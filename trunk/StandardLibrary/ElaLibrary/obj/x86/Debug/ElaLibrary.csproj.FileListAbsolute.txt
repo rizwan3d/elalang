@@ -1,9 +1,0 @@
-C:\Projects\Ela\StandardLibrary\ElaLibrary\bin\x86\Debug\elalib.dll
-C:\Projects\Ela\StandardLibrary\ElaLibrary\bin\x86\Debug\elalib.pdb
-C:\Projects\Ela\StandardLibrary\ElaLibrary\bin\x86\Debug\Ela.dll
-C:\Projects\Ela\StandardLibrary\ElaLibrary\bin\x86\Debug\modgen.exe
-C:\Projects\Ela\StandardLibrary\ElaLibrary\bin\x86\Debug\Ela.pdb
-C:\Projects\Ela\StandardLibrary\ElaLibrary\bin\x86\Debug\modgen.pdb
-C:\Projects\Ela\StandardLibrary\ElaLibrary\obj\x86\Debug\ResolveAssemblyReference.cache
-C:\Projects\Ela\StandardLibrary\ElaLibrary\obj\x86\Debug\elalib.dll
-C:\Projects\Ela\StandardLibrary\ElaLibrary\obj\x86\Debug\elalib.pdb
