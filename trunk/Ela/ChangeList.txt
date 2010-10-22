@@ -1,3 +1,4 @@
+0.7.19.0:Release:Release of Ela 0.7.19.
 0.7.18.48:Fix:A bug fixed that could cause an error when calling a function with empty body.
 0.7.18.47:Fix:A bug fixed in compilation logic of variants (wrong argument order).
 0.7.18.46:Fix:A bug fixed in compilation logic for short version of match expression.
@@ -46,6 +47,7 @@
 0.7.18.3:Change:Now coroutine is executed using the same Call procedure as a regular function. Also regular Call procedure is now able to correctly process static functions.
 0.7.18.2:New:Currying implemented for both native and external functions (experimental for now).
 0.7.18.1:Change:Minor refactoring in ElaFunctionInfo and ElaFunction object as well as in function call code in ElaMachine.
+0.7.18.0:Release:Release of Ela 0.7.18.
 0.7.17.11:New:A new reflection API that is usable from both Ela and .NETis implemented.
 0.7.17.10:Change:Now ElaObject has a protected virtual EnumerateFields method that returns all fields exposed by an object.
 0.7.17.9:Change:Now ElaObject has a GetValue(int) method that can be used by indexed derivations such as ElaTuple or ElaArray.
@@ -57,6 +59,7 @@
 0.7.17.3:Change:Additional public constructors added to ElaArray to simplify array creation from .NET code.
 0.7.17.2:Fix:A bug fixed in ElaString - it couldn't obtain the very first character through the indexer.
 0.7.17.1:Fix:A bug fixed in 'ctor' and 'any ctor' patterns for the case when a variant contains only a single element.
+0.7.17.0:Release:Release of Ela 0.7.17.
 0.7.16.22:Change:Minor performance tweaks in ElaMachine for 64 bit.
 0.7.16.21:Change:ElaFunction object refactored. Now native function is implemented through internal ElaNativeFunction class and ElaFunction is an abstract base class.
 0.7.16.20:New:Now tail call optimization is done when last expression in function is a pipe (|> or <|) operator.
@@ -79,43 +82,46 @@
 0.7.16.3:Fix:Compiler now catches situations when cases of 'or' patterns don't match in number of variable declarations.
 0.7.16.2:Fix:When compiling 'as' pattern an existing variable can be used instead of forcing to declare a new variable.
 0.7.16.1:Fix:Fixes in parser for pattern matching - sequences, tail and head, 'as' patterns are now processed more correctly.
-0.7.15.35:Fix:Minor fixes in exception handling, error messages moved to the Strings table.
-0.7.15.34:New:A lookup table OpHelper.OpSize was added in order to determine the size of op codes, object file read/write logic modified to use new op code size lookup table.
-0.7.15.33:Change:Call_0 op code removed.
-0.7.15.32:Change:Listlen op code removed (replaced by Pushfld "length").
-0.7.15.31:Change:Arrlen op code removed (replaced by Pushfld "length").
-0.7.15.30:Change:Refactoring in Ela type system, better public API for interoperability with .NET.
-0.7.15.29:Change:Object file format reading/writing is enabled again.
-0.7.15.28:Change:Refactoring in parser (language grammar).
-0.7.15.27:Change:Major refactoring in AST(now it is possible to construct AST outside of Ela library).
-0.7.15.26:New:ElaExpression.SetLinePragma(int,int) public method added.
-0.7.15.25:Change:CodeFrame.File made public (but with internal setter).
-0.7.15.24:Change:ScopeVar structure made public (also added public read-only properties VariableAddress and VariableFlags).
-0.7.15.23:Change:Methods Scope.GetVariable and Scope.Clone made public.
-0.7.15.22:Change:CodeFrame.GlobalScope property made public (but with internal setter).
-0.7.15.21:Change:CodeFrame.Imports property made public and changed type to IReadOnlyMap<>.
-0.7.15.20:New:Map<> and IReadOnlyMap<> added for use by compiler for imports, pervasives, etc.
-0.7.15.19:New:ElaTranslationException class was added (can be helpful for writing user code).
-0.7.15.18:New:A protected CodeAssembly.AddModule method added. This method allows to add new CodeFrame instances to the module list.
-0.7.15.17:Change:PushI4_1 and PushI4_2 op codes removed.
-0.7.15.16:Change:Call_1 and Call_2 op codes removed.
-0.7.15.15:Change:Throw_S op code removed. Now Throw is used for both cases (system and user exceptions).
-0.7.15.14:Change:Newtup_3 op code removed.
-0.7.15.13:New:Now 'is' operator can be used to check if an expression is unit using unit literal ().
-0.7.15.12:Change:List_isnull op code removed and replaced by Listlen op code.
-0.7.15.11:Change:Unused Cin op code removed.
-0.7.15.10:Fix:Minor fix in EIL generation logic (0 was printed for opcodes without argument).
-0.7.15.9:Change:Minor refactoring in op codes naming.
-0.7.15.8:Change:Now 'yield' presence is determined through expression flags, not through HasYield virtual property.
-0.7.15.7:Change:A syntax sugar for the generators was removed.
-0.7.15.6:New:Now an empty tuple (unit literal) is recognized as a 'unit' type expression when performing static code analysis.
-0.7.15.5:New:Now warning is raised when one of the expression in binary expression always returns 'unit'.
-0.7.15.4:New:Now 'yield', 'return', 'break' and 'continue' are not allowed in binary expression (previously they caused 'Stack corrupted' error).
-0.7.15.3:New:A new 'BreaksExecution' hint added to the AST (for 'yield', 'return', 'break', 'continue'; can be used for code analysis).
-0.7.15.2:New:A new 'ReturnsUnit' hint added to the AST (can be used for static code analysis).
-0.7.15.1:Change:Minor refactoring in parser.
-0.7.15.0:Change:Linkers are now generic classes (compiler and parser can be specified via generic parameters).
+0.7.16.0:Release:Release of Ela 0.7.16
+0.7.15.36:Fix:Minor fixes in exception handling, error messages moved to the Strings table.
+0.7.15.35:New:A lookup table OpHelper.OpSize was added in order to determine the size of op codes, object file read/write logic modified to use new op code size lookup table.
+0.7.15.34:Change:Call_0 op code removed.
+0.7.15.33:Change:Listlen op code removed (replaced by Pushfld "length").
+0.7.15.32:Change:Arrlen op code removed (replaced by Pushfld "length").
+0.7.15.31:Change:Refactoring in Ela type system, better public API for interoperability with .NET.
+0.7.15.30:Change:Object file format reading/writing is enabled again.
+0.7.15.29:Change:Refactoring in parser (language grammar).
+0.7.15.28:Change:Major refactoring in AST(now it is possible to construct AST outside of Ela library).
+0.7.15.27:New:ElaExpression.SetLinePragma(int,int) public method added.
+0.7.15.26:Change:CodeFrame.File made public (but with internal setter).
+0.7.15.25:Change:ScopeVar structure made public (also added public read-only properties VariableAddress and VariableFlags).
+0.7.15.24:Change:Methods Scope.GetVariable and Scope.Clone made public.
+0.7.15.23:Change:CodeFrame.GlobalScope property made public (but with internal setter).
+0.7.15.22:Change:CodeFrame.Imports property made public and changed type to IReadOnlyMap<>.
+0.7.15.21:New:Map<> and IReadOnlyMap<> added for use by compiler for imports, pervasives, etc.
+0.7.15.20:New:ElaTranslationException class was added (can be helpful for writing user code).
+0.7.15.19:New:A protected CodeAssembly.AddModule method added. This method allows to add new CodeFrame instances to the module list.
+0.7.15.18:Change:PushI4_1 and PushI4_2 op codes removed.
+0.7.15.17:Change:Call_1 and Call_2 op codes removed.
+0.7.15.16:Change:Throw_S op code removed. Now Throw is used for both cases (system and user exceptions).
+0.7.15.15:Change:Newtup_3 op code removed.
+0.7.15.14:New:Now 'is' operator can be used to check if an expression is unit using unit literal ().
+0.7.15.13:Change:List_isnull op code removed and replaced by Listlen op code.
+0.7.15.12:Change:Unused Cin op code removed.
+0.7.15.11:Fix:Minor fix in EIL generation logic (0 was printed for opcodes without argument).
+0.7.15.10:Change:Minor refactoring in op codes naming.
+0.7.15.9:Change:Now 'yield' presence is determined through expression flags, not through HasYield virtual property.
+0.7.15.8:Change:A syntax sugar for the generators was removed.
+0.7.15.7:New:Now an empty tuple (unit literal) is recognized as a 'unit' type expression when performing static code analysis.
+0.7.15.6:New:Now warning is raised when one of the expression in binary expression always returns 'unit'.
+0.7.15.5:New:Now 'yield', 'return', 'break' and 'continue' are not allowed in binary expression (previously they caused 'Stack corrupted' error).
+0.7.15.4:New:A new 'BreaksExecution' hint added to the AST (for 'yield', 'return', 'break', 'continue'; can be used for code analysis).
+0.7.15.3:New:A new 'ReturnsUnit' hint added to the AST (can be used for static code analysis).
+0.7.15.2:Change:Minor refactoring in parser.
+0.7.15.1:Change:Linkers are now generic classes (compiler and parser can be specified via generic parameters).
+0.7.15.0:Release:Release of Ela 0.7.15
 0.7.14.4:Change:Op codes encoding/decoding (parser and vm optimization, less memory consumption).
 0.7.14.3:Fix:Bug fix in record data type (unable to change values of fields).
 0.7.14.2:New:Implemented until and do/until cycles (similar to while and do/while cycles).
 0.7.14.1:Fix:Bug fix in while cycle (always executed as an endless cycle).
+0.7.14.0:Release:Release of Ela 0.7.14
