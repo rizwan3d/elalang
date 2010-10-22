@@ -1,6 +1,0 @@
-C:\Projects\Ela\Ela\bin\Release\Ela.dll
-C:\Projects\Ela\Ela\obj\x64\Release\ResolveAssemblyReference.cache
-C:\Projects\Ela\Ela\obj\x64\Release\Ela.Properties.Strings.resources
-C:\Projects\Ela\Ela\obj\x64\Release\Ela.Properties.Errors.resources
-C:\Projects\Ela\Ela\obj\x64\Release\Ela.csproj.GenerateResource.Cache
-C:\Projects\Ela\Ela\obj\x64\Release\Ela.dll
