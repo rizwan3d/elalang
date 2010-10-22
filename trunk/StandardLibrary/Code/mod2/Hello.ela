@@ -1,5 +1,0 @@
-let Message = "mod2";
-
-let FakeFun() {
-	cout "FAKE FUN!!!!";
-}
