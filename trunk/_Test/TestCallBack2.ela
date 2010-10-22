@@ -1,4 +1,0 @@
-var cb = CreateCallBack();
-var str = cb(123);
-
-trace(str);

@@ -1,5 +1,0 @@
-var x = 2;
-
-sleep 5000;
-
-var y = 3;
