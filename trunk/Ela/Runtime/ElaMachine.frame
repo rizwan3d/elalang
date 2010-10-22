@@ -1,0 +1,32 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Ela.Compilation;
+using Ela.CodeModel;
+using Ela.Debug;
+using Ela.Internal;
+using Ela.Linking;
+using Ela.Properties;
+using Ela.Runtime.ObjectModel;
+
+namespace Ela.Runtime
+{
+	public sealed partial class ElaMachine
+	{
+		private void Execute(WorkerThread thread)
+		{
+			if (thread.Busy)
+				throw BusyException();
+
+			thread.Busy = true;
+
+			%WITH_TRUE%
+		}
+		
+		
+		internal void ExecuteStep(WorkerThread thread)
+		{
+			%WITH_FALSE%
+		}
+	}
+}

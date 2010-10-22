@@ -1,0 +1,295 @@
+<?xml-stylesheet type="text/xsl" href="article.xsl"?>
+<article title="Ela Intermediate Language (EIL)">
+	
+<section level="1" title="Introduction" />
+Ela
+
+<section level="1" title="Instructions"/>
+A simple code sample using <key>let</key> instruction:
+
+<code>/* comment */
+let first = () -> { cout "First"; true; };
+let second = () -> { cout "Second"; false; };
+var str = "some string";
+
+when (first() &amp;&amp; second())
+	cout "we're here";
+</code>
+and some other things.
+
+<section level="3" title="Nop"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">0</tdn>
+	<th>Peek:</th><tdn width="20">0</tdn>
+	<th>Push:</th><tdn width="20">0</tdn>
+</row>
+No action is performed by the stack machine for this op code.
+
+<section level="3" title="Pushnull"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">0</tdn>
+	<th>Peek:</th><tdn width="20">0</tdn>
+	<th>Push:</th><tdn width="20">1</tdn>
+</row>
+Pushes a value of <key>null</key> onto evaluation stack.
+
+<section level="3" title="Pushvoid"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">0</tdn>
+	<th>Peek:</th><tdn width="20">0</tdn>
+	<th>Push:</th><tdn width="20">1</tdn>
+</row>
+Pushes a value of <key>void</key> onto evaluation stack.
+
+<section level="3" title="Pushelem"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">2</tdn>
+	<th>Peek:</th><tdn width="20">0</tdn>
+	<th>Push:</th><tdn width="20">1</tdn>
+</row>
+Pushes an indexed element (such as an element of an array, tuple, etc.) onto evaluation stack. Stack transitional behavior is the following:
+<list>
+	<li><i>Value 1</i> is pushed onto evaluation stack.</li>
+	<li><i>Value 2</i> is pushed onto evaluation stack.</li>
+	<li><i>Value 2</i> then <i>Value 1</i> are popped from the stack, <i>Value 2</i> is treated as an array index, <i>Value 1</i> - as an array instance. An index is applied to an array and an array element is returned.</li>
+	<li>A result is pushed onto evaluation stack.</li>
+</list>
+
+<section level="3" title="Pushcons"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">1</tdn>
+	<th>Peek:</th><tdn width="20">0</tdn>
+	<th>Push:</th><tdn width="20">1</tdn>
+</row>
+Pushes a name of a constructor which was used to create an instance of an object on the top of evaluation stack onto evaluation stack. Stack transitional behavior is the following:
+<list>
+	<li><i>Value</i> is pushed onto evaluation stack.</li>
+	<li><i>Value</i> is popped from the stack, treated as an instance of <key>production</key> and a name of its constructor is obtained.</li>
+	<li>A result (of type <key>string</key>) is pushed onto evaluation stack.</li>
+</list>
+
+<section level="3" title="Pop"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">1</tdn>
+	<th>Peek:</th><tdn width="20">0</tdn>
+	<th>Push:</th><tdn width="20">0</tdn>
+</row>
+Removes a value from the top of evaluation stack. A removed value is not persisted anywhere.
+
+<section level="3" title="Popelem"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">3</tdn>
+	<th>Peek:</th><tdn width="20">0</tdn>
+	<th>Push:</th><tdn width="20">0</tdn>
+</row>
+Pops an element from the top of evaluation stack and writes it at a specified index into array (or similar structure). Stack transitional behavior is the following:
+<list>
+	<li><i>Value 1</i> is pushed onto evaluation stack.</li>
+	<li><i>Value 2</i> is pushed onto evaluation stack.</li>
+	<li><i>Value 3</i> is pushed onto evaluation stack.</li>
+	<li><i>Value 3</i> then <i>Value 2</i> then <i>Value 1</i> are popped from the stack, <i>Value 3</i> is treated as an array index, <i>Value 2</i> - as an array instance, <i>Value 3</i> as an element that should be written at a specified index. An index is applied to an array and element is written to an array. No value is pushed onto the stack.</li>
+</list>
+
+<section level="3" title="Arrlen"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">0</tdn>
+	<th>Peek:</th><tdn width="20">1</tdn>
+	<th>Push:</th><tdn width="20">1</tdn>
+</row>
+Calculates a length of an array (or similar structure such as tuple) on the top of evaluation stack and pushes a result onto stack. Stack transitional behavior is the following:
+<list>
+	<li><i>Value</i> is pushed onto evaluation stack.</li>
+	<li><i>Value</i> is peeked from the stack and is treated as an array, array length is calculated.</li>
+	<li>A result (of type <key>int</key>) is pushed onto evaluation stack.</li>
+</list>
+
+<section level="3" title="Listadd"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">2</tdn>
+	<th>Peek:</th><tdn width="20">0</tdn>
+	<th>Push:</th><tdn width="20">1</tdn>
+</row>
+Adds an element to the head of the list and pushed a new list onto evaluation stack. Stack transitional behavior is the following:
+<list>
+	<li><i>Value 1</i> is pushed onto evaluation stack.</li>
+	<li><i>Value 2</i> is pushed onto evaluation stack.</li>
+	<li><i>Value 2</i> then <i>Value 1</i> are popped from the stack, <i>Value 2</i> is treated as a list instance, <i>Value 1</i> - as an element that should be appended to head of the list. A new list is constructed by append an element to the head of the list.</li>
+	<li>A result (of type <key>list</key>) is pushed onto evaluation stack.</li>
+</list>
+
+<section level="3" title="Listadd_Bw"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">2</tdn>
+	<th>Peek:</th><tdn width="20">0</tdn>
+	<th>Push:</th><tdn width="20">1</tdn>
+</row>
+Adds an element to the head of the list and pushed a new list onto evaluation stack. This op code uses a different order of arguments on evaluation stack than <i>Listadd</i>. Stack transitional behavior is the following:
+<list>
+	<li><i>Value 1</i> is pushed onto evaluation stack.</li>
+	<li><i>Value 2</i> is pushed onto evaluation stack.</li>
+	<li><i>Value 2</i> then <i>Value 1</i> are popped from the stack, <i>Value 1</i> is treated as a list instance, <i>Value 2</i> - as an element that should be appended to head of the list. A new list is constructed by append an element to the head of the list.</li>
+	<li>A result (of type <key>list</key>) is pushed onto evaluation stack.</li>
+</list>
+
+<section level="3" title="Listail"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">1</tdn>
+	<th>Peek:</th><tdn width="20">0</tdn>
+	<th>Push:</th><tdn width="20">1</tdn>
+</row>
+Obtains a tail of the list on the top of evaluation stack and pushes it back onto evaluation stack.
+<list>
+	<li><i>Value</i> is pushed onto evaluation stack.</li>
+	<li><i>Value</i> is popped from the stack and is treated as a list instance. List tail is obtained.</li>
+	<li>A result (of type <key>list</key>) is pushed onto evaluation stack.</li>
+</list>
+
+<section level="3" title="Listlen"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">1</tdn>
+	<th>Peek:</th><tdn width="20">0</tdn>
+	<th>Push:</th><tdn width="20">1</tdn>
+</row>
+Calculates a length of a linked list on the top of evaluation stack and pushes a result onto stack. Stack transitional behavior is the following:
+<list>
+	<li><i>Value</i> is pushed onto evaluation stack.</li>
+	<li><i>Value</i> is popped from the stack and is treated as a list, list length is calculated.</li>
+	<li>A result (of type <key>int</key>) is pushed onto evaluation stack.</li>
+</list>
+
+<section level="3" title="Listelem"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">1</tdn>
+	<th>Peek:</th><tdn width="20">0</tdn>
+	<th>Push:</th><tdn width="20">1</tdn>
+</row>
+Obtains an element from the head of a list on evaluation stack and pushed result onto evaluation stack. Stack transitional behavior is the following:
+<list>
+	<li><i>Value</i> is pushed onto evaluation stack.</li>
+	<li><i>Value</i> is popped from the stack and is treated as a list, an element from the head is obtained.</li>
+	<li>A result is pushed onto evaluation stack.</li>
+</list>
+
+<section level="3" title="List_isnil"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">1</tdn>
+	<th>Peek:</th><tdn width="20">0</tdn>
+	<th>Push:</th><tdn width="20">1</tdn>
+</row>
+Checks whether a list on the top of evaluation stack is an empty list. Stack transitional behavior is the following:
+<list>
+	<li><i>Value</i> is pushed onto evaluation stack.</li>
+	<li><i>Value</i> is popped from the stack and is treated as a list. A check is performed whether a list is empty, the result of a check is a boolean value, <i>true</i> if a list is empty, otherwise - <i>false</i>.</li>
+	<li>A result (of type <key>bool</key>) is pushed onto evaluation stack.</li>
+</list>
+
+<section level="3" title="Ret"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">0</tdn>
+	<th>Peek:</th><tdn width="20">0</tdn>
+	<th>Push:</th><tdn width="20">0</tdn>
+</row>
+Terminates an execution of a current code section. If current code section is a function control flow is returned to the caller, if current section is a global section a module execution is terminated.
+
+<section level="3" title="ConvI1"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">1</tdn>
+	<th>Peek:</th><tdn width="20">0</tdn>
+	<th>Push:</th><tdn width="20">1</tdn>
+</row>
+Converts a value on the top of evaluation stack into bool and pushes a result onto evaluation stack. Stack transitional behavior is the following:
+<list>
+	<li><i>Value</i> is pushed onto evaluation stack.</li>
+	<li><i>Value</i> is popped from the stack and is converted to the boolean type.</li>
+	<li>A result (of type <key>bool</key>) is pushed onto evaluation stack.</li>
+</list>
+
+<section level="3" title="ConvI4"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">1</tdn>
+	<th>Peek:</th><tdn width="20">0</tdn>
+	<th>Push:</th><tdn width="20">1</tdn>
+</row>
+Converts a value on the top of evaluation stack into 32-bit integer and pushes a result onto evaluation stack. Stack transitional behavior is the following:
+<list>
+	<li><i>Value</i> is pushed onto evaluation stack.</li>
+	<li><i>Value</i> is popped from the stack and is converted to the 32-bit integer.</li>
+	<li>A result (of type <key>int</key>) is pushed onto evaluation stack.</li>
+</list>
+
+<section level="3" title="ConvR4"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">1</tdn>
+	<th>Peek:</th><tdn width="20">0</tdn>
+	<th>Push:</th><tdn width="20">1</tdn>
+</row>
+Converts a value on the top of evaluation stack into 32-bit floating point number and pushes a result onto evaluation stack. Stack transitional behavior is the following:
+<list>
+	<li><i>Value</i> is pushed onto evaluation stack.</li>
+	<li><i>Value</i> is popped from the stack and is converted to the 32-bit floating point number.</li>
+	<li>A result (of type <key>real</key>) is pushed onto evaluation stack.</li>
+</list>
+
+<section level="3" title="ConvStr"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">1</tdn>
+	<th>Peek:</th><tdn width="20">0</tdn>
+	<th>Push:</th><tdn width="20">1</tdn>
+</row>
+Converts a value on the top of evaluation stack into string and pushes a result onto evaluation stack. Stack transitional behavior is the following:
+<list>
+	<li><i>Value</i> is pushed onto evaluation stack.</li>
+	<li><i>Value</i> is popped from the stack and is converted to the string.</li>
+	<li>A result (of type <key>string</key>) is pushed onto evaluation stack.</li>
+</list>
+
+<section level="3" title="ConvI8"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">1</tdn>
+	<th>Peek:</th><tdn width="20">0</tdn>
+	<th>Push:</th><tdn width="20">1</tdn>
+</row>
+Converts a value on the top of evaluation stack into 64-bit integer and pushes a result onto evaluation stack. Stack transitional behavior is the following:
+<list>
+	<li><i>Value</i> is pushed onto evaluation stack.</li>
+	<li><i>Value</i> is popped from the stack and is converted to the 64-bit integer.</li>
+	<li>A result (of type <key>long</key>) is pushed onto evaluation stack.</li>
+</list>
+
+<section level="3" title="ConvR8"/>
+<row>
+	<th>Args:</th><tdn width="20">0</tdn>
+	<th>Pop:</th><tdn width="20">1</tdn>
+	<th>Peek:</th><tdn width="20">0</tdn>
+	<th>Push:</th><tdn width="20">1</tdn>
+</row>
+Converts a value on the top of evaluation stack into 64-bit floating point number and pushes a result onto evaluation stack. Stack transitional behavior is the following:
+<list>
+	<li><i>Value</i> is pushed onto evaluation stack.</li>
+	<li><i>Value</i> is popped from the stack and is converted to the 64-bit floating point number.</li>
+	<li>A result (of type <key>double</key>) is pushed onto evaluation stack.</li>
+</list>
+
+<section level="1" title="Additional Information" />
+Ela is a language
+</article>

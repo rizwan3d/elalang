@@ -1,0 +1,4 @@
+var x = 0;
+var f = () -> x = 2;
+f();
+trace(x);

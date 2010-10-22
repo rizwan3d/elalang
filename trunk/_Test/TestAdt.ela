@@ -1,0 +1,14 @@
+var Add = 0;
+
+type expr = Add(x, y) | Mul(x, y);
+
+var adt = expr.Add(23, 12);
+
+var res = match (adt)
+	| Add(23, x) if (x > 11) -> "Add2: " + string(x)
+	| (x, y) -> "any: " + string(x) + string(y)
+	| Add(x, y) -> "Add: " + string(x) + ";" + string(y)
+	| Mul() -> "Mul"
+	| _ -> "unknown";
+
+res;

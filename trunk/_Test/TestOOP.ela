@@ -1,0 +1,23 @@
+var math = Math(2);
+ 
+ #region Couts
+ cout "Add:" + math.Add(2);
+ cout "Minus:" + math.Minus(2);
+ cout "Mul:" + math.Mul(2);
+ cout "Del:" + math.Del(2);
+ read();
+ #endregion
+ 
+ 
+ 
+ function Math2()
+ {
+ }
+ 
+ function Math(y)
+ {
+ 	var Add = fun(x) => x + y;
+ 	var Minus = fun(x) => x - y;
+ 	var Mul = fun(x) => x * y;
+ 	var Del = fun(x) => x / y;
+ }

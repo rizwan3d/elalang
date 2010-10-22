@@ -1,0 +1,8 @@
+C:\Projects\Ela\Ela\bin\Debug\Ela.dll
+C:\Projects\Ela\Ela\bin\Debug\Ela.pdb
+C:\Projects\Ela\Ela\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Projects\Ela\Ela\obj\x86\Debug\Ela.Properties.Strings.resources
+C:\Projects\Ela\Ela\obj\x86\Debug\Ela.Properties.Errors.resources
+C:\Projects\Ela\Ela\obj\x86\Debug\Ela.csproj.GenerateResource.Cache
+C:\Projects\Ela\Ela\obj\x86\Debug\Ela.dll
+C:\Projects\Ela\Ela\obj\x86\Debug\Ela.pdb

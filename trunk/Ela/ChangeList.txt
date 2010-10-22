@@ -1,0 +1,121 @@
+0.7.18.48:Fix:A bug fixed that could cause an error when calling a function with empty body.
+0.7.18.47:Fix:A bug fixed in compilation logic of variants (wrong argument order).
+0.7.18.46:Fix:A bug fixed in compilation logic for short version of match expression.
+0.7.18.45:Change:Now compiler supports separate 'debug' (generate debug info) and 'optimize' (perform optimizations) flags.
+0.7.18.44:Change:Tail call optimization disabled inside try/catch and for generators.
+0.7.18.43:Change:Function composition compilation logic optimized.
+0.7.18.42:New:A tail call (non-recursive) is now optimized. A call is performed using new op code 'Callc' (experimental).
+0.7.18.41:Fix:A bug fixed in currying logic in virtual machine.
+0.7.18.40:New:FunctionImplicitPartial warning is now generated when a function is partially applied during composition.
+0.7.18.39:Change:Minor changes in composition grammar - order of evaluation for '>>>' and '<<<' operators is exchanged.
+0.7.18.38:New:Now function call verification is performed against composed functions (using function composition operators).
+0.7.18.37:New:Now function call verification is performed against curried functions as well.
+0.7.18.36:New:A new FunctionZeroParams warning is now generated with a function with non-zero argument list is tried to call with empty argument list.
+0.7.18.35:New:A new mechanism implemented in compiler that allows expression compiler to return additional metadata about compilation results which can be used for code verification and optimization.
+0.7.18.34:Fix:A bug in function composition fixed (number of arguments for the first function were incorrectly determined which caused VM to crush).
+0.7.18.33:New:A shortcut syntax (e.g. fun(x, y,)) with a trailing comma added for tuple creation inside a function call expression (as an alternative to fun((x,y))).
+0.7.18.32:New:A new static verification added - compiler now tries to determine if a function call operation is performed against function and generates an appropriate warning if needed.
+0.7.18.31:New:A new static verification added - compiler now tries to check if a correct number of arguments are specified in a function call and generates an appropriate warning if needed.
+0.7.18.30:Change:Parallel match compilation logic optimized, new diagnostic warnings added.
+0.7.18.29:Change:Match compilation logic optimized for the cases when pattern matching is used in cycles.
+0.7.18.28:Change:Error reporting completely refactored for parser, compiler, linker and Ela runtime.
+0.7.18.27:New:A new ElaRecordInfo class added to the reflection API. This class is used to describe 'record' data types and exposes method to operate with record fields.
+0.7.18.26:Change:Ela type system was refactored in the part that is responsible for the reflection support, redundant code removed.
+0.7.18.25:Change:Error handling in virtual machine enhanced for all indexer related operations (Popelem, Pushelem, Popfld, Pushfld).
+0.7.18.24:Change:A new ElaIndexedObject type was added Ela type system.This type is now used as a base type for all types that support indexer operation.
+0.7.18.23:Change:ElaTypeInfo changes 'IsIndexed' field is removed.
+0.7.18.22:Change:ElaTupleInfo changes 'IsTagged' field is replaced by the 'Tag' field that returns a tag value. Comparison logic is updated as well.
+0.7.18.21:Fix:A bug fixed in the parser production for the sequence match pattern that was creating nested sequences instead of processing them a solid sequence.
+0.7.18.20:New:A new 'Len' op code was added. This op code is used when compiling match instead of manually pushing "length" field.
+0.7.18.19:Change:Match validation (typing of match patterns) is fully redesigned, both AST and match compilation logic have changed.
+0.7.18.18:Change:Ela AST refactored in the part that represents elements of match expression.
+0.7.18.17:Change:Minor refactoring in Ela code model (parser AST).
+0.7.18.16:Fix:Now placeholder expression ('_') is correctly processed when used inside casts, 'typeof' and 'is' expressions.
+0.7.18.15:Fix:A bug fix in functions with multiple parameters created using partial application.
+0.7.18.14:Fix:Newseq op didn't correctly check the type of an argument when a sequence was created from a static function (regular function could be used with no errors).
+0.7.18.13:New:ElaTupleInfo added to reflection API (can be obtained through ElaTuple and ElaRecord instances).
+0.7.18.12:Change:Minor refactoring in Ela type system.
+0.7.18.11:New:ElaSequenceInfo added to reflection API (can be obtained through ElaSequence instance).
+0.7.18.10:Change:Minor refactorying and enhancements in ElaSequence type.
+0.7.18.9:New:ElaLazyInfo added to reflection API (can be obtained through ElaLazy instance).
+0.7.18.8:Change:Minor refactoring in ElaLazy type.
+0.7.18.7:New:Comparison methods (that are usable from both Ela code and .NET) added to Ela reflection classes.
+0.7.18.6:New:A default ToString implementation return type name in Ela notation added to all Ela types.
+0.7.18.5:New:ElaVariableInfo now has a getValue method exposed to Ela code that returns a variable value.
+0.7.18.4:New:ElaAssemblyInfo added to reflection API (it is accessible through ElaModuleInfo instance).
+0.7.18.3:Change:Now coroutine is executed using the same Call procedure as a regular function. Also regular Call procedure is now able to correctly process static functions.
+0.7.18.2:New:Currying implemented for both native and external functions (experimental for now).
+0.7.18.1:Change:Minor refactoring in ElaFunctionInfo and ElaFunction object as well as in function call code in ElaMachine.
+0.7.17.11:New:A new reflection API that is usable from both Ela and .NETis implemented.
+0.7.17.10:Change:Now ElaObject has a protected virtual EnumerateFields method that returns all fields exposed by an object.
+0.7.17.9:Change:Now ElaObject has a GetValue(int) method that can be used by indexed derivations such as ElaTuple or ElaArray.
+0.7.17.8:Change:Changes in Ela type system organization - now ElaTuple, ElaString and ElaRecord don't inherit ElaArray.
+0.7.17.7:Change:Additional public constructors added to ElaList to simplify array creation from .NET code.
+0.7.17.6:Change:Additional public constructors added to ElaTuple to simplify array creation from .NET code.
+0.7.17.5:Change:Changes in grammar. Now it is possible to obtain fields from primitives literals, i.e. "1.getType()".
+0.7.17.4:New:Now it is possible to create a tuple with one argument using (x,) notation and to match against such a tuple.
+0.7.17.3:Change:Additional public constructors added to ElaArray to simplify array creation from .NET code.
+0.7.17.2:Fix:A bug fixed in ElaString - it couldn't obtain the very first character through the indexer.
+0.7.17.1:Fix:A bug fixed in 'ctor' and 'any ctor' patterns for the case when a variant contains only a single element.
+0.7.16.22:Change:Minor performance tweaks in ElaMachine for 64 bit.
+0.7.16.21:Change:ElaFunction object refactored. Now native function is implemented through internal ElaNativeFunction class and ElaFunction is an abstract base class.
+0.7.16.20:New:Now tail call optimization is done when last expression in function is a pipe (|> or <|) operator.
+0.7.16.19:New:Now it is possible to create external Ela function with an unlimited number of parameters (used for String.format currently).
+0.7.16.18:Fix:Minors clean-ups in runtime code.
+0.7.16.17:Fix:Bug fixed in ElaLinker that was causing some error messages to be lost.
+0.7.16.16:New:A new method 'ToModule' was added to the RuntimeValue structure.
+0.7.16.15:Change:'Module' type is implemented through 'ElaModule' class that has a module handle and a reference to ElaMachine.
+0.7.16.14:New:Scope class now has a public EnumerateNames method that allows to iterate through all variable names.
+0.7.16.13:Change:Output format for the call stack is changed.
+0.7.16.12:Change:Now ElaDebugger and not ElaMachine is responsible for building call stack for errors.
+0.7.16.11:Fix:An unneccessary 'Cache' hint removed from compiler.
+0.7.16.10:Fix:Minor fixes in error reporter for parser, enhanced error reporting for match syntax errors.
+0.7.16.9:Change:Minor clean-ups in compiler code and internal compiler object model.
+0.7.16.8:Change:Clean-ups in CodeFrame implementation, change work with module references.
+0.7.16.7:Change:CodeAssembly, work with module names, handles and arguments was fully redesigned.
+0.7.16.6:Fix:A bug fixed that was causing VM to fail if there is a return from a function from another module.
+0.7.16.5:Fix:Linker didn't correctly handle situations when different modules have the same name (only one module was actually saved).
+0.7.16.4:Fix:Stack wasn't cleared when an exception is raised from the VM.
+0.7.16.3:Fix:Compiler now catches situations when cases of 'or' patterns don't match in number of variable declarations.
+0.7.16.2:Fix:When compiling 'as' pattern an existing variable can be used instead of forcing to declare a new variable.
+0.7.16.1:Fix:Fixes in parser for pattern matching - sequences, tail and head, 'as' patterns are now processed more correctly.
+0.7.15.35:Fix:Minor fixes in exception handling, error messages moved to the Strings table.
+0.7.15.34:New:A lookup table OpHelper.OpSize was added in order to determine the size of op codes, object file read/write logic modified to use new op code size lookup table.
+0.7.15.33:Change:Call_0 op code removed.
+0.7.15.32:Change:Listlen op code removed (replaced by Pushfld "length").
+0.7.15.31:Change:Arrlen op code removed (replaced by Pushfld "length").
+0.7.15.30:Change:Refactoring in Ela type system, better public API for interoperability with .NET.
+0.7.15.29:Change:Object file format reading/writing is enabled again.
+0.7.15.28:Change:Refactoring in parser (language grammar).
+0.7.15.27:Change:Major refactoring in AST(now it is possible to construct AST outside of Ela library).
+0.7.15.26:New:ElaExpression.SetLinePragma(int,int) public method added.
+0.7.15.25:Change:CodeFrame.File made public (but with internal setter).
+0.7.15.24:Change:ScopeVar structure made public (also added public read-only properties VariableAddress and VariableFlags).
+0.7.15.23:Change:Methods Scope.GetVariable and Scope.Clone made public.
+0.7.15.22:Change:CodeFrame.GlobalScope property made public (but with internal setter).
+0.7.15.21:Change:CodeFrame.Imports property made public and changed type to IReadOnlyMap<>.
+0.7.15.20:New:Map<> and IReadOnlyMap<> added for use by compiler for imports, pervasives, etc.
+0.7.15.19:New:ElaTranslationException class was added (can be helpful for writing user code).
+0.7.15.18:New:A protected CodeAssembly.AddModule method added. This method allows to add new CodeFrame instances to the module list.
+0.7.15.17:Change:PushI4_1 and PushI4_2 op codes removed.
+0.7.15.16:Change:Call_1 and Call_2 op codes removed.
+0.7.15.15:Change:Throw_S op code removed. Now Throw is used for both cases (system and user exceptions).
+0.7.15.14:Change:Newtup_3 op code removed.
+0.7.15.13:New:Now 'is' operator can be used to check if an expression is unit using unit literal ().
+0.7.15.12:Change:List_isnull op code removed and replaced by Listlen op code.
+0.7.15.11:Change:Unused Cin op code removed.
+0.7.15.10:Fix:Minor fix in EIL generation logic (0 was printed for opcodes without argument).
+0.7.15.9:Change:Minor refactoring in op codes naming.
+0.7.15.8:Change:Now 'yield' presence is determined through expression flags, not through HasYield virtual property.
+0.7.15.7:Change:A syntax sugar for the generators was removed.
+0.7.15.6:New:Now an empty tuple (unit literal) is recognized as a 'unit' type expression when performing static code analysis.
+0.7.15.5:New:Now warning is raised when one of the expression in binary expression always returns 'unit'.
+0.7.15.4:New:Now 'yield', 'return', 'break' and 'continue' are not allowed in binary expression (previously they caused 'Stack corrupted' error).
+0.7.15.3:New:A new 'BreaksExecution' hint added to the AST (for 'yield', 'return', 'break', 'continue'; can be used for code analysis).
+0.7.15.2:New:A new 'ReturnsUnit' hint added to the AST (can be used for static code analysis).
+0.7.15.1:Change:Minor refactoring in parser.
+0.7.15.0:Change:Linkers are now generic classes (compiler and parser can be specified via generic parameters).
+0.7.14.4:Change:Op codes encoding/decoding (parser and vm optimization, less memory consumption).
+0.7.14.3:Fix:Bug fix in record data type (unable to change values of fields).
+0.7.14.2:New:Implemented until and do/until cycles (similar to while and do/while cycles).
+0.7.14.1:Fix:Bug fix in while cycle (always executed as an endless cycle).

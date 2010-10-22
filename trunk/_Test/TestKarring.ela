@@ -1,0 +1,9 @@
+var Foo = function(val)
+{
+	return "Calculation result is " + val;
+};
+
+
+var f = Foo(_);
+
+return f(2);

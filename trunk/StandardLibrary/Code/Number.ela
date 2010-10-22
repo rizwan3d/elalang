@@ -1,0 +1,7 @@
+let intMaxValue = 2147483647;
+
+let intMinValue = -2147483647;
+
+let longMaxValue = 9223372036854775807L;
+
+let longMinValue = -9223372036854775807L;

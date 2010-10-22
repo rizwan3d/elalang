@@ -1,0 +1,8 @@
+let err = (0, 1, 2);//`Error(234, "Undefined error.", true);
+
+let mt(e) on `Error(x, y, z) -> z on _ -> "";
+
+cout err[0];
+cout err[1];
+cout err[2];
+

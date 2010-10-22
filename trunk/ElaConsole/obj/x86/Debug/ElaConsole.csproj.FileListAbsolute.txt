@@ -1,0 +1,8 @@
+C:\Projects\Ela\ElaConsole\bin\Debug\elac.exe.config
+C:\Projects\Ela\ElaConsole\bin\Debug\elac.exe
+C:\Projects\Ela\ElaConsole\bin\Debug\elac.pdb
+C:\Projects\Ela\ElaConsole\bin\Debug\Ela.dll
+C:\Projects\Ela\ElaConsole\bin\Debug\Ela.pdb
+C:\Projects\Ela\ElaConsole\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Projects\Ela\ElaConsole\obj\x86\Debug\elac.exe
+C:\Projects\Ela\ElaConsole\obj\x86\Debug\elac.pdb

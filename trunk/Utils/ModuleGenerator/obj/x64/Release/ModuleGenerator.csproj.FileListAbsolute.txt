@@ -1,0 +1,10 @@
+C:\Projects\Ela\Binaries\modgen.exe
+C:\Projects\Ela\Binaries\modgen.pdb
+C:\Projects\Ela\ModuleGenerator\obj\x64\Release\ResolveAssemblyReference.cache
+C:\Projects\Ela\ModuleGenerator\obj\x64\Release\modgen.exe
+C:\Projects\Ela\ModuleGenerator\obj\x64\Release\modgen.pdb
+C:\Projects\Ela\Utils\Binaries\modgen.exe
+C:\Projects\Ela\Utils\Binaries\modgen.pdb
+C:\Projects\Ela\Utils\ModuleGenerator\obj\x64\Release\ResolveAssemblyReference.cache
+C:\Projects\Ela\Utils\ModuleGenerator\obj\x64\Release\modgen.exe
+C:\Projects\Ela\Utils\ModuleGenerator\obj\x64\Release\modgen.pdb

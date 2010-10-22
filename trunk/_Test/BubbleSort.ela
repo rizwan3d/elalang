@@ -1,0 +1,15 @@
+open Debug[elalib];
+let s = Debug.startClock();
+
+let size = 1000;
+let arr = [| for (i to size - 1) size - i |];
+
+let bubbleSort(item) {
+	for (i to item.length - 1)
+		for (j when item[j + 1] < item[j] to item.length - 2 - i)
+			item[j] <=> item[j + 1]
+}
+
+bubbleSort(arr);
+cout Debug.stopClock(s);
+

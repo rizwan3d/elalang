@@ -1,0 +1,39 @@
+open String[elalib] with format;
+
+let `TestSession(tests) ( tests: tests );
+	
+let `TestResult(tests, failed) (
+	tests: tests,
+	failed: failed
+);
+
+let createSession() `TestSession([]);
+
+let registerFunction(session, fun) 
+	session.tests ::= (format("{0}.{1}", fun.getTypeInfo().name, fun.getTypeInfo().module.name), fun);
+
+let private countFailed(list, failed) match (list)
+	on (_, f)::xs when (!f) -> countFailed(xs, failed + 1)
+	on (_, f)::xs -> countFailed(xs, failed)
+	on [] -> failed;
+
+let runTests(session) {		
+	let list = [ for ((n, f) in session.tests) (n, try f() catch(e) false) ];
+	`TestResult(list, countFailed(list, 0))
+}	
+	
+let private formatTests(result, idx, str) match (result)
+	on (n,r)::xs ->
+			formatTests(xs, idx + 1, 
+				str + format("\r\n{0}. {1}: {2}", idx, if (r) "Success" else "FAILED ", n))
+	on [] -> str + "\r\n";
+	
+let formatResult(result) {
+	var str = "Test session started\r\n";
+	str += formatTests(result.tests, 1, "");
+	str += "\r\nTest session finished\r\n";
+	str += format("Executed tests: {0}\r\n", result.tests.length);
+	str += format("Successful tests: {0}\r\n", result.tests.length - result.failed);
+	str += format("Failed tests: {0}", result.failed);
+	str
+}

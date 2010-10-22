@@ -1,0 +1,15 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <StartArguments>
+    </StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <StartArguments>..\..\..\StandardLibrary\ElaLibrary\bin\debug\elalib.dll "C:\projects\RND\ElaNew\StandardLibrary\ElaLibrary\Generated.cs"</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <StartArguments>..\..\..\StandardLibrary\ElaLibrary\bin\debug\elalib.dll "C:\projects\RND\ElaNew\StandardLibrary\ElaLibrary\Generated.cs"</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <StartArguments>..\..\..\StandardLibrary\ElaLibrary\bin\debug\elalib.dll "C:\projects\RND\ElaNew\StandardLibrary\ElaLibrary\Generated.cs"</StartArguments>
+  </PropertyGroup>
+</Project>

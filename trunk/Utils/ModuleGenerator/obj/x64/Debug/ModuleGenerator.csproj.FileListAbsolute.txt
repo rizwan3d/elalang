@@ -1,0 +1,14 @@
+C:\Projects\Ela\ModuleGenerator\bin\Debug\modgen.exe
+C:\Projects\Ela\ModuleGenerator\bin\Debug\modgen.pdb
+C:\Projects\Ela\ModuleGenerator\bin\Debug\Ela.dll
+C:\Projects\Ela\ModuleGenerator\bin\Debug\Ela.pdb
+C:\Projects\Ela\ModuleGenerator\obj\x64\Debug\ResolveAssemblyReference.cache
+C:\Projects\Ela\ModuleGenerator\obj\x64\Debug\modgen.exe
+C:\Projects\Ela\ModuleGenerator\obj\x64\Debug\modgen.pdb
+C:\Projects\Ela\Utils\ModuleGenerator\bin\Debug\modgen.exe
+C:\Projects\Ela\Utils\ModuleGenerator\bin\Debug\modgen.pdb
+C:\Projects\Ela\Utils\ModuleGenerator\bin\Debug\Ela.dll
+C:\Projects\Ela\Utils\ModuleGenerator\bin\Debug\Ela.pdb
+C:\Projects\Ela\Utils\ModuleGenerator\obj\x64\Debug\ResolveAssemblyReference.cache
+C:\Projects\Ela\Utils\ModuleGenerator\obj\x64\Debug\modgen.exe
+C:\Projects\Ela\Utils\ModuleGenerator\obj\x64\Debug\modgen.pdb

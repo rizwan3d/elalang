@@ -1,0 +1,172 @@
+﻿<html>
+  <head>
+    <title>Проект Ela</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet"  type="text/css" href="http://rsdn.ru/css/article.css" />
+  </head>
+  <body>
+  
+<SCRIPT LANGUAGE="javascript">	function ToggleCode(id){ el=document.all[id];img=document.all[ "img"+id];if(el.style.display=="none"){img.src="http://rsdn.ru/images/ls2.gif";el.style.display="";}else{img.src="http://rsdn.ru/images/ls1.gif";el.style.display="none";}}</SCRIPT><H1>Проект Ela<A href="printv.asp?what=this"></A><BR><SPAN class="subtitle"></SPAN></H1>
+<H5><SPAN class="title">Автор: </SPAN><SPAN class="value"><A target="_blank" href="http://www.rsdn.ru/Users/16070.aspx" title="">Воронков Василий Владимирович</A></SPAN></H5>
+<H6><SPAN class="title">Опубликовано: </SPAN><SPAN class="value">03.06.2010</SPAN><BR><SPAN class="title">Версия текста: </SPAN><SPAN class="value">1.0</SPAN></H6>
+<DIV style="margin-left:2em"><A href="#ID0EZB"><B>Что?</B></A><BR><DIV style="margin-left:2em"></DIV><A href="#ID0ESE"><B>Как?</B></A><BR><DIV style="margin-left:2em"></DIV><A href="#ID0E4E"><B>Зачем?</B></A><BR><DIV style="margin-left:2em"></DIV><A href="#ID0EVH"><B>Текущее состояние проекта</B></A><BR><DIV style="margin-left:2em"></DIV>
+</DIV>
+<H2>Что?<A name="ID0EZB"></A></H2>
+    
+    <P>Ela является функциональным языком программирования – поддерживает функции как первоклассные объекты, концепцию неизменяемых структур данных и переменных, а так же специальные конструкции вроде паттерн-матчинга, упрощающие написание кода в декларативном ключе. В Ela есть списки, генераторы, полиморфные варианты, отложенные (или ленивые) вычисления и поддержка асинхронного программирования через реальные потоки. Также, что немаловажно, все конструкции языка являются выражениями, т.е. могут потенциально возвращать значение. Поэтому, к примеру, такой код является полностью корректным:</P>
+    <DIV id="ID0E6B">
+  <TABLE class="code" width="98%">
+    <TR>
+      <TD>
+        <PRE><SPAN class="KEYWORD">var</SPAN> x = <SPAN class="KEYWORD">if</SPAN> (<SPAN class="KEYWORD">true</SPAN>) 1 <SPAN class="KEYWORD">else</SPAN> 2;
+  </PRE>
+      </TD>
+    </TR>
+  </TABLE>
+</DIV>
+    <P>И даже такой:</P>
+    <DIV id="ID0ELC">
+  <TABLE class="code" width="98%">
+    <TR>
+      <TD>
+        <PRE><SPAN class="KEYWORD">var</SPAN> x = {
+  <SPAN class="KEYWORD">var</SPAN> accum = 0;
+
+  <SPAN class="KEYWORD">for</SPAN> (x <SPAN class="KEYWORD">to</SPAN> 10)
+    accum += x;
+    
+  accum;
+}</PRE>
+      </TD>
+    </TR>
+  </TABLE>
+</DIV>
+    <P>В этом случае значением переменной «x» будет последнее выражение в блоке, т.е. значение переменной «accum».</P>
+    <P>Будучи языком с С-подобным синтаксисом, Ela поддерживает лексические блоки для переменных на манер С/C++ с затенением переменных из родительского блока (что хорошо видно из предыдущего примера, где переменная «x», используемая в цикле «for», затеняет родительскую переменную «x»). Это поведение, к примеру, отличается от C#, где затенение переменных в лексических блоках недопустимо.</P>
+    <P>Ela также является и императивным языком. В Ela допускаются побочные эффекты, есть возможность объявления изменяемых переменных, поддерживаются циклы с операторами break, continue и return, а также другие императивные конструкции. </P>
+    <P>Но Ela еще и язык с динамической типизацией, а это означает, что информация о типе в Ela связывается не с переменной, а со значением этой переменной. Фактически, так как переменные не несут в себе никакой информации о типе, то код вида «x + y» представляет собой операцию не над типами данных, а над именами, и поэтому нам становится известно, какого рода операцию следует выполнить – сложение целых, конкатенацию строк или же и вовсе объединение списков – уже только на этапе исполнения. Однако, в отличие от таких языков как JavaScript и PHP, Ela является строго типизированным языком, т.е. если вы попробуете вычесть из строки целое, сложить список и массив или же совершить любую другую подобную операцию, то получите ошибку времени исполнения.</P>
+    <P>Ela не поддерживает напрямую объектно-ориентированное программирование, в языке нет возможности описать свой собственный тип (класс), как нет и концепции прототипов, знакомой многим программистам по JavaScript, однако модули (которыми являются исполнимые файлы) являются в Ela первоклассными объектами, поддерживается так же и утиная типизация, поэтому многие сценарии и паттерны объектно-ориентированного программирования могут быть реализованы и в Ela.</P>
+    <P>Вот несколько примеров кода на Ela, дающих некоторое представление о языке.</P>
+    <P>Реализация быстрой сортировки списка на функциональный манер:</P>
+    <DIV id="ID0EDD">
+  <TABLE class="code" width="98%">
+    <TR>
+      <TD>
+        <PRE><SPAN class="KEYWORD">let</SPAN> quickSort(list)
+  <SPAN class="KEYWORD">on</SPAN> x::xs -&gt; quickSort([<SPAN class="KEYWORD">for</SPAN> (y <SPAN class="KEYWORD">when</SPAN> y &lt; x <SPAN class="KEYWORD">in</SPAN> xs) y]) + 
+        [x] + 
+        quickSort([<SPAN class="KEYWORD">for</SPAN> (y <SPAN class="KEYWORD">when</SPAN> y &gt;= x <SPAN class="KEYWORD">in</SPAN> xs) y])
+  <SPAN class="KEYWORD">on</SPAN> [] -&gt; [];</PRE>
+      </TD>
+    </TR>
+  </TABLE>
+</DIV>
+    <P>Классическая императивная реализация quick sort для массива по алгоритму Хоара:</P>
+    <DIV id="ID0EZD">
+  <TABLE class="code" width="98%">
+    <TR>
+      <TD>
+        <PRE><SPAN class="KEYWORD">let</SPAN> quickSort(item, left, right)
+{
+  <SPAN class="KEYWORD">var</SPAN> i = left;
+  <SPAN class="KEYWORD">var</SPAN> j = right;
+  <SPAN class="KEYWORD">var</SPAN> center = item[(left + right) / 2];
+  <SPAN class="KEYWORD">var</SPAN> x = ();
+  
+  <SPAN class="KEYWORD">while</SPAN> (i &lt;= j)
+  {
+    <SPAN class="KEYWORD">while</SPAN> (item[i] &lt; center &amp;&amp; i &lt; right)
+      i++;
+    <SPAN class="KEYWORD">while</SPAN> (item[j] &gt; center &amp;&amp; j &gt; left)
+      j--;
+
+    <SPAN class="KEYWORD">when</SPAN> (i &lt;= j) {
+      x = item[i];
+      item[i] = item[j];
+      item[j] = x;
+      i++;
+      j--;
+    }
+  } 
+  
+  <SPAN class="KEYWORD">when</SPAN> (left &lt; j)
+    quickSort(item, left, j);
+  
+  <SPAN class="KEYWORD">when</SPAN> (right &gt; i)
+    quickSort(item, i, right);
+}</PRE>
+      </TD>
+    </TR>
+  </TABLE>
+</DIV>
+  <H2>Как?<A name="ID0ESE"></A></H2>
+    
+    <P>Ela полностью реализована на языке C# 3.0 и может работать под управлением .NET Framework версий 3.5 и 4.0, а также под Mono 2.0. Ela на текущий момент является интерпретируемым языком – компиляция исходного кода на Ela происходит в промежуточный байт-код (Ela Intermediate Language, или EIL), инструкции которого были разработаны специально для Ela, и исполняется на своей виртуальной машине, реализованной в виде стек-машины. </P>
+    <P>По скорости исполнения кода Ela не является ни самым быстрым, ни самым медленным интерпретируемым языком. К примеру, скорость кода на Ela имеет склонность быть ниже, чем код на CPython 2.6, но в то же время быстрее Ruby 1.8 и JScript (реализации ECMAScript, которая используется в браузере Internet Explorer). </P>
+    <P>Весь язык реализован в виде отдельной динамической библиотеки Ela.dll, размер которой на текущий момент составляет менее 200 килобайт. Данная библиотека не требует регистрации и не имеет никаких внешних зависимостей. Небезопасный (unsafe) код при разработке Ela не использовался.</P>
+  <H2>Зачем?<A name="ID0E4E"></A></H2>
+    
+    <P>Зачем нужен еще один язык программирования?</P>
+    <P>Начнем с того, что если вы ведете разработку с использованием .NET Framework и вам требуется встраиваемый скриптовый язык, то ваш выбор будет весьма ограничен. Вы можете использовать какие-либо популярные языков вроде Lua, однако в таком случае ваше приложение получит зависимости от «native» библиотек и потеряет кроссплатформенность. Можно использовать JScript.NET – язык с весьма сомнительным дизайном и туманным будущим. Или же поискать какие-либо альтернативы, разработанные специально для .NET, однако мне не попадалось ничего, что могло бы удовлетворить мои потребности.</P>
+    <P>Ela же может быть с легкостью использована как встраиваемый язык программирования – в тех случаях, когда часть логики программы должна модифицироваться на лету. Архитектура Ela разрабатывалась с учетом таких сценариев использования, интерпретатор обладает достаточной производительностью, собирается в конфигурации AnyCPU и может работать как под Windows, так и под Unix системами, к тому же обладает простым и понятным «интерфейсом», с помощью которого его можно подключить к вашему проекту. </P>
+    <P>К примеру, следующий код на C# добавляет к типу System.String метод Eval, позволяющий интерпретировать выражения и передавать в них параметры:</P>
+    <DIV id="ID0EJF">
+  <TABLE class="code" width="98%">
+    <TR>
+      <TD>
+        <PRE><SPAN class="KEYWORD">internal</SPAN> <SPAN class="KEYWORD">static</SPAN> <SPAN class="KEYWORD">class</SPAN> StringExtensions
+{
+  <SPAN class="KEYWORD">public</SPAN> <SPAN class="KEYWORD">static</SPAN> <SPAN class="KEYWORD">object</SPAN> Eval&lt;T&gt;(<SPAN class="KEYWORD">this</SPAN> <SPAN class="KEYWORD">string</SPAN> @<SPAN class="KEYWORD">this</SPAN>, T args)
+  {
+    <SPAN class="KEYWORD">var</SPAN> linker = <SPAN class="KEYWORD">new</SPAN> ElaIncrementalLinker(
+      <SPAN class="KEYWORD">new</SPAN> LinkerOptions(), CompilerOptions.Default);
+    linker.SetSource(@<SPAN class="KEYWORD">this</SPAN>);
+    <SPAN class="KEYWORD">var</SPAN> res = linker.Build();
+
+    <SPAN class="KEYWORD">if</SPAN> (res.Success) {
+      <SPAN class="KEYWORD">var</SPAN> asm = res.Assembly;
+
+      <SPAN class="KEYWORD">foreach</SPAN> (<SPAN class="KEYWORD">var</SPAN> p <SPAN class="KEYWORD">in</SPAN> <SPAN class="KEYWORD">typeof</SPAN>(T).GetProperties())
+        asm.AddArgument(p.Name, p.GetValue(args, <SPAN class="KEYWORD">null</SPAN>));
+
+      <SPAN class="KEYWORD">var</SPAN> vm = <SPAN class="KEYWORD">new</SPAN> ElaMachine(asm);
+      <SPAN class="KEYWORD">return</SPAN> vm.Run().ReturnValue.ToObject();
+    }
+    <SPAN class="KEYWORD">else</SPAN>
+      <SPAN class="KEYWORD">return</SPAN> <SPAN class="KEYWORD">null</SPAN>;
+  }
+}</PRE>
+      </TD>
+    </TR>
+  </TABLE>
+</DIV>
+    <P>Использовать данный метод расширения можно так:</P>
+    <DIV id="ID0EDH">
+  <TABLE class="code" width="98%">
+    <TR>
+      <TD>
+        <PRE>
+      <SPAN class="KEYWORD">var</SPAN> res = <SPAN class="STRING">"$x + $y"</SPAN>.Eval(<SPAN class="KEYWORD">new</SPAN> { x = 2, y = 1 });</PRE>
+      </TD>
+    </TR>
+  </TABLE>
+</DIV>
+    <P>(С помощью сигмы «$» префиксируются все параметры, т.е. значения, которые передаются извне).</P>
+    <P>Более того, модули для Ela можно писать как на Ela, так и на любом .NET-языке, что позволяет легко добавить в Ela проблемноориентированные расширения. Ela также поддерживает пользовательские операторы на манер F#, с помощью которых вы можете расширить синтаксис языка.</P>
+    <P>Ela вполне может подойти и на роль самостоятельного скриптового языка – и использоваться в целях автоматизации или администрирования. Код на Ela благодаря динамической природе языка и функциональным возможностям является весьма лаконичным, и вы можете значительно сократить время, наобходимое для разработки.</P>
+    <P>Наконец Ela – неплохой выбор, если вы хотите изучить функциональное программирование, имея большой опыт программирования на динамических языках. В Ela используется простая интуитивно-понятная система типов, здесь вы будете чувствовать себя «как дома» и сможете постепенно осваивать функциональные возможности.</P>
+  <H2>Текущее состояние проекта<A name="ID0EVH"></A></H2>
+    
+    <P>На настоящий момент проект включает в себя реализацию языка Ela, представленную в виде независимой библиотеки, а также утилиту командной строки Ela Console, которая может быть использована для запуска файлов Ela на исполнение, для их компиляции в объектные файлы и также работает в интерактивном режиме. </P>
+    <P>Сам язык программирования находится в стадии ранней альфа-версии. Реализован основной задуманный функционал, однако ряд запланированных возможностей все еще пребывают в стадии дизайна и разработки. Вы можете повлиять на язык и его развитие, оставляя свои комментарии и замечания на форуме.</P>
+    <P>Документация по языку Ela находится в процессе разработки.</P>
+    <P></P>
+  <DIV align="right">
+  <FONT style="font-family:arial;font-size:9pt;color:#8088a0"><I><HR color="#8088a0" width="100%" size="1">
+                Любой из материалов, опубликованных на этом сервере, не может быть воспроизведен в какой бы
+                то ни было форме и какими бы то ни было средствами без письменного разрешения владельцев авторских
+                прав. 
+             </I></FONT>
+</DIV>
+</body>
+</html>
