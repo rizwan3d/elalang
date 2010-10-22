@@ -70,9 +70,9 @@ namespace VersionTracker
 				switch (revision)
 				{
 					case 4: return String.Format(f, v.Major, v.Minor, v.Build, v.Revision + 1);
-					case 3: return String.Format(f, v.Major, v.Minor, v.Build + 1, 1);
-					case 2: return String.Format(f, v.Major, v.Minor + 1, 1, 1);
-					case 1: return String.Format(f, v.Major + 1, 1, 1, 1);
+					case 3: return String.Format(f, v.Major, v.Minor, v.Build + 1, 0);
+					case 2: return String.Format(f, v.Major, v.Minor + 1, 0, 0);
+					case 1: return String.Format(f, v.Major + 1, 0, 0, 0);
 				}
 			}
 
@@ -81,9 +81,9 @@ namespace VersionTracker
 
 		private void incrementMenu_Opening(object sender, CancelEventArgs e)
 		{
-			if (grid.SelectedCells.Count == 1 && grid.SelectedCells[0].ColumnIndex == 0)
+			if (grid.SelectedRows.Count == 1)
 			{
-				var c = grid.SelectedCells[0].Value as String;
+				var c = grid.SelectedRows[0].Cells[0].Value as String;
 				revertChangeToolStripMenuItem.Enabled = grid.SelectedCells[0].Tag != null;
 
 				if (!String.IsNullOrEmpty(c))
@@ -99,9 +99,9 @@ namespace VersionTracker
 
 		private void incrementRevisionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (grid.SelectedCells.Count == 1)
+			if (grid.SelectedRows.Count == 1)
 			{
-				var c = grid.SelectedCells[0];
+				var c = grid.SelectedRows[0].Cells[0];
 				c.Tag = c.Value;
 				c.Value = IncrementVersion(c.Value.ToString(), Convert.ToInt32(((ToolStripMenuItem)sender).Tag));
 			}
@@ -273,7 +273,7 @@ namespace VersionTracker
 								fix++;
 							else if (val == "Change")
 								change++;
-							else
+							else if (val == "New")
 								news++;
 						}
 					}
@@ -360,6 +360,48 @@ namespace VersionTracker
 						if (v.Major == or.Major && v.Minor == or.Minor && v.Build == or.Build)
 							grid.Rows[i].Cells[0].Value = String.Format("{0}.{1}.{2}.{3}", v.Major, v.Minor, v.Build, v.Revision - 1);
 					}
+				}
+			}
+		}
+
+		private void grid_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+		{
+			if (e.RowIndex != -1)
+			{
+				var row = grid.Rows[e.RowIndex];
+
+				if (row.Cells[1].Value != null)
+				{
+					var c = default(Color);
+					var b = false;
+
+					switch (row.Cells[1].Value.ToString())
+					{
+						case "Release":
+							c = Color.Yellow;
+							b = true;
+							break;
+						case "Fix":
+							c = Color.LightSalmon;
+							b = false;
+							break;
+						case "Change":
+							c = Color.LightGray;
+							b = false;
+							break;
+						default:
+							c = SystemColors.Window;
+							b = false;
+							break;
+					}
+
+					row.Cells[0].Style.BackColor = c;
+					row.Cells[1].Style.BackColor = c;
+					row.Cells[2].Style.BackColor = c;
+
+					row.Cells[0].Style.Font = new Font(grid.DefaultCellStyle.Font, b ? FontStyle.Bold : FontStyle.Regular);
+					row.Cells[1].Style.Font = new Font(grid.DefaultCellStyle.Font, b ? FontStyle.Bold : FontStyle.Regular);
+					row.Cells[2].Style.Font = new Font(grid.DefaultCellStyle.Font, b ? FontStyle.Bold : FontStyle.Regular);
 				}
 			}
 		}

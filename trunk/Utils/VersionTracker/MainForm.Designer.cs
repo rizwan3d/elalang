@@ -289,11 +289,13 @@
 			this.grid.Location = new System.Drawing.Point(0, 24);
 			this.grid.MultiSelect = false;
 			this.grid.Name = "grid";
+			this.grid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
 			this.grid.Size = new System.Drawing.Size(917, 527);
 			this.grid.TabIndex = 2;
 			this.grid.Visible = false;
 			this.grid.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.grid_UserDeletingRow);
 			this.grid.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.grid_CellMouseDown);
+			this.grid.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.grid_RowPostPaint);
 			this.grid.DefaultValuesNeeded += new System.Windows.Forms.DataGridViewRowEventHandler(this.grid_DefaultValuesNeeded);
 			// 
 			// VersionColumn
@@ -310,7 +312,8 @@
 			this.TypeColumn.Items.AddRange(new object[] {
             "New",
             "Fix",
-            "Change"});
+            "Change",
+            "Release"});
 			this.TypeColumn.Name = "TypeColumn";
 			this.TypeColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
 			// 
@@ -363,9 +366,6 @@
 		private System.Windows.Forms.ToolStripMenuItem incrementFirstRevisionToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
 		private System.Windows.Forms.ToolStripMenuItem revertChangeToolStripMenuItem;
-		private System.Windows.Forms.DataGridViewTextBoxColumn VersionColumn;
-		private System.Windows.Forms.DataGridViewComboBoxColumn TypeColumn;
-		private System.Windows.Forms.DataGridViewTextBoxColumn DescriptionColumn;
 		private System.Windows.Forms.ToolStripMenuItem viedToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem allItemsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem currentMinorRevisionToolStripMenuItem;
@@ -377,6 +377,9 @@
 		private System.Windows.Forms.ToolStripStatusLabel viewChangeLabel;
 		private System.Windows.Forms.ToolStripStatusLabel viewFixLabel;
 		private System.Windows.Forms.ToolStripSeparator viewSep;
+		private System.Windows.Forms.DataGridViewTextBoxColumn VersionColumn;
+		private System.Windows.Forms.DataGridViewComboBoxColumn TypeColumn;
+		private System.Windows.Forms.DataGridViewTextBoxColumn DescriptionColumn;
     }
 }
 
