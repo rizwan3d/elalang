@@ -34,7 +34,7 @@ This page contains a short description of differences in syntax between Ela and 
 || Swap two variables || {{{ var t = x;}}}<br>{{{ x = y;}}}<br>{{{ y = t; }}} || {{{ x <=> y; }}}|| ||
 || Return a value from a function || {{{ function foo() { return 0; } }}} || {{{ let foo() 0; }}} || Keyword 'return' is supported by not required in Ela. ||
 || Strict comparison || {{{ x === y;}}}<br>{{{ x !== y; }}} || {{{ x == y;}}}<br>{{{ x != y; }}} || Comparisons are always strict in Ela. ||
-|| Run code async || {{{ setTimeout(function() { 2 + 2 }, 0); }}} || {{{ async 2 + 2;; }}} || ||
+|| Run code async || {{{ setTimeout(function() { 2 + 2 }, 0); }}} || {{{ async 2 + 2; }}} || ||
 || Ternary operator || {{{ x ? 1 : 0; }}} || {{{ if (x) 1 else 0; }}} || Ternary operator is not supported in Ela, but 'if' is an expression. ||
 || Type check || {{{ if (typeof(obj) == "Number") { } }}} || {{{ if (obj is int) { } }}} || ||
 || Type conversion || {{{ parseInt(obj); }}} || {{{ obj :> int }}} || ||
