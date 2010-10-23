@@ -71,11 +71,11 @@ namespace Ela.Runtime
 			//ERR  UNI  INT  REA  BYT  CHR  LNG  DBL  STR  LST  ARR  TUP  REC  FUN  OBJ  LAZ  ENU  MOD
 			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //ERR
 			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //UNI
-			{ ___, ___, INT, REA, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //INT
-			{ ___, ___, REA, REA, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //REA
+			{ ___, ___, INT, REA, ___, ___, LNG, DBL, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //INT
+			{ ___, ___, REA, REA, ___, ___, ___, DBL, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //REA
 			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //BYT
 			{ ___, ___, ___, ___, ___, CHR, ___, ___, STR, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //CHR
-			{ ___, ___, LNG, ___, ___, ___, LNG, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //LNG
+			{ ___, ___, LNG, ___, ___, ___, LNG, DBL, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //LNG
 			{ ___, ___, DBL, DBL, ___, ___, DBL, DBL, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //DBL
 			{ ___, ___, ___, ___, ___, STR, ___, ___, STR, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //STR
 			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, LST, ___, ___, ___, ___, ___, ___, ___, ___ }, //LST
@@ -1323,7 +1323,7 @@ namespace Ela.Runtime
 						if (Call(evalStack.Pop().Ref, thread, evalStack.Count - callStack.Peek().StackOffset))
 							goto default;
 						break;
-					case Op.Callc:
+					case Op.Callt:
 						{
 							var cp = callStack.Pop();
 
@@ -1476,10 +1476,13 @@ namespace Ela.Runtime
 						break;
 					case Op.Len:
 						{
-							var obj = evalStack.Pop().Ref as ElaIndexedObject;
+							right = evalStack.Pop();
+							var obj = right.Ref as ElaIndexedObject;
 
 							if (obj != null)
 								evalStack.Push(obj.Length);
+							else if (right.Type == LST)
+								evalStack.Push(((ElaList)right.Ref).GetLength());
 							else
 								InvalidType(right, thread, TUP, REC, ARR, LST, STR);
 						}

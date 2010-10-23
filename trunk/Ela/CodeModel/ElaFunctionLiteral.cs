@@ -33,7 +33,7 @@ namespace Ela.CodeModel
 
 
 		#region Properties
-		public int Currying { get; set; }
+		public int ParameterSlots { get; set; }
 
 		public ElaFunctionType FunctionType { get; set; }
 
@@ -44,17 +44,28 @@ namespace Ela.CodeModel
 		public ElaExpression Expression { get; set; }
 
 		private int _parameterCount = -1;
-		public int ParameterCount
+		public virtual int ParameterCount
 		{
 			get
 			{
 				if (_parameterCount == -1)
 				{
-					if (Currying > 0)
-						_parameterCount = Currying;
-					else
-						_parameterCount = Parameters.Type == ElaNodeType.VariableReference ? 1 :
-							Parameters.Type == ElaNodeType.TupleLiteral ? ((ElaTupleLiteral)Parameters).Parameters.Count : 0;
+					if (ParameterSlots > 0)
+						_parameterCount = ParameterSlots;
+					else 
+					{
+						if (Parameters == null)
+							_parameterCount = 0;
+						else if (Parameters.Type == ElaNodeType.VariableReference)
+							_parameterCount = 1;
+						else if (Parameters.Type == ElaNodeType.TupleLiteral)
+						{
+							var t = (ElaTupleLiteral)Parameters;
+							_parameterCount = t.Parameters != null ? t.Parameters.Count : 0;
+						}
+						else
+							_parameterCount = 0;
+					}
 				}
 
 				return _parameterCount;

@@ -128,6 +128,7 @@
     <Compile Include="Compilation\ElaCompilerHint.cs" />
     <Compile Include="Compilation\ElaCompilerWarning.cs" />
     <Compile Include="Compilation\ExprData.cs" />
+    <Compile Include="Compilation\FunFlag.cs" />
     <Compile Include="Compilation\IElaCompiler.cs" />
     <Compile Include="Compilation\PatternTree.cs" />
     <Compile Include="Compilation\Strings.cs" />

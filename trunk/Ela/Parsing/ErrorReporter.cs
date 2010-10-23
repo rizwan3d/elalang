@@ -110,6 +110,7 @@ namespace Ela.Parsing
 				case Parser._ASYNC: return ElaParserError.ExpectedKeywordAsync;
 				case Parser._LAZY: return ElaParserError.ExpectedKeywordLazy;
 				case Parser._IGNOR: return ElaParserError.ExpectedKeywordIgnore;
+				case Parser._ELSE: return ElaParserError.ExpectedKeywordElse;
 				default: return ElaParserError.ExpectedToken;
 			}
 		}

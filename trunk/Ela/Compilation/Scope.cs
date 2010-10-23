@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Ela.CodeModel;
 
 namespace Ela.Compilation
 {
@@ -39,6 +40,12 @@ namespace Ela.Compilation
 		{
 			foreach (var s in Locals.Keys)
 				yield return s;
+		}
+
+
+		internal void ChangeVariable(string name, ScopeVar var)
+		{
+			Locals[name] = var;
 		}
 		#endregion
 

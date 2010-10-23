@@ -71,7 +71,7 @@ namespace Ela.Compilation
 			1, //NewR8
 			1, //Leave
 			1, //Calld
-			5, //Callc
+			5, //Callt
 			5, //Start
 			5, //Call
 			5, //Incr

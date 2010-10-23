@@ -25,7 +25,7 @@ namespace Ela.Parsing
 				return new ElaFunctionLiteral(t)
 				{
 					Expression = exp,
-					Currying = exp.Placeholders
+					ParameterSlots = exp.Placeholders
 				};
 			}
 			else

@@ -17,5 +17,10 @@ namespace Ela.CodeModel
 
 		}
 		#endregion
+
+
+		#region Properties
+		public override int ParameterCount { get { return 0; } }
+		#endregion
 	}
 }

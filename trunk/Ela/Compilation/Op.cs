@@ -134,7 +134,7 @@ namespace Ela.Compilation
 
 		Calld,
 
-		Callc,
+		Callt,
 
 
 		Start,

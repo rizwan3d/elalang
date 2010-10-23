@@ -7,1177 +7,6 @@ using Ela.Runtime.ObjectModel;
 namespace Ela.StandardLibrary.Modules 
 {
 	
-partial class DebugModule : Ela.Linking.ForeignModule
-{
-	public override void Initialize()
-	{
-	
-		Add("print", new _elafunc_Print(this));
-	
-		Add("getArray", new _elafunc_GetArray(this));
-	
-		Add("getList", new _elafunc_GetList(this));
-	
-		Add("startClock", new _elafunc_StartClock(this));
-	
-		Add("stopClock", new _elafunc_StopClock(this));
-	
-	}
-
-	
-	class _elafunc_Print : ElaFunction
-	{
-		private DebugModule obj;
-		internal _elafunc_Print(DebugModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-        
-          obj.Print(
-					args[0]
-					);					
-					
-         return
-       	new RuntimeValue(ElaObject.Unit);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_GetArray : ElaFunction
-	{
-		private DebugModule obj;
-		internal _elafunc_GetArray(DebugModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.GetArray(
-					
-								args[0].ToInt32(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_GetList : ElaFunction
-	{
-		private DebugModule obj;
-		internal _elafunc_GetList(DebugModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.GetList(
-					
-								args[0].ToInt32(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_StartClock : ElaFunction
-	{
-		private DebugModule obj;
-		internal _elafunc_StartClock(DebugModule obj) : base(0)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.StartClock(
-					
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_StopClock : ElaFunction
-	{
-		private DebugModule obj;
-		internal _elafunc_StopClock(DebugModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.StopClock(
-					
-								args[0].ToInt64(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-}
-}
-			
-namespace Ela.StandardLibrary.Modules 
-{
-	
-partial class CharModule : Ela.Linking.ForeignModule
-{
-	public override void Initialize()
-	{
-	
-		Add("isLower", new _elafunc_IsLower(this));
-	
-		Add("isUpper", new _elafunc_IsUpper(this));
-	
-		Add("upper", new _elafunc_ToUpper(this));
-	
-		Add("lower", new _elafunc_ToLower(this));
-	
-	}
-
-	
-	class _elafunc_IsLower : ElaFunction
-	{
-		private CharModule obj;
-		internal _elafunc_IsLower(CharModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.IsLower(
-					
-								args[0].ToChar(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_IsUpper : ElaFunction
-	{
-		private CharModule obj;
-		internal _elafunc_IsUpper(CharModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.IsUpper(
-					
-								args[0].ToChar(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_ToUpper : ElaFunction
-	{
-		private CharModule obj;
-		internal _elafunc_ToUpper(CharModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.ToUpper(
-					
-								args[0].ToChar(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_ToLower : ElaFunction
-	{
-		private CharModule obj;
-		internal _elafunc_ToLower(CharModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.ToLower(
-					
-								args[0].ToChar(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-}
-}
-			
-namespace Ela.StandardLibrary.Modules 
-{
-	
-partial class MathModule : Ela.Linking.ForeignModule
-{
-	public override void Initialize()
-	{
-	
-		Add("rnd", new _elafunc_Randomize(this));
-	
-		Add("acos", new _elafunc_Acos(this));
-	
-		Add("asin", new _elafunc_Asin(this));
-	
-		Add("atan", new _elafunc_Atan(this));
-	
-		Add("atan2", new _elafunc_Atan2(this));
-	
-		Add("ceil", new _elafunc_Ceil(this));
-	
-		Add("cos", new _elafunc_Cos(this));
-	
-		Add("cosh", new _elafunc_Cosh(this));
-	
-		Add("exp", new _elafunc_Exp(this));
-	
-		Add("floor", new _elafunc_Floor(this));
-	
-		Add("log", new _elafunc_Log(this));
-	
-		Add("log2", new _elafunc_Log2(this));
-	
-		Add("log10", new _elafunc_Log10(this));
-	
-		Add("round", new _elafunc_Round(this));
-	
-		Add("sin", new _elafunc_Sin(this));
-	
-		Add("sinh", new _elafunc_Sinh(this));
-	
-		Add("sqrt", new _elafunc_Sqrt(this));
-	
-		Add("tan", new _elafunc_Tan(this));
-	
-		Add("tanh", new _elafunc_Tanh(this));
-	
-		Add("truc", new _elafunc_Truncate(this));
-	
-	}
-
-	
-	class _elafunc_Randomize : ElaFunction
-	{
-		private MathModule obj;
-		internal _elafunc_Randomize(MathModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.Randomize(
-					
-								args[0].ToInt32(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_Acos : ElaFunction
-	{
-		private MathModule obj;
-		internal _elafunc_Acos(MathModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.Acos(
-					
-								args[0].ToDouble(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_Asin : ElaFunction
-	{
-		private MathModule obj;
-		internal _elafunc_Asin(MathModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.Asin(
-					
-								args[0].ToDouble(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_Atan : ElaFunction
-	{
-		private MathModule obj;
-		internal _elafunc_Atan(MathModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.Atan(
-					
-								args[0].ToDouble(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_Atan2 : ElaFunction
-	{
-		private MathModule obj;
-		internal _elafunc_Atan2(MathModule obj) : base(2)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.Atan2(
-					
-								args[0].ToDouble(null)
-							,
-								args[1].ToDouble(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_Ceil : ElaFunction
-	{
-		private MathModule obj;
-		internal _elafunc_Ceil(MathModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.Ceil(
-					
-								args[0].ToDouble(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_Cos : ElaFunction
-	{
-		private MathModule obj;
-		internal _elafunc_Cos(MathModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.Cos(
-					
-								args[0].ToDouble(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_Cosh : ElaFunction
-	{
-		private MathModule obj;
-		internal _elafunc_Cosh(MathModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.Cosh(
-					
-								args[0].ToDouble(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_Exp : ElaFunction
-	{
-		private MathModule obj;
-		internal _elafunc_Exp(MathModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.Exp(
-					
-								args[0].ToDouble(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_Floor : ElaFunction
-	{
-		private MathModule obj;
-		internal _elafunc_Floor(MathModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.Floor(
-					
-								args[0].ToDouble(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_Log : ElaFunction
-	{
-		private MathModule obj;
-		internal _elafunc_Log(MathModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.Log(
-					
-								args[0].ToDouble(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_Log2 : ElaFunction
-	{
-		private MathModule obj;
-		internal _elafunc_Log2(MathModule obj) : base(2)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.Log2(
-					
-								args[0].ToDouble(null)
-							,
-								args[1].ToDouble(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_Log10 : ElaFunction
-	{
-		private MathModule obj;
-		internal _elafunc_Log10(MathModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.Log10(
-					
-								args[0].ToDouble(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_Round : ElaFunction
-	{
-		private MathModule obj;
-		internal _elafunc_Round(MathModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.Round(
-					
-								args[0].ToDouble(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_Sin : ElaFunction
-	{
-		private MathModule obj;
-		internal _elafunc_Sin(MathModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.Sin(
-					
-								args[0].ToDouble(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_Sinh : ElaFunction
-	{
-		private MathModule obj;
-		internal _elafunc_Sinh(MathModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.Sinh(
-					
-								args[0].ToDouble(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_Sqrt : ElaFunction
-	{
-		private MathModule obj;
-		internal _elafunc_Sqrt(MathModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.Sqrt(
-					
-								args[0].ToDouble(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_Tan : ElaFunction
-	{
-		private MathModule obj;
-		internal _elafunc_Tan(MathModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.Tan(
-					
-								args[0].ToDouble(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_Tanh : ElaFunction
-	{
-		private MathModule obj;
-		internal _elafunc_Tanh(MathModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.Tanh(
-					
-								args[0].ToDouble(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-	class _elafunc_Truncate : ElaFunction
-	{
-		private MathModule obj;
-		internal _elafunc_Truncate(MathModule obj) : base(1)
-		{
-			this.obj = obj;
-		}
-		
-		
-		
-		public override RuntimeValue Call(params RuntimeValue[] args)
-		{
-			try
-			{
-          
-            var ret =
-          
-        
-          obj.Truncate(
-					
-								args[0].ToDouble(null)
-							
-					);					
-					
-         return
-       	new RuntimeValue(ret);
-			}
-			catch (ElaCastException ex)
-			{
-				if (ex.ExpectedType != ObjectType.None)
-					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
-				else
-					throw new ElaParameterTypeException(ex.InvalidType);
-			}
-		}
-	}
-	
-}
-}
-			
-namespace Ela.StandardLibrary.Modules 
-{
-	
 partial class CollectionModule : Ela.Linking.ForeignModule
 {
 	public override void Initialize()
@@ -2724,6 +1553,1177 @@ partial class StringModule : Ela.Linking.ForeignModule
 								args[1].ToChar(null)
 							,
 								args[2].ToInt32(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+}
+}
+			
+namespace Ela.StandardLibrary.Modules 
+{
+	
+partial class CharModule : Ela.Linking.ForeignModule
+{
+	public override void Initialize()
+	{
+	
+		Add("isLower", new _elafunc_IsLower(this));
+	
+		Add("isUpper", new _elafunc_IsUpper(this));
+	
+		Add("upper", new _elafunc_ToUpper(this));
+	
+		Add("lower", new _elafunc_ToLower(this));
+	
+	}
+
+	
+	class _elafunc_IsLower : ElaFunction
+	{
+		private CharModule obj;
+		internal _elafunc_IsLower(CharModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.IsLower(
+					
+								args[0].ToChar(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_IsUpper : ElaFunction
+	{
+		private CharModule obj;
+		internal _elafunc_IsUpper(CharModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.IsUpper(
+					
+								args[0].ToChar(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_ToUpper : ElaFunction
+	{
+		private CharModule obj;
+		internal _elafunc_ToUpper(CharModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.ToUpper(
+					
+								args[0].ToChar(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_ToLower : ElaFunction
+	{
+		private CharModule obj;
+		internal _elafunc_ToLower(CharModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.ToLower(
+					
+								args[0].ToChar(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+}
+}
+			
+namespace Ela.StandardLibrary.Modules 
+{
+	
+partial class DebugModule : Ela.Linking.ForeignModule
+{
+	public override void Initialize()
+	{
+	
+		Add("print", new _elafunc_Print(this));
+	
+		Add("getArray", new _elafunc_GetArray(this));
+	
+		Add("getList", new _elafunc_GetList(this));
+	
+		Add("startClock", new _elafunc_StartClock(this));
+	
+		Add("stopClock", new _elafunc_StopClock(this));
+	
+	}
+
+	
+	class _elafunc_Print : ElaFunction
+	{
+		private DebugModule obj;
+		internal _elafunc_Print(DebugModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+        
+          obj.Print(
+					args[0]
+					);					
+					
+         return
+       	new RuntimeValue(ElaObject.Unit);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_GetArray : ElaFunction
+	{
+		private DebugModule obj;
+		internal _elafunc_GetArray(DebugModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.GetArray(
+					
+								args[0].ToInt32(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_GetList : ElaFunction
+	{
+		private DebugModule obj;
+		internal _elafunc_GetList(DebugModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.GetList(
+					
+								args[0].ToInt32(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_StartClock : ElaFunction
+	{
+		private DebugModule obj;
+		internal _elafunc_StartClock(DebugModule obj) : base(0)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.StartClock(
+					
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_StopClock : ElaFunction
+	{
+		private DebugModule obj;
+		internal _elafunc_StopClock(DebugModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.StopClock(
+					
+								args[0].ToInt64(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+}
+}
+			
+namespace Ela.StandardLibrary.Modules 
+{
+	
+partial class MathModule : Ela.Linking.ForeignModule
+{
+	public override void Initialize()
+	{
+	
+		Add("rnd", new _elafunc_Randomize(this));
+	
+		Add("acos", new _elafunc_Acos(this));
+	
+		Add("asin", new _elafunc_Asin(this));
+	
+		Add("atan", new _elafunc_Atan(this));
+	
+		Add("atan2", new _elafunc_Atan2(this));
+	
+		Add("ceil", new _elafunc_Ceil(this));
+	
+		Add("cos", new _elafunc_Cos(this));
+	
+		Add("cosh", new _elafunc_Cosh(this));
+	
+		Add("exp", new _elafunc_Exp(this));
+	
+		Add("floor", new _elafunc_Floor(this));
+	
+		Add("log", new _elafunc_Log(this));
+	
+		Add("log2", new _elafunc_Log2(this));
+	
+		Add("log10", new _elafunc_Log10(this));
+	
+		Add("round", new _elafunc_Round(this));
+	
+		Add("sin", new _elafunc_Sin(this));
+	
+		Add("sinh", new _elafunc_Sinh(this));
+	
+		Add("sqrt", new _elafunc_Sqrt(this));
+	
+		Add("tan", new _elafunc_Tan(this));
+	
+		Add("tanh", new _elafunc_Tanh(this));
+	
+		Add("truc", new _elafunc_Truncate(this));
+	
+	}
+
+	
+	class _elafunc_Randomize : ElaFunction
+	{
+		private MathModule obj;
+		internal _elafunc_Randomize(MathModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.Randomize(
+					
+								args[0].ToInt32(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_Acos : ElaFunction
+	{
+		private MathModule obj;
+		internal _elafunc_Acos(MathModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.Acos(
+					
+								args[0].ToDouble(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_Asin : ElaFunction
+	{
+		private MathModule obj;
+		internal _elafunc_Asin(MathModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.Asin(
+					
+								args[0].ToDouble(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_Atan : ElaFunction
+	{
+		private MathModule obj;
+		internal _elafunc_Atan(MathModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.Atan(
+					
+								args[0].ToDouble(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_Atan2 : ElaFunction
+	{
+		private MathModule obj;
+		internal _elafunc_Atan2(MathModule obj) : base(2)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.Atan2(
+					
+								args[0].ToDouble(null)
+							,
+								args[1].ToDouble(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_Ceil : ElaFunction
+	{
+		private MathModule obj;
+		internal _elafunc_Ceil(MathModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.Ceil(
+					
+								args[0].ToDouble(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_Cos : ElaFunction
+	{
+		private MathModule obj;
+		internal _elafunc_Cos(MathModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.Cos(
+					
+								args[0].ToDouble(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_Cosh : ElaFunction
+	{
+		private MathModule obj;
+		internal _elafunc_Cosh(MathModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.Cosh(
+					
+								args[0].ToDouble(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_Exp : ElaFunction
+	{
+		private MathModule obj;
+		internal _elafunc_Exp(MathModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.Exp(
+					
+								args[0].ToDouble(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_Floor : ElaFunction
+	{
+		private MathModule obj;
+		internal _elafunc_Floor(MathModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.Floor(
+					
+								args[0].ToDouble(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_Log : ElaFunction
+	{
+		private MathModule obj;
+		internal _elafunc_Log(MathModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.Log(
+					
+								args[0].ToDouble(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_Log2 : ElaFunction
+	{
+		private MathModule obj;
+		internal _elafunc_Log2(MathModule obj) : base(2)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.Log2(
+					
+								args[0].ToDouble(null)
+							,
+								args[1].ToDouble(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_Log10 : ElaFunction
+	{
+		private MathModule obj;
+		internal _elafunc_Log10(MathModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.Log10(
+					
+								args[0].ToDouble(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_Round : ElaFunction
+	{
+		private MathModule obj;
+		internal _elafunc_Round(MathModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.Round(
+					
+								args[0].ToDouble(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_Sin : ElaFunction
+	{
+		private MathModule obj;
+		internal _elafunc_Sin(MathModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.Sin(
+					
+								args[0].ToDouble(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_Sinh : ElaFunction
+	{
+		private MathModule obj;
+		internal _elafunc_Sinh(MathModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.Sinh(
+					
+								args[0].ToDouble(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_Sqrt : ElaFunction
+	{
+		private MathModule obj;
+		internal _elafunc_Sqrt(MathModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.Sqrt(
+					
+								args[0].ToDouble(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_Tan : ElaFunction
+	{
+		private MathModule obj;
+		internal _elafunc_Tan(MathModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.Tan(
+					
+								args[0].ToDouble(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_Tanh : ElaFunction
+	{
+		private MathModule obj;
+		internal _elafunc_Tanh(MathModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.Tanh(
+					
+								args[0].ToDouble(null)
+							
+					);					
+					
+         return
+       	new RuntimeValue(ret);
+			}
+			catch (ElaCastException ex)
+			{
+				if (ex.ExpectedType != ObjectType.None)
+					throw new ElaParameterTypeException(ex.ExpectedType, ex.InvalidType);
+				else
+					throw new ElaParameterTypeException(ex.InvalidType);
+			}
+		}
+	}
+	
+	class _elafunc_Truncate : ElaFunction
+	{
+		private MathModule obj;
+		internal _elafunc_Truncate(MathModule obj) : base(1)
+		{
+			this.obj = obj;
+		}
+		
+		
+		
+		public override RuntimeValue Call(params RuntimeValue[] args)
+		{
+			try
+			{
+          
+            var ret =
+          
+        
+          obj.Truncate(
+					
+								args[0].ToDouble(null)
 							
 					);					
 					
