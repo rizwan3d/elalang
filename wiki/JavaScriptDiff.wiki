@@ -1,4 +1,4 @@
-#summary Overview in syntax differences between Ela and JavaScript
+#summary Overview of differences between Ela and JavaScript
 
 = Introduction =
 
