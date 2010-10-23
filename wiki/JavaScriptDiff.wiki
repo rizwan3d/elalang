@@ -3,7 +3,7 @@
 = Introduction =
 
 This page contains a short description of differences in syntax between Ela and JavaScript. Of course the languages are not different only in syntax. The major points here are: 
-  * JavaScript supports prototype based object oriented programming when Ela doesn't support it (but has a better support for functional programming)
+  * JavaScript supports prototype based object oriented programming when Ela doesn't directly support it (but has a better support for functional programming)
   * Both languages are dynamically typed but Ela is strongly typed and JavaScript is not (e.g. it is not possible to sum strings and integers in Ela).
   * Both languages utilize a C-style syntax but Ela has a support for full lexical scope (similar to C/C++) when JavaScript does not.
 
