@@ -32,11 +32,11 @@ This page contains a short description of differences in syntax between Ela and 
 || Insert an item to array || `N/A` || `arr.insert(1);` || ||
 || Add a field to object || `obj.NewField = 1;` || `N/A` || You can't dynamically add fields to objects (records) in Ela. ||
 || Swap two variables || `var t = x;`<br>`x = y;`<br>`y = t;` || `x <=> y;` || ||
-|| Return a value from a function || `function foo() { return 0; }` || `let foo() 0;` || Keyword 'return' is supported by not required in Ela. ||
+|| Return a value from a function || `function foo() { return 0; }` || `let foo() 0;` || Keyword "return" is supported by not required in Ela. ||
 || Strict comparison || `x === y;`<br>`x !== y;` || `x == y;`<br>`x != y;` || Comparisons are always strict in Ela. ||
 || Run code async || `setTimeout(function() { 2 + 2 }, 0);` || `async 2 + 2;` || ||
-|| Ternary operator || `x ? 1 : 0;` || `if (x) 1 else 0;` || Ternary operator is not supported in Ela, but 'if' is an expression. ||
+|| Ternary operator || `x ? 1 : 0;` || `if (x) 1 else 0;` || Ternary operator is not supported in Ela, but "if" is an expression. ||
 || Type check || `if (typeof(obj) == "Number") { }` || `if (obj is int) { }` || ||
 || Type conversion || `var i = parseInt(obj);` || `let i = obj :> int` || ||
 || Null || `var obj = null;`<br>`if (obj != null) { }`|| `let obj = ();`<br>`unless (obj is ()) { }` || Ela doesn't have a notion of "null" (or "undefined"). <br>Instead of it a type "unit" is used. ||
-|| Reference "base" variable || `N/A` || `let y = base.x`|| You can reference a variable declared in an enclosing function <br>using "base" keyword (useful when you have a local<br>variable with the same name. ||
+|| Reference "base" variable || `N/A` || `let y = base.x`|| You can reference a variable declared in an enclosing function <br>using "base" keyword (useful when you have a local<br>variable with the same name). ||
