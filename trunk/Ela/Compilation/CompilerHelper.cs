@@ -1627,16 +1627,7 @@ namespace Ela.Compilation
 					break;
 				case ElaBinaryOperator.PipeBackward:
 				case ElaBinaryOperator.PipeForward:
-					var tail = (hints & Hints.Tail) == Hints.Tail;
-
-					if (tail && bin.Right.Type == ElaNodeType.VariableReference &&
-						((ElaVariableReference)bin.Right).VariableName == map.FunctionName && opt)
-					{
-						AddLinePragma(bin);
-						cw.Emit(Op.Br, map.FunStart);
-					}
-					else
-						cw.Emit(tail && map.GotoParam == -1 && opt ? Op.Callt : Op.Call, 1);
+					cw.Emit(Op.Call, 1);
 					break;
 				case ElaBinaryOperator.Custom:
 					cw.Emit(Op.Pushperv, AddString(bin.CustomOperator));

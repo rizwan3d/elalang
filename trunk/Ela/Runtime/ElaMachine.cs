@@ -1324,14 +1324,8 @@ namespace Ela.Runtime
 							goto default;
 						break;
 					case Op.Callt:
-						{
-							var cp = callStack.Pop();
-
-							if (Call(evalStack.Pop().Ref, thread, opd))
-								goto default;
-							else
-								callStack.Push(cp);
-						}
+						if (Call(evalStack.Pop().Ref, thread, opd))
+							goto default;
 						break;
 					case Op.Calla:
 						CallAsync(thread);
@@ -1416,8 +1410,13 @@ namespace Ela.Runtime
 							{
 								var modMem = callStack.Pop();
 								thread.Offset = modMem.ReturnAddress;
-								pervasives.Pop();
-								ReadPervasives(thread.Module, thread.ModuleHandle);
+								
+								if (pervasives.Count > 0)
+									pervasives.Pop();
+								
+								if (pervasives.Count > 0)
+									ReadPervasives(thread.Module, thread.ModuleHandle);
+								
 								thread.SwitchModule(callStack.Peek().ModuleHandle);
 								evalStack.Pop();
 								goto default;
@@ -2199,7 +2198,11 @@ namespace Ela.Runtime
 		{
 			thread.Busy = false;
 			var deb = new ElaDebugger(asm);
-			var cs = deb.BuildCallStack(thread);			
+			var cs = deb.BuildCallStack(thread);
+
+			while (thread.CallStack.Count > 1)
+				thread.CallStack.Pop();
+
 			return new ElaCodeException(err, errorType, cs.File, cs.Line, cs.Column, cs);
 		}
 		#endregion
