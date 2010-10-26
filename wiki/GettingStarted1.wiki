@@ -185,12 +185,60 @@ In a case if you haven't heard this notion before - a _curried function_ simply 
 4
 }}}
 
-But what happens when you call it like `sum(2)` and don't provide the second argument in-place? Doing so creates a _partially applied_ sum function that accepts a single parameter, adds it to the number 2 and yields the results of this calculation:
+It might not seem very handy at the first glance but there is much more in it.
+
+First of all what happens when you call it like `sum(2)` and don't provide the second argument in-place? Doing so creates a _partially applied_ sum function that accepts a single parameter, adds it to the number 2 and yields the results of this calculation:
 
 {{{
 >let sum2 = sum(2)
 
 >sum2(10)
+
+12
+}}}
+
+Partial application allows you to create new functions at runtime and to escape certain verbosity which might be annoying in the cases when a frequently call a function with a similar parameter list. You can think of it as of _specialization_ of a generic sum function for a partical case when one of the arguments is always an integer of value 2.
+
+Of course something we don't need to "narrow" what the function actually do but quite the opposite - to combine it with other function to achieve a more complex functionality.
+
+Let's say that we are writing a program that can sum two integers but except of it this program should also make sure that the result of this sum is greater than 0. In a case if it somehow goes below 0 the result should be immediatly corrected.
+
+OK, we've got our requirements, let's implement it.
+
+First of all we need to implement a validation function:
+
+{{{
+>let guard(x) if (x < 0) 0 else x
+}}}
+
+And then - to write the calling code:
+
+{{{
+>let res = sum(2, 3); guard(res)
+
+5
+}}}
+
+Pretty wordy, isn't it? Also that is the kind of code that actually tells the compiler what it needs to do - well, eh, call this function, take the return value, then, eh, call another function... You can surely write it as nested function call (e.g. `guard(sum(2, 3)') but it doesn't look pretty either. What we actually have in here is a chain of function calls - why not to write in the same manner?
+
+{{{
+>sum(2, 3) |> guard
+
+5
+
+>guard <| sum(2, 3)
+
+5
+}}}
+
+These are forward and backward pipe operators. You can really think of them as a pipe that takes its input and pushes it through the sequence of function calls in order to finally yield you a computed value. Each function in such a chain should only take a single parameter except of the very first function that serves as an entry point for the pipe (in our case this is a pipe function). But what one of the values for the calculation comes from another function and we now need to use our some function in the middle of a pipe?
+
+That is again a case when partial application may be useful:
+
+{{{
+>let getValue() 10
+
+>getValue() |> sum(2) |> guard
 
 12
 }}}
