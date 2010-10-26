@@ -267,3 +267,65 @@ Function composition creates a new function that has the same parameter list as 
 As with pipe operators you can combine any number of functions at once using composition operators. Each function except of the first should only accept a single parameter.
 
 The major difference between composition and pipes is that pipes don't create any functions, they perform a function call, when composition never calls function but generates a new function as a combination of them.
+
+OK, let's take another task - we don't need to sum two integers and validate the result but rather to calculate the sum of elements in a list.
+
+So we need to implement a function that takes as the arguments - a list, an initial value for out calculation and a function that will be used to performed an actual calculation. This is a typical higher-order function (a function that operates with other functions). Let's call it _fold_:
+
+{{{
+>let fold3(list, i, f) { var res = i; for (x in list) res = f(res, x); res }
+
+>fold3([1, 2, 3, 4], 0, sum)
+
+>10
+}}}
+
+OK, it gets the job done, but there is one thing I don't really like about this function. Again it actually tells the compiler what it should do - erh, declare a mutable variable to store an itermediate result, iterate through the list, call a function on each iteration...
+
+The code doesn't really seem to be clean when in reality that is a very simple function that does a very simple thing. How else we can implement it?
+
+{{{
+let fold2(list, i, f) on x::xs,.. -> fold(list, f(i, x), f) on [],.. -> i
+
+>fold2([1, 2, 3, 4], 0, sum)
+
+>10
+}}}
+
+The second version of the _fold_ function uses _pattern matching_. Here you can see a short version of _match_ expression that is allowed when the whole function body is a single match. It uses a special _head and tail_ pattern that may come up very handy when we need to deconstruct lists.
+
+A pattern _x::xs_ does two things - it verifies that our linked list contains at list one element and binds the very first element of the list (the _head_) to the variable _x_ and the rest of the list (the _tail_) to the variable _xs_. So on the first call x will be bound to 1 and xs to [2, 3, 4], on the second call - x to 2 and xs to [3, 4], etc. The second pattern matches the empty list.
+
+As soon as we use a short match syntax here we actually match against the whole expression in the function argument list taking it as if it were a tuple. But as soon as we don't really need to bind or deconstruct the other two parameters we are using these dots to tell the compiler that the other values are out of need for us.
+
+You might say that this function might look better or more "declarative" but it is less effecient than the first version of fold because it have to recursively call itself instead of running a simple and cheap _for_ cycle.
+
+Luckily that is not exactly the case here. The function _fold2_ is a _tail recursive function_ which means that the very last instruction of this function is a call to itself. Ela compiler can recognize tail recursion and replace with simple goto instead of an expensive function call. In other words you have the same effeciency as with _for_ cycle and a much nicer code.
+
+But still there is something not really right with the way how we do it. We have created a sum function before during another test - therefore we now can simply reference it by name and provide as an argument to our fold function. But what is we didn't have an implementation of sum? Should we write a separate declaration for each function even if this function is that straightforward and simple?
+
+Of course no. That is the reason why Ela have so called _anonymous functions_. Anonymous functions are pretty much like regular functions with the only exception that they simply lack names. The same for their syntax:
+
+{{{
+>\(x, y) x + y
+}}}
+
+As you can see here we use a *\* operator (you can take it as a stylized lambda symbol) instead of a function name. Parenthis around parameters are always required (even if you have a function with a single parameter, e.g. `\(x) x * 2`).
+
+This is how our code would look like with anonymous function:
+
+{{{
+>fold2([1, 2, 3, 4], 0, \(x, y) x + y)
+
+>10
+}}}
+
+Well again there is something not really right here. It looks like that our sum operation does nothing else than a standard *+* operator do and even anonymous function syntax is somewhat too much for it. And again we have a solution here:
+
+{{{
+>fold2([1, 2, 3, 4], 0, _+_)
+
+>10
+}}}
+
+So what've just happend? What is this `_+_` thing?
