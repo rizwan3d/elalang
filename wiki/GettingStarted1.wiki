@@ -273,9 +273,9 @@ OK, let's take another task - we don't need to sum two integers and validate the
 So we need to implement a function that takes as the arguments - a list, an initial value for out calculation and a function that will be used to performed an actual calculation. This is a typical _higher-order function_ (a function that operates with other functions). Let's call it _fold_:
 
 {{{
->let fold3(list, i, f) { var res = i; for (x in list) res = f(res, x); res }
+>let fold(list, i, f) { var res = i; for (x in list) res = f(res, x); res }
 
->fold3([1, 2, 3, 4], 0, sum)
+>fold([1, 2, 3, 4], 0, sum)
 
 >10
 }}}
@@ -285,7 +285,7 @@ OK, it gets the job done, but there is one thing I don't really like about this 
 The code doesn't really seem to be clean when in reality that is a very simple function that does a very simple thing. How else we can implement it?
 
 {{{
-let fold2(list, i, f) on x::xs,.. -> fold(list, f(i, x), f) on [],.. -> i
+let fold2(list, i, f) on x::xs,.. -> fold2(list, f(i, x), f) on [],.. -> i
 
 >fold2([1, 2, 3, 4], 0, sum)
 
@@ -296,7 +296,7 @@ The second version of the _fold_ function uses _pattern matching_. Here you can 
 
 A pattern `x::xs` does two things - it verifies that our linked list contains at list one element and binds the very first element of the list (the _head_) to the variable _x_ and the rest of the list (the _tail_) to the variable _xs_. So on the first call `x` will be bound to `1` and `xs` to `[2, 3, 4]`, on the second call - `x` to `2` and `xs` to `[3, 4]`, etc. The second pattern matches the empty list.
 
-As soon as we use a short match syntax here we actually match against the whole expression in the function argument list taking it as if it were a tuple. But as soon as we don't really need to bind or deconstruct the other two parameters we are using these dots to tell the compiler that the other values are out of need for us.
+As soon as we use a short match syntax here we actually match against the whole expression in the function argument list taking it as if it were a tuple. But we don't really need to bind or deconstruct the other two parameters - we just need them as is. Therefore we are using the two dots `..` operator to tell the compiler that the other values are out of need for us - that we don't really care how many other elements our virtual tuple has.
 
 You might say that this function might look better or more "declarative" but it is less effecient than the first version of fold because it have to recursively call itself instead of running a simple and cheap _for_ cycle.
 
