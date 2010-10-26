@@ -35,14 +35,14 @@ In Ela everything is an expression therefore you can test any language construct
 
 As you can see Ela has an operator priority similar to the C-style languages. Also at the very basis Ela syntax has a lot in common with other C-style languages as well (for example with JavaScript).
 
-Ela has a lot of built-in types including four numeric types (int, long, float and double), strings (e.g. `"Hello"`), chars (e.g. `'H'`), linked lists, arrays, tuples, records, polymorphic variants, etc. You can use *D* postfix to tell the compiler that you number is double and *L* postfix to specify that you want to declare a 64-bit integer:
+Ela has a lot of built-in types including four numeric types (int, long, float and double), strings (e.g. `"Hello"`), chars (e.g. `'H'`), linked lists, arrays, tuples, records, polymorphic variants, etc. You can use `D` postfix to tell the compiler that you number is double and `L` postfix to specify that you want to declare a 64-bit integer:
 
 {{{
 >25L / 12
 
 2
 
->25d / 12
+>25D / 12
 
 2.08333333333333
 }}}
@@ -55,7 +55,7 @@ You can use the following syntax to declare an array:
 [|1,2,3|]
 }}}
 
-Arrays can be concatenated using *+* operator:
+Arrays can be concatenated using `+` operator:
 
 {{{
 >[| 1, 2, 3 |] + [| 4, 5, 6 |]
@@ -71,7 +71,7 @@ Linked lists can be created and concatenated in a similar manner:
 [1,2,3,4]
 }}}
 
-Ela also has a _list constructor_ operator *::* that can be used to create lists:
+Ela also has a _list constructor_ operator `::` that can be used to create lists:
 
 {{{
 >1::2::3::[]
@@ -270,7 +270,7 @@ The major difference between composition and pipes is that pipes don't create an
 
 OK, let's take another task - we don't need to sum two integers and validate the result but rather to calculate the sum of elements in a list.
 
-So we need to implement a function that takes as the arguments - a list, an initial value for out calculation and a function that will be used to performed an actual calculation. This is a typical higher-order function (a function that operates with other functions). Let's call it _fold_:
+So we need to implement a function that takes as the arguments - a list, an initial value for out calculation and a function that will be used to performed an actual calculation. This is a typical _higher-order function_ (a function that operates with other functions). Let's call it _fold_:
 
 {{{
 >let fold3(list, i, f) { var res = i; for (x in list) res = f(res, x); res }
@@ -294,7 +294,7 @@ let fold2(list, i, f) on x::xs,.. -> fold(list, f(i, x), f) on [],.. -> i
 
 The second version of the _fold_ function uses _pattern matching_. Here you can see a short version of _match_ expression that is allowed when the whole function body is a single match. It uses a special _head and tail_ pattern that may come up very handy when we need to deconstruct lists.
 
-A pattern _x::xs_ does two things - it verifies that our linked list contains at list one element and binds the very first element of the list (the _head_) to the variable _x_ and the rest of the list (the _tail_) to the variable _xs_. So on the first call x will be bound to 1 and xs to [2, 3, 4], on the second call - x to 2 and xs to [3, 4], etc. The second pattern matches the empty list.
+A pattern `x::xs` does two things - it verifies that our linked list contains at list one element and binds the very first element of the list (the _head_) to the variable _x_ and the rest of the list (the _tail_) to the variable _xs_. So on the first call `x` will be bound to `1` and `xs` to `[2, 3, 4]`, on the second call - `x` to `2` and `xs` to `[3, 4]`, etc. The second pattern matches the empty list.
 
 As soon as we use a short match syntax here we actually match against the whole expression in the function argument list taking it as if it were a tuple. But as soon as we don't really need to bind or deconstruct the other two parameters we are using these dots to tell the compiler that the other values are out of need for us.
 
@@ -310,7 +310,7 @@ Of course no. That is the reason why Ela have so called _anonymous functions_. A
 >\(x, y) x + y
 }}}
 
-As you can see here we use a *\* operator (you can take it as a stylized lambda symbol) instead of a function name. Parenthis around parameters are always required (even if you have a function with a single parameter, e.g. `\(x) x * 2`).
+As you can see here we use a `\` operator (you can take it as a stylized lambda symbol) instead of a function name. Parenthis around parameters are always required (even if you have a function with a single parameter, e.g. `\(x) x + 2`).
 
 This is how our code would look like with anonymous function:
 
@@ -320,7 +320,7 @@ This is how our code would look like with anonymous function:
 >10
 }}}
 
-Well again there is something not really right here. It looks like that our sum operation does nothing else than a standard *+* operator do and even anonymous function syntax is somewhat too much for it. And again we have a solution here:
+Well again there is something not really right here. It looks like that our sum operation does nothing else than a standard `+` operator do and even anonymous function syntax is somewhat too much for it. And again we have a solution here:
 
 {{{
 >fold2([1, 2, 3, 4], 0, _+_)
@@ -328,4 +328,4 @@ Well again there is something not really right here. It looks like that our sum 
 >10
 }}}
 
-So what've just happend? What is this `_+_` thing?
+So what've just happend? What is this `_+_` thing? That is simply another way to declare a function in Ela. If a function body is short just as in our case when it has only a single binary operation we do not have to explicitly specify the whole parameter list but rather use a `_` operator. Here - exactly as in the case with a regular anonymous function - we declare a function that takes two parameters which are referenced using `_` in their subsequent order (e.g. a function in the form `_+_+_` would take three parameters a return a sum of them).
