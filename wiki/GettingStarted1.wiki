@@ -219,7 +219,7 @@ And then - to write the calling code:
 5
 }}}
 
-Pretty wordy, isn't it? Also that is the kind of code that actually tells the compiler what it needs to do - well, eh, call this function, take the return value, then, eh, call another function... You can surely write it as nested function call (e.g. `guard(sum(2, 3)`) but it doesn't look pretty either. What we actually have in here is a chain of function calls - why not to write in the same manner?
+Pretty wordy, isn't it? Also that is the kind of code that actually tells the compiler what it needs to do - well, eh, call this function, take the return value, then, eh, call another function... You can surely write it as nested function call (e.g. `guard(sum(2, 3)`) but it doesn't look pretty either. What we actually have in here is a chain of function calls - why not to write it in the same manner?
 
 {{{
 >sum(2, 3) |> guard
@@ -231,9 +231,9 @@ Pretty wordy, isn't it? Also that is the kind of code that actually tells the co
 5
 }}}
 
-These are forward and backward pipe operators. You can really think of them as a pipe that takes its input and pushes it through the sequence of function calls in order to finally yield you a computed value. Each function in such a chain should only take a single parameter except of the very first function that serves as an entry point for the pipe (in our case this is a pipe function). But what one of the values for the calculation comes from another function and we now need to use our some function in the middle of a pipe?
+These are forward and backward pipe operators. You can really think of them as a pipe that takes its input and pushes it through the sequence of function calls in order to finally yield a computed value for you. Each function in such a chain should only take a single parameter except of the very first function that serves as an entry point for the pipe and is called before the pipe is entered (you can also use any expression here, not just function call). But what if one of the values for the calculation comes from another function and we now need to use our sum function in the middle of a pipe?
 
-That is again a case when partial application may be useful:
+That is again a case when partial application may be helpful:
 
 {{{
 >let getValue() 10
