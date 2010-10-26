@@ -1,4 +1,4 @@
-#summary Gettings started with Ela using Ela interactive environment (WIP)
+#summary Getting started with Ela using interactive environment (WIP)
 
 = Introduction =
 
@@ -13,7 +13,7 @@ In order to start an interactive session you don't have to provide any command l
 OK, so you have downloaded files, started Ela Console and if you have .NET or Mono propertly installed you should be able to see the program welcome caption.
 
 {{{
-Ela Interpreter version 0.7.19.0
+Ela Interpreter version 0.7.20.0
 Running CLR 2.0.50727.3615 32-bit
 
 Interactive mode
@@ -242,3 +242,28 @@ That is again a case when partial application may be helpful:
 
 12
 }}}
+
+OK, but if we need to perform these operations - calculation through sum and validation through guard - quite often and even our pipes might look somewhat repetative? There is another operator in Ela specifically for such cases - it is called _function composition_:
+
+{{{
+>let comp = guard >>> sum
+
+>comp(2, 3)
+
+5
+}}}
+
+Or you can use backward function composition:
+
+{{{
+>let comp2 = sum <<< guard;
+
+>comp2(20, 30)
+
+50
+}}}
+
+Function composition creates a new function that has the same parameter list as the very first function in the chain and returns the value from the very last function.
+As with pipe operators you can combine any number of functions at once using composition operators. Each function except of the first should only accept a single parameter.
+
+The major difference between composition and pipes is that pipes don't create any functions, they perform a function call, when composition never calls function but generates a new function as a combination of them.
