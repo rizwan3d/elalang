@@ -151,10 +151,46 @@ Ela is a functional language and probably the most important data type in Ela ty
 >let sum(x, y) x + y
 }}}
 
-As soon as everything in Ela is an expression (in other words any language construct potentially yields a value) the "return" keyword is not required (but still supported in Ela if you prefer to write in such a way). A body of a function in Ela should be an expression but again as soon as everything is an expression there is absolutely no problem with that. If you want to create a function with a body that contains several expression you can a special block expression *{ }* for that. This is how our previous function could be rewritten:
+As soon as everything in Ela is an expression (in other words any language construct potentially yields a value) the _return_ keyword is not required (but is still supported in Ela if you prefer to write in such a way). A body of a function in Ela should be an expression but again as soon as everything is an expression there is absolutely no problem with that. If you want to create a function with a body that contains several expressions you can use a special block expression *{ }* for that. This is how our previous function could be written:
 
 {{{
 >let sum(x, y) { let res = x + y; res }
 }}}
 
-The situation with a block expression is pretty simple - it starts a new lexical scope just like in C/C++ (which has no effect in a case of a function declaration as soon as function already starts a lexical scope) and as well as all other expressions yields a value (which is always the value of a very last expression inside it, in our case the value of a _res_ variable). You are probably interested which value can be returned by an empty block expression and if it is even an allowed language construct. Yes, it is an allowed construct. And it yield a value of type _unit_.
+The situation with a block expression is pretty simple - it starts a new lexical scope just like in C/C++ (which has no effect in a case of a function declaration as soon as function already starts a lexical scope) and as well as all other expressions it yields a value (which is always the value of a very last expression inside it, in our case the value of a _res_ variable). You are probably interested which value can be returned by an empty block expression and if it is even an allowed language construct. Yes, it is an allowed construct. And it yields a value of type _unit_.
+
+Unit is a special type that is used in the cases when no other specific value can be yielded. You might find similarities between unit and _void_ but unlike void in many languages unit is an actual value that can be returned from a function, assigned to a variable, etc. Also there is no such a notion as _null_ in Ela and unit is sometimes used instead of it.
+
+This is how you can explicitly assign a unit to a variable:
+
+{{{
+>let empty = ();
+}}}
+
+(It is probably easier taking the similarities in literals to think of a unit as of a zero element tuple). Also several language constructs (not only empty block) always yield a unit. This is typically a case for the imperative constructs such as _for_ cycles.
+
+But lets return to our function.
+
+There is something special about our _sum_ function in comparison with many other programming languages including JavaScript. Guess what? This function is _curried_. Basically all the functions in Ela are curried and there is no way to declare a one that is not.
+
+In a case if you haven't heard this notion before - a _curried function_ simply means a function that can accept its parameters one by one. Let's test it in an iteractive mode:
+
+{{{
+>sum(2, 2)
+
+4
+
+>sum(2)(2)
+
+4
+}}}
+
+But what happens when you call it like `sum(2)` and don't provide the second argument in-place? Doing so creates a _partially applied_ sum function that accepts a single parameter, adds it to the number 2 and yields the results of this calculation:
+
+{{{
+>let sum2 = sum(2)
+
+>sum2(10)
+
+12
+}}}
