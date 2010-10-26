@@ -1,4 +1,4 @@
-#summary An overview of Ela Console and language interpreter (WIP)
+#summary Gettings started with Ela using Ela interactive environment (WIP)
 
 = Introduction =
 
