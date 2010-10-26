@@ -1,4 +1,4 @@
-#summary An overview of Ela Console and language interpreter
+#summary An overview of Ela Console and language interpreter (WIP)
 
 = Introduction =
 
@@ -134,7 +134,6 @@ An immutable variable means that can't change a value bound to this variable how
 {{{
 >let arr = [| 1, 2, 3 |]
 
-
 >arr[0] = 10
 
 10
@@ -143,3 +142,19 @@ An immutable variable means that can't change a value bound to this variable how
 
 [|10,2,3|]
 }}}
+
+However the same trick won't work for lists that are read-only and any list modification should create a new instance of a list.
+
+Ela is a functional language and probably the most important data type in Ela type system is function. Functions can be declared using the following syntax:
+
+{{{
+>let sum(x, y) x + y
+}}}
+
+As soon as everything in Ela is an expression (in other words any language construct potentially yields a value) the "return" keyword is not required (but still supported in Ela if you prefer to write in such a way). A body of a function in Ela should be an expression but again as soon as everything is an expression there is absolutely no problem with that. If you want to create a function with a body that contains several expression you can a special block expression *{ }* for that. This is how our previous function could be rewritten:
+
+{{{
+>let sum(x, y) { let res = x + y; res }
+}}}
+
+The situation with a block expression is pretty simple - it starts a new lexical scope just like in C/C++ (which has no effect in a case of a function declaration as soon as function already starts a lexical scope) and as well as all other expressions yields a value (which is always the value of a very last expression inside it, in our case the value of a _res_ variable). You are probably interested which value can be returned by an empty block expression and if it is even an allowed language construct. Yes, it is an allowed construct. And it yield a value of type _unit_.
