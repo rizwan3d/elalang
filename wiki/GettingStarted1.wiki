@@ -2,15 +2,15 @@
 
 = Introduction =
 
-Current Ela implementation is a single managed DLL that doesn't require any installation and can be executed under CLR and Mono. You will require .NET 3.5 or higher to run it under CLR or Mono 2.6 or higher to run it under Mono.
+Current Ela implementation is a single managed DLL that doesn't require any installation and can run under CLR and Mono. You will require .NET 3.5 or higher to run it under CLR or Mono 2.6 or higher to run it under Mono.
 
-A command line utility Ela Console (_elac_) that comes with Ela supports both platforms as well and can be used for various purposes - you can execute Ela source code files using it (i.e. _elac HelloWorld.ela_), compile them into object files (_.elaobj_) or just output byte code to the console or use interactive mode for testing and debugging. Lunch _elac_ with a _-help_ switch to view all the available options.
+A command line utility Ela Console (_elac_) that comes with Ela supports both platforms as well and can be used for various purposes - you can execute Ela source code files using it (i.e. _elac HelloWorld.ela_), compile them into object files (_.elaobj_), output byte code to the console or use interactive mode for testing and debugging. Lunch _elac_ with a _-help_ switch to view all the available options.
 
-In order to start an interactive session you don't have to provide any command line parameters to _elac_. Just double click the file. (In order to run it under you should lunch Ela Console through the Mono hosting process, i.e. _Mono.exe elac.exe_).
+In order to start an interactive session you don't have to provide any command line parameters to Ela Console. Just start he _elac.exe_. (In order to run it under Mono you should lunch Ela Console through the Mono hosting process, i.e. _Mono.exe elac.exe_).
 
 = Interactive mode =
 
-OK, so you have downloaded files, started Ela Console and if you have .NET or Mono propertly installed you should be able to see the program welcome caption.
+OK, so you have downloaded files, started Ela Console and if you have .NET or Mono properly installed you should be able to see the program welcome caption:
 
 {{{
 Ela Interpreter version 0.7.20.0
@@ -23,7 +23,7 @@ Press Ctrl+C to exit.
 
 It may vary depending on your system and Ela Interpreter version.
 
-Now you can enter Ela expressions and see the immediate result in the console window. Pressing _Return_ key always executes an expression. If you want to specify several expressions at once you can separate them with a semicolon character. Semicolon is optional hovewer if there is only one expression that you want to execute.
+Now you can type Ela expressions and see the immediate result in the console window. Pressing _Return_ key always executes an expression. If you want to write several expressions at once you can separate them with a semicolon character, e.g. `a;b;c`. Semicolon is optional hovewer if there is only one expression that you want to execute.
 
 In Ela everything is an expression therefore you can test any language construct in an interactive mode. Lets start from simple expressions:
 
@@ -33,9 +33,11 @@ In Ela everything is an expression therefore you can test any language construct
 6
 }}}
 
-As you can see Ela has an operator priority similar to the C-style languages. Also at the very basis Ela syntax has a lot in common with other C-style languages as well (for example with JavaScript).
+As you can see Ela has an operator precedence similar to that of C style languages. Also at the very basis Ela syntax has a lot in common with many other popular languages as well (for example with JavaScript or C#).
 
-Ela has a lot of built-in types including four numeric types (int, long, float and double), strings (e.g. `"Hello"`), chars (e.g. `'H'`), linked lists, arrays, tuples, records, polymorphic variants, etc. You can use `D` postfix to tell the compiler that you number is double and `L` postfix to specify that you want to declare a 64-bit integer:
+Ela has a variety of built-in types including four numeric types (int, long, float and double), booleans, strings (e.g. `"Hello"`), chars (e.g. `'H'`), linked lists, arrays, tuples, records, polymorphic variants, etc. and of course functions.
+
+Numeric types are either 32-bit (int and single) or 64-bit (long and double). You can use `D` postfix to tell the compiler that your floating point number is double and `L` postfix to specify that you want to declare a 64-bit integer:
 
 {{{
 >25L / 12
@@ -46,6 +48,8 @@ Ela has a lot of built-in types including four numeric types (int, long, float a
 
 2.08333333333333
 }}}
+
+Arrays in Ela are dynamic meaning that they automatically reallocate themselves when needed for the sake of programmer's convenience. That is quite similar to what you have in JavaScript but the way how you interact with array is different. If you ever programmed in .NET/Java you can find a lot of similarities between Ela arrays and ArrayList.
 
 You can use the following syntax to declare an array:
 
@@ -61,6 +65,45 @@ Arrays can be concatenated using `+` operator:
 >[| 1, 2, 3 |] + [| 4, 5, 6 |]
 
 [|1,2,3,4,5,6|]
+}}}
+
+Behavior of arrays is more, say, explicit than in JavaScript. For example the following code would cause an error:
+
+{{{
+>let arr = [|0|]
+
+>arr[1] = 1
+
+(1,4): Error ELA805: Index was out of range.
+        in memory at line: 1, col: 4
+}}}
+
+Ela doesn't allow to use the same code to add and to change elements in the array. If you want to add a new element you should use an `add` function:
+
+{{{
+>arr.add(0)
+
+>arr[1] = 1
+
+1
+}}}
+
+Array also defines functions `remove` (that removes an element by index), `insert` and `clear`:
+
+{{{
+>let arr2 = [|1,2,3|]
+
+>arr2.insert(1, 10)
+
+>arr2
+
+[|1,10,2,3|]
+
+>arr2.remove(1)
+
+>arr2
+
+[|1,2,3|]
 }}}
 
 Linked lists can be created and concatenated in a similar manner:
