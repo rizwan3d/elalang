@@ -78,7 +78,7 @@ Behavior of arrays is more, say, explicit than in JavaScript. For example the fo
         in memory at line: 1, col: 4
 }}}
 
-Ela doesn't allow to use the same code to add and to change elements in the array. If you want to add a new element you should use an `add` function:
+Ela doesn't allow to use the same indexer operator to add and to change elements in the array. If you want to add a new element you should use a special `add` function:
 
 {{{
 >arr.add(0)
@@ -106,23 +106,36 @@ Array also defines functions `remove` (that removes an element by index), `inser
 [|1,2,3|]
 }}}
 
-Linked lists can be created and concatenated in a similar manner:
+List is another data structure in Ela that can be used to represent a sequence of elements. It is organized as an immutable single linked list. Unlike array, a complicated mutable data structure that incapsulates low such level operations as memory allocation, data copying, etc. list is much simpler in its internals. Basically you can think of a linked list as of a wrapper around your values that holds an additional reference to the next list element. That is it. In order to represent an empty list we use a special global instance of such data structure that has no value and doesn't point to any "next" element. This global instance is called a _nil_ list. It is global as soon as lists are immutable (you can't change them in-place as array) therefore there is no need to allocate additional memory each time you need an empty list:
 
 {{{
->[1, 2] + [3, 4]
+>let l1 = []
 
-[1,2,3,4]
+>let l2 = []
+
+>l1 == l2
+
+True
 }}}
 
-Ela also has a _list constructor_ operator `::` that can be used to create lists:
+The literal `[]` is used to denote a nil list. Nil is what you should start from if you need to construct a new list. Ela defines a special _list constructor_ operator that you can use in such cases:
+
+{{{
+>1::[]
+
+[1]
+}}}
+
+We have created a list with one element. What actually happend is that we've wrapped our integer value in the list structure and set it reference to the next element to nil.
+You can use these technique to create lists with any number of elements:
 
 {{{
 >1::2::3::[]
 
-[1,2,3]}}}
+[1,2,3]
 }}}
 
-List constructor operator is right associative and the very right part of it should always reference a list instance. For example, the following code would cause an error:
+Remember that list constructor operator is right associative and the very right part of it should always reference a list instance. For example, the following code would cause an error:
 
 {{{
 >1::2::3
@@ -130,6 +143,38 @@ List constructor operator is right associative and the very right part of it sho
 (1,7): Error ELA808: Invalid type. Expected: 'list', got: 'int'.
         in memory at line: 1, col: 7
 }}}
+
+In order to simplify list creation Ela also has a list literal form similar to the one that is used by array. For example, out three element list from the previous example can be created in the following manner:
+
+{{{
+>[1, 2, 3]
+
+[1,2,3]
+}}}
+
+Lists can be concatenated using `+` operator as well as arrays:
+
+{{{
+>[1, 2] + [3, 4]
+
+[1,2,3,4]
+}}}
+
+As with arrays you can obtain a length of a list using built-in length field and access its element using indexer but these are much more expensive operations than with the case of an array:
+
+{{{
+>let list = [1, 2, 3]
+
+>list.length
+
+3
+
+>list[1]
+
+2
+}}}
+
+Lists are really useful in certain cases - it is easy to add a new element to _head_ of the list and it is easy to chop the head of the list as well, e.g. to split the list `[1, 2, 3]` into the head value of 1 and the tail list `[2, 3]`.
 
 Ela also supports tuples - grouped values of different types - with a syntax that is pretty similar to the one that used by many programming languages:
 
