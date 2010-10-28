@@ -14,7 +14,7 @@ This page contains a short description of differences in syntax between Ela and 
 || Immutable variable declaration || `N/A` || `let x = 0;` || Immutable variables cannot be changed once declared. ||
 || Variable declaration without initialization || `var x;` || `N/A` || Initialization is mandatory in Ela. ||
 || Function declaration || `function sum(x, y) { return x + y; }` || `let sum(x, y) { x + y }` || ||
-|| Anonymous function declaration || `function(x, y) { return x + y; }` || `(x, y) -> x + y;` || ||
+|| Anonymous function declaration || `function(x, y) { return x + y; }` || `\(x, y) x + y;` || ||
 || String literal || `"Hello"` or <br>`'Hello'` || `"Hello"` || Only double quotes can be used for strings in Ela.||
 || Char literal || `N/A` || `'H'` || ||
 || Array literal || `[0, 1, 2, 3]` || `[| 0, 1, 2, 3 |]` || ||
