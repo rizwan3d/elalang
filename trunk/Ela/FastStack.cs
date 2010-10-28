@@ -118,6 +118,7 @@ namespace Ela
 		internal T this[int index]
 		{
 			get { return array[index]; }
+			set { array[index] = value; }
 		}
 		#endregion
 	}

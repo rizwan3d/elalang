@@ -133,6 +133,7 @@
     <Compile Include="Compilation\PatternTree.cs" />
     <Compile Include="Compilation\Strings.cs" />
     <Compile Include="Debug\CallStack.cs" />
+    <Compile Include="Debug\ElaDebugException.cs" />
     <Compile Include="IReadOnlyMap.cs" />
     <Compile Include="Compilation\OpHelper.cs" />
     <Compile Include="ElaTranslationException.cs" />
@@ -140,6 +141,7 @@
     <Compile Include="Linking\ElaLinkerException.cs" />
     <Compile Include="Linking\ElaLinkerWarning.cs" />
     <Compile Include="Linking\Strings.cs" />
+    <Compile Include="Parsing\ElaParserException.cs" />
     <Compile Include="Parsing\ElaParserError.cs" />
     <Compile Include="Parsing\IElaParser.cs" />
     <Compile Include="Parsing\Strings.cs" />
@@ -241,7 +243,6 @@
     <Compile Include="Debug\ValueFormatter.cs" />
     <Compile Include="Debug\VarSym.cs" />
     <Compile Include="ElaException.cs" />
-    <Compile Include="ElaFatalException.cs" />
     <Compile Include="ElaMessage.cs" />
     <Compile Include="FastList.cs" />
     <Compile Include="FastStack.cs" />
@@ -276,6 +277,7 @@
     <Compile Include="Runtime\ElaMachine.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Runtime\ElaMachineException.cs" />
     <Compile Include="Runtime\ElaParameterTypeException.cs" />
     <Compile Include="Runtime\ElaRuntimeError.cs" />
     <Compile Include="Runtime\EvalStack.cs" />
@@ -309,7 +311,6 @@
     <Compile Include="Runtime\Reflection\ElaTupleInfo.cs" />
     <Compile Include="Runtime\Reflection\ElaTypeInfo.cs" />
     <Compile Include="Runtime\Reflection\ElaVariableInfo.cs" />
-    <Compile Include="Runtime\Reflection\ElaVariantInfo.cs" />
     <Compile Include="Runtime\RuntimeValue.cs" />
     <Compile Include="Runtime\Strings.cs" />
     <Compile Include="Runtime\WorkerThread.cs" />

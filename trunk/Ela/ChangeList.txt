@@ -1,3 +1,41 @@
+0.7.20.0:Release:Release of Ela 0.7.20.
+0.7.19.37:Fix:A bug fixed fixed in compilation logic of custom operators (wrong parameter order for operators were used).
+0.7.19.36:Fix:A bug fixed in parsing logic of the backward composition operator.
+0.7.19.35:Fix:A bug fixed in parsing logic of the forward pipe operator.
+0.7.19.34:Fix:A bug fixed in compilation logic of generators (execution of generators could fail because of unneccarry stack manipulation code).
+0.7.19.33:Change:Implementation of pervasives (e.g. custom operators) is completely rewritten and is now much more effecient.
+0.7.19.32:Fix:A bug fixed in literal pattern (it wasn't possible to use negative integers and reals).
+0.7.19.31:Change:Compilation logic for automatically generated polymorphic variants fully refactored. Now it doesn't create a constructor function but generates a variant in place.
+0.7.19.30:New:Now sequence pattern, list pattern and array pattern support a 'dot-dot' operator that allows to use 'relaxed' check of a corresponding sequence size (equal or greater to the number of arguments in the pattern instead of strictly equals by default).
+0.7.19.29:Change:List and constructor pattern AST nodes and parsing logic refactored.
+0.7.19.28:Fix:A bug fixed in a VM state refresh procedure that is used by interactive mode (the memory layouts didn't properly resize).
+0.7.19.27:Fix:The 'long' data type didn't correctly convert to 'double' during implicit conversions.
+0.7.19.26:Fix:A bug fixed in compilation logic of function - function handle was calculated incorrectly, different handles can be used for the same function in symbols and in byte code.
+0.7.19.25:Fix:A variants related bug fixed - variants were accidentally exported as a part of visible global scope which could VM to fail through introspection.
+0.7.19.24:Fix:A bug fixed in compilation logic of contructor pattern (didn't correctly process situations when formal parameter list wasn't specified at all).
+0.7.19.23:Fix:A bug fixed in compilation logic of variants (incorrect variable address calculation for storing generated constructors).
+0.7.19.22:Fix:A bug fixed in ElaLazy computation logic that cause unnecessary stack operations.
+0.7.19.21:Fix:A bug fixed in interactive mode of VM - it didn't correctly recover after errors.
+0.7.19.20:Change:StackOffset removed from the function memory frame because of redundancy.
+0.7.19.19:Fix:Iteration didn't work for records (but worked for tuples).
+0.7.19.18:Fix:A bug fixed in the record indexer implementation (didn't work correctly for the numeric indices).
+0.7.19.17:Fix:A bug fixed in the Pushfld op code for the case a standard record attribute (such as length) was queried.
+0.7.19.16:Change:Now ElaList inherits ElaIndexedObject and supports an indexer operator as well as array.
+0.7.19.15:Fix:Now compiler raises an error for the casts to non-supported types, previously such situations were completely ignored.
+0.7.19.14:Fix:Fixed bug in optimization of tail calls for binary operators including pipe operators.
+0.7.19.13:Fix:A critical bug fixed in implementation of async calculation (the result of value of calculation was never persisted).
+0.7.19.12:Fix:Error reporting for the cases when a field of an object is immutable enhanced in a virtual machine.
+0.7.19.11:Fix:A bug fixed in compilation logic of function composition.
+0.7.19.10:Fix:A bug fixed in tail recursion - VM crushed when a function called to itself without supplying full argument list.
+0.7.19.9:Fix:A bug fixed in stack clear logic of ExecuteThrow routine in Ela VM.
+0.7.19.8:Fix:A bug/design leak fixed in compilation logic for the polymorphic variants. Compilation logic fully redesigned. Also now variants are scoped as regular variables.
+0.7.19.7:Fix:A bug in Callt op code fixed (bug cause VM to crash when a tail call was done to the function in another module).
+0.7.19.6:New:A new setting added to linker that allows to specify a name of a standard library. Stdlib is now preloaded and it is also possible to use shorter open declarations for standard modules (expiremental).
+0.7.19.5:Change:Minor clean-ups in Ela parser grammar.
+0.7.19.4:Change:Exception handling logic refactored in virtual machine and parser. Now each Ela component generates its own exception type (e.g. ElaParserException).
+0.7.19.3:New:Now match patterns can be used inside functions formal parameter list, e.g. \([x,y]) { ... }.
+0.7.19.2:Change:A new syntax for anonymous functions implemented instead of (x, y) -> expr now \(x, y) expr.
+0.7.19.1:Fix:Bug fixes in operations affinity table in virtual machine (several types such as 'int' and 'double' were always incompatible).
 0.7.19.0:Release:Release of Ela 0.7.19.
 0.7.18.48:Fix:A bug fixed that could cause an error when calling a function with empty body.
 0.7.18.47:Fix:A bug fixed in compilation logic of variants (wrong argument order).
@@ -5,7 +43,7 @@
 0.7.18.45:Change:Now compiler supports separate 'debug' (generate debug info) and 'optimize' (perform optimizations) flags.
 0.7.18.44:Change:Tail call optimization disabled inside try/catch and for generators.
 0.7.18.43:Change:Function composition compilation logic optimized.
-0.7.18.42:New:A tail call (non-recursive) is now optimized. A call is performed using new op code 'Callc' (experimental).
+0.7.18.42:New:A tail call (non-recursive) is now optimized. A call is performed using new op code 'Callt' (experimental).
 0.7.18.41:Fix:A bug fixed in currying logic in virtual machine.
 0.7.18.40:New:FunctionImplicitPartial warning is now generated when a function is partially applied during composition.
 0.7.18.39:Change:Minor changes in composition grammar - order of evaluation for '>>>' and '<<<' operators is exchanged.
