@@ -72,6 +72,7 @@ namespace Ela.Parsing
 				case Parser._charTok: return ElaParserError.ExpectedCharToken;
 				case Parser._operatorTok: return ElaParserError.ExpectedOperatorToken;
 				case Parser._variantTok: return ElaParserError.ExpectedVariantToken;
+				case Parser._LAMBDA: return ElaParserError.ExpectedLambda;
 				case Parser._SEMI: return ElaParserError.ExpectedSemicolon;
 				case Parser._LBRA: return ElaParserError.ExpectedCurlyBrace;
 				case Parser._RBRA: return ElaParserError.ExpectedCurlyBrace;

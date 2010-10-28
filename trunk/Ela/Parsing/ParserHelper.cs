@@ -8,9 +8,12 @@ namespace Ela.Parsing
 {
 	internal sealed partial class Parser
 	{
+		#region Construction
 		private static CultureInfo culture = CultureInfo.GetCultureInfo("en-US");
 		private FastStack<ElaFunctionLiteral> funs = new FastStack<ElaFunctionLiteral>();
-		
+		#endregion
+
+
 		#region Methods
 		private void InitializeCodeUnit()
 		{
@@ -65,6 +68,12 @@ namespace Ela.Parsing
 
 		private ElaLiteralValue ParseInt(string val)
 		{
+			return ParseInt(val, false);
+		}
+
+
+		private ElaLiteralValue ParseInt(string val, bool negate)
+		{
 			if (TrimLast(ref val, 'l', 'L'))
 			{
 				var res = default(Int64);
@@ -81,7 +90,7 @@ namespace Ela.Parsing
 					}
 				}
 				
-				return new ElaLiteralValue(res);
+				return new ElaLiteralValue(negate ? -res : res);
 			}
 			else
 			{
@@ -99,7 +108,7 @@ namespace Ela.Parsing
 					}
 				}
 				
-				return new ElaLiteralValue(res);
+				return new ElaLiteralValue(negate ? -res : res);
 			}
 		}
 
@@ -119,6 +128,12 @@ namespace Ela.Parsing
 
 		private ElaLiteralValue ParseReal(string val)
 		{
+			return ParseReal(val, false);
+		}
+
+
+		private ElaLiteralValue ParseReal(string val, bool negate)
+		{
 			if (TrimLast(ref val, 'd', 'D'))
 			{
 				var res = default(Double);
@@ -126,7 +141,7 @@ namespace Ela.Parsing
 				if (!Double.TryParse(val, NumberStyles.Float, culture.NumberFormat, out res))
 					AddError(ElaParserError.InvalidRealSyntax);
 				
-				return new ElaLiteralValue(res);
+				return new ElaLiteralValue(negate ? -res : res);
 			}
 			else
 			{
@@ -135,7 +150,7 @@ namespace Ela.Parsing
 				if (!Single.TryParse(val, NumberStyles.Float, culture.NumberFormat, out res))
 					AddError(ElaParserError.InvalidRealSyntax);
 				
-				return new ElaLiteralValue(res);
+				return new ElaLiteralValue(negate ? -res : res);
 			}
 		}
 

@@ -351,4 +351,10 @@
   <data name="UnknownConversionType" xml:space="preserve">
     <value>Unknown type '{0}'. An expression should be one of the standard Ela types.</value>
   </data>
+  <data name="ExpectedLambda" xml:space="preserve">
+    <value>Expected lambda operator '\'.</value>
+  </data>
+  <data name="ShortMatchInvalidParamList" xml:space="preserve">
+    <value>Unable to use short syntax for 'match' expression inside a function when a parameter list is already presented as match patterns.</value>
+  </data>
 </root>

@@ -166,11 +166,6 @@ internal sealed class Errors {
 	public List<ElaMessage> ErrorList { get; private set; }
 } // Errors
 
-
-internal class FatalError: ElaFatalException {
-	public FatalError(string m): base(m) {}
-}
-
 }
 
 $$$

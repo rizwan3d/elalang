@@ -47,6 +47,7 @@ TOKENS
 	LBRA = "{".
 	RBRA = "}".
 	MATCH_ARR = "->".
+	LAMBDA = "\\".
 	
 	ARG = "$".
 	IN = "in".
@@ -91,72 +92,49 @@ IGNORE cr + lf + tab
 
 PRODUCTIONS
 	Literal<out ElaExpression exp> = 
-		(. exp = null; .)
+	(. exp = null; .)
+	(
 		(	
-			(
-				Primitive<out exp>
-				{ Indexer<exp, out exp> | Invoke<exp, out exp> }
-				[ MemberAccess<exp, out exp> ]
-			)
-			|
-			(
-				ListCreateExpr<out exp>
-				{ Indexer<exp, out exp> | Invoke<exp, out exp> }
-				[ MemberAccess<exp, out exp> ]
-			)
-			|
-			(
-				ArrayCreateExpr<out exp>
-				{ Indexer<exp, out exp> | Invoke<exp, out exp> }
-				[ MemberAccess<exp, out exp> ]
-			)
-			|
-			(
-				BASE 
-				(. exp = new ElaBaseReference(t); .)
-				[ MemberAccess<exp, out exp> ]
-			)
-			|
-			(
-				ident
-				(. exp = new ElaVariableReference(t) { VariableName = t.val }; .)
-				{ Indexer<exp, out exp> | Invoke<exp, out exp> }
-				[ MemberAccess<exp, out exp> ]
-			)
-			|
-			(
-				ARG ident
-				(. exp = new ElaArgument(t) { ArgumentName = t.val }; .)
-				{ Indexer<exp, out exp> | Invoke<exp, out exp> }
-				[ MemberAccess<exp, out exp> ]
-			)
-			|
-			(
-				variantTok 
-				(. 
-					var ev = new ElaVariantLiteral(t) { Name = t.val.TrimStart('`') }; 
-					exp = ev;
-				.)
-				(
-					(
-						Invoke<exp, out exp>
-						(. ev.Length = ((ElaFunctionCall)exp).Parameters.Count; .)
-					)
-					|
-					(
-						(. exp = new ElaFunctionCall(t) { Target = exp }; .)
-					)
-				)
-				[ Indexer<exp, out exp> { Indexer<exp, out exp> | Invoke<exp, out exp> } ]
-				[ MemberAccess<exp, out exp> ]
-			)
-			|
-			(
-				"_" (. exp = new ElaPlaceholder(t); .)
-				{ Indexer<exp, out exp> | Invoke<exp, out exp> }
-				[ MemberAccess<exp, out exp> ]
-			)
-		).
+			Primitive<out exp>
+			| ListLiteral<out exp>
+			| ArrayLiteral<out exp>
+			| VariantLiteral<out exp> 
+			| BaseReference<out exp>
+			| ident (. exp = new ElaVariableReference(t) { VariableName = t.val }; .)
+			| ARG ident (. exp = new ElaArgument(t) { ArgumentName = t.val }; .)
+			| "_" (. exp = new ElaPlaceholder(t); .)
+		)
+		{ Indexer<exp, out exp> | Invoke<exp, out exp> }
+		[ MemberAccess<exp, out exp> ]
+	).	
+	
+	BaseReference<out ElaExpression exp> =
+	(.
+		var baseRef = new ElaBaseReference(t);
+		exp = null;
+	.)
+	(
+		BASE "." ident
+		(. exp = new ElaFieldReference(t) { FieldName = t.val, TargetObject = baseRef }; .)
+	).
+	
+	VariantLiteral<out ElaExpression exp> = 
+	(. exp = null; .)
+	(
+		variantTok 
+		(. var ev = new ElaVariantLiteral(t) { Name = t.val.TrimStart('`') }; .)
+		(
+			[
+				"(" 
+					[
+						Expr<out exp> (. ev.Parameters.Add(exp); .)
+						{ "," Expr<out exp> (. ev.Parameters.Add(exp); .) }
+					]
+				")"
+			]
+		)
+		(. exp = ev; .)				
+	).
 					
 	Invoke<ElaExpression target, out ElaExpression exp> =
 		(
@@ -214,7 +192,7 @@ PRODUCTIONS
 			exp = match; 
 			var cexp = default(ElaExpression);
 		.)
-		"(" Expr<out cexp> [ "," TupleExpr<ref cexp> ] ")"
+		"(" Expr<out cexp> [ TupleExpr<ref cexp> ] ")"
 		(. match.Expression = cexp; .)
 		MatchEntry<match> { MatchEntry<match> }.
 					
@@ -232,10 +210,13 @@ PRODUCTIONS
 			[ 
 				Guard<out cexp>
 				(. pat.Guard = cexp; .)
-			]		
+			]
 		)
-		MATCH_ARR Expr<out cexp>
-		(. entry.Expression = cexp; .).
+		(	
+			MATCH_ARR Expr<out cexp>
+			(. entry.Expression = cexp; .)			
+			(. if (la.kind != _ON && t.kind != _ON && t.kind != _RBRA && t.kind != _SEMI) .) SEMI
+		).
 		
 	Guard<out ElaExpression exp> = 
 		WHEN 
@@ -272,7 +253,7 @@ PRODUCTIONS
 			.)
 		}.
 					
-	SinglePattern<out ElaPattern pat> = 				
+	SinglePattern<out ElaPattern pat> =			
 		(. pat = null; .)
 		(
 			"_" (. pat = new ElaDefaultPattern(t); .)
@@ -337,6 +318,7 @@ PRODUCTIONS
 					"," SinglePattern<out cpat> 
 					(. seq.Patterns.Add(cpat); .)
 				}
+				[ ".." (. seq.CheckMinimumSize = true; .) ]
 			)
 		"|]".
 		
@@ -427,12 +409,14 @@ PRODUCTIONS
 				OrPattern<out cpat> [ ConsPattern<cpat, out cpat> ]	
 				(. seq.Patterns.Add(cpat); .)
 				{ 
-					"," OrPattern<out cpat> [ ConsPattern<cpat, out cpat> ]	
+					"," 
+					OrPattern<out cpat> [ ConsPattern<cpat, out cpat> ]	
 					(. seq.Patterns.Add(cpat); .)
 				}
 			]
+			[ ".." (. seq.CheckMinimumSize = true; .) ]
 		).
-		
+			
 	ConsPattern<ElaPattern prev, out ElaPattern exp> =
 		(. 
 			var cexp = default(ElaPattern); 
@@ -508,88 +492,84 @@ PRODUCTIONS
 				| charTok (. val.Value = ParseChar(t.val); .)
 				| intTok (. val.Value = ParseInt(t.val); .)
 				| realTok (. val.Value = ParseReal(t.val); .)
+				| 
+				(
+					"-" (intTok (. val.Value = ParseInt(t.val, true); .) | realTok (. val.Value = ParseReal(t.val, true); .) )
+				)
+				|
+				(
+					"+" ( intTok (. val.Value = ParseInt(t.val); .) | realTok (. val.Value = ParseReal(t.val); .) )
+				)
 				| "true" (. val.Value = new ElaLiteralValue(true); .)
 				| "false" (. val.Value = new ElaLiteralValue(false); .)
 			)
 		).		
 			
 	ListPattern<out ElaPattern pat> = 
-		(. pat = null; .)
-		(
-			"[" 
-				(. 
-					var listPat = default(ElaListPattern); 
-					var listTok = t;					
-					var cp = default(ElaPattern);
-				.)
-				[ 				
-					RootPattern<out cp>
-				]
-				(.
-					var seq = cp as ElaSeqPattern;
-					listPat = new ElaListPattern(listTok, seq);
-					pat = listPat;
-						
-					if (seq == null && cp != null)
-						listPat.Patterns.Add(cp);
-				.)
-			"]"
-		).
+		(.
+			var seq = new ElaListPattern(t); 
+			var cpat = default(ElaPattern);
+			pat = seq;
+		.)
+		"["
+			[
+				SinglePattern<out cpat> 
+				(.  seq.Patterns.Add(cpat);  .)
+				{ 
+					"," SinglePattern<out cpat> 
+					(. seq.Patterns.Add(cpat); .)
+				}
+				[ ".." (. seq.CheckMinimumSize = true; .) ]
+			]
+		"]".
 		
 	CtorPattern<out ElaPattern pat> = 
 		(. 
-			var cons = default(ElaConstructorPattern);
-			var consTok = t;
-			var cp = default(ElaPattern);
-			var seq = default(ElaSeqPattern);
-			var name = String.Empty;
-			pat = null;
+			var seq = new ElaConstructorPattern(t);
+			var cpat = default(ElaPattern);
+			pat = seq;			
 		.)
 		(
-			variantTok (. name = t.val.TrimStart('`'); .)			
+			variantTok (. seq.Name = t.val.TrimStart('`'); .)			
 			[ 
 				"(" 
-				[ 
-					RootPattern<out cp> 
-					(. seq = cp as ElaSeqPattern; .)
-				] 
+				(. seq.HasParameterList = true; .)
+				(
+					SinglePattern<out cpat> 
+					(. seq.Patterns.Add(cpat);  .)
+					{ 
+						"," SinglePattern<out cpat> 
+						(. seq.Patterns.Add(cpat); .)
+					}
+					[ ".." (. seq.CheckMinimumSize = true; .) ]
+				)
 				")" 			
 			]
-		)
-		(. 
-			cons = new ElaConstructorPattern(consTok, seq) { Name = name };
-			pat = cons;
-				
-			if (seq == null && cp != null)
-				cons.Patterns.Add(cp);
-		.).		
+		).		
 		
 	AnyCtorPattern<out ElaPattern pat> = 
 		(. 
-			var cons = default(ElaConstructorPattern);
-			var consTok = t;
-			var cp = default(ElaPattern);
-			var seq = default(ElaSeqPattern);
-			pat = null;
+			var seq = new ElaConstructorPattern(t);
+			var cpat = default(ElaPattern);
+			pat = seq;			
 		.)
 		(
-			"`"
+			"`"			
 			[ 
 				"(" 
-				[ 
-					RootPattern<out cp> 
-					(. seq = cp as ElaSeqPattern; .)
-				] 
+				(. seq.HasParameterList = true; .)
+				(
+					SinglePattern<out cpat> 
+					(. seq.Patterns.Add(cpat);  .)
+					{ 
+						"," SinglePattern<out cpat> 
+						(. seq.Patterns.Add(cpat); .)
+					}
+					[ ".." (. seq.CheckMinimumSize = true; .) ]
+				)
 				")" 			
 			]
-		)
-		(. 
-			cons = new ElaConstructorPattern(consTok, seq);
-			pat = cons;
-				
-			if (seq == null && cp != null)
-				cons.Patterns.Add(cp);
-		.).		
+		).			
 			
 	/* End Match */
 		
@@ -610,7 +590,7 @@ PRODUCTIONS
 		BinaryExpr<out exp> (. list.Add(exp); .)		
 		[ "," ListParamList<list> ].
 		
-	ListCreateExpr<out ElaExpression exp> = 
+	ListLiteral<out ElaExpression exp> = 
 		"[" 
 			(. 
 				var listExp = new ElaListLiteral(t);
@@ -627,7 +607,7 @@ PRODUCTIONS
 			] 
 		"]".
 		
-	ArrayCreateExpr<out ElaExpression exp> = 
+	ArrayLiteral<out ElaExpression exp> = 
 		"[|"
 			(. 
 				var arrExp = new ElaArrayLiteral(t);
@@ -723,7 +703,7 @@ PRODUCTIONS
 				[
 					(
 						(. if (name == null) AddError(ElaParserError.InvalidFunctionDeclaration); .)				
-						FunDecl<out cexp>
+						FunExpr<out cexp>
 					)
 					| 
 					(
@@ -750,7 +730,7 @@ PRODUCTIONS
 					varExp.VariableName = t.val.Substring(1);
 					varExp.VariableFlags |= ElaVariableFlags.Constructor;
 				.)
-				FunDecl<out cexp>
+				FunExpr<out cexp>
 				(. 
 					var fl = (ElaFunctionLiteral)cexp;
 					fl.FunctionType = ElaFunctionType.Constructor; 
@@ -760,28 +740,49 @@ PRODUCTIONS
 			|
 			(
 				"@" "(" operatorTok (. varExp.VariableName = t.val; .) ")"				
-				FunDecl<out cexp>
+				FunExpr<out cexp>
 				(. ((ElaFunctionLiteral)cexp).FunctionType = ElaFunctionType.BinaryOperator; .)
 			)
 			|
 			(
 				"~" "(" operatorTok (. varExp.VariableName = t.val; .) ")"
-				FunDecl<out cexp>
+				FunExpr<out cexp>
 				(. ((ElaFunctionLiteral)cexp).FunctionType = ElaFunctionType.UnaryOperator; .)
 			)
 		)
 		(. varExp.InitExpression = cexp; .).
 			
-	FunDecl<out ElaExpression exp> =
+	FunExpr<out ElaExpression exp> =
 		(
-			"(" 
-				(. var tp = new ElaTupleLiteral(t, false); exp = tp; .)
-				[	
-					ident (. tp.Parameters.Add(new ElaVariableReference(t) { VariableName = t.val }); .)
-					{ "," ident (. tp.Parameters.Add(new ElaVariableReference(t) { VariableName = t.val }); .) } 
-				] 
+			(. 
+				var mi = new ElaFunctionLiteral(t);
+				var pat = default(ElaPattern);
+				exp = mi;
+			.)			
+			"("
+				[
+					SinglePattern<out pat> [ ConsPattern<pat, out pat> ] (. mi.Parameters.Add(pat); .)
+					{ "," SinglePattern<out pat> [ ConsPattern<pat, out pat> ] (. mi.Parameters.Add(pat); .) } 
+				]
 			")"
-			FunExpr<ref exp>
+			FunBodyExpr<mi>
+		).
+		
+	FunBodyExpr<ElaFunctionLiteral mi> =
+		(
+			(. funs.Push(mi); .)
+			(
+				FunMatchExpr<mi>
+				|
+				(
+					(. var fexp = default(ElaExpression); .)
+					Expr<out fexp>
+					(. mi.Expression = fexp; .)
+				)
+				|
+				SEMI			
+			)
+			(. funs.Pop(); .)
 		).
 		
 	WhenExpr<out ElaExpression exp> =
@@ -1054,7 +1055,7 @@ PRODUCTIONS
 		}.	
 		
 	IsExpr<out ElaExpression exp> =
-		CompExpr<out exp>
+		BackwardCompExpr<out exp>
 		(. 
 			var pat = default(ElaPattern); 
 		.)
@@ -1063,8 +1064,8 @@ PRODUCTIONS
 			(. exp = new ElaIs(t) { Expression = exp, Pattern = pat }; .)
 		}.		
 			
-	CompExpr<out ElaExpression exp> = 
-		ConsExpr<out exp>
+	BackwardCompExpr<out ElaExpression exp> = 
+		ForwardCompExpr<out exp>
 		{
 			(. 
 				var cexp = default(ElaExpression); 
@@ -1072,22 +1073,29 @@ PRODUCTIONS
 			.)
 			(
 				(
-					"<<<" (. op = ElaBinaryOperator.CompForward; .)		
-					CompExpr<out cexp>
-					(. exp = new ElaBinary(t) { Left = GetFun(exp), Operator = op, Right = GetFun(cexp) }; .)
-				)
-				|
-				(
-					">>>" (. op = ElaBinaryOperator.CompBackward; .)
-					CompExpr<out cexp>
+					"<<<" (. op = ElaBinaryOperator.CompBackward; .)		
+					ForwardCompExpr<out cexp>
 					(. exp = new ElaBinary(t) { Right = GetFun(exp), Operator = op, Left = GetFun(cexp) }; .)
 				)
 			)
 		}.
 		
+	ForwardCompExpr<out ElaExpression exp> = 
+		ConsExpr<out exp>
+		{
+			(. 
+				var cexp = default(ElaExpression); 
+				var op = default(ElaBinaryOperator);
+			.)
+			(
+				">>>" (. op = ElaBinaryOperator.CompForward; .)
+				ForwardCompExpr<out cexp>
+				(. exp = new ElaBinary(t) { Left = GetFun(exp), Operator = op, Right = GetFun(cexp) }; .)
+			)
+		}.		
 			
 	ConsExpr<out ElaExpression exp> =
-		PipeExpr<out exp>
+		BackwardPipeExpr<out exp>
 		{
 			(. 
 				var cexp = default(ElaExpression); 
@@ -1098,7 +1106,21 @@ PRODUCTIONS
 			(. exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; .)
 		}.		
 		
-	PipeExpr<out ElaExpression exp> =
+	BackwardPipeExpr<out ElaExpression exp> =
+		ForwardPipeExpr<out exp>
+		{
+			(. 
+				var cexp = default(ElaExpression); 
+				var op = default(ElaBinaryOperator);
+			.)
+			(
+				"<|" (. op = ElaBinaryOperator.PipeBackward; .)
+				BackwardPipeExpr<out cexp>
+				(. exp = new ElaBinary(t) { Right = GetFun(exp), Operator = op, Left = GetFun(cexp) }; .)
+			)
+		}.
+		
+	ForwardPipeExpr<out ElaExpression exp> = 
 		BitOrExpr<out exp>
 		{
 			(. 
@@ -1106,17 +1128,9 @@ PRODUCTIONS
 				var op = default(ElaBinaryOperator);
 			.)
 			(
-				(
-					"|>" (. op = ElaBinaryOperator.PipeForward; .)
-					BitOrExpr<out cexp>
-					(. exp = new ElaBinary(t) { Left = GetFun(exp), Operator = op, Right = GetFun(cexp) }; .)
-				)
-				|
-				(
-					"<|" (. op = ElaBinaryOperator.PipeBackward; .)
-					PipeExpr<out cexp>
-					(. exp = new ElaBinary(t) { Right = GetFun(exp), Operator = op, Left = GetFun(cexp) }; .)
-				)
+				"|>" (. op = ElaBinaryOperator.PipeForward; .)
+				BitOrExpr<out cexp>
+				(. exp = new ElaBinary(t) { Left = GetFun(exp), Operator = op, Right = GetFun(cexp) }; .)
 			)
 		}.
 	
@@ -1245,10 +1259,7 @@ PRODUCTIONS
 		{
 			(. var typ = ObjectType.None; .)
 			":>" ident (. typ = GetType(t.val); .)
-			(. 
-				exp = new ElaCast(t) { 
-					CastAffinity = typ, Expression = exp }; 
-			.)			
+			(. exp = new ElaCast(t) { CastAffinity = typ, Expression = exp }; .)			
 		}.		
 		
 	CustomOpExpr<out ElaExpression exp> = 
@@ -1326,13 +1337,13 @@ PRODUCTIONS
 							)
 							|
 							(
-								":" ObjectExpr<exp, out exp>
+								":" RecordExpr<exp, out exp>
 								{ Indexer<exp, out exp> | Invoke<exp, out exp> }
 								[ MemberAccess<exp, out exp> ]	
 							)							
 							|
 							(
-								"," TupleExpr<ref exp> ")"
+								TupleExpr<ref exp> ")"
 								{ Indexer<exp, out exp> | Invoke<exp, out exp> }
 								[ MemberAccess<exp, out exp> ]	
 							)
@@ -1349,6 +1360,7 @@ PRODUCTIONS
 			exp = pexp;				
 			var cexp = default(ElaExpression);				
 		.)
+		","
 		(	
 			[
 				Expr<out cexp> 
@@ -1357,7 +1369,7 @@ PRODUCTIONS
 			{ "," Expr<out cexp> (. pexp.Parameters.Add(cexp); .) }
 		).			
 		
-	ObjectExpr<ElaExpression fl, out ElaExpression exp> =
+	RecordExpr<ElaExpression fl, out ElaExpression exp> =
 		(. 
 			var obj = new ElaRecordLiteral(t); 
 			exp = obj;
@@ -1391,49 +1403,63 @@ PRODUCTIONS
 		)
 		[ "," FieldExpr<list> ].
 				
-	FunExpr<ref ElaExpression exp> =
-		(. 
-			var mi = new ElaFunctionLiteral(t);
-			mi.Parameters = exp;
-			funs.Push(mi);
-		.)
+	LambdaExpr<out ElaExpression exp> =
+		(. exp = null; .)
 		(
-			FunMatchExpr<mi>
-			|
-			(
-				(. var fexp = default(ElaExpression); .)
-				Expr<out fexp>
-				(. mi.Expression = fexp; .)
-			)
-			|
-			SEMI			
-		)
-		(. 
-			exp = mi; 
-			funs.Pop();
-		.).	
+			LAMBDA 		
+			(. 
+				var mi = new ElaFunctionLiteral(t);
+				var pat = default(ElaPattern);
+				exp = mi;
+			.)			
+			[ 
+				"("
+					[
+						SinglePattern<out pat> [ ConsPattern<pat, out pat> ] (. mi.Parameters.Add(pat); .)
+						{ "," SinglePattern<out pat> [ ConsPattern<pat, out pat> ] (. mi.Parameters.Add(pat); .) } 
+					]
+				")"
+			]
+			FunBodyExpr<mi>	
+		).
 		
 	FunMatchExpr<ElaFunctionLiteral mi> = 
 		(.
 			var match = new ElaMatch(t);
-			match.Expression = mi.Parameters;
-			mi.Expression = match;
 			
-			if (mi.Parameters.Type == ElaNodeType.TupleLiteral &&
-				((ElaTupleLiteral)mi.Parameters).Parameters.Count == 0)
+			if (mi.ParameterCount == 0)
 				AddError(ElaParserError.ShortMatchWithoutParams);
+			else
+			{
+				if (mi.Parameters.Count == 1) 
+				{
+					if (mi.Parameters[0].Type != ElaNodeType.VariablePattern)
+						AddError(ElaParserError.ShortMatchInvalidParamList);
+					else
+						match.Expression = new ElaVariableReference(t) { VariableName = ((ElaVariablePattern)mi.Parameters[0]).Name };
+				}
+				else
+				{
+					var tp = new ElaTupleLiteral(t, false);
+					match.Expression = tp;
+					
+					for (var i = 0; i < mi.Parameters.Count; i++)
+					{
+						var p = mi.Parameters[i];
+					
+						if (p.Type != ElaNodeType.VariablePattern)
+							AddError(ElaParserError.ShortMatchInvalidParamList);
+						else
+							tp.Parameters.Add(new ElaVariableReference(t) { VariableName = ((ElaVariablePattern)p).Name });
+					}
+				}
+					
+				mi.Expression = match;			
+			}
 		.)
 		MatchEntry<match> { MatchEntry<match> }.
 					
-	BinaryExpr<out ElaExpression exp> = 
-		(
-			OrExpr<out exp>
-			[			
-				"->" FunExpr<ref exp>
-				|
-				Assignment<exp, out exp>			
-			]
-		).	
+	BinaryExpr<out ElaExpression exp> = OrExpr<out exp> [ Assignment<exp, out exp> ].	
 			
 	AsyncExpr<out ElaExpression exp> =
 		(
@@ -1489,7 +1515,8 @@ PRODUCTIONS
 			ContinueExpr<out exp> |	
 			TryCatchExpr<out exp> |	
 			AsyncExpr<out exp> |
-			LazyExpr<out exp> 			
+			LazyExpr<out exp> |
+			LambdaExpr<out exp>		
 		)
 		(. exp = GetFun(exp); .).
 		
@@ -1506,7 +1533,7 @@ PRODUCTIONS
 		(
 			Expr<out exp> (. if (la.kind != _RBRA && t.kind != _RBRA && t.kind != _SEMI) .) (SEMI|EOF)
 			| SEMI
-			| IncludeStat<out exp> SEMI
+			| IncludeStat<out exp> (. if (la.kind != _RBRA && t.kind != _RBRA && t.kind != _SEMI) .) SEMI
 		)
 		(. if (exp != null) list.Add(exp); .).	
 				

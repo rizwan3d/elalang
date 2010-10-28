@@ -143,7 +143,7 @@ internal class Buffer {
 			}
 
 			if (value < 0 || value > fileLen) {
-				throw new FatalError("buffer out of bounds access, position: " + value);
+				throw new ElaParserException("Buffer out of bounds access, position: " + value);
 			}
 
 			if (value >= bufStart && value < bufStart + bufLen) { // already in buffer
@@ -257,7 +257,7 @@ internal sealed class Scanner {
 			buffer = new Buffer(stream, false);
 			Init();
 		} catch (IOException) {
-			throw new FatalError("Cannot open file " + fileName);
+			throw new ElaParserException("Cannot open file " + fileName);
 		}
 	}
 		
@@ -275,7 +275,7 @@ internal sealed class Scanner {
 			NextCh(); int ch1 = ch;
 			NextCh(); int ch2 = ch;
 			if (ch1 != 0xBB || ch2 != 0xBF) {
-				throw new FatalError(String.Format("illegal byte order mark: EF {0,2:X} {1,2:X}", ch1, ch2));
+				throw new ElaParserException(String.Format("Illegal byte order mark: EF {0,2:X} {1,2:X}", ch1, ch2));
 			}
 			buffer = new UTF8Buffer(buffer); col = 0;
 			NextCh();

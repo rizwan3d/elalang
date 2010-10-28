@@ -22,6 +22,8 @@ namespace Ela.Parsing
 
 		InvalidRecordFieldDeclaration = 8,
 
+		ShortMatchInvalidParamList = 9,
+
 
 
 		ExpectedToken = 100,
@@ -117,6 +119,8 @@ namespace Ela.Parsing
 		ExpectedKeywordLazy = 145,
 
 		ExpectedKeywordIgnore = 146,
+				
+		ExpectedLambda = 147,
 
 
 		
