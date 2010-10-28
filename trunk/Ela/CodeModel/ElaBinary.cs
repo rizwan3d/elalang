@@ -28,7 +28,12 @@ namespace Ela.CodeModel
 
 		public string CustomOperator { get; set; }
 
-		public override int Placeholders { get { return Left.Placeholders + (Right != null ? Right.Placeholders : 0); } }
+		public override int Placeholders { get { return (Left != null ? Left.Placeholders : 0) + (Right != null ? Right.Placeholders : 0); } }
+
+		internal bool Tail
+		{
+			get { return Operator == ElaBinaryOperator.BooleanOr; }
+		}
 		#endregion
 	}
 }

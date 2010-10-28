@@ -19,12 +19,6 @@ namespace Ela.CodeModel
 		}
 
 
-		internal ElaSeqPattern(Token tok, List<ElaPattern> patterns, ElaNodeType type) : base(tok, type)
-		{
-			_patterns = patterns;
-		}
-
-
 		public ElaSeqPattern() : this(null)
 		{
 			
@@ -69,6 +63,9 @@ namespace Ela.CodeModel
 		{
 			get { return _patterns != null; }
 		}
+
+
+		public bool CheckMinimumSize { get; set; }
 
 
 		internal override ElaPatternAffinity Affinity

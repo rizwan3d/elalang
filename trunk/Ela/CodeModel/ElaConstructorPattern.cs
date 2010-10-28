@@ -7,7 +7,7 @@ namespace Ela.CodeModel
 	public sealed class ElaConstructorPattern : ElaSeqPattern
 	{
 		#region Construction
-		internal ElaConstructorPattern(Token tok, ElaSeqPattern seq) : base(tok, seq != null ? seq.Patterns : null, ElaNodeType.ConstructorPattern)
+		internal ElaConstructorPattern(Token tok) : base(tok, ElaNodeType.ConstructorPattern)
 		{
 			
 		}
@@ -21,7 +21,9 @@ namespace Ela.CodeModel
 
 
 		#region Properties
-		public string Name { get; internal set; }
+		public string Name { get; set; }
+
+		public bool HasParameterList { get; set; }
 		#endregion
 	}
 }

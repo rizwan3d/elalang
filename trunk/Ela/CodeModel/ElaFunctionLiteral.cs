@@ -13,7 +13,7 @@ namespace Ela.CodeModel
 		}
 
 
-		internal ElaFunctionLiteral(Token tok) : base(tok, ElaNodeType.FunctionLiteral)
+		internal ElaFunctionLiteral(Token tok) : this(tok, ElaNodeType.FunctionLiteral)
 		{
 			
 		}
@@ -25,7 +25,7 @@ namespace Ela.CodeModel
 		}
 
 
-		public ElaFunctionLiteral() : this(null)
+		public ElaFunctionLiteral() : this(null, ElaNodeType.FunctionLiteral)
 		{
 			
 		}
@@ -38,37 +38,29 @@ namespace Ela.CodeModel
 		public ElaFunctionType FunctionType { get; set; }
 
 		public string Name { get; set; }
-				
-		public ElaExpression Parameters { get; set; }
-
+	
 		public ElaExpression Expression { get; set; }
 
-		private int _parameterCount = -1;
-		public virtual int ParameterCount
+
+		public int ParameterCount 
+		{ 
+			get 
+			{ 
+				return ParameterSlots > 0 ? ParameterSlots : 
+					_parameters != null ? _parameters.Count : 0; 
+			} 
+		}
+
+		
+		private List<ElaPattern> _parameters;
+		public List<ElaPattern> Parameters
 		{
 			get
 			{
-				if (_parameterCount == -1)
-				{
-					if (ParameterSlots > 0)
-						_parameterCount = ParameterSlots;
-					else 
-					{
-						if (Parameters == null)
-							_parameterCount = 0;
-						else if (Parameters.Type == ElaNodeType.VariableReference)
-							_parameterCount = 1;
-						else if (Parameters.Type == ElaNodeType.TupleLiteral)
-						{
-							var t = (ElaTupleLiteral)Parameters;
-							_parameterCount = t.Parameters != null ? t.Parameters.Count : 0;
-						}
-						else
-							_parameterCount = 0;
-					}
-				}
+				if (_parameters == null)
+					_parameters = new List<ElaPattern>();
 
-				return _parameterCount;
+				return _parameters;
 			}
 		}
 		#endregion

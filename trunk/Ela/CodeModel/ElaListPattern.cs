@@ -7,7 +7,7 @@ namespace Ela.CodeModel
 	public sealed class ElaListPattern : ElaSeqPattern
 	{
 		#region Construction
-		internal ElaListPattern(Token tok, ElaSeqPattern seq) : base(tok, seq != null ? seq.Patterns : null, ElaNodeType.ListPattern)
+		internal ElaListPattern(Token tok) : base(tok, ElaNodeType.ListPattern)
 		{
 			
 		}

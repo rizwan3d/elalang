@@ -21,7 +21,19 @@ namespace Ela.CodeModel
 
 
 		#region Properties
-		public int Length { get; set; }
+		private List<ElaExpression> _parameters;
+		public List<ElaExpression> Parameters
+		{
+			get
+			{
+				if (_parameters == null)
+					_parameters = new List<ElaExpression>();
+
+				return _parameters;
+			}
+		}
+
+		public bool HasParameters { get { return _parameters != null; } }
 
 		public string Name { get; set; }
 		#endregion

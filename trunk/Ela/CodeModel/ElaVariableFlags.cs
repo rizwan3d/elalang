@@ -15,6 +15,8 @@ namespace Ela.CodeModel
 
 		Function = 0x08,
 
-		ObjectLiteral = 0x10
+		ObjectLiteral = 0x10,
+
+		SpecialName = 0x20
 	}
 }
