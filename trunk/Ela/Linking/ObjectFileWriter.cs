@@ -35,9 +35,9 @@ namespace Ela.Linking
 				bw.Write(kv.Value.Folder);
 			}
 
-			bw.Write(frame.Pervasives.Count);
+			bw.Write(frame.DeclaredPervasives.Count);
 
-			foreach (var kv in frame.Pervasives)
+			foreach (var kv in frame.DeclaredPervasives)
 			{
 				bw.Write(kv.Key);
 				bw.Write(kv.Value);

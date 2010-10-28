@@ -29,6 +29,7 @@ namespace Ela.Linking
 
 		private Dictionary<String,Dictionary<String,ElaModuleAttribute>> foreignModules;
 		private FastList<DirectoryInfo> dirs;
+		private bool stdLoaded;
 		
 		public ElaLinker(LinkerOptions linkerOptions, CompilerOptions compOptions, FileInfo rootFile)
 		{
@@ -68,9 +69,13 @@ namespace Ela.Linking
 
 		internal void ResolveModule(ModuleReference mod)
 		{
+			LoadStdLib();
+
 			if (!Assembly.IsModuleRegistered(mod.ToString()))
 			{
-				if (mod.DllName != null)
+				if (mod.DllName == null && stdLoaded && TryLoadStandardModule(mod))
+					return;
+				else if (mod.DllName != null)
 					ResolveDll(mod);
 				else
 				{
@@ -105,11 +110,38 @@ namespace Ela.Linking
 			{
 				return obj.Read();
 			}
-			catch (ElaFatalException ex)
+			catch (ElaException ex)
 			{
 				AddError(ElaLinkerError.ObjectFileReadFailed, fi, mod.Line, mod.Column, fi.Name, ex.Message);
 				return null;
 			}
+		}
+
+
+		private void LoadStdLib()
+		{
+			if (!stdLoaded && !String.IsNullOrEmpty(LinkerOptions.StandardLibrary))
+			{
+				var mod = new ModuleReference(null, LinkerOptions.StandardLibrary, null, 0, 0) { IsStandardLibrary = true };
+				var fi = default(FileInfo);
+				LoadAssemblyFile(mod, out fi);
+				stdLoaded = true;
+			}
+		}
+
+
+		private bool TryLoadStandardModule(ModuleReference mod)
+		{
+			var dict = default(Dictionary<String,ElaModuleAttribute>);
+			var attr = default(ElaModuleAttribute);
+
+			if (foreignModules.TryGetValue("$", out dict) && dict.TryGetValue(mod.ModuleName, out attr))
+			{
+				LoadModule(mod, attr, new FileInfo(LinkerOptions.StandardLibrary));
+				return true;
+			}
+			else
+				return false;
 		}
 
 
@@ -129,8 +161,7 @@ namespace Ela.Linking
 			var dict = default(Dictionary<String,ElaModuleAttribute>);
 			var fi = default(FileInfo);
 
-			if (foreignModules.TryGetValue(mod.DllName, out dict) ||
-				LoadAssemblyFile(mod, out fi))
+			if (foreignModules.TryGetValue(mod.DllName, out dict) || LoadAssemblyFile(mod, out fi))
 			{
 				if (dict == null)
 					dict = foreignModules[mod.DllName];
@@ -205,7 +236,7 @@ namespace Ela.Linking
 						dict.Add(a.ModuleName, a);
 				}
 
-				foreignModules.Add(mod.DllName, dict);
+				foreignModules.Add(mod.IsStandardLibrary ? "$" : mod.DllName, dict);
 			}
 
 			return true;

@@ -17,6 +17,8 @@ namespace Ela.Linking
 		#region Properties
 		public CodeBase CodeBase { get; private set; }
 
+		public string StandardLibrary { get; set; }
+
 		public bool ForceRecompile { get; set; }
 
 		public bool SkipTimeStampCheck { get; set; }
