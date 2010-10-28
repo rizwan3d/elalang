@@ -24,15 +24,16 @@ namespace Ela.Debug
 
 
 		#region Methods
-		internal void StartFunction(string name, int handle, int offset, int pars)
+		internal void StartFunction(string name, int offset, int pars)
 		{
-			funs.Push(new FunSym(name, handle, offset, pars));
+			funs.Push(new FunSym(name, offset, pars));
 		}
 
 
-		internal void EndFunction(int offset)
+		internal void EndFunction(int handle, int offset)
 		{
 			var f = funs.Pop();
+			f.Handle = handle;
 			f.EndOffset = offset;
 			Symbols.Functions.Add(f);
 		}

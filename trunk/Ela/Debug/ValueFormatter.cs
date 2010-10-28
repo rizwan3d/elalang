@@ -27,7 +27,8 @@ namespace Ela.Debug
 				case ObjectType.Record:
 					return FormatRecord(value.DataType, (ElaRecord)value.Ref);
 				case ObjectType.Function:
-					return "function@" + ((ElaFunction)value.Ref).ParameterCount;
+					var pc = ((ElaFunction)value.Ref).ParameterCount;
+					return "function@" +  (pc < 0 ? "inf" : pc.ToString());
 				case ObjectType.Lazy:
 					var lazy = (ElaLazy)value.ToObject();
 					return String.Format("lazy:{0}", lazy.HasValue() ? FormatValue(lazy.InternalValue) : "unevaluated");

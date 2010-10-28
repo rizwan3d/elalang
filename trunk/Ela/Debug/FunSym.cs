@@ -5,10 +5,9 @@ namespace Ela.Debug
 	public sealed class FunSym
 	{
 		#region Construction
-		internal FunSym(string name, int handle, int offset, int pars)
+		internal FunSym(string name, int offset, int pars)
 		{
 			Name = name;
-			Handle = handle;
 			StartOffset = offset;
 			Parameters = pars;
 		}
@@ -20,7 +19,7 @@ namespace Ela.Debug
 
 		public int Parameters { get; private set; }
 		
-		public int Handle { get; private set; }
+		public int Handle { get; internal set; }
 
 		public int StartOffset { get; private set; }
 

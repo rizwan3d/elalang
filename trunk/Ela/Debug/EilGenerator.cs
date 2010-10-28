@@ -41,9 +41,8 @@ namespace Ela.Debug
 
 		private string InternalGenerate(int offset, int length)
 		{
-			if (offset > frame.Ops.Count - 1 ||
-				length > frame.Ops.Count)
-				throw new ElaFatalException("Range for EIL generator is invalid.");
+			if (offset > frame.Ops.Count - 1 || length > frame.Ops.Count)
+				throw new ElaDebugException(Ela.Runtime.Strings.GetMessage("InvalidEilRange"));
 
 			var dr = frame.Symbols != null ? new DebugReader(frame.Symbols) : null;
 			var sb = new StringBuilder();
