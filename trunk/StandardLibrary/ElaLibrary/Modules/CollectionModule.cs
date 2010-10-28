@@ -62,14 +62,14 @@ namespace Ela.StandardLibrary.Modules
 		[Function("listLength")]
 		internal int ListLength(ElaList list)
 		{
-			return list.GetLength();
+			return list.Length;
 		}
 
 
 		[Function("listToArray")]
 		internal ElaArray ListToArray(ElaList list)
 		{
-			var len = list.GetLength();
+			var len = list.Length;
 			var array = new ElaArray(len);
 			var c = 0;
 

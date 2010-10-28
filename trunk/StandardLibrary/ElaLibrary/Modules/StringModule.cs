@@ -35,7 +35,7 @@ namespace Ela.StandardLibrary.Modules
 				if ((obj = (args[1].ToObject() as IEnumerable<RuntimeValue>)) != null)
 					return String.Format(str, obj.Select(o => o.ToObject()).ToArray());
 				else
-					return String.Format(str, obj);
+					return String.Format(str, args[1]);
 			}
 			else
 			{

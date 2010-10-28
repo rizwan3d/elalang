@@ -1,32 +1,61 @@
-open String[elalib] with format;
+open String with format;
+open Debug;
 
 let `TestSession(tests) ( tests: tests );
 	
-let `TestResult(tests, failed) (
+let `TestSessionResult(tests, failed) (
 	tests: tests,
 	failed: failed
 );
 
-let createSession() `TestSession([]);
+let `Test(fun, assert) {
+	let t = fun.getType();
+	let name = format("{0}.{1}", t.module.name, t.name);
+	(name, fun, assert)	
+}
 
-let registerFunction(session, fun) 
-	session.tests ::= (format("{0}.{1}", fun.getTypeInfo().name, fun.getTypeInfo().module.name), fun);
+let createSession() `TestSession([||]);
 
-let private countFailed(list, failed) match (list)
-	on (_, f)::xs when (!f) -> countFailed(xs, failed + 1)
-	on (_, f)::xs -> countFailed(xs, failed)
-	on [] -> failed;
+let registerFunction(session, fun, assert)
+	session.tests.add <| `Test(fun, assert);
+	
+let registerFunctions(session, mod) {
+	let t = mod.getType();
+	
+	for (v in t.getGlobals()) {
+		let f = v.getValue();
+		
+		when (f is function)
+			registerFunction(session, f, \(r) r);
+	}
+		
+	session.tests.length
+}
 
 let runTests(session) {		
-	let list = [ for ((n, f) in session.tests) (n, try f() catch(e) false) ];
-	`TestResult(list, countFailed(list, 0))
+	var failed = 0;
+
+	let list = 
+		[ 
+			for ((n, f, a) in session.tests)				
+				(
+					n,
+					try (f() |> a, "")
+					catch (e) {
+						failed++;
+						(false, e.message)
+					}
+				)
+		];
+	`TestSessionResult(list, failed)
 }	
+
+let private formatTest(idx, r, n, m)
+	format("\r\n{0}. {1}: {2} {3}", idx, if (r) "Success" else "FAILED ", n, "  " + m);
 	
-let private formatTests(result, idx, str) match (result)
-	on (n,r)::xs ->
-			formatTests(xs, idx + 1, 
-				str + format("\r\n{0}. {1}: {2}", idx, if (r) "Success" else "FAILED ", n))
-	on [] -> str + "\r\n";
+let private formatTests(result, idx, str)
+	on (n,(r,m))::xs,.. -> formatTests(xs, idx + 1, str + formatTest(idx, r, n, m))
+	on [],.. -> str + "\r\n";
 	
 let formatResult(result) {
 	var str = "Test session started\r\n";
