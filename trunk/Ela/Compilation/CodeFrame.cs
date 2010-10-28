@@ -34,8 +34,8 @@ namespace Ela.Compilation
 			OpData = new FastList<Int32>();
 			Strings = new FastList<String>();
 			_references = new ReferenceMap();
-			Pervasives = new Dictionary<String,Int32>();
-			Variants = new Dictionary<String,Int32>();
+			DeclaredPervasives = new Dictionary<String,Int32>();
+			ReferencedPervasives = new Dictionary<String,Int32>();
 		}
 		#endregion
 
@@ -50,9 +50,9 @@ namespace Ela.Compilation
 			copy.Ops = Ops.Clone();
 			copy.OpData = OpData.Clone();
 			copy._references = new ReferenceMap(_references);
-			copy.Pervasives = new Dictionary<String,Int32>(Pervasives);
+			copy.DeclaredPervasives = new Dictionary<String,Int32>(DeclaredPervasives);
+			copy.ReferencedPervasives = new Dictionary<String,Int32>(ReferencedPervasives);
 			copy.Symbols = Symbols != null ? Symbols.Clone() : null;
-			copy.Variants = new Dictionary<String,Int32>(Variants);
 			return copy;
 		}
 
@@ -83,14 +83,14 @@ namespace Ela.Compilation
 		public Scope GlobalScope { get; internal set; }
 		
 		public FileInfo File { get; internal set; }
-		
-		internal Dictionary<String,Int32> Variants { get; private set; }
 
 		internal FastList<MemoryLayout> Layouts { get; private set; }
 
 		internal FastList<String> Strings { get; private set; }
 
-		internal Dictionary<String,Int32> Pervasives { get; private set; }		
+		internal Dictionary<String,Int32> DeclaredPervasives { get; private set; }
+
+		internal Dictionary<String,Int32> ReferencedPervasives { get; private set; }		
 		#endregion
 	}
 }

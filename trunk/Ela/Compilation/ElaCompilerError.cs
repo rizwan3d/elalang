@@ -45,9 +45,9 @@ namespace Ela.Compilation
 
 		InvalidConstructorBody = 318,
 
-		InvalidFunctionDeclaration = 319,
+		CastNotSupported = 319,
 
-		InvalidParameterDeclaration = 320,
+		// = 320,
 
 		MatchNotSupportedInFor = 321,
 

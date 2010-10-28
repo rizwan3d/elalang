@@ -52,5 +52,10 @@ namespace Ela.Compilation
 
 		public readonly int Column;
 		#endregion
+
+
+		#region Properties
+		internal bool IsStandardLibrary { get; set; }
+		#endregion
 	}
 }

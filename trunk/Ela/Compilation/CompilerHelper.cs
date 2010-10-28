@@ -124,18 +124,29 @@ namespace Ela.Compilation
 				case ElaNodeType.VariantLiteral:
 					{
 						var s = (ElaVariantLiteral)exp;
-						var hdl = 0;
-						var fn = s.Name + "@" + s.Length;
+						var len = s.HasParameters ? s.Parameters.Count : 0;
+						var fn = s.Name + "@" + len;
+						var scopeVar = GetVariable(fn);
 
-						if (!frame.Variants.TryGetValue(fn, out hdl))
+						if (scopeVar.IsEmpty())
 						{
-							hdl = CompileVariant(s);
-							frame.Variants.Add(fn, hdl);
-						}
+							if (len > 0)
+								CompileTupleParameters(s, s.Parameters, map, hints);
+							else
+								cw.Emit(Op.Newtup, 0);
 
-						AddLinePragma(exp);
-						cw.Emit(Op.PushI4, s.Length);
-						cw.Emit(Op.Newfun, hdl);
+							AddLinePragma(exp);
+							cw.Emit(Op.Settag, AddString(s.Name));
+						}
+						else
+						{							
+							for (var i = 0; i < len; i++)
+								CompileExpression(s.Parameters[len - i - 1], map, Hints.None);
+
+							cw.Emit(Op.Pushvar, scopeVar.Address);
+							AddLinePragma(exp); 
+							cw.Emit(Op.Call, len);							
+						}
 					}
 					break;
 				case ElaNodeType.Ignore:
@@ -239,57 +250,68 @@ namespace Ela.Compilation
 							CompileGenerator(f);
 						else
 							CompileFunction(f, FunFlag.None);
+
+						exprData = new ExprData(DataKind.FunParams, f.ParameterCount);
 					}
 					break;
 				case ElaNodeType.VariableDeclaration:
 					{
 						var s = (ElaVariableDeclaration)exp;
+						
+						if (s.InitExpression == null)
+							AddError(ElaCompilerError.VariableDeclarationInitMissing, s);
 
-						if ((s.VariableFlags & ElaVariableFlags.Constructor) == ElaVariableFlags.Constructor)
+						if (s.Pattern == null)
 						{
-							if ((s.VariableFlags & ElaVariableFlags.Immutable) != ElaVariableFlags.Immutable)
-								AddWarning(ElaCompilerWarning.ConstructorAsMutable, s);
+							if (options.StrictMode && CurrentScope.Parent == null &&
+								(s.VariableFlags & ElaVariableFlags.Immutable) != ElaVariableFlags.Immutable)
+								AddError(ElaCompilerError.StrictModeMutableGlobal, exp, s.VariableName);
+
+							var addr = 0;
+							var funPars = -1;
+
+							if ((s.VariableFlags & ElaVariableFlags.Constructor) == ElaVariableFlags.Constructor)
+							{
+								if ((s.VariableFlags & ElaVariableFlags.Immutable) != ElaVariableFlags.Immutable)
+									AddWarning(ElaCompilerWarning.ConstructorAsMutable, s);
+
+								var cons = (ElaFunctionLiteral)s.InitExpression;
+								CompileFunction(cons, FunFlag.Constructor);
+								var varName = s.VariableName + "@" + cons.ParameterCount;
+								AddLinePragma(s);
+								var scopeVar = GetVariable(varName);
+
+								if (scopeVar.IsEmpty())
+									addr = AddVariable(varName, s, ElaVariableFlags.SpecialName, -1);
+								else
+									addr = scopeVar.Address;
+
+								cw.Emit(Op.Popvar, addr);
+								break;
+							}
+							else if (s.InitExpression.Type == ElaNodeType.FunctionLiteral)
+							{
+								var fun = (ElaFunctionLiteral)s.InitExpression;
+								funPars = fun.ParameterCount;
+
+								if (fun.FunctionType != ElaFunctionType.Standard)
+								{
+									AddOperator(s, map, hints);
+									break;
+								}
+							}
+
+							addr = AddVariable(s.VariableName, s, s.VariableFlags, -1);
+							var ed = CompileExpression(s.InitExpression, map, Hints.None);
 							
-							CompileFunction((ElaFunctionLiteral)s.InitExpression, FunFlag.Constructor);
+							if (ed.Type == DataKind.FunCurry || ed.Type == DataKind.FunParams)
+								CurrentScope.ChangeVariable(s.VariableName, new ScopeVar(s.VariableFlags | ElaVariableFlags.Function,  addr >> 8, ed.Data));
+							
+							AddLinePragma(s);
+							cw.Emit(Op.Popvar, addr);
 						}
 						else
-						{
-							if (s.InitExpression == null)
-								AddError(ElaCompilerError.VariableDeclarationInitMissing, s);
-
-							if (s.Pattern == null)
-							{
-								if (options.StrictMode && CurrentScope.Parent == null &&
-									(s.VariableFlags & ElaVariableFlags.Immutable) != ElaVariableFlags.Immutable)
-									AddError(ElaCompilerError.StrictModeMutableGlobal, exp, s.VariableName);
-
-								var addr = 0;
-								var funPars = -1;
-
-								if (s.InitExpression.Type == ElaNodeType.FunctionLiteral)
-								{
-									var fun = (ElaFunctionLiteral)s.InitExpression;
-									funPars = fun.ParameterCount;
-
-									if (fun.FunctionType != ElaFunctionType.Standard)
-									{
-										AddOperator(s, map, hints);
-										break;
-									}
-								}
-
-								addr = AddVariable(s.VariableName, s, s.VariableFlags, -1);
-								var ed = CompileExpression(s.InitExpression, map, Hints.None);
-								
-								if (ed.Type == DataKind.FunCurry || ed.Type == DataKind.FunParams)
-									CurrentScope.ChangeVariable(s.VariableName, new ScopeVar(s.VariableFlags | ElaVariableFlags.Function,  addr, ed.Data));
-								
-								AddLinePragma(s);
-								cw.Emit(Op.Popvar, addr);
-							}
-							else
-								CompileDeclPattern(s, map);
-						}
+							CompileDeclPattern(s, map);
 
 						if ((hints & Hints.Left) != Hints.Left)
 							cw.Emit(Op.Pushunit);
@@ -439,10 +461,10 @@ namespace Ela.Compilation
 				case ElaNodeType.Binary:
 					{
 						var bin = (ElaBinary)exp;
+						var tail = (hints & Hints.Tail) == Hints.Tail;
 						var newHints = 
 							((hints & Hints.Scope) == Hints.Scope ? Hints.Scope : Hints.None) |
-							((hints & Hints.Nested) == Hints.Nested ? Hints.Nested : Hints.None) | 
-							((hints & Hints.Tail) == Hints.Tail ? Hints.Tail : Hints.None);
+							((hints & Hints.Nested) == Hints.Nested ? Hints.Nested : Hints.None);
 
 						if ((bin.Left.Flags & ElaExpressionFlags.ReturnsUnit) == ElaExpressionFlags.ReturnsUnit)
 							AddWarning(ElaCompilerWarning.UnitAlwaysFail, bin.Left);
@@ -471,13 +493,24 @@ namespace Ela.Compilation
 						}
 						else
 						{
-							CompileExpression(bin.Left, map, newHints);
+							var left = tail && bin.Tail ? Hints.Tail : Hints.None;
+							var right = tail && bin.Tail ? Hints.Tail : Hints.None;
 
-							if (bin.Operator != ElaBinaryOperator.BooleanAnd &&
-								bin.Operator != ElaBinaryOperator.BooleanOr)
-								CompileExpression(bin.Right, map, newHints);
+							if (bin.Operator != ElaBinaryOperator.Custom)
+							{
+								CompileExpression(bin.Left, map, newHints | left);
 
-							CompileBinary(bin, map, newHints);
+								if (bin.Operator != ElaBinaryOperator.BooleanAnd &&
+									bin.Operator != ElaBinaryOperator.BooleanOr)
+									CompileExpression(bin.Right, map, newHints | right);
+							}
+							else
+							{
+								CompileExpression(bin.Right, map, newHints | right);
+								CompileExpression(bin.Left, map, newHints | left);
+							}
+
+							CompileBinary(bin, map, newHints, tail, left == Hints.Tail, right == Hints.Tail);
 
 							if ((hints & Hints.Left) == Hints.Left)
 							{
@@ -718,31 +751,35 @@ namespace Ela.Compilation
 						if (tail && v.Target.Type == ElaNodeType.VariableReference && 
 							((ElaVariableReference)v.Target).VariableName == map.FunctionName)
 						{
-							AddLinePragma(v);
-							cw.Emit(Op.Br, map.FunStart);
-						}
-						else
-						{
-							var ed = CompileExpression(v.Target, map, Hints.None);
-
-							if (ed.Data > -1 && ed.Type == DataKind.FunParams)
+							if (map.FunctionParameters == len)
 							{
-								if (ed.Data < len)
-									AddWarning(ElaCompilerWarning.FunctionTooManyParams, exp, ed.Data, len);
-								else if (ed.Data > 0 && len == 0)
-									AddWarning(ElaCompilerWarning.FunctionZeroParams, exp, ed.Data);
-								else if (ed.Data > len)
-									exprData = new ExprData(DataKind.FunCurry, len);
+								AddLinePragma(v);
+								cw.Emit(Op.Br, map.FunStart);
+								break;
 							}
-							else if (ed.Type == DataKind.VarType)
-								AddWarning(ElaCompilerWarning.FunctionInvalidType, exp);
-
-							AddLinePragma(v);
-							cw.Emit(tail && opt ? Op.Callt : Op.Call, len);
-
-							if ((hints & Hints.Left) == Hints.Left)
-								cw.Emit(Op.Pop);
+							else if (map.FunctionParameters < len)
+								AddWarning(ElaCompilerWarning.FunctionTooManyParams, v, map.FunctionParameters, len);
 						}
+					
+						var ed = CompileExpression(v.Target, map, Hints.None);
+
+						if (ed.Data > -1 && ed.Type == DataKind.FunParams)
+						{
+							if (ed.Data < len)
+								AddWarning(ElaCompilerWarning.FunctionTooManyParams, exp, ed.Data, len);
+							else if (ed.Data > 0 && len == 0)
+								AddWarning(ElaCompilerWarning.FunctionZeroParams, exp, ed.Data);
+							else if (ed.Data > len)
+								exprData = new ExprData(DataKind.FunCurry, len);
+						}
+						else if (ed.Type == DataKind.VarType)
+							AddWarning(ElaCompilerWarning.FunctionInvalidType, exp);
+
+						AddLinePragma(v);
+						cw.Emit(tail && opt ? Op.Callt : Op.Call, len);
+
+						if ((hints & Hints.Left) == Hints.Left)
+							cw.Emit(Op.Pop);
 					}
 					break;
 				case ElaNodeType.Cast:
@@ -750,7 +787,7 @@ namespace Ela.Compilation
 						var v = (ElaCast)exp;
 						CompileExpression(v.Expression, map, Hints.None);
 						AddLinePragma(v);
-						AddConv(v.CastAffinity);
+						AddConv(v.CastAffinity, v);
 
 						if ((hints & Hints.Left) == Hints.Left)
 							AddValueNotUsed(v);
@@ -886,9 +923,10 @@ namespace Ela.Compilation
 			var funSkipLabel = cw.DefineLabel();
 			cw.Emit(Op.Br, funSkipLabel);
 			var address = cw.Offset;
+			var map = new LabelMap(Label.Empty);
 
 			if (dec.ParameterCount > 0)
-				CompileParameters(dec);
+				CompileParameters(dec, map);
 
 			CompileFunction(dec, FunFlag.Generator);
 			cw.Emit(Op.Newseq);
@@ -899,7 +937,7 @@ namespace Ela.Compilation
 			EndSection();
 			cw.MarkLabel(funSkipLabel);
 			cw.Emit(Op.Nop);
-			
+
 			if (dec.ParameterCount == 0)
 				cw.Emit(Op.PushI4_0);
 			else
@@ -911,8 +949,8 @@ namespace Ela.Compilation
 
 		private void CompileFunction(ElaFunctionLiteral dec, FunFlag flag)
 		{
-			var pars = flag == FunFlag.Generator ? 0 : dec.ParameterCount;
-			StartFun(dec.Name, frame.Layouts.Count, dec.ParameterCount);
+			var pars = flag == FunFlag.Generator || dec.ParameterCount == 0 ? 0 : dec.ParameterCount;
+			StartFun(dec.Name, dec.ParameterCount);
 
 			var map = new LabelMap(cw.DefineLabel());
 			var funSkipLabel = cw.DefineLabel();
@@ -921,6 +959,7 @@ namespace Ela.Compilation
 
 			map.FunStart = startLabel;
 			map.FunctionName = dec.Name;
+			map.FunctionParameters = pars;
 			cw.MarkLabel(startLabel);
 			cw.Emit(Op.Nop);
 
@@ -940,7 +979,8 @@ namespace Ela.Compilation
 				}
 			}
 			
-			CompileParameters(dec);
+			if (pars > 0)
+				CompileParameters(dec, map);
 			
 			if (dec.FunctionType == ElaFunctionType.BinaryOperator && pars != 2)
 				AddError(ElaCompilerError.OperatorBinaryTwoParams, dec);
@@ -977,6 +1017,7 @@ namespace Ela.Compilation
 			}
 
 			frame.Layouts.Add(new MemoryLayout(currentCounter, address));
+			var funHandle = frame.Layouts.Count - 1;
 			EndScope();
 			EndSection();
 
@@ -988,13 +1029,7 @@ namespace Ela.Compilation
 			AddLinePragma(dec);
 
 			if (flag == FunFlag.Generator)
-				cw.Emit(Op.Newfuns, frame.Layouts.Count - 1);
-			else if (flag == FunFlag.Constructor)
-			{
-				var fn = dec.Name + "@" + pars;
-				frame.Variants.Remove(fn);
-				frame.Variants.Add(fn, frame.Layouts.Count - 1);
-			}
+				cw.Emit(Op.Newfuns, funHandle);
 			else
 			{
 				if (pars == 0)
@@ -1002,44 +1037,44 @@ namespace Ela.Compilation
 				else
 					cw.Emit(Op.PushI4, pars);
 
-				cw.Emit(Op.Newfun, frame.Layouts.Count - 1);
+				cw.Emit(Op.Newfun, funHandle);
 			}
 
-			EndFun();
+			EndFun(funHandle);
 		}
 
 
-		private void CompileParameters(ElaFunctionLiteral fun)
+		private void CompileParameters(ElaFunctionLiteral fun, LabelMap map)
 		{
-			if (fun.Parameters != null)
-			{
-				if (fun.Parameters.Type == ElaNodeType.VariableReference)
-					AddParameter(fun.Parameters);
-				else if (fun.Parameters.Type == ElaNodeType.TupleLiteral)
-				{
-					var pars = ((ElaTupleLiteral)fun.Parameters).Parameters;
+			var pars = fun.Parameters;
 
-					if (pars != null)
-					{
-						for (var i = 0; i < pars.Count; i++)
-							AddParameter(pars[i]);
-					}
-				}
+			for (var i = 0; i < pars.Count; i++)
+			{
+				var e = pars[i];
+
+				if (e.Type == ElaNodeType.VariablePattern)
+					AddParameter((ElaVariablePattern)e);
 				else
-					AddError(ElaCompilerError.InvalidFunctionDeclaration, fun);
+				{
+					var addr = AddVariable();
+					cw.Emit(Op.Popvar, addr);
+					var nextLab = cw.DefineLabel();
+					var skipLab = cw.DefineLabel();
+					CompilePattern(addr, null, e, map, nextLab, ElaVariableFlags.Immutable, -1);
+					cw.Emit(Op.Br, skipLab);
+					cw.MarkLabel(nextLab);
+					cw.Emit(Op.Throw, (Int32)ElaRuntimeError.MatchFailed);
+					cw.MarkLabel(skipLab);
+					cw.Emit(Op.Nop);
+				}
 			}
 		}
 
 
-		private void AddParameter(ElaExpression exp)
+		private void AddParameter(ElaVariablePattern exp)
 		{
-			if (exp.Type != ElaNodeType.VariableReference)
-				AddError(ElaCompilerError.InvalidParameterDeclaration, exp);
-			else
-			{
-				var addr = AddVariable(((ElaVariableReference)exp).VariableName, exp, ElaVariableFlags.Immutable, -1);
-				cw.Emit(Op.Popvar, addr);
-			}
+			var addr = AddVariable(exp.Name, exp, ElaVariableFlags.Immutable, -1);
+			cw.Emit(Op.Popvar, addr);
 		}
 		#endregion
 
@@ -1322,7 +1357,7 @@ namespace Ela.Compilation
 		}
 
 
-		private void AddConv(ObjectType aff)
+		private void AddConv(ObjectType aff, ElaExpression exp)
 		{
 			switch (aff)
 			{
@@ -1349,6 +1384,9 @@ namespace Ela.Compilation
 					break;
 				case ObjectType.Sequence:
 					cw.Emit(Op.ConvSeq);
+					break;
+				default:
+					AddError(ElaCompilerError.CastNotSupported, exp, aff.GetShortForm());
 					break;
 			}
 		}
@@ -1399,7 +1437,7 @@ namespace Ela.Compilation
 			cw.MarkLabel(funSkipLabel);
 			cw.Emit(Op.Nop);
 			
-			if (funPars > -1)
+			if (funPars > -1) 
 			{
 				cw.Emit(Op.PushI4, funPars);
 				AddLinePragma(exp);
@@ -1429,44 +1467,6 @@ namespace Ela.Compilation
 				CompileExpression(f.FieldValue, map, Hints.None);
 				cw.Emit(Op.Pushstr, AddString(f.FieldName));
 			}
-		}
-
-
-		private int CompileVariant(ElaVariantLiteral exp)
-		{
-			var funSkipLabel = cw.DefineLabel();
-			cw.Emit(Op.Br, funSkipLabel);
-
-			StartScope(true);
-			StartSection();
-			var address = cw.Offset;
-			var len = exp.Length;
-			var addrs = new int[len];
-
-			for (var i = 0; i < len; i++)
-			{
-				var addr = AddVariable();
-				addrs[i] = addr;
-				cw.Emit(Op.Popvar, addr);
-			}
-
-			for (var i = 0; i < len; i++)
-				cw.Emit(Op.Pushvar, addrs[i]);
-
-			if (len == 2)
-				cw.Emit(Op.Newtup_2);
-			else
-				cw.Emit(Op.Newtup, len);
-
-			cw.Emit(Op.Settag, AddString(exp.Name));
-			frame.Layouts.Add(new MemoryLayout(currentCounter, address));
-			cw.Emit(Op.Ret);
-
-			EndSection();
-			EndScope();
-			cw.MarkLabel(funSkipLabel);
-			cw.Emit(Op.Nop);
-			return frame.Layouts.Count - 1;
 		}
 		#endregion
 
@@ -1532,7 +1532,7 @@ namespace Ela.Compilation
 					left = true;
 					break;
 				case ElaUnaryOperator.Custom:
-					cw.Emit(Op.Pushperv, AddString(v.CustomOperator));
+					ReferencePervasive(v.CustomOperator);
 					cw.Emit(Op.Call, 1);
 					break;
 			}
@@ -1542,7 +1542,7 @@ namespace Ela.Compilation
 		}
 
 
-		private void CompileBinary(ElaBinary bin, LabelMap map, Hints hints)
+		private void CompileBinary(ElaBinary bin, LabelMap map, Hints hints, bool tail, bool leftTail, bool rightTail)
 		{
 			var exitLab = default(Label);
 			var termLab = default(Label);
@@ -1564,7 +1564,7 @@ namespace Ela.Compilation
 					termLab = cw.DefineLabel();
 					exitLab = cw.DefineLabel();
 					cw.Emit(Op.Brtrue, termLab);
-					CompileExpression(bin.Right, map, hints);
+					CompileExpression(bin.Right, map, hints | (rightTail ? Hints.Tail : Hints.None));
 					cw.Emit(Op.Br, exitLab);
 					cw.MarkLabel(termLab);
 					cw.Emit(Op.PushI1_1);
@@ -1625,15 +1625,53 @@ namespace Ela.Compilation
 				case ElaBinaryOperator.ConsList:
 					cw.Emit(Op.Listadd);
 					break;
-				case ElaBinaryOperator.PipeBackward:
 				case ElaBinaryOperator.PipeForward:
-					cw.Emit(Op.Call, 1);
+					if (tail && bin.Right.Type == ElaNodeType.VariableReference &&
+						((ElaVariableReference)bin.Right).VariableName == map.FunctionName && opt)
+					{
+						AddLinePragma(bin);
+						cw.Emit(Op.Br, map.FunStart);
+					}
+					else
+						cw.Emit(tail && map.GotoParam == -1 && opt ? Op.Callt : Op.Call, 1);
+					break;
+				case ElaBinaryOperator.PipeBackward:
+					if (tail && bin.Right.Type == ElaNodeType.VariableReference &&
+						((ElaVariableReference)bin.Right).VariableName == map.FunctionName && opt)
+					{
+						AddLinePragma(bin);
+						cw.Emit(Op.Br, map.FunStart);
+					}
+					else
+						cw.Emit(tail && map.GotoParam == -1 && opt ? Op.Callt : Op.Call, 1);
 					break;
 				case ElaBinaryOperator.Custom:
-					cw.Emit(Op.Pushperv, AddString(bin.CustomOperator));
+					ReferencePervasive(bin.CustomOperator);
 					cw.Emit(Op.Call, 2);
 					break;
 			}
+		}
+
+
+		private void ReferencePervasive(string name)
+		{
+			var addr = 0;
+
+			if (frame.DeclaredPervasives.TryGetValue(name, out addr))
+				cw.Emit(Op.Pushvar, ReferenceGlobal(addr));
+			else
+			{
+				var hdl = 0;
+
+				if (!frame.ReferencedPervasives.TryGetValue(name, out hdl))
+				{
+					hdl = frame.ReferencedPervasives.Count; 
+					frame.ReferencedPervasives.Add(name, hdl);
+				}
+
+				cw.Emit(Op.Pushperv, hdl);
+			}
+
 		}
 
 
@@ -2197,7 +2235,7 @@ namespace Ela.Compilation
 							var newSys = pushSys;
 							CompileSequencePattern(pushSys, tuple, cons, map, nextLab, flags);
 						}
-						else
+						else if (cons.HasParameterList)
 						{
 							cw.Emit(Op.Pushvar, pushSys);
 							cw.Emit(Op.Pushfld, AddString("length"));
@@ -2284,7 +2322,7 @@ namespace Ela.Compilation
 							else
 								cw.Emit(Op.PushI4, len);
 
-							cw.Emit(Op.Br_neq, nextLab);
+							cw.Emit(pat.CheckMinimumSize ? Op.Br_lt : Op.Br_neq, nextLab);
 							cw.Emit(Op.Pushvar, pushSys);
 							cw.Emit(Op.Dup);
 							var mutSys = AddVariable();
@@ -2337,7 +2375,7 @@ namespace Ela.Compilation
 
 			if (tuple != null)
 			{
-				if (tuple.Parameters.Count != len)
+				if (tuple.Parameters.Count < len || (tuple.Parameters.Count > len && !seq.CheckMinimumSize))
 				{
 					cw.Emit(Op.Br, nextLab);
 					AddWarning(ElaCompilerWarning.MatchEntryAlwaysFail, seq);
@@ -2365,7 +2403,7 @@ namespace Ela.Compilation
 					else
 						cw.Emit(Op.PushI4, len);
 
-					cw.Emit(Op.Br_neq, nextLab);
+					cw.Emit(seq.CheckMinimumSize ? Op.Br_lt : Op.Br_neq, nextLab);
 				}
 
 				for (var i = 0; i < len; i++)
@@ -2436,15 +2474,15 @@ namespace Ela.Compilation
 
 
 		#region Debug
-		private void StartFun(string name, int handle, int pars)
+		private void StartFun(string name, int pars)
 		{
-			pdb.StartFunction(name, handle, cw.Offset, pars);
+			pdb.StartFunction(name, cw.Offset, pars);
 		}
 
 
-		private void EndFun()
+		private void EndFun(int handle)
 		{
-			pdb.EndFunction(cw.Offset);
+			pdb.EndFunction(handle, cw.Offset);
 		}
 
 
@@ -2516,6 +2554,17 @@ namespace Ela.Compilation
 		}
 
 
+		private Scope FindGlobalScope()
+		{
+			var sc = CurrentScope;
+
+			while (sc.Parent != null)
+				sc = sc.Parent;
+
+			return sc;
+		}
+
+
 		private int AddVariable()
 		{
 			var ret = 0 | currentCounter << 8;
@@ -2526,10 +2575,10 @@ namespace Ela.Compilation
 
 		private int AddPervasive(string name)
 		{
-			if (!frame.Pervasives.ContainsKey(name))
+			if (!frame.DeclaredPervasives.ContainsKey(name))
 			{
 				var addr = AddVariable();
-				frame.Pervasives.Add(name, addr);
+				frame.DeclaredPervasives.Add(name, addr);
 				return addr;
 			}
 			else
@@ -2539,15 +2588,24 @@ namespace Ela.Compilation
 
 		private int AddVariable(string name, ElaExpression exp, ElaVariableFlags flags, int data)
 		{
-			if (IsRegistered(name))
+			if (exp != null && IsRegistered(name))
 			{
 				AddError(ElaCompilerError.VariableAlreadyDeclared, exp, name);
 				return -1;
 			}
 
 			CurrentScope.Locals.Add(name, new ScopeVar(flags, currentCounter, data));
-			AddVarPragma(name, currentCounter, cw.Offset);
+			
+			if (exp != null)
+				AddVarPragma(name, currentCounter, cw.Offset);
+
 			return AddVariable();
+		}
+
+
+		private int ReferenceGlobal(int addr)
+		{
+			return counters.Count | (addr >> 8) << 8;
 		}
 
 

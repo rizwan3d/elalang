@@ -18,6 +18,7 @@ namespace Ela.Compilation
 			FunStart = old.FunStart;
 			GotoParam = old.GotoParam;
 			FunctionName = old.FunctionName;
+			FunctionParameters = old.FunctionParameters;
 		}
 		#endregion
 
@@ -33,6 +34,8 @@ namespace Ela.Compilation
 
 		internal string FunctionName { get; set; }
 
+		internal int FunctionParameters { get; set; }
+		
 		internal int GotoParam { get; set; }
 		#endregion
 	}
