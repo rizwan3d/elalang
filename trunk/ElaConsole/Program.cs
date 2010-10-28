@@ -335,25 +335,28 @@ namespace ElaConsole
 
 		private static CompilerOptions CreateCompilerOptions()
 		{
-			return new CompilerOptions {
-				WarningsAsErrors = opt.WarningsAsErrors,
-				NoWarnings = opt.NoWarnings,
-				ShowHints = !opt.SupressHints,
-				StrictMode = opt.StrictMode,
-				GenerateDebugInfo = opt.Debug,
-				Optimize = !opt.DisableOptimization
-			};
+			return new CompilerOptions 
+				{
+					WarningsAsErrors = opt.WarningsAsErrors,
+					NoWarnings = opt.NoWarnings,
+					ShowHints = !opt.SupressHints,
+					StrictMode = opt.StrictMode,
+					GenerateDebugInfo = opt.Debug,
+					Optimize = !opt.DisableOptimization
+				};
 		}
 
 
 		private static LinkerOptions CreateLinkerOptions()
 		{
-			var linkOpt = new LinkerOptions { 
-				ForceRecompile = opt.ForceRecompile,
-				SkipTimeStampCheck = opt.SkipTimeStampCheck,
-				WarningsAsErrors = opt.LinkerWarningsAsErrors,
-				NoWarnings = opt.LinkerNoWarnings
-			}; 
+			var linkOpt = new LinkerOptions 
+				{ 
+					ForceRecompile = opt.ForceRecompile,
+					SkipTimeStampCheck = opt.SkipTimeStampCheck,
+					WarningsAsErrors = opt.LinkerWarningsAsErrors,
+					NoWarnings = opt.LinkerNoWarnings,
+					StandardLibrary = opt.StandardLibrary
+				}; 
 			linkOpt.CodeBase.LookupStartupDirectory = !opt.IgnoreStartupDirectory;
 
 			foreach (var s in opt.ReferencePaths)

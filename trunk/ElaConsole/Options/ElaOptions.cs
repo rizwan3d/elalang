@@ -87,7 +87,10 @@ namespace ElaConsole.Options
 
 		[CommandLineOption("skipDir")]
 		public bool IgnoreStartupDirectory { get; set; }
-		
+
+		[CommandLineOption("stdLib")]
+		public string StandardLibrary { get; set; }
+				
 		[CommandLineOption("skipCheck")]
 		public bool SkipTimeStampCheck { get; set; }
 
