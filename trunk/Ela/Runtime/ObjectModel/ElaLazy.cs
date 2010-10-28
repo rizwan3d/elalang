@@ -70,7 +70,7 @@ namespace Ela.Runtime.ObjectModel
 				var v = InternalValue;
 
 				if (v.Ref == null)
-					throw new ElaFatalException(Strings.GetMessage("LazyNoValue"));
+					throw new ElaMachineException(Strings.GetMessage("LazyNoValue"));
 
 				return v.ToObject();
 			}

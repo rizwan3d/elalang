@@ -104,6 +104,19 @@ namespace Ela.Runtime
 		}
 
 
+		internal void Push(bool val)
+		{
+			if (size == array.Length)
+			{
+				var dest = new RuntimeValue[array.Length * 2];
+				Array.Copy(array, 0, dest, 0, size);
+				array = dest;
+			}
+
+			array[size++] = new RuntimeValue(val);
+		}
+
+
 		internal void Trim(int num)
 		{
 			var iter = size - num;

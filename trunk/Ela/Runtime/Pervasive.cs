@@ -5,10 +5,10 @@ namespace Ela.Runtime
 	internal struct Pervasive
 	{
 		#region Construction
-		internal Pervasive(int module, int name)
+		internal Pervasive(int module, int address)
 		{
 			Module = module;
-			Name = name;
+			Address = address;
 		}
 		#endregion
 
@@ -16,7 +16,7 @@ namespace Ela.Runtime
 		#region Fields
 		internal readonly int Module;
 
-		internal readonly int Name;
+		internal readonly int Address;
 		#endregion
 	}
 }

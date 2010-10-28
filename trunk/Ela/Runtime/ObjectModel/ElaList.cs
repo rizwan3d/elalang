@@ -5,10 +5,9 @@ using System.Collections.Generic;
 
 namespace Ela.Runtime.ObjectModel
 {
-	public sealed class ElaList : ElaObject, IEnumerable<RuntimeValue>
+	public sealed class ElaList : ElaIndexedObject, IEnumerable<RuntimeValue>
 	{
 		#region Construction
-		private const string LENGTH = "length";
 		private const string HEAD = "head";
 		private const string TAIL = "tail";
 		
@@ -51,6 +50,23 @@ namespace Ela.Runtime.ObjectModel
 
 			return list;
 		}
+
+
+		protected internal override RuntimeValue GetValue(RuntimeValue index)
+		{
+			if (index.Type == ElaMachine.INT && index.I4 > -1 && index.I4 < GetLength())
+			{
+				var idx = index.I4;
+				var l = this;
+
+				while (idx --> 0)
+					l = l.Next;
+
+				return l.Value;
+			}
+			else
+				return new RuntimeValue(ElaObject.Invalid);
+		}
 		
 
 		public IEnumerator<RuntimeValue> GetEnumerator()
@@ -79,7 +95,6 @@ namespace Ela.Runtime.ObjectModel
 		{
 			switch (name)
 			{
-				case LENGTH: return new RuntimeValue(GetLength());
 				case HEAD: return Value;
 				case TAIL: return new RuntimeValue(Next);
 				default: return base.GetAttribute(name);
@@ -87,7 +102,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		public int GetLength()
+		private int GetLength()
 		{
 			if (this == Nil)
 				return 0;
@@ -111,6 +126,8 @@ namespace Ela.Runtime.ObjectModel
 		public ElaList Next { get; private set; }
 
 		public RuntimeValue Value { get; private set; }
+
+		public override int Length { get { return GetLength(); } }
 		#endregion
 	}
 }

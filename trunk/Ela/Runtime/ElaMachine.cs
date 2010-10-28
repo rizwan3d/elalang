@@ -15,7 +15,7 @@ namespace Ela.Runtime
 	{
 		#region Construction
 		private RuntimeValue[][] modules;
-		private FastStack<Dictionary<String, Pervasive>> pervasives;
+		private Pervasive[][] pervasives;
 		private CodeAssembly asm;
 		private object syncRoot = new Object();
 
@@ -32,13 +32,12 @@ namespace Ela.Runtime
 			MainThread = new WorkerThread(asm);
 			var lays = frame.Layouts[0];
 			modules = new RuntimeValue[asm.ModuleCount][];
+			pervasives = new Pervasive[asm.ModuleCount][];
+			pervasives[0] = new Pervasive[frame.ReferencedPervasives.Count];
 			var mem = new RuntimeValue[lays.Size];
 			modules[0] = mem;
-			pervasives = new FastStack<Dictionary<String, Pervasive>>();
-			pervasives.Push(new Dictionary<String, Pervasive>());
-			ReadPervasives(frame, 0);
 			MainThread.CallStack.Push(
-				new CallPoint(WorkerThread.EndAddress, 0, 0, null, mem,
+				new CallPoint(WorkerThread.EndAddress, 0, null, mem,
 					FastList<RuntimeValue[]>.Empty));
 		}
 		#endregion
@@ -65,30 +64,28 @@ namespace Ela.Runtime
 		internal const int LAZ = (Int32)ObjectType.Lazy;
 		internal const int SEQ = (Int32)ObjectType.Sequence;
 		internal const int MOD = (Int32)ObjectType.Module;
-		
+
 		private static int[,] opAffinity = 
 		{
-			//ERR  UNI  INT  REA  BYT  CHR  LNG  DBL  STR  LST  ARR  TUP  REC  FUN  OBJ  LAZ  ENU  MOD
-			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //ERR
+			//___  UNI  INT  REA  BYT  CHR  LNG  DBL  STR  LST  ARR  TUP  REC  FUN  OBJ  LAZ  SEQ  MOD
+			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //___
 			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //UNI
 			{ ___, ___, INT, REA, ___, ___, LNG, DBL, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //INT
 			{ ___, ___, REA, REA, ___, ___, ___, DBL, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //REA
-			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //BYT
+			{ ___, ___, ___, ___, BYT, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //BYT
 			{ ___, ___, ___, ___, ___, CHR, ___, ___, STR, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //CHR
 			{ ___, ___, LNG, ___, ___, ___, LNG, DBL, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //LNG
 			{ ___, ___, DBL, DBL, ___, ___, DBL, DBL, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //DBL
 			{ ___, ___, ___, ___, ___, STR, ___, ___, STR, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //STR
 			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, LST, ___, ___, ___, ___, ___, ___, ___, ___ }, //LST
 			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ARR, ___, ___, ___, ___, ___, ___, ___ }, //ARR
-			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //TUP
-			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //REC
-			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //UNI
-			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //PRD
-			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //FUN
-			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //OBJ
-			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //LAZ
-			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //ENU
-			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //MOD
+			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, TUP, ___, ___, ___, ___, ___, ___ }, //TUP
+			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, REC, ___, ___, ___, ___, ___ }, //REC
+			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, FUN, ___, ___, ___, ___ }, //FUN
+			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, OBJ, ___, ___, ___ }, //OBJ
+			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, LAZ, ___, ___ }, //LAZ
+			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, SEQ, ___ }, //SEQ
+			{ ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, MOD }, //MOD
 		};
 		#endregion
 
@@ -97,10 +94,22 @@ namespace Ela.Runtime
 		public ExecutionResult Run()
 		{
 			MainThread.Offset = MainThread.Offset == 0 ? 0 : MainThread.Offset;
-			Execute(MainThread);
+
+			try
+			{
+				Execute(MainThread);
+			}
+			catch (ElaException)
+			{
+				throw;
+			}
+			//catch (Exception ex)
+			//{
+			//    throw Exception("CriticalError", ex);
+			//}
 
 			if (MainThread.EvalStack.Count > 1)
-				throw new ElaFatalException(Strings.GetMessage("StackCorrupted"));
+				throw Exception("StackCorrupted");
 
 			return new ExecutionResult(
 				MainThread.EvalStack.Count > 0 ? MainThread.EvalStack.Pop() : new RuntimeValue(ElaObject.Unit));
@@ -124,16 +133,35 @@ namespace Ela.Runtime
 				Array.Copy(mem, 0, arr, 0, mem.Length);
 				modules[0] = arr;
 				MainThread.SwitchModule(0);
-				var cp = MainThread.CallStack.Pop();
-				MainThread.CallStack.Push(new CallPoint(cp.ReturnAddress, cp.ModuleHandle,
-					cp.StackOffset, cp.ReturnValue, arr, cp.Captures));
+				MainThread.CallStack.Clear();
+				var cp = new CallPoint(WorkerThread.EndAddress, 0, null, arr,
+					FastList<RuntimeValue[]>.Empty);
+				MainThread.CallStack.Push(cp);
 			}
 		}
 		
 		
 		public RuntimeValue GetVariableByHandle(int moduleHandle, int varHandle)
 		{
-			return modules[moduleHandle][varHandle];
+			var mod = default(RuntimeValue[]);
+
+			try
+			{
+				mod = modules[moduleHandle];
+			}
+			catch (IndexOutOfRangeException)
+			{
+				throw Exception("InvalidModuleHandle");
+			}
+
+			try
+			{
+				return mod[varHandle];
+			}
+			catch (IndexOutOfRangeException)
+			{
+				throw Exception("InvalidVariableAddress");
+			}
 		}
 		#endregion
 
@@ -142,7 +170,7 @@ namespace Ela.Runtime
 		private void Execute(WorkerThread thread)
 		{
 			if (thread.Busy)
-				throw BusyException();
+				throw Exception("ThreadBusy");
 
 			thread.Busy = true;
 
@@ -153,6 +181,7 @@ namespace Ela.Runtime
 			var opData = thread.Module.OpData.GetRawArray();
 			var locals = callStack.Peek().Locals;
 			var captures = callStack.Peek().Captures;
+			var currentPervs = pervasives[thread.ModuleHandle];
 
 			var left = default(RuntimeValue);
 			var right = default(RuntimeValue);
@@ -160,13 +189,13 @@ namespace Ela.Runtime
 			var i4 = 0;
 			var i4_2 = 0;
 
-			for (; ; )
+			CYCLE:
 			{
 				#region Body
 				var op = ops[thread.Offset];
 				var opd = opData[thread.Offset];
 				thread.Offset++;
-
+				
 				switch (op)
 				{
 					#region Stack Operations
@@ -217,7 +246,7 @@ namespace Ela.Runtime
 							if (coll == null)
 							{
 								ExecuteThrow(ElaRuntimeError.OperationNotSupported, thread, left.DataType.GetShortForm());
-								goto default;
+								goto SWITCH_MEM;
 							}
 							else
 							{
@@ -226,7 +255,7 @@ namespace Ela.Runtime
 								if (res.Type == ___)
 								{
 									ExecuteThrow(ElaRuntimeError.IndexOutOfRange, thread);
-									goto default;
+									goto SWITCH_MEM;
 								}
 								else
 									evalStack.Push(res);
@@ -246,13 +275,20 @@ namespace Ela.Runtime
 
 								if (!fr.GlobalScope.Locals.TryGetValue(fld, out sc))
 								{
-									ExecuteThrow(ElaRuntimeError.UndefinedVariable, thread, fld);
-									goto default;
+									res = right.Ref.GetAttribute(fld);
+
+									if (res.Type == ___)
+									{
+										ExecuteThrow(ElaRuntimeError.UndefinedVariable, thread, fld);
+										goto SWITCH_MEM;
+									}
+									else
+										evalStack.Push(res);
 								}
 								else if ((sc.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private)
 								{
 									ExecuteThrow(ElaRuntimeError.PrivateVariable, thread, fld);
-									goto default;
+									goto SWITCH_MEM;
 								}
 								else
 								{
@@ -264,7 +300,7 @@ namespace Ela.Runtime
 							{
 								if (right.Type == REC)
 								{
-									res = ((ElaRecord)right.Ref).GetField(fld);
+									res = ((ElaRecord)right.Ref).GetValue(fld);
 
 									if (res.Type == ___)
 										res = right.Ref.GetAttribute(fld);
@@ -275,7 +311,7 @@ namespace Ela.Runtime
 								if (res.Type == ___)
 								{
 									ExecuteThrow(ElaRuntimeError.UnknownField, thread, fld);
-									goto default;
+									goto SWITCH_MEM;
 								}
 								else
 									evalStack.Push(res);
@@ -290,8 +326,8 @@ namespace Ela.Runtime
 								evalStack.Push(seq.GetNext());
 							else
 							{
-								Call(seq.Function, thread, 0);
-								goto default;
+								Call(seq.Function, thread, 0, null);
+								goto SWITCH_MEM;
 							}
 						}
 						break;
@@ -318,13 +354,13 @@ namespace Ela.Runtime
 								if (!coll.SetValue(right, evalStack.Pop()))
 								{
 									ExecuteThrow(ElaRuntimeError.IndexOutOfRange, thread);
-									goto default;
+									goto SWITCH_MEM;
 								}
 							}
 							else
 							{
 								ExecuteThrow(ElaRuntimeError.OperationNotSupported, thread, left.DataType.GetShortForm());
-								goto default;
+								goto SWITCH_MEM;
 							}
 						}
 						break;
@@ -338,14 +374,22 @@ namespace Ela.Runtime
 							{
 								if (!((ElaRecord)right.Ref).SetField(fld, left))
 								{
-									ExecuteThrow(ElaRuntimeError.UnknownField, thread, fld);
-									goto default;
+									if (right.Ref.GetAttribute(fld).Type != ___)
+										ExecuteThrow(ElaRuntimeError.FieldNotMutable, thread, fld);
+									else
+										ExecuteThrow(ElaRuntimeError.UnknownField, thread, fld);
+
+									goto SWITCH_MEM;
 								}
 							}
 							else
 							{
-								InvalidType(right, thread, REC);
-								goto default;
+								if (right.Ref.GetAttribute(fld).Type != ___)
+									ExecuteThrow(ElaRuntimeError.FieldNotMutable, thread, fld);
+								else
+									InvalidType(right, thread, REC);
+
+								goto SWITCH_MEM;
 							}
 						}
 						break;
@@ -362,27 +406,21 @@ namespace Ela.Runtime
 							else
 							{
 								UndefinedArgument(name, thread);
-								goto default;
+								goto SWITCH_MEM;
 							}
 						}
 						break;
 					case Op.Pushperv:
 						{
-							var name = frame.Strings[opd];
-							var perv = default(Pervasive);
+							var perv = currentPervs[opd];
 
-							if (!pervasives.Peek().TryGetValue(name, out perv))
+							if (perv.Module == 0)
 							{
-								UnknownName(name, thread);
-								goto default;
+								UnknownName(thread);
+								goto SWITCH_MEM;
 							}
 							else
-							{
-								if (perv.Module == 0)
-									evalStack.Push(locals[perv.Name >> 8]);
-								else
-									evalStack.Push(modules[perv.Module][perv.Name >> 8]);
-							}
+								evalStack.Push(modules[perv.Module][perv.Address >> 8]);
 						}
 						break;
 					#endregion
@@ -413,7 +451,7 @@ namespace Ela.Runtime
 							else
 							{
 								InvalidBinaryOperation("+", left, right, thread);
-								goto default;
+								goto SWITCH_MEM;
 							}
 
 							evalStack.Replace(res);
@@ -435,7 +473,7 @@ namespace Ela.Runtime
 						else
 						{
 							InvalidBinaryOperation("-", left, right, thread);
-							goto default;
+							goto SWITCH_MEM;
 						}
 
 						evalStack.Replace(res);
@@ -450,7 +488,7 @@ namespace Ela.Runtime
 							if (right.I4 == 0)
 							{
 								ExecuteThrow(ElaRuntimeError.DivideByZero, thread);
-								goto default;
+								goto SWITCH_MEM;
 							}
 							else
 								res = new RuntimeValue(left.I4 / right.I4);
@@ -464,7 +502,7 @@ namespace Ela.Runtime
 							if (lng == 0)
 							{
 								ExecuteThrow(ElaRuntimeError.DivideByZero, thread);
-								goto default;
+								goto SWITCH_MEM;
 							}
 							else
 								res = new RuntimeValue(lng / right.GetLong());
@@ -474,7 +512,7 @@ namespace Ela.Runtime
 						else
 						{
 							InvalidBinaryOperation("/", left, right, thread);
-							goto default;
+							goto SWITCH_MEM;
 						}
 
 						evalStack.Replace(res);
@@ -495,7 +533,7 @@ namespace Ela.Runtime
 						else
 						{
 							InvalidBinaryOperation("*", left, right, thread);
-							goto default;
+							goto SWITCH_MEM;
 						}
 
 						evalStack.Replace(res);
@@ -512,7 +550,7 @@ namespace Ela.Runtime
 						else
 						{
 							InvalidBinaryOperation("**", left, right, thread);
-							goto default;
+							goto SWITCH_MEM;
 						}
 
 						evalStack.Replace(res);
@@ -527,7 +565,7 @@ namespace Ela.Runtime
 							if (right.I4 == 0)
 							{
 								ExecuteThrow(ElaRuntimeError.DivideByZero, thread);
-								goto default;
+								goto SWITCH_MEM;
 							}
 							else
 								res = new RuntimeValue(left.I4 % right.I4);
@@ -541,7 +579,7 @@ namespace Ela.Runtime
 							if (lng == 0)
 							{
 								ExecuteThrow(ElaRuntimeError.DivideByZero, thread);
-								goto default;
+								goto SWITCH_MEM;
 							}
 							else
 								res = new RuntimeValue(lng % right.GetLong());
@@ -551,7 +589,7 @@ namespace Ela.Runtime
 						else
 						{
 							InvalidBinaryOperation("%", left, right, thread);
-							goto default;
+							goto SWITCH_MEM;
 						}
 
 						evalStack.Replace(res);
@@ -572,7 +610,7 @@ namespace Ela.Runtime
 							else
 							{
 								InvalidType(right, thread, TUP, REC);
-								goto default;
+								goto SWITCH_MEM;
 							}
 
 							var cons = left.Ref.ToString();
@@ -589,7 +627,7 @@ namespace Ela.Runtime
 						else
 						{
 							InvalidType(right, thread, TUP, REC);
-							goto default;
+							goto SWITCH_MEM;
 						}
 						break;
 					case Op.Cgt:
@@ -608,7 +646,7 @@ namespace Ela.Runtime
 						else
 						{
 							InvalidBinaryOperation(">", left, right, thread);
-							goto default;
+							goto SWITCH_MEM;
 						}
 
 						evalStack.Push(res);
@@ -629,7 +667,7 @@ namespace Ela.Runtime
 						else
 						{
 							InvalidBinaryOperation("<", left, right, thread);
-							goto default;
+							goto SWITCH_MEM;
 						}
 
 						evalStack.Push(res);
@@ -652,7 +690,7 @@ namespace Ela.Runtime
 						else if (i4 == ___)
 						{
 							InvalidBinaryOperation("==", left, right, thread);
-							goto default;
+							goto SWITCH_MEM;
 						}
 						else
 							res = new RuntimeValue(left.Ref == right.Ref);
@@ -677,7 +715,7 @@ namespace Ela.Runtime
 						else if (i4 == ___)
 						{
 							InvalidBinaryOperation("!=", left, right, thread);
-							goto default;
+							goto SWITCH_MEM;
 						}
 						else
 							res = new RuntimeValue(left.Ref != right.Ref);
@@ -700,7 +738,7 @@ namespace Ela.Runtime
 						else
 						{
 							InvalidBinaryOperation(">=", left, right, thread);
-							goto default;
+							goto SWITCH_MEM;
 						}
 
 						evalStack.Push(res);
@@ -721,7 +759,7 @@ namespace Ela.Runtime
 						else
 						{
 							InvalidBinaryOperation("<=", left, right, thread);
-							goto default;
+							goto SWITCH_MEM;
 						}
 
 						evalStack.Push(res);
@@ -741,7 +779,7 @@ namespace Ela.Runtime
 						else
 						{
 							InvalidType(right, thread, LST);
-							goto default;
+							goto SWITCH_MEM;
 						}
 						break;
 					case Op.Listgen:
@@ -753,7 +791,7 @@ namespace Ela.Runtime
 						if (right.Type != LST)
 						{
 							InvalidType(right, thread, LST);
-							goto default;
+							goto SWITCH_MEM;
 						}
 						else if (right.Ref != ElaList.Nil)
 							evalStack.Push(new RuntimeValue(((ElaList)right.Ref).Next));
@@ -766,7 +804,7 @@ namespace Ela.Runtime
 						if (right.Type != LST)
 						{
 							InvalidType(right, thread, LST);
-							goto default;
+							goto SWITCH_MEM;
 						}
 						else
 							evalStack.Push(((ElaList)right.Ref).Value);
@@ -781,7 +819,7 @@ namespace Ela.Runtime
 						if (left.Type != INT || right.Type != INT)
 						{
 							InvalidType(left, thread, INT);
-							goto default;
+							goto SWITCH_MEM;
 						}
 						else
 						{
@@ -796,7 +834,7 @@ namespace Ela.Runtime
 						if (left.Type != INT || right.Type != INT)
 						{
 							InvalidType(left, thread, INT);
-							goto default;
+							goto SWITCH_MEM;
 						}
 						else
 						{
@@ -811,7 +849,7 @@ namespace Ela.Runtime
 						if (left.Type != INT || right.Type != INT)
 						{
 							InvalidType(left, thread, INT);
-							goto default;
+							goto SWITCH_MEM;
 						}
 						else
 						{
@@ -826,7 +864,7 @@ namespace Ela.Runtime
 						if (right.Type != INT)
 						{
 							InvalidType(right, thread, INT);
-							goto default;
+							goto SWITCH_MEM;
 						}
 						else
 						{
@@ -837,7 +875,7 @@ namespace Ela.Runtime
 							else
 							{
 								InvalidType(left, thread, INT, LNG);
-								goto default;
+								goto SWITCH_MEM;
 							}
 						}
 						break;
@@ -848,7 +886,7 @@ namespace Ela.Runtime
 						if (right.Type != INT)
 						{
 							InvalidType(right, thread, INT);
-							goto default;
+							goto SWITCH_MEM;
 						}
 						else
 						{
@@ -859,7 +897,7 @@ namespace Ela.Runtime
 							else
 							{
 								InvalidType(left, thread, INT, LNG);
-								goto default;
+								goto SWITCH_MEM;
 							}
 						}
 						break;
@@ -873,7 +911,7 @@ namespace Ela.Runtime
 							if (right.Type != INT)
 							{
 								InvalidUnaryOperation("++", right, thread);
-								goto default;
+								goto SWITCH_MEM;
 							}
 							else
 							{
@@ -890,7 +928,7 @@ namespace Ela.Runtime
 							if (right.Type != INT)
 							{
 								InvalidUnaryOperation("--", right, thread);
-								goto default;
+								goto SWITCH_MEM;
 							}
 							else
 							{
@@ -906,7 +944,7 @@ namespace Ela.Runtime
 						if (right.Type != BYT)
 						{
 							InvalidUnaryOperation("!", right, thread);
-							goto default;
+							goto SWITCH_MEM;
 						}
 						else
 						{
@@ -928,7 +966,7 @@ namespace Ela.Runtime
 						else
 						{
 							InvalidUnaryOperation("-", right, thread);
-							goto default;
+							goto SWITCH_MEM;
 						}
 
 						evalStack.Push(res);
@@ -947,7 +985,7 @@ namespace Ela.Runtime
 						else
 						{
 							InvalidUnaryOperation("+", right, thread);
-							goto default;
+							goto SWITCH_MEM;
 						}
 
 						evalStack.Push(res);
@@ -958,7 +996,7 @@ namespace Ela.Runtime
 						if (right.Type != INT)
 						{
 							InvalidUnaryOperation("~", right, thread);
-							goto default;
+							goto SWITCH_MEM;
 						}
 						else
 						{
@@ -968,35 +1006,35 @@ namespace Ela.Runtime
 						break;
 					case Op.Valueof:
 						if (ValueOf(thread))
-							goto default;
+							goto SWITCH_MEM;
 						break;
 					#endregion
 
 					#region Conversion Operations
 					case Op.ConvI4:
 						ConvertI4(evalStack.Peek(), thread);
-						goto default;
+						goto SWITCH_MEM;
 					case Op.ConvR4:
 						ConvertR4(evalStack.Peek(), thread);
-						goto default;
+						goto SWITCH_MEM;
 					case Op.ConvI1:
 						ConvertI1(evalStack.Peek(), thread);
-						goto default;
+						goto SWITCH_MEM;
 					case Op.ConvStr:
 						ConvertStr(evalStack.Peek(), thread);
-						goto default;
+						goto SWITCH_MEM;
 					case Op.ConvI8:
 						ConvertI8(evalStack.Peek(), thread);
-						goto default;
+						goto SWITCH_MEM;
 					case Op.ConvCh:
 						ConvertCh(evalStack.Peek(), thread);
-						goto default;
+						goto SWITCH_MEM;
 					case Op.ConvR8:
 						ConvertR8(evalStack.Peek(), thread);
-						goto default;
+						goto SWITCH_MEM;
 					case Op.ConvSeq:
 						ConvertSeq(evalStack.Peek(), thread);
-						goto default;
+						goto SWITCH_MEM;
 					#endregion
 
 					#region Goto Operations
@@ -1194,7 +1232,7 @@ namespace Ela.Runtime
 							if (right.Type != FUN)
 							{
 								InvalidType(right, thread, FUN);
-								goto default;
+								goto SWITCH_MEM;
 							}
 							else
 							{
@@ -1253,10 +1291,10 @@ namespace Ela.Runtime
 							if (right.Type == SEQ)
 								evalStack.Push(right);
 							else if (right.Type != ARR && right.Type != LST && right.Type != TUP &&
-								right.Type != STR && right.Type != FUN)
+								right.Type != REC && right.Type != STR && right.Type != FUN)
 							{
-								InvalidType(right, thread, ARR, LST, TUP, STR);
-								goto default;
+								InvalidType(right, thread, ARR, LST, TUP, STR, REC);
+								goto SWITCH_MEM;
 							}
 							else if (right.Type == FUN)
 							{
@@ -1264,8 +1302,8 @@ namespace Ela.Runtime
 
 								if (sf == null || sf.Memory == null)
 								{
-									InvalidType(right, thread, ARR, LST, TUP, STR);
-									goto default;
+									InvalidType(right, thread, ARR, LST, TUP, STR, REC);
+									goto SWITCH_MEM;
 								}
 
 								evalStack.Push(new RuntimeValue(new ElaSequence(right.Ref)));
@@ -1316,16 +1354,34 @@ namespace Ela.Runtime
 
 					#region Function Operations
 					case Op.Call:
-						if (Call(evalStack.Pop().Ref, thread, opd))
-							goto default;
+						if (Call(evalStack.Pop().Ref, thread, opd, null))
+							goto SWITCH_MEM;
 						break;
 					case Op.Calld:
-						if (Call(evalStack.Pop().Ref, thread, evalStack.Count - callStack.Peek().StackOffset))
-							goto default;
+						{
+							//if (Call(evalStack.Pop().Ref, thread, evalStack.Count - callStack.Peek().StackOffset, null))
+							//	goto SWITCH_MEM;
+
+							var fun = evalStack.Pop().Ref as ElaFunction;
+
+							if (fun == null)
+							{
+								ExecuteThrow(ElaRuntimeError.NotFunction, thread);
+								goto SWITCH_MEM;
+							}
+							else
+								Call(fun, thread, fun.ParameterCount, null);
+						}
 						break;
 					case Op.Callt:
-						if (Call(evalStack.Pop().Ref, thread, opd))
-							goto default;
+						{
+							var cp = callStack.Pop();
+
+							if (Call(evalStack.Pop().Ref, thread, opd, cp))
+								goto SWITCH_MEM;
+							else
+								callStack.Push(cp);
+						}
 						break;
 					case Op.Calla:
 						CallAsync(thread);
@@ -1358,7 +1414,7 @@ namespace Ela.Runtime
 								return;
 
 							thread.Offset = om.ReturnAddress;
-							goto default;
+							goto SWITCH_MEM;
 						}
 					case Op.Ret:
 						{
@@ -1374,7 +1430,7 @@ namespace Ela.Runtime
 								else
 								{
 									thread.Offset = om.ReturnAddress;
-									goto default;
+									goto SWITCH_MEM;
 								}
 							}
 							else
@@ -1403,23 +1459,19 @@ namespace Ela.Runtime
 						break;
 					case Op.Throw:
 						ExecuteThrow((ElaRuntimeError)opd, thread);
-						goto default;
+						goto SWITCH_MEM;
 					case Op.Term:
 						{
 							if (callStack.Count > 1)
 							{
 								var modMem = callStack.Pop();
 								thread.Offset = modMem.ReturnAddress;
-								
-								if (pervasives.Count > 0)
-									pervasives.Pop();
-								
-								if (pervasives.Count > 0)
-									ReadPervasives(thread.Module, thread.ModuleHandle);
-								
+								var om = thread.Module;
+								var omh = thread.ModuleHandle;
 								thread.SwitchModule(callStack.Peek().ModuleHandle);
+								ReadPervasives(thread, om, omh);
 								evalStack.Pop();
-								goto default;
+								goto SWITCH_MEM;
 							}
 							else
 							{
@@ -1435,8 +1487,7 @@ namespace Ela.Runtime
 							if (modules[hdl] == null)
 							{
 								var frm = asm.GetModule(hdl);
-								pervasives.Push(new Dictionary<String,Pervasive>());
-
+								
 								if (frm is IntrinsicFrame)
 									modules[hdl] = ((IntrinsicFrame)frm).Memory;
 								else
@@ -1444,18 +1495,22 @@ namespace Ela.Runtime
 									i4 = frm.Layouts[0].Size;
 									var loc = new RuntimeValue[i4];
 									modules[hdl] = loc;
-									var modMem = new CallPoint(thread.Offset, hdl, evalStack.Count,
+									var modMem = new CallPoint(thread.Offset, hdl,
 										null, loc, FastList<RuntimeValue[]>.Empty);
 									callStack.Push(modMem);
 									thread.SwitchModule(hdl);
 									thread.Offset = 0;
-									goto default;
+									goto SWITCH_MEM;
 								}
 							}
 						}
 						break;
 					case Op.Start:
-						callStack.Peek().CatchMark = opd;
+						{
+							var om = callStack.Peek();
+							om.CatchMark = opd;
+							om.CatchOffset = evalStack.Count;
+						}
 						break;
 					case Op.Leave:
 						callStack.Peek().CatchMark = null;
@@ -1469,7 +1524,7 @@ namespace Ela.Runtime
 							else
 							{
 								InvalidType(right, thread, TUP, REC);
-								goto default;
+								goto SWITCH_MEM;
 							}
 						}
 						break;
@@ -1480,30 +1535,29 @@ namespace Ela.Runtime
 
 							if (obj != null)
 								evalStack.Push(obj.Length);
-							else if (right.Type == LST)
-								evalStack.Push(((ElaList)right.Ref).GetLength());
 							else
 								InvalidType(right, thread, TUP, REC, ARR, LST, STR);
 						}
 						break;
-					#endregion
-
-					#region Control Structures
-					default:
-						{
-							var mem = callStack.Peek();
-							thread.SwitchModule(mem.ModuleHandle);
-							locals = mem.Locals;
-							captures = mem.Captures;
-							ops = thread.Module.Ops.GetRawArray();
-							opData = thread.Module.OpData.GetRawArray();
-							frame = thread.Module;
-						}
-						break;
-					#endregion
+					#endregion					
 				}
 				#endregion
 			}
+			goto CYCLE;
+
+			SWITCH_MEM:
+			{
+				var mem = callStack.Peek();
+				thread.SwitchModule(mem.ModuleHandle);
+				locals = mem.Locals;
+				captures = mem.Captures;
+				ops = thread.Module.Ops.GetRawArray();
+				opData = thread.Module.OpData.GetRawArray();
+				frame = thread.Module;
+				currentPervs = pervasives[thread.ModuleHandle];
+			}
+			goto CYCLE;
+			
 		}
 		#endregion
 
@@ -1569,9 +1623,9 @@ namespace Ela.Runtime
 		}
 
 
-		private void UnknownName(string name, WorkerThread thread)
+		private void UnknownName(WorkerThread thread)
 		{
-			ExecuteThrow(ElaRuntimeError.UnknownPervasive, thread, name);
+			ExecuteThrow(ElaRuntimeError.UnknownPervasive, thread);
 		}
 
 
@@ -1587,9 +1641,15 @@ namespace Ela.Runtime
 		}
 
 
-		private ElaFatalException BusyException()
+		private ElaMachineException Exception(string message, Exception ex)
 		{
-			return new ElaFatalException(Strings.GetMessage("ThreadBusy"));
+			return new ElaMachineException(Strings.GetMessage(message), ex);
+		}
+
+
+		private ElaMachineException Exception(string message)
+		{
+			return Exception(message, null);
 		}
 		#endregion
 
@@ -1807,16 +1867,16 @@ namespace Ela.Runtime
 
 
 		#region Operations
-		private void ReadPervasives(CodeFrame frame, int handle)
+		private void ReadPervasives(WorkerThread thread, CodeFrame frame, int handle)
 		{
-			var dict = pervasives.Peek();
+			var refs = thread.Module.ReferencedPervasives;
+			var pervs = pervasives[thread.ModuleHandle];
+			var hdl = 0;
 
-			foreach (var kv in frame.Pervasives)
+			foreach (var kv in frame.DeclaredPervasives)
 			{
-				if (dict.ContainsKey(kv.Key))
-					dict.Remove(kv.Key);
-
-				dict.Add(kv.Key, new Pervasive(handle, kv.Value));
+				if (refs.TryGetValue(kv.Key, out hdl))
+					pervs[hdl] = new Pervasive(handle, kv.Value);
 			}
 		}
 
@@ -1916,8 +1976,7 @@ namespace Ela.Runtime
 					newMem = new RuntimeValue[layout.Size];
 
 				var os = t.Offset;
-				var cp = new CallPoint(0, fun.ModuleHandle, len, null,
-					newMem, fun.Captures);
+				var cp = new CallPoint(0, fun.ModuleHandle, null, newMem, fun.Captures);
 				t.CallStack.Push(cp);
 				t.Offset = layout.Address;
 				Execute(t);
@@ -1952,7 +2011,7 @@ namespace Ela.Runtime
 		}
 
 
-		private bool Call(ElaObject fun, WorkerThread thread, int parPassed)
+		private bool Call(ElaObject fun, WorkerThread thread, int parPassed, CallPoint cp)
 		{
 			var pop = true;
 			
@@ -1970,11 +2029,11 @@ namespace Ela.Runtime
 							thread.SwitchModule(natFun.ModuleHandle);
 
 						var mod = thread.Module;
-						var retAddr = thread.Offset;
+						var retAddr = cp != null ? cp.ReturnAddress : thread.Offset;
 						var layout = mod.Layouts[natFun.Handle];
 						var newLoc = natFun.Memory != null ? natFun.Memory : new RuntimeValue[layout.Size];
-						var newMem = new CallPoint(retAddr, natFun.ModuleHandle,
-							thread.EvalStack.Count - parPassed, null, newLoc, natFun.Captures);
+						var newMem = new CallPoint(retAddr, cp != null ? cp.ModuleHandle : natFun.ModuleHandle,
+							cp != null ? cp.ReturnValue : null, newLoc, natFun.Captures);
 
 						if (natFun.AppliedParameters != null)
 						{
@@ -2015,23 +2074,24 @@ namespace Ela.Runtime
 		{
 			var newThread = thread.Clone();
 			var lazy = default(ElaLazy);
-			newThread.ReturnValue = lazy;
 			var rv = thread.EvalStack.Pop();
 			var fun = rv.Ref as ElaNativeFunction;
 				
 			if (fun != null)
 			{
-				Call(fun, newThread, 0);
+				Call(fun, newThread, 0, null);
 				var t = new System.Threading.Thread(
 					new System.Threading.ThreadStart(() => Execute(newThread)));
 				lazy = new ElaLazy(t);
+				newThread.ReturnValue = lazy;
 				t.Start();
 			}
 			else
 			{
 				var t = new System.Threading.Thread(
-					new System.Threading.ThreadStart(() => Call(rv.Ref, newThread, 0)));
-				lazy = new ElaLazy(t); 
+					new System.Threading.ThreadStart(() => Call(rv.Ref, newThread, 0, null)));
+				lazy = new ElaLazy(t);
+				newThread.ReturnValue = lazy;
 				t.Start();
 			}
 
@@ -2094,10 +2154,9 @@ namespace Ela.Runtime
 						lazy.Thread.Join();
 					else
 					{
-						if (Call(lazy.Function, thread, 0))
+						if (Call(lazy.Function, thread, 0, null))
 						{
 							var mem = thread.CallStack.Peek();
-							mem.ReturnAddress--;
 							mem.ReturnValue = lazy;
 							return true;
 						}
@@ -2179,7 +2238,7 @@ namespace Ela.Runtime
 				while (c++ < i)
 					callStack.Pop();
 
-				thread.EvalStack.Clear(callStack.Peek().StackOffset);
+				thread.EvalStack.Clear(callStack.Peek().CatchOffset);
 
 				if (errorType == ElaRuntimeError.None)
 					thread.EvalStack.Push(errObj);
@@ -2198,11 +2257,7 @@ namespace Ela.Runtime
 		{
 			thread.Busy = false;
 			var deb = new ElaDebugger(asm);
-			var cs = deb.BuildCallStack(thread);
-
-			while (thread.CallStack.Count > 1)
-				thread.CallStack.Pop();
-
+			var cs = deb.BuildCallStack(thread);			
 			return new ElaCodeException(err, errorType, cs.File, cs.Line, cs.Column, cs);
 		}
 		#endregion

@@ -44,21 +44,16 @@ namespace Ela.Runtime.ObjectModel
 						(sv.Flags & ElaVariableFlags.Constructor) == ElaVariableFlags.Constructor));
 				}
 
-				var variants = new List<ElaVariantInfo>();
-
-				foreach (var kv in frame.Variants)
-					variants.Add(new ElaVariantInfo(kv.Key, kv.Value));
-
 				var refs = new List<ElaReferenceInfo>();
 
 				foreach (var kv in frame.References)
 					refs.Add(new ElaReferenceInfo(kv.Value.ModuleName, kv.Value.DllName, kv.Key, kv.Value.Folder));
 
 				return new ElaModuleInfo(vm, Handle, name,
-					frame.File != null ? frame.File.FullName : null, !(frame is IntrinsicFrame), variables, variants, refs);
+					frame.File != null ? frame.File.FullName : null, !(frame is IntrinsicFrame), variables, refs);
 			}
 			else
-				return new ElaModuleInfo(null, Handle, null, null, false, null, null, null);
+				return new ElaModuleInfo(null, Handle, null, null, false, null, null);
 		}
 		#endregion
 

@@ -91,6 +91,7 @@ namespace Ela.Runtime
 		{
 			return DataType == ObjectType.Double ? ((ElaDouble)Ref).Value :
 				DataType == ObjectType.Single ? GetReal() :
+				DataType == ObjectType.Long ? (Double)GetLong() :
 				(Double)I4;
 		}
 

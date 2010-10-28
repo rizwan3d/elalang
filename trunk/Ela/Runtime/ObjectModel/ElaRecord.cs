@@ -68,6 +68,7 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override bool SetValue(RuntimeValue index, RuntimeValue value)
 		{
 			return index.Type == ElaMachine.STR ? SetValue(index.Ref.ToString(), value) : 
+				index.Type == ElaMachine.INT ? SetValue(index.I4, value) :
 				base.SetValue(index, value);
 		}		
 
@@ -92,10 +93,15 @@ namespace Ela.Runtime.ObjectModel
 		private bool SetValue(string key, RuntimeValue value)
 		{
 			var idx = GetOrdinal(key);
+			return SetValue(idx, value);
+		}
 
-			if (idx > -1 && idx < Values.Length)
+
+		private bool SetValue(int index, RuntimeValue value)
+		{
+			if (index > -1 && index < Values.Length)
 			{
-				Values[idx] = value;
+				Values[index] = value;
 				return true;
 			}
 			else
@@ -103,7 +109,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		private RuntimeValue GetValue(string key)
+		internal RuntimeValue GetValue(string key)
 		{
 			var index = GetOrdinal(key);
 			return index != -1 && index < Values.Length ? Values[index] : new RuntimeValue(Invalid);

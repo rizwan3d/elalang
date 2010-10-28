@@ -60,7 +60,7 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Functions
+		#region Ela Functions
 		private sealed class AddFunction : ElaFunction
 		{
 			private ElaArray array;

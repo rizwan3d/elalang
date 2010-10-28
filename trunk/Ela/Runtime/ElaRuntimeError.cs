@@ -52,6 +52,8 @@ namespace Ela.Runtime
 
 		UnknownParameterType = 822,
 
-		CallWithNoParams = 823
+		CallWithNoParams = 823,
+
+		FieldNotMutable = 824,
 	}
 }

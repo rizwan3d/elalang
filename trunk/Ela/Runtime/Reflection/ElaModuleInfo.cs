@@ -9,8 +9,7 @@ namespace Ela.Runtime.Reflection
 	public sealed class ElaModuleInfo : ElaTypeInfo, IEquatable<ElaModuleInfo>
 	{
 		#region Construction
-		private const string GETGLOBALS = "getGlobalVariables";
-		private const string GETVARIANTS = "getVariants";
+		private const string GETGLOBALS = "getGlobals";
 		private const string GETREFERENCES = "getReferences";
 		private const string ASSEMBLY = "assembly";
 		private const string HANDLE = "handle";
@@ -20,12 +19,10 @@ namespace Ela.Runtime.Reflection
 		private const string ISMAINMODULE = "isMainModule";
 
 		private IEnumerable<ElaVariableInfo> variables;
-		private IEnumerable<ElaVariantInfo> variants;
 		private IEnumerable<ElaReferenceInfo> references;
 		
 		internal ElaModuleInfo(ElaMachine vm, int handle, string name, string codeBase, bool native,
-			IEnumerable<ElaVariableInfo> variables, IEnumerable<ElaVariantInfo> variants,
-			IEnumerable<ElaReferenceInfo> references) : base(ObjectType.Module)
+			IEnumerable<ElaVariableInfo> variables, IEnumerable<ElaReferenceInfo> references) : base(ObjectType.Module)
 		{
 			Handle = handle;
 			Name = name;
@@ -34,7 +31,6 @@ namespace Ela.Runtime.Reflection
 			Machine = vm;
 			Assembly = vm != null ? new ElaAssemblyInfo(vm) : null;
 			this.variables = variables;
-			this.variants = variants;
 			this.references = references;
 		}
 		#endregion
@@ -53,22 +49,6 @@ namespace Ela.Runtime.Reflection
 			public override RuntimeValue Call(params RuntimeValue[] args)
 			{
 				return new RuntimeValue(new ElaArray(obj.GetGlobalVariables()));
-			}
-		}
-
-
-		private sealed class GetVariantsFunction : ElaFunction
-		{
-			private ElaModuleInfo obj;
-
-			internal GetVariantsFunction(ElaModuleInfo obj) : base(0)
-			{
-				this.obj = obj;
-			}
-
-			public override RuntimeValue Call(params RuntimeValue[] args)
-			{
-				return new RuntimeValue(new ElaArray(obj.GetVariants()));
 			}
 		}
 
@@ -123,12 +103,6 @@ namespace Ela.Runtime.Reflection
 		}
 
 
-		public ElaVariantInfo[] GetVariants()
-		{
-			return variants.ToArray();
-		}
-
-
 		public ElaReferenceInfo[] GetReferences()
 		{
 			return references.ToArray();
@@ -146,7 +120,6 @@ namespace Ela.Runtime.Reflection
 			switch (name)
 			{
 				case GETGLOBALS: return new RuntimeValue(new GetVariablesFunction(this));
-				case GETVARIANTS: return new RuntimeValue(new GetVariantsFunction(this));
 				case GETREFERENCES: return new RuntimeValue(new GetReferencesFunction(this));
 
 				case ASSEMBLY: return new RuntimeValue(Assembly);

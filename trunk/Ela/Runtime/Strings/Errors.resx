@@ -132,6 +132,9 @@
   <data name="ExternalCallFailed" xml:space="preserve">
     <value>An unexpected error occured during external function call: {0}</value>
   </data>
+  <data name="FieldNotMutable" xml:space="preserve">
+    <value>Field '{0}' in the target object is not mutable. You cannot change its value.</value>
+  </data>
   <data name="IndexOutOfRange" xml:space="preserve">
     <value>Index was out of range.</value>
   </data>
@@ -160,7 +163,7 @@
     <value>The name '{0}' is declared as private and cannot be referenced.</value>
   </data>
   <data name="TooFewParams" xml:space="preserve">
-    <value>Not all of the parameters are specified in a function call. Currying functions is not supported when calling Ela functions from external context.</value>
+    <value>Partial application of a function is not supported. Function is either not curried (supports unlimited number of optional parameters) or is called from external context (e.g. Ela function from .NET code).</value>
   </data>
   <data name="TooManyParams" xml:space="preserve">
     <value>Too many parameters specified in a function call.</value>
@@ -181,12 +184,12 @@
     <value>An unknown runtime error has occured. Error details: {0}.</value>
   </data>
   <data name="UnknownField" xml:space="preserve">
-    <value>There is no such mutable field as '{0}' in the target object.</value>
+    <value>There is no such field as '{0}' in the target object.</value>
   </data>
   <data name="UnknownParameterType" xml:space="preserve">
     <value>Invalid type for the function parameter: '{0}'.</value>
   </data>
   <data name="UnknownPervasive" xml:space="preserve">
-    <value>A reference to the unknown name '{0}'.</value>
+    <value>A reference to the unknown name or operator.</value>
   </data>
 </root>
