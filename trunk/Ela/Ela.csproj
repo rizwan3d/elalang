@@ -12,7 +12,6 @@
     <AssemblyName>Ela</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SourceAnalysisOverrideSettingsFile>D:\Users\Voronkov\AppData\Roaming\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
     <NoStdLib>False</NoStdLib>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
@@ -121,8 +120,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BuiltinFunc.cs" />
+    <Compile Include="CodeModel\ElaBlock.cs" />
+    <Compile Include="CodeModel\ElaCastPattern.cs" />
     <Compile Include="CodeModel\ElaArrayPattern.cs" />
+    <Compile Include="CodeModel\ElaBuiltinFunction.cs" />
+    <Compile Include="CodeModel\ElaBuiltinFunctionKind.cs" />
+    <Compile Include="CodeModel\ElaCustomOperator.cs" />
+    <Compile Include="CodeModel\ElaLazyLiteral.cs" />
+    <Compile Include="CodeModel\ElaNilPattern.cs" />
+    <Compile Include="CodeModel\ElaOtherwiseGuard.cs" />
     <Compile Include="CodeModel\ElaPatternAffinity.cs" />
+    <Compile Include="CodeModel\ElaPatternGroup.cs" />
+    <Compile Include="CodeModel\ElaRange.cs" />
+    <Compile Include="CodeModel\ElaRecordPattern.cs" />
+    <Compile Include="CodeModel\ElaUnary.cs" />
+    <Compile Include="CodeModel\ElaUnaryOperator.cs" />
+    <Compile Include="CodeModel\ElaUnitLiteral.cs" />
+    <Compile Include="CodeModel\ElaVariantLiteral.cs" />
+    <Compile Include="CodeModel\ElaVariantPattern.cs" />
+    <Compile Include="CodeModel\Extensions.cs" />
+    <Compile Include="Compilation\Builder.Declarations.cs" />
+    <Compile Include="Compilation\Builder.Cycles.cs" />
+    <Compile Include="Compilation\Builder.Match.cs" />
+    <Compile Include="Compilation\Builder.Operators.cs" />
+    <Compile Include="Compilation\Builder.Ranges.cs" />
+    <Compile Include="Compilation\Builder.Functions.cs" />
     <Compile Include="Compilation\DataKind.cs" />
     <Compile Include="Compilation\ElaCompilerError.cs" />
     <Compile Include="Compilation\ElaCompilerHint.cs" />
@@ -130,55 +153,55 @@
     <Compile Include="Compilation\ExprData.cs" />
     <Compile Include="Compilation\FunFlag.cs" />
     <Compile Include="Compilation\IElaCompiler.cs" />
+    <Compile Include="Compilation\OpStackHelper.cs" />
     <Compile Include="Compilation\PatternTree.cs" />
     <Compile Include="Compilation\Strings.cs" />
+    <Compile Include="Culture.cs" />
     <Compile Include="Debug\CallStack.cs" />
+<<<<<<< .mine
     <Compile Include="Debug\ElaDebugException.cs" />
+    <Compile Include="Debug\StackPoint.cs" />
+=======
+    <Compile Include="Debug\ElaDebugException.cs" />
+>>>>>>> .r97
     <Compile Include="IReadOnlyMap.cs" />
-    <Compile Include="Compilation\OpHelper.cs" />
+    <Compile Include="Compilation\OpSizeHelper.cs" />
     <Compile Include="ElaTranslationException.cs" />
     <Compile Include="Linking\ElaLinkerError.cs" />
     <Compile Include="Linking\ElaLinkerException.cs" />
     <Compile Include="Linking\ElaLinkerWarning.cs" />
     <Compile Include="Linking\Strings.cs" />
+<<<<<<< .mine
+    <Compile Include="Lookup.cs" />
     <Compile Include="Parsing\ElaParserException.cs" />
+=======
+    <Compile Include="Parsing\ElaParserException.cs" />
+>>>>>>> .r97
     <Compile Include="Parsing\ElaParserError.cs" />
     <Compile Include="Parsing\IElaParser.cs" />
     <Compile Include="Parsing\Strings.cs" />
     <Compile Include="Properties\VersionInfo.cs" />
-    <Compile Include="CodeModel\ElaAndPattern.cs" />
     <Compile Include="CodeModel\ElaArgument.cs" />
     <Compile Include="CodeModel\ElaAsPattern.cs" />
-    <Compile Include="CodeModel\ElaAsyncLiteral.cs" />
-    <Compile Include="CodeModel\ElaConstructorPattern.cs" />
     <Compile Include="CodeModel\ElaDefaultPattern.cs" />
     <Compile Include="CodeModel\ElaFieldPattern.cs" />
     <Compile Include="CodeModel\ElaFor.cs" />
     <Compile Include="CodeModel\ElaForType.cs" />
     <Compile Include="CodeModel\ElaFunctionType.cs" />
-    <Compile Include="CodeModel\ElaBoolPattern.cs" />
     <Compile Include="CodeModel\ElaHeadTailPattern.cs" />
-    <Compile Include="CodeModel\ElaIgnore.cs" />
     <Compile Include="CodeModel\ElaImportedName.cs" />
-    <Compile Include="CodeModel\ElaLazyLiteral.cs" />
-    <Compile Include="CodeModel\ElaListPattern.cs" />
     <Compile Include="CodeModel\ElaLiteralPattern.cs" />
-    <Compile Include="CodeModel\ElaOrPattern.cs" />
-    <Compile Include="CodeModel\ElaSeqPattern.cs" />
-    <Compile Include="CodeModel\ElaTryCatch.cs" />
+    <Compile Include="CodeModel\ElaTuplePattern.cs" />
+    <Compile Include="CodeModel\ElaTry.cs" />
     <Compile Include="CodeModel\ElaIsPattern.cs" />
     <Compile Include="CodeModel\ElaArrayLiteral.cs" />
-    <Compile Include="CodeModel\ElaAssign.cs" />
     <Compile Include="CodeModel\ElaBaseReference.cs" />
     <Compile Include="CodeModel\ElaBinary.cs" />
-    <Compile Include="CodeModel\ElaBinaryOperator.cs" />
-    <Compile Include="CodeModel\ElaBlock.cs" />
+    <Compile Include="CodeModel\ElaOperator.cs" />
     <Compile Include="CodeModel\ElaBreak.cs" />
     <Compile Include="CodeModel\ElaCast.cs" />
-    <Compile Include="CodeModel\ElaCodeUnit.cs" />
     <Compile Include="CodeModel\ElaCondition.cs" />
     <Compile Include="CodeModel\ElaContinue.cs" />
-    <Compile Include="CodeModel\ElaCout.cs" />
     <Compile Include="CodeModel\ElaExpression.cs" />
     <Compile Include="CodeModel\ElaExpressionFlags.cs" />
     <Compile Include="CodeModel\ElaFieldReference.cs" />
@@ -198,24 +221,17 @@
     <Compile Include="CodeModel\ElaPlaceholder.cs" />
     <Compile Include="CodeModel\ElaPrimitive.cs" />
     <Compile Include="CodeModel\ElaReturn.cs" />
-    <Compile Include="CodeModel\ElaThrow.cs" />
+    <Compile Include="CodeModel\ElaRaise.cs" />
     <Compile Include="CodeModel\ElaIs.cs" />
-    <Compile Include="CodeModel\ElaTypeof.cs" />
-    <Compile Include="CodeModel\ElaUnary.cs" />
-    <Compile Include="CodeModel\ElaUnaryOperator.cs" />
-    <Compile Include="CodeModel\ElaValueofPattern.cs" />
     <Compile Include="CodeModel\ElaVariablePattern.cs" />
-    <Compile Include="CodeModel\ElaVariableDeclaration.cs" />
+    <Compile Include="CodeModel\ElaBinding.cs" />
     <Compile Include="CodeModel\ElaVariableFlags.cs" />
     <Compile Include="CodeModel\ElaVariableReference.cs" />
-    <Compile Include="CodeModel\ElaVariantLiteral.cs" />
-    <Compile Include="CodeModel\ElaVoidPattern.cs" />
+    <Compile Include="CodeModel\ElaUnitPattern.cs" />
     <Compile Include="CodeModel\ElaWhile.cs" />
-    <Compile Include="CodeModel\ElaWhileType.cs" />
-    <Compile Include="CodeModel\ElaYield.cs" />
     <Compile Include="Compilation\CodeFrame.cs" />
     <Compile Include="Compilation\CodeWriter.cs" />
-    <Compile Include="Compilation\CompilerHelper.cs" />
+    <Compile Include="Compilation\Builder.cs" />
     <Compile Include="Compilation\CompilerOptions.cs" />
     <Compile Include="Compilation\CompilerResult.cs" />
     <Compile Include="Compilation\ElaCompiler.cs" />
@@ -240,7 +256,10 @@
     <Compile Include="Debug\LineSym.cs" />
     <Compile Include="Debug\SymGenerator.cs" />
     <Compile Include="Debug\SymTables.cs" />
-    <Compile Include="Debug\ValueFormatter.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaBoolean.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaChar.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaUnit.cs" />
+    <Compile Include="FormatHelper.cs" />
     <Compile Include="Debug\VarSym.cs" />
     <Compile Include="ElaException.cs" />
     <Compile Include="ElaMessage.cs" />
@@ -281,25 +300,58 @@
     <Compile Include="Runtime\ElaParameterTypeException.cs" />
     <Compile Include="Runtime\ElaRuntimeError.cs" />
     <Compile Include="Runtime\EvalStack.cs" />
+    <Compile Include="Runtime\ExecutionContext.cs" />
     <Compile Include="Runtime\ExecutionResult.cs" />
     <Compile Include="Runtime\ObjectModel\ElaArray.cs" />
     <Compile Include="Runtime\ObjectModel\ElaDouble.cs" />
     <Compile Include="Runtime\ObjectModel\ElaError.cs" />
-    <Compile Include="Runtime\ObjectModel\ElaFunction.cs" />
-    <Compile Include="Runtime\ObjectModel\ElaIndexedObject.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaInteger.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaLazy.cs" />
     <Compile Include="Runtime\ObjectModel\ElaModule.cs" />
     <Compile Include="Runtime\ObjectModel\ElaRecordField.cs" />
-    <Compile Include="Runtime\ObjectModel\ElaSequence.cs" />
-    <Compile Include="Runtime\ObjectModel\ElaNativeFunction.cs" />
-    <Compile Include="Runtime\ObjectModel\ElaLazy.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaFunction.cs" />
     <Compile Include="Runtime\ObjectModel\ElaList.cs" />
     <Compile Include="Runtime\ObjectModel\ElaLong.cs" />
     <Compile Include="Runtime\ObjectModel\ElaObject.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaSingle.cs" />
     <Compile Include="Runtime\ObjectModel\ElaString.cs" />
     <Compile Include="Runtime\ObjectModel\ElaRecord.cs" />
+    <Compile Include="ElaTraits.cs" />
     <Compile Include="Runtime\ObjectModel\ElaTuple.cs" />
     <Compile Include="ObjectTypeExtensions.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaVariant.cs" />
     <Compile Include="Runtime\Pervasive.cs" />
+<<<<<<< .mine
+    <Compile Include="Runtime\ElaValue.cs" />
+    <Compile Include="Runtime\Reflection\ElaAssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Runtime\Reflection\ElaFunctionInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Runtime\Reflection\ElaInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Runtime\Reflection\ElaModuleInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Runtime\Reflection\ElaRecordInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Runtime\Reflection\ElaReferenceInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Runtime\Reflection\ElaTupleInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Runtime\Reflection\ElaTypeInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Runtime\Reflection\ElaVariableInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Runtime\ShowInfo.cs" />
+=======
     <Compile Include="Runtime\Reflection\ElaAssemblyInfo.cs" />
     <Compile Include="Runtime\Reflection\ElaFunctionInfo.cs" />
     <Compile Include="Runtime\Reflection\ElaInfo.cs" />
@@ -312,6 +364,7 @@
     <Compile Include="Runtime\Reflection\ElaTypeInfo.cs" />
     <Compile Include="Runtime\Reflection\ElaVariableInfo.cs" />
     <Compile Include="Runtime\RuntimeValue.cs" />
+>>>>>>> .r97
     <Compile Include="Runtime\Strings.cs" />
     <Compile Include="Runtime\WorkerThread.cs" />
     <Compile Include="TranslationResult.cs" />

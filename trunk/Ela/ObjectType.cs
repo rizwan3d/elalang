@@ -6,23 +6,23 @@ namespace Ela
 	{
 		None = 0,
 
-		Unit = 1,
+		Integer = 1,
 
-		
-		Integer = 2,
-
+		Long = 2,
+	
 		Single = 3,
 
-		Boolean = 4,
+		Double = 4,
 
-		Char = 5,
 		
-		Long = 6,
+		Boolean = 5,
+
+		Char = 6,
 		
-		Double = 7,
+		String = 7,
 
-		String = 8,
-
+		Unit = 8,		
+		
 		
 		List = 9,
 
@@ -38,10 +38,10 @@ namespace Ela
 
 		Object = 14,
 
-		Lazy = 15,
+		Module = 15,
 
-		Sequence = 16,
+		Lazy = 16,
 
-		Module = 17
+		Variant = 17
 	}
 }

@@ -1,3 +1,135 @@
+0.7.20.132:Fix:A bug fixed in partial application of functions using 'operator' syntax.
+0.7.20.131:New:A pretty printing functionality is added to Ela AST. Some of the compiler error message now shows the body of an errorneous expression.
+0.7.20.130:Change:Now Ela allows to declare custom operators with any number of arguments (they can be called in infix, prefix and postfix forms).
+0.7.20.129:Change:Parser error reporting logic is refactored and enhanced.
+0.7.20.128:Fix:Traits 'Cont' and 'Insert' used to define a mutable container such as ElaArray are removed as welll as corresponding built-ins and op codes. Now ElaArray directly exposes functions to operate with its contents like it used before.
+0.7.20.127:New:Variant types are fully refactored. Now variant is a type that holds a tag and an instance of an object of any other type. It provide transparent operations with the wrapped object, e.g. you can write '`Some 3 + 5' and this will be a perfectly valid code with the result '8'. Pattern matching for variants is refactored as well.
+0.7.20.126:New:'Show' trait now supports format strings (all numeric types implement them). Also new built-ins 'show' (with default format) and 'showf' (with a format as a first argument) are added with corresponding op codes.
+0.7.20.125:Change:Unary minus and 'bitwise not' are now normal unary operators with their own precedence (less tight than function application). Partial application is also supported. Functions 'negate' and 'bitnot' are decomissioned.
+0.7.20.124:Change:Compilation logic for pipe operators is fully refactored. Now these operators a not functions but a pure syntax and only exist in parse time and are translated to regular function application AST node.
+0.7.20.123:Fix:Validation logic for PM as a function definition (check whether patterns for all function parameters are provided) is corrected. It didn't recognize errorneous situations in some cases.
+0.7.20.122:Change:Guards expressions (PM without patterns and 'match with' block) are (probably temporary) decomissioned.
+0.7.20.121:Fix:A bug in compilation logic of head/tail pattern was fixed. This bug could cause stack corruption (unused data could be left on a stack).
+0.7.20.120:Change:Do/end expression decomissioned. One shoudl use sequencing operator '$' instead.
+0.7.20.119:Change:Cycles now no longer can be used as the comprehension syntax.
+0.7.20.118:Change:Mutable variable declaration syntax changed from "var x = ..." to "let mutable x = ...".
+0.7.20.117:Change:The 'or' pattern (written using '||' operator) is now decomissioned. One can use closures to achieve the similar effect.
+0.7.20.116:New:Now it is possible to use string literals when specifying record field names in record pattern.
+0.7.20.115:Fix:A bug fixed in code for cloning external function (an array that holds partially applied parameters wasn't cloned and a new function copy used the pointer to the same array).
+0.7.20.114:Fix:A bug fixed in compilation logic of 'if' expression (wrong lexical scoping, both 'if' and 'else' clauses had the same lexical scope which could cause VM to crush in some rare cases).
+0.7.20.113:New:Now one can use string literal to specify field names in record literal if a field name doesn't comply with identifier rules, e.g. {"text-decoration"="underline"}.
+0.7.20.112:Change:A 'field test' pattern (the one that doesn't binding a value of record field but simply checks if this field is present) is decomissioned.
+0.7.20.111:Change:Compilation logic for record patterns is refactored.
+0.7.20.110:Change:Now 'where' binding support function definition by PM and multiple binding using 'and' but has a required 'end' terminator.
+0.7.20.109:New:A new 'Call' trait is implemented (this trait is supported by 'function' data type).
+0.7.20.108:New:An ability to reload an opened module added to Ela linker and VM (this feature is used by interactive console).
+0.7.20.107:Change:Ela VM and type system are seriously refactored to gain a better type flexibility. Also performance is tuned for certain cases.
+0.7.20.106:Change:'Eq' trait now has both methods Equals and NotEquals. 'Ord' traits now have methods additional methods 'GreaterEquals' and 'LesserEquals'.
+0.7.20.105:Change:Now most of trait operations return 'ElaValue' and not a concrete value, e.g. Equals, Greater, etc. return ElaValue, not a boolean value as they used to. One can use 'Bool' trait to obtain boolean.
+0.7.20.104:Change:'Invalid' type is decomissioned and is no longer used internally by VM to signal an incorrect operation.
+0.7.20.103:Change:The 'Show' trait is extended with extendable ShowInfo structure that can be used to provide display options.
+0.7.20.102:Change:Now Ela supports only implicit conversion from int to long and from single to double, int to double, long to single, etc. are prohibited.
+0.7.20.101:Change:The 'traits' system is fully refactored. Now all binary operations accept two parameters for both left and right operands - now expressions 'Foo + x' and 'x + Foo' will have the same result type.
+0.7.20.100:New:A lazy list comprehension is implemented that can be used to generate lazy linked lists using the same syntax as with regular lists comprehensions.
+0.7.20.99:New:Now tuples support comparisons (based on their elements), arithmetic and bitwise operations.
+0.7.20.98:New:A new 'where' binding implemented (in Haskell style). This binding can be scoped to guards and can be quite useful in pattern matching.
+0.7.20.97:Change:Now lambdas support guards but don't support multiple body definition.
+0.7.20.96:New:Guards syntax has changed and guards are enhanced - now they can be used in PM without patterns (in such case either the previous pattern is considered or none). Match compilation logic has changed to support this.
+0.7.20.95:New:A new 'Lazycall' op code added that is used to optimize lazy values creation and execution when a body of a lazy value is a function application.
+0.7.20.94:Change:Op codes 'Brptr' and 'Pushptr' are removed a long with the special stack 'pointer' data type as soon as these staff is no longer needed by Ela interpreter.
+0.7.20.93:New:Now it is possible to use guards in method formal parameter list.
+0.7.20.92:New:Ranges in Haskell style added (including support for infinite lists).
+0.7.20.91:Fix:Ela op code deserialization logic was incorrect and caused linker to crush.
+0.7.20.90:Fix:A logic for verification of date stamps of Ela object files (in Ela linker) was incorrect and generated a warning when it wasn't needed.
+0.7.20.89:Fix:A bug fixed in interactive mode - user defined operators didn't work at in incremental compilation mode.
+0.7.20.88:New:A new 'Trait' op code is added that allow to check whether an object support provided traits.
+0.7.20.87:New:A new 'Tag' trait is added that potentially allows other data types (not only records and tuples) to be 'tagged'.
+0.7.20.86:Change:Implementation of polymorphic variants has changed. Now variant constructors are not literals but functions. In fact a 'tag' built-in function that accepts a string tag and an object is used for construction of variants. Older syntax is just a sugar for it - e.g. `Some (x, y) is equivalent to tag "Some" (x, y). Constructors for variants are also removed from the language. Now regular functions can be used to construct variants with the same success.
+0.7.20.85:New:Compilation of simple cases for the pattern head/tail (which are the most common cases) is seriously optmized. New op codes are used for this - 'Skiptl' and 'Skiptn'.
+0.7.20.84:Change:Module 'open' expressions can be used only as top level expressions.
+0.7.20.83:New:An alternative (closer to Set-Builder notation) list and array comprehension syntax added.
+0.7.20.82:Change:Now for expression and while expression use a do/end block as their body therefore the 'end' token is required for them.
+0.7.20.81:Change:Now a global scope can either contains a single expression (can be useful in interactive mode) or only let/do expressions. All other expressions are prohibited. Semicolons are no longer used to separate declarations. The only place where semicolons can be used are do/end expressions.
+0.7.20.80:Change:Do/while and until expressions are removed. Also unless expression (a version of when expression) is removed.
+0.7.20.79:Change:A new do/end expression is introduced to simplify writing imperative code. Expressions inside do/end block should be separated with semicolons. This construct doesn not define a lexical scope.
+0.7.20.78:New:A support for lazy lists is added. Now lists allow to have a 'thunk' as a next element. Therefore a second argument of a cons operator can simply contains a lazy value.
+0.7.20.77:Change:Generator function (or so called 'static functions') are fully removed from the language along with 'Newfuns', 'Callcc', 'Checkcc', 'Yield' and many other related op codes. Also built-in functions 'iter' and 'next' are removed and for/in construct is rewritten to use 'Fold' trait.
+0.7.20.76:New:Ela reflection API is refactored according to the new changes in Ela object model. Exceptions are now records with a 'Type' tag.
+0.7.20.75:New:A new 'Convert' trait is added that can be used to control how objects convert to each other.
+0.7.20.74:Change:Conversion routine is again refactored. Now ElaValue doesn't implement IConvertible but defines methods that exactly corresponds to Ela types and perform exact type marshalling and no conversion.
+0.7.20.73:New:A new 'Show' trait that controls formatting of objects to a string added. Now string conversion and string representation are two different things.
+0.7.20.72:New:ElaArray now implements 'Fold' trait and can be analysed using pattern matching (specifically head/tail pattern).
+0.7.20.71:New:A new 'Fold' and 'Cons' traits are added that allow to fully similate linked lists by other data structures.
+0.7.20.70:New:A new exception handling mechanism for objects that support traits is implemented. Exception handling is done through the ExecutionContext instance and allows to preserve full stack trace if an error object originates from the Ela code (e.g. executed in another worker thread).
+0.7.20.69:Change:Now all virtual machine operations are based on traits, including atomic operations such as 'add', 'sub', 'del' and more complex operations.
+0.7.20.68:Change:New built-in functions 'add', 'remove', 'clear' and 'insert' are added instead of built-in functions of array. These new functions however are polymorphic.
+0.7.20.67:Change:Ela object model fully refactored. A new 'traits' concept is introduced. All standard functions are groups into categories (traits) and external objects can fully extend object model and can be used with Ela standard operators. Now objects don't have any built-in attributes at all.
+0.7.20.66:Change:Calculation of lazy values is refactored.
+0.7.20.65:Change:'Typeid' op code now checks if a value is unevaluated lazy and pushes lazy type ID, if it is an evaluated lazy and pushes ID of an actual value or acts as normal in other case.
+0.7.20.64:New:A new 'force' built-in function (and corresponding 'Force' op code) added that can be used to explicitly force lazy values.
+0.7.20.63:Change:Functions id, sub, key and rec are no longer built-in. They will be moved to the library.
+0.7.20.62:New:An 'AmbiguousUnary' parser error added that rejects expressions in the form 'n-1' (without spaces). Previously they were considered to be function applications.
+0.7.20.61:Fix:Compilation logic for list pattern is fixed (it worked correctly only for the first two elements).
+0.7.20.60:Fix:Comprehension compilation logic fixed (nested comprehensions didn't work correctly).
+0.7.20.59:Fix:A bug fixed in compilation logic of variants and in compilation logic of variants call.
+0.7.20.58:New:A shortcut syntax for record pattern is now available, one can write '{foo}' as an equivalent to '{foo=foo}'.
+0.7.20.57:Fix:A bug in indexer logic of lists is fixed.
+0.7.20.56:Fix:Now compiler disallows implicit tupling of function arguments when PM is used in function definition and an irrefutable pattern (such as 'x') is specified while not providing the full argument list. This behavior could cause unintuitive runtime errors.
+0.7.20.55:Fix:A bug fixed in comparison logic ('Br_eq' and 'Br_neq') of boolean values.
+0.7.20.54:Change:Now each function has its own stack which size is defined statically, therefore the need to dynamically check and resize stack is eleminated which causes noticeable performance improvements.
+0.7.20.53:New:Now Ela compiler statically calculates the size of the stack for functions and global scope.
+0.7.20.52:Change:Linker level verification of variants is disabled (probably will be removed in future).
+0.7.20.51:Change:Work with exceptions is fully redesigned, new syntax introduced ('raise' and 'fail'), new op code for rethrowing exceptions without chaing call stack ('Rethrow'), ElaError object is redesigned as well. Now polymorphic variants are used to present exceptions.
+0.7.20.50:Change:Not it is not possible to skip linking stage. One should run Ela machine only after linker, not after compiler.
+0.7.20.49:Change:Conversion routines rewritten for all Ela types and ElaValue. Now conversion behavior can be extended by custom types. Also lazy values acts as proxies, therefore the need to force them when passing to external methods is eliminated.
+0.7.20.48:Change:'Throw' op code splitted into two op codes - 'Throw' to generate user exceptions and 'Failwith' to generate system exceptions (these two op codes have different stack behavior).
+0.7.20.47:Change:Op codes 'Newfund' and 'Calld' removed. Now calling and creating a function with statically unknown number of parameters is not supported.
+0.7.20.46:Change:'Newtup' op code changed. Tuple literal compilation rewritten to use new op code 'Tupcons' that allows to statically calculate stack size.
+0.7.20.45:Change:'Newrec' op code changed. Record literal compilation rewritten to use new op code 'Reccons' that allows to statically calculate stack size.
+0.7.20.44:Change:'Newarr' op code changed. Array literal and array comprehension compilation rewritten to use new op code 'Arrcons' that allows to statically calculate stack size.
+0.7.20.43:Change:'Lgen' op code removed. List literal and list comprehension compilation rewritten to use new op codes 'Lconsr' and 'Lrev' that allow to statically calculate stack size.
+0.7.20.42:New:New op codes 'Popelemi' and 'Pushelemi' added to optimize work with indexers (experimental).
+0.7.20.41:Fix:A bug fixed in compilation logic for the field reference (in some cases an instruction 'Popfld' may be incorrectly generated instead of 'Pushfld' which will lead to VM crush).
+0.7.20.40:Change:Compiler warnings about calling a function with incorrect number of parameters are removed - now this case cannot be verified statically.
+0.7.20.39:Change:Execution and compilation logic optimized for functions with tupled parameters, e.g. f(x, y). New op code 'Tupex' is added to support that.
+0.7.20.38:Fix:A bug fixed in tail recursion optimization - it could be incorrectly applied in the case if a function with the same name (but not the same function) is tail called.
+0.7.20.37:Change:Now curried functions are always called with exactly one parameter, e.g. fun x y will be compiled into two function calls ((f x) y).
+0.7.20.36:New:ElaSequence type removed with op codes 'Pushseq', 'Newseq' and 'Convseq'. Appropriate changes in compiler, VM and value formatter are made.
+0.7.20.35:Fix:Size of 'Throw' op code was calculated incorrectly during byte code serialization.
+0.7.20.34:Fix:A bug in eval stack trim procedure fixed (used in exception handling) - could cause parasite entries on eval stack.
+0.7.20.33:Change:Compilation logic for pipes is optimized for the cases when builtin functions are used with pipes (functions are now inlined).
+0.7.20.32:Fix:A bug fixed in compilation logic of 'try' expression - it didn't pop value when used as a left hand expression.
+0.7.20.31:New:Lazy with memoization makes its return but now has a full transparency for the client code (no need to manually force lazy values).
+0.7.20.30:New:Support for mutually recursive functions (using 'and' keyword in declarations) added.
+0.7.20.29:Change:Now fun sym (in debug info) is generated for composition if a composition is at the right hand side of a variable declaration.
+0.7.20.28:Change:Now instead of sigma '$' for arguments a dedicated argument literal is used in parser (e.g. '$ arg' is not valid anymore, but '$arg' is valid).
+0.7.20.27:Change:Operator priorities are corrected for better usability (closer to Haskell).
+0.7.20.26:Change:Now '+' is valid only for numeric types, for string/list, etc. concatenation a new '++' operator is used. A corresponding 'Concat' op code added.
+0.7.20.25:Change:Refactoring in AST and compiler - now assignment operators ('<-' and '<->') are presented as a binary operator and not a separate AST node.
+0.7.20.24:Fix:A bug fixed in tail call (Callt op code) - in certain cases it could cause VM to crush.
+0.7.20.23:Change:Now Ela doesn't have unary operators (both standard and custom). 'Bitwise not' replaced with 'bitnot' function, boolean not - with 'not', etc.
+0.7.20.22:New:The 'let' binding now can be used to start a lexical scope by adding 'in' after the binding (in the Haskell/OCaml style).
+0.7.20.21:New:Partial application (for both left and right arguments) implemented for standard operators.
+0.7.20.20:New:A flip built-in function (both regular and inline) implemented. Function flips first two parameters of a supplied functions. It works through the new op code Flip.
+0.7.20.19:New:An ability to define multiple function bodies added (used for pattern matching sugar in Haskell style).
+0.7.20.18:Fix:A bug fixed in optimization logic for compilation of endless cycle, e.g. 'while true'.
+0.7.20.17:Fix:A bug fixed in 'as' pattern (binding was done only if a pattern was matched successfully which could cause a VM crash).
+0.7.20.16:New:A new type enforcement pattern (that actually converts an object to a supplied type) implemented.
+0.7.20.15:Fix:A bug in 'is' patten fixed (binding were never done correctly).
+0.7.20.14:Fix:A bug fixed in refresh logic for inner state of virtual machine (could cause VM to crash when opening module in interactive session).
+0.7.20.13:New:A new 'Swap' op code added that swaps two values on the top of the stack (e.g. making left right and right left).
+0.7.20.12:Change:Assignment operator '<-' now yields unit instead of operation result.
+0.7.20.11:Change:Now most of Ela operators are functions and can be used in the same way as regular functions (compiler tries to inline them however wherever possible).
+0.7.20.10:Fix:A bug with recursive variable declaration was fixed. Now recursive references only allowed in function declarations.
+0.7.20.9:Change:Formatting of types for functions changed to use notation 'a->'a->'a. Formatting also shows partial applied functions as a pair of signatures.
+0.7.20.8:Change:Expressions 'typeof', 'ignore' and 'cout' are removed and replaced by special buil-in functions ('typeof' renamed to 'typeid') that can be inlined in certain cases.
+0.7.20.7:Fix:Fixed an incorrect warning generation for the case when a unit type function is used in a pipe chain.
+0.7.20.6:Fix:A bug fixed in error generation logic when a call to Ela function was done through virtual machine using Call method (the case for built-in object functions).
+0.7.20.5:Change:Now all functions accepts at least one parameter. Function without parameters can be simulated using unit pattern '()' instead of parameters list.
+0.7.20.4:Change:Increment, decrement, post increment and post decrement operators are removed.
+0.7.20.3:Change:Unary minus operator is removed. Minus now has a syntax '~' is a regular function call.
+0.7.20.2:Change:Boolean pattern as well as And pattern are removed from pattern matching.
+0.7.20.1:Change:Full redesign of language syntax in ML style.
 0.7.20.0:Release:Release of Ela 0.7.20.
 0.7.19.37:Fix:A bug fixed fixed in compilation logic of custom operators (wrong parameter order for operators were used).
 0.7.19.36:Fix:A bug fixed in parsing logic of the backward composition operator.

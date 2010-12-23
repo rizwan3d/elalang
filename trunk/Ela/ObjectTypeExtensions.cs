@@ -19,10 +19,10 @@ namespace Ela
 		private const string LIST = "list";
 		private const string FUN = "function";
 		private const string UNIT = "unit";
-		private const string LAZY = "lazy";
-		private const string SEQ = "seq";
 		private const string MOD = "module";
 		private const string OBJ = "object";
+		private const string LAZ = "lazy";
+		private const string VAR = "variant";
 		#endregion
 
 
@@ -44,10 +44,10 @@ namespace Ela
 				case ObjectType.Record: return RECORD;
 				case ObjectType.Function: return FUN;
 				case ObjectType.Unit: return UNIT;
-				case ObjectType.Lazy: return LAZY;
-				case ObjectType.Sequence: return SEQ;
 				case ObjectType.Module: return MOD;
 				case ObjectType.Object: return OBJ;
+				case ObjectType.Lazy: return LAZ;
+				case ObjectType.Variant: return VAR;
 				default: return ERR;
 			}
 		}

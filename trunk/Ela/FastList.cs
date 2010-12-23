@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Ela
 {
-	public class FastList<T> : IEnumerable<T>
+	public sealed class FastList<T> : IEnumerable<T>
 	{
 		#region Construction
 		internal static readonly FastList<T> Empty = new FastList<T>();
@@ -15,7 +15,7 @@ namespace Ela
 
 		public FastList() : this(DEFAULT_SIZE)
 		{
-
+			
 		}
 
 
