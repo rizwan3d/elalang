@@ -46,7 +46,7 @@ namespace Ela.ModuleGenerator
 
 						var pars = mi.GetParameters();
 
-						if (attr.UnlimitedParameters && (pars.Length != 1 && pars[0].ParameterType != typeof(RuntimeValue[])))
+						if (attr.UnlimitedParameters && (pars.Length != 1 && pars[0].ParameterType != typeof(ElaValue[])))
 							throw new Exception("Functions with unlimited parameters should have a single parameter of type RuntimeValue[].");
 						else
 						{
