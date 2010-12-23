@@ -1,68 +1,56 @@
-open String with format;
-open Debug;
+let +: x y = x:string ++ y:string
 
-let `TestSession(tests) ( tests: tests );
-	
-let `TestSessionResult(tests, failed) (
-	tests: tests,
-	failed: failed
-);
-
-let `Test(fun, assert) {
-	let t = fun.getType();
-	let name = format("{0}.{1}", t.module.name, t.name);
-	(name, fun, assert)	
-}
-
-let createSession() `TestSession([||]);
-
-let registerFunction(session, fun, assert)
-	session.tests.add <| `Test(fun, assert);
-	
-let registerFunctions(session, mod) {
-	let t = mod.getType();
-	
-	for (v in t.getGlobals()) {
-		let f = v.getValue();
-		
-		when (f is function)
-			registerFunction(session, f, \(r) r);
+let assert =
+	{
+		eq  = op' "eq"  (==),
+		neq = op' "neq" (<>),
+		gt  = op' "gt"  (>),
+		lt  = op' "lt"  (<),
+		gte = op' "gte" (>=),
+		lte = op' "lte" (<=),
+		eqt = op' "eqt" (==) true,
+		eqf = op' "eqf" (==) false
 	}
-		
-	session.tests.length
-}
-
-let runTests(session) {		
-	var failed = 0;
-
-	let list = 
-		[ 
-			for ((n, f, a) in session.tests)				
-				(
-					n,
-					try (f() |> a, "")
-					catch (e) {
-						failed++;
-						(false, e.message)
-					}
-				)
-		];
-	`TestSessionResult(list, failed)
-}	
-
-let private formatTest(idx, r, n, m)
-	format("\r\n{0}. {1}: {2} {3}", idx, if (r) "Success" else "FAILED ", n, "  " + m);
+    where op' m op x y | op x y = ();
+                       | else   = raise AssertFailed (m)
+    end
+    
+let funData fun = (funName fun, fun)
+                  where funName f = t.module.name ++ "." ++ t.name
+                                    where t = type f                  
+    
+let regFun fun lst = fd :: lst
+                     where fd = funData fun
 	
-let private formatTests(result, idx, str)
-	on (n,(r,m))::xs,.. -> formatTests(xs, idx + 1, str + formatTest(idx, r, n, m))
-	on [],.. -> str + "\r\n";
+let regFuns mod lst = each' funData (?function) vals
+                      where vals = [ v.value @ v <- (type mod).globals ] and
+                            each' f p x::xs | p x  = f x :: each' f p xs;
+                                            | else = each' f p xs;
+                                  _ _ []           = lst
+                      end
+
+let run lst = (res, failed)
+        where exec (n, f) = try (f assert $ n, true, "") with 
+                            `AssertFailed m = (n, false, ": Assert failed: " ++ m);
+                            `             m = (n, false, ": Error occured: " ++ m) 
+                            end and
+              run' x::xs = exec x :: run' xs;
+                   []    = [] and
+              count f i x::xs | f x  = count f (i + 1) xs;
+                              | else = count f i xs;
+                    f i []           = i and
+              res = run' lst and
+              failed = count (\(_,y,_) -> not y) 0 res
+        end
 	
-let formatResult(result) {
-	var str = "Test session started\r\n";
-	str += formatTests(result.tests, 1, "");
-	str += "\r\nTest session finished\r\n";
-	str += format("Executed tests: {0}\r\n", result.tests.length);
-	str += format("Successful tests: {0}\r\n", result.tests.length - result.failed);
-	str += format("Failed tests: {0}", result.failed);
-	str
-}
+let fmt prf (tests, failed) =
+	let tag' true = "Success "; false = "FAILED " and
+        fmt' i (n, r, m) = i +: ". " +: n +: ": " +: (tag' r) +: " " +: m and
+        all' x::xs i = prf <| fmt' i x $ all' xs (i + 1);
+             [] i    = prf ""
+	in prf "Test session started" 
+    $ all' tests 1
+    $ prf "Test session finished"
+    $ prf ("Executed tests: " +: (length tests))
+    $ prf ("Successful tests: " +: (length tests - failed))
+    $ prf ("Failed tests: " +: failed)
