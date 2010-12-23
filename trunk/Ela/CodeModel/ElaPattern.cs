@@ -22,8 +22,6 @@ namespace Ela.CodeModel
 
 		#region Properties
 		internal virtual ElaPatternAffinity Affinity { get { return ElaPatternAffinity.Any; } }
-
-		public ElaExpression Guard { get; set; }
 		#endregion
 	}
 }

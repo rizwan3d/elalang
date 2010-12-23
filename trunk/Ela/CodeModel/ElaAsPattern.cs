@@ -19,6 +19,14 @@ namespace Ela.CodeModel
 		#endregion
 
 
+		#region Methods
+		public override string ToString()
+		{
+			return Pattern.PutInBraces() + "@" + Name;
+		}
+		#endregion
+
+
 		#region Properties
 		public ElaPattern Pattern { get; set; }
 

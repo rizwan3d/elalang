@@ -6,10 +6,6 @@ namespace Ela.CodeModel
 	{
 		Standard,
 
-		BinaryOperator,
-
-		UnaryOperator,
-
-		Constructor
+		Operator
 	}
 }

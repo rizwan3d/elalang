@@ -6,27 +6,64 @@ using Ela.Parsing;
 
 namespace Ela.CodeModel
 {
-	public sealed class ElaTupleLiteral : ElaExpression
+	public class ElaTupleLiteral : ElaExpression
 	{
 		#region Construction
-		internal ElaTupleLiteral(Token tok, bool unit) : base(tok, ElaNodeType.TupleLiteral)
+		internal ElaTupleLiteral(Token tok, ElaNodeType type) : base(tok, type)
 		{
-			if (unit)
-				Flags = ElaExpressionFlags.ReturnsUnit;
-			else
-				Parameters = new List<ElaExpression>();
+
 		}
 
 
-		public ElaTupleLiteral(bool unit) : this(null, unit)
+		internal ElaTupleLiteral(Token tok) : base(tok, ElaNodeType.TupleLiteral)
+		{
+			
+		}
+
+
+		public ElaTupleLiteral() : this(null)
 		{
 			
 		}
 		#endregion
 
 
+		#region Methods
+		public override string ToString()
+		{
+			var sb = new StringBuilder();
+			sb.Append('(');
+			var c = 0;
+
+			foreach (var f in Parameters)
+			{
+				if (c++ > 0)
+					sb.Append(", ");
+
+				sb.Append(f.ToString());
+			}
+
+			sb.Append(')');
+			return sb.ToString();
+		}
+		#endregion
+
+
 		#region Properties
-		public List<ElaExpression> Parameters { get; private set; }
+		private List<ElaExpression> _parameters;
+		public List<ElaExpression> Parameters
+		{
+			get
+			{
+				if (_parameters == null)
+					_parameters = new List<ElaExpression>();
+
+				return _parameters;
+			}
+		}
+
+
+		public bool HasParameters { get { return _parameters != null; } }
 		#endregion
 	}
 }

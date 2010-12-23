@@ -31,6 +31,12 @@ namespace Ela.CodeModel
 			Line = line;
 			Column = column;
 		}
+
+
+		internal virtual string GetName()
+		{
+			return null;
+		}
 		#endregion
 
 
@@ -42,8 +48,6 @@ namespace Ela.CodeModel
 		public ElaExpressionFlags Flags { get; internal protected set; }
 		
 		public ElaNodeType Type { get; protected set; }
-
-		public virtual int Placeholders { get { return 0; } }
 		#endregion
 	}
 }

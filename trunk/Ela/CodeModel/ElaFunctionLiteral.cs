@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using Ela.Parsing;
 
 namespace Ela.CodeModel
@@ -7,62 +8,69 @@ namespace Ela.CodeModel
 	public class ElaFunctionLiteral : ElaExpression
 	{
 		#region Construction
-		internal ElaFunctionLiteral(Token tok, ElaNodeType type) : base(tok, type)
+		internal ElaFunctionLiteral(Token tok, ElaNodeType type)
+			: base(tok, type)
 		{
 
 		}
 
 
-		internal ElaFunctionLiteral(Token tok) : this(tok, ElaNodeType.FunctionLiteral)
-		{
-			
-		}
-
-
-		public ElaFunctionLiteral(ElaNodeType type) : this(null, type)
+		internal ElaFunctionLiteral(Token tok)
+			: this(tok, ElaNodeType.FunctionLiteral)
 		{
 
 		}
 
 
-		public ElaFunctionLiteral() : this(null, ElaNodeType.FunctionLiteral)
+		public ElaFunctionLiteral(ElaNodeType type)
+			: this(null, type)
 		{
-			
+
+		}
+
+
+		public ElaFunctionLiteral()
+			: this(null, ElaNodeType.FunctionLiteral)
+		{
+
+		}
+		#endregion
+
+
+		#region Methods
+		public override string ToString()
+		{
+			if (FunctionType == ElaFunctionType.Operator || Body.Entries.Count > 0)
+				return "let " + this.ToStringAsFunction();
+			else
+			{
+				var pat = Body.Entries[0].Pattern;
+
+				if (pat.Type == ElaNodeType.VariablePattern &&
+					((ElaVariablePattern)pat).Name[0] == '$')
+					return Body.Entries[0].Expression.ToString();
+				else
+					return "\\" + Body.Entries[0].Pattern.ToString() + " -> " + Body.Entries[0].Expression.ToString();
+			}
 		}
 		#endregion
 
 
 		#region Properties
-		public int ParameterSlots { get; set; }
+		public int ParameterCount
+		{
+			get
+			{
+				return Body.Entries[0].Pattern.Type != ElaNodeType.PatternGroup ? 1 :
+					((ElaPatternGroup)Body.Entries[0].Pattern).Patterns.Count;
+			}
+		}
 
 		public ElaFunctionType FunctionType { get; set; }
 
 		public string Name { get; set; }
-	
-		public ElaExpression Expression { get; set; }
 
-
-		public int ParameterCount 
-		{ 
-			get 
-			{ 
-				return ParameterSlots > 0 ? ParameterSlots : 
-					_parameters != null ? _parameters.Count : 0; 
-			} 
-		}
-
-		
-		private List<ElaPattern> _parameters;
-		public List<ElaPattern> Parameters
-		{
-			get
-			{
-				if (_parameters == null)
-					_parameters = new List<ElaPattern>();
-
-				return _parameters;
-			}
-		}
+		public ElaMatch Body { get; set; }
 		#endregion
 	}
 }

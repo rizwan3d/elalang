@@ -19,8 +19,11 @@ namespace Ela.CodeModel
 		#endregion
 
 
-		#region Properties
-		public override int Placeholders { get { return 1; } }		
+		#region Methods
+		public override string ToString()
+		{
+			return "_";
+		}
 		#endregion
 	}
 }

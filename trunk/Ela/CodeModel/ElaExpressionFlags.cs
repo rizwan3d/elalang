@@ -11,8 +11,6 @@ namespace Ela.CodeModel
 
 		ReturnsUnit = 0x04,
 
-		BreaksExecution = 0x08,
-
-		HasYield = 0x10,
+		BreaksExecution = 0x08
 	}
 }

@@ -19,15 +19,19 @@ namespace Ela.CodeModel
 		#endregion
 
 
+		#region Methods
+		public override string ToString()
+		{
+			return Expression + (Pattern.Type == ElaNodeType.IsPattern ? String.Empty :  " ? ") + 
+				Pattern.PutInBracesComplex();
+		}
+		#endregion
+
+
 		#region Properties
 		public ElaPattern Pattern { get; set; }
 
 		public ElaExpression Expression { get; set; }
-
-		public override int Placeholders
-		{
-			get { return Expression.Placeholders; }
-		}
 		#endregion
 	}
 }

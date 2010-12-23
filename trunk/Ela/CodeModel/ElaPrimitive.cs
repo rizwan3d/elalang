@@ -16,6 +16,14 @@ namespace Ela.CodeModel
 			
 		}
 		#endregion
+		
+
+		#region Methods
+		public override string ToString()
+		{
+			return Value.ToString();
+		}
+		#endregion
 
 
 		#region Properties

@@ -19,12 +19,19 @@ namespace Ela.CodeModel
 		#endregion
 
 
+		#region Methods
+		public override string ToString()
+		{
+			return (Expression.IsSimpleExpression() ? Expression.ToString() : Expression.PutInBraces()) +
+				":" + CastAffinity.GetShortForm();
+		}
+		#endregion
+
+
 		#region Properties
 		public ElaExpression Expression { get; set; }
 
 		public ObjectType CastAffinity { get; set; }
-		
-		public override int Placeholders { get { return Expression.Placeholders; } }
 		#endregion
 	}
 }

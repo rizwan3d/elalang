@@ -19,6 +19,14 @@ namespace Ela.CodeModel
 		#endregion
 
 
+		#region Methods
+		public override string ToString()
+		{
+			return FieldName + "=" + (FieldValue.IsSimpleExpression() ? FieldValue.ToString() : FieldValue.PutInBraces());
+		}
+		#endregion
+
+
 		#region Properties
 		public string FieldName { get; set; }
 

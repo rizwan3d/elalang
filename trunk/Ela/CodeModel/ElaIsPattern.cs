@@ -19,6 +19,14 @@ namespace Ela.CodeModel
 		#endregion
 
 
+		#region Methods
+		public override string ToString()
+		{
+			return VariableName + "?" + TypeAffinity.GetShortForm();
+		}
+		#endregion
+
+
 		#region Properties
 		public ObjectType TypeAffinity { get; set; }
 

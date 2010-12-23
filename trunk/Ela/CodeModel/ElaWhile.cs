@@ -20,12 +20,18 @@ namespace Ela.CodeModel
 		#endregion
 
 
+		#region Methods
+		public override string ToString()
+		{
+			return "while " + Condition + " do " + Body;
+		}
+		#endregion
+
+
 		#region Properties
 		public ElaExpression Condition { get; set; }
 
 		public ElaExpression Body { get; set; }
-
-		public ElaWhileType WhileType { get; set; } 
 		#endregion
 	}
 }

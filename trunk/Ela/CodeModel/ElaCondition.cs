@@ -20,14 +20,20 @@ namespace Ela.CodeModel
 		#endregion
 
 
+		#region Methods
+		public override string ToString()
+		{
+			return "if " + Condition.ToString() + " then " + True.ToString() + " else " + False.ToString();
+		}
+		#endregion
+
+
 		#region Properties
 		public ElaExpression Condition { get; set; }
 
 		public ElaExpression True { get; set; }
 
 		public ElaExpression False { get; set; }
-
-		public bool Unless { get; set; }
 		#endregion
 	}
 }

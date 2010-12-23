@@ -11,12 +11,14 @@ namespace Ela.CodeModel
 
 		Private = 0x02,
 
-		Constructor = 0x04,
+		Module = 0x04,
 
 		Function = 0x08,
 
 		ObjectLiteral = 0x10,
 
-		SpecialName = 0x20
+		SpecialName = 0x20,
+
+		Parameter = 0x40
 	}
 }

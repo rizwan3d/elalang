@@ -6,15 +6,28 @@ namespace Ela.CodeModel
 	public sealed class ElaBinary : ElaExpression
 	{
 		#region Construction
-		internal ElaBinary(Token tok) : base(tok, ElaNodeType.Binary)
+		internal ElaBinary(Token tok)
+			: base(tok, ElaNodeType.Binary)
 		{
 
 		}
 
 
-		public ElaBinary() : base(ElaNodeType.Binary)
+		public ElaBinary()
+			: base(ElaNodeType.Binary)
 		{
 
+		}
+		#endregion
+
+
+		#region Methods
+		public override string ToString()
+		{
+			var str = Left.PutInBracesComplex() + " " +
+				(Operator == ElaOperator.Custom ? CustomOperator : Operator.AsString()) +
+				" " + Right.PutInBracesComplex();
+			return Left.IsHiddenVar() || Right.IsHiddenVar() ? str.PutInBraces() : str;
 		}
 		#endregion
 
@@ -24,16 +37,9 @@ namespace Ela.CodeModel
 
 		public ElaExpression Right { get; set; }
 
-		public ElaBinaryOperator Operator { get; set; }
+		public ElaOperator Operator { get; set; }
 
 		public string CustomOperator { get; set; }
-
-		public override int Placeholders { get { return (Left != null ? Left.Placeholders : 0) + (Right != null ? Right.Placeholders : 0); } }
-
-		internal bool Tail
-		{
-			get { return Operator == ElaBinaryOperator.BooleanOr; }
-		}
 		#endregion
 	}
 }

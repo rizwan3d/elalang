@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using Ela.Parsing;
 
 namespace Ela.CodeModel
@@ -20,6 +21,42 @@ namespace Ela.CodeModel
 		#endregion
 
 
+		#region Methods
+		public override string ToString()
+		{
+			var sb = new StringBuilder();
+			sb.Append('[');
+
+			if (Comprehension != null)
+			{
+				var @for = (ElaFor)Comprehension;
+
+				if (@for.ForType == ElaForType.LazyComprehension)
+					sb.Append('&');
+
+				sb.Append(" " + @for.ToStringAsComprehension() + " ");
+			}
+			else if (Range != null)
+				sb.Append(Range.ToString());
+			else
+			{
+				var c = 0;
+
+				foreach (var v in Values)
+				{
+					if (c++ > 0)
+						sb.Append(", ");
+
+					sb.Append(v.ToString());
+				}
+			}
+
+			sb.Append(']');
+			return sb.ToString();
+		}
+		#endregion
+
+
 		#region Properties
 		private List<ElaExpression> _values;
 		public List<ElaExpression> Values 
@@ -33,9 +70,9 @@ namespace Ela.CodeModel
 			}
 		}
 
-
-
 		public ElaExpression Comprehension { get; set; }
+
+		public ElaRange Range { get; set; }
 		#endregion
 	}
 }

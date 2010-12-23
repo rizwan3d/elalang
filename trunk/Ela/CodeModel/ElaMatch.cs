@@ -1,21 +1,50 @@
 ﻿using System;
-using Ela.Parsing;
 using System.Collections.Generic;
+using System.Text;
+using Ela.Parsing;
 
 namespace Ela.CodeModel
 {
-	public sealed class ElaMatch : ElaExpression
+	public class ElaMatch : ElaExpression
 	{
 		#region Construction
-		internal ElaMatch(Token tok) : base(tok, ElaNodeType.Match)
+		internal ElaMatch(Token tok, ElaNodeType type) : base(tok, type)
 		{
 			Entries = new List<ElaMatchEntry>();
 		}
 
 
-		public ElaMatch() : this(null)
+		internal ElaMatch(Token tok) : this(tok, ElaNodeType.Match)
 		{
 			
+		}
+
+
+		public ElaMatch() : this(null, ElaNodeType.Match)
+		{
+			
+		}
+		#endregion
+
+
+		#region Methods
+		public override string ToString()
+		{
+			var sb = new StringBuilder();
+			sb.Append("match ");
+			sb.Append(Expression);
+			sb.AppendLine(" with");
+			var c = 0;
+
+			foreach (var p in Entries)
+			{
+				if (c++ > 0)
+					sb.Append(";\r\n");
+
+				sb.Append(p);
+			}
+
+			return sb.ToString();
 		}
 		#endregion
 

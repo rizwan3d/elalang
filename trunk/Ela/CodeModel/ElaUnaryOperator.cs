@@ -8,22 +8,6 @@ namespace Ela.CodeModel
 
 		Negate,
 
-		Positive,
-
-		BooleanNot,
-
-		BitwiseNot,
-
-		Increment,
-
-		Decrement,
-
-		PostIncrement,
-
-		PostDecrement,
-
-		ValueOf,
-
-		Custom
+		BitwiseNot
 	}
 }

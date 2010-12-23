@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ela.Parsing;
+using System.Text;
 
 namespace Ela.CodeModel
 {
@@ -16,6 +17,19 @@ namespace Ela.CodeModel
 		public ElaBlock() : base(ElaNodeType.Block)
 		{
 			
+		}
+		#endregion
+				
+
+		#region Methods
+		public override string ToString()
+		{
+			var sb = new StringBuilder();
+
+			foreach (var e in Expressions)
+				sb.Append(e.ToString());
+
+			return sb.ToString();
 		}
 		#endregion
 
@@ -34,6 +48,9 @@ namespace Ela.CodeModel
 		}
 
 
+		public bool StartScope { get; set; }
+
+
 		public bool IsEmpty
 		{
 			get { return _expressions == null; }
@@ -44,8 +61,13 @@ namespace Ela.CodeModel
 		{
 			get
 			{
-				return _expressions != null && _expressions.Count > 0 ?
-					_expressions[_expressions.Count - 1] : null;
+				if (_expressions != null && _expressions.Count > 0)
+				{
+					var last = _expressions[_expressions.Count - 1];
+					return last.Type == ElaNodeType.Block ? ((ElaBlock)last).LastExpression : last;
+				}
+				else
+					return null;
 			}
 		}
 		#endregion

@@ -14,18 +14,16 @@ namespace Ela.CodeModel
 		RecordLiteral = 3,
 
 		TupleLiteral = 4,
-
-		VariantLiteral = 5,
 		
-		AsyncLiteral = 6,
+		UnitLiteral = 5,
+
+		FunctionLiteral = 6,
 
 		LazyLiteral = 7,
 
-		FunctionLiteral = 8,
+		VariantLiteral = 8,
 		
-
-
-		Assign,
+		
 
 		Unary,
 
@@ -53,8 +51,6 @@ namespace Ela.CodeModel
 
 		Is,
 
-		Typeof,
-
 		BaseReference,
 		
 		For,
@@ -67,17 +63,13 @@ namespace Ela.CodeModel
 
 		Continue,
 
-		Cout,
-
-		TryCatch,
+		Try,
 
 		Return,
 
-		Ignore,
+		Binding,
 
-		VariableDeclaration,
-
-		Throw,
+		Raise,
 
 		Block,
 
@@ -85,33 +77,34 @@ namespace Ela.CodeModel
 
 		MatchEntry,
 
-		Yield,
+		Range,
 
 		ModuleInclude,
+
+		BuiltinFunction,
+
+		CustomOperator,
+
+
+		OtherwiseGuard,
 		
 		DefaultPattern,
 
-		VoidPattern,
+		UnitPattern,
 
-		ConstructorPattern,
+		NilPattern,
 
 		LiteralPattern,
 
-		BoolPattern,
-
 		VariablePattern,
+
+		VariantPattern,
 
 		HeadTailPattern,
 
-		ValueofPattern,
-
-		ListPattern,
-
-		AndPattern,
-
-		OrPattern,
-
 		SeqPattern,
+
+		RecordPattern,
 
 		ArrayPattern,
 
@@ -119,6 +112,10 @@ namespace Ela.CodeModel
 
 		IsPattern,
 
-		AsPattern
+		CastPattern,
+
+		AsPattern,
+
+		PatternGroup
 	}
 }

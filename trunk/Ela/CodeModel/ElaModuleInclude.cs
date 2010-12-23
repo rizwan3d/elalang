@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using Ela.Parsing;
 
 namespace Ela.CodeModel
@@ -16,6 +17,42 @@ namespace Ela.CodeModel
 		public ElaModuleInclude() : base(ElaNodeType.ModuleInclude)
 		{
 			Flags = ElaExpressionFlags.ReturnsUnit;
+		}
+		#endregion
+
+
+		#region Methods
+		public override string ToString()
+		{
+			var sb = new StringBuilder();
+			sb.Append("open ");
+			sb.Append(Name);
+
+			if (!String.IsNullOrEmpty(Alias) && Alias != Name)
+				sb.Append(" as " + Alias);
+
+			if (!String.IsNullOrEmpty(DllName))
+				sb.Append("[" + DllName + "]");
+
+			if (!String.IsNullOrEmpty(Folder))
+				sb.Append(" at \"" + Folder + "\"");
+
+			if (HasImports)
+			{
+				sb.Append(" with ");
+				var c = 0;
+
+				foreach (var i in _imports)
+				{
+					if (c++ > 0)
+						sb.Append(',');
+
+					sb.Append(i);
+				}
+			}
+
+			sb.AppendLine();
+			return sb.ToString();
 		}
 		#endregion
 

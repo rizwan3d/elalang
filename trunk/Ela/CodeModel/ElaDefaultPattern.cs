@@ -17,5 +17,13 @@ namespace Ela.CodeModel
 
 		}
 		#endregion
+
+
+		#region Methods
+		public override string ToString()
+		{
+			return "_";
+		}
+		#endregion
 	}
 }

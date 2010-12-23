@@ -19,6 +19,15 @@ namespace Ela.CodeModel
 		#endregion
 
 
+		#region Methods
+		public override string ToString()
+		{
+			return ExternalName == LocalName ? ExternalName :
+				(ExternalName + " = " + LocalName);
+		}
+		#endregion
+
+
 		#region Properties
 		public string ExternalName { get; set; }
 

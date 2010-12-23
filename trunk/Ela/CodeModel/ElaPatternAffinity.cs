@@ -20,6 +20,8 @@ namespace Ela.CodeModel
 
 		Array = 0x200,
 
-		Sequence = 0x400
+		Sequence = 0x400,
+
+		Symbol = 0x800
 	}
 }

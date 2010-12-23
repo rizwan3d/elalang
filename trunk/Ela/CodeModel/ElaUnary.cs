@@ -19,14 +19,18 @@ namespace Ela.CodeModel
 		#endregion
 
 
+		#region Methods
+		public override string ToString()
+		{
+			return Operator.AsString() + Expression.PutInBracesComplex();
+		}
+		#endregion
+
+
 		#region Properties
 		public ElaExpression Expression { get; set; }
 
 		public ElaUnaryOperator Operator { get; set; }
-
-		public string CustomOperator { get; set; }
-
-		public override int Placeholders { get { return Expression != null ? Expression.Placeholders : 0; } }		
 		#endregion
 	}
 }

@@ -19,6 +19,14 @@ namespace Ela.CodeModel
 		#endregion
 
 
+		#region Methods
+		public override string ToString()
+		{
+			return TargetObject.PutInBracesComplex() + ".[" + Index.ToString() + "]";
+		}
+		#endregion
+
+
 		#region Properties
 		public ElaExpression Index { get; set; }
 

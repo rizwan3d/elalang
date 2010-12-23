@@ -19,6 +19,14 @@ namespace Ela.CodeModel
 		#endregion
 
 
+		#region Methods
+		public override string ToString()
+		{
+			return "$" + ArgumentName;
+		}
+		#endregion
+
+
 		#region Properties
 		public string ArgumentName { get; set; }
 		#endregion

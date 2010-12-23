@@ -19,6 +19,14 @@ namespace Ela.CodeModel
 		#endregion
 
 
+		#region Methods
+		public override string ToString()
+		{
+			return "return " + Expression.ToString();
+		}
+		#endregion
+
+
 		#region Properties
 		public ElaExpression Expression { get; set; }
 		#endregion

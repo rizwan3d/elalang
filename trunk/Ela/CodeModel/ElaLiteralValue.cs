@@ -126,6 +126,37 @@ namespace Ela.CodeModel
 		{
 			return data;
 		}
+
+
+		public ElaLiteralValue MakeNegative()
+		{
+			if (LiteralType == ObjectType.Integer)
+				return new ElaLiteralValue(-AsInteger());
+			else if (LiteralType == ObjectType.Long)
+				return new ElaLiteralValue(-AsLong());
+			else if (LiteralType == ObjectType.Single)
+				return new ElaLiteralValue(-AsReal());
+			else if (LiteralType == ObjectType.Double)
+				return new ElaLiteralValue(-AsDouble());
+			else
+				throw new NotSupportedException();
+		}
+
+
+		public override string ToString()
+		{
+			switch (LiteralType)
+			{
+				case ObjectType.Integer: return AsInteger().ToString(Culture.NumberFormat);
+				case ObjectType.Long: return AsLong().ToString(Culture.NumberFormat) + "L";
+				case ObjectType.Boolean: return AsBoolean().ToString().ToLower();
+				case ObjectType.Char: return "'" + AsChar().ToString() + "'";
+				case ObjectType.Single: return AsReal().ToString(Culture.NumberFormat);
+				case ObjectType.Double: return AsDouble().ToString(Culture.NumberFormat) + "D";
+				case ObjectType.String: return "\"" + AsString() + "\"";
+				default: return String.Empty;
+			}
+		}
 		#endregion
 
 

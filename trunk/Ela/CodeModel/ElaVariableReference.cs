@@ -19,6 +19,20 @@ namespace Ela.CodeModel
 		#endregion
 
 
+		#region Methods
+		internal override string GetName()
+		{
+			return VariableName;
+		}
+
+
+		public override string ToString()
+		{
+			return VariableName[0] == '$' ? String.Empty : VariableName;
+		}
+		#endregion
+
+
 		#region Properties
 		public string VariableName { get; set; }
 		#endregion

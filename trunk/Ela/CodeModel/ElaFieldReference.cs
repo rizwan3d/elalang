@@ -19,12 +19,19 @@ namespace Ela.CodeModel
 		#endregion
 
 
+		#region Methods
+		public override string ToString()
+		{
+			return (TargetObject.IsSimpleExpression() ? TargetObject.ToString() : TargetObject.PutInBraces()) +
+				"." + FieldName;
+		}
+		#endregion
+
+
 		#region Properties
 		public string FieldName { get; set; }
 
 		public ElaExpression TargetObject { get; set; }
-
-		public override int Placeholders { get { return TargetObject.Placeholders; } }
 		#endregion
 	}
 }
