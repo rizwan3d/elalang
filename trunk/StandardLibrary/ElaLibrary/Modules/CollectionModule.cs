@@ -18,17 +18,17 @@ namespace Ela.StandardLibrary.Modules
 
 
 		#region Methods
-		[Function("where")]
-		internal ElaSequence Where(ElaSequence seq, ElaFunction selector)
-		{
-			return new ElaSequence(seq.Where(e => selector.Call(e).ToBoolean(null)));
-		}
+		//[Function("where")]
+		//internal ElaSequence Where(ElaSequence seq, ElaFunction selector)
+		//{
+		//    return new ElaSequence(seq.Where(e => selector.Call(e).ToBoolean(null)));
+		//}
 
 
 		[Function("arrayToList")]
 		internal ElaList ArrayToList(ElaArray array)
 		{
-			var list = ElaList.Nil;
+			var list = ElaList.GetNil();
 
 			for (var i = array.Length; i > -1; --i)
 				list = new ElaList(list, array[i]);
@@ -37,23 +37,23 @@ namespace Ela.StandardLibrary.Modules
 		}
 
 
-		[Function("distinct")]
-		internal ElaSequence Distinct(ElaSequence seq)
-		{
-			var newSeq = seq.Distinct();
-			return new ElaSequence(newSeq);
-		}
+		//[Function("distinct")]
+		//internal ElaSequence Distinct(ElaSequence seq)
+		//{
+		//    var newSeq = seq.Distinct();
+		//    return new ElaSequence(newSeq);
+		//}
 
 
-		[Function("length")]
-		internal int Length(ElaSequence seq)
-		{
-			return seq.Count();
-		}
+		//[Function("length")]
+		//internal int Length(ElaSequence seq)
+		//{
+		//    return seq.Count();
+		//}
 
 
 		[Function("listItem")]
-		internal RuntimeValue ListItem(ElaList list, int index)
+		internal ElaValue ListItem(ElaList list, int index)
 		{
 			return list.ElementAt(index);
 		}
@@ -95,7 +95,7 @@ namespace Ela.StandardLibrary.Modules
 		[Function("reverseList")]
 		internal ElaList ReverseList(ElaList list)
 		{
-			var newList = ElaList.Nil;
+			var newList = ElaList.GetNil();
 
 			foreach (var e in list)
 				newList = new ElaList(newList, e);
@@ -132,7 +132,7 @@ namespace Ela.StandardLibrary.Modules
 		[Function("sortList")]
 		internal ElaList SortList(ElaList list, ElaFunction func)
 		{
-			var newList = ElaList.Nil;
+			var newList = ElaList.GetNil();
 
 			foreach (var i in list.OrderBy(k => func.Call(k)).Reverse())
 				newList = new ElaList(newList, i);

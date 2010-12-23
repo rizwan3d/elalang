@@ -19,10 +19,25 @@ namespace Ela.StandardLibrary.Modules
 
 		#region Methods
 		[Function("print")]
-		internal void Print(RuntimeValue value)
+		internal void Print(ElaValue value)
 		{
-			Console.WriteLine(ValueFormatter.FormatValue(value));
+			Console.WriteLine(value);
 		}
+
+
+		[Function("fake3")]
+		internal void Fake3(ElaValue p1, ElaValue p2, ElaValue p3)
+		{
+			
+		}
+
+
+		[Function("callMe")]
+		internal ElaValue CallMe(ElaValue p1, ElaValue p2, ElaValue p3, ElaFunction fun)
+		{
+			return fun.Call(p1, p2, p3);
+		}
+
 
 
 		[Function("getArray")]
@@ -31,7 +46,7 @@ namespace Ela.StandardLibrary.Modules
 			var arr = new ElaArray(size);
 
 			for (var i = 0; i < size; i++)
-				arr[i] = new RuntimeValue(i);
+				arr.Add(new ElaValue(i));
 
 			return arr;
 		}
@@ -40,10 +55,10 @@ namespace Ela.StandardLibrary.Modules
 		[Function("getList")]
 		internal ElaList GetList(int size)
 		{
-			var list = ElaList.Nil;
+			var list = ElaList.GetNil();
 
 			for (var i = size; i > -1; --i)
-				list = new ElaList(list, new RuntimeValue(i));
+				list = new ElaList(list, new ElaValue(i));
 
 			return list;
 		}

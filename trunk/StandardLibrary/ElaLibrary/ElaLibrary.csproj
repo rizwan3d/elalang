@@ -119,6 +119,7 @@
     <Compile Include="Modules\CollectionModule.cs" />
     <Compile Include="Modules\DebugModule.cs" />
     <Compile Include="Modules\MathModule.cs" />
+    <Compile Include="Modules\FormatModule.cs" />
     <Compile Include="Modules\StringModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

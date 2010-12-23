@@ -6,3 +6,4 @@ using Ela.StandardLibrary.Modules;
 [assembly: ElaModule("Math", typeof(MathModule))]
 [assembly: ElaModule("Collection", typeof(CollectionModule))]
 [assembly: ElaModule("String", typeof(StringModule))]
+[assembly: ElaModule("Fmt", typeof(FormatModule))]

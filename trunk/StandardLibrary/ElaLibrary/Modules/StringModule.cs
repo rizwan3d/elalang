@@ -4,6 +4,7 @@ using Ela.ModuleGenerator;
 using Ela.Runtime.ObjectModel;
 using Ela.Runtime;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Ela.StandardLibrary.Modules
 {
@@ -17,35 +18,85 @@ namespace Ela.StandardLibrary.Modules
 		#endregion
 
 
-		#region Methods
-		[Function("format", UnlimitedParameters = true)]
-		internal string Format(RuntimeValue[] args)
+		#region Nested Classes
+		internal sealed class ElaStringBuilder : ElaObject
 		{
-			if (args.Length == 0)
-				return String.Empty;
-			else if (args[0].DataType != ObjectType.String)
-				throw new ElaParameterTypeException(ObjectType.String, args[0].DataType);
+			private StringBuilder builder;
 
-			var str = args[0].ToString();
-
-			if (args.Length == 2)
+			internal ElaStringBuilder() : base(ElaTraits.Convert|ElaTraits.Show|ElaTraits.Eq)
 			{
-				var obj = default(IEnumerable<RuntimeValue>);
+				builder = new StringBuilder();
+			}
 
-				if ((obj = (args[1].ToObject() as IEnumerable<RuntimeValue>)) != null)
-					return String.Format(str, obj.Select(o => o.ToObject()).ToArray());
+
+			protected override ElaValue Convert(ObjectType type, ExecutionContext ctx)
+			{
+				if (type == ObjectType.String)
+					return new ElaValue(builder.ToString());
 				else
-					return String.Format(str, args[1]);
+				{
+					ctx.ConversionFailed(new ElaValue(this), type, "Only conversion to string is supported by string builder.");
+					return Default();
+				}
 			}
-			else
+
+
+			protected override string Show(ExecutionContext ctx, ShowInfo info)
 			{
-				var arr = new object[args.Length - 1];
-
-				for (var i = 1; i < args.Length; i++)
-					arr[i - 1] = args[i].ToObject();
-
-				return String.Format(str, arr);
+				return new ElaValue(builder.ToString()).ToString();
 			}
+
+
+			protected override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+			{
+				return new ElaValue(left.AsObject() == right.AsObject());
+			}
+
+
+			protected override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+			{
+				return new ElaValue(left.AsObject() != right.AsObject());
+			}
+
+
+			internal void Append(string str)
+			{
+				builder.Append(str);
+			}
+		}
+		#endregion
+
+
+		#region Methods
+		[Function("format")]
+		internal string Format(string format, ElaValue arg)
+		{
+			var obj = default(IEnumerable<ElaValue>);
+
+			if ((obj = (arg.AsObject() as IEnumerable<ElaValue>)) != null)
+				return String.Format(format, obj.Select(o => o.AsObject()).ToArray());
+			else
+				return String.Format(format, arg);
+		}
+
+
+		[Function("builder")]
+		internal ElaObject CreateBuilder()
+		{
+			return new ElaStringBuilder();
+		}
+
+
+		[Function("append")]
+		internal ElaObject Append(string str, ElaObject obj)
+		{
+			var builder = obj as ElaStringBuilder;
+
+			if (builder == null)
+				throw new ElaParameterTypeException(obj.GetTypeInfo().TypeCode);
+
+			builder.Append(str);
+			return builder;
 		}
 
 
@@ -64,35 +115,35 @@ namespace Ela.StandardLibrary.Modules
 
 
 		[Function("indexOf")]
-		internal int IndexOf(string str, string cs)
+		internal int IndexOf(string sc, string str)
 		{
-			return str.IndexOf(cs);
+			return str.IndexOf(sc);
 		}
 
 
 		[Function("indexOfFrom")]
-		internal int IndexOf2(int index, string str)
+		internal int IndexOf2(string sc, int index, string str)
 		{
-			return str.IndexOf(str, index);
+			return str.IndexOf(sc, index);
 		}
 
 
 		[Function("lastIndexOf")]
-		internal int LastIndexOf(string str, string cs)
+		internal int LastIndexOf(string sc, string str)
 		{
-			return str.LastIndexOf(cs);
+			return str.LastIndexOf(sc);
 		}
 
 
 		[Function("indexOfAny")]
-		internal int IndexOfAny(string str, char[] chars)
+		internal int IndexOfAny(char[] chars, string str)
 		{
 			return str.IndexOfAny(chars);
 		}
 
 
 		[Function("indexOfAnyFrom")]
-		internal int IndexOfAnyFrom(string str, int index, char[] chars)
+		internal int IndexOfAnyFrom(char[] chars, int index, string str)
 		{
 			return str.IndexOfAny(chars, index);
 		}
@@ -184,13 +235,13 @@ namespace Ela.StandardLibrary.Modules
 
 
 		[Function("splitToList")]
-		internal ElaList SplitToList(string str, string[] seps)
+		internal ElaList SplitToList(string[] seps, string str)
 		{
 			var arr = Split(str, seps);
-			var list = ElaList.Nil;
+			var list = ElaList.GetNil();
 
 			for (var i = arr.Length - 1; i > -1; i--)
-				list = new ElaList(list, new RuntimeValue(arr[i]));
+				list = new ElaList(list, new ElaValue(arr[i]));
 			
 			return list;
 		}
