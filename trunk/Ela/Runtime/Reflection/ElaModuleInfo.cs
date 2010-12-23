@@ -9,8 +9,8 @@ namespace Ela.Runtime.Reflection
 	public sealed class ElaModuleInfo : ElaTypeInfo, IEquatable<ElaModuleInfo>
 	{
 		#region Construction
-		private const string GETGLOBALS = "getGlobals";
-		private const string GETREFERENCES = "getReferences";
+		private const string GLOBALS = "globals";
+		private const string REFERENCES = "references";
 		private const string ASSEMBLY = "assembly";
 		private const string HANDLE = "handle";
 		private const string NAME = "name";
@@ -20,9 +20,10 @@ namespace Ela.Runtime.Reflection
 
 		private IEnumerable<ElaVariableInfo> variables;
 		private IEnumerable<ElaReferenceInfo> references;
-		
-		internal ElaModuleInfo(ElaMachine vm, int handle, string name, string codeBase, bool native,
-			IEnumerable<ElaVariableInfo> variables, IEnumerable<ElaReferenceInfo> references) : base(ObjectType.Module)
+
+		internal ElaModuleInfo(ElaObject obj, ElaMachine vm, int handle, string name, string codeBase, bool native,
+			IEnumerable<ElaVariableInfo> variables, IEnumerable<ElaReferenceInfo> references)
+			: base(11, obj)
 		{
 			Handle = handle;
 			Name = name;
@@ -32,44 +33,19 @@ namespace Ela.Runtime.Reflection
 			Assembly = vm != null ? new ElaAssemblyInfo(vm) : null;
 			this.variables = variables;
 			this.references = references;
+
+			AddField(3, GLOBALS, new ElaValue(new ElaArray(GetGlobalVariables())));
+			AddField(4, REFERENCES, new ElaValue(new ElaArray(GetReferences())));
+			AddField(5, ASSEMBLY, new ElaValue(Assembly));
+			AddField(6, HANDLE, new ElaValue(Handle));
+			AddField(7, NAME, new ElaValue(Name));
+			AddField(8, CODEBASE, new ElaValue(CodeBase));
+			AddField(9, ISNATIVE, new ElaValue(IsNative));
+			AddField(10, ISMAINMODULE, new ElaValue(IsMainModule));
 		}
 		#endregion
 
 
-		#region Functions
-		private sealed class GetVariablesFunction : ElaFunction
-		{
-			private ElaModuleInfo obj;
-
-			internal GetVariablesFunction(ElaModuleInfo obj) : base(0)
-			{
-				this.obj = obj;
-			}
-
-			public override RuntimeValue Call(params RuntimeValue[] args)
-			{
-				return new RuntimeValue(new ElaArray(obj.GetGlobalVariables()));
-			}
-		}
-
-
-		private sealed class GetReferencesFunction : ElaFunction
-		{
-			private ElaModuleInfo obj;
-
-			internal GetReferencesFunction(ElaModuleInfo obj) : base(0)
-			{
-				this.obj = obj;
-			}
-
-			public override RuntimeValue Call(params RuntimeValue[] args)
-			{
-				return new RuntimeValue(new ElaArray(obj.GetReferences()));
-			}
-		}
-		#endregion
-
-		
 		#region Methods
 		public static bool Equals(ElaModuleInfo lho, ElaModuleInfo rho)
 		{
@@ -113,35 +89,16 @@ namespace Ela.Runtime.Reflection
 		{
 			return Name;
 		}
-
-
-		internal protected override RuntimeValue GetAttribute(string name)
-		{
-			switch (name)
-			{
-				case GETGLOBALS: return new RuntimeValue(new GetVariablesFunction(this));
-				case GETREFERENCES: return new RuntimeValue(new GetReferencesFunction(this));
-
-				case ASSEMBLY: return new RuntimeValue(Assembly);
-				case HANDLE: return new RuntimeValue(Handle);
-				case NAME: return new RuntimeValue(Name);
-				case CODEBASE: return new RuntimeValue(CodeBase);
-				case ISNATIVE: return new RuntimeValue(IsNative);
-				case ISMAINMODULE: return new RuntimeValue(IsMainModule);
-
-				default: return base.GetAttribute(name);
-			}
-		}
 		#endregion
 
 
 		#region Properties
 		public ElaAssemblyInfo Assembly { get; private set; }
-		
+
 		public int Handle { get; private set; }
 
 		public string Name { get; private set; }
-		
+
 		public string CodeBase { get; private set; }
 
 		public bool IsNative { get; private set; }

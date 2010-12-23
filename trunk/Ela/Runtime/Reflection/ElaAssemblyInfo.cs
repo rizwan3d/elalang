@@ -19,10 +19,20 @@ namespace Ela.Runtime.Reflection
 		private const string GETARGVALUE = "getArgValue";
 		private ElaMachine vm;
 
-		internal ElaAssemblyInfo(ElaMachine vm)
+		internal ElaAssemblyInfo(ElaMachine vm) : base(8)
 		{
 			this.vm = vm;
 			Assembly = vm.Assembly;
+
+
+			AddField(0, MODULECOUNT, new ElaValue(Assembly.ModuleCount));
+			AddField(1, ARGCOUNT, new ElaValue(Assembly.ArgumentCount));
+			AddField(2, ISREGISTERED, new ElaValue(new IsRegisteredFunction(Assembly)));
+			AddField(3, GETROOTMODULE, new ElaValue(new GetRootModuleFunction(this)));
+			AddField(4, GETMODULES, new ElaValue(new GetModuleFunction(this)));
+			AddField(5, GETMODULE, new ElaValue(new GetModuleFunction(this)));
+			AddField(6, GETARGUMENTS, new ElaValue(new GetArgumentFunction(Assembly)));
+			AddField(7, GETARGVALUE, new ElaValue(new GetArgumentFunction(Assembly)));
 		}
 		#endregion
 
@@ -37,9 +47,9 @@ namespace Ela.Runtime.Reflection
 				this.asm = asm;
 			}
 
-			public override RuntimeValue Call(params RuntimeValue[] args)
+			public override ElaValue Call(params ElaValue[] args)
 			{
-				return new RuntimeValue(asm.IsModuleRegistered(args[0].ToString()));
+				return new ElaValue(asm.IsModuleRegistered(args[0].ToString()));
 			}
 		}
 
@@ -53,9 +63,9 @@ namespace Ela.Runtime.Reflection
 				this.obj = obj;
 			}
 
-			public override RuntimeValue Call(params RuntimeValue[] args)
+			public override ElaValue Call(params ElaValue[] args)
 			{
-				return new RuntimeValue(new ElaModule(0, obj.vm).GetTypeInfo());
+				return new ElaValue(new ElaModule(0, obj.vm).GetTypeInfo());
 			}
 		}
 
@@ -69,9 +79,9 @@ namespace Ela.Runtime.Reflection
 				this.obj = obj;
 			}
 
-			public override RuntimeValue Call(params RuntimeValue[] args)
+			public override ElaValue Call(params ElaValue[] args)
 			{
-				return new RuntimeValue(new ElaArray(obj.Assembly.EnumerateModules().Select(
+				return new ElaValue(new ElaArray(obj.Assembly.EnumerateModules().Select(
 					m => new ElaModule(obj.Assembly.GetModuleHandle(m), obj.vm)).ToArray()));
 			}
 		}
@@ -86,9 +96,9 @@ namespace Ela.Runtime.Reflection
 				this.obj = obj;
 			}
 
-			public override RuntimeValue Call(params RuntimeValue[] args)
+			public override ElaValue Call(params ElaValue[] args)
 			{
-				return new RuntimeValue(new ElaModule(obj.Assembly.GetModuleHandle(args[0].ToString()), obj.vm));
+				return new ElaValue(new ElaModule(obj.Assembly.GetModuleHandle(args[0].ToString()), obj.vm));
 			}
 		}
 
@@ -102,9 +112,9 @@ namespace Ela.Runtime.Reflection
 				this.asm = asm;
 			}
 
-			public override RuntimeValue Call(params RuntimeValue[] args)
+			public override ElaValue Call(params ElaValue[] args)
 			{
-				return new RuntimeValue(new ElaArray(asm.EnumerateArguments().ToArray()));
+				return new ElaValue(new ElaArray(asm.EnumerateArguments().ToArray()));
 			}
 		}
 
@@ -118,11 +128,11 @@ namespace Ela.Runtime.Reflection
 				this.asm = asm;
 			}
 
-			public override RuntimeValue Call(params RuntimeValue[] args)
+			public override ElaValue Call(params ElaValue[] args)
 			{
-				var val = default(RuntimeValue);
+				var val = default(ElaValue);
 				return asm.TryGetArgument(args[0].ToString(), out val) ? val :
-					new RuntimeValue(ElaObject.Unit);
+					new ElaValue(ElaUnit.Instance);
 			}
 		}
 		#endregion
@@ -152,24 +162,6 @@ namespace Ela.Runtime.Reflection
 		public override int GetHashCode()
 		{
 			return Assembly.GetHashCode();
-		}
-
-
-		internal protected override RuntimeValue GetAttribute(string name)
-		{
-			switch (name)
-			{
-				case MODULECOUNT: return new RuntimeValue(Assembly.ModuleCount);
-				case ARGCOUNT: return new RuntimeValue(Assembly.ArgumentCount);
-				case ISREGISTERED: return new RuntimeValue(new IsRegisteredFunction(Assembly));
-				case GETROOTMODULE: return new RuntimeValue(new GetRootModuleFunction(this));
-				case GETMODULES: return new RuntimeValue(new GetModuleFunction(this));
-				case GETMODULE: return new RuntimeValue(new GetModuleFunction(this));
-				case GETARGUMENTS: return new RuntimeValue(new GetArgumentFunction(Assembly));
-				case GETARGVALUE: return new RuntimeValue(new GetArgumentFunction(Assembly));
-
-				default: return base.GetAttribute(name);
-			}
 		}
 		#endregion
 

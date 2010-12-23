@@ -11,12 +11,17 @@ namespace Ela.Runtime.Reflection
 		private const string ALIAS = "alias";
 		private const string FOLDER = "folder";
 		
-		internal ElaReferenceInfo(string moduleName, string dllName, string alias, string folder)
+		internal ElaReferenceInfo(string moduleName, string dllName, string alias, string folder) : base(4)
 		{
 			ModuleName = moduleName;
 			DllName = dllName;
 			Alias = alias;
 			Folder = folder;
+
+			AddField(0, MODULENAME, new ElaValue(ModuleName));
+			AddField(1, DLLNAME, new ElaValue(DllName));
+			AddField(2, ALIAS, new ElaValue(Alias));
+			AddField(3, FOLDER, new ElaValue(Folder));
 		}
 		#endregion
 
@@ -46,19 +51,6 @@ namespace Ela.Runtime.Reflection
 		public override int GetHashCode()
 		{
 			return ModuleName.GetHashCode();
-		}
-		
-		
-		internal protected override RuntimeValue GetAttribute(string name)
-		{
-			switch (name)
-			{
-				case MODULENAME: return new RuntimeValue(ModuleName);
-				case DLLNAME: return new RuntimeValue(DllName);
-				case ALIAS: return new RuntimeValue(Alias);
-				case FOLDER: return new RuntimeValue(Folder);
-				default: return base.GetAttribute(name);
-			}
 		}
 		#endregion
 

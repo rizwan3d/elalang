@@ -12,22 +12,28 @@ namespace Ela.Runtime.Reflection
 		private const string NAME = "name";
 		private const string PARAMS = "parameters";
 		private const string ISNATIVE = "isNative";
-		private const string ISSTATIC = "isStatic";
 		private const string ISGLOBAL = "isGlobal";
-		private const string ISCURRIED = "isCurried";
+		private const string ISPARTIAL = "isPartial";
 
 		
-		internal ElaFunctionInfo(ElaModuleInfo module, int handle, string name, int pars, bool isNative, bool isStatic, 
-			bool isGlobal, bool isCurried) : base(ObjectType.Function)
+		internal ElaFunctionInfo(ElaObject obj, ElaModuleInfo module, int handle, string name, int pars, bool isNative, 
+			bool isGlobal, bool isPartial) : base(10, obj)
 		{
 			DeclaringModule = module;
 			Handle = handle;
 			Name = name;
 			Parameters = pars;
 			IsNative = isNative;
-			IsStatic = isStatic;
 			IsGlobal = isGlobal;
-			IsCurried = isCurried;
+			IsPartiallyApplied = isPartial;
+
+			AddField(3, MODULE, DeclaringModule != null ? new ElaValue(DeclaringModule) : new ElaValue(ElaUnit.Instance));
+			AddField(4, HANDLE, new ElaValue(Handle));
+			AddField(5, NAME, new ElaValue(Name));
+			AddField(6, PARAMS, new ElaValue(Parameters));
+			AddField(7, ISNATIVE, new ElaValue(IsNative));
+			AddField(8, ISGLOBAL, new ElaValue(IsGlobal));
+			AddField(9, ISPARTIAL, new ElaValue(IsPartiallyApplied));
 		}
 		#endregion
 
@@ -38,8 +44,8 @@ namespace Ela.Runtime.Reflection
 			return Object.ReferenceEquals(lho, rho) ||
 				!Object.ReferenceEquals(lho, null) && !Object.ReferenceEquals(rho, null) &&
 				lho.Name == rho.Name && lho.Parameters == rho.Parameters &&
-				lho.IsNative == rho.IsNative && lho.IsStatic == rho.IsStatic &&
-				lho.IsGlobal == rho.IsGlobal && lho.IsCurried == rho.IsCurried;
+				lho.IsNative == rho.IsNative && lho.IsGlobal == rho.IsGlobal && 
+				lho.IsPartiallyApplied == rho.IsPartiallyApplied;
 		}
 
 
@@ -58,24 +64,7 @@ namespace Ela.Runtime.Reflection
 		public override int GetHashCode()
 		{
 			return Name.GetHashCode();
-		}
-		
-		
-		internal protected override RuntimeValue GetAttribute(string name)
-		{
-			switch (name)
-			{
-				case MODULE: return new RuntimeValue(DeclaringModule);
-				case HANDLE: return new RuntimeValue(Handle);
-				case NAME: return new RuntimeValue(Name);
-				case PARAMS: return new RuntimeValue(Parameters);
-				case ISNATIVE: return new RuntimeValue(IsNative);
-				case ISSTATIC: return new RuntimeValue(IsStatic);
-				case ISGLOBAL: return new RuntimeValue(IsGlobal);
-				case ISCURRIED: return new RuntimeValue(IsCurried);
-				default: return base.GetAttribute(name);
-			}
-		}
+		}		
 		#endregion
 
 
@@ -90,11 +79,9 @@ namespace Ela.Runtime.Reflection
 
 		public bool IsNative { get; private set; }
 
-		public bool IsStatic { get; private set; }
-
 		public bool IsGlobal { get; private set; }
 		
-		public bool IsCurried { get; private set; }
+		public bool IsPartiallyApplied { get; private set; }
 		#endregion
 
 

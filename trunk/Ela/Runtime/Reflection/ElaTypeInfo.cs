@@ -11,20 +11,26 @@ namespace Ela.Runtime.Reflection
 		private const string TYPE = "type";
 		private const string TYPEID = "typeId";
 		private const string ISBYREF = "isByRef";
-		private const string ISINDEXED = "isIndexed";
-		private const string ISENUM = "isEnumerable";
-		private const string ISNUMBER = "isNumeric";
-		private const string ISTUPLE = "isTuple";
-		
-		internal ElaTypeInfo(ObjectType type)
+
+		private ElaObject obj;
+
+		internal ElaTypeInfo(ElaObject obj) : this(3, obj)
 		{
-			TypeCode = type;
+
+		}
+
+		internal ElaTypeInfo(int size, ElaObject obj) : base(size)
+		{
+			this.obj = obj;
+
+			AddField(0, TYPE, new ElaValue(TypeCode.GetShortForm()));
+			AddField(1, TYPEID, new ElaValue((Int32)TypeCode));
+			AddField(2, ISBYREF, new ElaValue(IsByRef));
+
 		}
 		#endregion
 
-
-	
-
+		
 		#region Methods
 		public static bool Equals(ElaTypeInfo lho, ElaTypeInfo rho)
 		{
@@ -50,36 +56,14 @@ namespace Ela.Runtime.Reflection
 		{
 			return (Int32)TypeCode;
 		}
-
-
-		internal protected override RuntimeValue GetAttribute(string name)
-		{
-			switch (name)
-			{
-				case TYPE: return new RuntimeValue(TypeCode.GetShortForm());
-				case TYPEID: return new RuntimeValue((Int32)TypeCode);
-				case ISBYREF: return new RuntimeValue(IsByRef);
-				case ISENUM: return new RuntimeValue(IsEnumerable);
-				case ISNUMBER: return new RuntimeValue(IsNumeric);
-				case ISTUPLE: return new RuntimeValue(IsTuple);			
-				
-				default: return base.GetAttribute(name);
-			}
-		}
-
-
-		private void CheckObject(ElaObject obj)
-		{
-			if (obj == null)
-				throw new ArgumentNullException("obj");
-			else if (obj.TypeId != (Int32)TypeCode)
-				throw new ElaParameterTypeException(TypeCode, (ObjectType)obj.TypeId);
-		}
 		#endregion
 
 
 		#region Properties
-		public ObjectType TypeCode { get; private set; }
+		public ObjectType TypeCode
+		{
+			get { return (ObjectType)obj.TypeId; }
+		}
 
 
 		public bool IsByRef
@@ -89,33 +73,6 @@ namespace Ela.Runtime.Reflection
 				return TypeCode != ObjectType.Integer && TypeCode != ObjectType.Char &&
 					TypeCode != ObjectType.Boolean && TypeCode != ObjectType.Single;
 			}
-		}
-
-
-		public bool IsEnumerable
-		{
-			get 
-			{ 
-				return TypeCode == ObjectType.Array || TypeCode == ObjectType.Tuple ||
-					TypeCode == ObjectType.Record || TypeCode == ObjectType.String  || 
-					TypeCode == ObjectType.Sequence || TypeCode == ObjectType.List; 
-			}
-		}
-
-
-		public bool IsNumeric
-		{
-			get 
-			{ 
-				return TypeCode == ObjectType.Integer || TypeCode == ObjectType.Single ||
-					TypeCode == ObjectType.Double || TypeCode == ObjectType.Long; 
-			}
-		}
-
-
-		public bool IsTuple
-		{
-			get { return TypeCode == ObjectType.Tuple || TypeCode == ObjectType.Record; }
 		}
 		#endregion
 

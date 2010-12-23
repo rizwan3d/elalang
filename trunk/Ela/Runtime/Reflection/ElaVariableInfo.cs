@@ -10,39 +10,26 @@ namespace Ela.Runtime.Reflection
 		private const string ADDRESS = "address";
 		private const string NAME = "name";
 		private const string ISIMMUTABLE = "isImmutable";
-		private const string ISCONSTRUCTOR = "isConstructor";
 		private const string ISPRIVATE = "isPrivate";
-		private const string GETVALUE = "getValue";
-		private RuntimeValue value;
+		private const string VALUE = "value";
+		private ElaValue value;
 		private int moduleHandle;
 		
-		internal ElaVariableInfo(int moduleHandle, int address, string name, RuntimeValue value, bool immutable, bool priv, bool ctor)
+		internal ElaVariableInfo(int moduleHandle, int address, string name, ElaValue value, bool immutable, bool priv) : base(5)
 		{
 			Address = address;
 			Name = name;
 			IsImmutable = immutable;
 			IsPrivate = priv;
-			IsConstructor = ctor;
 			this.moduleHandle = moduleHandle;
 			this.value = value;
-		}
-		#endregion
 
 
-		#region Ela Functions
-		private sealed class GetValueFunction : ElaFunction
-		{
-			private ElaVariableInfo obj;
-
-			internal GetValueFunction(ElaVariableInfo obj) : base(0)
-			{
-				this.obj = obj;
-			}
-
-			public override RuntimeValue Call(params RuntimeValue[] args)
-			{
-				return obj.GetVariableValue();
-			}
+			AddField(0, ADDRESS, new ElaValue(Address));
+			AddField(1, NAME,  new ElaValue(Name));
+			AddField(2, ISIMMUTABLE, new ElaValue(IsImmutable));
+			AddField(3, ISPRIVATE, new ElaValue(IsPrivate));
+			AddField(4, VALUE, value);
 		}
 		#endregion
 
@@ -74,24 +61,9 @@ namespace Ela.Runtime.Reflection
 		}
 		
 		
-		public RuntimeValue GetVariableValue()
+		public ElaValue GetVariableValue()
 		{
 			return value;
-		}
-
-
-		internal protected override RuntimeValue GetAttribute(string name)
-		{
-			switch (name)
-			{
-				case ADDRESS: return new RuntimeValue(Address);
-				case NAME: return new RuntimeValue(Name);
-				case ISIMMUTABLE: return new RuntimeValue(IsImmutable);
-				case ISPRIVATE: return new RuntimeValue(IsPrivate);
-				case ISCONSTRUCTOR: return new RuntimeValue(IsConstructor);
-				case GETVALUE: return new RuntimeValue(new GetValueFunction(this));
-				default: return base.GetAttribute(name);
-			}
 		}
 		#endregion
 
@@ -104,8 +76,6 @@ namespace Ela.Runtime.Reflection
 		public bool IsImmutable { get; private set; }
 
 		public bool IsPrivate { get; private set; }
-
-		public bool IsConstructor { get; private set; }
 		#endregion
 
 

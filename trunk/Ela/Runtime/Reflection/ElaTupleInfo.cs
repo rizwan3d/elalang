@@ -7,11 +7,16 @@ namespace Ela.Runtime.Reflection
 	public class ElaTupleInfo : ElaTypeInfo, IEquatable<ElaTupleInfo>
 	{
 		#region Construction
-		private const string TAG = "Tag";
+		private ElaTuple obj;
 
-		internal ElaTupleInfo(string tag, ObjectType type) : base(type)
+		internal ElaTupleInfo(ElaObject obj) : this(3, obj)
 		{
-			Tag = tag;
+			this.obj = (ElaTuple)obj;
+		}
+
+		internal ElaTupleInfo(int size, ElaObject obj) : base(size, obj)
+		{
+			
 		}
 		#endregion
 
@@ -20,8 +25,7 @@ namespace Ela.Runtime.Reflection
 		public static bool Equals(ElaTupleInfo lho, ElaTupleInfo rho)
 		{
 			return Object.ReferenceEquals(lho, rho) ||
-				!Object.ReferenceEquals(lho, null) && !Object.ReferenceEquals(rho, null) &&
-				lho.Tag == rho.Tag;
+				!Object.ReferenceEquals(lho, null) && !Object.ReferenceEquals(rho, null);
 		}
 
 
@@ -39,19 +43,8 @@ namespace Ela.Runtime.Reflection
 
 		public override int GetHashCode()
 		{
-			return Tag != null ? Tag.GetHashCode() : 0;
+			return obj.Length;
 		}
-
-
-		internal protected override RuntimeValue GetAttribute(string name)
-		{
-			return name == TAG ? new RuntimeValue(Tag) : base.GetAttribute(name);
-		}
-		#endregion
-
-
-		#region Properties
-		public string Tag { get; private set; }
 		#endregion
 
 
