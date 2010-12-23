@@ -124,22 +124,22 @@
     <value>Unable to call a function that accepts {0} parameters with an empty argument list.</value>
   </data>
   <data name="ConversionFailed" xml:space="preserve">
-    <value>Conversion from '{0}' to '{1}' failed because of the following reason: {2}.</value>
+    <value>Conversion of value '{0}' of type '{1}' to type '{2}' failed because of the following reason: {3}.</value>
   </data>
   <data name="DivideByZero" xml:space="preserve">
-    <value>Division by zero.</value>
+    <value>Division by zero of value '{0}' of type '{1}'.</value>
   </data>
-  <data name="ExternalCallFailed" xml:space="preserve">
-    <value>An unexpected error occured during external function call: {0}</value>
-  </data>
-  <data name="FieldNotMutable" xml:space="preserve">
-    <value>Field '{0}' in the target object is not mutable. You cannot change its value.</value>
+  <data name="ExpectedFunction" xml:space="preserve">
+    <value>A functional type is expected, got '{0}'.</value>
   </data>
   <data name="IndexOutOfRange" xml:space="preserve">
-    <value>Index was out of range.</value>
+    <value>Index '{0}' of type '{1}' was out of range on object '{2}' of type '{3}'.</value>
   </data>
-  <data name="InvalidBinaryOperation" xml:space="preserve">
-    <value>Unable to perform operation '{0}' on types '{1}' and '{2}'.</value>
+  <data name="InvalidFormat" xml:space="preserve">
+    <value>Format '{0}' for the value '{1}' of type '{2}' is invalid or not supported.</value>
+  </data>
+  <data name="InvalidIndexType" xml:space="preserve">
+    <value>Indices of type '{0}' are not supported.</value>
   </data>
   <data name="InvalidParameterType" xml:space="preserve">
     <value>Invalid type for the function parameter. Expected '{0}', got '{1}'.</value>
@@ -147,14 +147,11 @@
   <data name="InvalidType" xml:space="preserve">
     <value>Invalid type. Expected: '{0}', got: '{1}'.</value>
   </data>
-  <data name="InvalidUnaryOperation" xml:space="preserve">
-    <value>Unable to perform operation '{0}' on type '{1}'.</value>
+  <data name="LeftOperand" xml:space="preserve">
+    <value>The value '{0}' of type '{1}' is not a valid left operand for the value '{2}' of type '{3}' in an operation defined in trait '{4}'.</value>
   </data>
   <data name="MatchFailed" xml:space="preserve">
     <value>Match failed. None of the patterns were successful.</value>
-  </data>
-  <data name="NotFunction" xml:space="preserve">
-    <value>Value is not a function.</value>
   </data>
   <data name="OperationNotSupported" xml:space="preserve">
     <value>This operation is not supported by the object of type '{0}'.</value>
@@ -162,34 +159,106 @@
   <data name="PrivateVariable" xml:space="preserve">
     <value>The name '{0}' is declared as private and cannot be referenced.</value>
   </data>
+  <data name="RightOperand" xml:space="preserve">
+    <value>The value '{0}' of type '{1}' is not a valid right operand for the value '{2}' of type '{3}' in an operation defined in trait '{4}'.</value>
+  </data>
   <data name="TooFewParams" xml:space="preserve">
-    <value>Partial application of a function is not supported. Function is either not curried (supports unlimited number of optional parameters) or is called from external context (e.g. Ela function from .NET code).</value>
+    <value>Partial application of a function is not supported. Function is called from external context (e.g. Ela function from .NET code).</value>
   </data>
   <data name="TooManyParams" xml:space="preserve">
     <value>Too many parameters specified in a function call.</value>
   </data>
-  <data name="UnableCallAsFunction" xml:space="preserve">
-    <value>Unable to call a specified value as a function. Invalid function handle.</value>
+  <data name="TraitBit" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Bit' (bitwise operations).</value>
   </data>
-  <data name="UnableConvert" xml:space="preserve">
-    <value>Unable to convert type '{0}' to '{1}'.</value>
+  <data name="TraitBool" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Bool' (boolean operations).</value>
+  </data>
+  <data name="TraitBound" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Bound' (doesn't have a maximum or minimum value notion).</value>
+  </data>
+  <data name="TraitCall" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Call' (function call operation).</value>
+  </data>
+  <data name="TraitConcat" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Concat' (concatenation operation).</value>
+  </data>
+  <data name="TraitCons" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Cons' (construction operation).</value>
+  </data>
+  <data name="TraitCont" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Cont' (operations on mutable container).</value>
+  </data>
+  <data name="TraitConvert" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Convert' (it cannot be converted to other types).</value>
+  </data>
+  <data name="TraitEnum" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Enum' (definition of successor and predecessor).</value>
+  </data>
+  <data name="TraitEq" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Eq' (equality comparison).</value>
+  </data>
+  <data name="TraitFieldGet" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'FieldGet' (read field operation).</value>
+  </data>
+  <data name="TraitFieldSet" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'FieldGet' (write field operation).</value>
+  </data>
+  <data name="TraitFold" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Fold' (head, tail and nil operations).</value>
+  </data>
+  <data name="TraitGet" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Get' (read through indexer).</value>
+  </data>
+  <data name="TraitInsert" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Insert' (insert operation).</value>
+  </data>
+  <data name="TraitIter" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Iter' (can't create an iterator).</value>
+  </data>
+  <data name="TraitLen" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Len' (calculation of 'length').</value>
+  </data>
+  <data name="TraitNeg" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Neg' (negation operation).</value>
+  </data>
+  <data name="TraitNum" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Num' (basic arithmetic operations).</value>
+  </data>
+  <data name="TraitOrd" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Ord' (comparison operations).</value>
+  </data>
+  <data name="TraitSet" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Set' (write through indexer).</value>
+  </data>
+  <data name="TraitShow" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Show' (cannot be represented as a string).</value>
+  </data>
+  <data name="TraitTag" xml:space="preserve">
+    <value>A value {0} of type '{1}' doesn't support trait 'Tag' (it cannot be tagged and used a polymorphic variant).</value>
+  </data>
+  <data name="TuplesLength" xml:space="preserve">
+    <value>The length of two tuples '{0}' and '{1}' should be equal to support some operations (such as comparison).</value>
   </data>
   <data name="UndefinedArgument" xml:space="preserve">
     <value>An argument with the name '{0}' is undefined.</value>
   </data>
   <data name="UndefinedVariable" xml:space="preserve">
-    <value>A name '{0} is not defined in the target module.</value>
+    <value>A name '{0}' is not defined in the module '{1}'.</value>
   </data>
   <data name="Unknown" xml:space="preserve">
     <value>An unknown runtime error has occured. Error details: {0}.</value>
   </data>
   <data name="UnknownField" xml:space="preserve">
-    <value>There is no such field as '{0}' in the target object.</value>
+    <value>There is no such field as '{0}' in the object '{1}' of type '{2}'.</value>
   </data>
   <data name="UnknownParameterType" xml:space="preserve">
     <value>Invalid type for the function parameter: '{0}'.</value>
   </data>
   <data name="UnknownPervasive" xml:space="preserve">
     <value>A reference to the unknown name or operator.</value>
+  </data>
+  <data name="UserCode" xml:space="preserve">
+    <value>An error in user code occured.</value>
   </data>
 </root>

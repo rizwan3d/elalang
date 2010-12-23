@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CriticalError" xml:space="preserve">
-    <value>A critical error occured in Ela virtual machine. All active execution threads were terminated.</value>
+    <value>A critical error occured in Ela virtual machine. All active execution threads were terminated. Main thread IL: #{0} {1}.</value>
   </data>
   <data name="InvalidEilRange" xml:space="preserve">
     <value>Range for EIL generator is invalid.</value>
@@ -129,13 +129,10 @@
   <data name="InvalidVariableAddress" xml:space="preserve">
     <value>Invalid variable address.</value>
   </data>
-  <data name="LazyNoValue" xml:space="preserve">
-    <value>Unable to obtain a value from an object of type 'lazy'. Value is not computed.</value>
+  <data name="NotSupported" xml:space="preserve">
+    <value>This type of conversion is not supported.</value>
   </data>
   <data name="StackCorrupted" xml:space="preserve">
     <value>Stack is corrupted.</value>
-  </data>
-  <data name="ThreadBusy" xml:space="preserve">
-    <value>Worker thread is busy. Unable to execute operations on a worker thread.</value>
   </data>
 </root>
