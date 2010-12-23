@@ -2,34 +2,200 @@
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using Ela.Debug;
 
 namespace Ela.Runtime.ObjectModel
 {
-	public sealed class ElaList : ElaIndexedObject, IEnumerable<RuntimeValue>
+	public class ElaList : ElaObject, IEnumerable<ElaValue>
 	{
 		#region Construction
-		private const string HEAD = "head";
-		private const string TAIL = "tail";
-		
-		public static readonly ElaList Nil = new ElaList(null, new RuntimeValue(ElaObject.Unit));
+		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Len | ElaTraits.Fold | ElaTraits.Cons | ElaTraits.Concat | ElaTraits.Convert;
+		internal static readonly ElaList Nil = new ElaList(null, new ElaValue(ElaUnit.Instance));
 
-
-		public ElaList(object value) : this(Nil, RuntimeValue.FromObject(value))
+		public ElaList(object value)
+			: this(Nil, ElaValue.FromObject(value))
 		{
-			
+
 		}
 
 
-		public ElaList(ElaList next, object value) : this(next, RuntimeValue.FromObject(value))
+		public ElaList(ElaObject next, object value)
+			: this(next, ElaValue.FromObject(value))
 		{
-			
+
 		}
 
-		
-		public ElaList(ElaList next, RuntimeValue value) : base(ObjectType.List)
+
+		public ElaList(ElaObject next, ElaValue value)
+			: base(ObjectType.List, TRAITS)
 		{
-			Next = next;
-			Value = value;
+			InternalNext = next;
+			InternalValue = value;
+		}
+		#endregion
+
+
+		#region Traits
+		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.Ref == right.Ref);
+		}
+
+
+		protected internal override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.Ref != right.Ref);
+		}
+
+
+		protected internal override ElaValue GetLength(ExecutionContext ctx)
+		{
+			var count = 0;
+			ElaObject xs = this;
+
+			while (!xs.IsNil(ctx))
+			{
+				count++;
+				xs = xs.Tail(ctx).Ref;
+
+				if (xs.TypeId == ElaMachine.LAZ)
+				{
+					var la = (ElaLazy)xs;
+
+					if (la.Value.Ref == null)
+					{
+						try
+						{
+							la.Value = la.Force();
+						}
+						catch (ElaCodeException ex)
+						{
+							ctx.Fail(ex.ErrorObject);
+							return Default();
+						}
+					}
+				}
+			}
+
+			return new ElaValue(count);
+		}
+
+
+		protected internal override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
+		{
+			index = index.Id(ctx);
+
+			if (index.Type != ElaMachine.INT)
+			{
+				ctx.InvalidIndexType(index.DataType);
+				return base.GetValue(index, ctx);
+			}
+			else if (index.I4 < 0)
+			{
+				ctx.IndexOutOfRange(index, new ElaValue(this));
+				return base.GetValue(index, ctx);
+			}
+
+			ElaObject l = this;
+
+			for (var i = 0; i < index.I4; i++)
+			{
+				l = l.Tail(ctx).Ref;
+
+				if (l.TypeId == ElaMachine.LAZ)
+				{
+					var la = (ElaLazy)l;
+
+					if (la.Value.Ref == null)
+					{
+						try
+						{
+							la.Value = la.Force();
+						}
+						catch (ElaCodeException ex)
+						{
+							ctx.Fail(ex.ErrorObject);
+							return base.GetValue(index, ctx);
+						}
+					}
+				}
+
+				if (l.IsNil(ctx))
+				{
+					ctx.IndexOutOfRange(index, new ElaValue(this));
+					return base.GetValue(index, ctx);
+				}
+			}
+
+			return l.Head(ctx);
+		}
+
+
+		protected internal override ElaValue Head(ExecutionContext ctx)
+		{
+			return InternalValue;
+		}
+
+
+		protected internal override ElaValue Tail(ExecutionContext ctx)
+		{
+			return new ElaValue(InternalNext);
+		}
+
+
+		protected internal override bool IsNil(ExecutionContext ctx)
+		{
+			return this == Nil;
+		}
+
+
+		protected internal override ElaValue CreateList(ElaObject next, ElaValue value, ExecutionContext ctx)
+		{
+			if (next is ElaList || next is ElaLazy)
+				return new ElaValue(new ElaList(next, value));
+
+			ctx.Fail(ElaRuntimeError.InvalidType, ObjectType.List, (ObjectType)next.TypeId);
+			return Default();
+		}
+
+
+		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			if (left.Type == ElaMachine.LST)
+			{
+				if (right.Type == ElaMachine.LST)
+				{
+					var list = (ElaList)right.Ref;
+
+					foreach (var e in ((ElaList)left.Ref).Reverse())
+						list = new ElaList(list, e);
+
+					return new ElaValue(list);
+				}
+				else
+					return right.Ref.Concatenate(left, right, ctx);
+			}
+			else
+			{
+				ctx.InvalidLeftOperand(left, right, ElaTraits.Concat);
+				return Default();
+			}
+		}
+
+
+		protected internal override ElaValue Convert(ObjectType type, ExecutionContext ctx)
+		{
+			if (type == ObjectType.List)
+				return new ElaValue(this);
+
+			ctx.ConversionFailed(new ElaValue(this), type);
+			return base.Convert(type, ctx);
+		}
+
+
+		protected internal override string Show(ExecutionContext ctx, ShowInfo info)
+		{
+			return "[" + FormatHelper.FormatEnumerable((IEnumerable<ElaValue>)this, ctx, info) + "]";
 		}
 		#endregion
 
@@ -37,11 +203,11 @@ namespace Ela.Runtime.ObjectModel
 		#region Methods
 		public static ElaList FromEnumerable(IEnumerable<Object> seq)
 		{
-			return FromEnumerable(seq.Select(e => RuntimeValue.FromObject(e)));
+			return FromEnumerable(seq.Select(e => ElaValue.FromObject(e)));
 		}
 
 
-		public static ElaList FromEnumerable(IEnumerable<RuntimeValue> seq)
+		public static ElaList FromEnumerable(IEnumerable<ElaValue> seq)
 		{
 			var list = ElaList.Nil;
 
@@ -52,35 +218,32 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override RuntimeValue GetValue(RuntimeValue index)
+		public static ElaList GetNil()
 		{
-			if (index.Type == ElaMachine.INT && index.I4 > -1 && index.I4 < GetLength())
-			{
-				var idx = index.I4;
-				var l = this;
-
-				while (idx --> 0)
-					l = l.Next;
-
-				return l.Value;
-			}
-			else
-				return new RuntimeValue(ElaObject.Invalid);
+			return ElaList.Nil;
 		}
-		
 
-		public IEnumerator<RuntimeValue> GetEnumerator()
+
+		public IEnumerator<ElaValue> GetEnumerator()
 		{
 			if (this != Nil)
 			{
-				var xs = this;
+				ElaObject xs = this;
 
 				do
 				{
-					yield return xs.Value;
-					xs = xs.Next;
+					yield return xs.Head(ElaObject.DummyContext);
+					xs = xs.Tail(ElaObject.DummyContext).Ref;
+
+					if (xs.TypeId == ElaMachine.LAZ)
+					{
+						var la = (ElaLazy)xs;
+
+						if (la.Value.Ref == null)
+							la.Value = la.Force();
+					}
 				}
-				while (xs != Nil);
+				while (!xs.IsNil(ElaObject.DummyContext));
 			}
 		}
 
@@ -89,45 +252,32 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return GetEnumerator();
 		}
-
-
-		protected internal override RuntimeValue GetAttribute(string name)
-		{
-			switch (name)
-			{
-				case HEAD: return Value;
-				case TAIL: return new RuntimeValue(Next);
-				default: return base.GetAttribute(name);
-			}
-		}
-
-
-		private int GetLength()
-		{
-			if (this == Nil)
-				return 0;
-
-			var count = 0;
-			var xs = this;
-
-			do
-			{
-				count++;
-				xs = xs.Next;
-			}
-			while (xs != Nil);
-
-			return count;
-		}
 		#endregion
 
 
 		#region Properties
-		public ElaList Next { get; private set; }
+		internal ElaValue InternalValue;
 
-		public RuntimeValue Value { get; private set; }
+		internal ElaObject InternalNext;
 
-		public override int Length { get { return GetLength(); } }
+		public ElaList Next
+		{
+			get
+			{
+				return InternalNext != null && InternalNext.TypeId == ElaMachine.LST ?
+					(ElaList)InternalNext : null;
+			}
+		}
+
+		public ElaValue Value
+		{
+			get { return InternalValue; }
+		}
+
+		public int Length
+		{
+			get { return GetLength(null).AsInteger(); }
+		}
 		#endregion
 	}
 }

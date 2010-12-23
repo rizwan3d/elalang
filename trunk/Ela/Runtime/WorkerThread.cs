@@ -19,8 +19,8 @@ namespace Ela.Runtime
 		{
 			Assembly = asm;
 			Module = asm.GetRootModule();
-			EvalStack = new EvalStack();
 			CallStack = new FastStack<CallPoint>();
+			Context = new ExecutionContext();
 		}
 		#endregion
 
@@ -37,9 +37,9 @@ namespace Ela.Runtime
 		{
 			var ret = new WorkerThread();
 			ret.Assembly = Assembly;
-			ret.EvalStack = EvalStack.Clone();
 			ret.CallStack = new FastStack<CallPoint>();
 			ret.Module = Assembly.GetRootModule();
+			ret.Context = new ExecutionContext();
 			ret.Offset = 1;
 			return ret;
 		}
@@ -49,19 +49,15 @@ namespace Ela.Runtime
 		#region Properties
 		internal CodeAssembly Assembly { get; private set; }
 
-		internal EvalStack EvalStack { get; private set; }
-
 		internal FastStack<CallPoint> CallStack { get; private set; }
 
 		internal int Offset { get; set; }
 
-		internal bool Busy { get; set; }
-
 		internal CodeFrame Module { get; private set; }
 
 		internal int ModuleHandle { get; private set; }
-		
-		internal ElaLazy ReturnValue { get; set; }
+
+		internal ExecutionContext Context { get; private set; }
 		#endregion
 	}
 }

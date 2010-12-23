@@ -5,7 +5,7 @@ namespace Ela.Runtime
 	public sealed class ExecutionResult
 	{
 		#region Construction
-		internal ExecutionResult(RuntimeValue val)
+		internal ExecutionResult(ElaValue val)
 		{
 			ReturnValue = val;
 		}
@@ -13,7 +13,7 @@ namespace Ela.Runtime
 
 
 		#region Properties
-		public RuntimeValue ReturnValue { get; private set; }
+		public ElaValue ReturnValue { get; private set; }
 		#endregion
 	}
 }

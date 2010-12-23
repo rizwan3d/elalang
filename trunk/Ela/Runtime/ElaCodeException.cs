@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Ela.Debug;
+using Ela.Runtime.ObjectModel;
 
 namespace Ela.Runtime
 {
@@ -12,11 +13,13 @@ namespace Ela.Runtime
 		private const string EXC_FORMAT = "{0}\r\n{1}";
 
 		internal ElaCodeException(string message, ElaRuntimeError error, FileInfo file, int line, int col,
-			IEnumerable<CallFrame> callStack) : base(message, null)
+			IEnumerable<CallFrame> callStack, ElaError errObj)
+			: base(message, null)
 		{
 			Error = new ElaMessage(message, MessageType.Error, (Int32)error, line, col);
 			Error.File = file;
 			CallStack = callStack;
+			ErrorObject = errObj;
 		}
 		#endregion
 
@@ -46,6 +49,8 @@ namespace Ela.Runtime
 		public ElaMessage Error { get; private set; }
 
 		public IEnumerable<CallFrame> CallStack { get; private set; }
+
+		internal ElaError ErrorObject { get; private set; }
 		#endregion
 	}
 }

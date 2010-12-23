@@ -3,195 +3,309 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using Ela.Runtime.Reflection;
+using Ela.Debug;
 
 namespace Ela.Runtime.ObjectModel
 {
-	public class ElaArray : ElaIndexedObject, IEnumerable<RuntimeValue>
+	public class ElaArray : ElaObject, IEnumerable<ElaValue>
 	{
 		#region Construction
 		private const int DEFAULT_SIZE = 4;
-		private const string ADD = "add";
-		private const string REMOVE = "remove";
-		private const string INSERT = "insert";
-		private const string CLEAR = "clear";
-
+		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Len | ElaTraits.Get | ElaTraits.Set | ElaTraits.Seq | ElaTraits.Fold | ElaTraits.Concat | ElaTraits.Convert | ElaTraits.Show | ElaTraits.FieldGet;
 		private int size;
-		private RuntimeValue[] array;
+		private ElaValue[] array;
+		private int headIndex;
 
+		private const string ADD = "add";
+		private const string INSERT = "insert";
+		private const string REMOVE = "removeAt";
+		private const string CLEAR = "clear";
+		private const string LENGTH = "length";
 
-		public ElaArray(RuntimeValue[] arr) : base(ObjectType.Array)
+		public ElaArray(ElaValue[] arr)
+			: base(ObjectType.Array, TRAITS)
 		{
 			if (arr == null)
 				throw new ArgumentNullException("arr");
 
-			array = new RuntimeValue[arr.Length == 0 ? DEFAULT_SIZE : arr.Length];
-			
-			if (arr.Length != 0)
-				Array.Copy(arr, array, arr.Length);
+			array = new ElaValue[arr.Length == 0 ? DEFAULT_SIZE : arr.Length];
 
-			size = array.Length;
+			if (arr.Length != 0)
+			{
+				Array.Copy(arr, array, arr.Length);
+				size = array.Length;
+			}
 		}
 
 
-		public ElaArray(object[] arr) : base(ObjectType.Array)
+		public ElaArray(object[] arr)
+			: base(ObjectType.Array, TRAITS)
 		{
 			if (arr == null)
 				throw new ArgumentNullException("arr");
-	
-			array = new RuntimeValue[arr.Length == 0 ? DEFAULT_SIZE : arr.Length];
+
+			array = new ElaValue[arr.Length == 0 ? DEFAULT_SIZE : arr.Length];
 
 			for (var i = 0; i < arr.Length; i++)
-				array[i] = RuntimeValue.FromObject(arr[i]);
+				array[i] = ElaValue.FromObject(arr[i]);
 
-			size = array.Length;
+			if (arr.Length != 0)
+				size = array.Length;
 		}
 
 
-		public ElaArray(int size) : base(ObjectType.Array)
+		public ElaArray(int size)
+			: base(ObjectType.Array, TRAITS)
 		{
-			array = new RuntimeValue[size == 0 ? DEFAULT_SIZE : size];
+			array = new ElaValue[size == 0 ? DEFAULT_SIZE : size];
 		}
 
 
-		public ElaArray() : this(DEFAULT_SIZE)
+		public ElaArray()
+			: this(DEFAULT_SIZE)
 		{
-			
+
+		}
+
+
+		private ElaArray(ElaValue[] arr, int size, int headIndex)
+			: base(ObjectType.Array, TRAITS)
+		{
+			array = arr;
+			this.size = size;
+			this.headIndex = headIndex;
 		}
 		#endregion
 
 
 		#region Ela Functions
-		private sealed class AddFunction : ElaFunction
+		private abstract class ArrayFunction : ElaFunction
 		{
-			private ElaArray array;
-
-			internal AddFunction(ElaArray array) : base(1)
+			protected ArrayFunction(ElaArray arr, int args)
+				: base(args)
 			{
-				this.array = array;
+				Instance = arr;
 			}
 
-			public override RuntimeValue Call(params RuntimeValue[] args)
+			protected ElaArray Instance { get; private set; }
+		}
+
+
+		private sealed class _Add : ArrayFunction
+		{
+			internal _Add(ElaArray arr) : base(arr, 1) { }
+
+			public override ElaValue Call(params ElaValue[] args)
 			{
-				array.Add(args[0]);
-				return new RuntimeValue(ElaObject.Unit);
+				Instance.Add(args[0]);
+				return Default();
 			}
 		}
 
 
-		private sealed class InsertFunction : ElaFunction
+		private sealed class _Remove : ArrayFunction
 		{
-			private ElaArray array;
+			internal _Remove(ElaArray arr) : base(arr, 1) { }
 
-			internal InsertFunction(ElaArray array) : base(2)
+			public override ElaValue Call(params ElaValue[] args)
 			{
-				this.array = array;
-			}
-
-			public override RuntimeValue Call(params RuntimeValue[] args)
-			{
-				var index = args[0];
-				var val = args[1];
-
-				if (index.DataType != ObjectType.Integer)
-					throw new ElaParameterTypeException(ObjectType.Integer, index.DataType);
-
-				array.Insert(index.I4, val);
-				return new RuntimeValue(ElaObject.Unit);
+				Instance.Remove(args[0].Id(DummyContext).AsInteger());
+				return Default();
 			}
 		}
 
 
-		private sealed class RemoveFunction : ElaFunction
+		private sealed class _Insert : ArrayFunction
 		{
-			private ElaArray array;
+			internal _Insert(ElaArray arr) : base(arr, 2) { }
 
-			internal RemoveFunction(ElaArray array) : base(1)
+			public override ElaValue Call(params ElaValue[] args)
 			{
-				this.array = array;
-			}
-
-			public override RuntimeValue Call(params RuntimeValue[] args)
-			{
-				var index = args[0];
-
-				if (index.DataType != ObjectType.Integer)
-					throw new ElaParameterTypeException(ObjectType.Integer, index.DataType);
-
-				array.Remove(index.I4);
-				return new RuntimeValue(ElaObject.Unit);
+				Instance.Insert(args[0].Id(DummyContext).AsInteger(), args[1]);
+				return Default();
 			}
 		}
 
 
-		private sealed class ClearFunction : ElaFunction
+		private sealed class _Clear : ArrayFunction
 		{
-			private ElaArray array;
+			internal _Clear(ElaArray arr) : base(arr, 1) { }
 
-			internal ClearFunction(ElaArray array) : base(0)
+			public override ElaValue Call(params ElaValue[] args)
 			{
-				this.array = array;
-			}
-
-			public override RuntimeValue Call(params RuntimeValue[] args)
-			{
-				array.Clear();
-				return new RuntimeValue(ElaObject.Unit);
+				Instance.Clear();
+				return Default();
 			}
 		}
 		#endregion
 
 
-		#region Methods
-		public IEnumerator<RuntimeValue> GetEnumerator()
+		#region Traits
+		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return array.Take(size).GetEnumerator();
+			return new ElaValue(left.Ref == right.Ref);
+		}
+
+
+		protected internal override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.Ref != right.Ref);
+		}
+
+
+		protected internal override ElaValue GetLength(ExecutionContext ctx)
+		{
+			return new ElaValue(size - headIndex);
+		}
+
+
+		protected internal override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
+		{
+			index = index.Id(ctx);
+
+			if (index.Type != ElaMachine.INT)
+			{
+				ctx.InvalidIndexType(index.DataType);
+				return Default();
+			}
+			else if (index.I4 >= Length || index.I4 < 0)
+			{
+				ctx.IndexOutOfRange(index, new ElaValue(this));
+				return Default();
+			}
+
+			return array[index.I4];
+		}
+
+
+		protected internal override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
+		{
+			index = index.Id(ctx);
+
+			if (index.Type != ElaMachine.INT)
+			{
+				ctx.InvalidIndexType(index.DataType);
+				return;
+			}
+
+			if (index.I4 < 0 || index.I4 >= Length)
+			{
+				ctx.IndexOutOfRange(index, new ElaValue(this));
+				return;
+			}
+
+			array[index.I4] = value;
+		}
+
+
+		protected internal override ElaValue Head(ExecutionContext ctx)
+		{
+			return array[headIndex];
+		}
+
+
+		protected internal override ElaValue Tail(ExecutionContext ctx)
+		{
+			return new ElaValue(new ElaArray(array, size, headIndex + 1));
+		}
+
+
+		protected internal override bool IsNil(ExecutionContext ctx)
+		{
+			return headIndex == size;
+		}
+
+
+		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			if (left.Type == ElaMachine.ARR)
+			{
+				if (right.Type == ElaMachine.ARR)
+				{
+					var thisArr = (ElaArray)left.Ref;
+					var otherArr = (ElaArray)right.Ref;
+					var arr = new ElaValue[thisArr.Length + otherArr.Length];
+					Array.Copy(thisArr.array, 0, arr, 0, thisArr.Length);
+					Array.Copy(otherArr.array, 0, arr, thisArr.Length, otherArr.Length);
+					return new ElaValue(new ElaArray(arr, arr.Length, 0));
+				}
+				else
+					return right.Ref.Concatenate(left, right, ctx);
+			}
+			else
+			{
+				ctx.InvalidLeftOperand(left, right, ElaTraits.Concat);
+				return Default();
+			}
+		}
+
+
+		protected internal override ElaValue Convert(ObjectType type, ExecutionContext ctx)
+		{
+			if (type == ObjectType.Array)
+				return new ElaValue(this);
+
+			ctx.ConversionFailed(new ElaValue(this), type);
+			return base.Convert(type, ctx);
+		}
+
+
+		protected internal override string Show(ExecutionContext ctx, ShowInfo info)
+		{
+			return "[|" + FormatHelper.FormatEnumerable((IEnumerable<ElaValue>)this, ctx, info) + "|]";
+		}
+
+
+		protected internal override ElaValue GetField(string field, ExecutionContext ctx)
+		{
+			switch (field)
+			{
+				case ADD: return new ElaValue(new _Add(this));
+				case INSERT: return new ElaValue(new _Insert(this));
+				case REMOVE: return new ElaValue(new _Remove(this));
+				case CLEAR: return new ElaValue(new _Clear(this));
+				case LENGTH: return new ElaValue(Length);
+				default:
+					ctx.UnknownField(field, new ElaValue(this));
+					return Default();
+			}
+		}
+
+
+		protected internal override bool HasField(string field, ExecutionContext ctx)
+		{
+			return field == ADD || field == INSERT || field == REMOVE || field == CLEAR || field == LENGTH;
+		}
+		#endregion
+
+
+		#region Methods
+		public IEnumerator<ElaValue> GetEnumerator()
+		{
+			for (var i = 0; i < Length; i++)
+				yield return array[i];
 		}
 
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return ((IEnumerable<RuntimeValue>)this).GetEnumerator();
+			return GetEnumerator();
 		}
 
 
-		protected internal override RuntimeValue GetAttribute(string name)
+		internal ElaValue FastGet(int index)
 		{
-			switch (name)
-			{
-				case ADD: return new RuntimeValue(new AddFunction(this));
-				case REMOVE: return new RuntimeValue(new RemoveFunction(this));
-				case INSERT: return new RuntimeValue(new InsertFunction(this));
-				case CLEAR: return new RuntimeValue(new ClearFunction(this));
-				default: return base.GetAttribute(name);
-			}
+			return index < Length ? array[index] : Default();
 		}
 
 
-		protected internal override RuntimeValue GetValue(RuntimeValue index)
-		{
-			return index.Type == ElaMachine.INT && index.I4 < size && index.I4 > -1 ? array[index.I4] : new RuntimeValue(Invalid);
-		}
-
-
-		protected internal override bool SetValue(RuntimeValue index, RuntimeValue value)
-		{
-			if (index.Type == ElaMachine.INT && index.I4 > -1 && index.I4 < size)
-			{
-				array[index.I4] = value;
-				return true;
-			}
-			else
-				return false;
-		}
-
-
-		internal void InternalSetValue(int index, RuntimeValue value)
+		internal void FastSet(int index, ElaValue value)
 		{
 			array[index] = value;
 		}
 
 
-		public void Add(RuntimeValue value)
+		public void Add(ElaValue value)
 		{
 			if (size == array.Length)
 				EnsureSize(size + 1);
@@ -203,13 +317,15 @@ namespace Ela.Runtime.ObjectModel
 
 		public bool Remove(int index)
 		{
+			index += headIndex;
+
 			if (index < 0 || index >= size)
 				return false;
 			else
 			{
 				if (index < --size)
 					Array.Copy(array, index + 1, array, index, size - index);
-				
+
 				if (array[size].Type > 6)
 					array[size].Ref = null;
 
@@ -218,18 +334,20 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		public bool Insert(int index, RuntimeValue value)
+		public bool Insert(int index, ElaValue value)
 		{
+			index += headIndex;
+
 			if (index < 0 || index >= size)
 				return false;
 			else
 			{
 				if (size == array.Length)
 					EnsureSize(size + 1);
-			
+
 				if (index < size)
 					Array.Copy(array, index, array, index + 1, size - index);
-				
+
 				array[index] = value;
 				size++;
 				return true;
@@ -243,21 +361,15 @@ namespace Ela.Runtime.ObjectModel
 			{
 				Array.Clear(array, 0, size);
 				size = 0;
+				headIndex = 0;
 			}
 		}
 
 
 		internal void Copy(int offset, ElaArray elaList)
 		{
-			Array.Copy(elaList.array, 0, array, offset, elaList.size);
+			Array.Copy(elaList.array, 0, array, offset + headIndex, elaList.Length);
 			size += elaList.size;
-		}
-
-
-		internal void Stretch(int newSize)
-		{
-			EnsureSize(newSize);
-			size = newSize;
 		}
 
 
@@ -265,7 +377,7 @@ namespace Ela.Runtime.ObjectModel
 		{
 			if (array.Length < newSize)
 			{
-				var newArr = new RuntimeValue[array.Length == 0 ? DEFAULT_SIZE : array.Length * 2];
+				var newArr = new ElaValue[array.Length == 0 ? DEFAULT_SIZE : array.Length * 2];
 				Array.Copy(array, newArr, array.Length);
 				array = newArr;
 			}
@@ -274,32 +386,29 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Properties
-		public override int Length
+		public int Length
 		{
-			get { return size; }
+			get { return size - headIndex; }
 		}
 
 
-		public RuntimeValue this[int index]
+		public ElaValue this[int index]
 		{
-			get 
+			get
 			{
-				if (index < size && index > -1)
+				if (index < Length && index > -1)
 					return array[index];
 				else
 					throw new IndexOutOfRangeException();
 			}
-			set 
+			set
 			{
-				if (index > -1 && index < size)
+				if (index > -1 && index < Length)
 					array[index] = value;
 				else
 					throw new IndexOutOfRangeException();
 			}
 		}
-
-
-		internal override bool ReadOnly { get { return false; } }
 		#endregion
 	}
 }

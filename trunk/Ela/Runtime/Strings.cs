@@ -16,7 +16,14 @@ namespace Ela.Runtime
 
 		internal static string GetError(ElaRuntimeError error, params object[] args)
 		{
-			return String.Format(errors.GetString(error.ToString()), args);
+			try
+			{
+				return String.Format(errors.GetString(error.ToString()), args);
+			}
+			catch (FormatException)
+			{
+				return errors.GetString(error.ToString()); 
+			}
 		}
 	}
 }

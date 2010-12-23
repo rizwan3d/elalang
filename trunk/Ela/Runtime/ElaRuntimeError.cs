@@ -14,19 +14,19 @@ namespace Ela.Runtime
 
 		DivideByZero = 803,
 
-		ExternalCallFailed = 804,
+		TuplesLength = 804,
 
 		IndexOutOfRange = 805,
 
-		InvalidBinaryOperation = 806,
+		ExpectedFunction = 806,
 
-		InvalidUnaryOperation = 807,
+		LeftOperand = 807,
 
 		InvalidType = 808,
 
 		MatchFailed = 809,
 
-		NotFunction = 810,
+		RightOperand = 810,
 
 		OperationNotSupported = 811,
 
@@ -36,9 +36,9 @@ namespace Ela.Runtime
 
 		TooFewParams = 814,
 
-		UnableCallAsFunction = 815,
+		InvalidFormat = 815,
 
-		UnableConvert = 816,
+		// = 816,
 
 		UndefinedArgument = 817,
 
@@ -54,6 +54,135 @@ namespace Ela.Runtime
 
 		CallWithNoParams = 823,
 
-		FieldNotMutable = 824,
+		InvalidIndexType = 824,
+
+		// = 825,
+
+		// = 826,
+
+		// = 827,
+
+		// = 828,
+
+		// = 829,
+
+		// = 830,
+
+		// = 831,
+
+		// = 832,
+
+		// = 833,
+
+		// = 834,
+
+		// = 835,
+
+		// = 836,
+
+		// = 837,
+
+		// = 838,
+
+		// = 839,
+
+		// = 840,
+
+		// = 841,
+
+		// = 842,
+
+		// = 843,
+
+		// = 844,
+
+		// = 845,
+
+		// = 846,
+
+		// = 847,
+
+		// = 848,
+
+		// = 849,
+
+		// = 850,
+
+		// = 851,
+
+		// = 852,
+
+		// = 853,
+
+		// = 854,
+
+		// = 855,
+
+		// = 856,
+
+		// = 857,
+
+		// = 858,
+
+		// = 859,
+
+		// = 860,
+
+		// = 861,
+
+		// = 862,
+
+		// = 863,
+
+		TraitGet = 900,
+
+		TraitSet = 901,
+
+		TraitFieldGet = 902,
+
+		TraitFieldSet = 903,
+
+		TraitBit = 904,
+
+		TraitConcat = 905,
+
+		TraitNum = 906,
+
+		TraitOrd = 907,
+
+		TraitEq = 908,
+
+		TraitTag = 909,
+
+		TraitEnum = 910,
+
+		TraitNeg = 911,
+
+		TraitBool = 912,
+
+		TraitLen = 913,
+
+		TraitCont = 914,
+
+		TraitInsert = 915,
+
+		TraitCons = 916,
+
+		TraitIter = 917,
+
+		TraitConvert = 918,
+
+		TraitShow = 919,
+
+		TraitBound = 920,
+
+		TraitFold = 921,
+
+		TraitCall = 922,
+
+		// = 923,
+
+
+		UserCode = 999
 	}
 }

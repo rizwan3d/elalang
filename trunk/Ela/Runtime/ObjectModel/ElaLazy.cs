@@ -1,86 +1,179 @@
 ﻿using System;
-using System.Threading;
-using Ela.Runtime.Reflection;
 
 namespace Ela.Runtime.ObjectModel
 {
-	public sealed class ElaLazy : ElaObject
+	internal sealed class ElaLazy : ElaObject
 	{
 		#region Construction
-		private bool async;
-
-		internal ElaLazy(ElaFunction function) : base(ObjectType.Lazy)
+		internal ElaLazy(ElaFunction function)
+			: base(ObjectType.Lazy, ElaTraits.None)
 		{
 			Function = function;
-		}
-
-
-		internal ElaLazy(Thread thread) : base(ObjectType.Lazy)
-		{
-			Thread = thread;
-			async = true;
+			_value = default(ElaValue);
 		}
 		#endregion
 
 
 		#region Methods
-		public override ElaTypeInfo GetTypeInfo()
+		public string AsString()
 		{
-			return new ElaLazyInfo(async, HasValue());
+			return Force().AsString();
 		}
 
 
-		public bool HasValue()
+		public bool AsBoolean()
 		{
-			return InternalValue.Ref != null;
+			return Force().AsBoolean();
 		}
 
 
-		public void Force()
+		public char AsChar()
 		{
-			if (Function != null)
-				SetValue(Function.Call());
-			else
+			return Force().AsChar();
+		}
+
+
+		public double AsDouble()
+		{
+			return Force().AsDouble();
+		}
+
+
+		public float AsSingle()
+		{
+			return Force().AsSingle();
+		}
+
+
+		public int AsInteger()
+		{
+			return Force().AsInteger();
+		}
+
+
+		public long AsLong()
+		{
+			return Force().AsLong();
+		}
+
+
+		public ElaArray AsArray()
+		{
+			return Force().AsArray();
+		}
+
+
+		public ElaList AsList()
+		{
+			return Force().AsList();
+		}
+
+
+		public ElaTuple AsTuple()
+		{
+			return Force().AsTuple();
+		}
+
+
+		public ElaRecord AsRecord()
+		{
+			return Force().AsRecord();
+		}
+
+
+		public ElaFunction AsFunction()
+		{
+			return Force().AsFunction();
+		}
+
+
+		public object AsObject()
+		{
+			switch (Force().DataType)
 			{
-				var t = Thread;
-
-				if (t != null)
-					t.Join();
+				case ObjectType.Array: return Value.AsArray();
+				case ObjectType.Boolean: return Value.AsBoolean();
+				case ObjectType.Char: return Value.AsChar();
+				case ObjectType.Double: return Value.AsDouble();
+				case ObjectType.Function: return Value.AsFunction();
+				case ObjectType.Integer: return Value.AsInteger();
+				case ObjectType.List: return Value.AsList();
+				case ObjectType.Long: return Value.AsLong();
+				case ObjectType.Record: return Value.AsRecord();
+				case ObjectType.Single: return Value.AsSingle();
+				case ObjectType.String: return Value.AsString();
+				case ObjectType.Tuple: return Value.AsTuple();
+				case ObjectType.Unit: return null;
+				case ObjectType.Lazy: return Value.AsObject();
+				default:
+					if (Value.Ref != null)
+						return Value.Ref;
+					else
+						throw new NotSupportedException();
 			}
 		}
 
 
-		internal void SetValue(RuntimeValue value)
+		internal ElaValue Force()
 		{
-			if (InternalValue.DataType != ObjectType.None)
-				throw new InvalidOperationException();
+			if (Value.Ref == null)
+				Value = Function.CallWithThrow(
+					Function.LastParameter.Ref != null ? Function.LastParameter :
+					new ElaValue(ElaUnit.Instance));
 
-			InternalValue = value;
-			Thread = null;
-			Function = null;
+			return Value;
+		}
+
+
+		internal override ElaValue Force(ExecutionContext ctx)
+		{
+			if (Value.Ref == null)
+				Value = Function.Call(
+					Function.LastParameter.Ref != null ? Function.LastParameter :
+					new ElaValue(ElaUnit.Instance), ctx);
+
+			return Value;
+		}
+
+
+		protected internal override ElaValue CreateList(ElaObject next, ElaValue value, ExecutionContext ctx)
+		{
+			return new ElaValue(new ElaList(next, value));
+		}
+
+
+		protected internal override ElaValue Tail(ExecutionContext ctx)
+		{
+			return Value.Ref != null ? Value.Ref.Tail(ctx) : Default();
+		}
+
+
+		protected internal override ElaValue Head(ExecutionContext ctx)
+		{
+			return Value.Ref != null ? Value.Ref.Head(ctx) : Default();
+		}
+
+
+		protected internal override bool IsNil(ExecutionContext ctx)
+		{
+			return Value.Ref != null ? Value.Ref.IsNil(ctx) : true;
 		}
 		#endregion
 
 
 		#region Properties
-		public object Value
+		internal ElaFunction Function;
+
+		private ElaValue _value;
+		internal ElaValue Value
 		{
-			get
+			get { return _value; }
+			set
 			{
-				var v = InternalValue;
-
-				if (v.Ref == null)
-					throw new ElaMachineException(Strings.GetMessage("LazyNoValue"));
-
-				return v.ToObject();
+				Function = null;
+				_value = value;
 			}
 		}
-
-		internal ElaFunction Function { get; private set; }
-
-		internal Thread Thread { get; private set; }
-		
-		internal RuntimeValue InternalValue { get; private set; }
 		#endregion
 	}
 }

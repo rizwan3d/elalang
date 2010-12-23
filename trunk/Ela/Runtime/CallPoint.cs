@@ -6,31 +6,30 @@ namespace Ela.Runtime
 	internal sealed class CallPoint
 	{
 		#region Construction
-		internal CallPoint(int retAddr, int modHandle, ElaLazy lazy, RuntimeValue[] locals, FastList<RuntimeValue[]> captures)
+		internal CallPoint(int modHandle, EvalStack stack, ElaValue[] locals, FastList<ElaValue[]> captures)
 		{
-			ReturnAddress = retAddr;
 			ModuleHandle = modHandle;
-			ReturnValue = lazy;
 			Locals = locals;
 			Captures = captures;
+			Stack = stack;
 		}
 		#endregion
 
 
 		#region Fields
-		internal readonly int ReturnAddress;
-				
 		internal readonly int ModuleHandle;
-		
-		internal readonly RuntimeValue[] Locals;
 
-		internal readonly FastList<RuntimeValue[]> Captures;
-		
-		internal ElaLazy ReturnValue;
-		
+		internal readonly ElaValue[] Locals;
+
+		internal readonly EvalStack Stack;
+
+		internal readonly FastList<ElaValue[]> Captures;
+
+		internal int BreakAddress;
+
+		internal int StackOffset;
+
 		internal int? CatchMark;
-
-		internal int CatchOffset;
 		#endregion
 	}
 }

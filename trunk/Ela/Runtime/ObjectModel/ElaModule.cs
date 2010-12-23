@@ -9,9 +9,11 @@ namespace Ela.Runtime.ObjectModel
 	public sealed class ElaModule : ElaObject
 	{
 		#region Construction
+		private const string MODULE = "[module:{0}]";
 		private ElaMachine vm;
 
-		internal ElaModule(int handle, ElaMachine vm) : base(ObjectType.Module)
+		internal ElaModule(int handle, ElaMachine vm)
+			: base(ObjectType.Module, ElaTraits.Eq | ElaTraits.Show)
 		{
 			Handle = handle;
 			this.vm = vm;
@@ -19,13 +21,29 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Methods
-		public override string ToString()
+		#region Traits
+		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return Handle.ToString();
+			return new ElaValue(left.DataType == right.DataType &&
+				((ElaModule)left.Ref).Handle == ((ElaModule)right.Ref).Handle);
 		}
 
 
+		protected internal override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.DataType != right.DataType ||
+				((ElaModule)left.Ref).Handle != ((ElaModule)right.Ref).Handle);
+		}
+
+
+		protected internal override string Show(ExecutionContext ctx, ShowInfo info)
+		{
+			return String.Format(MODULE, vm != null ? vm.Assembly.GetModuleName(Handle) : String.Empty);
+		}
+		#endregion
+
+
+		#region Methods
 		public override ElaTypeInfo GetTypeInfo()
 		{
 			if (vm != null)
@@ -38,10 +56,12 @@ namespace Ela.Runtime.ObjectModel
 				foreach (var v in frame.GlobalScope.EnumerateNames())
 				{
 					var sv = frame.GlobalScope.GetVariable(v);
-					variables.Add(new ElaVariableInfo(Handle, sv.Address, v, vm.GetVariableByHandle(Handle, sv.Address),
-						(sv.Flags & ElaVariableFlags.Immutable) == ElaVariableFlags.Immutable,
-						(sv.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private,
-						(sv.Flags & ElaVariableFlags.Constructor) == ElaVariableFlags.Constructor));
+					var val = vm.GetVariableByHandle(Handle, sv.Address);
+
+					if (val.Ref != null)
+						variables.Add(new ElaVariableInfo(Handle, sv.Address, v, val,
+							(sv.Flags & ElaVariableFlags.Immutable) == ElaVariableFlags.Immutable,
+							(sv.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private));
 				}
 
 				var refs = new List<ElaReferenceInfo>();
@@ -49,11 +69,11 @@ namespace Ela.Runtime.ObjectModel
 				foreach (var kv in frame.References)
 					refs.Add(new ElaReferenceInfo(kv.Value.ModuleName, kv.Value.DllName, kv.Key, kv.Value.Folder));
 
-				return new ElaModuleInfo(vm, Handle, name,
+				return new ElaModuleInfo(this, vm, Handle, name,
 					frame.File != null ? frame.File.FullName : null, !(frame is IntrinsicFrame), variables, refs);
 			}
 			else
-				return new ElaModuleInfo(null, Handle, null, null, false, null, null);
+				return new ElaModuleInfo(this, null, Handle, null, null, false, null, null);
 		}
 		#endregion
 

@@ -1,53 +1,77 @@
 ﻿using System;
+using System.Collections.Generic;
+using Ela.Debug;
 
 namespace Ela.Runtime.ObjectModel
 {
-	public sealed class ElaError : ElaRecord
+	public sealed class ElaError : ElaVariant
 	{
 		#region Construction
-		private const string TOSTRING_FORMAT = "[error:{0}]";
-
-		internal ElaError(ElaRuntimeError code, string message) : base(2)
+		private string message;
+		private object[] args;
+		
+		internal ElaError(ElaRuntimeError code) : this(code, null, null, new object[0])
 		{
-			AddField(0, "code", new RuntimeValue((Int32)code));
-			AddField(1, "message", new RuntimeValue(message));
-			Tag = code.ToString().Replace("Runtime_", String.Empty);
-		}
-		#endregion
 
-
-		#region Methods
-		public override string ToString()
-		{
-			return String.Format(TOSTRING_FORMAT, (Int32)Code);
 		}
 
 
-		public override bool SetField(string key, RuntimeValue value)
+		internal ElaError(ElaRuntimeError code, params object[] args) : this(code, null, null, args)
 		{
-			return false;
+
+		}
+
+		
+		internal ElaError(string customCode, string message) : this(ElaRuntimeError.UserCode, customCode, message, new object[0])
+		{
+
 		}
 
 
-		protected internal override bool SetValue(RuntimeValue index, RuntimeValue value)
+		private ElaError(ElaRuntimeError code, string customCode, string message, params object[] args) : 
+			base(null, new ElaValue(ElaUnit.Instance))
 		{
-			return false;
+			Code = code;
+			this.message = message;				
+			this.args = args;
+			base.Tag = code != ElaRuntimeError.UserCode ? code.ToString() : customCode;
+			base.Value = new ElaValue(Message);
 		}
 		#endregion
 
 
 		#region Properties
-		public ElaRuntimeError Code
+		internal string Message
 		{
-			get { return (ElaRuntimeError)base.GetField("code").I4; }
+			get
+			{
+				if (message == null && Code != ElaRuntimeError.UserCode)
+					return message = Strings.GetError(Code, args);
+				else if (message == null)
+					return String.Empty;
+				else
+					return message;
+			}
 		}
 
-		public string Message
+		internal string FullMessage
 		{
-			get { return base.GetField("message").ToString(); }
+			get
+			{
+				return Code != ElaRuntimeError.UserCode ? Message :
+					!String.IsNullOrEmpty(Tag) && !String.IsNullOrEmpty(Message) ?
+					Tag + ": " + Message :
+					!String.IsNullOrEmpty(Tag) ? Tag : Message;
+			}
 		}
 
-		internal override bool ReadOnly { get { return true; } }
+		internal ElaRuntimeError Code { get; private set; }
+
+		internal int CodeOffset { get; set; }
+
+		internal int Module { get; set; }
+
+		internal Stack<StackPoint> Stack { get; set; }
 		#endregion
 	}
 }
