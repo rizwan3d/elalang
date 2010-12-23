@@ -58,6 +58,7 @@ namespace Ela.Linking
 			{
 				var l = frame.Layouts[i];
 				bw.Write(l.Size);
+				bw.Write(l.StackSize);
 				bw.Write(l.Address);
 			}
 
@@ -74,7 +75,7 @@ namespace Ela.Linking
 				var op = ops[i];
 				bw.Write((Byte)op);
 
-				if (OpHelper.OpSize[(Int32)op] > 1)
+				if (OpSizeHelper.OpSize[(Int32)op] > 1)
 					bw.Write(frame.OpData[i]);
 			}
 		}

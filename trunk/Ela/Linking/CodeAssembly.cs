@@ -14,8 +14,9 @@ namespace Ela.Linking
 		
 		private Dictionary<String,Int32> moduleMap;
 		private FastList<CodeFrame> modules;
-		private Dictionary<String,RuntimeValue> arguments;
-
+		private Dictionary<String,ElaValue> arguments;
+		
+		public static readonly CodeAssembly Empty = new CodeAssembly(CodeFrame.Empty);
 
 		public CodeAssembly(CodeFrame frame) : this()
 		{
@@ -28,7 +29,7 @@ namespace Ela.Linking
 		{
 			modules = new FastList<CodeFrame>();
 			moduleMap = new Dictionary<String,Int32>();
-			arguments = new Dictionary<String,RuntimeValue>();
+			arguments = new Dictionary<String,ElaValue>();
 		}
 		#endregion
 
@@ -68,7 +69,12 @@ namespace Ela.Linking
 
 		public CodeFrame GetModule(string name)
 		{
-			return GetModule(moduleMap[name]);
+			var hdl = 0;
+
+			if (moduleMap.TryGetValue(name, out hdl))
+				return GetModule(hdl);
+			else
+				return null;
 		}
 
 
@@ -94,7 +100,7 @@ namespace Ela.Linking
 		{
 			if (!arguments.ContainsKey(name))
 			{
-				var val = RuntimeValue.FromObject(value);
+				var val = ElaValue.FromObject(value);
 				arguments.Add(name, val);
 				return true;
 			}
@@ -115,7 +121,7 @@ namespace Ela.Linking
 		}
 
 
-		internal bool TryGetArgument(string name, out RuntimeValue arg)
+		internal bool TryGetArgument(string name, out ElaValue arg)
 		{
 			return arguments.TryGetValue(name, out arg);
 		}
@@ -125,6 +131,12 @@ namespace Ela.Linking
 		{
 			if (frame != null)
 				modules[0] = frame;
+		}
+
+
+		internal void RefreshModule(int handle, CodeFrame frame)
+		{
+			modules[handle] = frame;
 		}
 		#endregion
 

@@ -22,7 +22,7 @@ namespace Ela.Linking
 	public class ElaLinker<P,C> where P : IElaParser, new() where C : IElaCompiler, new()
 	{
 		#region Construction
-		protected const string FILE = "memory";
+		protected const string FILE = "<memory>";
 		private const string EXT = ".ela";
 		private const string OBJEXT = ".elaobj";
 		private const string DLLEXT = ".dll";
@@ -293,7 +293,7 @@ namespace Ela.Linking
 
 			if (pRes.Success)
 			{
-				var cRes = Compile(file, pRes.CodeUnit, frame, scope);
+				var cRes = Compile(file, pRes.Expression, frame, scope);
 				ret = cRes.CodeFrame;
 
 				if (cRes.Success)
@@ -318,11 +318,11 @@ namespace Ela.Linking
 		}
 
 
-		internal CompilerResult Compile(FileInfo file, ElaCodeUnit unit, CodeFrame frame, Scope scope)
+		internal CompilerResult Compile(FileInfo file, ElaExpression expr, CodeFrame frame, Scope scope)
 		{
 			var elac = new C();
-			var res = frame != null ? elac.Compile(unit, CompilerOptions, frame, scope) : 
-				elac.Compile(unit, CompilerOptions);
+			var res = frame != null ? elac.Compile(expr, CompilerOptions, frame, scope) :
+				elac.Compile(expr, CompilerOptions);
 			AddMessages(res.Messages, file);
 			return res;
 		}
@@ -352,7 +352,7 @@ namespace Ela.Linking
 
 				if (ret2 != null && ret1 != null)
 				{
-					if (!LinkerOptions.SkipTimeStampCheck && ret1.LastWriteTime != ret2.LastWriteTime)
+					if (!LinkerOptions.SkipTimeStampCheck && ret2.LastWriteTime < ret1.LastWriteTime)
 					{
 						AddWarning(ElaLinkerWarning.ObjectFileOutdated, ret1, mod.Line, mod.Column, ret2.Name, ret1.Name);
 						return ret1;
@@ -430,7 +430,7 @@ namespace Ela.Linking
 
 		internal List<ElaMessage> Messages { get; private set; }
 
-		internal CodeAssembly Assembly { get; private set; }
+		internal CodeAssembly Assembly { get; set; }
 
 		internal bool Success { get; set; }
 		#endregion

@@ -7,7 +7,7 @@ namespace Ela.Linking
 	public sealed class IntrinsicFrame : CodeFrame
 	{
 		#region Construction
-		internal IntrinsicFrame(RuntimeValue[] mem)
+		internal IntrinsicFrame(ElaValue[] mem)
 		{
 			Memory = mem;
 		}
@@ -15,7 +15,7 @@ namespace Ela.Linking
 
 
 		#region Properties
-		internal RuntimeValue[] Memory { get; private set; }
+		internal ElaValue[] Memory { get; private set; }
 		#endregion
 	}
 }

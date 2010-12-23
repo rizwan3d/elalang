@@ -8,7 +8,8 @@ namespace Ela.Linking
 	public sealed class ObjectFileReader : ObjectFile
 	{
 		#region Construction
-		public ObjectFileReader(FileInfo file) : base(file)
+		public ObjectFileReader(FileInfo file)
+			: base(file)
 		{
 
 		}
@@ -21,7 +22,7 @@ namespace Ela.Linking
 			using (var bw = new BinaryReader(File.OpenRead()))
 				return Read(bw);
 		}
-				
+
 
 		private CodeFrame Read(BinaryReader bw)
 		{
@@ -33,11 +34,16 @@ namespace Ela.Linking
 				throw new ElaLinkerException(Strings.GetMessage("InvalidObjectFile", Version), null);
 
 			var c = bw.ReadInt32();
-			
+
 			for (var i = 0; i < c; i++)
 				frame.AddReference(bw.ReadString(),
 					new ModuleReference(bw.ReadString(), bw.ReadString(), bw.ReadString(), 0, 0));
-			
+
+			c = bw.ReadInt32();
+
+			for (var i = 0; i < c; i++)
+				frame.DeclaredPervasives.Add(bw.ReadString(), bw.ReadInt32());
+
 			c = bw.ReadInt32();
 
 			for (var i = 0; i < c; i++)
@@ -47,13 +53,8 @@ namespace Ela.Linking
 			c = bw.ReadInt32();
 
 			for (var i = 0; i < c; i++)
-				frame.DeclaredPervasives.Add(bw.ReadString(), bw.ReadInt32());
-			
-			c = bw.ReadInt32();
-
-			for (var i = 0; i < c; i++)
 			{
-				var l = new MemoryLayout(bw.ReadInt32(), bw.ReadInt32());
+				var l = new MemoryLayout(bw.ReadInt32(), bw.ReadInt32(), bw.ReadInt32());
 				frame.Layouts.Add(l);
 			}
 
@@ -68,7 +69,7 @@ namespace Ela.Linking
 			{
 				var opCode = (Op)bw.ReadByte();
 				frame.Ops.Add(opCode);
-				frame.OpData.Add(OpHelper.OpSize[(Int32)opCode] > 1 ? bw.ReadInt32() : 0);
+				frame.OpData.Add(OpSizeHelper.OpSize[(Int32)opCode] > 1 ? bw.ReadInt32() : 0);
 			}
 
 			return frame;
