@@ -16,13 +16,13 @@ namespace Ela.Parsing
 
 		InvalidEscapeCode = 5,
 
-		ShortMatchWithoutParams = 6,
+		// 6,
 
 		InvalidFunctionDeclaration = 7,
 
-		InvalidRecordFieldDeclaration = 8,
+		// = 8,
 
-		ShortMatchInvalidParamList = 9,
+		// = 9,
 
 
 
@@ -46,13 +46,13 @@ namespace Ela.Parsing
 
 		ExpectedBooleanToken = 109,
 
-		ExpectedArgSigma = 110,
-		
+		ExpectedFunctionToken = 110,
+
 		ExpectedSemicolon = 111,
 
 		ExpectedCurlyBrace = 112,
 
-		ExpectedMatchOperator = 113,
+		ExpectedArrow = 113,
 
 		ExpectedKeywordIn = 114,
 
@@ -66,13 +66,13 @@ namespace Ela.Parsing
 
 		ExpectedKeywordMatch = 119,
 
-		ExpectedKeywordWhen = 120,
-		
-		ExpectedKeywordAs = 121,
-		
-		ExpectedKeywordIs = 122,
+		ExpectedSquareBrace = 120,
 
-		ExpectedKeywordVar = 123,
+		ExpectedKeywordAs = 121,
+
+		ExpectedIsOperator = 122,
+
+		ExpectedArrayBrace = 123,
 
 		ExpectedKeywordLet = 124,
 
@@ -90,7 +90,7 @@ namespace Ela.Parsing
 
 		ExpectedKeywordWhile = 131,
 
-		ExpectedKeywordUntil = 132,
+		ExpectedEq = 132,
 
 		ExpectedKeywordDo = 133,
 
@@ -110,25 +110,41 @@ namespace Ela.Parsing
 
 		ExpectedKeywordContinue = 141,
 
-		ExpectedKeywordTry = 142,
+		ExpectedKeywordRaise = 142,
 
 		ExpectedKeywordCatch = 143,
 
-		ExpectedKeywordAsync = 144,
+		ExpectedArgumentIdentToken = 144,
 
-		ExpectedKeywordLazy = 145,
+		ExpectedSeq = 145,
 
 		ExpectedKeywordIgnore = 146,
-				
+
 		ExpectedLambda = 147,
 
+		ExpectedDot = 148,
 
-		
-		InvalidProduction = 200, 
-		
+		ExpectedKeywordThen = 149,
+
+		ExpectedKeywordTry = 150,
+
+		ExpectedKeywordFail = 151,
+
+		ExpectedKeywordWhere = 152,
+
+		ExpectedKeywordAnd = 153,
+
+		ExpectedKeywordEnd = 154,
+
+		ExpectedKeywordMutable = 155,
+
+
+
+		InvalidProduction = 200,
+
 		InvalidLiteral = 201,
 
-		InvalidPrimitiveLiteral = 202,
+		InvalidPrimitive = 202,
 
 		InvalidExpression = 203,
 
@@ -136,7 +152,7 @@ namespace Ela.Parsing
 
 		InvalidLiteralPattern = 205,
 
-		InvalidBooleanPattern = 206,
+		InvalidContinue = 206,
 
 		InvalidBindingPattern = 207,
 
@@ -144,30 +160,126 @@ namespace Ela.Parsing
 
 		InvalidIsOperatorPattern = 209,
 
-		InvalidRootExpression = 210,
+		InvalidRoot = 210,
 
-		InvalidIterationExpression = 211,
+		InvalidBreak = 211,
 
 		InvalidAssignment = 212,
 
-		InvalidVariableDeclaration = 213,
+		InvalidIf = 213,
 
-		InvalidFunctionExpression = 214,
+		InvalidFunction = 214,
 
-		InvalidWhenExpression = 215,
+		InvalidRaise = 215,
 
-		InvalidIncludeExpression = 216,
+		InvalidLazy = 216,
 
-		InvalidWhileExpression = 217,
+		InvalidWhile = 217,
 
-		InvalidDoWhileExpression = 218,
+		InvalidFail = 218,
 
-		InvalidForExpression = 219,
+		InvalidFor = 219,
 
-		InvalidTryCatchExpression = 220,
+		InvalidTry = 220,
 
-		InvalidUnaryExpression = 221,
+		InvalidUnary = 221,
 
-		InvalidUnaryOperator = 222,
+		InvalidReturn = 222,
+
+		InvalidSimpleExpression = 223,
+
+		InvalidVariant = 224,
+
+		InvalidVariableReference = 225,
+
+		InvalidTuple = 226,
+
+		InvalidGrouping = 227,
+
+		InvalidMemberAccess = 228,
+
+		InvalidArgumentReference = 229,
+
+		InvalidBaseReference = 230,
+
+		InvalidMatch = 231,
+
+		InvalidMatchEntry = 232,
+
+		InvalidParenPattern = 233,
+
+		InvalidVariantPattern = 234,
+
+		InvalidFuncPattern = 235,
+
+		InvalidArrayPattern = 236,
+
+		InvalidUnitPattern = 237,
+
+		InvalidDefaultPattern = 238,
+
+		InvalidRecordPattern = 239,
+
+		InvalidTuplePattern = 240,
+
+		InvalidConsPattern = 241,
+
+		InvalidListPattern = 242,
+
+		InvalidRecord = 243,
+
+		InvalidRange = 244,
+
+		InvalidList = 245,
+
+		InvalidParamList = 246,
+
+		InvalidArray = 247,
+
+		InvalidBinding = 248,
+
+		InvalidWhereBinding = 249,
+
+		InvalidLambda = 250,
+
+		InvalidInclude = 251,
+
+		InvalidPipe = 252,
+
+		InvalidOr = 253,
+
+		InvalidAnd = 254,
+
+		InvalidEq = 255,
+
+		InvalidShift = 256,
+
+		InvalidConcat = 257,
+
+		InvalidCons = 258,
+
+		InvalidMath = 259,
+
+		InvalidCast = 260,
+
+		InvalidInfix = 261,
+
+		InvalidBitOr = 262,
+
+		InvalidBitXor = 263,
+
+		InvalidBitAnd = 264,
+
+		InvalidComp = 265,
+
+		InvalidApplication = 266,
+
+		InvalidSequence = 267,
+
+		InvalidComprehension = 268,
+
+		InvalidGuard = 269,
+
+		InvalidFuncOperator = 270
 	}
 }

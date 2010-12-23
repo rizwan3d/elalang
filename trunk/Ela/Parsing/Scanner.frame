@@ -45,7 +45,7 @@ internal sealed class Token {
 //-----------------------------------------------------------------------------------
 // Buffer
 //-----------------------------------------------------------------------------------
-internal class Buffer {
+internal class Buffer : IDisposable {
 	// This Buffer supports the following cases:
 	// 1) seekable stream (file)
 	//    a) whole stream in buffer
@@ -94,10 +94,15 @@ internal class Buffer {
 
 	~Buffer() { Close(); }
 	
+	void IDisposable.Dispose() {
+		Close();
+	}
+	
 	protected void Close() {
 		if (!isUserStream && stream != null) {
 			stream.Close();
 			stream = null;
+			GC.SuppressFinalize(this);
 		}
 	}
 	
@@ -228,6 +233,7 @@ internal sealed class UTF8Buffer: Buffer {
 internal sealed class Scanner {
 	const char EOL = '\n';
 	const int eofSym = 0; /* pdt */
+	
 -->declarations
 
 	public Buffer buffer; // scanner buffer
@@ -291,6 +297,7 @@ internal sealed class Scanner {
 			// replace isolated '\r' by '\n' in order to make
 			// eol handling uniform across Windows, Unix and Mac
 			if (ch == '\r' && buffer.Peek() != '\n') ch = EOL;
+						
 			if (ch == EOL) { line++; col = 0; }
 		}
 -->casing1

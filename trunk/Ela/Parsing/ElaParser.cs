@@ -41,7 +41,7 @@ namespace Ela.Parsing
 		{
 			var p = new Parser(new Scanner(stream));
 			p.Parse();			
-			return new ParserResult(p.CodeUnit, p.errors.ErrorList.Count == 0, p.errors.ErrorList);
+			return new ParserResult(p.Expression, p.errors.ErrorList.Count == 0, p.errors.ErrorList);
 		}
 		#endregion
 	}

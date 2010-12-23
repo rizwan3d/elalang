@@ -8,31 +8,104 @@ namespace Ela.Parsing
 {
 	internal sealed partial class Parser
 	{
-		#region Construction
-		private static CultureInfo culture = CultureInfo.GetCultureInfo("en-US");
-		private FastStack<ElaFunctionLiteral> funs = new FastStack<ElaFunctionLiteral>();
-		#endregion
-
+		private static readonly ElaVariableReference hiddenVar = new ElaVariableReference { VariableName = "$0" };
+		private static readonly ElaVariablePattern hiddenPattern = new ElaVariablePattern { Name = "$0" };
 
 		#region Methods
-		private void InitializeCodeUnit()
+		private ElaExpression GetBuiltin(Token t, string value)
 		{
-			CodeUnit = new ElaCodeUnit();
+			var kind = BuiltinFunc.Kind(value);
+			return kind != ElaBuiltinFunctionKind.None ? (ElaExpression)new ElaBuiltinFunction(t) { Kind = kind } :
+				(ElaExpression)new ElaVariableReference(t) { VariableName = value };
 		}
 
-			   
-		private ElaExpression GetFun(ElaExpression exp)
+
+		private bool RequireEnd(ElaExpression exp)
 		{
-			if (exp != null && exp.Placeholders > 0 && exp.Type != ElaNodeType.Placeholder)
+			if (exp.Type == ElaNodeType.Binding)
 			{
-				return new ElaFunctionLiteral(t)
-				{
-					Expression = exp,
-					ParameterSlots = exp.Placeholders
-				};
+				var vexp = (ElaBinding)exp;
+				
+				if (vexp.And != null)
+					return true;
+
+				if (vexp.InitExpression.Type != ElaNodeType.FunctionLiteral)
+					return false;
+				
+				return ((ElaFunctionLiteral)vexp.InitExpression).Body.Entries.Count > 1;
 			}
 			else
-				return exp;
+				return true;
+		}
+
+
+		private void SetFunMetadata(ElaBinding varExp, ElaExpression cexp, ElaVariableFlags flags)
+		{
+			if (cexp != null)
+			{
+				var imm = (flags & ElaVariableFlags.Immutable) == ElaVariableFlags.Immutable;
+
+				if (cexp.Type == ElaNodeType.FunctionLiteral && imm && varExp.VariableName != null)
+				{
+					((ElaFunctionLiteral)cexp).Name = varExp.VariableName;
+					varExp.VariableFlags |= ElaVariableFlags.Function;
+				}
+				else if (cexp.Type < ElaNodeType.FunctionLiteral && imm && varExp.VariableName != null)
+					varExp.VariableFlags |= ElaVariableFlags.ObjectLiteral;
+			}
+		}
+
+
+		private ElaExpression GetOperatorFun(ElaExpression exp, ElaOperator op, bool right)
+		{
+			var bin = new ElaBinary(t) 
+			{ 
+				Operator = op,
+				Left = !right ? exp : hiddenVar,
+				Right = right ? exp : hiddenVar
+			};
+			var m = new ElaMatch();
+			m.SetLinePragma(exp.Line, exp.Column);
+			m.Entries.Add(new ElaMatchEntry { Expression = bin, Pattern = hiddenPattern });
+
+			var ret = new ElaFunctionLiteral { Body = m };
+			ret.SetLinePragma(exp.Line, exp.Column);
+			return ret;
+		}
+
+
+		private ElaExpression GetCustomOperatorFun(string name, ElaExpression par)
+		{
+			return new ElaBinary(t)
+			{
+				Operator = ElaOperator.Custom,
+				CustomOperator = name,
+				Right = par
+			};
+		}
+
+
+		private ElaExpression GetPrefixFun(string name, ElaExpression par, bool flip)
+		{
+			var fc = new ElaFunctionCall(t)
+			{
+				Target = new ElaVariableReference(t) { VariableName = name }
+			};
+
+			fc.Parameters.Add(par);
+			fc.FlipParameters = flip;
+			return fc;
+		}
+
+
+		private ElaExpression GetPartialFun(ElaExpression exp)
+		{
+			var m = new ElaMatch { Expression = hiddenVar };
+			m.SetLinePragma(exp.Line, exp.Column);
+			m.Entries.Add(new ElaMatchEntry { Expression = exp, Pattern = hiddenPattern });			
+			var ret = new ElaFunctionLiteral() { Body = m };
+			ret.SetLinePragma(exp.Line, exp.Column);
+			return ret;
 		}
 
 
@@ -54,7 +127,8 @@ namespace Ela.Parsing
 				val == "object" ? ObjectType.Object :
 				val == "unit" ? ObjectType.Unit :
 				val == "module" ? ObjectType.Module :
-				val == "seq" ? ObjectType.Sequence :
+				val == "lazy" ? ObjectType.Lazy :
+				val == "variant" ? ObjectType.Variant :
 				TypeError(val);
 		}
 
@@ -138,7 +212,7 @@ namespace Ela.Parsing
 			{
 				var res = default(Double);
 				
-				if (!Double.TryParse(val, NumberStyles.Float, culture.NumberFormat, out res))
+				if (!Double.TryParse(val, NumberStyles.Float, Culture.NumberFormat, out res))
 					AddError(ElaParserError.InvalidRealSyntax);
 				
 				return new ElaLiteralValue(negate ? -res : res);
@@ -147,7 +221,7 @@ namespace Ela.Parsing
 			{
 				var res = default(Single);
 				
-				if (!Single.TryParse(val, NumberStyles.Float, culture.NumberFormat, out res))
+				if (!Single.TryParse(val, NumberStyles.Float, Culture.NumberFormat, out res))
 					AddError(ElaParserError.InvalidRealSyntax);
 				
 				return new ElaLiteralValue(negate ? -res : res);
@@ -157,10 +231,15 @@ namespace Ela.Parsing
 
 		private string ReadString(string val)
 		{
-			var res = EscapeCodeParser.Parse(ref val);
-			
-			if (res > 0)
-				AddError(ElaParserError.InvalidEscapeCode, res);
+			if (val.Length > 0 && val[0] != '@')
+			{
+				var res = EscapeCodeParser.Parse(ref val);
+
+				if (res > 0)
+					AddError(ElaParserError.InvalidEscapeCode, res);
+			}
+			else
+				val = val.Substring(2, val.Length - 3);
 			
 			return val;
 		}
@@ -182,7 +261,7 @@ namespace Ela.Parsing
 
 
 		#region Properties
-		public ElaCodeUnit CodeUnit { get; private set; }
+		public ElaExpression Expression { get; private set; }
 		#endregion
 	}
 }
