@@ -314,7 +314,8 @@ namespace VersionTracker
 			{
 				using (var sr = new StreamWriter(File.Open(CurrentFile, FileMode.Create)))
 				{
-					foreach (var r in grid.Rows.Cast<DataGridViewRow>().Reverse())
+					foreach (var r in grid.Rows.Cast<DataGridViewRow>().OrderByDescending(
+						r => GetVersion(r.Cells[0].Value)))
 					{
 						if (r.Index < grid.Rows.Count - 1 || r.Cells[2].Value != null)
 						{
@@ -404,6 +405,30 @@ namespace VersionTracker
 					row.Cells[2].Style.Font = new Font(grid.DefaultCellStyle.Font, b ? FontStyle.Bold : FontStyle.Regular);
 				}
 			}
+		}
+
+		private void grid_SortCompare(object sender, DataGridViewSortCompareEventArgs e)
+		{
+			if (e.Column.Index == 0)
+			{
+				e.SortResult = Compare(e.CellValue1, e.CellValue2);
+				e.Handled = true;
+			}
+		}
+
+
+		private int Compare(object val1, object val2)
+		{
+			var v1 = GetVersion(val1);
+			var v2 = GetVersion(val2);
+			return v1.CompareTo(v2);
+		}
+
+
+		private Version GetVersion(object val)
+		{
+			return val != null ? new Version(val.ToString()) :
+				new Version(String.Format("{0}.0.0.0", Int32.MaxValue));
 		}
 	}
 

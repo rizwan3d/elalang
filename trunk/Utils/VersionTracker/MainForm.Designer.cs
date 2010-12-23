@@ -90,7 +90,7 @@
 			// 
 			this.newChangeListToolStripMenuItem.Name = "newChangeListToolStripMenuItem";
 			this.newChangeListToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-			this.newChangeListToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.newChangeListToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
 			this.newChangeListToolStripMenuItem.Text = "&New Change List";
 			this.newChangeListToolStripMenuItem.Click += new System.EventHandler(this.newChangeListToolStripMenuItem_Click);
 			// 
@@ -98,19 +98,19 @@
 			// 
 			this.openChangeListToolStripMenuItem.Name = "openChangeListToolStripMenuItem";
 			this.openChangeListToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.openChangeListToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.openChangeListToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
 			this.openChangeListToolStripMenuItem.Text = "&Open Change List";
 			this.openChangeListToolStripMenuItem.Click += new System.EventHandler(this.openChangeListToolStripMenuItem_Click);
 			// 
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(196, 6);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(207, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -130,35 +130,35 @@
 			// allItemsToolStripMenuItem
 			// 
 			this.allItemsToolStripMenuItem.Name = "allItemsToolStripMenuItem";
-			this.allItemsToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+			this.allItemsToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
 			this.allItemsToolStripMenuItem.Text = "&All items";
 			this.allItemsToolStripMenuItem.Click += new System.EventHandler(this.allItemsToolStripMenuItem_Click);
 			// 
 			// currentMinorRevisionToolStripMenuItem
 			// 
 			this.currentMinorRevisionToolStripMenuItem.Name = "currentMinorRevisionToolStripMenuItem";
-			this.currentMinorRevisionToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+			this.currentMinorRevisionToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
 			this.currentMinorRevisionToolStripMenuItem.Text = "Current minor &revision";
 			this.currentMinorRevisionToolStripMenuItem.Click += new System.EventHandler(this.currentMinorRevisionToolStripMenuItem_Click);
 			// 
 			// currentMajorRevisionToolStripMenuItem
 			// 
 			this.currentMajorRevisionToolStripMenuItem.Name = "currentMajorRevisionToolStripMenuItem";
-			this.currentMajorRevisionToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+			this.currentMajorRevisionToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
 			this.currentMajorRevisionToolStripMenuItem.Text = "Current &major revision";
 			this.currentMajorRevisionToolStripMenuItem.Click += new System.EventHandler(this.currentMajorRevisionToolStripMenuItem_Click);
 			// 
 			// currentMinorVersionToolStripMenuItem
 			// 
 			this.currentMinorVersionToolStripMenuItem.Name = "currentMinorVersionToolStripMenuItem";
-			this.currentMinorVersionToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+			this.currentMinorVersionToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
 			this.currentMinorVersionToolStripMenuItem.Text = "Current minor &version";
 			this.currentMinorVersionToolStripMenuItem.Click += new System.EventHandler(this.currentMinorVersionToolStripMenuItem_Click);
 			// 
 			// currentMajorVersionToolStripMenuItem
 			// 
 			this.currentMajorVersionToolStripMenuItem.Name = "currentMajorVersionToolStripMenuItem";
-			this.currentMajorVersionToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+			this.currentMajorVersionToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
 			this.currentMajorVersionToolStripMenuItem.Text = "Current ma&jor version";
 			this.currentMajorVersionToolStripMenuItem.Click += new System.EventHandler(this.currentMajorVersionToolStripMenuItem_Click);
 			// 
@@ -235,13 +235,13 @@
             this.toolStripMenuItem2,
             this.revertChangeToolStripMenuItem});
 			this.incrementMenu.Name = "incrementMenu";
-			this.incrementMenu.Size = new System.Drawing.Size(197, 98);
+			this.incrementMenu.Size = new System.Drawing.Size(208, 98);
 			this.incrementMenu.Opening += new System.ComponentModel.CancelEventHandler(this.incrementMenu_Opening);
 			// 
 			// incrementThirdRevisionToolStripMenuItem
 			// 
 			this.incrementThirdRevisionToolStripMenuItem.Name = "incrementThirdRevisionToolStripMenuItem";
-			this.incrementThirdRevisionToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+			this.incrementThirdRevisionToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
 			this.incrementThirdRevisionToolStripMenuItem.Tag = "3";
 			this.incrementThirdRevisionToolStripMenuItem.Text = "Increment &Major Revision";
 			this.incrementThirdRevisionToolStripMenuItem.Click += new System.EventHandler(this.incrementRevisionToolStripMenuItem_Click);
@@ -249,7 +249,7 @@
 			// incrementSecondRevisionToolStripMenuItem
 			// 
 			this.incrementSecondRevisionToolStripMenuItem.Name = "incrementSecondRevisionToolStripMenuItem";
-			this.incrementSecondRevisionToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+			this.incrementSecondRevisionToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
 			this.incrementSecondRevisionToolStripMenuItem.Tag = "2";
 			this.incrementSecondRevisionToolStripMenuItem.Text = "Increment Minor &Version";
 			this.incrementSecondRevisionToolStripMenuItem.Click += new System.EventHandler(this.incrementRevisionToolStripMenuItem_Click);
@@ -257,7 +257,7 @@
 			// incrementFirstRevisionToolStripMenuItem
 			// 
 			this.incrementFirstRevisionToolStripMenuItem.Name = "incrementFirstRevisionToolStripMenuItem";
-			this.incrementFirstRevisionToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+			this.incrementFirstRevisionToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
 			this.incrementFirstRevisionToolStripMenuItem.Tag = "1";
 			this.incrementFirstRevisionToolStripMenuItem.Text = "Increment Ma&jor Version";
 			this.incrementFirstRevisionToolStripMenuItem.Click += new System.EventHandler(this.incrementRevisionToolStripMenuItem_Click);
@@ -265,12 +265,12 @@
 			// toolStripMenuItem2
 			// 
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-			this.toolStripMenuItem2.Size = new System.Drawing.Size(193, 6);
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(204, 6);
 			// 
 			// revertChangeToolStripMenuItem
 			// 
 			this.revertChangeToolStripMenuItem.Name = "revertChangeToolStripMenuItem";
-			this.revertChangeToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+			this.revertChangeToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
 			this.revertChangeToolStripMenuItem.Text = "&Revert Change";
 			this.revertChangeToolStripMenuItem.Click += new System.EventHandler(this.revertChangeToolStripMenuItem_Click);
 			// 
@@ -294,6 +294,7 @@
 			this.grid.TabIndex = 2;
 			this.grid.Visible = false;
 			this.grid.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.grid_UserDeletingRow);
+			this.grid.SortCompare += new System.Windows.Forms.DataGridViewSortCompareEventHandler(this.grid_SortCompare);
 			this.grid.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.grid_CellMouseDown);
 			this.grid.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.grid_RowPostPaint);
 			this.grid.DefaultValuesNeeded += new System.Windows.Forms.DataGridViewRowEventHandler(this.grid_DefaultValuesNeeded);
