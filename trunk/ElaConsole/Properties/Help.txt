@@ -1,11 +1,16 @@
-﻿Ela Console Command Line Options
+﻿Ela Console Options and Commands Reference
+
+
+		COMMAND LINE OPTIONS
 
 
 Syntax: elac [filename] [options]
-
-
-		*** Console Options ***
 			
+
+		*** General Options ***
+			
+-prompt <string>	Use an alternative prompt (by default "ela").
+
 -nologo or -n		Do not show Ela Console logo and version 
 			information.
 
@@ -42,7 +47,7 @@ Syntax: elac [filename] [options]
 
 -arg			An argument that will be passed directly to the Ela
 			executable. All arguments are passed as strings and can
-			be accessed through an indexed array $args. You can 
+			be accessed through a tuple named $args. You can 
 			specify this switch multiple times.
 			
 
@@ -84,8 +89,22 @@ or -rc			object file available.
 
 File name can be omitted. In this case Ela Console is started in interactive 
 mode. 
-Parameters can be also specified via .config file in the <appSettings> section 
-as follows:
+Parameters can be also specified via elac.config file in the <appSettings> 
+section as follows:
 <add key="debug" value="true" />
 Parameters specified as command line arguments always override parameters in 
-the .config file.
+the elac.config file.
+
+
+
+		INTERACTIVE MODE COMMANDS
+		
+									
+#reload <module>	Reload a module with the specified alias into 
+			interactive session.
+			
+#clear			Clears the console window.
+			
+#help			Print this help from interactive mode.
+
+

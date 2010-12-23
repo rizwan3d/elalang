@@ -16,6 +16,9 @@ namespace ElaConsole.Options
 
 
 		#region Console Options
+		[CommandLineOption("prompt")]
+		public string Prompt { get; set; }
+		
 		[CommandLineOption(true)]
 		public string FileName { get; set; }
 

@@ -8,6 +8,7 @@ using Ela.Parsing;
 using Ela.Runtime;
 using Ela.Runtime.ObjectModel;
 using ElaConsole.Options;
+using System.Diagnostics;
 
 namespace ElaConsole
 {
@@ -79,7 +80,7 @@ namespace ElaConsole
 					return R_ERR;
 
 				var ec = new ElaCompiler();
-				var cres = ec.Compile(res.CodeUnit, CreateCompilerOptions());
+				var cres = ec.Compile(res.Expression, CreateCompilerOptions());
 				helper.PrintErrors(cres.Messages);
 
 				if (!cres.Success)
@@ -187,7 +188,17 @@ namespace ElaConsole
 				if (!String.IsNullOrEmpty(source))
 				{
 					source = source.Trim('\0');
-					InterpretString(source);
+
+					if (source.Length > 0)
+					{
+						if (source[0] == '#')
+						{
+							var cmd = new InteractiveCommands(vm, helper);
+							cmd.ProcessCommand(source);
+						}
+						else
+							InterpretString(source);
+					}
 				}
 
 				if (opt.OneCommand)
@@ -202,11 +213,7 @@ namespace ElaConsole
 			var res = default(LinkerResult);
 			
 			if (opt.ShowBuildTime) //GIT
-			{
-				var l = new ElaIncrementalLinker(new LinkerOptions(), CompilerOptions.Default);
-				l.SetSource("var x = 0");
-				l.Build();
-			}
+				Warmup();
 			
 			var dt = DateTime.Now;
 			
@@ -229,7 +236,12 @@ namespace ElaConsole
 			else
 			{
 				if (opt.ShowBuildTime)
-					Console.WriteLine("Build taken: {0}", DateTime.Now - dt);
+				{
+					var fin = DateTime.Now - dt;
+					Console.WriteLine("Modules in assembly: {0}", res.Assembly.ModuleCount);
+					Console.WriteLine("EIL instruction number in main module: {0}", res.Assembly.GetRootModule().Ops.Count);
+					Console.WriteLine("Build taken: {0}", fin);
+				}
 
 				var ret = Execute(res.Assembly, false);
 
@@ -248,12 +260,10 @@ namespace ElaConsole
 
 			linker.SetSource(source);
 			var res = linker.Build();
-
+			helper.PrintErrors(res.Messages);
+				
 			if (!res.Success)
-			{
-				helper.PrintErrors(res.Messages);
 				return R_ERR;
-			}
 			else
 				return Execute(res.Assembly, true);
 		}
@@ -288,8 +298,8 @@ namespace ElaConsole
 					{
 						if (opt.Arguments.Count > 0)
 						{
-							var arr = CompileArguments();
-							asm.AddArgument("args", arr);
+							var tup = CompileArguments();
+							asm.AddArgument("args", tup);
 						}
 
 						vm = new ElaMachine(asm);
@@ -298,7 +308,7 @@ namespace ElaConsole
 						vm.RefreshState();
 
 					if (opt.ShowTime && !interactive)
-						new ElaMachine(CodeFrame.Empty).Run(); //GIT
+						Warmup(); //GIT
 					
 					var os = lastOffset;
 					lastOffset = mod.Ops.Count;
@@ -309,11 +319,12 @@ namespace ElaConsole
 						Console.WriteLine("Execution time: {0}", DateTime.Now - dt);
 
 					if (exer.ReturnValue.DataType != ObjectType.None && exer.ReturnValue.DataType != ObjectType.Unit)
-						Console.WriteLine(ValueFormatter.FormatValue(exer.ReturnValue));
+						Console.WriteLine(exer.ReturnValue.ToString());
 				}
 				catch (ElaCodeException ex)
 				{
-					Console.WriteLine(ex.ToString());
+					vm.Recover();
+					helper.PrintError(ex.ToString());
 					return R_ERR;
 				}
 			}
@@ -322,14 +333,14 @@ namespace ElaConsole
 		}
 
 
-		private static ElaArray CompileArguments()
+		private static ElaTuple CompileArguments()
 		{
-			var arr = new ElaArray(opt.Arguments.Count);
+			var arr = new ElaValue[opt.Arguments.Count];
 
 			for (var i = 0; i < opt.Arguments.Count; i++)
-				arr[i] = new RuntimeValue(opt.Arguments[i]);
+				arr[i] = new ElaValue(opt.Arguments[i]);
 
-			return arr;
+			return new ElaTuple(arr);
 		}
 
 
@@ -363,6 +374,15 @@ namespace ElaConsole
 				linkOpt.CodeBase.Directories.Add(new DirectoryInfo(s));
 
 			return linkOpt;
+		}
+
+
+		private static void Warmup()//GIT
+		{
+			var tlk = new ElaIncrementalLinker(new LinkerOptions(), CompilerOptions.Default);
+			tlk.SetSource("{x=[[|0|]]}");
+			var res = tlk.Build();
+			new ElaMachine(res.Assembly).Run(); 
 		}
 		#endregion
 	}

@@ -120,7 +120,8 @@ namespace ElaConsole
 				Console.WriteLine();
 				var oc = Console.ForegroundColor;
 				Console.ForegroundColor = ConsoleColor.White;
-				Console.Write(">");
+				var prompt = String.IsNullOrEmpty(opt.Prompt) ? "ela" : opt.Prompt;
+				Console.Write(prompt + ">");
 				Console.ForegroundColor = oc;
 			}
 		}
@@ -170,7 +171,7 @@ namespace ElaConsole
 			if (!opt.Silent)
 			{
 				foreach (var e in errors)
-					Console.WriteLine(e.ToString());
+					WriteMessage(e.ToString(), e.Type);
 			}
 		}
 
@@ -184,7 +185,21 @@ namespace ElaConsole
 
 		internal void PrintErrorAlways(string message, params object[] args)
 		{
-			Console.WriteLine("Ela Console error: " + message, args);
+			WriteMessage(String.Format("Ela Console error: " + message, args), MessageType.Error);
+		}
+
+
+		private void WriteMessage(string msg, MessageType type)
+		{
+			var col = Console.ForegroundColor;
+
+			var newCol = type == MessageType.Error ? ConsoleColor.Red :
+				type == MessageType.Warning ? ConsoleColor.Yellow :
+				ConsoleColor.White;
+
+			Console.ForegroundColor = newCol;
+			Console.WriteLine(msg);
+			Console.ForegroundColor = col;
 		}
 		#endregion
 	}
