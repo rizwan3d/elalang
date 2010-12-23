@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Ela.Compilation
 {
@@ -8,7 +9,6 @@ namespace Ela.Compilation
 		internal LabelMap(Label exit)
 		{
 			Exit = exit;
-			GotoParam = -1;
 		}
 
 
@@ -16,7 +16,6 @@ namespace Ela.Compilation
 		{
 			Exit = old.Exit;
 			FunStart = old.FunStart;
-			GotoParam = old.GotoParam;
 			FunctionName = old.FunctionName;
 			FunctionParameters = old.FunctionParameters;
 		}
@@ -35,8 +34,8 @@ namespace Ela.Compilation
 		internal string FunctionName { get; set; }
 
 		internal int FunctionParameters { get; set; }
-		
-		internal int GotoParam { get; set; }
+
+		internal Scope FunctionScope { get; set; }
 		#endregion
 	}
 }

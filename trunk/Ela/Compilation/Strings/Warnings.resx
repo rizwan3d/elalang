@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ConstructorAsMutable" xml:space="preserve">
-    <value>You cannot redefine a constructor for a polymorphic variant (e.g. `Foo), declare it as an immutable value using 'let'.</value>
-  </data>
   <data name="EmbeddedBinding" xml:space="preserve">
     <value>Variable declared inside an embedded expression is not visible from the rest of the code.</value>
   </data>
@@ -128,12 +125,6 @@
   </data>
   <data name="FunctionInvalidType" xml:space="preserve">
     <value>An object bound to the referenced name doesn't support call operation.</value>
-  </data>
-  <data name="FunctionTooManyParams" xml:space="preserve">
-    <value>A target function accepts {0} parameters and {1} arguments are passed in a function call. A call will likely fail at runtime.</value>
-  </data>
-  <data name="FunctionZeroParams" xml:space="preserve">
-    <value>A call to function that accepts {0} parameters with an empty argument list will likely fail at runtime.</value>
   </data>
   <data name="MatchEntryAlwaysFail" xml:space="preserve">
     <value>This pattern will never match.</value>

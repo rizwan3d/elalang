@@ -10,8 +10,6 @@ namespace Ela.Compilation
 
 		Pushunit,
 
-		Pushptr,
-
 		Pushelem,
 
 		PushI4_0,
@@ -24,35 +22,27 @@ namespace Ela.Compilation
 
 		Popelem,
 
-		Pushseq,
-
 		Pushstr_0,
 
-		Listadd,
+		Arrcons,
 
-		Listgen,
+		Tupcons,
 
-		Listtail,
+		Reccons,
 
-		Listelem,
+		Lrev,
+
+		Cons,
+
+		Consr,
+
+		Tail,
+
+		Head,
 
 		Ret,
 
-		ConvI1,
-
-		ConvI4,
-
-		ConvR4,
-
-		ConvStr,
-
-		ConvCh,
-
-		ConvI8,
-
-		ConvR8,
-
-		ConvSeq,
+		Concat,
 
 		Add,
 
@@ -69,10 +59,6 @@ namespace Ela.Compilation
 		Shr,
 
 		Shl,
-
-		Ctag,
-
-		Htag,
 
 		Ceq,
 
@@ -96,35 +82,27 @@ namespace Ela.Compilation
 
 		Neg,
 
-		Pos,
-
 		NotBw,
 
 		Dup,
 
-		Calla,
-
-		Valueof,
-
-		Newseq,
-
-		Newlist,
+		Swap,
 
 		Newlazy,
 
+		Newlist,
+
 		Newmod,
 
-		Newarr_0,
+		Newarr,
 
 		Newtup_2,
 
 		Cout,
 
-		Throw,
+		Typeid,
 
-		Typeof,
-
-		Term,
+		Stop,
 
 		NewI8,
 
@@ -132,20 +110,74 @@ namespace Ela.Compilation
 
 		Leave,
 
-		Calld,
+		Flip,
+
+		LazyCall,
+
+		Call,
 
 		Callt,
 
+		Throw,
+
+		Rethrow,
+
+		Force,
+
+		Type,
+
+		Isnil,
+
+		Succ,
+
+		Pred,
+
+		Max,
+
+		Min,
+
+		Show,
+
+		Tagval,
+
+		Skiphtag,
+
+
+
+
+		Skiptag,
+
+		Isfun,
+
+		Conv,
+
+		Newvar,
+
+		Newrec,
+
+		Newtup,
+
+		Skiptn,
+
+		Skiptl,
+
+		Trait,
+
+		PushelemI4,
+
+		Pushelemi,
+
+		Popelemi,
+
+		Tupex,
+
+		Failwith,
 
 		Start,
-
-		Call,
 
 		Incr,
 
 		Decr,
-
-		Cop,
 
 		Pushstr,
 
@@ -177,8 +209,6 @@ namespace Ela.Compilation
 
 		Brfalse,
 
-		Brptr,
-
 		Br_lt,
 
 		Br_gt,
@@ -187,24 +217,6 @@ namespace Ela.Compilation
 
 		Br_neq,
 
-		Brdyn,
-
-		Yield,
-
-		Newfun,
-
-		Newfund,
-
-		Newfuns,
-
-		Newrec,
-
-		Newarr,
-
-		Newtup,
-
-		Settag,
-
-		Epilog,
+		Newfun
 	}
 }

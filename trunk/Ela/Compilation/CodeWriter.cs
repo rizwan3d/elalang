@@ -11,6 +11,13 @@ namespace Ela.Compilation
 		private FastList<Int32> opData;
 		private FastList<Int32> labels;
 		private FastList<Int32> fixups;
+		private FastStack<StackSize> locals;
+
+		private sealed class StackSize
+		{
+			internal int Counter;
+			internal int Max;
+		}
 
 		internal CodeWriter(FastList<Op> ops, FastList<Int32> opData)
 		{
@@ -18,6 +25,7 @@ namespace Ela.Compilation
 			this.opData = opData;
 			labels = new FastList<Int32>();
 			fixups = new FastList<Int32>();
+			locals = new FastStack<StackSize>();
 		}
 		#endregion
 
@@ -32,6 +40,19 @@ namespace Ela.Compilation
 
 			fixups.Clear();
 			labels.Clear();
+		}
+
+
+		internal void StartFrame(int init)
+		{
+			locals.Push(new StackSize { Counter = init, Max = init });
+		}
+
+
+		internal int FinishFrame()
+		{
+			var ret = locals.Pop();
+			return ret.Max;
 		}
 
 
@@ -69,21 +90,27 @@ namespace Ela.Compilation
 				Emit(op, label.GetIndex());
 			}
 			else
-				Emit(op);
+				Emit(op, 0);
 		}
-
 
 		internal void Emit(Op op, int data)
 		{
 			ops.Add(op);
+			var size = OpStackHelper.Op[(Int32)op];
+
+			var ss = locals.Peek();
+			ss.Counter += size;
+
+			if (ss.Counter > ss.Max)
+				ss.Max = ss.Counter;
+
 			opData.Add(data);
 		}
 
 
 		internal void Emit(Op op)
 		{
-			ops.Add(op);
-			opData.Add(0);
+			Emit(op, 0);
 		}
 		#endregion
 

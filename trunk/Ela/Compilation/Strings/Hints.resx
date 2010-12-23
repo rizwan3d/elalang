@@ -129,7 +129,4 @@
   <data name="UseVarInsteadOfLet" xml:space="preserve">
     <value>Use 'var' keyword to declare a mutable variable.</value>
   </data>
-  <data name="UseYieldInGenerator" xml:space="preserve">
-    <value>Use 'yield' expression in order to return a value from a generator.</value>
-  </data>
 </root>

@@ -1,29 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using Ela.Debug;
 using System.IO;
+using Ela.Debug;
 
 namespace Ela.Compilation
 {
 	public class CodeFrame
 	{
-		#region Nested classes
-		private sealed class ReferenceMap : Dictionary<String,ModuleReference>, IReadOnlyMap<String,ModuleReference>
-		{
-			internal ReferenceMap() { }
-			internal ReferenceMap(ReferenceMap copy) : base(copy) { }
-		}
-		#endregion
-
-
 		#region Construction
-		public static readonly CodeFrame Empty = new CodeFrame(Op.Term);
+		public static readonly CodeFrame Empty = new CodeFrame(Op.Stop);
 
-		private CodeFrame(Op op) : this()
+		private CodeFrame(Op op)
+			: this()
 		{
 			Ops.Add(op);
 			OpData.Add(0);
-			Layouts.Add(new MemoryLayout(0, 0));
+			Layouts.Add(new MemoryLayout(0, 0, 0));
 		}
 
 
@@ -34,8 +26,17 @@ namespace Ela.Compilation
 			OpData = new FastList<Int32>();
 			Strings = new FastList<String>();
 			_references = new ReferenceMap();
-			DeclaredPervasives = new Dictionary<String,Int32>();
-			ReferencedPervasives = new Dictionary<String,Int32>();
+			DeclaredPervasives = new Dictionary<String, Int32>();
+			ReferencedPervasives = new Dictionary<String, Int32>();
+		}
+		#endregion
+
+
+		#region Nested classes
+		private sealed class ReferenceMap : Dictionary<String, ModuleReference>, IReadOnlyMap<String, ModuleReference>
+		{
+			internal ReferenceMap() { }
+			internal ReferenceMap(ReferenceMap copy) : base(copy) { }
 		}
 		#endregion
 
@@ -50,8 +51,8 @@ namespace Ela.Compilation
 			copy.Ops = Ops.Clone();
 			copy.OpData = OpData.Clone();
 			copy._references = new ReferenceMap(_references);
-			copy.DeclaredPervasives = new Dictionary<String,Int32>(DeclaredPervasives);
-			copy.ReferencedPervasives = new Dictionary<String,Int32>(ReferencedPervasives);
+			copy.DeclaredPervasives = new Dictionary<String, Int32>(DeclaredPervasives);
+			copy.ReferencedPervasives = new Dictionary<String, Int32>(ReferencedPervasives);
 			copy.Symbols = Symbols != null ? Symbols.Clone() : null;
 			return copy;
 		}
@@ -69,9 +70,9 @@ namespace Ela.Compilation
 
 		#region Properties
 		private ReferenceMap _references;
-		public IReadOnlyMap<String,ModuleReference> References 
-		{ 
-			get { return _references; } 
+		public IReadOnlyMap<String, ModuleReference> References
+		{
+			get { return _references; }
 		}
 
 		public FastList<Op> Ops { get; private set; }
@@ -81,16 +82,16 @@ namespace Ela.Compilation
 		public DebugInfo Symbols { get; internal set; }
 
 		public Scope GlobalScope { get; internal set; }
-		
-		public FileInfo File { get; internal set; }
+
+		public FileInfo File { get; set; }
 
 		internal FastList<MemoryLayout> Layouts { get; private set; }
 
 		internal FastList<String> Strings { get; private set; }
 
-		internal Dictionary<String,Int32> DeclaredPervasives { get; private set; }
+		internal Dictionary<String, Int32> DeclaredPervasives { get; private set; }
 
-		internal Dictionary<String,Int32> ReferencedPervasives { get; private set; }		
+		internal Dictionary<String, Int32> ReferencedPervasives { get; private set; }
 		#endregion
 	}
 }

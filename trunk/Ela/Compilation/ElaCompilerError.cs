@@ -7,15 +7,15 @@ namespace Ela.Compilation
 		None = 0,
 
 
-		VariableAlreadyDeclared = 300, 
-		
-		YieldNotAllowed = 301,
+		VariableAlreadyDeclared = 300,
 
-		//302
+		// = 301,
+
+		OperatorInvalidDeclaration = 302,
 
 		StrictModeMutableGlobal = 303,
 
-		ReturnInGenerator = 304,
+		// = 304,
 
 		ReturnInGlobal = 305,
 
@@ -39,21 +39,21 @@ namespace Ela.Compilation
 
 		UnableAssignExpression = 315,
 
-		OperatorBinaryTwoParams = 316,
+		// = 316,
 
-		OperatorUnaryOneParam = 317,
+		PatternNotAllArgs = 317,
 
-		InvalidConstructorBody = 318,
+		NameReserved = 318,
 
 		CastNotSupported = 319,
 
-		// = 320,
+		InfiniteRangeOnlyList = 320,
 
 		MatchNotSupportedInFor = 321,
 
 		MatchEntryTypingFailed = 322,
 
-		MatchOrPatternVariables = 323,
+		// = 323,
 
 		MatchHeadTailPatternNil = 324,
 
@@ -61,6 +61,11 @@ namespace Ela.Compilation
 
 		OperatorOnlyInGlobal = 326,
 
-		VariableDeclarationInitMissing = 327
+		VariableDeclarationInitMissing = 327,
+
+		ElseGuardNotValid = 328,
+
+		MatchEntryEmptyNoGuard = 329,
+
 	}
 }

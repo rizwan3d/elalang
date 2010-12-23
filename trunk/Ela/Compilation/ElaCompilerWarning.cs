@@ -17,17 +17,16 @@ namespace Ela.Compilation
 		
 		OperatorAsMutable = 404,
 
-		ConstructorAsMutable = 405, 
+		// = 405, 
 		
 		ValueNotUsed = 406,
+
+
+		// = 407,
 		
-
-
-		FunctionTooManyParams = 407,
-
 		FunctionInvalidType = 408,
 
-		FunctionZeroParams = 409,
+		// = 409,
 
 		FunctionImplicitPartial = 410,
 	}

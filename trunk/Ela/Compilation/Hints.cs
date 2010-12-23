@@ -2,6 +2,7 @@
 
 namespace Ela.Compilation
 {
+	[Flags]
 	internal enum Hints
 	{
 		None = 0x00,
@@ -12,12 +13,20 @@ namespace Ela.Compilation
 
 		Scope = 0x04,
 
-		Comp = 0x08,
+		CompList = 0x08,
 
-		Tail = 0x10,
+		CompArray = 0x10,
 
-		Throw = 0x20,
+		Tail = 0x20,
 
-		Nested = 0x40
+		Throw = 0x40,
+
+		Nested = 0x80,
+
+		And = 0x100,
+
+		FunBody = 0x200,
+
+		Silent = 0x400,
 	}
 }

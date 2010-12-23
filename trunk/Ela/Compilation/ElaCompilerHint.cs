@@ -7,7 +7,7 @@ namespace Ela.Compilation
 		None = 0,
 
 		
-		UseYieldInGenerator = 500,
+		// = 500,
 
 		UseVarInsteadOfLet = 501,
 

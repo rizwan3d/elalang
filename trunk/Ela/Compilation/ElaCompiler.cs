@@ -15,21 +15,20 @@ namespace Ela.Compilation
 
 
 		#region Methods
-		public CompilerResult Compile(ElaCodeUnit unit, CompilerOptions options)
+		public CompilerResult Compile(ElaExpression expr, CompilerOptions options)
 		{
 			var frame = new CodeFrame();
-			frame.Layouts.Add(new MemoryLayout(0, 1));
-			return Compile(unit, options, frame, new Scope(false, null));
+			return Compile(expr, options, frame, new Scope(false, null));
 		}
 
 
-		public CompilerResult Compile(ElaCodeUnit unit, CompilerOptions options, CodeFrame frame, Scope globalScope)
+		public CompilerResult Compile(ElaExpression expr, CompilerOptions options, CodeFrame frame, Scope globalScope)
 		{
 			//try
 			{
 				Options = options;
-				var helper = new CompilerHelper(frame, Options, globalScope);
-				frame.Layouts[0].Size = helper.CompileUnit(unit);
+				var helper = new Builder(frame, Options, globalScope);
+				helper.CompileUnit(expr);
 				frame.Symbols = frame.Symbols == null ? helper.Symbols :
 					helper.Symbols != null ? frame.Symbols.Merge(helper.Symbols) : frame.Symbols;
 				frame.GlobalScope = globalScope;

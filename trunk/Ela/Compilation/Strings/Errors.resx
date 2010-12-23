@@ -138,41 +138,44 @@
   <data name="ContinueNotAllowed" xml:space="preserve">
     <value>Expression 'continue' is not allowed in this context.</value>
   </data>
+  <data name="ElseGuardNotValid" xml:space="preserve">
+    <value>An 'else' guard is not valid in this context.</value>
+  </data>
   <data name="ForeachNoInitialization" xml:space="preserve">
     <value>Initialization expression is not supported in for/in cycles.</value>
   </data>
-  <data name="InvalidConstructorBody" xml:space="preserve">
-    <value>Last expression in a constructor declaration should be a tuple or a record literal.</value>
+  <data name="InfiniteRangeOnlyList" xml:space="preserve">
+    <value>Range: {0} is invalid. Only lists can be generated using infinite ranges.</value>
+  </data>
+  <data name="MatchEntryEmptyNoGuard" xml:space="preserve">
+    <value>An empty match entry should have a mandatory guard clause.</value>
   </data>
   <data name="MatchEntryTypingFailed" xml:space="preserve">
-    <value>Data types of a match entry are incompatible with previous entries.</value>
+    <value>Data types of a match entry {0} are incompatible with previous entries.</value>
   </data>
   <data name="MatchHeadTailPatternNil" xml:space="preserve">
-    <value>A list nil constructor ([]) can only be used at the end of a head/tail (x::xs) pattern.</value>
+    <value>Match entry {0} is invalid. A list nil constructor ([]) can only be used at the end of a head/tail (x::xs) pattern.</value>
   </data>
   <data name="MatchNotSupportedInFor" xml:space="preserve">
-    <value>Pattern matching is not allowed in for/to and for/downto cycles.</value>
+    <value>An expression: {0} is invalid. Pattern matching is not allowed in for/to and for/downto cycles.</value>
   </data>
-  <data name="MatchOrPatternVariables" xml:space="preserve">
-    <value>When using '||' (or) pattern in match all cases should declare the same number of variables.</value>
+  <data name="NameReserved" xml:space="preserve">
+    <value>Name '{0}' is reserved and cannot be used for a variable.</value>
   </data>
   <data name="OperatorAlreadyDeclared" xml:space="preserve">
     <value>Operator '{0}' is already declared in this module.</value>
   </data>
-  <data name="OperatorBinaryTwoParams" xml:space="preserve">
-    <value>Binary operator should have exactly two parameters.</value>
+  <data name="OperatorInvalidDeclaration" xml:space="preserve">
+    <value>Operator declarations cannot be paired with other declarations using 'and' keyword.</value>
   </data>
   <data name="OperatorOnlyInGlobal" xml:space="preserve">
     <value>Operators can be declared only in the global scope.</value>
   </data>
-  <data name="OperatorUnaryOneParam" xml:space="preserve">
-    <value>Unary operator should have a single parameter.</value>
+  <data name="PatternNotAllArgs" xml:space="preserve">
+    <value>Not all of the function arguments are specified in the pattern {0}.</value>
   </data>
   <data name="PlaceholderNotValid" xml:space="preserve">
     <value>An expression '_' is not valid in this context.</value>
-  </data>
-  <data name="ReturnInGenerator" xml:space="preserve">
-    <value>Expression 'return' is not allowed in generator.</value>
   </data>
   <data name="ReturnInGlobal" xml:space="preserve">
     <value>Expression 'return' is allowed only inside functions.</value>
@@ -181,7 +184,7 @@
     <value>Unable to declare a mutable global scope variable when the strict mode is on.</value>
   </data>
   <data name="UnableAssignExpression" xml:space="preserve">
-    <value>Unable to assign a value to this expression.</value>
+    <value>Unable to assign a value to the expression {0}.</value>
   </data>
   <data name="UndefinedVariable" xml:space="preserve">
     <value>Undefined name '{0}'.</value>
@@ -191,8 +194,5 @@
   </data>
   <data name="VariableDeclarationInitMissing" xml:space="preserve">
     <value>Variables cannot be declared without initialization.</value>
-  </data>
-  <data name="YieldNotAllowed" xml:space="preserve">
-    <value>Expression 'yield' is not allowed in this context.</value>
   </data>
 </root>
