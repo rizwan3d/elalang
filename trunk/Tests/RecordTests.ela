@@ -1,0 +1,22 @@
+﻿let fromLiteral {eq} =
+	let rec' = {lang="Ela", dev="Basil"} in
+    eq (length rec') 2
+    $ eq rec'.[0] "Ela" 
+    $ eq rec'.[1] "Basil" 
+    $ eq rec'.lang "Ela" 
+    $ eq rec'.dev "Basil"
+    $ eq rec'.["lang"] "Ela"
+    $ eq rec'.["dev"] "Basil"
+
+let changeItem {eq} =
+	let rec' = {x=1} in
+    rec'.x <- 2
+    $ eq rec'.x 2
+    $ rec'.[0] <- 22
+    $ eq rec'.x 22
+    $ rec'.["x"] <- 222
+    $ eq rec'.x 222
+
+let typeCheck {eqt} =
+	let rec' = {x=0} in
+	eqt (rec' ? record)

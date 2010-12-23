@@ -1,0 +1,25 @@
+﻿open Test
+open BasicTests
+open FunTests
+open RangeTests
+open ListTests
+open TupleTests
+open RecordTests
+open VariantTests
+open ComplexTests
+open ComprehensionTests
+
+let lst = [] 
+	|> Test.regFuns BasicTests
+    |> Test.regFuns FunTests
+    |> Test.regFuns RangeTests
+	|> Test.regFuns ListTests
+	|> Test.regFuns TupleTests
+	|> Test.regFuns RecordTests
+    |> Test.regFuns VariantTests
+	|> Test.regFuns ComplexTests
+    |> Test.regFuns ComprehensionTests
+	
+let _ = Test.fmt cout <| Test.run lst
+
+

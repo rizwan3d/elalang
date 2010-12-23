@@ -1,0 +1,52 @@
+let simple {eqt} =
+    eqt <| v ? (`Some)
+    $ eqt <| v2 ? (`Some 2)
+    $ eqt <| v3 ? (`None)
+    where v = `Some and
+          v2 = `Some 2 and
+          v3 = `None
+    end 
+    
+let simple2 {eqt} = 
+    eqt <| v ? (`Some (12, _))
+    $ eqt <| v2 ? (`Some (1::x::xs))
+    $ eqt <| v3 ? (`Some [|1,2,3|])
+    where v = `Some (12, 20) and
+          v2 = `Some [1,2,3] and
+          v3 = `Some [|1,2,3|]
+    end
+    
+let matchTest {eq} =
+    match v with
+    `Some m = eq v "message"
+    end
+    where v = `Some "message"
+    
+let transparency {eq} = 
+    eq (v + 14) 26
+    $ eq (14 - v) 2
+    $ eq (v * 2) 24
+    $ eq (24 / v) 2
+    $ eq (v / 2) 6    
+    where v = `Some 12
+    
+let transparency2 {eq} = 
+    eq v 100
+    $ eq v1 "message"
+    $ eq v2 (1,2)
+    where v = `Some 100 and
+          v1 = `Some "message" and
+          v2 = `Some (1,2)
+    end
+    
+let transparency3 {eqt} =
+    eqt ((100::v) ? (100::xs))   
+    $ v2.insert 0 100
+    $ eqt (v2 ? [|100,1,2,3|])
+    where v = [1,2,3,4] and
+          v2 = [|1,2,3|]
+    end
+    
+let typeCheck {eqt} =
+	let vr  = `None in
+	eqt (vr ? variant)

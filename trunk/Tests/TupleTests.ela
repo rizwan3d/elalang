@@ -1,0 +1,20 @@
+﻿let fromLiteral {eq} = 
+	let tup = ('E', 'l', 'a') in
+    eq (length tup) 3 
+    $ eq tup.[0] 'E' 
+    $ eq tup.[1] 'l'
+    $ eq tup.[2] 'a'
+
+let fromLiteral2 {eq} =
+	let tup = ("Ela",) in
+	eq (length tup) 1 $ eq tup.[0] "Ela"
+
+let changeItem {eqt} =
+	try 
+        (let tup = [0] in tup.[0] <- 1)
+        $ eqt false
+	with _ = eqt true end
+
+let typeCheck {eqt} =
+	let tup  = (0,) in
+	eqt (tup ? tuple)
