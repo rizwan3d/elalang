@@ -84,10 +84,8 @@ namespace Ela.Debug
 						val = String.Format(VAR, od);
 						break;
 					default:
-						if (o < Op.Start)
-							val = String.Empty;
-						else if (od != -1)
-							val = od.ToString();
+						var size = OpSizeHelper.OpSize[(Int32)o];
+						val = size > 1 ? od.ToString() : String.Empty;
 						break;
 				}
 

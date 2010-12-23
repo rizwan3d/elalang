@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Ela.Runtime;
+using System.IO;
 using Ela.Linking;
+using Ela.Runtime;
 
 namespace Ela.Debug
 {
@@ -16,42 +17,45 @@ namespace Ela.Debug
 			Assembly = asm;
 		}
 		#endregion
-
-
+		
 
 		#region Methods
-		public CallStack BuildCallStack(WorkerThread thread)
+		public CallStack BuildCallStack(int currentOffset, DebugInfo symbols, FileInfo moduleFile, Stack<StackPoint> callChain)
 		{
-			var syms = new DebugReader(thread.Module.Symbols);
-			var frames = new List<CallFrame>();			
-			var lp = syms.FindLineSym(thread.Offset - 1);			
+			var syms = new DebugReader(symbols);
+			var frames = new List<CallFrame>();
+			var lp = syms.FindLineSym(currentOffset - 1);			
 			var retval = new CallStack(
-					thread.Module.File,
+					moduleFile,
 					lp != null ? lp.Line : 0,
 					lp != null ? lp.Column : 0,
 					frames
 				);
 
-			var callStack = thread.CallStack.Clone();
-			var mem = default(CallPoint);
-			var offset = thread.Offset - 1;
+			if (callChain.Count == 0)
+				return retval;
+
+			var mem = default(StackPoint);
 			var list = new List<CallFrame>();
+			var first = true;
+			var offset = 0;
 
 			do
 			{
-				mem = callStack.Pop();
-				var glob = mem.ReturnAddress == WorkerThread.EndAddress;
+				mem = callChain.Pop();
+				offset = first ? currentOffset - 1 : mem.BreakAddress - 1;
+				var glob = callChain.Count == 0 || offset < 0;
 				var funSym = !glob ? syms.FindFunSym(offset) : null;
-				var line = syms != null ? syms.FindLineSym(offset) : null;
+				var line = syms != null && offset > 0 ? syms.FindLineSym(offset) : null;
 				var mod = Assembly.GetModuleName(mem.ModuleHandle);
 				frames.Add(new CallFrame(glob, mod,
 					funSym != null ? 
 						funSym.Name != null ? funSym.Name : String.Format(FUNC_PARS, funSym.Parameters) :
 						glob ? null : FUNC,
 					offset, line));
-				offset = mem.ReturnAddress;
+				first = false;
 			}
-			while (callStack.Count > 0);
+			while (callChain.Count > 0 && offset > 0);
 
 			return retval;
 		}
