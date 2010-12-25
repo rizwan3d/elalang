@@ -30,7 +30,7 @@ namespace Ela.Compilation
 
 				AddLinePragma(s);
 				cw.Emit(Op.Nop);
-				var addr = AddVariable(((ElaVariablePattern)s.Pattern).Name, s, s.VariableFlags, -1);
+				var addr = AddVariable(((ElaVariablePattern)s.Pattern).Name, s, ElaVariableFlags.Immutable, -1);
 
 				if (addr != -1)
 				{
@@ -192,7 +192,7 @@ namespace Ela.Compilation
 				var addr = -1;
 
 				if (s.Pattern.Type == ElaNodeType.VariablePattern)
-					addr = AddVariable(((ElaVariablePattern)s.Pattern).Name, s.Pattern, s.VariableFlags, -1);
+					addr = AddVariable(((ElaVariablePattern)s.Pattern).Name, s.Pattern, ElaVariableFlags.Immutable, -1);
 				else
 					addr = AddVariable();
 
@@ -209,7 +209,7 @@ namespace Ela.Compilation
 				cw.Emit(Op.Br, breakExit);
 
 				if (s.Pattern.Type != ElaNodeType.VariablePattern)
-					CompilePattern(addr, null, s.Pattern, map, iter, s.VariableFlags, hints);
+					CompilePattern(addr, null, s.Pattern, map, iter, ElaVariableFlags.Immutable, hints);
 
 				if (s.Guard != null)
 				{
@@ -309,7 +309,7 @@ namespace Ela.Compilation
 
 			if (s.Pattern.Type == ElaNodeType.VariablePattern)
 			{
-				var addr = AddVariable(((ElaVariablePattern)s.Pattern).Name, s.Pattern, s.VariableFlags, -1);
+				var addr = AddVariable(((ElaVariablePattern)s.Pattern).Name, s.Pattern, ElaVariableFlags.Immutable, -1);
 				cw.Emit(Op.Pushvar, head);
 				cw.Emit(Op.Popvar, addr);
 			}

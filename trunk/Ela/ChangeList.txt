@@ -1,3 +1,4 @@
+0.7.20.133:Change:Now it is not possible to declare a cycle variable as mutable (e.g. for let mutable x in...). The cycle variables are still kind of mutable but their value is changed only by the cycle itself. (Basically you can notice this only if you capture this variable using closure).
 0.7.20.132:Fix:A bug fixed in partial application of functions using 'operator' syntax.
 0.7.20.131:New:A pretty printing functionality is added to Ela AST. Some of the compiler error message now shows the body of an errorneous expression.
 0.7.20.130:Change:Now Ela allows to declare custom operators with any number of arguments (they can be called in infix, prefix and postfix forms).

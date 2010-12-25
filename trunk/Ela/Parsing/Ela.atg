@@ -1117,12 +1117,8 @@ PRODUCTIONS
 			exp = it;
 			var cexp = default(ElaExpression);
 			var pat = default(ElaPattern);
-			
-			var flags = ElaVariableFlags.Immutable;
-			it.VariableFlags = flags;
 		.)
 		(
-			[ LET [ VariableAttributes<out flags> ] (. it.VariableFlags = flags; .) ] 
 			ForeachPattern<out pat> 			
 			[ "=" BinaryExpr<out cexp> (. it.InitExpression = cexp; .) ]
 			[ 
@@ -1761,7 +1757,6 @@ PRODUCTIONS
 	ComprehensionEntry<ElaExpression body, out ElaFor it> =
 		(.
 			it = new ElaFor(t) { 
-				VariableFlags = ElaVariableFlags.Immutable,
 				ForType = ElaForType.Foreach
 			};
 			var cexp = default(ElaExpression);

@@ -30,9 +30,6 @@ namespace Ela.CodeModel
 				var sb = new StringBuilder();
 				sb.Append("for ");
 
-				if ((VariableFlags & ElaVariableFlags.Immutable) != ElaVariableFlags.Immutable)
-					sb.Append("let mutable ");
-
 				sb.Append(Pattern.PutInBracesComplex());
 
 				if (Guard != null)
@@ -70,8 +67,6 @@ namespace Ela.CodeModel
 		public ElaExpression Body { get; set; }
 
 		public ElaExpression InitExpression { get; set; }
-		
-		public ElaVariableFlags VariableFlags { get; set; }
 
 		public ElaForType ForType { get; set; }
 		#endregion

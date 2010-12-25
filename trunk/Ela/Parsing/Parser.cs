@@ -1417,16 +1417,6 @@ internal sealed partial class Parser {
 		var cexp = default(ElaExpression);
 		var pat = default(ElaPattern);
 		
-		var flags = ElaVariableFlags.Immutable;
-		it.VariableFlags = flags;
-		
-		if (la.kind == 29) {
-			Get();
-			if (la.kind == 30 || la.kind == 49) {
-				VariableAttributes(out flags);
-			}
-			it.VariableFlags = flags; 
-		}
 		ForeachPattern(out pat);
 		if (la.kind == 19) {
 			Get();
@@ -2162,7 +2152,6 @@ internal sealed partial class Parser {
 
 	void ComprehensionEntry(ElaExpression body, out ElaFor it) {
 		it = new ElaFor(t) { 
-		VariableFlags = ElaVariableFlags.Immutable,
 		ForType = ElaForType.Foreach
 		};
 		var cexp = default(ElaExpression);
