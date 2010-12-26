@@ -77,7 +77,7 @@ let compare {eqt} =
 	let compareWithHundred = compare' 100 in
 	eqt <| (compareWithHundred 12) ? (`Lt)
 	
-let flipFold {eq} = 
+let flipFold {eq} =  
 	let fold' x::xs f = f x :: fold' xs f;
 			  [] f    = [] in
     let list = [1, 2, 3] in
