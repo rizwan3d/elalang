@@ -1,0 +1,48 @@
+#summary Getting started with Ela
+
+==Introduction==
+
+This article provides basic information about compiling, installing and using Ela interpreter and a very short overview of the language.
+
+==Installing Ela==
+
+Ela itself doesn't require installation and/or configuration at all. The whole language implementation is a single _Ela.dll_ library that is installed using X-COPY method. The command line utility _Ela Console_ doesn't require installation as well however you might need to spend a minute or two to do some optional configuration which can simplify the usage of interpreter.
+
+Ela Console uses a standard application configuration file for settings. It doesn't come with the one so you have to create it. The file should be placed in the same directory as Ela Console and have the name _elac.exe.config_. The structure of the file is pretty straitforward:
+
+{{{
+<configuration>
+  <appSettings>
+    <add key="key name" value="key value" />
+  </appSettings>
+</configuration>
+}}}
+
+You can add multiple keys to the `appSettings` section. In order to learn how Ela Console can be configured simply lunch it with the `-help` key. You will see a list of command line options - all of these options can be specified via configuration file as well. For example lunching Ela Console like so `elac.exe -strict` is the same as having the following key in the configuration file:
+
+{{{
+<add key="strict" value="true" />
+}}}
+
+Normally you might need to provide some settings to Ela linker such as the locations where linker should look for the modules and a name of a standard library DLL. The first settings can be specified in the following manner:
+
+{{{
+<add key="ref" value="C:\MyModules\;C:\Ela\Code;C:\Misc" />
+}}}
+
+You specify several folders separated by semicolon. Ela linker will use these folders to loook for the modules that are opened within your code using `open <ModuleName>` statement. By default linker looks only in the same folder where the executable Ela file is located.
+
+The second option can be configured like so:
+
+{{{
+<add key="stdLib" value="MyLibrary.dll" />
+}}}
+
+
+==Compiling Ela==
+
+Ela is implemented using C# 3.0 and runs on the .NET Framework 3.5 (or Mono 2.6). Higher versions of both .NET Framework and Mono are supported as well. All published builds are compiled using Microsoft C# 3.0 however the project can be also compiled with Microsoft C# 4.0. Other compilers (such as Mono C# compiler) are not currently used but would most likely work as well.
+
+The code repository contains a Visual Studio 2008 solution that includes several projects - the core of them are Ela (which is a language implementation) and Ela Console (a command line utility that can be used to run Ela programs). If you are there the language itself than _Ela_ project is all you need - this project is implemented in pure C#, without unsafe code and doesn't have any external dependencies except of the .NET Framework.
+
+All published Ela binaries are build using _Any CPU_ configuration; you can of course build it targeting a more specific platform such as x86 (for example if you want it to run as a 32-bit process even in 64-bit operative system).
