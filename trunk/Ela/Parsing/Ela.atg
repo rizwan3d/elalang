@@ -603,6 +603,14 @@ PRODUCTIONS
 				| charTok (. val.Value = ParseChar(t.val); .)
 				| intTok (. val.Value = ParseInt(t.val); .)
 				| realTok (. val.Value = ParseReal(t.val); .)
+				|
+				(
+					"--"
+					(
+						intTok (. val.Value = ParseInt(t.val).MakeNegative(); .)
+						| realTok (. val.Value = ParseReal(t.val).MakeNegative(); .)
+					)
+				)
 				| "true" (. val.Value = new ElaLiteralValue(true); .)
 				| "false" (. val.Value = new ElaLiteralValue(false); .)
 			)
@@ -1556,8 +1564,6 @@ PRODUCTIONS
 						exp = new ElaUnary(t) { Expression = exp, Operator = ElaUnaryOperator.BitwiseNot };
 				.) 
 			)
-			|
-			operatorTok
 			| 
 			Application<out exp>
 		).

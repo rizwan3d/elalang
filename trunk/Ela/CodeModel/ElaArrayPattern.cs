@@ -8,7 +8,7 @@ namespace Ela.CodeModel
 	public sealed class ElaArrayPattern : ElaTuplePattern
 	{
 		#region Construction
-		internal ElaArrayPattern(Token tok) : base(tok, ElaNodeType.ArrayLiteral)
+		internal ElaArrayPattern(Token tok) : base(tok, ElaNodeType.ArrayPattern)
 		{
 			
 		}
