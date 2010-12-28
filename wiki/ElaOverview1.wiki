@@ -489,7 +489,7 @@ You might also noticed that unlike such languages as C# Ela doesn't use any spec
 
 As you probably remember from the previous chapter a function in Ela is declared using the same `let` notation. As in other languages Ela allows you to declare local variables in functions. This is done using either the `let` keyword or the `where` keyword.
 
-It is imporant to understand that as soon as the body of a function in Ela is always an expression (e.g. potentially yields a value which is definetly not the case of a declaration in the form `let x = 1`) the syntax of `let` bindings that declare local variables is a little bit different from the one that is used in the top level. It is better to show it by an example:
+It is imporant to understand that as soon as the body of a function in Ela is always an expression (e.g. potentially yields a value which is definitely not the case of a declaration in the form `let x = 1`) the syntax of `let` bindings that declare local variables is a little bit different from the one that is used in the top level. It is better to show it by an example:
 
 {{{
 let func x y = let z = x + y in
@@ -580,6 +580,6 @@ This is something you cannot do with `let` binding. Without `where` you will hav
 
 You should also note that a semicolon operator is placed after `where` declaration, not before it. This is because `where` binding is considered to be a part of a match entry.
 
-These are basically all the major things that you should know about Ela syntax. As I mentioned before Ela syntax is actually much simpler than the one of such languages as C#. You don't have to track the expression context to understand what a particular operation means - e.g. operators such as `-`, `|` or `*` always mean the same thing whereever you see them. Ela has only two constructs that can be used bind names to values - `let` and `where`. Besides them you only need to learn how to use pattern matching (`match` expression), exception handling (`try` expression) and a conditional operator (`if` expression which has a required `else` clause in Ela). That is really it. The rest of Ela code is just a sequence of function applications.
+These are basically all the major things that you should know about Ela syntax. As I mentioned before Ela syntax is actually much simpler than the one of such languages as C#. You don't have to track the expression context to understand what a particular operation means - e.g. operators such as `-`, `|` or `*` always mean the same thing whereever you see them. Ela has only two constructs that can be used to bind names to values - `let` and `where`. Besides them you only need to learn how to use pattern matching (`match` expression), exception handling (`try` expression) and a conditional operator (`if` expression which has a required `else` clause in Ela). That is really it. The rest of Ela code is just a sequence of function applications.
 
 In other words Ela is a small language but not primitive. It fully adopts the functional programming paradigm and in the next chapters I will try to show how you can use Ela to write the same code as you do in imperative language but in more concise, readable and less error prone way.
