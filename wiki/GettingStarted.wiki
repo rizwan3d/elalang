@@ -131,7 +131,7 @@ And this is what you need to do to make this module available in Ela:
     res.Assembly.AddModule("Math", new MathModule());
 }}}
 
-And now you seamlessly use this module from Ela:
+And now you can seamlessly use this module from Ela:
 
 {{{
 open Math
@@ -145,4 +145,4 @@ You can also compile your module into regular .NET assembly, reference _Ela.dll_
 [assembly:ElaModule("Math", typeof(MathModule)]
 }}}
 
-Now you don't have to manually add this module into collection of modules. Ela linker will be able to find without your help. But you will have to specify the dll name in your `open` directive like so: `open Math[MyMathLib]`.
+Now you don't have to manually add this module into collection of modules. Ela linker will be able to find it without your help. But you will have to specify the dll name in your `open` directive like so: `open Math[MyMathLib]`.
