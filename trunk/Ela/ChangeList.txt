@@ -1,3 +1,4 @@
+0.8.0.0:Release:Release of Ela 0.8
 0.7.20.134:New:Now it is possible to use negative integers and reals in literal patterns like so '--1' or '--.25'.
 0.7.20.133:Change:Now it is not possible to declare a cycle variable as mutable (e.g. for let mutable x in...). The cycle variables are still kind of mutable but their value is changed only by the cycle itself. (Basically you can notice this only if you capture this variable using closure).
 0.7.20.132:Fix:A bug fixed in partial application of functions using 'operator' syntax.
