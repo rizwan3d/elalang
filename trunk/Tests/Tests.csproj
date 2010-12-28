@@ -44,11 +44,13 @@
     <None Include="ArrayTests.ela" />
     <None Include="BasicTests.ela" />
     <None Include="ComplexTests.ela" />
+    <None Include="ComprehensionTests.ela" />
     <None Include="FunTests.ela" />
     <None Include="ListTests.ela" />
     <None Include="RangeTests.ela" />
     <None Include="RecordTests.ela" />
     <None Include="TupleTests.ela" />
+    <None Include="VariantTests.ela" />
     <None Include="_Run.ela" />
   </ItemGroup>
 </Project>
