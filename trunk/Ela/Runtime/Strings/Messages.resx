@@ -120,6 +120,9 @@
   <data name="CriticalError" xml:space="preserve">
     <value>A critical error occured in Ela virtual machine. All active execution threads were terminated. Main thread IL: #{0} {1}.</value>
   </data>
+  <data name="InvalidCast" xml:space="preserve">
+    <value>Unable to cast object of type '{0}' to the type '{1}'.</value>
+  </data>
   <data name="InvalidEilRange" xml:space="preserve">
     <value>Range for EIL generator is invalid.</value>
   </data>

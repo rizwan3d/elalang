@@ -143,6 +143,62 @@ namespace Ela.Runtime
 			else
 				throw new NotSupportedException();
 		}
+
+
+		public T ChangeType<T>()
+		{
+			var ti = typeof(T);
+			var ctx = new ExecutionContext();
+			var type = default(ObjectType);
+
+			if (ti == typeof(Int32))
+				type = ObjectType.Integer;
+			else if (ti == typeof(Single))
+				type = ObjectType.Single;
+			else if (ti == typeof(Int64))
+				type = ObjectType.Long;
+			else if (ti == typeof(Double))
+				type = ObjectType.Double;
+			else if (ti == typeof(Boolean))
+				type = ObjectType.Boolean;
+			else if (ti == typeof(String))
+				type = ObjectType.String;
+			else if (ti == typeof(Char))
+				type = ObjectType.Char;
+			else if (ti == typeof(ElaArray))
+				type = ObjectType.Array;
+			else if (ti == typeof(ElaList))
+				type = ObjectType.List;
+			else if (ti == typeof(ElaRecord))
+				type = ObjectType.Record;
+			else if (ti == typeof(ElaTuple))
+				type = ObjectType.Tuple;
+			else if (ti == typeof(ElaVariant))
+				type = ObjectType.Variant;
+			else if (ti == typeof(ElaFunction))
+				type = ObjectType.Function;
+			else if (ti == typeof(ElaModule))
+				type = ObjectType.Module;			
+			else
+			{
+				if (ti == typeof(ElaUnit))
+				{
+					if (DataType == ObjectType.Unit)
+						return (T)(Object)ElaUnit.Instance;
+					else
+						throw InvalidCast(DataType, type);
+				}
+				else if (ti == typeof(ElaObject))
+					return (T)(Object)Ref;
+			}
+
+			var ret = Ref.Convert(this, type, ctx).AsObject();
+
+			if (ctx.Failed)
+				throw InvalidCast(DataType, type);
+
+			return (T)ret;
+		}
 		#endregion
 
 
@@ -181,7 +237,7 @@ namespace Ela.Runtime
 			else if (DataType == ObjectType.Lazy)
 				return ((ElaLazy)Ref).AsString();
 			else
-				throw new ElaCastException(ObjectType.String, DataType);
+				throw InvalidCast(ObjectType.String, DataType);
 		}
 
 
@@ -192,7 +248,7 @@ namespace Ela.Runtime
 			else if (DataType == ObjectType.Lazy)
 				return ((ElaLazy)Ref).AsBoolean();
 			else
-				throw new ElaCastException(ObjectType.Boolean, DataType);
+				throw InvalidCast(ObjectType.Boolean, DataType);
 		}
 
 
@@ -203,7 +259,7 @@ namespace Ela.Runtime
 			else if (DataType == ObjectType.Lazy)
 				return ((ElaLazy)Ref).AsChar();
 			else
-				throw new ElaCastException(ObjectType.Char, DataType);
+				throw InvalidCast(ObjectType.Char, DataType);
 		}
 
 
@@ -214,7 +270,7 @@ namespace Ela.Runtime
 			else if (DataType == ObjectType.Lazy)
 				return ((ElaLazy)Ref).AsDouble();
 			else
-				throw new ElaCastException(ObjectType.Double, DataType);
+				throw InvalidCast(ObjectType.Double, DataType);
 		}
 
 
@@ -225,7 +281,7 @@ namespace Ela.Runtime
 			else if (DataType == ObjectType.Lazy)
 				return ((ElaLazy)Ref).AsSingle();
 			else
-				throw new ElaCastException(ObjectType.Single, DataType);
+				throw InvalidCast(ObjectType.Single, DataType);
 		}
 
 
@@ -236,7 +292,7 @@ namespace Ela.Runtime
 			else if (DataType == ObjectType.Lazy)
 				return ((ElaLazy)Ref).AsInteger();
 			else
-				throw new ElaCastException(ObjectType.Integer, DataType);
+				throw InvalidCast(ObjectType.Integer, DataType);
 		}
 
 
@@ -247,7 +303,7 @@ namespace Ela.Runtime
 			else if (DataType == ObjectType.Lazy)
 				return ((ElaLazy)Ref).AsLong();
 			else
-				throw new ElaCastException(ObjectType.Long, DataType);
+				throw InvalidCast(ObjectType.Long, DataType);
 		}
 
 
@@ -258,7 +314,7 @@ namespace Ela.Runtime
 			else if (DataType == ObjectType.Lazy)
 				return ((ElaLazy)Ref).AsArray();
 			else
-				throw new ElaCastException(ObjectType.Array, DataType);
+				throw InvalidCast(ObjectType.Array, DataType);
 		}
 
 
@@ -269,7 +325,7 @@ namespace Ela.Runtime
 			else if (DataType == ObjectType.Lazy)
 				return ((ElaLazy)Ref).AsList();
 			else
-				throw new ElaCastException(ObjectType.List, DataType);
+				throw InvalidCast(ObjectType.List, DataType);
 		}
 
 
@@ -280,7 +336,7 @@ namespace Ela.Runtime
 			else if (DataType == ObjectType.Lazy)
 				return ((ElaLazy)Ref).AsTuple();
 			else
-				throw new ElaCastException(ObjectType.Tuple, DataType);
+				throw InvalidCast(ObjectType.Tuple, DataType);
 		}
 
 
@@ -291,7 +347,7 @@ namespace Ela.Runtime
 			else if (DataType == ObjectType.Lazy)
 				return ((ElaLazy)Ref).AsRecord();
 			else
-				throw new ElaCastException(ObjectType.Record, DataType);
+				throw InvalidCast(ObjectType.Record, DataType);
 		}
 
 
@@ -302,7 +358,22 @@ namespace Ela.Runtime
 			else if (DataType == ObjectType.Lazy)
 				return ((ElaLazy)Ref).AsFunction();
 			else
-				throw new ElaCastException(ObjectType.Function, DataType);
+				throw InvalidCast(ObjectType.Function, DataType);
+		}
+
+
+		public ElaUnit AsUnit()
+		{
+			if (DataType == ObjectType.Unit)
+				return (ElaUnit)Ref;
+			else
+				throw InvalidCast(ObjectType.Unit, DataType);
+		}
+
+
+		private InvalidCastException InvalidCast(ObjectType target, ObjectType source)
+		{
+			return new InvalidCastException(Strings.GetMessage("InvalidCast", source.GetShortForm(), target.GetShortForm()));
 		}
 		#endregion
 

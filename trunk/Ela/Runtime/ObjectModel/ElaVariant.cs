@@ -242,7 +242,10 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Convert(ObjectType type, ExecutionContext ctx)
 		{
-			return Value.Ref.Convert(type, ctx);
+			if (type == ObjectType.Variant)
+				return new ElaValue(this);
+			else
+				return Value.Ref.Convert(type, ctx);
 		}
 
 

@@ -117,6 +117,25 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
+		protected ElaFunction CloneFast(ElaFunction newInstance)
+		{
+			var pars = new ElaValue[Parameters.Length];
+
+			if (AppliedParameters > 0) //This is faster than Array.Copy
+				for (var i = 0; i < AppliedParameters; i++)
+					pars[i] = Parameters[i];
+
+			newInstance.Parameters = pars;
+			newInstance.AppliedParameters = AppliedParameters;
+			newInstance.Handle = Handle;
+			newInstance.ModuleHandle = ModuleHandle;
+			newInstance.vm = vm;
+			newInstance.Captures = Captures;
+			newInstance.Flip = Flip;
+			return newInstance;
+		}
+
+
 		public virtual ElaFunction Clone()
 		{
 			var nf = (ElaFunction)MemberwiseClone();

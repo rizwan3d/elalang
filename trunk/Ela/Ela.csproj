@@ -158,25 +158,18 @@
     <Compile Include="Compilation\Strings.cs" />
     <Compile Include="Culture.cs" />
     <Compile Include="Debug\CallStack.cs" />
-<<<<<<< .mine
     <Compile Include="Debug\ElaDebugException.cs" />
     <Compile Include="Debug\StackPoint.cs" />
-=======
-    <Compile Include="Debug\ElaDebugException.cs" />
->>>>>>> .r97
     <Compile Include="IReadOnlyMap.cs" />
     <Compile Include="Compilation\OpSizeHelper.cs" />
     <Compile Include="ElaTranslationException.cs" />
+    <Compile Include="Linking\DelegateFunction.cs" />
     <Compile Include="Linking\ElaLinkerError.cs" />
     <Compile Include="Linking\ElaLinkerException.cs" />
     <Compile Include="Linking\ElaLinkerWarning.cs" />
     <Compile Include="Linking\Strings.cs" />
-<<<<<<< .mine
     <Compile Include="Lookup.cs" />
     <Compile Include="Parsing\ElaParserException.cs" />
-=======
-    <Compile Include="Parsing\ElaParserException.cs" />
->>>>>>> .r97
     <Compile Include="Parsing\ElaParserError.cs" />
     <Compile Include="Parsing\IElaParser.cs" />
     <Compile Include="Parsing\Strings.cs" />
@@ -291,13 +284,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runtime\CallPoint.cs" />
     <Compile Include="Runtime\ElaCallException.cs" />
-    <Compile Include="Runtime\ElaCastException.cs" />
     <Compile Include="Runtime\ElaCodeException.cs" />
     <Compile Include="Runtime\ElaMachine.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Runtime\ElaMachineException.cs" />
-    <Compile Include="Runtime\ElaParameterTypeException.cs" />
     <Compile Include="Runtime\ElaRuntimeError.cs" />
     <Compile Include="Runtime\EvalStack.cs" />
     <Compile Include="Runtime\ExecutionContext.cs" />
@@ -321,7 +312,6 @@
     <Compile Include="ObjectTypeExtensions.cs" />
     <Compile Include="Runtime\ObjectModel\ElaVariant.cs" />
     <Compile Include="Runtime\Pervasive.cs" />
-<<<<<<< .mine
     <Compile Include="Runtime\ElaValue.cs" />
     <Compile Include="Runtime\Reflection\ElaAssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -351,20 +341,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Runtime\ShowInfo.cs" />
-=======
-    <Compile Include="Runtime\Reflection\ElaAssemblyInfo.cs" />
-    <Compile Include="Runtime\Reflection\ElaFunctionInfo.cs" />
-    <Compile Include="Runtime\Reflection\ElaInfo.cs" />
-    <Compile Include="Runtime\Reflection\ElaLazyInfo.cs" />
-    <Compile Include="Runtime\Reflection\ElaModuleInfo.cs" />
-    <Compile Include="Runtime\Reflection\ElaRecordInfo.cs" />
-    <Compile Include="Runtime\Reflection\ElaReferenceInfo.cs" />
-    <Compile Include="Runtime\Reflection\ElaSequenceInfo.cs" />
-    <Compile Include="Runtime\Reflection\ElaTupleInfo.cs" />
-    <Compile Include="Runtime\Reflection\ElaTypeInfo.cs" />
-    <Compile Include="Runtime\Reflection\ElaVariableInfo.cs" />
-    <Compile Include="Runtime\RuntimeValue.cs" />
->>>>>>> .r97
     <Compile Include="Runtime\Strings.cs" />
     <Compile Include="Runtime\WorkerThread.cs" />
     <Compile Include="TranslationResult.cs" />

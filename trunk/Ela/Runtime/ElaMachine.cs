@@ -1836,7 +1836,7 @@ namespace Ela.Runtime
 				}
 
 				stack.Push(funObj.Call(arr));
-			}
+			}			
 			catch (Exception ex)
 			{
 				ExecuteFail(new ElaError(ElaRuntimeError.CallFailed, ex.Message), thread, stack);

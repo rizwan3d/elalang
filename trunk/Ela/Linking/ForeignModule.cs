@@ -81,6 +81,36 @@ namespace Ela.Linking
 		}
 
 
+		protected void Add<T1>(string name, Func<T1> fun)
+		{
+			Add(name, new ElaValue(new DelegateFunction<T1>(name, fun)));
+		}
+		
+
+		protected void Add<T1,T2>(string name, Func<T1,T2> fun)
+		{
+			Add(name, new ElaValue(new DelegateFunction<T1,T2>(name, fun)));
+		}
+
+
+		protected void Add<T1,T2,T3>(string name, Func<T1,T2,T3> fun)
+		{
+			Add(name, new ElaValue(new DelegateFunction<T1,T2,T3>(name, fun)));
+		}
+
+
+		protected void Add<T1,T2,T3,T4>(string name, Func<T1,T2,T3,T4> fun)
+		{
+			Add(name, new ElaValue(new DelegateFunction<T1,T2,T3,T4>(name, fun)));
+		}
+
+
+		protected void Add<T1,T2,T3,T4,T5>(string name, Func<T1,T2,T3,T4,T5> fun)
+		{
+			Add(name, new ElaValue(new DelegateFunction<T1,T2,T3,T4,T5>(name, fun)));
+		}
+
+
 		private void Add(string name, ElaValue value)
 		{
 			scope.Locals.Add(name, new ScopeVar(ElaVariableFlags.Immutable, locals.Count, -1));

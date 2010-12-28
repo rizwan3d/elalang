@@ -113,24 +113,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Generated.cs" />
-    <Compile Include="ModulesInfo.cs" />
-    <Compile Include="Modules\CharModule.cs" />
-    <Compile Include="Modules\CollectionModule.cs" />
-    <Compile Include="Modules\DebugModule.cs" />
-    <Compile Include="Modules\MathModule.cs" />
-    <Compile Include="Modules\FormatModule.cs" />
-    <Compile Include="Modules\StringModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Ela\Ela.csproj">
       <Project>{7BDF4A1E-DFFF-4AE5-BD2D-1B1F4BE84B1D}</Project>
       <Name>Ela</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Utils\ModuleGenerator\ModuleGenerator.csproj">
-      <Project>{B7F68842-B117-49A3-A3C3-BF2F8608D6A7}</Project>
-      <Name>ModuleGenerator</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -142,7 +130,8 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>"$(SolutionDir)Binaries\modgen.exe" $(TargetPath) $(ProjectDir)Generated.cs</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
