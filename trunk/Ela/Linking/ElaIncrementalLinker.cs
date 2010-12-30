@@ -15,7 +15,7 @@ namespace Ela.Linking
 		}
 
 		public ElaIncrementalLinker(LinkerOptions linkerOptions, CompilerOptions compOptions) :
-			base(linkerOptions, compOptions, null)
+			base(linkerOptions, compOptions, MemoryFile)
 		{
 			
 		}
@@ -36,7 +36,7 @@ namespace Ela.Linking
 		}
 
 		public ElaIncrementalLinker(LinkerOptions linkerOptions, CompilerOptions compOptions) :
-			base(linkerOptions, compOptions, null)
+			base(linkerOptions, compOptions, MemoryFile)
 		{
 			
 		}
@@ -48,8 +48,7 @@ namespace Ela.Linking
 		{
 			Messages.Clear();
 			Success = true;
-			var mod = new ModuleReference(
-				RootFile == null ? FILE : Path.GetFileNameWithoutExtension(RootFile.Name));
+			var mod = new ModuleReference(Path.GetFileNameWithoutExtension(RootFile.Name));
 			var frame = default(CodeFrame);
 			var scope = default(Scope);
 			var scratch = true;

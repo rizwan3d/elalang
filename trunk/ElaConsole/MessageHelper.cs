@@ -179,7 +179,7 @@ namespace ElaConsole
 		internal void PrintError(string message, params object[] args)
 		{
 			if (!opt.Silent)
-				PrintErrorAlways(message, args);
+				WriteMessage(String.Format(message, args), MessageType.Error);
 		}
 
 

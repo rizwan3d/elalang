@@ -22,11 +22,11 @@ namespace Ela.Linking
 	public class ElaLinker<P,C> where P : IElaParser, new() where C : IElaCompiler, new()
 	{
 		#region Construction
-		protected const string FILE = "<memory>";
 		private const string EXT = ".ela";
 		private const string OBJEXT = ".elaobj";
 		private const string DLLEXT = ".dll";
 
+		internal static readonly FileInfo MemoryFile = new FileInfo("memory");
 		private Dictionary<String,Dictionary<String,ElaModuleAttribute>> foreignModules;
 		private FastList<DirectoryInfo> dirs;
 		private bool stdLoaded;
@@ -313,7 +313,7 @@ namespace Ela.Linking
 					mod != null ? mod.Line : 0, 
 					mod != null ? mod.Column : 0,
 					Path.GetFileNameWithoutExtension(file != null ? file.Name :
-						RootFile != null ? RootFile.Name : FILE));
+						RootFile != null ? RootFile.Name : "<" + MemoryFile.Name + ">"));
 			return ret;
 		}
 

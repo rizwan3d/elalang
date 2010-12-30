@@ -1,0 +1,83 @@
+#summary Ela overview, part 2.
+
+== Introduction ==
+
+If you are reading than you've probably decided to continue your acquaintance with Ela. I believe this is the time to download the latest binaries of Ela itself - you will need them during this part of Ela overview series.
+
+Ela doesn't require installation, just extract it and copy the files to any folder you like. Ela distribution includes and Ela Console tool (_elac.exe_) that supports interactive mode. You can run it either under .NET Framework or Mono (in the latter case you have to put _mono_ ahead like: _mono.exe elac.exe_). 
+
+If you don't specify a file name to execute Ela Console is lunched in an interactive mode. You should see the following banner (depending on the version of Ela and runtime environment):
+
+{{{
+Ela Interpreter version 0.8.0.0
+Running CLR 2.0.50727.4952 64-bit
+
+Interactive mode
+Enter expressions and press <Return> to execute.
+Press Ctrl+C to exit.
+
+ela>
+}}}
+
+Interactive mode is a really neat thing which is very handy when you want to test some language constructs or debug your program. Just type Ela expressions and press `Return` key to execute them:
+
+{{{
+ela>"Hello, world!"
+
+Hello, world!
+
+ela>12 + 2 * 4
+
+20
+
+ela>(1,3) + (12,3)
+
+(13,6)
+}}}
+
+But that is not the only cool thing.
+
+With interactive mode you can compose your programs chunk by chunk. Ela interpreter "remembers" all the previous declarations you did:
+
+{{{
+ela>let x = 2
+
+ela>let y = x + 2
+
+ela>y
+
+4
+}}}
+
+(As you can see you can simply check what value is bound to a particular name by typing this name and pressing `Return`).
+
+While in interactive mode if you enter code that doesn't even compile you will see an error message (or several messages and warnings if you did something really bad) and of course this code is never executed:
+
+{{{
+ela>let z = x1 + 2
+
+(1,9): Error ELA313: Undefined name 'x1'.
+}}}
+
+As a result the name `z` wasn't declared which you can double check by entering `z` in console:
+
+{{{
+ela>z
+
+(1,1): Error ELA313: Undefined name 'z'.
+}}}
+
+However if you write code that fails at runtime like so
+
+{{{
+ela>let z = 12 / 0
+
+(1,14): Error ELA803: Division by zero of value '12' of type 'int'.
+        in <memory> at line: 1, col: 14
+}}}
+
+a name `z` actually gets declared - this is just initialization block that fails with an error. So we have a declared name which is not initialized - and that is not an allowed situation in Ela. In order to deal with this problem Ela Interactive initializes `z` with `unit` in such cases (if you don't understand what a unit is you can think of it as an Ela replacement for `null`).
+
+(Small hint - enter `#clear` and hit `Return` if you want to clear the messages in console).
+
+That is probably all you need to know about Ela interactive mode right now. Enough for the introduction, let's get started already.

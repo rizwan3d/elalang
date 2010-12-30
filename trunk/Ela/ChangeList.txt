@@ -1,3 +1,5 @@
+0.8.0.5:Change:Now the name of 'memory' module (in interactive mode) is always printed in brakets like so '<memory>' when an error is printed to output.
+0.8.0.4:Fix:Minor corrections in Ela compiler error messages.
 0.8.0.3:New:ForeignModule now supports delegates from Func family through methods like Add(string name,Func<T1,T2> fun).
 0.8.0.2:Change:Now ElaValue generate standard InvalidCastException instead of ElaCastException. ElaParameterTypeException is decomissioned as well.
 0.8.0.1:New:A generic ChangeType method added to ElaValue. This method can be used for conversions.

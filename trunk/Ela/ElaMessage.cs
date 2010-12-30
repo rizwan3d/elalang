@@ -1,14 +1,14 @@
 ﻿using System;
 using System.IO;
 using Ela.CodeModel;
+using Ela.Linking;
 
 namespace Ela
 {
 	public class ElaMessage
 	{
 		#region Construction
-		private const string ERR_FORMAT = "({0},{1}): {2} ELA{3}: {4}";
-		private const string LONG_ERR_FORMAT = "{0}({1},{2}): {3} ELA{4}: {5}";
+		private const string ERR_FORMAT = "{0}({1},{2}): {3} ELA{4}: {5}";
 
 		internal ElaMessage(string errorMessage, MessageType type, int code, int line, int column)
 		{
@@ -24,9 +24,15 @@ namespace Ela
 		#region Methods
 		public override string ToString()
 		{
-			return File != null ?
-				String.Format(LONG_ERR_FORMAT, File, Line, Column, Type.ToString(), Code, Message) :
-				String.Format(ERR_FORMAT, Line, Column, Type.ToString(), Code, Message);
+			return String.Format(ERR_FORMAT, GetFileName(), Line, Column, Type.ToString(), Code, Message);
+		}
+
+
+		private string GetFileName()
+		{
+			return File == null ? String.Empty :
+				File == ElaLinker.MemoryFile ? "<" + File.Name + ">" :
+				File.FullName;
 		}
 		#endregion
 
