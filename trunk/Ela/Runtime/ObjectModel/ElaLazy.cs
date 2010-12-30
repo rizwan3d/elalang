@@ -125,7 +125,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		internal override ElaValue Force(ExecutionContext ctx)
+		protected internal override ElaValue Force(ExecutionContext ctx)
 		{
 			if (Value.Ref == null)
 				Value = Function.Call(

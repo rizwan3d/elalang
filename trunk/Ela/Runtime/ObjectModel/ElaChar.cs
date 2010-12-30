@@ -43,7 +43,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-
 		internal override string Show(ElaValue @this, ExecutionContext ctx, ShowInfo info)
 		{
 			return ((Char)@this.I4).ToString();

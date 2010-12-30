@@ -34,7 +34,7 @@ namespace Ela
 
 		Neg = 0x4000,
 
-		// = 0x8000,
+		Thunk = 0x8000,
 
 		Seq = 0x10000,
 

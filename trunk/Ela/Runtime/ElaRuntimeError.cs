@@ -180,7 +180,7 @@ namespace Ela.Runtime
 
 		TraitCall = 922,
 
-		// = 923,
+		TraitThunk = 923,
 
 
 		UserCode = 999

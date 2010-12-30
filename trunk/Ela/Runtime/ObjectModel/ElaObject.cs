@@ -46,48 +46,55 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return String.Empty;
 		}
+
+
+		private string ThisToString(ElaValue first, ElaValue second, ExecutionContext ctx)
+		{
+			return first.Ref == this ? first.Ref.Show(first, ctx, ShowInfo.Default) :
+				second.Ref.Show(second, ctx, ShowInfo.Default);
+		}
 		#endregion
 
 
 		#region Traits
 		protected internal virtual ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitEq, ToString(), ((ObjectType)TypeId).GetShortForm());
+			ctx.Fail(ElaRuntimeError.TraitEq, ThisToString(left, right, ctx), ((ObjectType)TypeId).GetShortForm());
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitEq, ToString(), ((ObjectType)TypeId).GetShortForm());
+			ctx.Fail(ElaRuntimeError.TraitEq, ThisToString(left, right, ctx), ((ObjectType)TypeId).GetShortForm());
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitOrd, ToString(), ((ObjectType)TypeId).GetShortForm());
+			ctx.Fail(ElaRuntimeError.TraitOrd, ThisToString(left, right, ctx), ((ObjectType)TypeId).GetShortForm());
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitOrd, ToString(), ((ObjectType)TypeId).GetShortForm());
+			ctx.Fail(ElaRuntimeError.TraitOrd, ThisToString(left, right, ctx), ((ObjectType)TypeId).GetShortForm());
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue GreaterEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitOrd, ToString(), ((ObjectType)TypeId).GetShortForm());
+			ctx.Fail(ElaRuntimeError.TraitOrd, ThisToString(left, right, ctx), ((ObjectType)TypeId).GetShortForm());
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue LesserEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitOrd, ToString(), ((ObjectType)TypeId).GetShortForm());
+			ctx.Fail(ElaRuntimeError.TraitOrd, ThisToString(left, right, ctx), ((ObjectType)TypeId).GetShortForm());
 			return Default();
 		}
 
@@ -142,70 +149,70 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal virtual ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitConcat, ToString(), ((ObjectType)TypeId).GetShortForm());
+			ctx.Fail(ElaRuntimeError.TraitConcat, ThisToString(left, right, ctx), ((ObjectType)TypeId).GetShortForm());
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Add(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitNum, ToString(), ((ObjectType)TypeId).GetShortForm());
+			ctx.Fail(ElaRuntimeError.TraitNum, ThisToString(left, right, ctx), ((ObjectType)TypeId).GetShortForm());
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Subtract(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitNum, ToString(), ((ObjectType)TypeId).GetShortForm());
+			ctx.Fail(ElaRuntimeError.TraitNum, ThisToString(left, right, ctx), ((ObjectType)TypeId).GetShortForm());
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Multiply(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitNum, ToString(), ((ObjectType)TypeId).GetShortForm());
+			ctx.Fail(ElaRuntimeError.TraitNum, ThisToString(left, right, ctx), ((ObjectType)TypeId).GetShortForm());
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Divide(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitNum, ToString(), ((ObjectType)TypeId).GetShortForm());
+			ctx.Fail(ElaRuntimeError.TraitNum, ThisToString(left, right, ctx), ((ObjectType)TypeId).GetShortForm());
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Modulus(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitNum, ToString(), ((ObjectType)TypeId).GetShortForm());
+			ctx.Fail(ElaRuntimeError.TraitNum, ThisToString(left, right, ctx), ((ObjectType)TypeId).GetShortForm());
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Power(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitNum, ToString(), ((ObjectType)TypeId).GetShortForm());
+			ctx.Fail(ElaRuntimeError.TraitNum, ThisToString(left, right, ctx), ((ObjectType)TypeId).GetShortForm());
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue BitwiseOr(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitBit, ToString(), ((ObjectType)TypeId).GetShortForm());
+			ctx.Fail(ElaRuntimeError.TraitBit, ThisToString(left, right, ctx), ((ObjectType)TypeId).GetShortForm());
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue BitwiseAnd(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitBit, ToString(), ((ObjectType)TypeId).GetShortForm());
+			ctx.Fail(ElaRuntimeError.TraitBit, ThisToString(left, right, ctx), ((ObjectType)TypeId).GetShortForm());
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue BitwiseXor(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitBit, ToString(), ((ObjectType)TypeId).GetShortForm());
+			ctx.Fail(ElaRuntimeError.TraitBit, ThisToString(left, right, ctx), ((ObjectType)TypeId).GetShortForm());
 			return Default();
 		}
 
@@ -219,14 +226,14 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal virtual ElaValue ShiftRight(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitBit, ToString(), ((ObjectType)TypeId).GetShortForm());
+			ctx.Fail(ElaRuntimeError.TraitBit, ThisToString(left, right, ctx), ((ObjectType)TypeId).GetShortForm());
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue ShiftLeft(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitBit, ToString(), ((ObjectType)TypeId).GetShortForm());
+			ctx.Fail(ElaRuntimeError.TraitBit, ThisToString(left, right, ctx), ((ObjectType)TypeId).GetShortForm());
 			return Default();
 		}
 
@@ -314,8 +321,9 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		internal virtual ElaValue Force(ExecutionContext ctx)
+		protected internal virtual ElaValue Force(ExecutionContext ctx)
 		{
+			ctx.Fail(ElaRuntimeError.TraitThunk, ToString(), ((ObjectType)TypeId).GetShortForm());
 			return Default();
 		}
 		#endregion

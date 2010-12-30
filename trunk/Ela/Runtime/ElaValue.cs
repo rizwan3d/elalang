@@ -82,7 +82,7 @@ namespace Ela.Runtime
 
 		internal ElaValue Id(ExecutionContext ctx)
 		{
-			return Ref.TypeId == ElaMachine.LAZ ? Ref.Force(ctx) : this;
+			return (Ref.Traits & ElaTraits.Thunk) == ElaTraits.Thunk ? Ref.Force(ctx) : this;
 		}
 
 

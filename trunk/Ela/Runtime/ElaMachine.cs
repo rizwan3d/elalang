@@ -895,10 +895,10 @@ namespace Ela.Runtime
 					case Op.Force:
 						right = evalStack.Peek();
 
-						if (right.Type != LAZ)
+						if ((right.Ref.Traits & ElaTraits.Thunk) != ElaTraits.Thunk)
 						{
 							evalStack.PopVoid();
-							InvalidType(right, thread, evalStack, LAZ);
+							NoTrait(ElaRuntimeError.TraitThunk, right, thread, evalStack);
 							goto SWITCH_MEM;
 						}
 
