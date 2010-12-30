@@ -105,7 +105,7 @@ You can also create Ela modules in C# (or any other .NET language). This is an e
         {
             //Here we need to specify how many arguments our funcions has,
             //in this particular case - just one.
-            internal RandomizeFunction() : base(1) { }
+            internal RandomizeFunction() : base(2) { }
                 
             public override RuntimeValue Call(params RuntimeValue[] args)
             {
