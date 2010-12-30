@@ -140,7 +140,7 @@ let res = fun 2 //The result is 6
 
 === Partial application ===
 
-And the final nuance - all functions in Ela actually accept one and only one argument. I really mean it. There is no way to declare a function that takes, say, two arguments or zero arguments. You might wonder how we've managed to write a `filter` function above which seem to have two arguments instead of one. But don't harry up.
+And the final nuance - all functions in Ela actually accept one and only one argument. I really mean it. There is no way to declare a function that takes, say, two arguments or zero arguments. You might wonder how we've managed to write a `filter` function above which seem to have two arguments instead of one. But don't hurry up.
 
 When we decide that all functions in our language have a single argument it changes quite a few things in the language itself. First we no longer need braces (like in C) to enclose the argument list in a function call - as soon as we don't have any argument list at all, just a single argument. 
 
