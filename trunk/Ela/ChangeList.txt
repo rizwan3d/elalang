@@ -1,3 +1,4 @@
+0.8.0.8:Change:Implementation of 'Show' trait in variant is corrected and now prints only the tag if it was created without the tagged value like so `None.
 0.8.0.7:New:A new 'Thunk' trait added. Now Ela 'lazy' type implements this trait and operations with lazy (force) are not hardcoded for the particular type, but for the trait (now once can implement his own lazy type).
 0.8.0.6:Fix:Correction in output of value in runtime error message (in certain case the value wasn't printed).
 0.8.0.5:Change:Now the name of 'memory' module (in interactive mode) is always printed in brakets like so '<memory>' when an error is printed to output.
