@@ -5,8 +5,7 @@ namespace Ela.Runtime.ObjectModel
 	internal sealed class ElaLazy : ElaObject
 	{
 		#region Construction
-		internal ElaLazy(ElaFunction function)
-			: base(ObjectType.Lazy, ElaTraits.None)
+		internal ElaLazy(ElaFunction function) : base(ObjectType.Lazy, ElaTraits.Thunk)
 		{
 			Function = function;
 			_value = default(ElaValue);
