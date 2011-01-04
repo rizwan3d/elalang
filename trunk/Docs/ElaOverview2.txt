@@ -81,3 +81,190 @@ a name `z` actually gets declared - this is just initialization block that fails
 (Small hint - enter `#clear` and hit `Return` if you want to clear the messages in console).
 
 That is probably all you need to know about Ela interactive mode right now. Enough for the introduction, let's get started already.
+
+== Data types ==
+
+Ela comes with a collection of standard data types which includes boolean and unit types, four numeric types, linked lists that we've tested a little bit in a previous article, dynamic indexed arrays, tuples, strings, chars, tuples, records, variant data types and of course functions. We will reviews all these data types in this section.
+
+=== Boolean type ===
+
+Most of modern programming languages have a notion of a boolean data type (which is called `bool` in Ela) and Ela is not an exception here. Boolean type is pretty straitforward and values of these type can have only two values - either `true` or `false`.
+
+You can create a boolean value using the literal form. Try the following in Ela Console:
+
+{{{
+ela>let b = true
+
+ela>let b2 = false
+
+ela>b
+
+True
+
+ela>b2
+
+False
+}}}
+
+Ela doesn't allow implicit conversions between booleans and integers therefore the following code is not correct:
+
+{{{
+ela>let zero = 0
+
+ela>if zero then "zero" else "not zero"
+
+<memory>(1,1): Error ELA912: A value '' of type 'int' doesn't support trait 'Bool' (boolean operations).
+        in memory at line: 1, col: 1
+}}}
+
+Boolean types support equality operations such as `==` (equals) and `<>` (not equals):
+
+{{{
+ela>b == b2
+
+False
+
+ela>b <> b2
+
+True
+}}}
+
+As you can see from this example a result of equality operations is a value of a boolean type. Therefore we can change the erroneous code above like so:
+
+{{{
+ela>if zero == 0 then "zero" else "not zero"
+
+zero
+}}}
+
+The result of comparison operations such as `>` (greater), `<` (lesser), `>=` (greater or equals) and `<=` (lesser or equals) is also a value of a boolean type however booleans itself don't support comparisons. Which is perfectly logical as soon as there is not much sense to test whether `true` is greater than `false` or vice versa.
+
+Ela has a set of operations that are predefined for boolean types. First of all these are boolean and `&&` and boolean or `||` operators. They work exactly the same way as in C, C#, Java, etc. It is important to understand that these operators are lazy (which is also a typical behavior in other languages as well). Operator `&&` returns `true` if both operands are `true` and operator `||` returns `true` if at least one of its operands is `true`:
+
+{{{
+ela>if b && b2 then "Yes" else "No"
+
+No
+
+ela>if b || b2 then "Yes" else "No"
+
+Yes
+}}}
+
+"Lazy" here means that these operators are executed like so:
+
+{{{
+ela>if b then (if b2 then "Yes" else "No") else "No"
+
+No
+
+ela>if b then "Yes" else if b2 then "Yes" else "No"
+
+Yes
+}}}
+
+As soon as `&&` yields `true` if both operands are `true` there is no need to evaluate both operands if we see that the first doesn't satisfy the condition. The same for `||`. If we see that the first operand satisfies the condition there is no need to evaluate the second operand as soon as it won't affect the result. It may come up pretty handy because you can use not just variable reference as operands but also much more complex expressions, costy function calls, etc.
+
+The last thing to mention about boolean operators is that unlike many other operators in Ela these two are not functions but just special forms therefore if you try to use them as function you will have a compile time error. This is because Ela is a language with strict evaluation and it is not possible to implement a function with two parameters that will evaluate the second parameter only if it is needed. 
+
+=== Unit type ===
+
+Unit is somewhat similar to the notion of _void_ from C style languages. It is different in certain aspects however. In Ela `unit` is a real data type and you can create a value of this type. This is a first class value in a sense that you can pass it as an argument to a function, return it from a function, add it as an element to array, etc. Unit even has it own literal in Ela. This is how you can create a value of type `unit`:
+
+{{{
+ela>let u = ()
+}}}
+
+Unit is an immutable data type - you cannot change it in place like you do with an array (and there is nothing to change really). Because of this there is only one global instance of `unit`. If you create two values of type `unit` and try to test them for equality this will always evaluate to `true`:
+
+{{{
+ela>let u2 = ()
+
+ela>u == u2
+
+True
+}}}
+
+Actually equality operators `==` and `<>` are the only two operators that are supported by `unit`. You are probably wondering what is the purpose of this data type which at the first glanse cannot do anything useful.
+
+The real application for `unit` is when there is no other meaningful value. Let's say that you want to implement a function just for the sake of the side effect. This is perfectly valid in Ela as soon as Ela is not a pure functional language. This function take take another function, a list and apply a given function to all elements of the list. This hypothetical function will also ignore a value that is returned by the supplied function. This is how we can implement it:
+
+{{{
+let each f x::xs = f x $ each f xs;
+         _ []    = ()
+}}} 
+
+I hope that this definition is clear for you. 
+
+As you can see we have defined this function by pattern matching as we did with `sum` and `filter` functions in the previous article. We pattern match against a linked list. The `$` operator in the first entry is a sequencing operator which is pretty similar to `;` in C. It simply says - evaluate the first expression, _ignore_ its return value and return the result of the second expression. And that is exactly what we need here. The second entry `_ [] = ()` matches against an empty list and returns `unit` as soon as we have to return something but there is nothing else except unit that we can return here.
+
+Another good example is a function that doesn't accept any arguments. As you know you cannot really declare one in Ela. However in certain cases when writing code with side effects you might need it. And this is how you can use `unit` to accomplish this task:
+
+{{{
+let nonsense () = ()
+}}}
+
+Here we have a `nonsense` function that accepts one argument of type `unit` and returns `unit`. This function is defined by pattern matching. As you remember from previous article with pattern matching you can use literal forms not only to create objects but to match against them as well. And that is exactly what we see here. A pattern `()` is used to match against a value of type `unit`. If you try to pass a value of other type a match will fail. This is how you can legally call this `nonsense` function:
+
+{{{
+ela>nonsense ()
+
+ela>nonsense u
+
+ela>nonsense u2
+}}}
+
+And this is an illegal call:
+
+{{{
+ela>nonsense 0
+
+<memory>(1,5): Error ELA809: Match failed. None of the patterns were successful.
+        in memory.nonsense at line: 1, col: 5
+        in memory at line: 1, col: 1
+}}}
+
+In other words we haven't tricked anyone here. We have created a function that accepts one argument and it truly does however by using `unit` we simply say that we don't really need anything meaningful with this argument and we are perfectly OK to accept a unit. What you see here is just a convention of representing functions without arguments. Of course you can do it differently like so:
+
+{{{
+let nonsense2 _ = ()
+}}}
+
+Here we used a "throw away" pattern which which we also have acquainted before. It might seem as a good alternative but in reality it is not because you will be to apply this function to a value of any type which is quite misleading:
+
+{{{
+ela>nonsense2 u
+
+ela>nonsense2 0
+
+ela>nonsense2 "Hello, world!"
+}}}
+
+In the conslusion of this section I should that it is important to understand here that unlike many other languages Ela doesn't have a notion of `null`. That is because Ela is a dynamically typed language and the type is not associated with variable but with the value itself. In other words it is not correct to say that in the code like `let u = ()` we have a variable `u` of type `unit`. In reality what we have here is a value of type `unit` which is bound to the name `u`. As a result you cannot declare a variable of type, say, array and assign it to a `null` like you do in C# or similar languages. The `unit` type might seem as something similar to the `null` which might be used as its replacement however `unit` is not `null` and is not here to serve the same purposes as `null`. You can use it only when no other value is applicable. That is it. And it is a typical case for the functions with side effects when in C# you will have a procedure that returns void or accepts zero arguments. Ela doesn't have `null` and it doesn't need `null`. Also Ela doesn't have a lot of problems connected with `null` such as annoying "null reference" exceptions. If you used `null` in functions that could return something or nothing there is a much better way to do the same thing in Ela - polymorphic variants. Don't worry, we'll deal with them a little bit later.
+
+=== Numeric types ===
+
+Ela has four built-in numeric types - signed 32-bit integers (`int`), signed 64-bit integers (`long`), single precision floating point numbers (`single`) and double precision floating point numbers (`double`). (As a remark that you might find useful - all these types are directly mapped to .NET data types: System.Int32, System.Int64, System.Single and System.Double).
+
+This is how you create values of these types:
+
+{{{
+ela>let int = 42
+
+ela>let long = 42L
+
+ela>let single = 1.42
+
+ela>let double = 1.42D
+}}}
+
+You have probably noticed the postfixes `L` and `D`. A postfix `L` is used to denote that you need a value of type `long` and `D` that you need `double`, not just `single` which is used by default.
+
+Numeric types are somewhat different from other data types. That is the place where Ela type system is not too strict for the sake of convinience and does support some implicit conversions from one type to another. The rules for implicit conversions are pretty straigtforward. In other to better undestand them I will put all the numeric types in order like so:
+
+  # int
+  # long
+  # single
+  # double
+
+And that is what happens - `int` can be implicitly converted to `long`, `single` and `double`, `long` - only to `single` and `double`, `single` - just to `double` and life is not fair to `double`, it cannot be converted to any other numeric type at all. That is because this "conversion chain" doesn't work backwards - `long` is never implicitly converted to `int`, `single` - to `long`, etc.
