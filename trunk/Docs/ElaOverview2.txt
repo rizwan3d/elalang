@@ -375,6 +375,8 @@ ela>max 1D
 1.79769313486232E+308
 }}}
 
+The functions `succ`, `pred`, `max` and `min` are built-in Ela functions. Besides the fact that they are built-in they are just like any other regular functions - you can assign them to variables, pass as arguments to other functions, etc.
+
 Ela like some other languages doesn't perform overflow check so you should be careful with your calculations. Here is simple example of factorial calculation that overflows:
 
 {{{
