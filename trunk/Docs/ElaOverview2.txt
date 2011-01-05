@@ -268,3 +268,123 @@ Numeric types are somewhat different from other data types. That is the place wh
   # double
 
 And that is what happens - `int` can be implicitly converted to `long`, `single` and `double`, `long` - only to `single` and `double`, `single` - just to `double` and life is not fair to `double`, it cannot be converted to any other numeric type at all. That is because this "conversion chain" doesn't work backwards - `long` is never implicitly converted to `int`, `single` - to `long`, etc.
+
+Here is a small example of how implicit conversions work:
+
+{{{
+ela>12 + 24.2
+
+36.2
+
+ela>25 / 12
+
+2
+
+ela>25D / 12
+
+2.08333333333333
+
+ela>4.3 * 120
+
+516
+}}}
+
+As you can see numeric types support all basic arithmetic operations including addition `+`, substraction `-`, multiplication `*`, division `\`, modulus `%`, power `**` and negation which is written `--` unlike many other languages where negation uses the same identifer as binary minus. These operators has the same priority as in C style languages. Power and modulus operators has the same priority as multiplication and division:
+
+{{{
+ela>14 % 5
+
+4
+
+ela>3 ** 3
+
+27
+
+ela>2 + 4 ** 3
+
+66
+
+ela>12 - 40 % 3
+
+11
+
+ela>155 * 20 / 2
+
+1550
+}}}
+
+A couple of other samples to illustrate negation operation:
+
+{{{
+ela>-42 //This is not a valid syntax in Ela
+
+<memory>(1,1): Error ELA210: Invalid syntax.
+
+ela>(-42) //This is a partial application of a '-' function
+
+<f>:*->*
+
+ela>--42 //Finally, a correct negation syntax
+
+-42
+}}}
+
+Types `int` and `long` also support bitwise operations such as bitwise and `&&&`, bitwise or `|||`, bitwise xor `^^^`, left shift `<<<`, right shift `>>>` and bitwise not `~~~`. These have the same behavior as operators `&`, `|`, `^`, `<<`, `>>` and `~` in C however their priority is different. Bitwise or, and and xor have one of the highest priorities among Ela operators:
+
+{{{
+ela>let sn = 48 ||| (134 <<< 8)
+
+ela>sn
+
+34352
+
+ela>sn >>> 8
+
+134
+
+ela>sn &&& 255
+
+48
+}}}
+
+Numeric types also support a bunch of other operations. They can be tested for equality using operators `==` and `<>`, compared using operators `>`, `<`, `>=` and `<=`. They also support operations successor and predecessor (`succ` and `pred`) and taking a minimum and a maximum value (`min` and `max`):
+
+{{{
+ela>succ 42
+
+43
+
+ela>pred 42
+
+41
+
+ela>max 1
+
+2147483647
+
+ela>max 1L
+
+9223372036854775807
+
+ela>min 1L
+
+-9223372036854775808
+
+ela>max 1D
+
+1.79769313486232E+308
+}}}
+
+Ela like some other languages doesn't perform overflow check so you should be careful with your calculations. Here is simple example of factorial calculation that overflows:
+
+{{{
+ela>let factorial 0 = 1; n = n * factorial (n - 1) //naive implementation of factorial function
+
+ela>factorial 13 //works OK
+
+1932053504
+
+ela>factorial 20 //overflows
+
+-2102132736
+}}}

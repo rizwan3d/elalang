@@ -5,7 +5,7 @@ namespace Ela.Runtime.ObjectModel
 	internal sealed class ElaChar : ElaObject
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Convert | ElaTraits.Enum;
+		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Ord | ElaTraits.Convert | ElaTraits.Enum;
 		
 		internal static readonly ElaChar Instance = new ElaChar();
 
@@ -38,6 +38,58 @@ namespace Ela.Runtime.ObjectModel
 			else
 			{
 				ctx.InvalidLeftOperand(left, right, ElaTraits.Eq);
+				return Default();
+			}
+		}
+
+
+		protected internal override ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			if (left.Type == ElaMachine.CHR)
+				return right.Type == ElaMachine.CHR ? new ElaValue(left.I4 > right.I4) :
+					right.Ref.Greater(left, right, ctx);
+			else
+			{
+				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				return Default();
+			}
+		}
+
+
+		protected internal override ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			if (left.Type == ElaMachine.CHR)
+				return right.Type == ElaMachine.CHR ? new ElaValue(left.I4 < right.I4) :
+					right.Ref.Lesser(left, right, ctx);
+			else
+			{
+				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				return Default();
+			}
+		}
+
+
+		protected internal override ElaValue GreaterEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			if (left.Type == ElaMachine.CHR)
+				return right.Type == ElaMachine.CHR ? new ElaValue(left.I4 >= right.I4) :
+					right.Ref.GreaterEquals(left, right, ctx);
+			else
+			{
+				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				return Default();
+			}
+		}
+
+
+		protected internal override ElaValue LesserEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			if (left.Type == ElaMachine.CHR)
+				return right.Type == ElaMachine.CHR ? new ElaValue(left.I4 <= right.I4) :
+					right.Ref.LesserEquals(left, right, ctx);
+			else
+			{
+				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
 				return Default();
 			}
 		}

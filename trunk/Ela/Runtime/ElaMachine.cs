@@ -1432,7 +1432,7 @@ namespace Ela.Runtime
 
 						if (right.Type == INT)
 						{
-							evalStack.Replace(right.I4 + 1);
+							evalStack.Replace(right.I4 - 1);
 							break;
 						}
 
