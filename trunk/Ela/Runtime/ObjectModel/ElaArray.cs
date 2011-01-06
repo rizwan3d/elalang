@@ -11,7 +11,7 @@ namespace Ela.Runtime.ObjectModel
 	{
 		#region Construction
 		private const int DEFAULT_SIZE = 4;
-		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Len | ElaTraits.Get | ElaTraits.Set | ElaTraits.Seq | ElaTraits.Fold | ElaTraits.Concat | ElaTraits.Convert | ElaTraits.Show | ElaTraits.FieldGet;
+		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Len | ElaTraits.Get | ElaTraits.Set | ElaTraits.Gen | ElaTraits.Seq | ElaTraits.Fold | ElaTraits.Concat | ElaTraits.Convert | ElaTraits.Show | ElaTraits.FieldGet;
 		private int size;
 		private ElaValue[] array;
 		private int headIndex;
@@ -22,8 +22,7 @@ namespace Ela.Runtime.ObjectModel
 		private const string CLEAR = "clear";
 		private const string LENGTH = "length";
 
-		public ElaArray(ElaValue[] arr)
-			: base(ObjectType.Array, TRAITS)
+		public ElaArray(ElaValue[] arr) : base(ObjectType.Array, TRAITS)
 		{
 			if (arr == null)
 				throw new ArgumentNullException("arr");
@@ -38,8 +37,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		public ElaArray(object[] arr)
-			: base(ObjectType.Array, TRAITS)
+		public ElaArray(object[] arr) : base(ObjectType.Array, TRAITS)
 		{
 			if (arr == null)
 				throw new ArgumentNullException("arr");
@@ -54,22 +52,19 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		public ElaArray(int size)
-			: base(ObjectType.Array, TRAITS)
+		public ElaArray(int size) : base(ObjectType.Array, TRAITS)
 		{
 			array = new ElaValue[size == 0 ? DEFAULT_SIZE : size];
 		}
 
 
-		public ElaArray()
-			: this(DEFAULT_SIZE)
+		public ElaArray() : this(DEFAULT_SIZE)
 		{
 
 		}
 
 
-		private ElaArray(ElaValue[] arr, int size, int headIndex)
-			: base(ObjectType.Array, TRAITS)
+		private ElaArray(ElaValue[] arr, int size, int headIndex) : base(ObjectType.Array, TRAITS)
 		{
 			array = arr;
 			this.size = size;
@@ -213,6 +208,19 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override bool IsNil(ExecutionContext ctx)
 		{
 			return headIndex == size;
+		}
+
+
+		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
+		{
+			Add(value);
+			return new ElaValue(this);			
+		}
+
+
+		protected internal override ElaValue GenerateFinalize(ExecutionContext ctx)
+		{
+			return new ElaValue(this);
 		}
 
 

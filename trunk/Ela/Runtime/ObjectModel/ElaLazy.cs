@@ -135,9 +135,21 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue CreateList(ElaObject next, ElaValue value, ExecutionContext ctx)
+		protected internal override ElaValue Cons(ElaObject next, ElaValue value, ExecutionContext ctx)
 		{
 			return new ElaValue(new ElaList(next, value));
+		}
+
+
+		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
+		{
+			return new ElaValue(new ElaList(this, value));
+		}
+
+
+		protected internal override ElaValue GenerateFinalize(ExecutionContext ctx)
+		{
+			return new ElaValue(this);
 		}
 
 

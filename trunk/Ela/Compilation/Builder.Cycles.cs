@@ -13,9 +13,7 @@ namespace Ela.Compilation
 			else
 			{
 				CheckEmbeddedWarning(s.Body);
-
-				var comp = (hints & Hints.CompArray) == Hints.CompArray ||
-					(hints & Hints.CompList) == Hints.CompList;
+				var comp = (hints & Hints.Comp) == Hints.Comp;
 
 				StartScope(false);
 				var firstIter = cw.DefineLabel();
@@ -76,18 +74,15 @@ namespace Ela.Compilation
 					if (s.Body != null)
 					{
 						var newHints = Hints.Scope |
-							((hints & Hints.CompArray) == Hints.CompArray ? Hints.CompArray :
-							(hints & Hints.CompList) == Hints.CompList ? Hints.CompList :
+							((hints & Hints.Comp) == Hints.Comp ? Hints.Comp :
 							Hints.Left);
 						CompileExpression(s.Body, newMap, newHints);
 
 						if (s.Body.Type != ElaNodeType.For &&
 							s.Body.Type != ElaNodeType.While)
 						{
-							if ((hints & Hints.CompList) == Hints.CompList)
-								cw.Emit(Op.Consr);
-							else if ((hints & Hints.CompArray) == Hints.CompArray)
-								cw.Emit(Op.Arrcons);
+							if ((hints & Hints.Comp) == Hints.Comp)
+								cw.Emit(Op.Gen);
 						}
 					}
 
@@ -107,9 +102,7 @@ namespace Ela.Compilation
 		private void CompileWhile(ElaWhile s, LabelMap map, Hints hints)
 		{
 			CheckEmbeddedWarning(s.Body);
-
-			var comp = (hints & Hints.CompArray) == Hints.CompArray ||
-				(hints & Hints.CompList) == Hints.CompList;
+			var comp = (hints & Hints.Comp) == Hints.Comp;
 
 			StartScope(false);
 			var iter = cw.DefineLabel();
@@ -132,18 +125,15 @@ namespace Ela.Compilation
 			if (s.Body != null)
 			{
 				var newHints = Hints.Scope |
-					((hints & Hints.CompArray) == Hints.CompArray ? Hints.CompArray :
-					(hints & Hints.CompList) == Hints.CompList ? Hints.CompList :
+					((hints & Hints.Comp) == Hints.Comp ? Hints.Comp :
 					Hints.Left);
 				CompileExpression(s.Body, newMap, newHints);
 
 				if (s.Body.Type != ElaNodeType.For &&
 					s.Body.Type != ElaNodeType.While)
 				{
-					if ((hints & Hints.CompList) == Hints.CompList)
-						cw.Emit(Op.Consr);
-					else if ((hints & Hints.CompArray) == Hints.CompArray)
-						cw.Emit(Op.Arrcons);
+					if ((hints & Hints.Comp) == Hints.Comp)
+						cw.Emit(Op.Gen);
 				}
 			}
 			else
@@ -176,9 +166,7 @@ namespace Ela.Compilation
 			else
 			{
 				CheckEmbeddedWarning(s.Body);
-
-				var comp = (hints & Hints.CompArray) == Hints.CompArray ||
-					(hints & Hints.CompList) == Hints.CompList;
+				var comp = (hints & Hints.Comp) == Hints.Comp;
 
 				StartScope(false);
 				var iter = cw.DefineLabel();
@@ -225,18 +213,15 @@ namespace Ela.Compilation
 				if (s.Body != null)
 				{
 					var newHints = Hints.Scope |
-						((hints & Hints.CompArray) == Hints.CompArray ? Hints.CompArray :
-						(hints & Hints.CompList) == Hints.CompList ? Hints.CompList :
+						((hints & Hints.Comp) == Hints.Comp ? Hints.Comp :
 						Hints.Left);
 					CompileExpression(s.Body, newMap, newHints);
 
 					if (s.Body.Type != ElaNodeType.For &&
 						s.Body.Type != ElaNodeType.While)
 					{
-						if ((hints & Hints.CompList) == Hints.CompList)
-							cw.Emit(Op.Consr);
-						else if ((hints & Hints.CompArray) == Hints.CompArray)
-							cw.Emit(Op.Arrcons);
+						if ((hints & Hints.Comp) == Hints.Comp)
+							cw.Emit(Op.Gen);
 					}
 				}
 
@@ -337,11 +322,11 @@ namespace Ela.Compilation
 			}
 			else
 			{
-				CompileExpression(s.Body, map, Hints.None);
 				cw.Emit(Op.Pushvar, tail);
 				cw.Emit(Op.Pushvar, 1 | (funAddr >> 8) << 8);
 				cw.Emit(Op.LazyCall);
-				cw.Emit(Op.Cons);
+				CompileExpression(s.Body, map, Hints.None);
+				cw.Emit(Op.Gen);
 				cw.Emit(Op.Br, exitLab);
 			}
 

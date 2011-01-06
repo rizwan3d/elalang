@@ -16,12 +16,10 @@ namespace Ela.Compilation
 			1, //Pop
 			1, //Popelem
 			1, //Pushstr_0
-			1, //Arrcons
-			1, //Tupcons
 			1, //Reccons
-			1, //Lrev
+			1, //Genfin
 			1, //Cons
-			1, //Consr
+			1, //Gen
 			1, //Tail
 			1, //Head
 			1, //Ret

@@ -273,9 +273,23 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal virtual ElaValue CreateList(ElaObject next, ElaValue value, ExecutionContext ctx)
+		protected internal virtual ElaValue Cons(ElaObject instance, ElaValue value, ExecutionContext ctx)
 		{
 			ctx.Fail(ElaRuntimeError.TraitCons, ToString(), ((ObjectType)TypeId).GetShortForm());
+			return Default();
+		}
+
+
+		protected internal virtual ElaValue Generate(ElaValue value, ExecutionContext ctx)
+		{
+			ctx.Fail(ElaRuntimeError.TraitGen, ToString(), ((ObjectType)TypeId).GetShortForm());
+			return Default();
+		}
+
+
+		protected internal virtual ElaValue GenerateFinalize(ExecutionContext ctx)
+		{
+			ctx.Fail(ElaRuntimeError.TraitGen, ToString(), ((ObjectType)TypeId).GetShortForm());
 			return Default();
 		}
 

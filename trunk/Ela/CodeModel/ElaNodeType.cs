@@ -85,6 +85,8 @@ namespace Ela.CodeModel
 
 		CustomOperator,
 
+		Comprehension,
+
 
 		OtherwiseGuard,
 		

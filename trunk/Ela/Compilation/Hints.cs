@@ -13,9 +13,9 @@ namespace Ela.Compilation
 
 		Scope = 0x04,
 
-		CompList = 0x08,
+		Comp = 0x08,
 
-		CompArray = 0x10,
+		// = 0x10,
 
 		Tail = 0x20,
 

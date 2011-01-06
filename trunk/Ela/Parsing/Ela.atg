@@ -695,32 +695,31 @@ PRODUCTIONS
 		].
 		
 				
-	ParamList<. List<ElaExpression> list, out ElaExpression comp, out ElaRange rng .> = 
+	ParamList<. out List<ElaExpression> list, out ElaComprehension comp, out ElaRange rng .> =
 		(. 
 			var exp = default(ElaExpression); 
+			list = null;
 			comp = null;
 			rng = null;
 		.)
 		Expr<out exp> 
 		[
-			(
-				ComprehensionExpr<exp, out exp>
-				(. comp = exp; .)
-			)
+			ComprehensionExpr<exp, out comp>
 			| 
 			RangeExpr<exp, null, out rng>
 			|
 			(
-				(. list.Add(exp); .)
+				(. var oexp = exp; .)
 				"," Expr<out exp> 
 				(
-					(
-						RangeExpr<list[0], exp, out rng>
-						(. list.Clear(); .)
-					)
+					RangeExpr<oexp, exp, out rng>
 					|
 					(
-						(. list.Add(exp); .)
+						(. 
+							list = new List<ElaExpression>();
+							list.Add(oexp);
+							list.Add(exp);
+						.)
 						{ 
 							"," Expr<out exp> 
 							(. list.Add(exp); .)
@@ -730,31 +729,51 @@ PRODUCTIONS
 			)
 		]
 		(.
-			if (list.Count == 0 && comp == null && rng == null && exp != null)
+			if (list == null && comp == null && rng == null && exp != null)
+			{
+				list = new List<ElaExpression>();
 				list.Add(exp);
+			}
 		.).
 		
 	ListLiteral<out ElaExpression exp> = 
 		"["
 			(. 
-				var listExp = new ElaListLiteral(t);
-				var comp = default(ElaExpression);
+				var list = default(List<ElaExpression>);
+				var comp = default(ElaComprehension);
 				var rng = default(ElaRange);
-				exp = listExp;
+				var ot = t;
+				
+				exp = null;
 			.)
 			[ 
 				(
-					ParamList<listExp.Values, out comp, out rng> 
+					ParamList<out list, out comp, out rng> 
 					(. 
-						listExp.Comprehension = comp; 
-						listExp.Range = rng;
+						if (list != null)
+						{
+							var listExp = new ElaListLiteral(ot) { Values = list };
+							exp = listExp;	
+						}
+						else if (comp != null)
+						{
+							comp.Initial = new ElaListLiteral(ot);
+							exp = comp;
+						}
+						else if (rng != null)
+						{
+							rng.Initial = new ElaListLiteral(ot);
+							exp = rng;
+						}
 					.)
 				)
 				|
 				(
-					"&" Expr<out comp> ComprehensionExpr<comp, out comp>
+					(. var cexp = default(ElaExpression); .)
+					"&" Expr<out cexp> ComprehensionExpr<cexp, out comp>
 					(. 
-						((ElaFor)comp).ForType = ElaForType.LazyComprehension; 
+						comp.Lazy = true;
+						comp.Initial = new ElaListLiteral(ot);
 						exp = comp;
 					.)
 				)
@@ -764,18 +783,35 @@ PRODUCTIONS
 	ArrayLiteral<out ElaExpression exp> = 
 		"[|"
 			(. 
-				var arrExp = new ElaArrayLiteral(t);
-				var comp = default(ElaExpression);
+				var list = default(List<ElaExpression>);
+				var comp = default(ElaComprehension);
 				var rng = default(ElaRange);
-				exp = arrExp;
+				var ot = t;
+				
+				exp = null;
 			.)
 			[ 
-				ParamList<arrExp.Values, out comp, out rng> 
-				(. 
-					arrExp.Comprehension = comp; 
-					arrExp.Range = rng; 
-				.)
-			] 
+				(
+					ParamList<out list, out comp, out rng> 
+					(. 
+						if (list != null)
+						{
+							var arrExp = new ElaArrayLiteral(ot) { Values = list };
+							exp = arrExp;	
+						}
+						else if (comp != null)
+						{
+							comp.Initial = new ElaArrayLiteral(ot);
+							exp = comp;
+						}
+						else if (rng != null)
+						{
+							rng.Initial = new ElaArrayLiteral(ot);
+							exp = rng;
+						}
+					.)
+				)
+			]
 		"|]".
 					
 	LetBinding<out ElaExpression exp> = 
@@ -1755,10 +1791,13 @@ PRODUCTIONS
 			| ForExpr<out exp>
 		).
 	
-	ComprehensionExpr<ElaExpression sel, out ElaExpression exp> =
-		(. 	var it = default(ElaFor); .)
+	ComprehensionExpr<ElaExpression sel, out ElaComprehension exp> =
+		(. 	
+			var it = default(ElaFor); 
+			var ot = t;		
+		.)
 		"@" ComprehensionEntry<sel, out it>
-		(. exp = it; .).
+		(. exp = new ElaComprehension(ot) { Generator = it }; .).
 		
 	ComprehensionEntry<ElaExpression body, out ElaFor it> =
 		(.

@@ -210,9 +210,21 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue CreateList(ElaObject next, ElaValue value, ExecutionContext ctx)
+		protected internal override ElaValue Cons(ElaObject next, ElaValue value, ExecutionContext ctx)
 		{
-			return Value.Ref.CreateList(next, value, ctx);
+			return Value.Ref.Cons(next, value, ctx);
+		}
+
+
+		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
+		{
+			return Value.Ref.Generate(value, ctx);
+		}
+
+
+		protected internal override ElaValue GenerateFinalize(ExecutionContext ctx)
+		{
+			return Value.Ref.GenerateFinalize(ctx);
 		}
 
 
@@ -236,7 +248,7 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override string Show(ExecutionContext ctx, ShowInfo info)
 		{
-			return "`" + Tag + (Value.Ref != ElaUnit.Instance ? " " + Value.Ref.Show(ctx, info) : String.Empty);
+			return "`" + Tag + (Value.Ref != ElaUnit.Instance ? " " + Value.Ref.Show(Value, ctx, info) : String.Empty);
 		}
 
 

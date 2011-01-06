@@ -1,3 +1,8 @@
+0.8.0.15:New:Now types 'single' and 'double' support 'Enum' trait (successor/predecessor operations).
+0.8.0.14:Change:'Arrcons', 'Tupcons' and 'Lrev' op codes are decomissioned. Now new op codes 'Gen' and 'Genfin' (to finalize generation) are used instead for all data structures. A new trait 'Gen' is added to support it.
+0.8.0.13:Change:Compilation logic for comprehensions and ranges is refactored and now is more generic.
+0.8.0.12:Change:Parsing logic for comprehensions and their representation in Ela DOM is redesigned.
+0.8.0.11:Change:Serialization to string of tuples is changed for the case of single element tuples, now a comma is added at the end to match literal and to denote that this a tuple, not just grouped expression.
 0.8.0.10:Fix:A bug fixed in implementation of 'pred' trait for integers (used to work in the same manner as 'succ').
 0.8.0.9:New:Now type 'char' supports trait 'Ord' (comparison operations - greater, lesser, etc.).
 0.8.0.8:Change:Implementation of 'Show' trait in variant is corrected and now prints only the tag if it was created without the tagged value like so `None.

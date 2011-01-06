@@ -24,17 +24,13 @@ namespace Ela.Compilation
 
 		Pushstr_0,
 
-		Arrcons,
-
-		Tupcons,
-
 		Reccons,
 
-		Lrev,
+		Genfin,
 
 		Cons,
 
-		Consr,
+		Gen,
 
 		Tail,
 

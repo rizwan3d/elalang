@@ -763,30 +763,6 @@ namespace Ela.Runtime
 					#endregion
 
 					#region Object Operations
-					case Op.Arrcons:
-						right = evalStack.Pop();
-						left = evalStack.Peek();
-
-						if (left.Type == ARR)
-							((ElaArray)left.Ref).Add(right);
-						else
-						{
-							InvalidType(left, thread, evalStack, ARR);
-							goto SWITCH_MEM;
-						}
-						break;
-					case Op.Tupcons:
-						right = evalStack.Pop();
-						left = evalStack.Peek();
-
-						if (left.Type == TUP)
-							((ElaTuple)left.Ref).InternalSetValue(right);
-						else
-						{
-							InvalidType(left, thread, evalStack, TUP);
-							goto SWITCH_MEM;
-						}
-						break;
 					case Op.Reccons:
 						{
 							right = evalStack.Pop();
@@ -804,7 +780,7 @@ namespace Ela.Runtime
 						break;
 					case Op.Cons:
 						right = evalStack.Pop();
-						evalStack.Replace(right.Ref.CreateList(right.Ref, evalStack.Peek(), ctx));
+						evalStack.Replace(right.Ref.Cons(right.Ref, evalStack.Peek(), ctx));
 
 						if (ctx.Failed)
 						{
@@ -813,31 +789,25 @@ namespace Ela.Runtime
 						}
 
 						break;
-					case Op.Consr:
+					case Op.Gen:
 						right = evalStack.Pop();
-						left = evalStack.Peek().Id(ctx);
-						evalStack.Replace(left.Ref.CreateList(left.Ref, right, ctx));
+						left = evalStack.Peek();
+						evalStack.Replace(left.Ref.Generate(right, ctx));
 
 						if (ctx.Failed)
 						{
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
-
 						break;
-					case Op.Lrev:
+					case Op.Genfin:
+						right = evalStack.Peek();
+						evalStack.Replace(right.Ref.GenerateFinalize(ctx));
+
+						if (ctx.Failed)
 						{
-							right = evalStack.Peek();
-							var lst = (ElaList)right.Ref;
-							var newLst = ElaList.Nil;
-
-							while (lst != ElaList.Nil)
-							{
-								newLst = new ElaList(newLst, lst.Value);
-								lst = lst.Next;
-							}
-
-							evalStack.Replace(new ElaValue(newLst));
+							ExecuteThrow(thread, evalStack);
+							goto SWITCH_MEM;
 						}
 						break;
 					case Op.Tail:

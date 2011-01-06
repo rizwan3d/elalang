@@ -207,6 +207,9 @@
   <data name="TraitFold" xml:space="preserve">
     <value>A value '{0}' of type '{1}' doesn't support trait 'Fold' (head, tail and nil operations).</value>
   </data>
+  <data name="TraitGen" xml:space="preserve">
+    <value>A value '{0}' of type '{1}' doesn't support trait 'Gen' (cannot be used in comprehensions and ranges).</value>
+  </data>
   <data name="TraitGet" xml:space="preserve">
     <value>A value '{0}' of type '{1}' doesn't support trait 'Get' (read through indexer).</value>
   </data>

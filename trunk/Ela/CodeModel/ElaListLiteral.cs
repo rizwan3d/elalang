@@ -27,28 +27,14 @@ namespace Ela.CodeModel
 			var sb = new StringBuilder();
 			sb.Append('[');
 
-			if (Comprehension != null)
+			var c = 0;
+
+			foreach (var v in Values)
 			{
-				var @for = (ElaFor)Comprehension;
+				if (c++ > 0)
+					sb.Append(", ");
 
-				if (@for.ForType == ElaForType.LazyComprehension)
-					sb.Append('&');
-
-				sb.Append(" " + @for.ToStringAsComprehension() + " ");
-			}
-			else if (Range != null)
-				sb.Append(Range.ToString());
-			else
-			{
-				var c = 0;
-
-				foreach (var v in Values)
-				{
-					if (c++ > 0)
-						sb.Append(", ");
-
-					sb.Append(v.ToString());
-				}
+				sb.Append(v.ToString());
 			}
 
 			sb.Append(']');
@@ -68,11 +54,8 @@ namespace Ela.CodeModel
 
 				return _values;
 			}
+			internal set { _values = value; }
 		}
-
-		public ElaExpression Comprehension { get; set; }
-
-		public ElaRange Range { get; set; }
 		#endregion
 	}
 }

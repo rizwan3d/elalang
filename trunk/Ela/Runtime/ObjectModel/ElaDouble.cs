@@ -5,7 +5,7 @@ namespace Ela.Runtime.ObjectModel
 	public sealed class ElaDouble : ElaObject
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Ord | ElaTraits.Bound | ElaTraits.Show | 
+		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Ord | ElaTraits.Bound | ElaTraits.Enum | ElaTraits.Show | 
 			ElaTraits.Convert | ElaTraits.Neg | ElaTraits.Num;
 
 		public ElaDouble(double value) : base(ObjectType.Double, TRAITS)
@@ -115,6 +115,18 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue GetMin(ExecutionContext ctx)
 		{
 			return new ElaValue(Double.MinValue);
+		}
+
+
+		protected internal override ElaValue Successor(ExecutionContext ctx)
+		{
+			return new ElaValue(InternalValue + 1);
+		}
+
+
+		protected internal override ElaValue Predecessor(ExecutionContext ctx)
+		{
+			return new ElaValue(InternalValue - 1);
 		}
 
 

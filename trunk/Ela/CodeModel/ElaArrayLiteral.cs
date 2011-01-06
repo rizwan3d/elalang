@@ -27,21 +27,14 @@ namespace Ela.CodeModel
 			var sb = new StringBuilder();
 			sb.Append("[| ");
 
-			if (Comprehension != null)
-				sb.Append(((ElaFor)Comprehension).ToStringAsComprehension());
-			else if (Range != null)
-				sb.Append(Range.ToString());
-			else
+			var c = 0;
+
+			foreach (var v in Values)
 			{
-				var c = 0;
+				if (c++ > 0)
+					sb.Append(", ");
 
-				foreach (var v in Values)
-				{
-					if (c++ > 0)
-						sb.Append(", ");
-
-					sb.Append(v.ToString());
-				}
+				sb.Append(v.ToString());
 			}
 
 			sb.Append(" |]");
@@ -51,11 +44,7 @@ namespace Ela.CodeModel
 
 
 		#region Properties
-		public List<ElaExpression> Values { get; private set; }
-		
-		public ElaExpression Comprehension { get; set; }
-		
-		public ElaRange Range { get; set; }
+		public List<ElaExpression> Values { get; internal set; }
 		#endregion
 	}
 }

@@ -18,7 +18,7 @@ namespace Ela
 
 		Call = 0x40,
 
-		// = 0x80,
+		Gen = 0x80,
 
 		// = 0x100,
 

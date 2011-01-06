@@ -182,6 +182,8 @@ namespace Ela.Runtime
 
 		TraitThunk = 923,
 
+		TraitGen = 924,
+
 
 		UserCode = 999
 	}

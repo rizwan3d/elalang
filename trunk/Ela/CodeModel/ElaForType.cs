@@ -8,8 +8,6 @@ namespace Ela.CodeModel
 
 		ForTo,
 
-		ForDownto,
-
-		LazyComprehension
+		ForDownto
 	}
 }

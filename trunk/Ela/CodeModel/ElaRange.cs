@@ -22,10 +22,12 @@ namespace Ela.CodeModel
 		#region Methods
 		public override string ToString()
 		{
-			return First.ToString() +
+			var format = Initial.Type == ElaNodeType.ArrayLiteral ? "[|{0}|]" : "[{0}]";
+
+			return String.Format(format, First.ToString() +
 				(Second != null ? "," + Second : String.Empty) +
 				".." +
-				(Last != null ? Last.ToString() : String.Empty);
+				(Last != null ? Last.ToString() : String.Empty));
 		}
 		#endregion
 
@@ -36,6 +38,8 @@ namespace Ela.CodeModel
 		public ElaExpression Second { get; set; }
 
 		public ElaExpression Last { get; set; }
+
+		public ElaExpression Initial { get; set; }
 		#endregion
 	}
 }

@@ -12,20 +12,23 @@ namespace Ela.Compilation
 
 			if (range.Last == null)
 			{
-				if ((hints & Hints.CompList) != Hints.CompList)
+				if (range.Initial.Type != ElaNodeType.ListLiteral)
 					AddError(ElaCompilerError.InfiniteRangeOnlyList, range, FormatNode(parent));
 
+				var sv = AddVariable();
 				CompileExpression(range.First, map, hints);
 				cw.Emit(Op.Dup);
+				cw.Emit(Op.Popvar, sv);
 				CompileCycleFunction(range.Second, map);
-				cw.Emit(Op.Cons);
+				cw.Emit(Op.Pushvar, sv);
+				cw.Emit(Op.Gen);
 			}
-			else if (!TryOptimizeRange(range, hints))
+			else if (!TryOptimizeRange(range, map, hints))
 				CompileStrictRange(range, map, hints);
 		}
 
 
-		private bool TryOptimizeRange(ElaRange range, Hints hints)
+		private bool TryOptimizeRange(ElaRange range, LabelMap map, Hints hints)
 		{
 			if (range.First.Type != ElaNodeType.Primitive ||
 				(range.Second != null && range.Second.Type != ElaNodeType.Primitive) ||
@@ -49,31 +52,19 @@ namespace Ela.Compilation
 			if (Math.Abs((fstVal - lstVal) / step) > 20)
 				return false;
 
-			if ((hints & Hints.CompList) == Hints.CompList)
-				cw.Emit(Op.Newlist);
-			else
-				cw.Emit(Op.Newarr);
+			CompileExpression(range.Initial, map, Hints.None);
 
 			if (snd != null)
 			{
 				cw.Emit(Op.PushI4, fstVal);
 				fstVal = sndVal;
-
-				if ((hints & Hints.CompList) == Hints.CompList)
-					cw.Emit(Op.Consr);
-				else
-					cw.Emit(Op.Arrcons);
+				cw.Emit(Op.Gen);
 			}
 
 			for (; ; )
 			{
 				cw.Emit(Op.PushI4, fstVal);
-
-				if ((hints & Hints.CompList) == Hints.CompList)
-					cw.Emit(Op.Consr);
-				else
-					cw.Emit(Op.Arrcons);
-
+				cw.Emit(Op.Gen);
 				fstVal += step;
 
 				if (step > 0)
@@ -85,9 +76,7 @@ namespace Ela.Compilation
 					break;
 			}
 
-			if ((hints & Hints.CompList) == Hints.CompList)
-				cw.Emit(Op.Lrev);
-
+			cw.Emit(Op.Genfin);
 			return true;
 		}
 
@@ -127,41 +116,31 @@ namespace Ela.Compilation
 			cw.Emit(Op.Popvar, second);
 			cw.Emit(Op.Pushvar, start);
 			cw.Emit(Op.Br_gt, trueLab);
+
+			CompileExpression(rng.Initial, map, Hints.None);
 			CompileStrictRangeCycle(start, second, step, last, hints, false);
+
 			cw.Emit(Op.Br, endLab);
 			cw.MarkLabel(trueLab);
-			CompileStrictRangeCycle(start, second, step, last, hints, true);
-			cw.MarkLabel(endLab);
 
-			if ((hints & Hints.CompList) == Hints.CompList)
-				cw.Emit(Op.Lrev);
-			else
-				cw.Emit(Op.Nop);
+			CompileExpression(rng.Initial, map, Hints.None);
+			CompileStrictRangeCycle(start, second, step, last, hints, true);
+
+			cw.MarkLabel(endLab);
+			cw.Emit(Op.Genfin);
 		}
 
 
 		private void CompileStrictRangeCycle(int start, int second, int step, int last, Hints hints, bool brGt)
 		{
-			if ((hints & Hints.CompList) == Hints.CompList)
-				cw.Emit(Op.Newlist);
-			else
-				cw.Emit(Op.Newarr);
-
 			cw.Emit(Op.Pushvar, start);
-
-			if ((hints & Hints.CompList) == Hints.CompList)
-				cw.Emit(Op.Consr);
-			else
-				cw.Emit(Op.Arrcons);
+			cw.Emit(Op.Gen);
 
 			cw.Emit(Op.Pushvar, second);
 			cw.Emit(Op.Dup);
 			cw.Emit(Op.Popvar, start);
 
-			if ((hints & Hints.CompList) == Hints.CompList)
-				cw.Emit(Op.Consr);
-			else
-				cw.Emit(Op.Arrcons);
+			cw.Emit(Op.Gen);
 
 			var iterLab = cw.DefineLabel();
 			var exitLab = cw.DefineLabel();
@@ -181,11 +160,7 @@ namespace Ela.Compilation
 				cw.Emit(Op.Br_lt, exitLab);
 
 			cw.Emit(Op.Pushvar, start);
-
-			if ((hints & Hints.CompList) == Hints.CompList)
-				cw.Emit(Op.Consr);
-			else
-				cw.Emit(Op.Arrcons);
+			cw.Emit(Op.Gen);
 
 			cw.Emit(Op.Br, iterLab);
 			cw.MarkLabel(exitLab);
@@ -219,14 +194,16 @@ namespace Ela.Compilation
 			cw.Emit(Op.Br, funSkipLabel);
 			var address = cw.Offset;
 
+			cw.Emit(Op.Pushvar, 1 | (fun >> 8) << 8);
+			cw.Emit(Op.Newlazy);
+
 			cw.Emit(Op.Pushvar, 1 | (start >> 8) << 8);
 			cw.Emit(Op.Pushvar, 1 | (step >> 8) << 8);
 			cw.Emit(Op.Add);
-			cw.Emit(Op.Dup);
+			cw.Emit(Op.Dup);			
 			cw.Emit(Op.Popvar, 1 | (start >> 8) << 8);
-			cw.Emit(Op.Pushvar, 1 | (fun >> 8) << 8);
-			cw.Emit(Op.Newlazy);
-			cw.Emit(Op.Cons);
+			
+			cw.Emit(Op.Gen);
 
 			cw.Emit(Op.Ret);
 			frame.Layouts.Add(new MemoryLayout(currentCounter, cw.FinishFrame(), address));

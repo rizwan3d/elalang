@@ -223,22 +223,39 @@ internal sealed partial class Parser {
 
 	void ListLiteral(out ElaExpression exp) {
 		Expect(13);
-		var listExp = new ElaListLiteral(t);
-		var comp = default(ElaExpression);
+		var list = default(List<ElaExpression>);
+		var comp = default(ElaComprehension);
 		var rng = default(ElaRange);
-		exp = listExp;
+		var ot = t;
+		
+		exp = null;
 		
 		if (StartOf(1)) {
 			if (StartOf(2)) {
-				ParamList(listExp.Values, out comp, out rng);
-				listExp.Comprehension = comp; 
-				listExp.Range = rng;
+				ParamList(out list, out comp, out rng);
+				if (list != null)
+				{
+					var listExp = new ElaListLiteral(ot) { Values = list };
+					exp = listExp;	
+				}
+				else if (comp != null)
+				{
+					comp.Initial = new ElaListLiteral(ot);
+					exp = comp;
+				}
+				else if (rng != null)
+				{
+					rng.Initial = new ElaListLiteral(ot);
+					exp = rng;
+				}
 				
 			} else {
+				var cexp = default(ElaExpression); 
 				Get();
-				Expr(out comp);
-				ComprehensionExpr(comp, out comp);
-				((ElaFor)comp).ForType = ElaForType.LazyComprehension; 
+				Expr(out cexp);
+				ComprehensionExpr(cexp, out comp);
+				comp.Lazy = true;
+				comp.Initial = new ElaListLiteral(ot);
 				exp = comp;
 				
 			}
@@ -248,15 +265,30 @@ internal sealed partial class Parser {
 
 	void ArrayLiteral(out ElaExpression exp) {
 		Expect(15);
-		var arrExp = new ElaArrayLiteral(t);
-		var comp = default(ElaExpression);
+		var list = default(List<ElaExpression>);
+		var comp = default(ElaComprehension);
 		var rng = default(ElaRange);
-		exp = arrExp;
+		var ot = t;
+		
+		exp = null;
 		
 		if (StartOf(2)) {
-			ParamList(arrExp.Values, out comp, out rng);
-			arrExp.Comprehension = comp; 
-			arrExp.Range = rng; 
+			ParamList(out list, out comp, out rng);
+			if (list != null)
+			{
+				var arrExp = new ElaArrayLiteral(ot) { Values = list };
+				exp = arrExp;	
+			}
+			else if (comp != null)
+			{
+				comp.Initial = new ElaArrayLiteral(ot);
+				exp = comp;
+			}
+			else if (rng != null)
+			{
+				rng.Initial = new ElaArrayLiteral(ot);
+				exp = rng;
+			}
 			
 		}
 		Expect(16);
@@ -1027,27 +1059,29 @@ internal sealed partial class Parser {
 		}
 	}
 
-	void ParamList(List<ElaExpression> list, out ElaExpression comp, out ElaRange rng ) {
+	void ParamList(out List<ElaExpression> list, out ElaComprehension comp, out ElaRange rng ) {
 		var exp = default(ElaExpression); 
+		list = null;
 		comp = null;
 		rng = null;
 		
 		Expr(out exp);
 		if (la.kind == 27 || la.kind == 56 || la.kind == 61) {
 			if (la.kind == 27) {
-				ComprehensionExpr(exp, out exp);
-				comp = exp; 
+				ComprehensionExpr(exp, out comp);
 			} else if (la.kind == 61) {
 				RangeExpr(exp, null, out rng);
 			} else {
-				list.Add(exp); 
+				var oexp = exp; 
 				Get();
 				Expr(out exp);
 				if (la.kind == 61) {
-					RangeExpr(list[0], exp, out rng);
-					list.Clear(); 
+					RangeExpr(oexp, exp, out rng);
 				} else if (la.kind == 14 || la.kind == 16 || la.kind == 56) {
-					list.Add(exp); 
+					list = new List<ElaExpression>();
+					list.Add(oexp);
+					list.Add(exp);
+					
 					while (la.kind == 56) {
 						Get();
 						Expr(out exp);
@@ -1056,16 +1090,21 @@ internal sealed partial class Parser {
 				} else SynErr(112);
 			}
 		}
-		if (list.Count == 0 && comp == null && rng == null && exp != null)
-		list.Add(exp);
+		if (list == null && comp == null && rng == null && exp != null)
+		{
+			list = new List<ElaExpression>();
+			list.Add(exp);
+		}
 		
 	}
 
-	void ComprehensionExpr(ElaExpression sel, out ElaExpression exp) {
+	void ComprehensionExpr(ElaExpression sel, out ElaComprehension exp) {
 		var it = default(ElaFor); 
+		var ot = t;		
+		
 		Expect(27);
 		ComprehensionEntry(sel, out it);
-		exp = it; 
+		exp = new ElaComprehension(ot) { Generator = it }; 
 	}
 
 	void LetBinding(out ElaExpression exp) {

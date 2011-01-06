@@ -5,7 +5,7 @@ namespace Ela.Runtime.ObjectModel
 	internal sealed class ElaSingle : ElaObject
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Ord | ElaTraits.Bound | ElaTraits.Show | 
+		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Ord | ElaTraits.Bound | ElaTraits.Enum | ElaTraits.Show | 
 			ElaTraits.Convert | ElaTraits.Neg | ElaTraits.Num;
 
 		internal static readonly ElaSingle Instance = new ElaSingle();
@@ -93,6 +93,18 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue GetMin(ExecutionContext ctx)
 		{
 			return new ElaValue(float.MinValue);
+		}
+
+
+		internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
+		{
+			return new ElaValue(@this.DirectGetReal() + 1);
+		}
+
+
+		internal override ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
+		{
+			return new ElaValue(@this.DirectGetReal() - 1);
 		}
 
 

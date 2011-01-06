@@ -126,6 +126,7 @@
     <Compile Include="CodeModel\ElaArrayPattern.cs" />
     <Compile Include="CodeModel\ElaBuiltinFunction.cs" />
     <Compile Include="CodeModel\ElaBuiltinFunctionKind.cs" />
+    <Compile Include="CodeModel\ElaComprehension.cs" />
     <Compile Include="CodeModel\ElaCustomOperator.cs" />
     <Compile Include="CodeModel\ElaLazyLiteral.cs" />
     <Compile Include="CodeModel\ElaNilPattern.cs" />

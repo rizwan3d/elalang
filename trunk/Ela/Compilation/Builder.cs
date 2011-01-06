@@ -63,6 +63,12 @@ namespace Ela.Compilation
 
 			switch (exp.Type)
 			{
+				case ElaNodeType.Range:
+					{
+						var r = (ElaRange)exp;
+						CompileRange(exp, r, map, hints);
+					}
+					break;
 				case ElaNodeType.VariantLiteral:
 					{
 						var v = (ElaVariantLiteral)exp;
@@ -156,10 +162,24 @@ namespace Ela.Compilation
 
 						if (s.ForType == ElaForType.Foreach)
 							CompileForeach(s, map, hints);
-						else if (s.ForType == ElaForType.LazyComprehension)
-							CompileLazyList(s, map, hints);
 						else
 							CompileFor(s, map, hints);
+					}
+					break;
+				case ElaNodeType.Comprehension:
+					{
+						var c = (ElaComprehension)exp;
+						AddLinePragma(c);							
+
+						if (c.Lazy)
+							CompileLazyList(c.Generator, map, hints);
+						else
+						{
+							CompileExpression(c.Initial, map, Hints.None);
+							CompileExpression(c.Generator, map, Hints.Comp);
+							AddLinePragma(c);
+							cw.Emit(Op.Genfin);
+						}
 					}
 					break;
 				case ElaNodeType.ModuleInclude:
@@ -422,26 +442,15 @@ namespace Ela.Compilation
 					{
 						var p = (ElaArrayLiteral)exp;
 
-						if (p.Comprehension != null)
-						{
-							AddLinePragma(p);
-							cw.Emit(Op.Newarr);
-							CompileExpression(p.Comprehension, map, Hints.CompArray);
-						}
-						else if (p.Range != null)
-							CompileRange(exp, p.Range, map, hints | Hints.CompArray);
-						else
-						{
-							AddLinePragma(p);
-							cw.Emit(Op.Newarr);
+						AddLinePragma(p);
+						cw.Emit(Op.Newarr);
 
-							for (var i = 0; i < p.Values.Count; i++)
-							{
-								CompileExpression(p.Values[i], map, Hints.None);
-								cw.Emit(Op.Arrcons);
-							}
+						for (var i = 0; i < p.Values.Count; i++)
+						{
+							CompileExpression(p.Values[i], map, Hints.None);
+							cw.Emit(Op.Gen);
 						}
-
+					
 						if ((hints & Hints.Left) == Hints.Left)
 							AddValueNotUsed(p);
 					}
@@ -451,16 +460,7 @@ namespace Ela.Compilation
 						var p = (ElaListLiteral)exp;
 						var len = p.Values.Count;
 
-						if (p.Comprehension != null)
-						{
-							cw.Emit(Op.Newlist);
-							CompileExpression(p.Comprehension, map, Hints.CompList);
-							AddLinePragma(p);
-							cw.Emit(Op.Lrev);
-						}
-						else if (p.Range != null)
-							CompileRange(exp, p.Range, map, hints | Hints.CompList);
-						else if (len > 0)
+						if (len > 0)
 						{
 							AddLinePragma(p);
 							cw.Emit(Op.Newlist);
@@ -468,7 +468,7 @@ namespace Ela.Compilation
 							for (var i = 0; i < len; i++)
 							{
 								CompileExpression(p.Values[p.Values.Count - i - 1], map, Hints.None);
-								cw.Emit(Op.Consr);
+								cw.Emit(Op.Gen);
 							}
 						}
 						else
@@ -768,7 +768,7 @@ namespace Ela.Compilation
 				for (var i = 0; i < pars.Count; i++)
 				{
 					CompileExpression(pars[i], map, Hints.None);
-					cw.Emit(Op.Tupcons);
+					cw.Emit(Op.Gen);
 				}
 			}
 

@@ -10,7 +10,7 @@ namespace Ela.Runtime.ObjectModel
 	public class ElaTuple : ElaObject, IEnumerable<ElaValue>
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Ord | ElaTraits.Enum | ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Len | ElaTraits.Seq | ElaTraits.Convert | ElaTraits.Num | ElaTraits.Bit | ElaTraits.Bool | ElaTraits.Neg | ElaTraits.Concat;
+		private const ElaTraits TRAITS = ElaTraits.Ord | ElaTraits.Enum | ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Cons | ElaTraits.Len | ElaTraits.Seq | ElaTraits.Convert | ElaTraits.Num | ElaTraits.Bit | ElaTraits.Bool | ElaTraits.Neg | ElaTraits.Concat;
 		private int cons;
 		
 		public ElaTuple(params object[] args) : base(ObjectType.Tuple, TRAITS)
@@ -783,7 +783,15 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override string Show(ExecutionContext ctx, ShowInfo info)
 		{
-			return "(" + FormatHelper.FormatEnumerable((IEnumerable<ElaValue>)this, ctx, info) + ")";
+			return "(" + FormatHelper.FormatEnumerable((IEnumerable<ElaValue>)this, ctx, info) + 
+				(Length == 1 ? ",)" : ")");
+		}
+
+
+		protected internal override ElaValue Cons(ElaObject instance, ElaValue value, ExecutionContext ctx)
+		{
+			InternalSetValue(value);
+			return new ElaValue(this);
 		}
 		#endregion
 
@@ -840,6 +848,13 @@ namespace Ela.Runtime.ObjectModel
 
 		internal void InternalSetValue(int index, ElaValue value)
 		{
+			if (Length == Values.Length)
+			{
+				var arr = new ElaValue[Length + 1];
+				Values.CopyTo(arr, 0);
+				Values = arr;
+			}
+			
 			Values[index] = value;
 			cons++;
 		}

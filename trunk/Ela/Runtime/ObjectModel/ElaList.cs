@@ -9,7 +9,7 @@ namespace Ela.Runtime.ObjectModel
 	public class ElaList : ElaObject, IEnumerable<ElaValue>
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Len | ElaTraits.Fold | ElaTraits.Cons | ElaTraits.Concat | ElaTraits.Convert;
+		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Len | ElaTraits.Gen | ElaTraits.Fold | ElaTraits.Cons | ElaTraits.Concat | ElaTraits.Convert;
 		internal static readonly ElaList Nil = new ElaList(null, new ElaValue(ElaUnit.Instance));
 
 		public ElaList(object value)
@@ -149,9 +149,9 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue CreateList(ElaObject next, ElaValue value, ExecutionContext ctx)
+		protected internal override ElaValue Cons(ElaObject next, ElaValue value, ExecutionContext ctx)
 		{
-			if (next is ElaList || next is ElaLazy)
+			if (next is ElaList || (next.Traits & ElaTraits.Thunk) == ElaTraits.Thunk)
 				return new ElaValue(new ElaList(next, value));
 
 			ctx.Fail(ElaRuntimeError.InvalidType, ObjectType.List, (ObjectType)next.TypeId);
@@ -197,6 +197,18 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return "[" + FormatHelper.FormatEnumerable((IEnumerable<ElaValue>)this, ctx, info) + "]";
 		}
+
+
+		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
+		{
+			return new ElaValue(new ElaList(this, value));
+		}
+
+
+		protected internal override ElaValue GenerateFinalize(ExecutionContext ctx)
+		{
+			return new ElaValue(Reverse());
+		}
 		#endregion
 
 
@@ -221,6 +233,21 @@ namespace Ela.Runtime.ObjectModel
 		public static ElaList GetNil()
 		{
 			return ElaList.Nil;
+		}
+		
+
+		public ElaList Reverse()
+		{
+			var newLst = ElaList.Nil;
+			var lst = this;
+
+			while (lst != ElaList.Nil)
+			{
+				newLst = new ElaList(newLst, lst.Value);
+				lst = lst.Next;
+			}
+
+			return newLst;
 		}
 
 
