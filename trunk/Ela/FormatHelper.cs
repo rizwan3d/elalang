@@ -25,7 +25,8 @@ namespace Ela
 				if (c++ > 0)
 					sb.Append(',');
 
-				sb.Append(v.Ref.Show(v, ctx, info));
+				if (v.Ref != null)
+					sb.Append(v.Ref.Show(v, ctx, info));
 			}
 
 			return sb.ToString();

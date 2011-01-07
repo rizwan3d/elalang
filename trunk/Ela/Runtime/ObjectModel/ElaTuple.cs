@@ -10,7 +10,7 @@ namespace Ela.Runtime.ObjectModel
 	public class ElaTuple : ElaObject, IEnumerable<ElaValue>
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Ord | ElaTraits.Enum | ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Cons | ElaTraits.Len | ElaTraits.Seq | ElaTraits.Convert | ElaTraits.Num | ElaTraits.Bit | ElaTraits.Bool | ElaTraits.Neg | ElaTraits.Concat;
+		private const ElaTraits TRAITS = ElaTraits.Ord | ElaTraits.Enum | ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Gen | ElaTraits.Len | ElaTraits.Seq | ElaTraits.Convert | ElaTraits.Num | ElaTraits.Bit | ElaTraits.Bool | ElaTraits.Neg | ElaTraits.Concat;
 		private int cons;
 		
 		public ElaTuple(params object[] args) : base(ObjectType.Tuple, TRAITS)
@@ -784,13 +784,19 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override string Show(ExecutionContext ctx, ShowInfo info)
 		{
 			return "(" + FormatHelper.FormatEnumerable((IEnumerable<ElaValue>)this, ctx, info) + 
-				(Length == 1 ? ",)" : ")");
+				(Length < 2 ? ",)" : ")");
 		}
 
 
-		protected internal override ElaValue Cons(ElaObject instance, ElaValue value, ExecutionContext ctx)
+		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
 		{
 			InternalSetValue(value);
+			return new ElaValue(this);
+		}
+
+
+		protected internal override ElaValue GenerateFinalize(ExecutionContext ctx)
+		{
 			return new ElaValue(this);
 		}
 		#endregion
