@@ -778,6 +778,10 @@ PRODUCTIONS
 					.)
 				)
 			] 
+			(.
+				if (exp == null)
+					exp = new ElaListLiteral(ot);
+			.)
 		"]".
 		
 	ArrayLiteral<out ElaExpression exp> = 
@@ -812,6 +816,10 @@ PRODUCTIONS
 					.)
 				)
 			]
+			(.
+				if (exp == null)
+					exp = new ElaArrayLiteral(ot);
+			.)
 		"|]".
 					
 	LetBinding<out ElaExpression exp> = 

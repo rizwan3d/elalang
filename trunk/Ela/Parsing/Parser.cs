@@ -260,6 +260,9 @@ internal sealed partial class Parser {
 				
 			}
 		}
+		if (exp == null)
+		exp = new ElaListLiteral(ot);
+		
 		Expect(14);
 	}
 
@@ -291,6 +294,9 @@ internal sealed partial class Parser {
 			}
 			
 		}
+		if (exp == null)
+		exp = new ElaArrayLiteral(ot);
+		
 		Expect(16);
 	}
 

@@ -22,7 +22,7 @@ namespace Ela.Compilation
 			-1, //Gen
 			0, //Tail
 			0, //Head
-			-1, //Ret
+			0, //Ret
 			-1, //Concat
 			-1, //Add
 			-1, //Mul

@@ -1,3 +1,4 @@
+0.8.0.16:Fix:A critical bug in stack size calculation fixed - compilation logic for the head/tail pattern is rewritten.
 0.8.0.15:New:Now types 'single' and 'double' support 'Enum' trait (successor/predecessor operations).
 0.8.0.14:Change:'Arrcons', 'Tupcons' and 'Lrev' op codes are decomissioned. Now new op codes 'Gen' and 'Genfin' (to finalize generation) are used instead for all data structures. A new trait 'Gen' is added to support it.
 0.8.0.13:Change:Compilation logic for comprehensions and ranges is refactored and now is more generic.

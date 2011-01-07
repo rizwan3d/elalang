@@ -454,6 +454,7 @@ namespace Ela.Compilation
 						if (!isEnd)
 						{
 							cw.Emit(Op.Dup);
+							cw.Emit(Op.Popvar, pushSys);
 							cw.Emit(Op.Head);
 						}
 
@@ -469,19 +470,22 @@ namespace Ela.Compilation
 						{
 							var newSys = AddVariable();
 							cw.Emit(Op.Popvar, newSys);
-							CompilePattern(newSys, null, e, map, isEnd ? nextLab : errLab, flags, hints);
+							CompilePattern(newSys, null, e, map, /*isEnd ? nextLab : errLab*/nextLab, flags, hints);
 						}
 
 						if (!isEnd)
+						{
+							cw.Emit(Op.Pushvar, pushSys);
 							cw.Emit(Op.Tail);
+						}
 					}
 				}
 
-				cw.Emit(Op.Br, sucLab);
-				cw.MarkLabel(errLab);
-				cw.Emit(Op.Pop);
-				cw.Emit(Op.Br, nextLab);
-				cw.MarkLabel(sucLab);
+				//cw.Emit(Op.Br, sucLab);
+				//cw.MarkLabel(errLab);
+				//cw.Emit(Op.Pop);
+				//cw.Emit(Op.Br, nextLab);
+				//cw.MarkLabel(sucLab);
 			}
 		}
 
