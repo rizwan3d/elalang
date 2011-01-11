@@ -1,6 +1,6 @@
 /* Core Ela functions */
 
-/* get by index operator, can be used with tuples, records and lists */
+/* get-by-index operator, can be used with arrays, tuples, records and lists */
 let !! x y = x.[y]
 
 /* TUPLE FUNCTIONS */
