@@ -782,6 +782,12 @@ namespace Ela.Compilation
 			for (var i = 0; i < fields.Count; i++)
 			{
 				var f = fields[i];
+
+				if (f.Mutable)
+					cw.Emit(Op.PushI4, 1);
+				else
+					cw.Emit(Op.PushI4_0); 
+				
 				CompileExpression(f.FieldValue, map, Hints.None);
 				cw.Emit(Op.Pushstr, AddString(f.FieldName));
 				cw.Emit(Op.Reccons);

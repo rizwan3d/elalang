@@ -1038,16 +1038,21 @@ internal sealed partial class Parser {
 	void RecordField(out ElaFieldDeclaration fld) {
 		fld = null; 
 		var cexp = default(ElaExpression);
+		var mutable = false;
 		
+		if (la.kind == 49) {
+			Get();
+			mutable = true; 
+		}
 		if (la.kind == 1) {
 			Get();
-			fld = new ElaFieldDeclaration(t) { FieldName = t.val }; 
+			fld = new ElaFieldDeclaration(t) { FieldName = t.val, Mutable = mutable }; 
 			Expect(19);
 			Expr(out cexp);
 			fld.FieldValue = cexp; 
 		} else if (la.kind == 7) {
 			Get();
-			fld = new ElaFieldDeclaration(t) { FieldName = ReadString(t.val) }; 
+			fld = new ElaFieldDeclaration(t) { FieldName = ReadString(t.val), Mutable = mutable }; 
 			Expect(19);
 			Expr(out cexp);
 			fld.FieldValue = cexp; 

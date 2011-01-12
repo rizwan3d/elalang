@@ -11,21 +11,30 @@ namespace Ela.Runtime.ObjectModel
 		#region Construction
 		private const ElaTraits TRAITS = ElaTraits.Ord | ElaTraits.Enum | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Set | ElaTraits.Len | ElaTraits.Seq | ElaTraits.FieldGet | ElaTraits.FieldSet | ElaTraits.Convert | ElaTraits.Show;
 		private string[] keys;
+		private bool[] flags;
 
-		public ElaRecord(params ElaRecordField[] fields)
-			: base(fields.Length, ObjectType.Record, TRAITS)
+		private enum SetResult
+		{
+			None,
+			Done,
+			OutOfRange,
+			Immutable
+		}
+
+		public ElaRecord(params ElaRecordField[] fields) : base(fields.Length, ObjectType.Record, TRAITS)
 		{
 			keys = new string[fields.Length];
+			flags = new bool[fields.Length];
 
 			for (var i = 0; i < fields.Length; i++)
-				AddField(i, fields[i].Field, fields[i].Value);
+				AddField(i, fields[i].Field, fields[i].Mutable, fields[i].Value);
 		}
 
 
-		internal ElaRecord(int size)
-			: base(size, ObjectType.Record, TRAITS)
+		internal ElaRecord(int size) : base(size, ObjectType.Record, TRAITS)
 		{
 			keys = new string[size];
+			flags = new bool[size];
 		}
 		#endregion
 
@@ -56,23 +65,19 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
 		{
 			index = index.Id(ctx);
+			var res = SetResult.None;
 
 			if (index.Type == ElaMachine.STR)
-			{
-				if (!SetValue(index.Ref.ToString(), value))
-					ctx.IndexOutOfRange(index, new ElaValue(this));
-
-				return;
-			}
+				res = SetValue(index.Ref.ToString(), value);
 			else if (index.Type == ElaMachine.INT)
-			{
-				if (!SetValue(index.I4, value))
-					ctx.IndexOutOfRange(index, new ElaValue(this));
+				res = SetValue(index.I4, value);
+			else
+				ctx.InvalidIndexType(index.DataType);
 
-				return;
-			}
-
-			ctx.InvalidIndexType(index.DataType);
+			if (res == SetResult.OutOfRange)
+				ctx.IndexOutOfRange(index, new ElaValue(this));
+			else if (res == SetResult.Immutable)
+				ctx.Fail(ElaRuntimeError.FieldImmutable, index.Ref.ToString(), Show(ctx, ShowInfo.Default));
 		}
 
 
@@ -90,7 +95,11 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override void SetField(string field, ElaValue value, ExecutionContext ctx)
 		{
-			if (!SetValue(field, value))
+			var res = SetValue(field, value);
+
+			if (res == SetResult.Immutable)
+				ctx.Fail(ElaRuntimeError.FieldImmutable, field, Show(ctx, ShowInfo.Default));
+			else if (res == SetResult.OutOfRange)
 				ctx.UnknownField(field, new ElaValue(this));
 		}
 
@@ -133,6 +142,9 @@ namespace Ela.Runtime.ObjectModel
 				if (c++ > 0)
 					sb.Append(",");
 
+				if (flags[c - 1])
+					sb.Append("mutable ");
+
 				sb.AppendFormat("{0}={1}", k, this[k].Ref.Show(this[k], ctx, info));
 			}
 
@@ -157,15 +169,29 @@ namespace Ela.Runtime.ObjectModel
 
 		internal void AddField(string key, ElaValue value)
 		{
+			AddField(key, false, value);
+		}
+
+
+		internal void AddField(string key, bool mutable, ElaValue value)
+		{
 			keys[base.Length] = key;
+			flags[base.Length] = mutable;
 			base.InternalSetValue(value);
 		}
 
 
 		internal void AddField(int index, string key, ElaValue value)
 		{
+			AddField(index, key, false, value);
+		}
+
+
+		internal void AddField(int index, string key, bool mutable, ElaValue value)
+		{
 			keys[index] = key;
 			Values[index] = value;
+			flags[index] = mutable;
 		}
 
 
@@ -179,22 +205,25 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		private bool SetValue(string key, ElaValue value)
+		private SetResult SetValue(string key, ElaValue value)
 		{
 			var idx = GetOrdinal(key);
 			return SetValue(idx, value);
 		}
 
 
-		private bool SetValue(int index, ElaValue value)
+		private SetResult SetValue(int index, ElaValue value)
 		{
 			if (index > -1 && index < Values.Length)
 			{
+				if (!flags[index])
+					return SetResult.Immutable;
+
 				Values[index] = value;
-				return true;
+				return SetResult.Done;
 			}
 			else
-				return false;
+				return SetResult.OutOfRange;
 		}
 		#endregion
 
@@ -213,8 +242,12 @@ namespace Ela.Runtime.ObjectModel
 			}
 			set
 			{
-				if (!SetValue(key, value))
+				var res = SetValue(key, value);
+
+				if (res == SetResult.OutOfRange)
 					throw new IndexOutOfRangeException();
+				else if (res == SetResult.Immutable)
+					throw new InvalidOperationException();
 			}
 		}
 
@@ -230,8 +263,12 @@ namespace Ela.Runtime.ObjectModel
 			}
 			set
 			{
-				if (!SetValue(index, value))
+				var res = SetValue(index, value);
+
+				if (res == SetResult.OutOfRange)
 					throw new IndexOutOfRangeException();
+				else if (res == SetResult.Immutable)
+					throw new InvalidOperationException();
 			}
 		}
 		#endregion

@@ -253,6 +253,8 @@ namespace Ela.Runtime.ObjectModel
 
 		public IEnumerator<ElaValue> GetEnumerator()
 		{
+
+
 			if (this != Nil)
 			{
 				ElaObject xs = this;
@@ -262,13 +264,10 @@ namespace Ela.Runtime.ObjectModel
 					yield return xs.Head(ElaObject.DummyContext);
 					xs = xs.Tail(ElaObject.DummyContext).Ref;
 
-					if (xs.TypeId == ElaMachine.LAZ)
-					{
-						var la = (ElaLazy)xs;
-
-						if (la.Value.Ref == null)
-							la.Value = la.Force();
-					}
+					if ((xs.Traits & ElaTraits.Thunk) == ElaTraits.Thunk)
+						xs.Force(ElaObject.DummyContext);
+					else if ((xs.Traits & ElaTraits.Fold) != ElaTraits.Fold)
+						yield break;
 				}
 				while (!xs.IsNil(ElaObject.DummyContext));
 			}

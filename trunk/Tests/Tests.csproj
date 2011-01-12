@@ -49,6 +49,7 @@
     <None Include="ListTests.ela" />
     <None Include="RangeTests.ela" />
     <None Include="RecordTests.ela" />
+    <None Include="ThunkTests.ela" />
     <None Include="TupleTests.ela" />
     <None Include="VariantTests.ela" />
     <None Include="_Run.ela" />

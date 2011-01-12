@@ -9,7 +9,7 @@
     $ eq rec'.["dev"] "Basil"
 
 let changeItem {eq} =
-	let rec' = {x=1} in
+	let rec' = {mutable x=1} in
     rec'.x <- 2
     $ eq rec'.x 2
     $ rec'.[0] <- 22

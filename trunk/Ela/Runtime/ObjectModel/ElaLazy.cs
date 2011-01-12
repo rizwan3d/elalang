@@ -161,7 +161,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Head(ExecutionContext ctx)
 		{
-			return Value.Ref != null ? Value.Ref.Head(ctx) : Default();
+			return Value.Ref != null ? 
+				((Value.Ref.Traits & ElaTraits.Fold) == ElaTraits.Fold ? Value.Ref.Head(ctx) : Value) : 
+				Default();
 		}
 
 

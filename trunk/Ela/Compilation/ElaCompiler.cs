@@ -24,7 +24,7 @@ namespace Ela.Compilation
 
 		public CompilerResult Compile(ElaExpression expr, CompilerOptions options, CodeFrame frame, Scope globalScope)
 		{
-			try
+			//try
 			{
 				Options = options;
 				var helper = new Builder(frame, Options, globalScope);
@@ -35,10 +35,10 @@ namespace Ela.Compilation
 				return new CompilerResult(helper.Success ? frame : null, 
 					helper.Success, helper.Errors.ToArray());
 			}
-			catch (Exception ex)
-			{
-				throw new ElaCompilerException(Strings.GetMessage("Ice", ex.Message), ex);
-			}
+			//catch (Exception ex)
+			//{
+			//    throw new ElaCompilerException(Strings.GetMessage("Ice", ex.Message), ex);
+			//}
 		}
 		#endregion
 

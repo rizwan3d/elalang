@@ -767,10 +767,11 @@ namespace Ela.Runtime
 						{
 							right = evalStack.Pop();
 							left = evalStack.Pop();
+							var mut = evalStack.Pop();
 							var rec = evalStack.Peek();
 
 							if (rec.Type == REC)
-								((ElaRecord)rec.Ref).AddField(right.AsString(), left);
+								((ElaRecord)rec.Ref).AddField(right.AsString(), mut.I4 == 1, left);
 							else
 							{
 								InvalidType(left, thread, evalStack, REC);

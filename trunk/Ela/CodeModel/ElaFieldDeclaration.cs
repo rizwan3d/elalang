@@ -22,13 +22,16 @@ namespace Ela.CodeModel
 		#region Methods
 		public override string ToString()
 		{
-			return FieldName + "=" + (FieldValue.IsSimpleExpression() ? FieldValue.ToString() : FieldValue.PutInBraces());
+			return (Mutable ? "mutable " : String.Empty) +
+				FieldName + "=" + (FieldValue.IsSimpleExpression() ? FieldValue.ToString() : FieldValue.PutInBraces());
 		}
 		#endregion
 
 
 		#region Properties
 		public string FieldName { get; set; }
+
+		public bool Mutable { get; set; }
 
 		public ElaExpression FieldValue { get; set; }
 		#endregion

@@ -27,7 +27,7 @@ namespace Ela.Compilation
 				var addr = -1;
 				var addSym = false;
 				
-				if (s.InitExpression.Type == ElaNodeType.FunctionLiteral)
+				if (s.InitExpression != null && s.InitExpression.Type == ElaNodeType.FunctionLiteral)
 				{
 					var fun = (ElaFunctionLiteral)s.InitExpression;
 
@@ -64,7 +64,7 @@ namespace Ela.Compilation
 				if (s.Where != null)
 					CompileExpression(s.Where, map, Hints.Left);
 
-				var ed = CompileExpression(s.InitExpression, map, Hints.None);
+				var ed = s.InitExpression != null ? CompileExpression(s.InitExpression, map, Hints.None) : default(ExprData);
 				var fc = ed.Type == DataKind.FunCurry || ed.Type == DataKind.FunParams;
 
 				if (ed.Type == DataKind.FunParams && addSym && ro)

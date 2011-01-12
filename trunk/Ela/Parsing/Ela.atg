@@ -664,22 +664,26 @@ PRODUCTIONS
 		(. 
 			fld = null; 
 			var cexp = default(ElaExpression);
+			var mutable = false;
 		.)
 		(
+			[ "mutable" (. mutable = true; .) ]
 			(
-				ident 
-				(. fld = new ElaFieldDeclaration(t) { FieldName = t.val }; .) 
-				"=" 
-				Expr<out cexp> 
-				(. fld.FieldValue = cexp; .)
-			)
-			|
-			(
-				stringTok
-				(. fld = new ElaFieldDeclaration(t) { FieldName = ReadString(t.val) }; .) 
-				"=" 
-				Expr<out cexp> 
-				(. fld.FieldValue = cexp; .)
+				(
+					ident 
+					(. fld = new ElaFieldDeclaration(t) { FieldName = t.val, Mutable = mutable }; .) 
+					"=" 
+					Expr<out cexp> 
+					(. fld.FieldValue = cexp; .)
+				)
+				|
+				(
+					stringTok
+					(. fld = new ElaFieldDeclaration(t) { FieldName = ReadString(t.val), Mutable = mutable }; .) 
+					"=" 
+					Expr<out cexp> 
+					(. fld.FieldValue = cexp; .)
+				)
 			)
 		).
 		

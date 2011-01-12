@@ -1,3 +1,8 @@
+0.8.0.21:Fix:A bug in 'lazy' data type behavior when it acts as a tail of a lazy list is fixed (this bug was reproducible on certain types of lazy lists).
+0.8.0.20:Fix:A bug in enumeration of certain types of lazy lists is fixed.
+0.8.0.19:Fix:A bug fixed in compiler that could cause compiler to crush when an initialization is missing in a variable declaration (should result in a regular error message instead).
+0.8.0.18:Fix:A bug fixed in error formatting code in Ela Console that could cause console to crush in certain cases.
+0.8.0.17:New:Now all record fields are immutable by default. To declare a mutable field one should write 'mutable', i.e. '{mutable x = 0}'.
 0.8.0.16:Fix:A critical bug in stack size calculation fixed - compilation logic for the head/tail pattern is rewritten.
 0.8.0.15:New:Now types 'single' and 'double' support 'Enum' trait (successor/predecessor operations).
 0.8.0.14:Change:'Arrcons', 'Tupcons' and 'Lrev' op codes are decomissioned. Now new op codes 'Gen' and 'Genfin' (to finalize generation) are used instead for all data structures. A new trait 'Gen' is added to support it.

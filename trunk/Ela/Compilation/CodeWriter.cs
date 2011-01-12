@@ -103,8 +103,6 @@ namespace Ela.Compilation
 
 			if (ss.Counter > ss.Max)
 				ss.Max = ss.Counter;
-			else if (ss.Counter < 0)
-				throw new ElaCompilerException("Stack size calculation error.", null);
 
 			opData.Add(data);
 		}

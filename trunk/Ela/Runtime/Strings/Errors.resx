@@ -132,6 +132,9 @@
   <data name="ExpectedFunction" xml:space="preserve">
     <value>A functional type is expected, got '{0}'.</value>
   </data>
+  <data name="FieldImmutable" xml:space="preserve">
+    <value>Field '{0}' of the record '{1}' is immutable and cannot be changed.</value>
+  </data>
   <data name="IndexOutOfRange" xml:space="preserve">
     <value>Index '{0}' of type '{1}' was out of range on object '{2}' of type '{3}'.</value>
   </data>

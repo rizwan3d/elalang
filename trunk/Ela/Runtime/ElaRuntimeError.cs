@@ -38,7 +38,7 @@ namespace Ela.Runtime
 
 		InvalidFormat = 815,
 
-		// = 816,
+		FieldImmutable = 816,
 
 		UndefinedArgument = 817,
 
