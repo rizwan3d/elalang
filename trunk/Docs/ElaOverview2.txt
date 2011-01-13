@@ -390,3 +390,91 @@ ela>factorial 20 //overflows
 
 -2102132736
 }}}
+
+== Lists ==
+
+List is one of the fundamental types in Ela. Lists in Ela are _single linked lists_. In a case if you haven't heard of such data structure before you can check it out in [http://en.wikipedia.org/wiki/List_(computing) Wikipedia]. 
+
+In short single linked list in an ordered sequence of elements where each element holds a reference to the next element. The very last item in a list points to a thing that is called a _nil list_, which is nothing more than an empty list.
+
+All elements of the linked list are also lists. Basically a single linked list can be seen as a very straightforward data structure that wrappes some value and a reference to the next element. If have you ever coded in such language as C# this is how a minimalistic linked list can be implemented in this language:
+
+{{{
+class LinkedList<T>
+{
+  public static readonly LinkedList Nil = new LinkedList();
+
+  private LinkedList() { }
+
+  public LinkedList(T value, LinkedList next)
+  {
+    Value = value;
+    Next = next;
+  }
+
+  public LinkedList Next { get; private set; }
+  public T Value { get; private set; }
+}
+}}}
+
+That is really it. As soon as list in an immutable data structure - you cannot change it in place like you do with an array - an empty (_nil_) list is represented as a "global" value. You don't have to create it "on demand" as soon as it never gets change and therefore can be initialized just once and used everywhere. As a result when you create an empty list in Ela nothing is actually gets created - you just reference this special global _nil_ variable. This is how you can do it:
+
+{{{
+let lst = []
+}}}
+
+A `[]` is a special literal form that is used to denote an empty list.
+
+If you need to create a list with just one element - e.g. an integer `42` - you basically have to initialize this simple linked list structure and to pass `42` as its value and a `nil` list as an element sitting nearby. This is how you can do it in C# using the `LinkedList` class that we've just created:
+
+{{{
+var lst = new LinkedList(42, LinkedList.Nil);
+}}}
+
+The same for the list with two elements:
+
+{{{
+var lst = new LinkedList(43, new LinkedList(42, LinkedList.Nil));
+}}}
+
+As you can see it looks quite cumbersome. That is why Ela has a special operator `::` that can be used to construct list. Let's try it in console:
+
+{{{
+>let lst = 43::(42::[])
+
+[43,42]
+}}}
+
+An operator `::` is called a list construction operator and it is right associative. It means that can omit braces from the previous sample and get exactly the same result:
+
+{{{
+>let lst2 = 43::42::[]
+
+[43,42]
+}}}
+
+There is also a syntax sugar for this operator - as soon as it is still not visual enough for list construction - a special literal form of the list. The code above can also be written like so:
+
+{{{
+let lst2 = [43, 42]
+}}}
+
+Another useful operator that can be used with lists is a _list concatenation operator_. This is how you can use it:
+
+{{{
+>lst ++ lst2
+
+[43, 42, 43, 42]
+}}}
+
+A `++` operator can be used to concatenate two lists, you can't use it to append an element to a list. Actually because of the way how linked lists are organized there is no direct way to append an element to the end of the list - only to the head. If you desperately need it however this is how you can accomplish this:
+
+{{{
+>lst ++ [41]
+
+[43, 42, 41]
+}}}
+
+(However bear in mind that this a very ineffecient operation - not only in Ela but in all languages that support lists and a similar set of operators).
+
+Here we actually create a new list here that contains a single element, number `41` and then concatenate the two lists.
