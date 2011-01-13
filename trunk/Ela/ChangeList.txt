@@ -1,3 +1,4 @@
+0.8.1.0:Release:Release of Ela 0.8.1
 0.8.0.21:Fix:A bug in 'lazy' data type behavior when it acts as a tail of a lazy list is fixed (this bug was reproducible on certain types of lazy lists).
 0.8.0.20:Fix:A bug in enumeration of certain types of lazy lists is fixed.
 0.8.0.19:Fix:A bug fixed in compiler that could cause compiler to crush when an initialization is missing in a variable declaration (should result in a regular error message instead).
