@@ -391,7 +391,7 @@ ela>factorial 20 //overflows
 -2102132736
 }}}
 
-== Lists ==
+=== Lists ===
 
 List is one of the fundamental types in Ela. Lists in Ela are _single linked lists_. In a case if you haven't heard of such data structure before you can check it out in [http://en.wikipedia.org/wiki/List_(computing) Wikipedia]. 
 
@@ -477,4 +477,144 @@ A `++` operator can be used to concatenate two lists, you can't use it to append
 
 (However bear in mind that this a very ineffecient operation - not only in Ela but in all languages that support lists and a similar set of operators).
 
-Here we actually create a new list here that contains a single element, number `41` and then concatenate the two lists.
+Here we actually create a new list that contains a single element, number `41`, and then concatenate the two lists.
+
+As soon as every list element holds a reference to the next element lists come up very handy when you need to iterate over their elements. In other words each item in a list basically know what it's neigbor is and it renders looping through the list as a pretty trivial task.
+
+However Ela is a functional language and it doesn't even have a concept of iterators that you might've heard of in such languages as C#. In Ela one should use recursion instead of cycles. And that is again the place where _pattern matching_ becomes really helpful. As you remember from the previous article pattern matching allows us to deconstruct an element using its literal syntax which is in a case of linked lists a construction operator `::`. That is a simple example of how you can iterate over list elements:
+
+{{{
+ela>let iter f x::xs = f x $ iter f xs; _ []    = ()
+}}}
+
+This function is basically an alternative to impertive cycle and you can use it like so (the following example prints all list elements to console):
+
+{{{
+ela>iter cout [1,2,3,4,5]
+
+1
+2
+3
+4
+5
+}}}
+
+You've already seen a similar trick in functions from the previous article. Lists and pattern matching against list is widely used in Ela code. As you remember a pattern in the form `x::xs` matches against a list that has at least one element. If a list really contains just a single item `xs` gets bound the `nil`. Usually in expressions like the one above we call `x` a _head_ of the list and `xs` a list tail. 
+
+The list deconstruction pattern can contain an arbitrary number of elements. You can use both variables and actual values in it, e.g. the following patterns are perfectly legal: `1::2::xs`, `x::(2,3)::xs`, `x::(y::ys)::xs`, `x::y::[]`. I will explain how this thing works with more detail in the chapter about pattern matching. 
+
+The last pattern `x::y::[]` is used to match a list that has _exactly_ two elements. We basically say here that we want a list tail to match a nil list. It is useful when you want to ensure that a given list has an exact number of items. As with construction syntax there is an alternate more readable form to write this - `[x,y]` which is fully equivavlent to `x::y::[]`.
+
+Another example of how you write a function that iterates over list elements using recursion and pattern matching:
+
+{{{
+ela>let length' _::xs = 1 + length' xs; [] = 0
+
+ela>length' [1,2,3,4,5]
+
+5
+}}}
+
+The function above can be used to calculate the length of a list. It is not a very effective implementation but it works OK as an example. We again deconstruct a list using recursion until we actually reach the `nil` list. This function is executed as a chain of additions - because of this we don't have to declare mutable variables. The result of this function when the given list is a not a nil list is always `1` plus the length of the rest list, list tail.
+
+Of course you don't have to code `length` function each time you need it. Ela already has a built-in polymorphic `length` function that you can with any list:
+
+{{{
+ela>length [1,2,3,4,5]
+
+5
+}}}
+
+Another useful operation that is available for lists is an ability to obtain a list element by its index. This is done using indexing syntax like so:
+
+{{{
+ela>let newList = [0,1,2,3,4]
+
+ela>newList.[2]
+}}}
+
+Indexing operator in Ela is pretty similar to that in C# with the only exception that it uses a extra dot before the square braces. If you already get used to the indexer in the form `newList[2]` it is really important to remember that this dot is required. This is because `newList[2]` is also a valid syntax in Ela but has a completely different meaning. As you remember Ela uses a simple juxtaposition for a function call, e.g. `x y` in Ela means that we apply an `x` function to the `y` argument. The same thing happens with `newList[2]` expression which is understood by Ela as: apply a function `newList` to the expression `[2]` which in turn creates a list with a single element.
+
+You should also remember that accessing list elements by index is not a very effective operation. We have to iterate through the whole list and count each iteration - that is really the only way to do that. If you need to access elements by index frequently you might consider to use a different data structure instead - e.g. _array_ which has a constant access time.
+
+=== Arrays ===
+
+Arrays in Ela are pretty similar to such type as `ArrayList` in .NET Framework. These are basically dynamic indexed polymorphic arrays. This is how you can create one:
+
+{{{
+ela>let arr = [|1,2,3,4,5|]
+
+ela>arr
+
+[|1,2,3,4,5|]
+}}}
+
+Arrays also support indexing operator and you can a built-in `length` function to calculate their length:
+
+{{{
+ela>arr.[4]
+
+5
+
+ela>arr.[1+2]
+
+4
+
+ela>length arr
+
+5
+}}}
+
+Besides this array support a set of specific function that allows to perform its modification in-place. These are functions `add`, `removeAt`, `insert` and `clear`. These functions are exposes as array fields. Field access in Ela is pretty similar to that one in C style languages:
+
+{{{
+ela>arr.insert
+
+<f>:*->*->*
+}}}
+
+Function `add` accepts a single arguments, appends it to the end of the list and returns `unit`:
+
+{{{
+ela>arr.add 6
+
+ela>arr
+
+[|1,2,3,4,5,6|]
+}}}
+
+Function `insert` allows you to insert elements into the list at a given position. The first argument is a zero based position, the second argument is a value to insert and the return value is unit:
+
+{{{
+ela>arr.insert 1 100
+
+ela>arr
+
+[|1,100,2,3,4,5,6|]
+}}}
+
+Function `removeAt` removes an element from a given position. It takes a position index and returns unit:
+
+{{{
+ela>arr.removeAt 1
+
+ela>arr
+
+[|1,2,3,4,5,6|]
+}}}
+
+And `clear` function just allows to remove all elements from the list:
+
+{{{
+ela>arr.clear ()
+
+ela>arr
+
+[||]
+}}}
+
+That is basically all that you should know about arrays.
+
+=== Tuples ===
+
+Tuples are yet another fundamental data type in Ela. Well, probably not that fundametal as a list but still pretty important.
