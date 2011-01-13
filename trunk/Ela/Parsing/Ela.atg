@@ -288,7 +288,7 @@ PRODUCTIONS
 		(
 			MatchEntry<match> { SEMI [MatchEntry<match>] }
 		)		
-		(. if (RequireEnd(exp)) .) ENDS.
+		ENDS.
 					
 	MatchEntry<ElaMatch match> = 
 		(. var cexp = default(ElaExpression); .)
@@ -863,7 +863,7 @@ PRODUCTIONS
 		).
 			
 		
-	WhereBinding<out ElaExpression exp> = WHERE WhereBindingBody<out exp> (. if (RequireEnd(exp)) .) ENDS.
+	WhereBinding<out ElaExpression exp> = WHERE WhereBindingBody<out exp> ENDS.
 	
 	WhereBindingBody<out ElaExpression exp> =
 		(. 
@@ -1256,7 +1256,7 @@ PRODUCTIONS
 		(
 			MatchEntry<match> { SEMI [MatchEntry<match>] }
 		)
-		(. if (RequireEnd(exp)) .) ENDS.
+		ENDS.
 			
 	/* Expr */
 		

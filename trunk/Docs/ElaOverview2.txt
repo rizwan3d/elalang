@@ -391,6 +391,109 @@ ela>factorial 20 //overflows
 -2102132736
 }}}
 
+=== Strings and char ===
+
+Strings and chars are yet another couple of data types that are well known by other programming languages. 
+
+Strings in Ela are unicode sequences of characters. In the current implementation they do map directly to the .NET Framework data type System.String. This is how you can create a string in Ela:
+
+{{{
+ela>let str = "Hello, world!"
+
+ela>str
+
+Hello, world!
+}}}
+
+Strings in Ela (as well as chars) support C style escape codes. For example this is how you can create a two line string with double quotes:
+
+{{{
+ela>let str2 = "Hello,\r\n\"Basil\""
+
+ela>str2
+
+Hello,
+"Basil"
+}}}
+
+Also strings are immutable - you cannot change them in-place.
+
+Unlike many programming languages strings in Ela doesn't support `+` operator. This one is reserved in Ela only for arithmetic. You can use another polymorphic operator `++` which is called a _concatenation operator_ if you want to concatenate strings:
+
+{{{
+ela>str ++ "\r\n" ++ str2
+
+Hello, world!
+Hello,
+"Basil"
+}}}
+
+As soon as strings are immutable concatenation operation creates a new string. Also this operation doesn't perform implicit type casts - its both operands should be strings otherwise a runtime error will be raised.
+
+You can test strings for equality and compare them using comparison operator:
+
+{{{
+ela>str == str2
+
+False
+
+ela>str > str2
+
+False
+
+ela>str <= str2
+
+True
+}}}
+
+You can also use built-in `length` function to calculate string length:
+
+{{{
+ela>let str = "Hello, world!"
+
+ela>length str
+
+13
+}}} 
+
+You can use an indexing operator to obtain a char by a given offset like so:
+
+{{{
+ela>str.[0]
+
+H
+
+ela>str.[12]
+
+!
+}}}
+
+Indexing operator in Ela is pretty similar to that in C# with the only exception that it uses a extra dot before the square braces. If you already get used to the indexer in the form `newList[2]` it is really important to remember that this dot is required. This is because `newList[2]` is also a valid syntax in Ela but has a completely different meaning. As you remember Ela uses a simple juxtaposition for a function call, e.g. `x y` in Ela means that we apply an `x` function to the `y` argument. The same thing happens with `newList[2]` expression which is understood by Ela as: apply a function `newList` to the expression `[2]` which in turn creates a list with a single element.
+
+As it was mentioned above indexing operator when applied to a string return a value of type `char`. Char is a pretty basic data type that is used to represent a single unicode character. It also has its own literal in Ela similar to the one that is used in C style languages:
+
+{{{
+ela>let c = 'H'
+
+ela>c
+
+H
+}}}
+
+Chars as well as string can be tested for equality and compared. Also chars support built-in 'succ' and 'pred' functions:
+
+{{{
+ela>succ 'a'
+
+b
+
+ela>pred 'b'
+
+a
+}}}
+
+These are basically all the things that you can do with chars. Unlike some other languages chars in Ela are not numeric types and cannot be implicitly converted to numeric types. Therefore code like `'a' + 'b'` is errorneous in Ela and won't work. You will have to explicitly convert chars to integers in order to fix it: `'a':int + 'b':int`.
+
 === Lists ===
 
 List is one of the fundamental types in Ela. Lists in Ela are _single linked lists_. In a case if you haven't heard of such data structure before you can check it out in [http://en.wikipedia.org/wiki/List_(computing) Wikipedia]. 
@@ -532,8 +635,6 @@ ela>let newList = [0,1,2,3,4]
 
 ela>newList.[2]
 }}}
-
-Indexing operator in Ela is pretty similar to that in C# with the only exception that it uses a extra dot before the square braces. If you already get used to the indexer in the form `newList[2]` it is really important to remember that this dot is required. This is because `newList[2]` is also a valid syntax in Ela but has a completely different meaning. As you remember Ela uses a simple juxtaposition for a function call, e.g. `x y` in Ela means that we apply an `x` function to the `y` argument. The same thing happens with `newList[2]` expression which is understood by Ela as: apply a function `newList` to the expression `[2]` which in turn creates a list with a single element.
 
 You should also remember that accessing list elements by index is not a very effective operation. We have to iterate through the whole list and count each iteration - that is really the only way to do that. If you need to access elements by index frequently you might consider to use a different data structure instead - e.g. _array_ which has a constant access time.
 

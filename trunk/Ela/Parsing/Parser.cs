@@ -390,7 +390,6 @@ internal sealed partial class Parser {
 				MatchEntry(match);
 			}
 		}
-		if (RequireEnd(exp)) 
 		Expect(51);
 	}
 
@@ -411,7 +410,6 @@ internal sealed partial class Parser {
 				MatchEntry(match);
 			}
 		}
-		if (RequireEnd(exp)) 
 		Expect(51);
 	}
 
@@ -636,7 +634,6 @@ internal sealed partial class Parser {
 	void WhereBinding(out ElaExpression exp) {
 		Expect(48);
 		WhereBindingBody(out exp);
-		if (RequireEnd(exp)) 
 		Expect(51);
 	}
 

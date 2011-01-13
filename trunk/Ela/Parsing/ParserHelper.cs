@@ -20,23 +20,26 @@ namespace Ela.Parsing
 		}
 
 
-		private bool RequireEnd(ElaExpression exp)
-		{
-			if (exp.Type == ElaNodeType.Binding)
-			{
-				var vexp = (ElaBinding)exp;
-				
-				if (vexp.And != null)
-					return true;
+		//private bool RequireEnd(ElaExpression exp)
+		//{
+		//    if (la.kind == _ENDS)
+		//        return true;
 
-				if (vexp.InitExpression.Type != ElaNodeType.FunctionLiteral)
-					return false;
+		//    if (exp.Type == ElaNodeType.Binding)
+		//    {
+		//        var vexp = (ElaBinding)exp;
 				
-				return ((ElaFunctionLiteral)vexp.InitExpression).Body.Entries.Count > 1;
-			}
-			else
-				return true;
-		}
+		//        if (vexp.And != null)
+		//            return true;
+
+		//        if (vexp.InitExpression.Type != ElaNodeType.FunctionLiteral)
+		//            return false;
+				
+		//        return ((ElaFunctionLiteral)vexp.InitExpression).Body.Entries.Count > 1;
+		//    }
+		//    else
+		//        return true;
+		//}
 
 
 		private void SetFunMetadata(ElaBinding varExp, ElaExpression cexp, ElaVariableFlags flags)

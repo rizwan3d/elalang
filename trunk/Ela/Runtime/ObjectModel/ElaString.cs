@@ -8,7 +8,7 @@ namespace Ela.Runtime.ObjectModel
 	public sealed class ElaString : ElaObject, IEnumerable<ElaValue>
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Len | ElaTraits.Convert | ElaTraits.Concat | ElaTraits.Fold;
+		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Ord | ElaTraits.Len | ElaTraits.Convert | ElaTraits.Concat | ElaTraits.Fold;
 		private string buffer;
 		private int headIndex;
 		
@@ -36,6 +36,58 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(left.Type != right.Type || left.AsString() != right.AsString());
+		}
+
+
+		protected internal override ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			if (left.Type == ElaMachine.STR)
+				return right.Type == ElaMachine.STR ? new ElaValue(left.AsString().CompareTo(right.AsString()) > 0) :
+					right.Ref.Greater(left, right, ctx);
+			else
+			{
+				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				return Default();
+			}
+		}
+
+
+		protected internal override ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			if (left.Type == ElaMachine.STR)
+				return right.Type == ElaMachine.STR ? new ElaValue(left.AsString().CompareTo(right.AsString()) < 0) :
+					right.Ref.Lesser(left, right, ctx);
+			else
+			{
+				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				return Default();
+			}
+		}
+
+
+		protected internal override ElaValue GreaterEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			if (left.Type == ElaMachine.STR)
+				return right.Type == ElaMachine.STR ? new ElaValue(left.AsString().CompareTo(right.AsString()) >= 0) :
+					right.Ref.GreaterEquals(left, right, ctx);
+			else
+			{
+				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				return Default();
+			}
+		}
+
+
+		protected internal override ElaValue LesserEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			if (left.Type == ElaMachine.STR)
+				return right.Type == ElaMachine.STR ? new ElaValue(left.AsString().CompareTo(right.AsString()) <= 0) :
+					right.Ref.LesserEquals(left, right, ctx);
+			else
+			{
+				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				return Default();
+			}
 		}
 
 

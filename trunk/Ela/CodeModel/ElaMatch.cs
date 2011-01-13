@@ -33,7 +33,7 @@ namespace Ela.CodeModel
 			var sb = new StringBuilder();
 			sb.Append("match ");
 			sb.Append(Expression);
-			sb.AppendLine(" with");
+			sb.AppendLine(" with ");
 			var c = 0;
 
 			foreach (var p in Entries)

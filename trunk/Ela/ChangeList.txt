@@ -1,3 +1,6 @@
+0.8.1.3:New:Now string support 'Ord' trait - comparison operations such as greater, lesser, etc.
+0.8.1.2:Fix:Minor fixes in 'match' pretty printing logic.
+0.8.1.1:Fix:Now 'end' is required for the 'where' construct. Logic that allowed to omit it in certain cases caused error prone code.
 0.8.1.0:Release:Release of Ela 0.8.1
 0.8.0.21:Fix:A bug in 'lazy' data type behavior when it acts as a tail of a lazy list is fixed (this bug was reproducible on certain types of lazy lists).
 0.8.0.20:Fix:A bug in enumeration of certain types of lazy lists is fixed.
