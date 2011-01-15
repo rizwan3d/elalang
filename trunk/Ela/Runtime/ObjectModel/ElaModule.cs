@@ -12,8 +12,7 @@ namespace Ela.Runtime.ObjectModel
 		private const string MODULE = "[module:{0}]";
 		private ElaMachine vm;
 
-		internal ElaModule(int handle, ElaMachine vm)
-			: base(ObjectType.Module, ElaTraits.Eq | ElaTraits.Show)
+		internal ElaModule(int handle, ElaMachine vm) : base(ObjectType.Module, ElaTraits.Eq | ElaTraits.Show)
 		{
 			Handle = handle;
 			this.vm = vm;
