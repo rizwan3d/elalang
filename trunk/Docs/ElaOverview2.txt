@@ -896,3 +896,45 @@ ela>r
 
 {x=1,y=2}
 }}}
+
+You can access elements of records using either their index or name. The latter one has a C style syntax:
+
+{{{
+ela>r.[1]
+
+2
+
+ela>r.y
+
+2
+}}}
+
+You can also declare a tuple with field names that are not valid Ela identifiers (i.e. contain special characters or spaces):
+
+{{{
+ela>let style = {"text-decoration" = "underline"}
+
+ela>style
+
+{text-decoration=underline}
+}}}
+
+In this case you will have to use indexer syntax to access a tuple element however you can still specify an element name through an indexer like so:
+
+{{{
+ela>r.["x"]
+
+1
+
+ela>style.["text-decoration"]
+
+underline
+}}}
+
+It is important to understand that tuples in Ela are not hash tables. They are associative arrays. All elements are stored in order and you can even pattern match a record using tuple pattern:
+
+{{{
+ela>sumTup r
+
+3
+}}}
