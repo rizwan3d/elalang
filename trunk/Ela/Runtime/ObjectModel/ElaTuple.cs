@@ -188,6 +188,7 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue Successor(ExecutionContext ctx)
 		{
 			var tuple = new ElaTuple(Length);
+			tuple.cons = Length;
 
 			for (var i = 0; i < Length; i++)
 			{
@@ -204,6 +205,7 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue Predecessor(ExecutionContext ctx)
 		{
 			var tuple = new ElaTuple(Length);
+			tuple.cons = Length;
 
 			for (var i = 0; i < Length; i++)
 			{

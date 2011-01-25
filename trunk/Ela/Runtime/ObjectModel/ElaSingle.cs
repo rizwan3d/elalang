@@ -145,7 +145,7 @@ namespace Ela.Runtime.ObjectModel
 
 		internal override ElaValue Negate(ElaValue @this, ExecutionContext ctx)
 		{
-			return new ElaValue(-@this.I4);
+			return new ElaValue(-@this.DirectGetReal());
 		}
 
 

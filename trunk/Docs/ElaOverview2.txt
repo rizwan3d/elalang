@@ -718,4 +718,181 @@ That is basically all that you should know about arrays.
 
 === Tuples ===
 
-Tuples are yet another fundamental data type in Ela. Well, probably not that fundametal as a list but still pretty important.
+Tuples are yet another fundamental data type in Ela. Well, probably not that fundametal as a list but still pretty important. Tuples are grouped sequence of elements. You can access each element of a tuple using an indexer syntax and this operation is as effecient as with arrays, however unlike arrays tuples are immutable - you cannot change them in place, append or remove items, etc.
+
+This is how you can create a tuple in Ela:
+
+{{{
+ela>let t = (1,2,3)
+
+ela>let t1 = (1,)
+
+ela>t1
+
+(1,)
+
+ela>t
+
+(1,2,3)
+}}}
+
+Tuple literal is pretty straitforward - you just list a sequence of elements separated by comma and enclose them in parentheses. However a single expression in parentheses like `(1)` doesn't create a tuple. As soon as parentheses are used as a grouping construct in the same manner as in C style languages the expression `(1)` is completely equivalent to just `1` (but of course `1 + 2 * 3` is pretty different from `(1 + 2) * 3` exactly like in C). If you want to create a tuple with just one element you can put a trailing comma like in the example above: `(1,)`.
+
+You can pattern match tuples using tuple literal syntax, i.e.:
+
+{{{
+ela>match t with (1,2,x) = x end
+
+3
+
+ela>let (y,) = t1
+
+ela>y
+
+1
+}}}
+
+Tuples are really useful in certain cases. For example with tuples and pattern matching you can initialize multiple variables with a single expression like so:
+
+{{{
+ela>let (x1, y1, z1) = (1, "Hello, world", 42.12)
+
+ela>x1
+
+1
+
+ela>y1
+
+Hello, world
+
+ela>z1
+
+42.12
+}}}
+
+You can return multiple values from a function:
+
+{{{
+ela>let divMod x y = (x / y, x % y)
+
+ela>divMod 43 12
+
+(3,7)
+}}}
+
+In the example above I have created a function that accepts two arguments, divides first of them by second and returns the integral part of the division result and the remainder.
+
+You can also use tuples to pass grouped arguments to a function:
+
+{{{
+ela>let sumTup (x, y) = x + y
+
+ela>sumTup (1, 3)
+
+4
+}}}
+
+Here we have created a function that actually accepts just one argument. This function pattern match this argument and binds the first element of a tuple to `x` and the second - to `y`. This function might look as if it accepts two arguments not just one if you have programmed in C style languages before that use such a convention for function declaration and call however this is not the case in Ela:
+
+{{{
+ela>sumTup 1 4
+
+<memory>(1,5): Error ELA809: Match failed. None of the patterns were successful.
+        in memory.sumTup at line: 1, col: 5
+        in memory at line: 1, col: 1
+}}}
+
+You can think that `sumTup` declaration is equivalent to the following:
+
+{{{
+ela>let sumTup2 t = t.[0] + t.[1]
+}}}
+
+However it is not. We can see why in a simple test:
+
+{{{
+ela>sumTup2 t
+
+3
+
+ela>sumTup t
+
+<memory>(1,5): Error ELA809: Match failed. None of the patterns were successful.
+        in memory.sumTup at line: 1, col: 5
+        in memory at line: 1, col: 1
+}}}
+
+As you remember `t` is a tuple with three elements that we have declared before. The `sumTup2` function works without errors - it doesn't care how long our tuple is and will accept a tuple with three, thirty three or just one argument. In the latter case it will fail with a runtime error while trying to obtain a non-existent element, in other cases it will simply ignore all tuple elements except of the first two. Sometimes this is not the behavior that actually need.
+
+And here comes our original `sumTup` function. As you can see it doesn't really want to accept a three element tuple. That is because a three element tuple doesn't match the pattern in the function declaration where we have explicitly specified that we want a pair of elements, not a triple. This is how we can make it work:
+
+{{{
+ela>let t2 = (12, 24)
+
+ela>sumTup t2
+
+36
+}}}
+
+Another interesting pecularity of tuples is that unlike arrays tuples are always flat. In other words you cannot create a tuple that has other tuples as its elements. If you need something like that you should probably stick with lists or arrays. With tuples the hierarchy will be always flattened:
+
+{{{
+ela>(1,(2,3,(4,5)),6)
+
+(1,2,3,4,5,6)
+}}}
+
+You can use the built-in `length` function to calculate the length of tuples:
+
+{{{
+ela>length t
+
+3
+
+ela>length t2
+
+2
+}}}
+
+Length calculation is a pretty efficient operation with tuples - pretty much like with arrays. Tuples don't have any built-in fields like arrays however they might be a much more powerful data structure in certain cases.
+
+A cool thing about tuples is that they support a lot of standard operators including comparison operators, arithmetic operators, bitwise, `succ` and `pred` functions and event concatenation operator. How all these things works with tuples? Let's take a look:
+
+{{{
+ela>(1, 2) == (1, 2)
+
+True
+
+ela>(1, 2) < (3, 4)
+
+True
+
+ela>succ (1, 2)
+
+(2,3)
+
+ela>(12, 5.5) + (1, 4.32)
+
+(13,9.82)
+
+ela>(4, 8) * (1, 2)
+
+(4,16)
+}}}
+
+=== Records ===
+
+The first thing you should know about records is that records _are_ tuples. They really are just special versions of tuples and everything from the previous section is true for records as well. You can think of records as extensions to tuples that basically adds two things:
+
+  # Access elements by names. With tuples you can only access an element by index when record allows you to give an alias to a particular element and to access this element using a given alias which might be more convinient in some cases.
+  # Mutability. Records are immutable by default but you can make them mutable if you need to do so (which cannot be achived with tuples)
+
+Records in Ela are created like so:
+
+{{{
+ela>let r = {x = 1, y = 2 }
+
+ela>r
+
+{x=1,y=2}
+}}}
