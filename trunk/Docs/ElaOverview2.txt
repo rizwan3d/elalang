@@ -2,14 +2,14 @@
 
 == Introduction ==
 
-If you are reading than you've probably decided to continue your acquaintance with Ela. I believe this is the time to download the latest binaries of Ela itself - you will need them during this part of Ela overview series.
+If you are reading this introduction than you've probably decided to continue your acquaintance with Ela. I believe this is the time to download the latest binaries of Ela itself - you will need them during this part of Ela overview series.
 
-Ela doesn't require installation, just extract it and copy the files to any folder you like. Ela distribution includes and Ela Console tool (_elac.exe_) that supports interactive mode. You can run it either under .NET Framework or Mono (in the latter case you have to put _mono_ ahead like: _mono.exe elac.exe_). 
+Ela doesn't require installation, just extract it and copy the files to any folder you like. Ela distribution includes Ela itself (_ela.dll_) and Ela Console tool (_elac.exe_) that supports interactive mode. You can run it either under .NET Framework or Mono (in the latter case you have to put _mono_ ahead like so: _mono.exe elac.exe_). 
 
-If you don't specify a file name to execute Ela Console is lunched in an interactive mode. You should see the following banner (depending on the version of Ela and runtime environment):
+If you don't specify a file name to execute, Ela Console is lunched in an interactive mode. You should see the following banner (depending on the Ela version and runtime environment):
 
 {{{
-Ela Interpreter version 0.8.0.0
+Ela Interpreter version 0.8.1.0
 Running CLR 2.0.50727.4952 64-bit
 
 Interactive mode
@@ -19,7 +19,7 @@ Press Ctrl+C to exit.
 ela>
 }}}
 
-Interactive mode is a really neat thing which is very handy when you want to test some language constructs or debug your program. Just type Ela expressions and press `Return` key to execute them:
+Interactive mode is a really neat thing which is very handy when you want to test some language constructs or debug your programs. Just type Ela expressions and press `Return` key to execute them:
 
 {{{
 ela>"Hello, world!"
@@ -51,7 +51,7 @@ ela>y
 
 (As you can see you can simply check what value is bound to a particular name by typing this name and pressing `Return`).
 
-While in interactive mode if you enter code that doesn't even compile you will see an error message (or several messages and warnings if you did something really bad) and of course this code is never executed:
+While in interactive mode if you enter code that doesn't even compile you will see an error message (or several messages and warnings if you did something really bad) and of course such code is never executed:
 
 {{{
 ela>let z = x1 + 2
@@ -76,7 +76,7 @@ ela>let z = 12 / 0
         in <memory> at line: 1, col: 14
 }}}
 
-a name `z` actually gets declared - this is just initialization block that fails with an error. So we have a declared name which is not initialized - and that is not an allowed situation in Ela. In order to deal with this problem Ela Interactive initializes `z` with `unit` in such cases (if you don't understand what a unit is you can think of it as an Ela replacement for `null`).
+a name `z` actually gets declared - this is just initialization block that fails with an error. So we have a declared name which is not initialized - and that is not an allowed situation in Ela. In order to deal with this problem Ela Interactive initializes `z` with `unit` in such cases (if you don't understand what is unit is you can think of it as an Ela replacement for `void`).
 
 (Small hint - enter `#clear` and hit `Return` if you want to clear the messages in console).
 
@@ -909,7 +909,7 @@ ela>r.y
 2
 }}}
 
-You can also declare a tuple with field names that are not valid Ela identifiers (i.e. contain special characters or spaces):
+You can also declare a record with field names that are not valid Ela identifiers (i.e. contain special characters or spaces):
 
 {{{
 ela>let style = {"text-decoration" = "underline"}
@@ -919,7 +919,7 @@ ela>style
 {text-decoration=underline}
 }}}
 
-In this case you will have to use indexer syntax to access a tuple element however you can still specify an element name through an indexer like so:
+In this case you will have to use indexer syntax to access a record element however you can still specify an element name through an indexer like so:
 
 {{{
 ela>r.["x"]
@@ -931,10 +931,145 @@ ela>style.["text-decoration"]
 underline
 }}}
 
-It is important to understand that tuples in Ela are not hash tables. They are associative arrays. All elements are stored in order and you can even pattern match a record using tuple pattern:
+It is important to understand that records in Ela are not hash tables. They are associative arrays. All elements in records are stored in order - just like in tuples - and you can even pattern match a record using tuple pattern. As a result we can use our previously defined `sumTup` function with a record:
 
 {{{
 ela>sumTup r
 
 3
 }}}
+
+Of course there is more specific pattern that is applied to records only. This pattern allows you to both match a record with the specified fields and bind values of these fields to local variables:
+
+{{{
+ela>let {x=x',y=y'} = r
+
+ela>x'
+
+1
+
+ela>y'
+
+2
+}}}
+
+First you have to specify the name of the field, followed by an equality operator and a name of a local variable. In the example above we test if a given record contains fields `x` and `y` and bind the values of these fields to variables `x'` and `y'`. If a given records doesn't have any of the specified fields the match will fail. However if record contains other fields, not just `x` and `y`, it will still be a match.
+
+There is also a syntax sugar that allows you to save up some key strokes when you want to bind field values to the variables of the same names. Instead of writing code like `{x=x,y=y}` you can simply write `{x,y}` - the latter syntax is fully equivalent to the first one.
+
+The second important difference between records and tuples is that records can be mutable - you can change values of record fields in place without the need to create a new record. However this behavior is not supported by default. So if you try to change a value of our previously defined record `r` you will get the following error:
+
+{{{
+ela>r.x <- 2
+
+<memory>(1,3): Error ELA816: Field 'x' of the record '{x=1,y=2}' is immutable and
+cannot be changed.
+        in memory at line: 1, col: 3
+}}}
+
+In order to make such an operation possible you have to explicitly declare a particular field as mutable using a `mutable` keyword:
+
+{{{
+ela>let recMut = { mutable x = 1, y = 2 }
+
+ela>recMut.x <- 2
+
+ela>recMut.y <- 3
+
+<memory>(1,8): Error ELA816: Field 'y' of the record '{mutable x=2,y=2}' is immutable and cannot be changed.
+        in memory at line: 1, col: 8
+
+ela>recMut
+
+{mutable x=2,y=2}
+}}}
+
+And that is basically all you should know about records.
+
+=== Polymorphic variants ===
+
+This one is much more straightforward than its title. The idea behind variants is really simple. Sometimes you might need to _tag_ some values. If you ever programmed in C# it offers a similar yet pretty limited infrastructure called _nullable types_. Imagine that you write a function that might return either an integer value or nothing. How to return this "nothing"? Of course you can generate an exception but in many cases it is not a good idea as soon as we don't have any _exceptional situation_ here - we just have nothing to return.
+
+That is a place where nullable types comes very handy. With nullable types you simply create a structure that wraps your actual return value and a boolen flag that indicates whether this value was trully initialized. Let's implement a simple function in C# that accepts a single integer arguments, tests whether this argument is odd and if it is returns the remainder of its division by 2, otherwise - returns "nothing":
+
+{{{
+int? getOdd(int x) {
+  var r = x % 2;
+ 
+  if (r > 0)
+    return r;
+  else
+    return null;
+}
+}}}
+
+Ela doesn't have nullable types. But Ela has something that might be a little bit more flexible. This is how this `getOdd` function will be implemented in Ela:
+
+{{{
+let getOdd x | r > 0 = `Odd r;
+             | else  = `Even
+             where r = x % 2 end
+}}}
+
+In Ela you can also creates a wrapping structure that can be used to attach any custom tag to a value if you want to associate some additional data with this value that can be used in further analysis. You can also attach a tag to _unit_ (in a case if there is no meaningful value for the particular situation). It is done like so: ``None ()` or even shorter like so: ``None` - these two expressions are equivalent.
+
+And that is what we have done in the example above - for an odd value we attach a tag "Odd" to the remainder and for the even value (as soon as there is no remainder) we just return a plain tag. (Please bear in mind that tags always start from a _back apostrophe_).
+
+As usual you can pattern match agains variants using their literal syntax:
+
+{{{
+ela>let getOdd x | r > 0 = `Odd r; | else = `Even where r = x % 2 end
+
+ela>match getOdd 13 with `Odd x = x; `Even = 0 end
+
+1
+}}}
+
+Tags can be attached to values of any types - it can be arrays, tuples, lists, records - whatever you can think of. When pattern matching you should specify a tag name followed by pattern that is used to match agains a value to which this tag is attached. Function `getOdd` uses a simple integer literal pattern but it can be head/tail pattern, array pattern, tuple pattern, etc.
+
+Another cool thing about variants is that they are completely transparent for the client code. Let's see what it means:
+
+{{{
+ela>let rem = getOdd 15
+
+ela>rem
+
+`Odd 1
+
+ela>rem + 3
+
+4
+
+ela>rem < 0
+
+False
+}}}
+
+If you try to perform any operation with a variant this operation will be actually performed with the wrapped value. So if you have a variant that wraps an integer you can still use all your arithmetic functions with this variant:
+
+{{{
+ela>let pow x y = x ** y
+
+ela>pow (`SomeNumber 14) (`AnotherNumber 5)
+
+537824
+}}}
+
+Polymorphic variants are used very widely in Ela. In many cases they are a much better alternative to exceptions (which are also supported in Ela but used less extensively than in languages like C#). Moreover variants are actually the only way how you can create your own data types in Ela:
+
+{{{
+ela>let cellp = `Cellphone { Model="E75", Maker="Nokia", Color="Black" }
+
+ela>if cellp ? (`Cellphone {Model="E75"}) then "This is a E75 smartphone!" else
+"Don't know what is is."
+
+This is a E75 smartphone!
+}}}
+
+As soon as variants fully support pattern matching even exceptions in Ela are based on variants. Also a lot of standard functions use ``Some` and ``None` tags in their return values to indicate whether a value is actually there.
+
+=== Function ===
+
+Finally we've got to the most important data type in Ela. Function. But functions are so important and fundamental - and there is so much to tell about them - that they will definitely require a separate article.
+
+The next part of Ela overview is fully devoted to functions, their pecularities in Ela, declaration syntax and operations available for them.
