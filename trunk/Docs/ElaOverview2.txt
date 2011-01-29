@@ -1064,7 +1064,7 @@ This is a E75 smartphone!
 
 As soon as variants fully support pattern matching even exceptions in Ela are based on variants. Also a lot of standard functions use ``Some` and ``None` tags in their return values to indicate whether a value is actually there.
 
-=== Function ===
+=== Functions ===
 
 Finally we've got to the most important data type in Ela. Function. But functions are so important and fundamental - and there is so much to tell about them - that they will definitely require a separate article.
 
