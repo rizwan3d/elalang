@@ -1,0 +1,24 @@
+﻿let simple {eq,eqt} =
+    eq (t + 2) 6
+    $ eq t 4
+    $ eqt (t == 4)
+    where t = (& 2 + 2) end
+    
+let lazyList {eqt} =
+    eqt (lst ? (_::_::(x?lazy)))
+    $ eqt (lst ? (1::5::xs))
+    where lst = 1 :: (& 2 + 3) :: (& 44 - 40) end
+    
+let memoization {eq} =
+    let mutable x = 0 in
+    let fun () = x <- x + 1 $ x in
+    let t = (& fun () ) in
+      t + 0
+    $ t + 1
+    $ eq x 1
+    
+let typeCheck {eqt} =
+	let t = (& 2 * 2) in
+	eqt (t ? lazy)
+    $ t + 0
+    $ eqt (t ? int)
