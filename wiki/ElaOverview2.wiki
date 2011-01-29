@@ -1,4 +1,4 @@
-#summary Ela overview, part 2.
+#summary Ela overview 2. Data types
 
 == Introduction ==
 
