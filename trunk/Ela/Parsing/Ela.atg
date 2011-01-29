@@ -478,7 +478,46 @@ PRODUCTIONS
 			ArrayPattern<out pat>
 			|
 			UnitPattern<out pat>
+			|
+			TraitPattern<out pat>
 		).
+		
+	TraitPattern<out ElaPattern pat> =
+		(. 
+			var trait = default(ElaTraits); 
+			var isp = new ElaIsPattern(t);
+			var tmp = default(ElaTraits);
+		.)
+		(
+			"<"
+				ident 
+				(. 
+					tmp = Builtins.Trait(t.val); 
+					
+					if (tmp == ElaTraits.None) {
+						AddError(ElaParserError.UnknownTrait, t.val);
+					}
+					
+					trait |= tmp;
+				.)
+				{ 
+					"," ident 
+					(. 
+						tmp = Builtins.Trait(t.val); 
+						
+						if (tmp == ElaTraits.None) {
+							AddError(ElaParserError.UnknownTrait, t.val);
+						}
+						
+						trait |= tmp;
+					.)
+				}
+			">"
+		)
+		(.
+			isp.Traits = trait;
+			pat = isp;
+		.).
 						
 	IsPattern<out ElaPattern pat> =
 		(. pat = null; .)
@@ -487,12 +526,19 @@ PRODUCTIONS
 			(
 				"?"
 				(
-					ident 
-					(. 
-						var typ = new ElaIsPattern(t) { VariableName = name }; 
-						typ.TypeAffinity = GetType(t.val); 
-						pat = typ;
-					.)
+					(
+						ident 
+						(. 
+							var typ = new ElaIsPattern(t) { VariableName = name }; 
+							typ.TypeAffinity = GetType(t.val); 
+							pat = typ;
+						.)
+					)
+					|
+					(
+						TraitPattern<out pat>
+						(. ((ElaIsPattern)pat).VariableName = name; .)
+					)
 				)
 			)
 			|

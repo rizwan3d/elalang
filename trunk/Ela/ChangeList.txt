@@ -1,3 +1,6 @@
+0.8.2.0:Release:Release of Ela 0.8.2
+0.8.1.7:Change:A 'Seq' trait is decomissioned.
+0.8.1.6:New:An ability to test if a given value supports specified traits is added to pattern matching, i.e. 'x ? <Num,Eq>').
 0.8.1.5:Fix:Operations 'succ' and 'pred' didn't work correctly with 'tuples' - the length of a result tuple wasn't calculated correctly.
 0.8.1.4:Fix:Negation ('Neg' op code) operation didn't work correctly for 'single' data type.
 0.8.1.3:New:Now string support 'Ord' trait - comparison operations such as greater, lesser, etc.

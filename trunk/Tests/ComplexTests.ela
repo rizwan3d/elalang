@@ -130,7 +130,7 @@ let iterators {eqt} =
     and filter f lst = 
         let filter' x::xs | r ? (`Some v) = v :: filter' xs;
                           | r ? (`None)   = filter' xs
-                          where r = f x;
+                          where r = f x end;
             []                            = []
         in 
         match filter' lst with

@@ -9,6 +9,7 @@ open VariantTests
 open ComplexTests
 open ComprehensionTests
 open ThunkTests
+open MatchTests
 
 let lst = [] 
 	|> Test.regFuns BasicTests
@@ -21,6 +22,7 @@ let lst = []
 	|> Test.regFuns ComplexTests
     |> Test.regFuns ComprehensionTests
     |> Test.regFuns ThunkTests
+    |> Test.regFuns MatchTests
 	
 let _ = Test.fmt cout <| Test.run lst
 

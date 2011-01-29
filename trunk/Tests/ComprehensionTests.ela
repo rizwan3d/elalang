@@ -2,19 +2,19 @@
     eq (length li) 5
     $ eq li.[0] 2
     $ eq li.[4] 10
-    where li = [x @ x <- [1..10] | x % 2 == 0]
+    where li = [x @ x <- [1..10] | x % 2 == 0] end
     
 let listSimple2 {eq} = 
     eq (length li) 3
     $ eq li.[0] 6
     $ eq li.[2] 10
-    where li = [x @ x <- [1..10] | x % 2 == 0, x > 4]
+    where li = [x @ x <- [1..10] | x % 2 == 0, x > 4] end
     
 let listSelect1 {eq} =
     eq (length li) 2
     $ eq li.[0] 12
     $ eq li.[1] 16
-    where li = [x * 2 @ x <- [1..10] | x % 2 == 0, x > 4, x < 10]
+    where li = [x * 2 @ x <- [1..10] | x % 2 == 0, x > 4, x < 10] end
 
 let listSelect2 {eq} =
     eq (length lst1) 2
@@ -30,46 +30,46 @@ let listSelect3 {eq} =
     eq (length li) 4
     $ eq li.[0] 2
     $ eq li.[3] 8
-    where li = [y @ (x::y::[]) <- [[1,2],[3,4],[5,6],[7,8]] | y % 2 == 0]
+    where li = [y @ (x::y::[]) <- [[1,2],[3,4],[5,6],[7,8]] | y % 2 == 0] end
 
 let listMultiple1 {eq} =
     eq (length li) 50
     $ eq li.[0] (1,11)
     $ eq li.[10] (3,11)
     $ eq li.[49] (10,20)
-    where li = [(x,y) @ x <- [1..10], y <- [11..20] | (x + y) % 2 == 0]
+    where li = [(x,y) @ x <- [1..10], y <- [11..20] | (x + y) % 2 == 0] end
     
 let listMultiple2 {eq} =
     eq (length li) 2
     $ eq li.[0] {id=1,n='a',y=1}
     $ eq li.[1] {id=2,n='b',y=2}
-    where li = [{id=x.id,n=x.n,y=y} @ x <- [{id=1,n='a'},{id=2,n='b'}], y <- [1..10] | x.id == y]
+    where li = [{id=x.id,n=x.n,y=y} @ x <- [{id=1,n='a'},{id=2,n='b'}], y <- [1..10] | x.id == y] end
     
 let listLazy1 {eqt} =
     eqt (li ? (2::4::6::xs))
-    where li = [& x @ x <- [1..] | x % 2 == 0]
+    where li = [& x @ x <- [1..] | x % 2 == 0] end
     
 let listLazy2 {eqt} =
     eqt (li ? ((1,499)::(1,498)::(1,497)::xs))
-    where li = [& (x,y) @ x <- [1..], y <- [1000,999..] | y < 500]
+    where li = [& (x,y) @ x <- [1..], y <- [1000,999..] | y < 500] end
     
 let arraySimple {eq} =
     eq (length arr) 5
     $ eq arr.[0] 2
     $ eq arr.[4] 10
-    where arr = [|x @ x <- [|1..10|] | x % 2 == 0|]
+    where arr = [|x @ x <- [|1..10|] | x % 2 == 0|] end
     
 let arraySimple2 {eq} = 
     eq (length arr) 3
     $ eq arr.[0] 6
     $ eq arr.[2] 10
-    where arr = [|x @ x <- [|1..10|] | x % 2 == 0, x > 4|]
+    where arr = [|x @ x <- [|1..10|] | x % 2 == 0, x > 4|] end
     
 let arraySelect1 {eq} =
     eq (length arr) 2
     $ eq arr.[0] 12
     $ eq arr.[1] 16
-    where arr = [|x * 2 @ x <- [|1..10|] | x % 2 == 0, x > 4, x < 10|]
+    where arr = [|x * 2 @ x <- [|1..10|] | x % 2 == 0, x > 4, x < 10|] end
 
 let arraySelect2 {eq} =
     eq (length arr1) 2
@@ -85,17 +85,17 @@ let arraySelect3 {eq} =
     eq (length arr) 4
     $ eq arr.[0] 2
     $ eq arr.[3] 8
-    where arr = [|y @ (x::y::[]) <- [|[|1,2|],[|3,4|],[|5,6|],[|7,8|]|] | y % 2 == 0|]
+    where arr = [|y @ (x::y::[]) <- [|[|1,2|],[|3,4|],[|5,6|],[|7,8|]|] | y % 2 == 0|] end
 
 let arrayMultiple1 {eq} =
     eq (length arr) 50
     $ eq arr.[0] (1,11)
     $ eq arr.[10] (3,11)
     $ eq arr.[49] (10,20)
-    where arr = [|(x,y) @ x <- [|1..10|], y <- [|11..20|] | (x + y) % 2 == 0|]
+    where arr = [|(x,y) @ x <- [|1..10|], y <- [|11..20|] | (x + y) % 2 == 0|] end
     
 let arrayMultiple2 {eq} =
     eq (length arr) 2
     $ eq arr.[0] {id=1,n='a',y=1}
     $ eq arr.[1] {id=2,n='b',y=2}
-    where arr = [|{id=x.id,n=x.n,y=y} @ x <- [|{id=1,n='a'},{id=2,n='b'}|], y <- [|1..10|] | x.id == y|]
+    where arr = [|{id=x.id,n=x.n,y=y} @ x <- [|{id=1,n='a'},{id=2,n='b'}|], y <- [|1..10|] | x.id == y|] end

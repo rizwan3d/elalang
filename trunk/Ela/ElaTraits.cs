@@ -36,7 +36,7 @@ namespace Ela
 
 		Thunk = 0x8000,
 
-		Seq = 0x10000,
+		// = 0x10000,
 
 		Fold = 0x20000,
 
@@ -50,8 +50,6 @@ namespace Ela
 
 		Cons = 0x400000,
 
-		Convert = 0x800000,
-
-		// = 0x1000000
+		Convert = 0x800000
 	}
 }

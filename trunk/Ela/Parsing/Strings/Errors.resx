@@ -307,7 +307,7 @@
     <value>Expected keyword 'and'.</value>
   </data>
   <data name="ExpectedKeywordEnd" xml:space="preserve">
-    <value>Invalid 'where' syntax, a required 'end' keyword is missing.</value>
+    <value>Invalid syntax, a required 'end' keyword is missing.</value>
   </data>
   <data name="ExpectedKeywordFail" xml:space="preserve">
     <value>Expected keyword 'fail'.</value>
@@ -497,5 +497,8 @@
   </data>
   <data name="InvalidWhereBinding" xml:space="preserve">
     <value>Invalid variable declaration through 'where' clause.</value>
+  </data>
+  <data name="UnknownTrait" xml:space="preserve">
+    <value>There is no such trait as '{0}'.</value>
   </data>
 </root>

@@ -60,10 +60,10 @@ let tuples1 {eq} =
     eq (length lst) 10
     $ eq lst.[0] (1,10)
     $ eq lst.[9] (10,19)
-    where lst = [(1,10)..(10,20)]
+    where lst = [(1,10)..(10,20)] end
     
 let tuples2 {eq} =
     eq (length lst) 7
     $ eq lst.[0] (10,20)
     $ eq lst.[6] (190,1100)
-    where lst = [(10,20),(40, 200)..(200,1100)]
+    where lst = [(10,20),(40, 200)..(200,1100)] end

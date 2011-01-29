@@ -47,6 +47,7 @@
     <None Include="ComprehensionTests.ela" />
     <None Include="FunTests.ela" />
     <None Include="ListTests.ela" />
+    <None Include="MatchTests.ela" />
     <None Include="RangeTests.ela" />
     <None Include="RecordTests.ela" />
     <None Include="ThunkTests.ela" />

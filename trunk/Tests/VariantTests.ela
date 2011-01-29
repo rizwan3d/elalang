@@ -20,7 +20,7 @@ let matchTest {eq} =
     match v with
     `Some m = eq v "message"
     end
-    where v = `Some "message"
+    where v = `Some "message" end
     
 let transparency {eq} = 
     eq (v + 14) 26
@@ -28,7 +28,7 @@ let transparency {eq} =
     $ eq (v * 2) 24
     $ eq (24 / v) 2
     $ eq (v / 2) 6    
-    where v = `Some 12
+    where v = `Some 12 end
     
 let transparency2 {eq} = 
     eq v 100

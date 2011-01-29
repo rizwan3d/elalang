@@ -324,11 +324,18 @@ namespace Ela.Compilation
 					{
 						var tp = (ElaIsPattern)patExp;
 
-						if (tuple != null && tp.TypeAffinity != ObjectType.Tuple)
+						if (tuple != null && tp.TypeAffinity != ObjectType.Tuple && tp.TypeAffinity != ObjectType.None )
 							MatchEntryAlwaysFail(patExp, nextLab);
 						else if (tuple == null)
 						{
-							CheckType(pushSys, tp.TypeAffinity, nextLab);
+							if (tp.Traits != ElaTraits.None)
+							{
+								cw.Emit(Op.Pushvar, pushSys);
+								cw.Emit(Op.Trait, (Int32)tp.Traits);
+								cw.Emit(Op.Brfalse, nextLab);
+							}
+							else
+								CheckType(pushSys, tp.TypeAffinity, nextLab);
 
 							if (tp.VariableName != null)
 							{
@@ -528,7 +535,7 @@ namespace Ela.Compilation
 			if (seq.Type == ElaNodeType.ArrayPattern)
 				CheckType(pushSys, ObjectType.Array, nextLab);
 			else if (pushSys != -1 && tuple == null)
-				Silent(pushSys, nextLab, hints, ElaTraits.Seq | ElaTraits.Len);
+				Silent(pushSys, nextLab, hints, ElaTraits.Get|ElaTraits.Len);
 			
 			if (tuple != null)
 			{

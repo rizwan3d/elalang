@@ -1045,7 +1045,7 @@ namespace Ela.Compilation
 				return -1;
 			}
 
-			if (BuiltinFunc.Kind(name) != ElaBuiltinFunctionKind.None)
+			if (Builtins.Kind(name) != ElaBuiltinFunctionKind.None)
 			{
 				AddError(ElaCompilerError.NameReserved, exp, name);
 				return -1;

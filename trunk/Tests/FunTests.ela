@@ -10,7 +10,7 @@
 let partial2 {eq} =
     eq (((fun 2) 3) 4) 20
     $ eq (fun 2 3 4) 20
-    where fun x y = \z -> z * x + z * y
+    where fun x y = \z -> z * x + z * y end
     
 let partial3 {eq} =
     let f1 = fun 10 12 and
@@ -19,13 +19,13 @@ let partial3 {eq} =
     eq ((f1 1) 1) 24
     $ eq (((f2 2) 3) 4) 10
     $ eq (f3 7) 30
-    where fun x y z k = x + y + z + k
+    where fun x y z k = x + y + z + k end
     
 let partial4 {eq} =
     eq (fun 2 2 4 2 1) 11
     where fun x y | r > 10 = r;
                   | else   = fun r
-                  where r = x + y
+                  where r = x + y end
     end
     
 let closure1 {eq} = 
@@ -45,12 +45,12 @@ let closure2 {eq} =
 let flipped1 {eq} = 
     eq (sub 3 2) 1
     $ eq (flip sub 3 2) (--1)
-    where sub x y = x - y
+    where sub x y = x - y end
     
 let flipped2 {eq} = 
     eq (sub 3 2 1) 0
     $ eq (flip sub 3 2 (--1)) 0
-    where sub x y z = x - y - z
+    where sub x y z = x - y - z end
     
 let partialOperators {eq} =
     eq (add' 7 2) 9

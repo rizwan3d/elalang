@@ -84,11 +84,11 @@ That is probably all you need to know about Ela interactive mode right now. Enou
 
 == Data types ==
 
-Ela comes with a collection of standard data types which includes boolean and unit types, four numeric types, linked lists that we've tested a little bit in a previous article, dynamic indexed arrays, tuples, strings, chars, tuples, records, variant data types and of course functions. We will reviews all these data types in this section.
+Ela comes with a wide collection of built-in data types. The basic types includes boolean and unit types, four numeric types, linked lists that we've tested a little bit in a previous article, dynamic indexed arrays, strings, chars, tuples, records, variant data types and of course functions. We will reviews all these data types in this section.
 
 === Boolean type ===
 
-Most of modern programming languages have a notion of a boolean data type (which is called `bool` in Ela) and Ela is not an exception here. Boolean type is pretty straitforward and values of these type can have only two values - either `true` or `false`.
+Most of modern programming languages have a notion of a boolean data type (which is called `bool` in Ela) and Ela is not an exception here. Boolean type is pretty straitforward and instances of these type can be either `true` or `false`- and no third option.
 
 You can create a boolean value using the literal form. Try the following in Ela Console:
 
@@ -139,7 +139,7 @@ zero
 
 The result of comparison operations such as `>` (greater), `<` (lesser), `>=` (greater or equals) and `<=` (lesser or equals) is also a value of a boolean type however booleans itself don't support comparisons. Which is perfectly logical as soon as there is not much sense to test whether `true` is greater than `false` or vice versa.
 
-Ela has a set of operations that are predefined for boolean types. First of all these are boolean and `&&` and boolean or `||` operators. They work exactly the same way as in C, C#, Java, etc. It is important to understand that these operators are lazy (which is also a typical behavior in other languages as well). Operator `&&` returns `true` if both operands are `true` and operator `||` returns `true` if at least one of its operands is `true`:
+Ela has a set of operations that are predefined for boolean types. First of all these are _boolean and_ (`&&`) and _boolean or_ (`||`) operators. They work exactly the same way as in C, C#, Java, etc. It is important to understand that these operators are lazy (which is also a typical behavior in other languages as well). Operator `&&` returns `true` if both operands are `true` and operator `||` returns `true` if at least one of its operands is `true`:
 
 {{{
 ela>if b && b2 then "Yes" else "No"
@@ -185,9 +185,9 @@ ela>u == u2
 True
 }}}
 
-Actually equality operators `==` and `<>` are the only two operators that are supported by `unit`. You are probably wondering what is the purpose of this data type which at the first glanse cannot do anything useful.
+Actually equality operators `==` and `<>` are the only two operators that are supported by `unit`. You are probably wondering what is the purpose of this data type which at the first glance cannot do anything useful.
 
-The real application for `unit` is when there is no other meaningful value. Let's say that you want to implement a function just for the sake of the side effect. This is perfectly valid in Ela as soon as Ela is not a pure functional language. This function take take another function, a list and apply a given function to all elements of the list. This hypothetical function will also ignore a value that is returned by the supplied function. This is how we can implement it:
+The real application for `unit` is when there is no other meaningful value. Let's say that you want to implement a function just for the sake of the side effect. This is perfectly valid in Ela as soon as Ela is not a pure functional language. This function accepts another function, a list and applies a given function to all elements of the list. This hypothetical function will also ignore a value that is returned by the supplied function. This is how we can implement it:
 
 {{{
 let each f x::xs = f x $ each f xs;
@@ -230,7 +230,7 @@ In other words we haven't tricked anyone here. We have created a function that a
 let nonsense2 _ = ()
 }}}
 
-Here we used a "throw away" pattern which which we also have acquainted before. It might seem as a good alternative but in reality it is not because you will be to apply this function to a value of any type which is quite misleading:
+Here we used a "throw away" pattern which we also have seen before. It might seem as a good alternative but in reality it is not because you will be able to apply this function to a value of any type which is quite misleading:
 
 {{{
 ela>nonsense2 u
@@ -240,7 +240,7 @@ ela>nonsense2 0
 ela>nonsense2 "Hello, world!"
 }}}
 
-In the conslusion of this section I should that it is important to understand here that unlike many other languages Ela doesn't have a notion of `null`. That is because Ela is a dynamically typed language and the type is not associated with variable but with the value itself. In other words it is not correct to say that in the code like `let u = ()` we have a variable `u` of type `unit`. In reality what we have here is a value of type `unit` which is bound to the name `u`. As a result you cannot declare a variable of type, say, array and assign it to a `null` like you do in C# or similar languages. The `unit` type might seem as something similar to the `null` which might be used as its replacement however `unit` is not `null` and is not here to serve the same purposes as `null`. You can use it only when no other value is applicable. That is it. And it is a typical case for the functions with side effects when in C# you will have a procedure that returns void or accepts zero arguments. Ela doesn't have `null` and it doesn't need `null`. Also Ela doesn't have a lot of problems connected with `null` such as annoying "null reference" exceptions. If you used `null` in functions that could return something or nothing there is a much better way to do the same thing in Ela - polymorphic variants. Don't worry, we'll deal with them a little bit later.
+In the conclusion of this section I should say that it is important to understand here that unlike many other languages Ela doesn't have a notion of `null`. That is because Ela is a dynamically typed language and the type is not associated with variable but with the value itself. In other words it is not correct to say that in the code like `let u = ()` we have a variable `u` of type `unit`. In reality what we have here is a value of type `unit` which is bound to the name `u`. As a result you cannot declare a variable of type, say, array and assign it to a `null` like you do in C# or similar languages. The `unit` type might seem as something similar to the `null` which might be used as its replacement however `unit` is not `null` and is not here to serve the same purposes as `null`. You can use it only when no other value is applicable. That is it. And it is a typical case for the functions with side effects when in C# you will have a procedure that returns void or accepts zero arguments. Ela doesn't have `null` and it doesn't need `null`. Also Ela doesn't have a lot of problems connected with `null` such as annoying "null reference" exceptions. If you used `null` in functions as a return value to denote that there is "nothing" we can return please bear in mind: a much better way to do the same thing exists in Ela, polymorphic variants. Don't worry, we'll deal with them a little bit later.
 
 === Numeric types ===
 
@@ -258,7 +258,7 @@ ela>let single = 1.42
 ela>let double = 1.42D
 }}}
 
-You have probably noticed the postfixes `L` and `D`. A postfix `L` is used to denote that you need a value of type `long` and `D` that you need `double`, not just `single` which is used by default.
+You have probably noticed the postfixes `L` and `D`. A postfix `L` is used to denote that you need a value of type `long` and `D` - that you need `double`, not just `single` which is used by default.
 
 Numeric types are somewhat different from other data types. That is the place where Ela type system is not too strict for the sake of convinience and does support some implicit conversions from one type to another. The rules for implicit conversions are pretty straigtforward. In other to better undestand them I will put all the numeric types in order like so:
 
@@ -329,7 +329,7 @@ ela>--42 //Finally, a correct negation syntax
 -42
 }}}
 
-Types `int` and `long` also support bitwise operations such as bitwise and `&&&`, bitwise or `|||`, bitwise xor `^^^`, left shift `<<<`, right shift `>>>` and bitwise not `~~~`. These have the same behavior as operators `&`, `|`, `^`, `<<`, `>>` and `~` in C however their priority is different. Bitwise or, and and xor have one of the highest priorities among Ela operators:
+Types `int` and `long` also support bitwise operations such as _bitwise and_ (`&&&`), _bitwise or_ (`|||`), _bitwise xor_ (`^^^`), _left shift_ (`<<<`), _right shift_ (`>>>`) and _bitwise not_ (`~~~`). These have the same behavior as operators `&`, `|`, `^`, `<<`, `>>` and `~` in C however their priority is different. Operators `&&&`, `|||` and `^^^` have one of the highest priorities among Ela operators:
 
 {{{
 ela>let sn = 48 ||| (134 <<< 8)
@@ -393,7 +393,7 @@ ela>factorial 20 //overflows
 
 === Strings and char ===
 
-Strings and chars are yet another couple of data types that are well known by other programming languages. 
+Strings and chars are yet another couple of data types that should be well known from other programming languages. 
 
 Strings in Ela are unicode sequences of characters. In the current implementation they do map directly to the .NET Framework data type System.String. This is how you can create a string in Ela:
 
@@ -418,7 +418,7 @@ Hello,
 
 Also strings are immutable - you cannot change them in-place.
 
-Unlike many programming languages strings in Ela doesn't support `+` operator. This one is reserved in Ela only for arithmetic. You can use another polymorphic operator `++` which is called a _concatenation operator_ if you want to concatenate strings:
+Unlike many programming languages strings in Ela don't support `+` operator. This one is reserved in Ela only for arithmetic. You can use another polymorphic operator `++` which is called a _concatenation operator_ if you want to concatenate strings:
 
 {{{
 ela>str ++ "\r\n" ++ str2
@@ -428,7 +428,7 @@ Hello,
 "Basil"
 }}}
 
-As soon as strings are immutable concatenation operation creates a new string. Also this operation doesn't perform implicit type casts - its both operands should be strings otherwise a runtime error will be raised.
+As soon as strings are immutable concatenation operation always creates a new string. Also this operation doesn't perform implicit type casts - its both operands should be strings otherwise a runtime error is raised.
 
 You can test strings for equality and compare them using comparison operator:
 
@@ -468,7 +468,7 @@ ela>str.[12]
 !
 }}}
 
-Indexing operator in Ela is pretty similar to that in C# with the only exception that it uses a extra dot before the square braces. If you already get used to the indexer in the form `newList[2]` it is really important to remember that this dot is required. This is because `newList[2]` is also a valid syntax in Ela but has a completely different meaning. As you remember Ela uses a simple juxtaposition for a function call, e.g. `x y` in Ela means that we apply an `x` function to the `y` argument. The same thing happens with `newList[2]` expression which is understood by Ela as: apply a function `newList` to the expression `[2]` which in turn creates a list with a single element.
+Indexing operator in Ela is pretty similar to that in C# with the only exception that it uses a extra dot before the square braces. If you already get used to the indexer in the form `newList[2]` it is really important to remember that this dot before the squate braces is required. This is because `newList[2]` is also a valid syntax in Ela but has a completely different meaning. As you remember Ela uses a simple juxtaposition for a function call, e.g. `x y` in Ela means that we apply an `x` function to the `y` argument. The same thing happens with `newList[2]` expression which is understood by Ela as: apply a function `newList` to the expression `[2]` which in turn creates a list with a single element.
 
 As it was mentioned above indexing operator when applied to a string return a value of type `char`. Char is a pretty basic data type that is used to represent a single unicode character. It also has its own literal in Ela similar to the one that is used in C style languages:
 
@@ -480,7 +480,7 @@ ela>c
 H
 }}}
 
-Chars as well as string can be tested for equality and compared. Also chars support built-in 'succ' and 'pred' functions:
+Chars as well as strings can be tested for equality and compared. Also chars support built-in 'succ' and 'pred' functions:
 
 {{{
 ela>succ 'a'
@@ -498,9 +498,9 @@ These are basically all the things that you can do with chars. Unlike some other
 
 List is one of the fundamental types in Ela. Lists in Ela are _single linked lists_. In a case if you haven't heard of such data structure before you can check it out in [http://en.wikipedia.org/wiki/List_(computing) Wikipedia]. 
 
-In short single linked list in an ordered sequence of elements where each element holds a reference to the next element. The very last item in a list points to a thing that is called a _nil list_, which is nothing more than an empty list.
+In short single linked list is an ordered sequence of elements where each element holds a reference to the next element. The very last item in a list points to a thing that is called a _nil list_, which is nothing more than an empty list.
 
-All elements of the linked list are also lists. Basically a single linked list can be seen as a very straightforward data structure that wrappes some value and a reference to the next element. If have you ever coded in such language as C# this is how a minimalistic linked list can be implemented in this language:
+All elements of the linked list are also lists. Basically a single linked list can be seen as a very straightforward data structure that wraps some value and a reference to the next element. If have you ever coded in such language as C# this is how a minimalistic linked list can be implemented in this language:
 
 {{{
 class LinkedList<T>
@@ -520,7 +520,7 @@ class LinkedList<T>
 }
 }}}
 
-That is really it. As soon as list in an immutable data structure - you cannot change it in place like you do with an array - an empty (_nil_) list is represented as a "global" value. You don't have to create it "on demand" as soon as it never gets change and therefore can be initialized just once and used everywhere. As a result when you create an empty list in Ela nothing is actually gets created - you just reference this special global _nil_ variable. This is how you can do it:
+That is really it. As soon as list is an immutable data structure - you cannot change it in place like you do with an array - an empty (_nil_) list is represented as a "global" value. You don't have to create it "on demand" as soon as it never gets change and therefore can be initialized just once and used everywhere. As a result when you create an empty list in Ela nothing actually gets created - you just reference this special global _nil_ variable. This is how you can do that:
 
 {{{
 let lst = []
@@ -540,7 +540,7 @@ The same for the list with two elements:
 var lst = new LinkedList(43, new LinkedList(42, LinkedList.Nil));
 }}}
 
-As you can see it looks quite cumbersome. That is why Ela has a special operator `::` that can be used to construct list. Let's try it in console:
+As you can see it looks quite cumbersome. That is why Ela has a special operator `::` that can be used to construct lists. Let's try it in console:
 
 {{{
 >let lst = 43::(42::[])
@@ -562,7 +562,7 @@ There is also a syntax sugar for this operator - as soon as it is still not visu
 let lst2 = [43, 42]
 }}}
 
-Another useful operator that can be used with lists is a _list concatenation operator_. This is how you can use it:
+Another useful operator that can be used with lists is a _concatenation operator_. This is how you can use it:
 
 {{{
 >lst ++ lst2
@@ -570,7 +570,7 @@ Another useful operator that can be used with lists is a _list concatenation ope
 [43, 42, 43, 42]
 }}}
 
-A `++` operator can be used to concatenate two lists, you can't use it to append an element to a list. Actually because of the way how linked lists are organized there is no direct way to append an element to the end of the list - only to the head. If you desperately need it however this is how you can accomplish this:
+A `++` operator can be used to concatenate two lists, you can't use it to append an element to a list. Actually because of the way how linked lists are organized there is no direct way to append an element to the end of the list - only to the head. If you desperately need it there is a way to do that of course:
 
 {{{
 >lst ++ [41]
@@ -584,13 +584,13 @@ Here we actually create a new list that contains a single element, number `41`, 
 
 As soon as every list element holds a reference to the next element lists come up very handy when you need to iterate over their elements. In other words each item in a list basically know what it's neigbor is and it renders looping through the list as a pretty trivial task.
 
-However Ela is a functional language and it doesn't even have a concept of iterators that you might've heard of in such languages as C#. In Ela one should use recursion instead of cycles. And that is again the place where _pattern matching_ becomes really helpful. As you remember from the previous article pattern matching allows us to deconstruct an element using its literal syntax which is in a case of linked lists a construction operator `::`. That is a simple example of how you can iterate over list elements:
+However Ela is a functional language and it doesn't even have a concept of iterators that you might've heard of in such languages as C#. In Ela one should use recursion instead of cycles. And that is again the place where _pattern matching_ becomes really helpful. As you remember from the previous article pattern matching allows us to deconstruct an element using its literal syntax which is in a case of linked lists a construction operator `::`. Here is a simple example of how you can iterate over list elements:
 
 {{{
 ela>let iter f x::xs = f x $ iter f xs; _ []    = ()
 }}}
 
-This function is basically an alternative to impertive cycle and you can use it like so (the following example prints all list elements to console):
+This function is basically an alternative to imperative cycle and you can use it like so (the following example prints all list elements to console):
 
 {{{
 ela>iter cout [1,2,3,4,5]
@@ -602,11 +602,11 @@ ela>iter cout [1,2,3,4,5]
 5
 }}}
 
-You've already seen a similar trick in functions from the previous article. Lists and pattern matching against list is widely used in Ela code. As you remember a pattern in the form `x::xs` matches against a list that has at least one element. If a list really contains just a single item `xs` gets bound the `nil`. Usually in expressions like the one above we call `x` a _head_ of the list and `xs` a list tail. 
+You've already seen a similar trick in functions from the previous article. Lists and pattern matching against lists are widely used in Ela code. As you remember a pattern in the form `x::xs` matches against a list that has at least one element. If a list really contains just a single item `xs` gets bound to the `nil`. Usually in expressions like the one above we call `x` a _head_ of the list and `xs` a list tail. 
 
 The list deconstruction pattern can contain an arbitrary number of elements. You can use both variables and actual values in it, e.g. the following patterns are perfectly legal: `1::2::xs`, `x::(2,3)::xs`, `x::(y::ys)::xs`, `x::y::[]`. I will explain how this thing works with more detail in the chapter about pattern matching. 
 
-The last pattern `x::y::[]` is used to match a list that has _exactly_ two elements. We basically say here that we want a list tail to match a nil list. It is useful when you want to ensure that a given list has an exact number of items. As with construction syntax there is an alternate more readable form to write this - `[x,y]` which is fully equivavlent to `x::y::[]`.
+The last pattern `x::y::[]` is used to match a list that has _exactly_ two elements. We basically say here that we want a list tail to match a nil list. It is useful when you want to ensure that a given list has an exact number of items. As with construction syntax there is a more readable form to write this - `[x,y]` which is fully equivavlent to `x::y::[]`.
 
 Another example of how you write a function that iterates over list elements using recursion and pattern matching:
 
@@ -620,7 +620,7 @@ ela>length' [1,2,3,4,5]
 
 The function above can be used to calculate the length of a list. It is not a very effective implementation but it works OK as an example. We again deconstruct a list using recursion until we actually reach the `nil` list. This function is executed as a chain of additions - because of this we don't have to declare mutable variables. The result of this function when the given list is a not a nil list is always `1` plus the length of the rest list, list tail.
 
-Of course you don't have to code `length` function each time you need it. Ela already has a built-in polymorphic `length` function that you can with any list:
+Of course you don't have to code `length` function each time you need it. You can use a polymorphics built-in `length` function that you've already seen in the section about strings:
 
 {{{
 ela>length [1,2,3,4,5]
@@ -628,7 +628,7 @@ ela>length [1,2,3,4,5]
 5
 }}}
 
-Another useful operation that is available for lists is an ability to obtain a list element by its index. This is done using indexing syntax like so:
+Another useful operation that is available for lists is an ability to obtain a list element by its index. This is done by using indexing syntax like so:
 
 {{{
 ela>let newList = [0,1,2,3,4]
@@ -636,7 +636,7 @@ ela>let newList = [0,1,2,3,4]
 ela>newList.[2]
 }}}
 
-You should also remember that accessing list elements by index is not a very effective operation. We have to iterate through the whole list and count each iteration - that is really the only way to do that. If you need to access elements by index frequently you might consider to use a different data structure instead - e.g. _array_ which has a constant access time.
+You should also remember that accessing list elements by index is not a very effective operation. We have to iterate through the whole list and count each iteration - that is really the only way to do it. If you need to access elements by index frequently you might consider to use a different data structure instead - e.g. _array_ which has a constant access time.
 
 === Arrays ===
 
@@ -650,7 +650,7 @@ ela>arr
 [|1,2,3,4,5|]
 }}}
 
-Arrays also support indexing operator and you can a built-in `length` function to calculate their length:
+Arrays also support indexing operator and you can use built-in `length` function to calculate their length:
 
 {{{
 ela>arr.[4]
@@ -666,13 +666,9 @@ ela>length arr
 5
 }}}
 
-Besides this array support a set of specific function that allows to perform its modification in-place. These are functions `add`, `removeAt`, `insert` and `clear`. These functions are exposes as array fields. Field access in Ela is pretty similar to that one in C style languages:
+Besides this arrays support a set of specific functions that allow to perform its modification in-place. These are functions `add`, `removeAt`, `insert` and `clear`. These functions are exposed as array fields. Field access in Ela is pretty similar to that one in C style languages.
 
-{{{
-ela>arr.insert
-
-<f>:*->*->*
-}}}
+Let's see which functions are supported by arrays.
 
 Function `add` accepts a single arguments, appends it to the end of the list and returns `unit`:
 
@@ -684,7 +680,7 @@ ela>arr
 [|1,2,3,4,5,6|]
 }}}
 
-Function `insert` allows you to insert elements into the list at a given position. The first argument is a zero based position, the second argument is a value to insert and the return value is unit:
+Function `insert` allows you to insert elements into the list at a given position. The first argument is a zero based position, the second argument is a value to insert and the return value is `unit`:
 
 {{{
 ela>arr.insert 1 100
@@ -694,7 +690,7 @@ ela>arr
 [|1,100,2,3,4,5,6|]
 }}}
 
-Function `removeAt` removes an element from a given position. It takes a position index and returns unit:
+Function `removeAt` removes an element from a given position. It takes a position index and returns `unit`:
 
 {{{
 ela>arr.removeAt 1
@@ -704,7 +700,7 @@ ela>arr
 [|1,2,3,4,5,6|]
 }}}
 
-And `clear` function just allows to remove all elements from the list:
+And `clear` function just allows you to remove all elements from the list:
 
 {{{
 ela>arr.clear ()
@@ -718,7 +714,7 @@ That is basically all that you should know about arrays.
 
 === Tuples ===
 
-Tuples are yet another fundamental data type in Ela. Well, probably not that fundametal as a list but still pretty important. Tuples are grouped sequence of elements. You can access each element of a tuple using an indexer syntax and this operation is as effecient as with arrays, however unlike arrays tuples are immutable - you cannot change them in place, append or remove items, etc.
+Tuples are yet another fundamental data type in Ela. Well, probably not that fundametal as a list but still pretty important. Tuples are grouped sequences of elements. You can access each element of a tuple using an indexer syntax and this operation is as effecient as with arrays, however unlike arrays tuples are immutable - you cannot change them in place, append or remove items, etc.
 
 This is how you can create a tuple in Ela:
 
@@ -736,7 +732,7 @@ ela>t
 (1,2,3)
 }}}
 
-Tuple literal is pretty straitforward - you just list a sequence of elements separated by comma and enclose them in parentheses. However a single expression in parentheses like `(1)` doesn't create a tuple. As soon as parentheses are used as a grouping construct in the same manner as in C style languages the expression `(1)` is completely equivalent to just `1` (but of course `1 + 2 * 3` is pretty different from `(1 + 2) * 3` exactly like in C). If you want to create a tuple with just one element you can put a trailing comma like in the example above: `(1,)`.
+Tuple literal is pretty straitforward - you just list a sequence of elements separated by commas and enclose them in parentheses. However a single expression in parentheses like `(1)` doesn't create a tuple. As soon as parentheses are used as a grouping construct in the same manner as in C style languages the expression `(1)` is completely equivalent to just `1` (but of course `1 + 2 * 3` is pretty different from `(1 + 2) * 3` exactly like in C). If you want to create a tuple with just one element you can put a trailing comma like in the example above: `(1,)`.
 
 You can pattern match tuples using tuple literal syntax, i.e.:
 
@@ -792,7 +788,7 @@ ela>sumTup (1, 3)
 4
 }}}
 
-Here we have created a function that actually accepts just one argument. This function pattern match this argument and binds the first element of a tuple to `x` and the second - to `y`. This function might look as if it accepts two arguments not just one if you have programmed in C style languages before that use such a convention for function declaration and call however this is not the case in Ela:
+Here we have created a function that actually accepts just one argument. This function pattern match this argument and binds the first element of a tuple to `x` and the second - to `y`. This function might look like as if it accepts two arguments not just one if you have programmed in C style languages before that use such a convention for all function declarations and calls however this is not the case in Ela:
 
 {{{
 ela>sumTup 1 4
@@ -822,7 +818,7 @@ ela>sumTup t
         in memory at line: 1, col: 1
 }}}
 
-As you remember `t` is a tuple with three elements that we have declared before. The `sumTup2` function works without errors - it doesn't care how long our tuple is and will accept a tuple with three, thirty three or just one argument. In the latter case it will fail with a runtime error while trying to obtain a non-existent element, in other cases it will simply ignore all tuple elements except of the first two. Sometimes this is not the behavior that actually need.
+As you remember `t` is a tuple with three elements that we have declared before. The `sumTup2` function works without errors - it doesn't care how long our tuple is and will accept a tuple with three, thirty three or just one argument. In the latter case it will fail with a runtime error while trying to obtain a non-existent element, in other cases it will simply ignore all tuple elements except of the first two. Sometimes this is not the behavior that we actually need.
 
 And here comes our original `sumTup` function. As you can see it doesn't really want to accept a three element tuple. That is because a three element tuple doesn't match the pattern in the function declaration where we have explicitly specified that we want a pair of elements, not a triple. This is how we can make it work:
 
@@ -856,7 +852,7 @@ ela>length t2
 
 Length calculation is a pretty efficient operation with tuples - pretty much like with arrays. Tuples don't have any built-in fields like arrays however they might be a much more powerful data structure in certain cases.
 
-A cool thing about tuples is that they support a lot of standard operators including comparison operators, arithmetic operators, bitwise, `succ` and `pred` functions and event concatenation operator. How all these things works with tuples? Let's take a look:
+A cool thing about tuples is that they support a lot of standard operators including comparison operators, arithmetic operators, bitwise, `succ` and `pred` functions and event concatenation operator. How all these things work with tuples? Let's take a look:
 
 {{{
 ela>(1, 2) == (1, 2)
@@ -882,10 +878,10 @@ ela>(4, 8) * (1, 2)
 
 === Records ===
 
-The first thing you should know about records is that records _are_ tuples. They really are just special versions of tuples and everything from the previous section is true for records as well. You can think of records as extensions to tuples that basically adds two things:
+The first thing you should know about records is that records _are_ tuples. They really are just special versions of tuples and everything from the previous section is true for records as well. You can think of records as extension to tuples that basically adds two things:
 
   # Access elements by names. With tuples you can only access an element by index when record allows you to give an alias to a particular element and to access this element using a given alias which might be more convinient in some cases.
-  # Mutability. Records are immutable by default but you can make them mutable if you need to do so (which cannot be achived with tuples)
+  # Mutability. Records are immutable by default but you can make them mutable if you need to do so (which cannot be done with tuples)
 
 Records in Ela are created like so:
 
@@ -990,7 +986,7 @@ And that is basically all you should know about records.
 
 This one is much more straightforward than its title. The idea behind variants is really simple. Sometimes you might need to _tag_ some values. If you ever programmed in C# it offers a similar yet pretty limited infrastructure called _nullable types_. Imagine that you write a function that might return either an integer value or nothing. How to return this "nothing"? Of course you can generate an exception but in many cases it is not a good idea as soon as we don't have any _exceptional situation_ here - we just have nothing to return.
 
-That is a place where nullable types comes very handy. With nullable types you simply create a structure that wraps your actual return value and a boolen flag that indicates whether this value was trully initialized. Let's implement a simple function in C# that accepts a single integer arguments, tests whether this argument is odd and if it is returns the remainder of its division by 2, otherwise - returns "nothing":
+That is a place where nullable types comes very handy. With nullable types you simply create a structure that wraps your actual return value and a boolen flag that indicates whether this value was trully initialized. Let's implement a simple function in C# that accepts a single integer argument, tests whether this argument is odd and if it is returns the remainder of its division by 2, otherwise - returns "nothing":
 
 {{{
 int? getOdd(int x) {
@@ -1011,7 +1007,7 @@ let getOdd x | r > 0 = `Odd r;
              where r = x % 2 end
 }}}
 
-In Ela you can also creates a wrapping structure that can be used to attach any custom tag to a value if you want to associate some additional data with this value that can be used in further analysis. You can also attach a tag to _unit_ (in a case if there is no meaningful value for the particular situation). It is done like so: ``None ()` or even shorter like so: ``None` - these two expressions are equivalent.
+In Ela you can also create a wrapping structure that can be used to attach any custom tag to a value if you want to associate some additional data with this value that can be used in further analysis. You can also attach a tag to _unit_ (in a case if there is no meaningful value for the particular situation). It is done like so: ``None ()` or even shorter like so: ``None` - these two expressions are equivalent.
 
 And that is what we have done in the example above - for an odd value we attach a tag "Odd" to the remainder and for the even value (as soon as there is no remainder) we just return a plain tag. (Please bear in mind that tags always start from a _back apostrophe_).
 
@@ -1025,7 +1021,7 @@ ela>match getOdd 13 with `Odd x = x; `Even = 0 end
 1
 }}}
 
-Tags can be attached to values of any types - it can be arrays, tuples, lists, records - whatever you can think of. When pattern matching you should specify a tag name followed by pattern that is used to match agains a value to which this tag is attached. Function `getOdd` uses a simple integer literal pattern but it can be head/tail pattern, array pattern, tuple pattern, etc.
+Tags can be attached to values of any types - it can be arrays, tuples, lists, records - whatever you can think of. When pattern matching you should specify a tag name followed by pattern that is used to match against a value to which this tag is attached. Function `getOdd` uses a simple integer literal pattern but it can be head/tail pattern, array pattern, tuple pattern, etc.
 
 Another cool thing about variants is that they are completely transparent for the client code. Let's see what it means:
 
@@ -1072,4 +1068,4 @@ As soon as variants fully support pattern matching even exceptions in Ela are ba
 
 Finally we've got to the most important data type in Ela. Function. But functions are so important and fundamental - and there is so much to tell about them - that they will definitely require a separate article.
 
-The next part of Ela overview is fully devoted to functions, their pecularities in Ela, declaration syntax and operations available for them.
+The next part of Ela overview is fully devoted to functions, their pecularities in Ela, declaration syntax and operations available for them. 

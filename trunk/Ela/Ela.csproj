@@ -120,7 +120,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BuiltinFunc.cs" />
+    <Compile Include="Builtins.cs" />
     <Compile Include="CodeModel\ElaBlock.cs" />
     <Compile Include="CodeModel\ElaCastPattern.cs" />
     <Compile Include="CodeModel\ElaArrayPattern.cs" />

@@ -14,7 +14,7 @@ namespace Ela.Parsing
 		#region Methods
 		private ElaExpression GetBuiltin(Token t, string value)
 		{
-			var kind = BuiltinFunc.Kind(value);
+			var kind = Builtins.Kind(value);
 			return kind != ElaBuiltinFunctionKind.None ? (ElaExpression)new ElaBuiltinFunction(t) { Kind = kind } :
 				(ElaExpression)new ElaVariableReference(t) { VariableName = value };
 		}

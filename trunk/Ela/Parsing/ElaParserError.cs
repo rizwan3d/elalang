@@ -16,7 +16,7 @@ namespace Ela.Parsing
 
 		InvalidEscapeCode = 5,
 
-		// 6,
+		UnknownTrait = 6,
 
 		InvalidFunctionDeclaration = 7,
 
