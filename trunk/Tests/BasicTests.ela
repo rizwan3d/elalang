@@ -97,3 +97,19 @@ let cast {eq} =
     $ eq ("12.2":single) 12.2
     $ eq (124:string) "124"
     $ eq ("True":bool) true
+    
+let swap {eq} = 
+    let mutable x = 12 and y = "Hello" in
+    (
+        x <-> y
+        $ eq x "Hello"
+        $ eq y 12    
+    )
+    
+let swap2 {eq} =
+    let mutable arr = [|1,2,3|] and i = 0 in
+    (
+        arr.[0] <-> arr.[i <- i + 1 $ i]
+        $ eq arr.[0] 2
+        $ eq arr.[1] 1
+    )    

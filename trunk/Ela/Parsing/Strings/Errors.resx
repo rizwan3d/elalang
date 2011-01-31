@@ -127,7 +127,7 @@
     <value>Invalid record literal. A curly brace '{{' or '}}' is expected.</value>
   </data>
   <data name="ExpectedEof" xml:space="preserve">
-    <value>End of file missing. Probably a required 'end' clause is missing.</value>
+    <value>End of file missing. Probably a required 'end' clause or parenthesis is missing.</value>
   </data>
   <data name="ExpectedIdentifierToken" xml:space="preserve">
     <value>Invalid identifier syntax. Probably identifier contains an invalid character.</value>

@@ -1,3 +1,4 @@
+0.8.2.1:Fix:A bug fixed in parser that could case parser to crash in semantic action for a match entry with guards.
 0.8.2.0:Release:Release of Ela 0.8.2
 0.8.1.7:Change:A 'Seq' trait is decomissioned.
 0.8.1.6:New:An ability to test if a given value supports specified traits is added to pattern matching, i.e. 'x ? <Num,Eq>').

@@ -588,11 +588,12 @@ internal sealed partial class Parser {
 	void MatchEntry(ElaMatch match) {
 		var cexp = default(ElaExpression); 
 		var pat = default(ElaPattern); 
+		var ot = t; 
+		
 		if (StartOf(9)) {
 			RootPattern(out pat);
 		}
-		var entry = new ElaMatchEntry();				
-		entry.SetLinePragma(pat.Line, pat.Column);
+		var entry = new ElaMatchEntry(ot);
 		entry.Pattern = pat;				
 		match.Entries.Add(entry);
 		

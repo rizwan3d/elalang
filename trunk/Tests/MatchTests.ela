@@ -81,3 +81,27 @@ let castMatch {eqt} =
 let asMatch {eqt} =
     eqt (match 4 with 4@n = n == 4; _ = false end)
     $ eqt (match (1,2) with (1,2)@t = t == (1,2); _ = false end)
+    
+let guards {eqt} =
+    eqt v
+    where v = match (1,4,3) with
+              (x,y,z) | x > z = false;
+                      | z > x && x + z == y = true
+              end
+    end
+    
+let guards2 {eqt} =
+    eqt v
+    where v = match (10,10) with
+              (x,y) | x > y = false;
+                    | x < y = false;
+                    | else  = true
+              end
+    end 
+    
+let shortMatch {eq,eqt} =
+    if v ? (x,2,3) then
+        eq x 1
+    else
+        eqt false
+    where v = (1,2,3) end 

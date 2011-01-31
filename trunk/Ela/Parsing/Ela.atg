@@ -293,11 +293,13 @@ PRODUCTIONS
 	MatchEntry<ElaMatch match> = 
 		(. var cexp = default(ElaExpression); .)
 		(		
-			(. var pat = default(ElaPattern); .)			
+			(. 
+				var pat = default(ElaPattern); 
+				var ot = t; 
+			.)			
 			[ RootPattern<out pat> ]
 			(. 
-				var entry = new ElaMatchEntry();				
-				entry.SetLinePragma(pat.Line, pat.Column);
+				var entry = new ElaMatchEntry(ot);
 				entry.Pattern = pat;				
 				match.Entries.Add(entry);
 			.)

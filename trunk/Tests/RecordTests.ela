@@ -7,6 +7,11 @@
     $ eq rec'.dev "Basil"
     $ eq rec'.["lang"] "Ela"
     $ eq rec'.["dev"] "Basil"
+    
+let fromLiteral2 {eq} = 
+    eq rec'.["font-color"] "red"
+    $ eq rec'.["text-decoration"] "none"
+    where rec' = {"font-color"="red","text-decoration"="none"} end
 
 let changeItem {eq} =
 	let rec' = {mutable x=1} in
