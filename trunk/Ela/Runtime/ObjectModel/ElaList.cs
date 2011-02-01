@@ -253,15 +253,13 @@ namespace Ela.Runtime.ObjectModel
 
 		public IEnumerator<ElaValue> GetEnumerator()
 		{
-
-
 			if (this != Nil)
 			{
 				ElaObject xs = this;
 
 				do
 				{
-					yield return xs.Head(ElaObject.DummyContext);
+					yield return xs.Head(ElaObject.DummyContext).Id(DummyContext);
 					xs = xs.Tail(ElaObject.DummyContext).Ref;
 
 					if ((xs.Traits & ElaTraits.Thunk) == ElaTraits.Thunk)
@@ -302,7 +300,7 @@ namespace Ela.Runtime.ObjectModel
 
 		public int Length
 		{
-			get { return GetLength(null).AsInteger(); }
+			get { return GetLength(DummyContext).AsInteger(); }
 		}
 		#endregion
 	}

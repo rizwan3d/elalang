@@ -1,3 +1,5 @@
+0.8.2.3:Fix:A bug in implementation of 'length' function for lists is fixed - it could crash in a case of lazy lists or cycle forever.
+0.8.2.2:Fix:A bug fixed in enumeration of lazy lists.
 0.8.2.1:Fix:A bug fixed in parser that could case parser to crash in semantic action for a match entry with guards.
 0.8.2.0:Release:Release of Ela 0.8.2
 0.8.1.7:Change:A 'Seq' trait is decomissioned.

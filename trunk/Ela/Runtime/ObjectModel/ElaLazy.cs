@@ -137,7 +137,7 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Cons(ElaObject next, ElaValue value, ExecutionContext ctx)
 		{
-			return new ElaValue(new ElaList(next, value));
+			return new ElaValue(new ElaList(this, value));
 		}
 
 
@@ -155,7 +155,8 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Tail(ExecutionContext ctx)
 		{
-			return Value.Ref != null ? Value.Ref.Tail(ctx) : Default();
+			return Value.Ref != null && (Value.Ref.Traits & ElaTraits.Fold) == ElaTraits.Fold ? Value.Ref.Tail(ctx) : 
+				new ElaValue(ElaList.Nil);
 		}
 
 
@@ -169,7 +170,7 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override bool IsNil(ExecutionContext ctx)
 		{
-			return Value.Ref != null ? Value.Ref.IsNil(ctx) : true;
+			return false;
 		}
 		#endregion
 

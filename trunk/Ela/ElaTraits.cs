@@ -2,6 +2,7 @@
 
 namespace Ela
 {
+	[Flags]
 	public enum ElaTraits
 	{
 		None = 0x00,
