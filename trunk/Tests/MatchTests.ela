@@ -99,6 +99,16 @@ let guards2 {eqt} =
               end
     end 
     
+let guards3 {eqt} =
+    eqt v
+    where v = match (10,2) with
+              (x,y) | r > 8 = false;
+                    | r < 8 = false;
+                    | else  = true
+                    where r = x - y end
+              end
+    end  
+    
 let shortMatch {eq,eqt} =
     if v ? (x,2,3) then
         eq x 1
