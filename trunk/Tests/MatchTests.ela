@@ -115,3 +115,10 @@ let shortMatch {eq,eqt} =
     else
         eqt false
     where v = (1,2,3) end 
+    
+let shortMatch2 {eq,eqt} =
+    if v ? (`Some [x,2]) then
+        eq x 12
+    else
+        eqt false
+    where v = `Some [12,2] end 

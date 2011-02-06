@@ -98,6 +98,18 @@ let cast {eq} =
     $ eq (124:string) "124"
     $ eq ("True":bool) true
     
+let bitNot {eq} =
+      eq (~~~2) (--3)
+    $ eq (~~~124) (--125)
+    $ eq (~~~(--3)) 2
+    
+let unaryMinus {eq} =
+      eq (--3) (0-3)
+    $ eq (--256) (0-256)
+    $ eq (--2.2) (0-2.2)
+    $ eq (--45L) (0-45L)
+    $ eq (--42.42D) (0-42.42D)
+    
 let swap {eq} = 
     let mutable x = 12 and y = "Hello" in
     (
