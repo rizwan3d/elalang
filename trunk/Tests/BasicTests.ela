@@ -113,3 +113,14 @@ let swap2 {eq} =
         $ eq arr.[0] 2
         $ eq arr.[1] 1
     )    
+    
+let assign {eq,eqt} =
+    let mutable x = 12 in
+    (
+        x <- "Hello"
+        $ eq x "Hello"
+        $ x <- 24.12
+        $ eq x 24.12
+        $ x <- [1,2]
+        $ eqt (x ? [1,2])
+    )
