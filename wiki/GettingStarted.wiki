@@ -67,14 +67,14 @@ In many cases you might need to provide some arguments to Ela code. Here is a fu
 {{{
 public object Eval(string source, object args)
 {
-    var l = new ElaIncrementalLinker(CompilerOptions.Default, new LinkerOptions());
+    var l = new ElaIncrementalLinker(new LinkerOptions(), CompilerOptions.Default);
     l.SetSource(source);
     var res = l.Build();
 
     if (res.Success)
     {
         foreach (var pi in args.GetType().GetProperties())
-            res.Assembly.AddArgument(pi.PropertyName, pi.GetValue(args, null));
+            res.Assembly.AddArgument(pi.Name, pi.GetValue(args, null));
     
         var vm = new ElaMachine(res.Assembly);
         return vm.Run().ReturnValue.AsObject();
