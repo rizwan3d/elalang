@@ -51,7 +51,7 @@ Implementation of Ela includes four loosely coupled components - a parser (_ElaP
 Ela provides two implementations of a linker. The one that is named _ElaIncrementalLinker_ is used to support interactive mode. It allows you to build and execute Ela code chunk by chunk. Incremental linker is also useful if you want to evaluate Ela code in a string representation. If this is not what you need you can use a regular Ela linker. This is a sample in C# that shows how execute Ela code represented as a regular string:
 
 {{{
-var l = new ElaIncrementalLinker(CompilerOptions.Default, new LinkerOptions());
+var l = new ElaIncrementalLinker(new LinkerOptions(), CompilerOptions.Default);
 l.SetSource(elaSourceCode);
 var res = l.Build();
 
@@ -67,14 +67,14 @@ In many cases you might need to provide some arguments to Ela code. Here is a fu
 {{{
 public object Eval(string source, object args)
 {
-    var l = new ElaIncrementalLinker(CompilerOptions.Default, new LinkerOptions());
+    var l = new ElaIncrementalLinker(new LinkerOptions(), CompilerOptions.Default);
     l.SetSource(source);
     var res = l.Build();
 
     if (res.Success)
     {
         foreach (var pi in args.GetType().GetProperties())
-            res.Assembly.AddArgument(pi.PropertyName, pi.GetValue(args, null));
+            res.Assembly.AddArgument(pi.Name, pi.GetValue(args, null));
     
         var vm = new ElaMachine(res.Assembly);
         return vm.Run().ReturnValue.AsObject();
