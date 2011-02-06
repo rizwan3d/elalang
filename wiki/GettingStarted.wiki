@@ -37,7 +37,7 @@ You specify several folders separated by semicolon. Ela linker will use these fo
 
 Ela is implemented using C# 3.0 and runs on the .NET Framework 3.5 (or Mono 2.6). Higher versions of both .NET Framework and Mono are supported as well. All published builds are compiled using Microsoft C# 3.0 however the project can be also compiled with Microsoft C# 4.0. Other compilers (such as Mono C# compiler) are not currently used but would most likely work as well.
 
-The code repository contains a Visual Studio 2008 solution that includes several projects - the core of them are Ela (which is a language implementation) and Ela Console (a command line utility that can be used to run Ela programs). If you are there the language itself than _Ela_ project is all you need - this project is implemented in pure C#, without unsafe code and doesn't have any external dependencies except of the .NET Framework.
+The code repository contains a Visual Studio 2008 solution that includes several projects - the core of them are Ela (which is a language implementation) and Ela Console (a command line utility that can be used to run Ela programs). If you need the language itself than _Ela_ project is all you need - this project is implemented in pure C#, without unsafe code and doesn't have any external dependencies except of the .NET Framework.
 
 All published Ela binaries are build using _Any CPU_ configuration; you can of course build it targeting a more specific platform such as x86 (for example if you want it to run as a 32-bit process even in 64-bit operative system).
 
@@ -103,8 +103,7 @@ You can also create Ela modules in C# (or any other .NET language). This is an e
     {
         private sealed class RandomizeFunction : ElaFunction
         {
-            //Here we need to specify how many arguments our funcions has,
-            //in this particular case - just one.
+            //Here we need to specify how many arguments our function has
             internal RandomizeFunction() : base(2) { }
                 
             public override RuntimeValue Call(params RuntimeValue[] args)
@@ -145,4 +144,4 @@ You can also compile your module into regular .NET assembly, reference _Ela.dll_
 [assembly:ElaModule("Math", typeof(MathModule)]
 }}}
 
-Now you don't have to manually add this module into collection of modules. Ela linker will be able to find it without your help. But you will have to specify the dll name in your `open` directive like so: `open Math[MyMathLib]`.
+Now you don't have to manually add this module into collection of modules. Ela linker will be able to find it without your help. But you will have to specify the dll name in your `open` directive like so: `open Math[MyMathDll]`.
