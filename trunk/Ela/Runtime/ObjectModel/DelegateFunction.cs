@@ -1,8 +1,6 @@
 ﻿using System;
-using Ela.Runtime;
-using Ela.Runtime.ObjectModel;
 
-namespace Ela.Linking
+namespace Ela.Runtime.ObjectModel
 {
 	internal abstract class DelegateFunction : ElaFunction
 	{
