@@ -145,6 +145,12 @@ namespace Ela.Runtime
 		}
 
 
+		public ElaValue Convert(ObjectType type, ExecutionContext ctx)
+		{
+			return Ref.Convert(this, type, ctx);
+		}
+
+
 		public T ChangeType<T>()
 		{
 			var ti = typeof(T);

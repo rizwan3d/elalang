@@ -1,3 +1,4 @@
+0.8.2.7:New:A new public Convert method that accepts ObjectType and execution context added to ElaValue.
 0.8.2.6:New:Now ElaFunction supports a set of static Create method that allow to create an Ela function from Func<> delegates.
 0.8.2.5:Fix:Linker didn't scan files in the folder where 'elac.exe' is located.
 0.8.2.4:Fix:Local binding using 'where' didn't always create a lexical scope.
