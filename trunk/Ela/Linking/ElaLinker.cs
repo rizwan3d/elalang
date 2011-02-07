@@ -34,9 +34,14 @@ namespace Ela.Linking
 		public ElaLinker(LinkerOptions linkerOptions, CompilerOptions compOptions, FileInfo rootFile)
 		{
 			dirs = new FastList<DirectoryInfo>();
-			
-			if (linkerOptions.CodeBase.LookupStartupDirectory && rootFile != null)
-				dirs.Add(rootFile.Directory);
+
+			if (linkerOptions.CodeBase.LookupStartupDirectory)
+			{
+				if (rootFile != null)
+					dirs.Add(rootFile.Directory);
+
+				dirs.Add(new DirectoryInfo(Environment.CurrentDirectory));
+			}
 
 			dirs.AddRange(linkerOptions.CodeBase.Directories);
 			LinkerOptions = linkerOptions;

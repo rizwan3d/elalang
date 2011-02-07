@@ -15,7 +15,7 @@ namespace Ela.Compilation
 				AddError(ElaCompilerError.VariableDeclarationInitMissing, s);
 
 			var rec = IsMutualRecursive(s);
-
+			
 			if (s.In != null)
 				StartScope(false);
 			
@@ -62,7 +62,7 @@ namespace Ela.Compilation
 				}
 
 				if (s.Where != null)
-					CompileExpression(s.Where, map, Hints.Left);
+					CompileWhere(s.Where, map, Hints.Left);
 
 				var ed = s.InitExpression != null ? CompileExpression(s.InitExpression, map, Hints.None) : default(ExprData);
 				var fc = ed.Type == DataKind.FunCurry || ed.Type == DataKind.FunParams;
@@ -72,6 +72,9 @@ namespace Ela.Compilation
 					pdb.StartFunction(s.VariableName, po, ed.Data);
 					pdb.EndFunction(-1, cw.Offset);
 				}
+
+				if (s.Where != null)
+					EndScope();
 
 				if (addr != -1 && fc)
 					CurrentScope.ChangeVariable(s.VariableName, new ScopeVar(s.VariableFlags | ElaVariableFlags.Function, addr >> 8, ed.Data));
@@ -99,6 +102,13 @@ namespace Ela.Compilation
 		}
 
 
+		private void CompileWhere(ElaBinding s, LabelMap map, Hints hints)
+		{
+			StartScope(false);
+			CompileExpression(s, map, hints);
+		}
+
+
 		private void CompileIn(ElaBinding s, LabelMap map, Hints hints)
 		{
 			if (s.In != null)
@@ -121,9 +131,13 @@ namespace Ela.Compilation
 			if (s.Pattern.Type == ElaNodeType.DefaultPattern)
 			{
 				if (s.Where != null)
-					CompileExpression(s.Where, map, Hints.Left);
+					CompileWhere(s.Where, map, Hints.Left);
 
 				CompileExpression(s.InitExpression, map, Hints.Nested);
+
+				if (s.Where != null)
+					EndScope();
+
 				cw.Emit(Op.Pop);
 			}
 			else
@@ -138,9 +152,13 @@ namespace Ela.Compilation
 				else
 				{
 					if (s.Where != null)
-						CompileExpression(s.Where, map, Hints.Left);
+						CompileWhere(s.Where, map, Hints.Left);
 
 					CompileExpression(s.InitExpression, map, Hints.None);
+
+					if (s.Where != null)
+						EndScope();
+
 					addr = AddVariable();
 					cw.Emit(Op.Popvar, addr);
 				}

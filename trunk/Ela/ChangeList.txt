@@ -1,3 +1,5 @@
+0.8.2.5:Fix:Linker didn't scan files in the folder where 'elac.exe' is located.
+0.8.2.4:Fix:Local binding using 'where' didn't always create a lexical scope.
 0.8.2.3:Fix:A bug in implementation of 'length' function for lists is fixed - it could crash in a case of lazy lists or cycle forever.
 0.8.2.2:Fix:A bug fixed in enumeration of lazy lists.
 0.8.2.1:Fix:A bug fixed in parser that could case parser to crash in semantic action for a match entry with guards.
