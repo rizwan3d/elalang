@@ -164,7 +164,7 @@
     <Compile Include="IReadOnlyMap.cs" />
     <Compile Include="Compilation\OpSizeHelper.cs" />
     <Compile Include="ElaTranslationException.cs" />
-    <Compile Include="Linking\DelegateFunction.cs" />
+    <Compile Include="Runtime\ObjectModel\DelegateFunction.cs" />
     <Compile Include="Linking\ElaLinkerError.cs" />
     <Compile Include="Linking\ElaLinkerException.cs" />
     <Compile Include="Linking\ElaLinkerWarning.cs" />

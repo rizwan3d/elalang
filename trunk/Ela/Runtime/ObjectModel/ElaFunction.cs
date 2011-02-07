@@ -12,6 +12,7 @@ namespace Ela.Runtime.ObjectModel
 		private ElaMachine vm;
 		private static readonly ElaValue[] defaultParams = new ElaValue[] { new ElaValue(ElaUnit.Instance) };
 		private static readonly ElaValue[] emptyParams = new ElaValue[0];
+		private const string DEF_NAME = "<f>";
 
 		protected ElaFunction() : this(1)
 		{
@@ -97,6 +98,68 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
+		#region Static Methods
+		public static ElaFunction Create<T1>(Func<T1> fun)
+		{
+			return new DelegateFunction<T1>(DEF_NAME, fun);
+		}
+
+
+		public static ElaFunction Create<T1,T2>(Func<T1,T2> fun)
+		{
+			return new DelegateFunction<T1,T2>(DEF_NAME, fun);
+		}
+
+
+		public static ElaFunction Create<T1,T2,T3>(Func<T1,T2,T3> fun)
+		{
+			return new DelegateFunction<T1,T2,T3>(DEF_NAME, fun);
+		}
+
+
+		public static ElaFunction Create<T1,T2,T3,T4>(Func<T1,T2,T3,T4> fun)
+		{
+			return new DelegateFunction<T1,T2,T3,T4>(DEF_NAME, fun);
+		}
+
+
+		public static ElaFunction Create<T1,T2,T3,T4,T5>(Func<T1,T2,T3,T4,T5> fun)
+		{
+			return new DelegateFunction<T1,T2,T3,T4,T5>(DEF_NAME, fun);
+		}
+
+
+		public static ElaFunction Create<T1>(string name, Func<T1> fun)
+		{
+			return new DelegateFunction<T1>(name, fun);
+		}
+
+
+		public static ElaFunction Create<T1,T2>(string name, Func<T1,T2> fun)
+		{
+			return new DelegateFunction<T1,T2>(name, fun);
+		}
+
+
+		public static ElaFunction Create<T1,T2,T3>(string name, Func<T1,T2,T3> fun)
+		{
+			return new DelegateFunction<T1,T2,T3>(name, fun);
+		}
+
+
+		public static ElaFunction Create<T1,T2,T3,T4>(string name, Func<T1,T2,T3,T4> fun)
+		{
+			return new DelegateFunction<T1,T2,T3,T4>(name, fun);
+		}
+
+
+		public static ElaFunction Create<T1,T2,T3,T4,T5>(string name, Func<T1,T2,T3,T4,T5> fun)
+		{
+			return new DelegateFunction<T1,T2,T3,T4,T5>(name, fun);
+		}
+		#endregion
+
+
 		#region Methods
 		internal ElaFunction CloneFast()
 		{
@@ -168,7 +231,7 @@ namespace Ela.Runtime.ObjectModel
 
 		protected virtual string GetFunctionName()
 		{
-			var funName = "<f>";
+			var funName = DEF_NAME;
 
 			if (vm != null)
 			{
