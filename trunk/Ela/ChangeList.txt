@@ -1,3 +1,4 @@
+0.8.3.0:Release:Release of Ela 0.8.3
 0.8.2.10:Change:An internal type name for function is changed from 'function' to 'fun'.
 0.8.2.9:Fix:Syntax in the form 'x * -y' is now recognized as invalid (the correct one is 'x * -y').
 0.8.2.8:Fix:Self reference in variable declaration was always allowed for regular declarations as well that could cause VM to crush in certain cases.

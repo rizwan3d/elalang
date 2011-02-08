@@ -21,6 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{4583F31E-C
 	ProjectSection(SolutionItems) = preProject
 		Docs\ElaOverview1.txt = Docs\ElaOverview1.txt
 		Docs\ElaOverview2.txt = Docs\ElaOverview2.txt
+		Docs\ElaOverview3.txt = Docs\ElaOverview3.txt
 		Docs\GettingStarted.txt = Docs\GettingStarted.txt
 		Docs\OperatorPrecedence.txt = Docs\OperatorPrecedence.txt
 	EndProjectSection
