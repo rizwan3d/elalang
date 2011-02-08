@@ -20,7 +20,7 @@ namespace Ela.Parsing
 
 		InvalidFunctionDeclaration = 7,
 
-		// = 8,
+		UnexpectedMinus = 8,
 
 		// = 9,
 

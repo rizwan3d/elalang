@@ -75,6 +75,7 @@ TOKENS
 	LAMBDA = "\\".
 	EQ = "=".
 	SEQ = "$".
+	MINUS = "-".
 	
 	DOT = ".".
 	IN = "in".

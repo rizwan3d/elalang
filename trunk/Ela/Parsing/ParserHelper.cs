@@ -61,6 +61,9 @@ namespace Ela.Parsing
 
 		private ElaExpression GetOperatorFun(ElaExpression exp, ElaOperator op, bool right)
 		{
+            if (la.kind == _MINUS)
+                AddError(ElaParserError.UnexpectedMinus);
+
 			var bin = new ElaBinary(t) 
 			{ 
 				Operator = op,
@@ -126,7 +129,7 @@ namespace Ela.Parsing
 				val == "array" ? ObjectType.Array :
 				val == "record" ? ObjectType.Record :
 				val == "tuple" ? ObjectType.Tuple :
-				val == "function" ? ObjectType.Function :
+				val == "fun" ? ObjectType.Function :
 				val == "object" ? ObjectType.Object :
 				val == "unit" ? ObjectType.Unit :
 				val == "module" ? ObjectType.Module :

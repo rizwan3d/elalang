@@ -370,61 +370,61 @@ internal sealed class Scanner {
 		switch (t.val) {
 			case "->": t.kind = 17; break;
 			case "=": t.kind = 19; break;
-			case ".": t.kind = 21; break;
-			case "in": t.kind = 22; break;
-			case "to": t.kind = 23; break;
-			case "downto": t.kind = 24; break;
-			case "base": t.kind = 25; break;
-			case "match": t.kind = 26; break;
-			case "@": t.kind = 27; break;
-			case "?": t.kind = 28; break;
-			case "let": t.kind = 29; break;
-			case "private": t.kind = 30; break;
-			case "open": t.kind = 31; break;
-			case "at": t.kind = 32; break;
-			case "with": t.kind = 33; break;
-			case "while": t.kind = 34; break;
-			case "do": t.kind = 35; break;
-			case "for": t.kind = 36; break;
-			case "if": t.kind = 37; break;
-			case "else": t.kind = 38; break;
-			case "then": t.kind = 39; break;
-			case "raise": t.kind = 40; break;
-			case "return": t.kind = 41; break;
-			case "break": t.kind = 42; break;
-			case "continue": t.kind = 43; break;
-			case "try": t.kind = 44; break;
-			case "true": t.kind = 45; break;
-			case "false": t.kind = 46; break;
-			case "fail": t.kind = 47; break;
-			case "where": t.kind = 48; break;
-			case "mutable": t.kind = 49; break;
-			case "and": t.kind = 50; break;
-			case "end": t.kind = 51; break;
-			case "_": t.kind = 52; break;
-			case ":": t.kind = 55; break;
-			case "|": t.kind = 57; break;
-			case "<": t.kind = 59; break;
-			case ">": t.kind = 60; break;
-			case "::": t.kind = 61; break;
-			case "--": t.kind = 62; break;
-			case "..": t.kind = 63; break;
-			case "&": t.kind = 64; break;
-			case "<-": t.kind = 65; break;
-			case "<->": t.kind = 66; break;
-			case "<|": t.kind = 67; break;
-			case "|>": t.kind = 68; break;
-			case "||": t.kind = 69; break;
-			case "&&": t.kind = 70; break;
-			case "==": t.kind = 71; break;
-			case "<>": t.kind = 72; break;
-			case ">=": t.kind = 73; break;
-			case "<=": t.kind = 74; break;
-			case ">>>": t.kind = 75; break;
-			case "<<<": t.kind = 76; break;
-			case "++": t.kind = 77; break;
-			case "+": t.kind = 78; break;
-			case "-": t.kind = 79; break;
+			case "-": t.kind = 21; break;
+			case ".": t.kind = 22; break;
+			case "in": t.kind = 23; break;
+			case "to": t.kind = 24; break;
+			case "downto": t.kind = 25; break;
+			case "base": t.kind = 26; break;
+			case "match": t.kind = 27; break;
+			case "@": t.kind = 28; break;
+			case "?": t.kind = 29; break;
+			case "let": t.kind = 30; break;
+			case "private": t.kind = 31; break;
+			case "open": t.kind = 32; break;
+			case "at": t.kind = 33; break;
+			case "with": t.kind = 34; break;
+			case "while": t.kind = 35; break;
+			case "do": t.kind = 36; break;
+			case "for": t.kind = 37; break;
+			case "if": t.kind = 38; break;
+			case "else": t.kind = 39; break;
+			case "then": t.kind = 40; break;
+			case "raise": t.kind = 41; break;
+			case "return": t.kind = 42; break;
+			case "break": t.kind = 43; break;
+			case "continue": t.kind = 44; break;
+			case "try": t.kind = 45; break;
+			case "true": t.kind = 46; break;
+			case "false": t.kind = 47; break;
+			case "fail": t.kind = 48; break;
+			case "where": t.kind = 49; break;
+			case "mutable": t.kind = 50; break;
+			case "and": t.kind = 51; break;
+			case "end": t.kind = 52; break;
+			case "_": t.kind = 53; break;
+			case ":": t.kind = 56; break;
+			case "|": t.kind = 58; break;
+			case "<": t.kind = 60; break;
+			case ">": t.kind = 61; break;
+			case "::": t.kind = 62; break;
+			case "--": t.kind = 63; break;
+			case "..": t.kind = 64; break;
+			case "&": t.kind = 65; break;
+			case "<-": t.kind = 66; break;
+			case "<->": t.kind = 67; break;
+			case "<|": t.kind = 68; break;
+			case "|>": t.kind = 69; break;
+			case "||": t.kind = 70; break;
+			case "&&": t.kind = 71; break;
+			case "==": t.kind = 72; break;
+			case "<>": t.kind = 73; break;
+			case ">=": t.kind = 74; break;
+			case "<=": t.kind = 75; break;
+			case ">>>": t.kind = 76; break;
+			case "<<<": t.kind = 77; break;
+			case "++": t.kind = 78; break;
+			case "+": t.kind = 79; break;
 			case "*": t.kind = 80; break;
 			case "/": t.kind = 81; break;
 			case "%": t.kind = 82; break;
@@ -697,20 +697,20 @@ internal sealed class Scanner {
 				else if (ch == '`') {AddCh(); goto case 6;}
 				else {t.kind = 2; break;}
 			case 63:
-				{t.kind = 54; break;}
+				{t.kind = 55; break;}
 			case 64:
-				{t.kind = 56; break;}
+				{t.kind = 57; break;}
 			case 65:
 				{t.kind = 90; break;}
 			case 66:
-				recEnd = pos; recKind = 58;
+				recEnd = pos; recKind = 59;
 				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 59;}
 				else if (ch == 39) {AddCh(); goto case 60;}
-				else {t.kind = 58; break;}
+				else {t.kind = 59; break;}
 			case 67:
-				recEnd = pos; recKind = 53;
+				recEnd = pos; recKind = 54;
 				if (ch == '&') {AddCh(); goto case 65;}
-				else {t.kind = 53; break;}
+				else {t.kind = 54; break;}
 
 		}
 		t.val = new String(tval, 0, tlen);

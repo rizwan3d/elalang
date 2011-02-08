@@ -48,7 +48,7 @@ namespace Ela.Compilation
 				}
 				else
 				{
-					addr = AddVariable(s.VariableName, s, s.VariableFlags, -1);
+                    addr = -1;// AddVariable(s.VariableName, s, s.VariableFlags, -1);
 					addSym = true;
 				}
 

@@ -501,4 +501,7 @@
   <data name="UnknownTrait" xml:space="preserve">
     <value>There is no such trait as '{0}'.</value>
   </data>
+  <data name="UnexpectedMinus" xml:space="preserve">
+    <value>Invalid syntax. Did you mean unary negation, e.g. '--x'?</value>
+  </data>
 </root>
