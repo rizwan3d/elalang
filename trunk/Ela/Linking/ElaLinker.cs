@@ -26,7 +26,7 @@ namespace Ela.Linking
 		private const string OBJEXT = ".elaobj";
 		private const string DLLEXT = ".dll";
 
-		internal static readonly FileInfo MemoryFile = new FileInfo("memory");
+		internal static readonly string MemoryFile = "memory";
 		private Dictionary<String,Dictionary<String,ElaModuleAttribute>> foreignModules;
 		private FastList<DirectoryInfo> dirs;
 		private bool stdLoaded;
@@ -35,7 +35,7 @@ namespace Ela.Linking
 		{
 			dirs = new FastList<DirectoryInfo>();
 
-			if (linkerOptions.CodeBase.LookupStartupDirectory)
+			if (!linkerOptions.Sandbox && linkerOptions.CodeBase.LookupStartupDirectory)
 			{
 				if (rootFile != null)
 					dirs.Add(rootFile.Directory);
@@ -318,7 +318,7 @@ namespace Ela.Linking
 					mod != null ? mod.Line : 0, 
 					mod != null ? mod.Column : 0,
 					Path.GetFileNameWithoutExtension(file != null ? file.Name :
-						RootFile != null ? RootFile.Name : "<" + MemoryFile.Name + ">"));
+						RootFile != null ? RootFile.Name : "<" + MemoryFile + ">"));
 			return ret;
 		}
 

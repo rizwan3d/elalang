@@ -26,6 +26,8 @@ namespace Ela.Linking
 		public bool NoWarnings { get; set; }
 
 		public bool WarningsAsErrors { get; set; }
+
+		public bool Sandbox { get; set; }
 		#endregion
 	}
 }

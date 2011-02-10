@@ -31,8 +31,7 @@ namespace Ela
 		private string GetFileName()
 		{
 			return File == null ? String.Empty :
-				File == ElaLinker.MemoryFile ? "<" + File.Name + ">" :
-				File.FullName;
+				File == null ? "<memory>" : File.FullName;
 		}
 		#endregion
 

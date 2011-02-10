@@ -1,3 +1,4 @@
+0.8.3.1:New:An ability to executed Ela scripts in a limited trust environment added. Now ElaLinker has a Sandbox option (disabled by default) that allows it.
 0.8.3.0:Release:Release of Ela 0.8.3
 0.8.2.10:Change:An internal type name for function is changed from 'function' to 'fun'.
 0.8.2.9:Fix:Syntax in the form 'x * -y' is now recognized as invalid (the correct one is 'x * -y').
