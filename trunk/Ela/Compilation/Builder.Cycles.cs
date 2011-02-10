@@ -139,11 +139,11 @@ namespace Ela.Compilation
 			else
 				cw.Emit(Op.Nop);
 
+			cw.MarkLabel(cond);
+				
 			if (!optimize)
 			{
-				cw.MarkLabel(cond);
 				CompileExpression(s.Condition, newMap, Hints.None);
-
 				cw.Emit(Op.Brtrue, iter);
 			}
 			else
