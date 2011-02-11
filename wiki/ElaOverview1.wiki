@@ -1,4 +1,5 @@
 #summary Ela overview
+#labels Featured
 
 ==Introduction==
 
