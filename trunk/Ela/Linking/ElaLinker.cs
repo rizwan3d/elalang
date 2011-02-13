@@ -125,7 +125,7 @@ namespace Ela.Linking
 
 		private void LoadStdLib()
 		{
-			if (!stdLoaded && !String.IsNullOrEmpty(LinkerOptions.StandardLibrary))
+			if (!LinkerOptions.Sandbox && !stdLoaded && !String.IsNullOrEmpty(LinkerOptions.StandardLibrary))
 			{
 				var mod = new ModuleReference(null, LinkerOptions.StandardLibrary, null, 0, 0) { IsStandardLibrary = true };
 				var fi = default(FileInfo);
@@ -156,7 +156,11 @@ namespace Ela.Linking
 			{
 				frame.File = fi;
 				Assembly.AddModule(mod.ToString(), frame);
-				ProcessIncludes(frame);
+
+				if (frame.References.Count > 0 && LinkerOptions.Sandbox)
+					AddError(ElaLinkerError.IncludeInSandbox, fi, 0, 0);
+				else
+					ProcessIncludes(frame);
 			}
 		}
 
@@ -394,9 +398,8 @@ namespace Ela.Linking
 		{
 			Success = false;
 
-			if (file != null)
-				Messages.Add(new ElaMessage(Strings.GetError(error, args),
-					MessageType.Error, (Int32)error, line, col) { File = file });
+			Messages.Add(new ElaMessage(Strings.GetError(error, args),
+				MessageType.Error, (Int32)error, line, col) { File = file });
 		}
 
 
