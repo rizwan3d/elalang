@@ -99,3 +99,7 @@ let arrayMultiple2 {eq} =
     $ eq arr.[0] {id=1,n='a',y=1}
     $ eq arr.[1] {id=2,n='b',y=2}
     where arr = [|{id=x.id,n=x.n,y=y} @ x <- [|{id=1,n='a'},{id=2,n='b'}|], y <- [|1..10|] | x.id == y|] end
+    
+let compOperator {eqt} =
+    eqt (lst ? [2,4,6,8,10])
+    where lst = [] @@ [x @ x <- [1..10] | x % 2 == 0] end 

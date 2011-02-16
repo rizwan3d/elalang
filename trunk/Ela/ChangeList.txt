@@ -1,3 +1,5 @@
+0.8.3.5:New:Now ElaString supports 'Cons' trait (can be constructed using list construction operator).
+0.8.3.4:New:A comprehension operator '@@' is added. (With comprehension operator you can use comprehensions for any type that supports 'Gen' trait).
 0.8.3.3:New:Now ElaLinker raises an exception when a module reference is used in sandbox mode.
 0.8.3.2:Fix:A bug fixed in compilation logic of 'while true do...' expression. Invalid optimization for this pattern was causing VM to crush.
 0.8.3.1:New:An ability to executed Ela scripts in a limited trust environment added. Now ElaLinker has a Sandbox option (disabled by default) that allows it.

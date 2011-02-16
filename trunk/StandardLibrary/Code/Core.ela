@@ -1,23 +1,70 @@
-/* Core Ela functions */
+/* 
+    Ela core module
+    Created in 2011 by Basil Voronkov
+*/
 
-/* get-by-index operator, can be used with arrays, tuples, records and lists */
-let !! x y = x.[y]
+open CoreInternal[elalib]
 
-/* TUPLE FUNCTIONS */
+/* MATH */
 
-let => x y = (x, y)
+let abs x | x >= 0 = x;
+          | else   = --x
 
-let fst (x, _) = x
+let exp = CoreInternal.exp
 
-let snd (_, y) = y
+let gcd 0 0 = fail "Core.gcd: gcd 0 0 is undefined";
+        x y = gcd' (abs x) (abs y)
+              where gcd' x 0 = x;
+                         x y = gcd' y (x % y)
+              end
+              
+let cos = CoreInternal.cos
 
-let fst3 (x, _, _) = x
+let sin = CoreInternal.sin
 
-let snd3 (_, y, _) = y
+let tan = CoreInternal.tan
+
+let quot = CoreInternal.quot
+
+let lcm _ 0 = 0;
+        0 _ = 0;
+        x y = abs ((x `quot` gcd x y) * y)
+
+let floor = CoreInternal.floor
+
+let ceiling = CoreInternal.ceiling
+
+let subtract = flip (-)
+
+let atan = CoreInternal.atan
+
+let sqrt x = x ** 0.5
+
+let truncate = CoreInternal.truncate
+
+let log = CoreInternal.log
+
+let even x = x % 2 == 0
+
+let odd x = x % 2 <> 0
+
+let maxValue x y | x >= y = x;
+                 | else   = y
+
+let minValue x y | x <= y = x;
+                 | else   = y
+
+let round = CoreInternal.round
+
+let pi = CoreInternal.pi
+
+let e = CoreInternal.e
 
 
 /* LIST FUNCTIONS */
-        
+
+let !! x y = x.[y]
+
 let head x::_ = x;
          []   = fail "Empty list"
 
@@ -33,15 +80,15 @@ let init x::[] = [];
          []    = fail "Empty list"
 
 let nil _::_ = false; [] = true
-              
+
 let takeWhile f x::xs | f x  = x :: takeWhile f xs;
                       | else = [];
               f []           = []
 
 let take 0 _     = [];
          n x::xs = x :: take (n - 1) xs;
-	     _ []    = []
-	   
+        _ []    = []
+
 let skip 0 xs    = xs;
          n _::xs = skip (n - 1) xs;
          _ []    = []
@@ -68,12 +115,53 @@ let foldl f z x::xs = foldl f (f z x) xs;
        
 let foldr f z x::xs = f x (foldr f z xs);
           _ z []    = z
-          
+
+let concat xs = foldr (++) [] xs
+
+let product xs = foldl (*) 1 xs
+
 let reverse = foldl (flip (::)) []
         
 let zipWith z x::xs y::ys = z x y :: zipWith z xs ys;
             _ _     _     = []
-      
+
+let any f x::xs | f x  = true;
+                | else = any f xs;
+        _ []           = false
+        
+let all f x::xs | f x  = all f xs;
+                | else = false;
+        _ []           = false
+
+let sum xs = foldl (+) 0 xs
+
+let splitAt 0 xs            = ([],xs);
+            _ []            = ([],[]);
+            n x::xs | n > 0 = (x::xs',xs2')
+                              where (xs',xs2') = splitAt (n-1) xs end;
+            _ _             = fail "Core.splitAt: negative argument"
+
+let span p [] = ([],[]);
+         p (x::xs')@xs | p x  = (x::ys, zs);
+                       | else = ([],xs)
+                       where (ys,zs) = span p xs' end
+
+let breakList p xs = span p' xs
+                     where p' x = not (p x) end
+
+let drop 0 xs            = xs;
+         _ []            = [];
+        n _::xs | n > 0  = drop (n-1) xs;
+         _ _             = fail "Core.drop: negative argument"
+
+let dropWhile p [] = [];
+              p x::xs | p x  = dropWhile p xs;
+                      | else = x::xs
+
+let elem x = any (==x)
+
+let notElem x = all (<>x)
+
 let repeat x = x :: (& repeat x)
 
 let cycle head::tail = head :: (& cycle' tail)
@@ -81,11 +169,25 @@ let cycle head::tail = head :: (& cycle' tail)
                                     []    = head :: (& cycle' tail)
                        end
 
-let any f x::xs | f x  = true;
-                | else = any f xs;
-        f []           = false
+let iterate f x = x :: (& iterate f (f x))
 
-let elem x = any (==x)
+let replicate n x = take n (repeat x)
+
+let concatMap f = concat << map f
+
+
+/* TUPLE FUNCTIONS */
+
+let => x y = (x, y)
+
+let fst (x, _) = x
+
+let snd (_, y) = y
+
+let fst3 (x, _, _) = x
+
+let snd3 (_, y, _) = y
+
 
 /* COMBINATORS */
 
@@ -97,12 +199,15 @@ let const x _ = x
 let sub x y z = x z (y z)
 
 /* fixed point combinator with non strict behavior;
-	strict version of this function is as follows:
-	let fix f x = f (fix f) x */
+    strict version of this function is as follows:
+    let fix f x = f (fix f) x */
 let fix f = f (& fix f)
 
+
+/* MISC */
+
 /* currying and uncurrying for functions with pairs and
-	with triples. */
+    with triples. */
 let curry f x y = f (x, y)
 
 let uncurry f (x, y) = f x y
@@ -112,9 +217,20 @@ let curry3 f x y z = f (x, y, z)
 let uncurry3 f (x, y, z) = f x y z
 
 /* a function with a recursive definition that can be
-	evaluated solely for the side effects of it first argument.
-	rec can be used for the function 'f' of one argument, rec2 - 
-	for the function 'f' of two arguments. */
+    evaluated solely for the side effects of it first argument.
+    rec can be used for the function 'f' of one argument, rec2 - 
+    for the function 'f' of two arguments. */
 let rec f x = f x $ rec
 
 let rec2 f x y = f x y $ rec2
+
+let until p f x | p x  = x;
+                | else = until p f (f x)
+
+let compare x y | x == y = `EQ;
+                | x <= y = `LT;
+                | else   = `GT
+
+let chr (x ? int) = x:char
+
+let ord (x ? char) = x:int

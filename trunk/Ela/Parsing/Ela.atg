@@ -1519,6 +1519,18 @@ PRODUCTIONS
 					"?" IsOperatorPattern<out pat> 
 					(. exp = new ElaIs(t) { Expression = exp, Pattern = pat }; .)
 				)
+				|
+				(
+					(. 
+						var comp = default(ElaComprehension); 
+						var cexp = default(ElaExpression);
+					.)
+					"@@" "[" Expr<out cexp> ComprehensionExpr<cexp, out comp> "]"
+					(. 
+						comp.Initial = exp;
+						exp = comp; 
+					.)
+				)
 			)
 		}.		
 		

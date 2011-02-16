@@ -12,7 +12,7 @@
 10. :: (Cons) Right Associative
 11. + (Add) - (Subtract)
 12. * (Multiply) / (Divide) % (Modulus) ** (Power)
-13. : (Cast) is (Match)
+13. : (Cast) ? (Match) @@ (Comprehension)
 14. Custom Operator / Function in infix form
 15. ||| (Bitwise OR)
 16. ^^^ (Bitwise XOR)

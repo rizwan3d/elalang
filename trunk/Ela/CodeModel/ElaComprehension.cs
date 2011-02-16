@@ -26,7 +26,9 @@ namespace Ela.CodeModel
 		public override string ToString()
 		{
 			var format = Lazy ? "[& {0}]" :
-				Initial.Type == ElaNodeType.ArrayLiteral ? "[|{0}|]" : "[{0}]";
+				Initial.Type == ElaNodeType.ArrayLiteral ? "[|{0}|]" : 
+				Initial.Type == ElaNodeType.ListLiteral ? "[{0}]" :
+				Initial.ToString() + " @@ " + "[{0}]";
 
 			return String.Format(format, Generator.ToStringAsComprehension());
 		}

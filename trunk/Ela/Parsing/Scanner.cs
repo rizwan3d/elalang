@@ -208,8 +208,8 @@ internal sealed class Scanner {
 	const char EOL = '\n';
 	const int eofSym = 0; /* pdt */
 	
-	const int maxT = 91;
-	const int noSym = 91;
+	const int maxT = 92;
+	const int noSym = 92;
 
 
 	public Buffer buffer; // scanner buffer
@@ -429,12 +429,13 @@ internal sealed class Scanner {
 			case "/": t.kind = 81; break;
 			case "%": t.kind = 82; break;
 			case "**": t.kind = 83; break;
-			case "|||": t.kind = 84; break;
-			case "^^^": t.kind = 85; break;
-			case "&&&": t.kind = 86; break;
-			case "<<": t.kind = 87; break;
-			case ">>": t.kind = 88; break;
-			case "~~~": t.kind = 89; break;
+			case "@@": t.kind = 84; break;
+			case "|||": t.kind = 85; break;
+			case "^^^": t.kind = 86; break;
+			case "&&&": t.kind = 87; break;
+			case "<<": t.kind = 88; break;
+			case ">>": t.kind = 89; break;
+			case "~~~": t.kind = 90; break;
 			default: break;
 		}
 	}
@@ -701,7 +702,7 @@ internal sealed class Scanner {
 			case 64:
 				{t.kind = 57; break;}
 			case 65:
-				{t.kind = 90; break;}
+				{t.kind = 91; break;}
 			case 66:
 				recEnd = pos; recKind = 59;
 				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 59;}

@@ -8,7 +8,7 @@ namespace Ela.Runtime.ObjectModel
 	public sealed class ElaString : ElaObject, IEnumerable<ElaValue>
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Ord | ElaTraits.Len | ElaTraits.Convert | ElaTraits.Concat | ElaTraits.Fold;
+		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Ord | ElaTraits.Len | ElaTraits.Convert | ElaTraits.Concat | ElaTraits.Fold | ElaTraits.Cons;
 		private string buffer;
 		private int headIndex;
 		
@@ -235,6 +235,26 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override bool IsNil(ExecutionContext ctx)
 		{
 			return headIndex == buffer.Length;
+		}
+
+
+		protected internal override ElaValue Cons(ElaObject next, ElaValue value, ExecutionContext ctx)
+		{
+			var nextStr = next as ElaString;
+
+			if (nextStr == null)
+			{
+				ctx.InvalidType(ObjectType.String, (ObjectType)next.TypeId);
+				return Default();
+			}
+
+			if (value.DataType != ObjectType.String && value.DataType != ObjectType.Char)
+			{
+				ctx.InvalidType(ObjectType.String, value.DataType);
+				return Default();
+			}
+
+			return new ElaValue(new ElaString(value.ToString() + nextStr));
 		}
 		#endregion
 

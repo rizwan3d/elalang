@@ -43,7 +43,6 @@ namespace VersionTracker
 					grid.Rows[0].Cells[0].Value = CurrentVersion;
 					var c = (DataGridViewComboBoxCell)grid.Rows[0].Cells[1];
 					c.Value = c.Items[0];
-					Registry.SetValue(@"HKEY_CURRENT_USER\Software\VersionTracker", "FileName", CurrentFile);
 					UpdateState();
 				}
 			}
@@ -163,7 +162,8 @@ namespace VersionTracker
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			Application.Idle += new EventHandler(Application_Idle);
-			var val = Registry.GetValue(@"HKEY_CURRENT_USER\Software\VersionTracker", "FileName", null);
+			var args = Environment.GetCommandLineArgs();
+			var val = args.Length > 1 ? args[1].Trim('"') : null;
 
 			if (val != null)
 			{
