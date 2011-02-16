@@ -937,6 +937,19 @@ PRODUCTIONS
 					)
 					|
 					(
+						(.
+							var gexp = default(ElaExpression);
+							var cexp3 = default(ElaExpression);
+							var cond = new ElaCondition(t);
+							varExp.InitExpression = cond;
+						.)
+						(
+							"|" BindingGuard<out gexp> (. cond.Condition = gexp; .) "=" Expr<out cexp3> (. cond.True = cexp3; .) SEMI
+							BindingGuardList<ref cond>
+						)
+					)
+					|
+					(
 						(. if (name == null) AddError(ElaParserError.InvalidFunctionDeclaration); .)				
 						FunExpr<out cexp>
 						(. varExp.InitExpression = cexp; .)
@@ -949,6 +962,45 @@ PRODUCTIONS
 				AND WhereBindingBody<out cd>
 				(. varExp.And = (ElaBinding)cd; .)
 			]
+		).
+		
+	BindingGuard<out ElaExpression exp> = 
+		(. exp = null; .)
+		(
+			BinaryExpr<out exp>
+			{
+				(. var old = exp; .)
+				"," 
+				(. var ot = t; .)
+				BinaryExpr<out exp>
+				(.
+					exp = new ElaBinary(t) { Operator = ElaOperator.BooleanAnd, Left = old, Right = exp };
+				.)
+			}
+		).
+		
+	BindingGuardList<ref ElaCondition cond> =
+		(.
+			var gexp = default(ElaExpression);
+			var cexp = default(ElaExpression);
+		.)
+		(				
+			"|" 
+			(
+				(
+					(.
+						var newCond = new ElaCondition(t);
+						cond.False = newCond;
+						cond = newCond;
+					.)
+					BindingGuard<out gexp> (. cond.Condition = gexp; .) "=" Expr<out cexp> (. cond.True = cexp; .)
+					[ SEMI BindingGuardList<ref cond> ]
+				)
+				|
+				(
+					"else" "=" Expr<out cexp> (. cond.False = cexp; .)
+				)
+			)
 		).
 		
 	VariableDeclarationBody<ElaVariableFlags flags, out ElaExpression exp> =
@@ -972,6 +1024,19 @@ PRODUCTIONS
 						(. if (name == null) AddError(ElaParserError.InvalidFunctionDeclaration); .)				
 						FunExpr<out cexp>
 						(. varExp.InitExpression = cexp; .)
+					)
+					|
+					(
+						(.
+							var gexp = default(ElaExpression);
+							var cexp3 = default(ElaExpression);
+							var cond = new ElaCondition(t);
+							varExp.InitExpression = cond;
+						.)
+						(
+							"|" BindingGuard<out gexp> (. cond.Condition = gexp; .) "=" Expr<out cexp3> (. cond.True = cexp3; .) SEMI
+							BindingGuardList<ref cond>
+						)
 					)
 					| 
 					(
