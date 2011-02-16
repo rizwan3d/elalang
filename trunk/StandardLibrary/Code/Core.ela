@@ -66,18 +66,18 @@ let e = CoreInternal.e
 let !! x y = x.[y]
 
 let head x::_ = x;
-         []   = fail "Empty list"
+         []   = fail "Core.head: Empty list"
 
 let tail _::xs = xs;
-         []    = fail "Empty list"
+         []    = fail "Core.tail: Empty list"
 
 let last x::[] = x;
          _::xs = last xs;
-         []    = fail "Empty list"
+         []    = fail "Core.last: Empty list"
 
 let init x::[] = [];
          x::xs = x :: init xs;
-         []    = fail "Empty list"
+         []    = fail "Core.init: Empty list"
 
 let nil _::_ = false; [] = true
 
@@ -158,6 +158,11 @@ let dropWhile p [] = [];
               p x::xs | p x  = dropWhile p xs;
                       | else = x::xs
 
+let index lst = index' 0 lst
+                where index' n x::xs = index' (n+1) xs;
+                             n []    = n
+                end
+
 let elem x = any (==x)
 
 let notElem x = all (<>x)
@@ -174,6 +179,10 @@ let iterate f x = x :: (& iterate f (f x))
 let replicate n x = take n (repeat x)
 
 let concatMap f = concat << map f
+
+let minimum x::xs = foldl minValue x xs
+
+let maximum x::xs = foldl maxValue x xs
 
 
 /* TUPLE FUNCTIONS */
@@ -192,11 +201,11 @@ let snd3 (_, y, _) = y
 /* COMBINATORS */
 
 /* id, const and sub are SKI combinators */
-let id x = x
+let id x = x //I
 
-let const x _ = x
+let const x _ = x //K
 
-let sub x y z = x z (y z)
+let sub x y z = x z (y z) //S
 
 /* fixed point combinator with non strict behavior;
     strict version of this function is as follows:
