@@ -1,0 +1,509 @@
+#summary Ela overview 5. Pattern matching
+
+==Introduction==
+
+This chapter contains an overview of all pattern matching constructs that are available in Ela and a detailed descriptions of all patterns.
+
+==Why pattern matching?==
+
+You are probably aware of `switch` statement which is adopted by most of C style programming languages. It is not a very powerful programming construct and has a lot of limitations such as support for matching only against constant values but it does improve code readability in many cases in comparison if a chain of `if..else` statements. Why? The reason is that `switch` is more declarative - instead of coding a sequence of conditions you simply put an expression and a list of its possible values beneath it. 
+
+However as I've mentioned before `switch` is a pretty limited construct. If you need something more complex than compare two integers or check an enumeration value than you have to stick with the regular imperative condition operator. But what if you have a `switch` with no limitations at all? What if you can match against not only simple values but complex as well such as arrays, records, lists? What if you can use nested patterns in your matches and check whether a provided value is, say, a list which elements are tuples which elements are strings - and all of this in a single expression? What if you can not only compare the values but also declare variables on the fly, e.g. test if a first element of your array satisfies a specified condition and bind a second one to a variable `x` - and again with a single short and readable expression?
+
+I believe that the answer to all these questions is pretty obvious. If you have such a powerful `switch` construct you will probably use it all the time. And that is exactly what happens in Ela. Ela _pattern matching_ is `switch` on steroids. In Ela code you can see pattern matching everywhere, as soon as it makes your code more dense and improves readability at the same time. There is also a number of language constructs that enable you to do pattern matching.
+
+==Ways to do pattern matching==
+
+===Match expression===
+
+The basic language construct that can be used to do pattern matching is a `match` expression. Its syntax is somewhat similar to the well known `switch` statement:
+
+{{{
+let x = 42
+
+match x with
+42 = "That's the right answer!";
+_  = "No, try one more time!"
+end
+}}}
+
+Each match entry consists of two parts - a pattern on the left side and an expression following an equatation operator that is evaluated if this pattern was successfully matched. As soon as `match` is an expression and yields a value its value is always a result of evaluation of an expression paired with successfully matched pattern. If nothing was matched than a runtime exception is raised. In order to avoid this we usually use a so called default pattern like in the code sample above. Default pattern, denoted by `_`, simply means that we should fall in here only if there is no better alternatives. 
+
+It is important to understand however than unlike most of `switch` statement implementations match entries are evaluated in order therefore the following code wouldn't work as expected:
+
+{{{
+match x with
+_  = "No, try one more time!";
+42 = "That's the right answer!"
+end
+}}}
+
+Even if the value of `x` is the desired `42` the expression above will always evaluate to `"No, try one more time!"` as soon as default pattern `_` matches any value and it is tried in the first place. Ela compiler will even warn you in such a case that you are not doing something right:
+
+{{{
+<memory>(1,14): Warning ELA402: This entry matches any value. All next match ent
+ries will be ignored.
+<memory>(1,14): Hint ELA503: Move a pattern that matches any value (such as '_'
+or variable declaration) to the end of the match.
+}}}
+
+Speaking about syntax each pattern entry should be terminated by semicolon (which is not required but allowed after the last entry). Also the whole match expression should end with a mandatory `end` keyword.
+
+You can match against any expression you want, not only variable reference, e.g. `match 2 + 2 with...` or `match sin x * 2` are perfectly legal. You can also match against several values at once like so:
+
+{{{
+match (x, "Answer") with
+(42, "Answer") = "That's the right answer!";
+_              = "No, try one more time!"
+end
+}}}
+
+Sometimes declarative patterns are not enough and in order to make your life easier Ela supports so called _boolean guards_. Boolean guard is an expression immediately following a pattern. If we have a guard in our match entry than this entry will be considered if matched only if pattern was matched successfully and a guard evaluated to true. This is how it looks like:
+
+{{{
+match (x, "Answer") with
+(42, s) | s == "Answer" = "That's the right answer!";
+_                       = "No, try one more time!"
+end
+}}}
+
+Even when you have several conditions for a single pattern guards are a good alternative to `if..else` expression:
+
+{{{
+match (x, "Answer") with
+(x, "Answer") | x == 42 = "That's the right answer!";
+	          | x == 41 = "No, but you're close!";
+_                       = "No, try one more time!"
+end
+}}}
+
+As you can see in such a case you can omit a pattern declaration to make your code more visual. Also if you omit an explicit pattern declaration you can use an `else` keyword to denote a case when your pattern was a success but no conditions were applied:
+
+{{{
+match (x, "Answer") with
+(x, "Answer") | x == 42 = "That's the right answer!";
+	          | x == 41 = "No, but you're close!";
+			  | else    = "No, try one more time!";
+_                       = "You are doing something wrong!"
+end
+}}}
+
+Last but not least - you can declare local variables that are scoped to your match entry (or several match entries if they share the same pattern).
+
+{{{
+match (x, "Answer") with
+(x, "Answer") | x == 42 = "That's the right answer!";
+	          | even    = "No, but the answer is even too!";
+			  | else    = "No, try one more time!"
+			  where even = x % 2 == 0 end;
+_                       = "You are doing something wrong!"
+end
+}}}
+
+As you remember from the part discussing syntax you can use a `where` construct to declare varaibles scoped to match entries. This construct is supposed to be the part of a match entry therefore it should be terminated with semicolon. And yes, with `where` you can declare local functions in the same way as you do using `let` and introduce several variables at once by chaining them using `and` keyword:
+
+{{{
+match (x, "Answer") with
+(x, "Answer") | x == 42 = "That's the right answer!";
+	          | even    = "No, but the answer is even too!";
+			  | odd     = "No, try one more time!"
+			  where even = x % 2 == 0 and
+					odd  = not even
+		      end
+_                       = "You are doing something wrong!"
+end
+}}}
+
+Well, that is really it.
+
+===Pattern matching in functions===
+
+We've dealed with that several times already so I am going to be really short here. First you remember that when you do pattern matching in regular (non anonymous) function definitions the syntax is basically the same as with `match` construct - with the only exception that if you need to match against several function arguments you don't have to use tuple syntax but simply to list all patterns in a row separated by spaces:
+
+{{{
+let checkAnswer x "Answer" | x == 42 = "That's the right answer!";
+				   		   | even    = "No, but the answer is even too!";
+						   | odd     = "No, try one more time!"
+						   where even = x % 2 == 0 and
+						         odd  = not even
+						   end
+                _  _                 = "You are doing something wrong!"
+}}}
+
+For the default match entry you have to specify a default pattern for each parameter. And you shouldn't terminate the whole construct with `end` keyword.
+
+Pattern matching in lambdas is a little bit different. First of all you can only use a single match entry; the is no possibility to define several function bodies for each set of pattern as with regular functions.
+
+{{{
+\x "Answer" | x == 42 -> "That's the right answer!"
+}}}
+
+And the second difference as you can see above is that pattern and expression are separated by `->` not by equatation operator.
+
+===Pattern matching using ? operator===
+
+Sometimes you need a more lightweight construct than the regular `match` expression and that is the case when you might consider to use `?` operator. The left operand of this operator is a value to be matched and the right operand is a pattern:
+
+{{{
+ela>[1,2] ? [h,2]
+
+True
+
+ela>h
+
+1
+}}}
+
+The result of such operation is always a boolean value, either `true` or `false` - and that is one of the most serious differences between `?` operator and a `match` expression. With `?` operator if you specify a pattern that doesn't match no runtime exception is raised - you simple have `false` as a result of its evaluation.
+
+===Pattern matching in variable bindings===
+
+Another way to do pattern matching is when you declare variables using `let` or `where` constructs. You always have a possibility to specify a pattern instead of a variable name like so:
+
+{{{
+ela>let [|x,y|] = [|12,24|]
+
+ela>x
+
+12
+
+ela>y
+
+12
+}}}
+
+Frequently this is a convinient way to declare several variables at once using tuple pattern:
+
+{{{
+ela>let (num, str) = (42, "Answer")
+
+ela>num
+
+42
+
+ela>str
+
+Answer
+}}}
+
+Ela compiler is smart enough to see that you don't really need to create a tuple here but just to intialize a set of variables.
+
+It is important to remember that when you pattern matching in binding constructs and an initialization expression doesn't match a pattern a runtime exception is raised. As soon as there is no way to specify a "default" pattern to escape try to be careful with pattern matching inside binding constructs.
+
+However you can still use guards in `let` and `where` bindings like so:
+
+{{{
+let y = 2
+
+let x | y > 0 = y;
+	  | else  = 0
+}}}
+
+When guards are used inside `let` and `where` bindings and `else` clause is mandatory.
+
+==Patterns==
+
+All patterns can be divided into two main groups - patterns that always successfully match against a provided value (and it doesn't matter what this value is) and patterns that only do match if a given value falls under certain restrictions. Patterns that always match are _variable_ pattern, _default_ pattern and _as_ pattern. All other patterns only match a specific value.
+
+===Variable pattern===
+
+This one is simple. Yet very useful and common. All it does is binding a given value to a specified variable. Basically you can see variable patterns everywhere. Even in the `let` construct in the form `let x = 2` we have a pattern matching that uses a variable pattern. 
+
+As soon as variable pattern matches any value it is usually moved to the end of the `match` construct - otherwise all other entries will be ignored as soon as they are processed in order:
+
+{{{
+match x with
+0 = "You have nothing!";
+1 = "You have just one!";
+x = processOther x
+end
+}}}
+
+Also in many cases this pattern is nested within other patterns as you have seen in multiple code samples before. For example our `filter` function:
+
+{{{
+let filter f x::xs | f x  = x :: filter f xs;
+                   | else = filter f xs;
+           _ []           = []
+}}}
+
+Here you can see a pattern `x::xs` that matches against a linked list with `x` and `xs` beign variable patterns.
+
+===Default pattern===
+
+Default pattern is used in two cases - when you need to create a default match entry (again do not forget to move to the very end of your `match` expression) or to denote that you don't need a specific value in your code.
+
+Here is the first usage:
+
+{{{
+match x with
+0 = "You have nothing!";
+1 = "You have just one!";
+_ = "I don't know how many you have."
+end
+}}}
+
+And the second one:
+
+{{{
+let (_,x) = (1,2)
+}}}
+
+Here we say that we are aware that a matched value is a pair but we don't really need the first value - so ignore it and bind the `x` variable to the second element. You can see a similar approach in the `filter` function definition above where we don't need to use a predicate function in the very last match clause - therefore we don't bind it the `f` variable like before but simply ignore it.
+
+===As pattern===
+
+_As_ pattern is used to bind the whole matched expression to a specific variable. It is different from the regular variable pattern as soon as the latter only allows you bind when _as_ pattern can have a nested pattern and therefore to match and to bind at the same time like so:
+
+{{{
+let (x::xs)@lst = [1..10]
+}}}
+
+Here we are binding the first element of our list to `x`, the tail to `xs` and the whole list to `lst` variable.
+
+===Grouping pattern===
+
+Grouping pattern is used in the same way as a regular grouping construct in your expressions. Patterns are processed from left to right and you can affect how they are interpreted using grouping. For example, pattern `(x::y)::z` is pretty different from `x::(y::z)`. The first one is used to match a list which first element is another list and the last can be any value including nil list. The second pattern is used to match a list which second element is a list of two elements.
+
+In certain cases grouping pattern is required for disambiguation. For example:
+
+{{{
+let fun (`Some x) = x
+}}}
+
+Here we have a function `fun` that accepts a single argument which is a polymorphic variants. Without parenthesis it will be unclear whether this is a function for a single argument or for two arguments (the first is a variant with no value which is perfectly valid and the second - any value that binds to `x`).
+
+===Simple literal patterns===
+
+These are numeric, string, char and boolean (`true` and `false` respectively) patterns. With these patterns you can check whether a given expression exactly matches a specific value:
+
+{{{
+match x with
+'a' = 'A';
+'b' = 'B';
+'c' = 'C';
+x   = x;
+end
+}}}
+
+The same for integers:
+
+{{{
+match x with
+0 = "We have zero";
+1 = "We have just a single one";
+_ = "We have something different!"
+end
+}}}
+
+Please bear in mind that Ela only support implicit conversions between certain numeric types (as it was described in the chapter devoted to data types). If you try to match a char with an integer literal pattern you will get a runtime error.
+
+Also for sake of convinience numeric patterns allow to use unary minus operator to match against negative numbers:
+
+{{{
+match x with 
+--2 = 2;
+x   = x
+end
+}}}
+
+===Unit pattern===
+
+This pattern allows to match agains unit. It succeeds only if a provided value is of type unit. This pattern is most frequently used in function definition as soon as it makes these definitions more visual:
+
+{{{
+let point () = { mutable x = 0, mutable y = 0 }
+}}}
+
+===Tuple pattern===
+
+Tuple pattern in spite of its name can be used to match any value has a notion of length and supports an access to its elements by index. These are tuples at the first place, records, arrays and even linked lists. Tuple pattern uses a tuple literal as follows:
+
+{{{
+match x with
+(1,2,y) = x;
+(2,2,z) = z
+end
+}}}
+
+Tuple pattern always checks a length of a provided value. Therefore if you try to match a triple of elements using a pattern `(x,y)` you will have a runtime match error. This is true for all types that can be matched using tuple pattern.
+
+If you want to match a tuple with just a single element you should put a trailing comma like so:
+
+{{{
+let (x,) = (1,)
+}}}
+
+===Array pattern===
+
+Array pattern is like tuple pattern with the exception that it can be only used to match arrays:
+
+{{{
+let [| (1,2), x |] = [| (1,2), 3 |]
+}}}
+
+In this example you can see multiple nesting of patterns - our `let` binding requires the initialization value to be of type `array` with the tuple as the first element.
+
+===Record pattern===
+
+Record pattern is used for records but is pretty diffrent in its behavior from tuple and array paterns. Record pattern doesn't calculate the length of a provided value. What it does is checking whether a given record has a specified field:
+
+{{{
+let rec = {x = 1, y = 2}
+
+let {x = x', y = y'} = rec
+}}}
+
+Here we test if a record `rec` contains fields `x` and `y` and if it is true bind value of `x` field to the variable `x'` and value of `y` field to the variable `y'`. If our record contains some additional fields that are not listed in the pattern this is perfectly OK and the match would still be a success. However if a record is missing either `x` or `y` field we will have a runtime error.
+
+As usual you can nest patterns here as well:
+
+{{{
+let {x=(x',y'),y=[| (1,2), "Hello", z |]} = rec
+}}}
+
+In a case when you need to bind record fields to the variables of the same name there is a short syntax for doing that:
+
+{{{
+let {x,y} = rec //the same as let {x=x,y=y} = rec
+}}}
+
+===Head and tail pattern===
+
+This is one of the most frequently used patterns in Ela. You have seen its application many times before. This pattern is used to deconstruct a list by splitting it into head and tail like so:
+
+{{{
+let (x::xs) = [1,2,3]
+
+let (y::y2::ys) = [1,2,3,4,5]
+}}}
+
+This pattern can be of an arbitrary length. In pattern `y::y2::ys` the variable `y` and `y2` are bound to the first and second list elements and `ys` is bound to the list tail - the rest part of the list excluding the very first items. 
+
+Head and tail pattern doesn't calculate the whole list length and as a result it is perfectly valid to use a pattern in the form `x::xs` to match a list with, say, one hundred of elements.
+
+Again nesting is perfectly legal with this pattern:
+
+{{{
+let (1,2)::{x,y}::xs = someList
+}}}
+
+When you need to match all the list elements and therefore to make sure that a provided list is of a particular length you can put a nil list literal at the end of the pattern like so:
+
+{{{
+let (x::y::[]) = [1,2]
+}}}
+
+In this code sample we are matching against a list that contains exactly two elements. If we have a list with a different number of elements a match will fail.
+
+Don't forget to use parenthesis around this pattern when you use in `let` and `where` bindings. In all other cases parenthesis are not required.
+
+===List pattern===
+
+List pattern is just a syntax sugar for the head and tail pattern. For example, the following pattern:
+
+{{{
+let [x,y] = [1,2]
+}}}
+
+is completely equivalent to the code sample in the previous section but tends to be a little bit shorter and visual.
+
+===Variant pattern===
+
+This pattern can be used solely to match polymorphic variants. It shares the same syntax with variant literal:
+
+{{{
+match x with
+`Some x = x;
+`None = 0
+end
+}}}
+
+As soon as in Ela you cannot tag several values at once the syntax for the variant and its pattern allows to specify only a single element right after the tag name. Of course you can use pattern here including tuple pattern (which is a typical way of tagging several values at once):
+
+{{{
+match x with
+`Some (1,x,y) = x + y
+end
+}}}
+
+You can also omit a pattern after the tag name like so:
+
+{{{
+match x with
+`Some = "Hey, we have something!"
+end
+}}}
+
+This pattern will be if a given value has a tag equals to _Some_ even if this is a tag with no value. In other words the following value for `x` from the example above are equally valid: ``Some`, ``Some 2`, ``Some (1,2,3)`, etc.
+
+You also have an ability to match against a polymorphic variant with any name. It is done like so:
+
+{{{
+match x with
+` (1,x,y) = x + y
+end
+}}}
+
+You are simply putting a back apostrophe without a tag name and as a result you have a pattern that will match any tag name. However it will fail if a given value is not tagged.
+
+Remember that you can omit parenthesis aroung variant patterns only when using `match` expressions. In all other cases parenthesis are required:
+
+{{{
+let (`Some x) = `Some 42
+
+let unbox (`Box x) = x
+}}}
+
+===Type check pattern===
+
+This pattern allows to check data type of a provided value. It fails if a given value is not of the specified type. The syntax of this pattern is as follows:
+
+{{{
+match x with
+x ? int = "You have int";
+x ? long = "You have long"
+end
+}}}
+
+All data types in Ela have special internal names. Here they are:
+
+  * _int_ - 32-bit integers
+  * _long_ - 64-bit integers
+  * _single_ - 32-bit floating point numbers
+  * _double_ - 64-bit floating point numbers
+  * _char_ - Chars
+  * _string_ - Strings
+  * _tuple_ - Tuples
+  * _list_ - Linked lists
+  * _record_ - Records
+  * _array_ - arrays
+  * _variant_ - polymorphic variants
+  * _lazy_ - lazy expressions, or thunks
+  * _modules_ - modules
+  
+===Trait check pattern===
+
+This pattern allows you to check whether a provided value supports specified traits. If this is not the case the pattern fails. This is how this pattern looks like:
+
+{{{
+match x with
+<Len,Get> = "Might be a tuple";
+<Len,FieldGet> = "Most probably a record";
+<Num> = "Might be a number. Or a tuple"
+end
+}}}
+
+You can find a list of all supported traits in the previous chapter.
+
+===Type enforcement pattern===
+
+This pattern doesn't perform any verifications. On the contrary it tries to convert a given value to the specified type. It has the following syntax:
+
+{{{
+let x:int = "42"
+}}}
+
+Here we are trying to bind variable `x` to the value `"42"` of type string. However thanks to the type enforcement pattern this value gets converted to 32-bit integer and `x` is actually assigned with an integer value.
+
+You should be careful with this pattern however. In many cases it is not possible to convert one type to another (e.g. there is no meaningful conversion between linked list and a floating point number) and in such cases a runtime error is raised.

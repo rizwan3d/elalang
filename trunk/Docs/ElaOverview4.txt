@@ -1,0 +1,11 @@
+#summary Ela overview 4. Traits
+
+==Introduction==
+
+In this chapter I will tell you about some advanced aspects of Ela type system - precisely _traits_ - that provide make type system very flexible and easily extendable. 
+
+==What this is all about==
+
+_Trait_ is like interface in an object oriented language. Not exactly like but the similarity can be obviosly established. Traits describes the behavior that is supported by a particular value. For example there is a trait _Num_ that includes all arithmentic operations. Taking into account the fact that some give value supports trait _Num_ doesn't neccessarily mean that this given value is actually a number. It means that it can _act_ like a number. Tuples which are not really numbers does support trait _Num_ and implement it by applying arithmentic operations to their elements. And strings which are not lists in Ela (but are indexed arrays exactly like .NET strings) can be folded like lists and even constructed using list construction operator.
+
+Thanks to the traits all operations in Ela don't deal with some specific types but operate with traits. You can always create your own data type that has nothing to do with built-in numerics but fully support addition, multiplication, division, etc. This fact renders all Ela operations as _abstract operations_. And as a result you gain a lot of flexibility in the type system.
