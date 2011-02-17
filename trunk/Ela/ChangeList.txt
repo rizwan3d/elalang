@@ -1,3 +1,5 @@
+0.8.4.0:Release:Release of Ela 0.8.4
+0.8.3.7:New:Partial application (in the form '(@@ [x,x<-seq])') for the comprehension operator has added.
 0.8.3.6:New:An ability to use guards (multiple, with mandatory 'else' guard) in 'let' and 'where' bindings added.
 0.8.3.5:New:Now ElaString supports 'Cons' trait (can be constructed using list construction operator).
 0.8.3.4:New:A comprehension operator '@@' is added. (With comprehension operator you can use comprehensions for any type that supports 'Gen' trait).

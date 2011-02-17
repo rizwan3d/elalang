@@ -206,6 +206,19 @@ PRODUCTIONS
 			)
 			|
 			(
+				"@@"
+				(. 
+					var comp = default(ElaComprehension); 
+					var cexp2 = default(ElaExpression);
+				.)
+				"[" Expr<out cexp2> ComprehensionExpr<cexp2, out comp> "]"
+				(. 
+					comp.Initial = hiddenVar;
+					exp = GetPartialFun(comp); 
+				.)
+			)
+			|
+			(
 				":" 
 				(. ot = t; .)
 				ident 
