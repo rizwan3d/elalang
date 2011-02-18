@@ -639,6 +639,87 @@ ela>newList.[2]
 
 You should also remember that accessing list elements by index is not a very effective operation. We have to iterate through the whole list and count each iteration - that is really the only way to do it. If you need to access elements by index frequently you might consider to use a different data structure instead - e.g. _array_ which has a constant access time.
 
+=== Thunks and lazy lists ===
+
+Thunks allow you to do deferred evaluation. With this data type you mark a certain expression in your code as the one that should be evaluated in a lazy manner - not immediately after it is declared but only when you actually need its value (e.g. to perform some kind of an operation with it).
+
+This is how you can initialize a thunk in Ela:
+
+{{{
+ela>let thunk = (& let temp = 2 + 2 in cout temp $ temp)
+}}} 
+
+As you can see we have an expression that initializes a local variable with a result of an addition of two numbers, prints this result to the output and returns it. But when you copy the code above to Ela Console you see nothing. That is because an expression in `(& ... )` braces is not evaluated. Instead an instance of a special data type is created that wraps this expression and `thunk` variable is initialized with an instance of this data type.
+
+But now we know that when Ela will finally calculate our lazy expression a console output in it will be triggered and signal us that calculation is finally done.
+
+Let's see what happens if we pass `thunk` variable to the function as follows:
+
+{{{
+ela>let isThunk x = if x ? lazy then "Yep, it's lazy!" else "No, it's not!"
+
+ela>isThunk thunk
+
+Yep, it's lazy!
+}}}
+
+OK, it wasn't evaluated. Why? Because type check that we have performed in the `isThunk` function doesn't require an expression to be evaluated - and as the result it wasn't.
+
+Let's try another way:
+
+{{{
+ela>thunk * 2
+
+4
+8
+}}}
+
+And now we have what we needed. We tried to multiply the value of `thunk` by two however in order to do so we obviosly need to calculate it. And that is the thing that was done here as you can see by the console output.
+
+But what is going to happen if we try to use `thunk` in another calculation?
+
+{{{
+ela>thunk / 2
+
+2
+}}}
+
+It is not calculated anymore! That is because it already was evaluated and its value was effectively remembered in order to prevent unneccessary calculations in future. The rule is pretty simple - every thunk is calculated just once and after that it becomes just an ordinary value:
+
+{{{
+ela>isThunk thunk
+
+No, it's not!
+
+ela>thunk ? int
+
+True
+}}}
+
+Thunks are also useful when you need to create a lazy list - that is a linked list which is created on demand, only when you need a value of a particular element. The cool thing about lazy lists is that you can use them to represent infinite lists - lists that basically never end.
+
+Let's try this. First we will need to declare a pretty typical `take` function that can take a specified amount of elements from a given list:
+
+{{{
+ela>let take 0 _ = []; n x::xs = x :: take (n - 1) xs; _ []    = []
+}}}
+
+Now we need to create our infinite list. We can do it through a function that accepts a number, increments it and uses the result to create list elements:
+
+{{{
+ela>let inf x = y :: (& inf y) where y = x + 1 end
+
+ela>let lst = inf 0
+}}}
+
+OK, but what we can do with an infinite list? For example we can take a finite number of elements from it using our previously defined `take` function:
+
+{{{
+ela>take 10 lst
+
+[1,2,3,4,5,6,7,8,9,10]
+}}}
+
 === Arrays ===
 
 Arrays in Ela are pretty similar to such type as `ArrayList` in .NET Framework. These are basically dynamic indexed polymorphic arrays. This is how you can create one:
@@ -1064,6 +1145,122 @@ This is a E75 smartphone!
 }}}
 
 As soon as variants fully support pattern matching even exceptions in Ela are based on variants. Also a lot of standard functions use ``Some` and ``None` tags in their return values to indicate whether a value is actually there.
+
+=== Modules ===
+
+You could probably think that modules are a little bit misplaced in the chapter devoted to Ela data types however that is not exactly true. But let's start from the beggining.
+
+I assume that you are already acquainted with the concept of modules from other programming languages. It is not much different in Ela. If you want to split your code into several files, to implement some generic functionality that might be used by several programs than modules is the only way to go. In Ela module is strictly bound to a file - you can't create several modules in a single file or a big module that includes several files. For that reason there is no specific syntax that can be used to declare a module - creating a file automatically does so.
+
+You can reference Ela modules within your code using `open <Module Name>` statement. Let's see that in action. Create a file `Foo.ela` in the same directory where you have your `elac.exe` executable, and place the following code into this file:
+
+{{{
+let message = "Hello from Foo!"
+}}}
+
+Now we can open this module directly from interactive console like so:
+
+{{{
+ela>open Foo
+
+ela>Foo.message
+
+Hello from Foo!
+}}}
+
+Yes, it works. By default Ela looks for referenced modules in the directory where it is installed and in the directory where the currently executing Ela file is located. You can configure Ela to use other lookup directories as well. In order to so you need to create `elac.exe.config` file nearby `elac.exe` with the following content:
+
+{{{
+<configuration>   
+	<appSettings>     
+		<add key="ref" value="c:\myLib;c:\myAnotherLib" />   
+	</appSettings> 
+</configuration>
+}}}
+
+However it is not always practical to alter configuration in order to open module from other than default directory. That is why you can specify a module path directly in the `open` statement. Let's test it. Create an _Includes_ directory nearby _elac.exe_ and create a `Bar.ela` file inside it with the following code:
+
+{{{
+let message = "Hello from Bar!"
+
+let message2 = "See you, Bar!"
+}}}
+
+Now let's try to open it from Ela Console:
+
+{{{
+ela>open Bar
+
+Bar.ela(1,1): Error ELA608: Unable to find referenced module 'Bar'.
+}}}
+
+Oops, that didn't work. Let's try it differently:
+
+{{{
+ela>open Bar at "Includes"
+
+ela>Bar.message
+
+Hello from Bar!
+}}}
+
+OK, but what if you have two completely different modules with the same name. Taking into account that different people could work on them that is a possibility. In order to deal with such situations Ela has an ability to define module aliases:
+
+{{{
+ela>open Foo as Foo2
+
+ela>Foo2.message
+
+Hello from Foo!
+}}}
+
+Last but not least you can provide an import list directly inside the `open` statement:
+
+{{{
+ela>open Bar at "Includes" as Bar2 with message, message2
+
+ela>message
+
+Hello from Bar!
+
+ela>message2
+
+See you, Bar!
+}}}
+
+By doing so you actually declare local module variables that are initialized by corresponding variables from another module. You can also give them different names if you wish so:
+
+{{{
+open Bar with myMessage = message, myMessage2 = message2
+}}}
+
+That is all that you should know about `open` statement. However you might still be wondering why this section is placed in the chapter about data type. That is because modules are first class values in Ela.
+
+It means that you can treat module like any other value. For example you can assign it to a variable:
+
+{{{
+ela>let mod = Bar
+
+ela>mod
+
+[module:Includes\Bar]
+}}}
+
+Or you can pass an instance of a module to a function:
+
+{{{
+ela>let getMsg mod = mod.message
+
+ela>getMsg Foo
+
+Hello from Foo!
+
+ela>getMsg Bar
+
+Hello from Bar!
+}}}
+
+As you can see you can even create generic functions that operates on modules.
 
 === Functions ===
 
