@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using Ela.Compilation;
 
 namespace Ela.Linking
@@ -32,7 +33,10 @@ namespace Ela.Linking
 				bw.Write(kv.Key);
 				bw.Write(kv.Value.ModuleName);
 				bw.Write(kv.Value.DllName);
-				bw.Write(kv.Value.Folder);
+				bw.Write(kv.Value.Path.Count());
+				
+				foreach (var p in kv.Value.Path)
+					bw.Write(p);
 			}
 
 			bw.Write(frame.DeclaredPervasives.Count);

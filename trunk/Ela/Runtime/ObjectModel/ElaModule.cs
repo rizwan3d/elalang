@@ -66,7 +66,8 @@ namespace Ela.Runtime.ObjectModel
 				var refs = new List<ElaReferenceInfo>();
 
 				foreach (var kv in frame.References)
-					refs.Add(new ElaReferenceInfo(kv.Value.ModuleName, kv.Value.DllName, kv.Key, kv.Value.Folder));
+					refs.Add(new ElaReferenceInfo(kv.Value.ModuleName, kv.Value.DllName, kv.Key, 
+						String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), kv.Value.Path)));
 
 				return new ElaModuleInfo(this, vm, Handle, name,
 					frame.File != null ? frame.File.FullName : null, !(frame is IntrinsicFrame), variables, refs);

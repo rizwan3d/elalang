@@ -7,7 +7,8 @@ namespace Ela.Runtime.ObjectModel
 	public abstract class ElaObject
 	{
 		#region Construction
-		internal static readonly ExecutionContext DummyContext = new ExecutionContext();		
+		internal static readonly ExecutionContext DummyContext = new ExecutionContext();
+		internal const string UNDEF = "<unknown>";
 		
 		protected ElaObject(ElaTraits traits) : this(ObjectType.Object, traits)
 		{
@@ -32,7 +33,13 @@ namespace Ela.Runtime.ObjectModel
 
 		public override string ToString()
 		{
-			return Show(DummyContext, ShowInfo.Debug);
+			if (TypeId == ElaMachine.INT ||
+				TypeId == ElaMachine.REA ||
+				TypeId == ElaMachine.CHR ||
+				TypeId == ElaMachine.BYT)
+				return UNDEF;
+			else
+				return Show(DummyContext, ShowInfo.Debug);
 		}
 
 

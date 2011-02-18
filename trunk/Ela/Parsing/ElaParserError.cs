@@ -22,7 +22,7 @@ namespace Ela.Parsing
 
 		UnexpectedMinus = 8,
 
-		// = 9,
+		ComprehensionOpInvalidOperand = 9,
 
 
 
@@ -68,7 +68,7 @@ namespace Ela.Parsing
 
 		ExpectedSquareBrace = 120,
 
-		ExpectedKeywordAs = 121,
+		// = 121,
 
 		ExpectedIsOperator = 122,
 
@@ -80,7 +80,7 @@ namespace Ela.Parsing
 
 		ExpectedKeywordOpen = 126,
 
-		ExpectedKeywordAt = 127,
+		// = 127,
 
 		ExpectedKeywordWith = 128,
 
@@ -137,6 +137,10 @@ namespace Ela.Parsing
 		ExpectedKeywordEnd = 154,
 
 		ExpectedKeywordMutable = 155,
+
+		ExpectedKeywordAsAmp = 156,
+
+		ExpectedComprehensionOp = 157,
 
 
 

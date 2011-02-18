@@ -11,12 +11,13 @@ namespace Ela.CodeModel
 		internal ElaModuleInclude(Token tok) : base(tok, ElaNodeType.ModuleInclude)
 		{
 			Flags = ElaExpressionFlags.ReturnsUnit;
+			Path = new List<String>();
 		}
 
 
-		public ElaModuleInclude() : base(ElaNodeType.ModuleInclude)
+		public ElaModuleInclude() : this(null)
 		{
-			Flags = ElaExpressionFlags.ReturnsUnit;
+			
 		}
 		#endregion
 
@@ -26,6 +27,15 @@ namespace Ela.CodeModel
 		{
 			var sb = new StringBuilder();
 			sb.Append("open ");
+
+			for (var i = 0; i < Path.Count; i++)
+			{
+				if (i > 0)
+					sb.Append('.');
+
+				sb.Append(Path[i]);
+			}
+
 			sb.Append(Name);
 
 			if (!String.IsNullOrEmpty(Alias) && Alias != Name)
@@ -33,9 +43,6 @@ namespace Ela.CodeModel
 
 			if (!String.IsNullOrEmpty(DllName))
 				sb.Append("[" + DllName + "]");
-
-			if (!String.IsNullOrEmpty(Folder))
-				sb.Append(" at \"" + Folder + "\"");
 
 			if (HasImports)
 			{
@@ -64,7 +71,7 @@ namespace Ela.CodeModel
 
 		public string DllName { get; set; }
 
-		public string Folder { get; set; }
+		public List<String> Path { get; private set; }
 
 		private List<ElaImportedName> _imports;
 		public List<ElaImportedName> Imports

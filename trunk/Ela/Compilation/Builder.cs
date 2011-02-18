@@ -186,7 +186,7 @@ namespace Ela.Compilation
 					{
 						var s = (ElaModuleInclude)exp;
 
-						var modRef = new ModuleReference(s.Name, s.DllName, s.Folder, s.Line, s.Column);
+						var modRef = new ModuleReference(s.Name, s.DllName, s.Path.ToArray(), s.Line, s.Column);
 						frame.AddReference(s.Alias, modRef);
 						AddLinePragma(s);
 						var modIndex = AddString(modRef.ToString());

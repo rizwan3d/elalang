@@ -31,7 +31,7 @@ namespace Ela.Compilation
 				((hints & Hints.Scope) == Hints.Scope ? Hints.Scope : Hints.None) |
 				((hints & Hints.Nested) == Hints.Nested ? Hints.Nested : Hints.None);
 
-			if (bin.Operator != ElaOperator.CompBackward && bin.Operator != ElaOperator.CompForward)
+			if (bin.Operator != ElaOperator.CompBackward && bin.Operator != ElaOperator.CompForward && bin.Operator != ElaOperator.Assign)
 			{
 				if (bin.Left != null &&
 					(bin.Left.Flags & ElaExpressionFlags.ReturnsUnit) == ElaExpressionFlags.ReturnsUnit)

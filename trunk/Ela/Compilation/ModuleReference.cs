@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Ela.Compilation
 {
@@ -14,11 +16,11 @@ namespace Ela.Compilation
 		}
 
 
-		internal ModuleReference(string moduleName, string dllName, string folder, int line, int column)
+		internal ModuleReference(string moduleName, string dllName, string[] path, int line, int column)
 		{
 			ModuleName = moduleName;
 			DllName = dllName;
-			Folder = folder;
+			Path = path ?? new string[0];
 			Line = line;
 			Column = column;
 		}
@@ -35,8 +37,9 @@ namespace Ela.Compilation
 
 		private string BuildFullName(string name)
 		{
-			return String.IsNullOrEmpty(Folder) ? name :
-				String.Concat(Folder, Path.DirectorySeparatorChar, name);
+			return Path.Count() == 0 ? name :
+				String.Concat(String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), Path), 
+					System.IO.Path.DirectorySeparatorChar, name);
 		}
 		#endregion
 
@@ -46,7 +49,7 @@ namespace Ela.Compilation
 
 		public readonly string DllName;
 
-		public readonly string Folder;
+		public readonly string[] Path;
 
 		public readonly int Line;
 

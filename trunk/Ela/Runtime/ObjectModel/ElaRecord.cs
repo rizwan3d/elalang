@@ -151,6 +151,20 @@ namespace Ela.Runtime.ObjectModel
 			sb.Append('}');
 			return sb.ToString();
 		}
+
+
+		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
+		{
+			ctx.Fail(ElaRuntimeError.TraitGen, ToString(), ((ObjectType)TypeId).GetShortForm());
+			return Default();
+		}
+
+
+		protected internal override ElaValue GenerateFinalize(ExecutionContext ctx)
+		{
+			ctx.Fail(ElaRuntimeError.TraitGen, ToString(), ((ObjectType)TypeId).GetShortForm());
+			return Default();
+		}
 		#endregion
 
 

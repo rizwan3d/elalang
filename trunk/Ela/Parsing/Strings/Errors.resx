@@ -135,11 +135,8 @@
   <data name="ExpectedIntToken" xml:space="preserve">
     <value>Invalid integer syntax.</value>
   </data>
-  <data name="ExpectedKeywordAs" xml:space="preserve">
-    <value>Expected 'as' pattern, e.g. 'expr@name'.</value>
-  </data>
-  <data name="ExpectedKeywordAt" xml:space="preserve">
-    <value>Expected keyword 'at'.</value>
+  <data name="ExpectedKeywordAsAmp" xml:space="preserve">
+    <value>Expected 'as' operator, e.g. 'expr@name'.</value>
   </data>
   <data name="ExpectedKeywordBase" xml:space="preserve">
     <value>Expected keyword 'base'.</value>
@@ -503,5 +500,11 @@
   </data>
   <data name="UnexpectedMinus" xml:space="preserve">
     <value>Invalid syntax. Did you mean unary negation, e.g. '--x'?</value>
+  </data>
+  <data name="ComprehensionOpInvalidOperand" xml:space="preserve">
+    <value>Invalid right operand for the comprehension '@@' operator.</value>
+  </data>
+  <data name="ExpectedComprehensionOp" xml:space="preserve">
+    <value>Expected comprehension operator '@@'.</value>
   </data>
 </root>

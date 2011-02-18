@@ -355,9 +355,9 @@ namespace Ela.Linking
 			foreach (var d in dirs)
 			{
 				if (secondName != null)
-					ret2 = Combine(d, mod.Folder, secondName);
+					ret2 = Combine(d, mod.Path, secondName);
 
-				ret1 = Combine(d, mod.Folder, firstName);
+				ret1 = Combine(d, mod.Path, firstName);
 
 				if (ret2 != null && ret1 != null)
 				{
@@ -382,13 +382,13 @@ namespace Ela.Linking
 		}
 
 
-		private FileInfo Combine(DirectoryInfo dir, string folder, string fileName)
+		private FileInfo Combine(DirectoryInfo dir, string[] path, string fileName)
 		{
-			var path = folder != null?
-				Path.Combine(Path.Combine(dir.FullName, folder), fileName) :
+			var finPath = path.Length > 0 ?
+				Path.Combine(Path.Combine(dir.FullName, String.Join(Path.DirectorySeparatorChar.ToString(), path)), fileName) :
 				Path.Combine(dir.FullName, fileName);
 
-			return File.Exists(path) ? new FileInfo(path) : null;
+			return File.Exists(finPath) ? new FileInfo(finPath) : null;
 		}
 		#endregion
 

@@ -1,3 +1,11 @@
+0.8.4.8:Change:Module 'open' directive syntax changed. Instead of 'open Foo at "Directory" with x' we have 'open Directory.Foo x'.
+0.8.4.7:Fix:Module 'open' directive now correctly works in both Windows and Unix when a path element is specified.
+0.8.4.6:Change:Minor cleanups and enhancements in parser error reporting logic.
+0.8.4.5:Fix:The 'as' clause didn't work in 'open' module directive.
+0.8.4.4:Fix:An incorrect warning could be generated for an expression like so 'x <- ()'.
+0.8.4.3:Change:Now ToString in ElaObject prints '<unknown>' if a value cannot be determined (which happens for stack based values).
+0.8.4.2:Fix:ElaRecord didn't correctly process a situation when one tried to use 'Gen' trait with it (it doesn't support Gen but error was raised).
+0.8.4.1:New:Comprehension operator '@@' can now be used for ranges as well as for comprehensions.
 0.8.4.0:Release:Release of Ela 0.8.4
 0.8.3.7:New:Partial application (in the form '(@@ [x,x<-seq])') for the comprehension operator has added.
 0.8.3.6:New:An ability to use guards (multiple, with mandatory 'else' guard) in 'let' and 'where' bindings added.

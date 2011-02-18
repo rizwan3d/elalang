@@ -2,6 +2,7 @@
 using System.IO;
 using Ela.CodeModel;
 using Ela.Compilation;
+using System.Collections.Generic;
 
 namespace Ela.Linking
 {
@@ -36,8 +37,18 @@ namespace Ela.Linking
 			var c = bw.ReadInt32();
 
 			for (var i = 0; i < c; i++)
-				frame.AddReference(bw.ReadString(),
-					new ModuleReference(bw.ReadString(), bw.ReadString(), bw.ReadString(), 0, 0));
+			{
+				var alias = bw.ReadString();
+				var modName = bw.ReadString();
+				var dllName = bw.ReadString();
+				var pl = bw.ReadInt32();
+				var list = new string[pl];
+
+				for (var j = 0; j < pl; j++)
+					list[j] = bw.ReadString();
+				
+				frame.AddReference(alias, new ModuleReference(modName, dllName, list, 0, 0));
+			}
 
 			c = bw.ReadInt32();
 

@@ -76,6 +76,7 @@ TOKENS
 	EQ = "=".
 	SEQ = "$".
 	MINUS = "-".
+	COMPH = "@@".
 	
 	DOT = ".".
 	IN = "in".
@@ -83,12 +84,11 @@ TOKENS
 	DOWNTO = "downto".
 	BASE = "base".
 	MATCH = "match".
-	AS = "@".
+	ASAMP = "@".
 	IS = "?".	
 	LET = "let".
 	PRIVATE = "private".
 	OPEN = "open".	
-	AT = "at".
 	WITH = "with".
 	WHILE = "while".
 	DO = "do".
@@ -207,15 +207,8 @@ PRODUCTIONS
 			|
 			(
 				"@@"
-				(. 
-					var comp = default(ElaComprehension); 
-					var cexp2 = default(ElaExpression);
-				.)
-				"[" Expr<out cexp2> ComprehensionExpr<cexp2, out comp> "]"
-				(. 
-					comp.Initial = hiddenVar;
-					exp = GetPartialFun(comp); 
-				.)
+				ComprehensionOpExpr<hiddenVar, out exp>
+				(. exp = GetPartialFun(exp); .)
 			)
 			|
 			(
@@ -1249,9 +1242,11 @@ PRODUCTIONS
 		(. exp = null; .)
 		(
 			OPEN (. var inc = new ElaModuleInclude(t); .)
-			ident
+			Qualident<inc.Path>
 			(.
-				inc.Alias = inc.Name = t.val;
+				var name = inc.Path[inc.Path.Count - 1];				
+				inc.Path.RemoveAt(inc.Path.Count - 1);				
+				inc.Alias = inc.Name = name;
 				exp = inc;
 			.)	
 			[
@@ -1263,10 +1258,18 @@ PRODUCTIONS
 				)
 				"]"
 			]		
-			[ AT stringTok (. inc.Folder = ReadString(t.val); .) ]
-			[ AS ident (. inc.Alias = t.val; .) ]
-			[ WITH IncludeImports<inc> ]
+			[ "@" ident (. inc.Alias = t.val; .) ]
+			[ IncludeImports<inc> ]
 		).
+		
+	Qualident<. List<String> path .> = 
+		(. var val = String.Empty; .)
+		(
+			ident (. val = t.val; .)
+			| stringTok (. val = ReadString(t.val); .)
+		)
+		(. path.Add(val); .)
+		[ "." Qualident<path> ].
 		
 	IncludeImports<ElaModuleInclude inc> =
 		(
@@ -1598,19 +1601,36 @@ PRODUCTIONS
 					(. exp = new ElaIs(t) { Expression = exp, Pattern = pat }; .)
 				)
 				|
-				(
-					(. 
-						var comp = default(ElaComprehension); 
-						var cexp = default(ElaExpression);
-					.)
-					"@@" "[" Expr<out cexp> ComprehensionExpr<cexp, out comp> "]"
-					(. 
-						comp.Initial = exp;
-						exp = comp; 
-					.)
-				)
+				"@@" ComprehensionOpExpr<exp, out exp>
 			)
 		}.		
+		
+	ComprehensionOpExpr<ElaExpression init, out ElaExpression exp> =
+		(.
+			var list = default(List<ElaExpression>);
+			var comp = default(ElaComprehension);
+			var rng = default(ElaRange);
+			exp = null;
+		.)
+		"["
+			(
+				ParamList<out list, out comp, out rng>
+				(.
+					if (rng != null) {
+						rng.Initial = init;
+						exp = rng;
+					}
+					else if (comp != null) {
+						comp.Initial = init;
+						exp = comp;
+					}
+					else {
+						AddError(ElaParserError.ComprehensionOpInvalidOperand);
+						exp = new ElaRange();
+					}
+				.)
+			)
+		"]".
 		
 	InfixExpr<out ElaExpression exp> = 
 		BitOrExpr<out exp>

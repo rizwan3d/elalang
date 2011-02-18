@@ -159,12 +159,12 @@ namespace Ela.Parsing
 				case Parser._DOWNTO: return ElaParserError.ExpectedKeywordDownto;
 				case Parser._BASE: return ElaParserError.ExpectedKeywordBase;
 				case Parser._MATCH: return ElaParserError.ExpectedKeywordMatch;
-				case Parser._AS: return ElaParserError.ExpectedKeywordAs;
+				case Parser._ASAMP: return ElaParserError.ExpectedKeywordAsAmp;
+				case Parser._COMPH: return ElaParserError.ExpectedComprehensionOp;
 				case Parser._IS: return ElaParserError.ExpectedIsOperator;
 				case Parser._LET: return ElaParserError.ExpectedKeywordLet;
 				case Parser._PRIVATE: return ElaParserError.ExpectedKeywordPrivate;
 				case Parser._OPEN: return ElaParserError.ExpectedKeywordOpen;
-				case Parser._AT: return ElaParserError.ExpectedKeywordAt;
 				case Parser._WITH: return ElaParserError.ExpectedKeywordWith;
 				case Parser._WHILE: return ElaParserError.ExpectedKeywordWhile;
 				case Parser._DO: return ElaParserError.ExpectedKeywordDo;
