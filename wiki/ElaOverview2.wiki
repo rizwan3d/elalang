@@ -1197,7 +1197,7 @@ Bar.ela(1,1): Error ELA608: Unable to find referenced module 'Bar'.
 Oops, that didn't work. Let's try it differently:
 
 {{{
-ela>open Bar at "Includes"
+ela>open Includes.Bar
 
 ela>Bar.message
 
@@ -1207,7 +1207,7 @@ Hello from Bar!
 OK, but what if you have two completely different modules with the same name. Taking into account that different people could work on them that is a possibility. In order to deal with such situations Ela has an ability to define module aliases:
 
 {{{
-ela>open Foo as Foo2
+ela>open Foo@Foo2
 
 ela>Foo2.message
 
@@ -1217,7 +1217,7 @@ Hello from Foo!
 Last but not least you can provide an import list directly inside the `open` statement:
 
 {{{
-ela>open Bar at "Includes" as Bar2 with message, message2
+ela>open Includes.Bar@Bar2 message, message2
 
 ela>message
 
@@ -1231,7 +1231,7 @@ See you, Bar!
 By doing so you actually declare local module variables that are initialized by corresponding variables from another module. You can also give them different names if you wish so:
 
 {{{
-open Bar with myMessage = message, myMessage2 = message2
+open Bar myMessage = message, myMessage2 = message2
 }}}
 
 That is all that you should know about `open` statement. However you might still be wondering why this section is placed in the chapter about data type. That is because modules are first class values in Ela.
