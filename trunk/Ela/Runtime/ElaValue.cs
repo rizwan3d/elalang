@@ -3,6 +3,7 @@ using System.Linq;
 using Ela.Runtime.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace Ela.Runtime
 {
@@ -142,6 +143,18 @@ namespace Ela.Runtime
 				return new ElaValue((String)value);
 			else if (value is ElaValue)
 				return (ElaValue)value;
+			else if (value is Array)
+			{
+				var arr = (Array)value;
+				var ret = new ElaArray(arr.Length);
+
+				for (var i = 0; i < arr.Length; i++)
+					ret.Add(ElaValue.FromObject(arr.GetValue(i)));
+
+				return new ElaValue(ret);
+			}
+			else if (value is IEnumerable)
+				return new ElaValue(ElaList.FromEnumerable((IEnumerable)value));
 			else
 				throw new NotSupportedException();
 		}

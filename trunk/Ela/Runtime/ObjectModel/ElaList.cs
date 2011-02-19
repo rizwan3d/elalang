@@ -213,9 +213,20 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+		public static ElaList FromEnumerable(IEnumerable seq)
+		{
+			var list = ElaList.Nil;
+
+			foreach (var e in seq)
+				list = new ElaList(list, ElaValue.FromObject(e));
+
+			return list.Reverse();
+		}
+
+
 		public static ElaList FromEnumerable(IEnumerable<Object> seq)
 		{
-			return FromEnumerable(seq.Select(e => ElaValue.FromObject(e)));
+			return FromEnumerable(seq.Select<Object,ElaValue>(ElaValue.FromObject));
 		}
 
 

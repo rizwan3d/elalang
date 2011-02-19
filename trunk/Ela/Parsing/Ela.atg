@@ -77,6 +77,7 @@ TOKENS
 	SEQ = "$".
 	MINUS = "-".
 	COMPH = "@@".
+	COMPO = "\\\\".
 	
 	DOT = ".".
 	IN = "in".
@@ -1967,7 +1968,7 @@ PRODUCTIONS
 			var it = default(ElaFor); 
 			var ot = t;		
 		.)
-		"@" ComprehensionEntry<sel, out it>
+		"\\\\" ComprehensionEntry<sel, out it>
 		(. exp = new ElaComprehension(ot) { Generator = it }; .).
 		
 	ComprehensionEntry<ElaExpression body, out ElaFor it> =

@@ -68,7 +68,7 @@ namespace Ela.Parsing
 
 		ExpectedSquareBrace = 120,
 
-		// = 121,
+		ExpectedComprehensionSlash = 121,
 
 		ExpectedIsOperator = 122,
 

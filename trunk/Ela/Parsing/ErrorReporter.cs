@@ -184,6 +184,7 @@ namespace Ela.Parsing
 				case Parser._AND: return ElaParserError.ExpectedKeywordAnd;
 				case Parser._ENDS: return ElaParserError.ExpectedKeywordEnd;
 				case Parser._MUTABLE: return ElaParserError.ExpectedKeywordMutable;
+				case Parser._COMPO: return ElaParserError.ExpectedComprehensionSlash;
 				default: return ElaParserError.ExpectedToken;
 			}
 		}

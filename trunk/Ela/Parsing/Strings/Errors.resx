@@ -507,4 +507,7 @@
   <data name="ExpectedComprehensionOp" xml:space="preserve">
     <value>Expected comprehension operator '@@'.</value>
   </data>
+  <data name="ExpectedComprehensionSlash" xml:space="preserve">
+    <value>Expected operator '\\'.</value>
+  </data>
 </root>
