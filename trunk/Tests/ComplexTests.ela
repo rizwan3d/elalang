@@ -8,7 +8,7 @@ let firstSecond {eq} =
 	
 let triangles {eq,eqt} =
 	let head' x::xs = x in
-    let triangles' = [ (a,b,c) @ c <- [1..10], b <- [1..c], a <- [1..b] |
+    let triangles' = [ (a,b,c) \\ c <- [1..10], b <- [1..c], a <- [1..b] |
                         a**2 + b**2 == c**2, a+b+c == 24]
     in
     eqt ((head' triangles') ? tuple)
