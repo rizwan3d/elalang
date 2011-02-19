@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using Ela.Runtime.ObjectModel;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace Ela.Runtime
 {
@@ -154,6 +156,12 @@ namespace Ela.Runtime
 		public T ChangeType<T>()
 		{
 			var ti = typeof(T);
+			return (T)ChangeType(ti);
+		}
+
+
+		public object ChangeType(Type ti)
+		{
 			var ctx = new ExecutionContext();
 			var type = default(ObjectType);
 
@@ -184,18 +192,22 @@ namespace Ela.Runtime
 			else if (ti == typeof(ElaFunction))
 				type = ObjectType.Function;
 			else if (ti == typeof(ElaModule))
-				type = ObjectType.Module;			
+				type = ObjectType.Module;
 			else
 			{
 				if (ti == typeof(ElaUnit))
 				{
 					if (DataType == ObjectType.Unit)
-						return (T)(Object)ElaUnit.Instance;
+						return ElaUnit.Instance;
 					else
 						throw InvalidCast(DataType, type);
 				}
 				else if (ti == typeof(ElaObject))
-					return (T)(Object)Ref;
+					return Ref;
+				else if (ti.IsArray)
+					return ConvertToArray(ti.GetElementType());
+				else if (ti.IsGenericType && ti.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+					return ConvertToArray(ti.GetGenericArguments()[0]);
 			}
 
 			var ret = Ref.Convert(this, type, ctx).AsObject();
@@ -203,7 +215,24 @@ namespace Ela.Runtime
 			if (ctx.Failed)
 				throw InvalidCast(DataType, type);
 
-			return (T)ret;
+			return ret;
+		}
+
+
+		private object ConvertToArray(Type el)
+		{
+			var seq = (IEnumerable<ElaValue>)Ref;
+			var len = Ref.GetLength(ElaObject.DummyContext);
+			var arr = Array.CreateInstance(el, len.AsInteger());
+			var i = 0;
+
+			foreach (var e in seq)
+			{
+				var o = e.ChangeType(el);
+				arr.SetValue(o, i++);
+			}
+
+			return arr;
 		}
 		#endregion
 

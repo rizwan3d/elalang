@@ -1,3 +1,5 @@
+0.8.4.10:New:Now ElaValue.GetType method can convert Ela objects to arrays (in the same manner as to IEnumerable<>).
+0.8.4.9:New:Now ElaValue.GetType method can convert Ela objects to IEnumerable<T> type where T can be a native .NET type (e.g. char or int). This also affect marshalling of data types performed by ForeignModule when registering delegates as Ela functions.
 0.8.4.8:Change:Module 'open' directive syntax changed. Instead of 'open Foo at "Directory" with x' we have 'open Directory.Foo x'.
 0.8.4.7:Fix:Module 'open' directive now correctly works in both Windows and Unix when a path element is specified.
 0.8.4.6:Change:Minor cleanups and enhancements in parser error reporting logic.
