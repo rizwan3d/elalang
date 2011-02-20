@@ -195,10 +195,6 @@ namespace Ela.Compilation
 				case ElaBuiltinFunctionKind.Typeid:
 					cw.Emit(Op.Typeid);
 					break;
-				case ElaBuiltinFunctionKind.Ignore:
-					cw.Emit(Op.Pop);
-					cw.Emit(Op.Pushunit);
-					break;
 				case ElaBuiltinFunctionKind.Cout:
 					cw.Emit(Op.Cout);
 					cw.Emit(Op.Pushunit);

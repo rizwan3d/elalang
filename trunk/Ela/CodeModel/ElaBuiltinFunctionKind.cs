@@ -8,8 +8,6 @@ namespace Ela.CodeModel
 
 		Typeid,
 
-		Ignore,
-
 		Cout,
 
 		Not,

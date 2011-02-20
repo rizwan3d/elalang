@@ -43,8 +43,7 @@ namespace Ela.CodeModel
 			{
 				_kind = value;
 
-				if (_kind == ElaBuiltinFunctionKind.Ignore ||
-					_kind == ElaBuiltinFunctionKind.Cout)
+				if (_kind == ElaBuiltinFunctionKind.Cout)
 					Flags = ElaExpressionFlags.ReturnsUnit;
 			}
 		}

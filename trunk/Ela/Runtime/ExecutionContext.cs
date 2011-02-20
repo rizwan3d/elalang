@@ -6,6 +6,8 @@ namespace Ela.Runtime
 	public sealed class ExecutionContext
 	{
 		#region Construction
+		private const string DEF_CATEGORY = "Failure";
+
 		internal ExecutionContext()
 		{
 
@@ -87,6 +89,12 @@ namespace Ela.Runtime
 		public void Fail(string category, string message)
 		{
 			Fail(new ElaError(category, message));
+		}
+
+
+		public void Fail(string message)
+		{
+			Fail(DEF_CATEGORY, message);
 		}
 
 

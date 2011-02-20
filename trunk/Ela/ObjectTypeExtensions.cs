@@ -17,7 +17,7 @@ namespace Ela
 		private const string TUPLE = "tuple";
 		private const string ARRAY = "array";
 		private const string LIST = "list";
-		private const string FUN = "function";
+		private const string FUN = "fun";
 		private const string UNIT = "unit";
 		private const string MOD = "module";
 		private const string OBJ = "object";

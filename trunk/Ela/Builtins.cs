@@ -11,7 +11,6 @@ namespace Ela
 			{
 				case "cout": return ElaBuiltinFunctionKind.Cout;
 				case "typeid": return ElaBuiltinFunctionKind.Typeid;
-				case "ignore": return ElaBuiltinFunctionKind.Ignore;
 				case "not": return ElaBuiltinFunctionKind.Not;
 				case "flip": return ElaBuiltinFunctionKind.Flip;
 				case "force": return ElaBuiltinFunctionKind.Force;
