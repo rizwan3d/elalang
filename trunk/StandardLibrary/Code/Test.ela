@@ -23,7 +23,7 @@ let funData fun = (funName fun, fun)
 let regFun fun lst = fd :: lst
                      where fd = funData fun end
 	
-let regFuns mod lst = each' funData (?fun) vals
+let regFuns mod lst = each' funData (is ?fun) vals
                       where vals = [ v.value \\ v <- (type mod).globals ] and
                             each' f p x::xs | p x  = f x :: each' f p xs;
                                             | else = each' f p xs;

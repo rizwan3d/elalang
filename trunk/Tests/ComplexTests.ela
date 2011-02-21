@@ -11,7 +11,7 @@ let triangles {eq,eqt} =
     let triangles' = [ (a,b,c) \\ c <- [1..10], b <- [1..c], a <- [1..b] |
                         a**2 + b**2 == c**2, a+b+c == 24]
     in
-    eqt ((head' triangles') ? tuple)
+    eqt ((head' triangles') is ?tuple)
     $ eq (head' triangles').[0] 6
     $ eq (head' triangles').[1] 8
     $ eq (head' triangles').[2] 10
@@ -21,14 +21,14 @@ let zips {eqt} =
             _ _         = [] in
     let f1 = zip [1,2,3,4,5] [5,5,5,5,5] in
     let f2 = zip [5,3,2,6,2,7,2,5,4,6,6] ["im","a","turtle"] in
-    eqt (f1.[0] ? (1, 5))
-    $ eqt (f1.[1] ? (2, 5))
-    $ eqt (f1.[2] ? (3, 5))
-    $ eqt (f1.[3] ? (4, 5))
-    $ eqt (f1.[4] ? (5, 5))
-    $ eqt (f2.[0] ? (5,"im"))
-    $ eqt (f2.[1] ? (3,"a"))
-    $ eqt (f2.[2] ? (2,"turtle"))
+    eqt (f1.[0] is (1, 5))
+    $ eqt (f1.[1] is (2, 5))
+    $ eqt (f1.[2] is (3, 5))
+    $ eqt (f1.[3] is (4, 5))
+    $ eqt (f1.[4] is (5, 5))
+    $ eqt (f2.[0] is (5,"im"))
+    $ eqt (f2.[1] is (3,"a"))
+    $ eqt (f2.[2] is (2,"turtle"))
 	
 let calcFact {eq} =
 	let fact = 
@@ -45,10 +45,10 @@ let skipElems {eqt} =
                        | else   = ps xs (i + 1);
 		       _ _              = () 
         in
-		if ps lst 1 ? (list@r) then `Some r else `None 
+		if ps lst 1 is (list@r) then `Some r else `None 
     in
 	let res = skip [0, 1, 2, 3] 2 in
-	eqt <| res ? (`Some [2,3])
+	eqt <| res is (`Some [2,3])
 
 let takeElems {eqt} =
 	let take lst n =
@@ -57,17 +57,17 @@ let takeElems {eqt} =
 		       _ _              = [] 
         in	
         let r = pt lst 1 in
-	    if r ? [] then `None else `Some r 
+	    if r is [] then `None else `Some r 
     in
 	let res = take [0, 1, 2, 3, 4] 3 in
-	eqt <| res ? (`Some [0,1,2])
+	eqt <| res is (`Some [0,1,2])
 
 let reverseElems {eqt} =
 	let reverse' x::xs = reverse' xs ++ [x];
 			     []    = [] 
     in
 	let res = reverse' [0, 1, 2, 3, 4, 5] in
-	eqt (res ? [5,4,3,2,1,0])
+	eqt (res is [5,4,3,2,1,0])
 
 let compare {eqt} =
 	let compare' x y | y >  x = `Gt;
@@ -75,7 +75,7 @@ let compare {eqt} =
                      | else   = `Lt 
     in
 	let compareWithHundred = compare' 100 in
-	eqt <| (compareWithHundred 12) ? (`Lt)
+	eqt <| (compareWithHundred 12) is (`Lt)
 	
 let flipFold {eq} =  
 	let fold' x::xs f = f x :: fold' xs f;
@@ -128,8 +128,8 @@ let iterators {eqt} =
     and iterate fun x::xs = fun x $ `Some xs;
                 _   []    = `None
     and filter f lst = 
-        let filter' x::xs | r ? (`Some v) = v :: filter' xs;
-                          | r ? (`None)   = filter' xs
+        let filter' x::xs | r is (`Some v) = v :: filter' xs;
+                          | r is (`None)   = filter' xs
                           where r = f x end;
             []                            = []
         in 

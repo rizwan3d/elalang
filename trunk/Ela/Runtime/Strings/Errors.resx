@@ -241,7 +241,7 @@
     <value>A value '{0}' of type '{1}' doesn't support trait 'Show' (cannot be represented as a string).</value>
   </data>
   <data name="TraitTag" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Tag' (it cannot be tagged and used a polymorphic variant).</value>
+    <value>A value '{0}' of type '{1}' doesn't support trait 'Tag' (it doesn't support a notion of 'tag').</value>
   </data>
   <data name="TraitThunk" xml:space="preserve">
     <value>A value '{0}' of type '{1}' doesn't support trait 'Thunk' (is not a 'lazy' or a similar type and cannot be 'forced').</value>

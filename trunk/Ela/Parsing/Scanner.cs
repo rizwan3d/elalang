@@ -208,8 +208,8 @@ internal sealed class Scanner {
 	const char EOL = '\n';
 	const int eofSym = 0; /* pdt */
 	
-	const int maxT = 92;
-	const int noSym = 92;
+	const int maxT = 93;
+	const int noSym = 93;
 
 
 	public Buffer buffer; // scanner buffer
@@ -379,7 +379,7 @@ internal sealed class Scanner {
 			case "base": t.kind = 28; break;
 			case "match": t.kind = 29; break;
 			case "@": t.kind = 30; break;
-			case "?": t.kind = 31; break;
+			case "is": t.kind = 31; break;
 			case "let": t.kind = 32; break;
 			case "private": t.kind = 33; break;
 			case "open": t.kind = 34; break;
@@ -407,34 +407,35 @@ internal sealed class Scanner {
 			case "|": t.kind = 59; break;
 			case "<": t.kind = 61; break;
 			case ">": t.kind = 62; break;
-			case "::": t.kind = 63; break;
-			case "--": t.kind = 64; break;
-			case "..": t.kind = 65; break;
-			case "&": t.kind = 66; break;
-			case "<-": t.kind = 67; break;
-			case "<->": t.kind = 68; break;
-			case "<|": t.kind = 69; break;
-			case "|>": t.kind = 70; break;
-			case "||": t.kind = 71; break;
-			case "&&": t.kind = 72; break;
-			case "==": t.kind = 73; break;
-			case "<>": t.kind = 74; break;
-			case ">=": t.kind = 75; break;
-			case "<=": t.kind = 76; break;
-			case ">>>": t.kind = 77; break;
-			case "<<<": t.kind = 78; break;
-			case "++": t.kind = 79; break;
-			case "+": t.kind = 80; break;
-			case "*": t.kind = 81; break;
-			case "/": t.kind = 82; break;
-			case "%": t.kind = 83; break;
-			case "**": t.kind = 84; break;
-			case "|||": t.kind = 85; break;
-			case "^^^": t.kind = 86; break;
-			case "&&&": t.kind = 87; break;
-			case "<<": t.kind = 88; break;
-			case ">>": t.kind = 89; break;
-			case "~~~": t.kind = 90; break;
+			case "?": t.kind = 63; break;
+			case "::": t.kind = 64; break;
+			case "--": t.kind = 65; break;
+			case "..": t.kind = 66; break;
+			case "&": t.kind = 67; break;
+			case "<-": t.kind = 68; break;
+			case "<->": t.kind = 69; break;
+			case "<|": t.kind = 70; break;
+			case "|>": t.kind = 71; break;
+			case "||": t.kind = 72; break;
+			case "&&": t.kind = 73; break;
+			case "==": t.kind = 74; break;
+			case "<>": t.kind = 75; break;
+			case ">=": t.kind = 76; break;
+			case "<=": t.kind = 77; break;
+			case ">>>": t.kind = 78; break;
+			case "<<<": t.kind = 79; break;
+			case "++": t.kind = 80; break;
+			case "+": t.kind = 81; break;
+			case "*": t.kind = 82; break;
+			case "/": t.kind = 83; break;
+			case "%": t.kind = 84; break;
+			case "**": t.kind = 85; break;
+			case "|||": t.kind = 86; break;
+			case "^^^": t.kind = 87; break;
+			case "&&&": t.kind = 88; break;
+			case "<<": t.kind = 89; break;
+			case ">>": t.kind = 90; break;
+			case "~~~": t.kind = 91; break;
 			default: break;
 		}
 	}
@@ -705,7 +706,7 @@ internal sealed class Scanner {
 			case 65:
 				{t.kind = 58; break;}
 			case 66:
-				{t.kind = 91; break;}
+				{t.kind = 92; break;}
 			case 67:
 				recEnd = pos; recKind = 60;
 				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 60;}

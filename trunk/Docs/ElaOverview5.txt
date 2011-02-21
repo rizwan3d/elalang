@@ -140,12 +140,12 @@ Pattern matching in lambdas is a little bit different. First of all you can only
 
 And the second difference is that as you can see above is the pattern and expression are separated by `->` instead of equatation operator.
 
-===Pattern matching using ? operator===
+===Pattern matching using 'is' operator===
 
-Sometimes you need a more lightweight construct than the regular `match` expression and that is the case when you might consider to use `?` operator. The left operand of this operator is a value to be matched and the right operand is a pattern:
+Sometimes you need a more lightweight construct than the regular `match` expression and that is the case when you might consider to use `is` operator. The left operand of this operator is a value to be matched and the right operand is a pattern:
 
 {{{
-ela>[1,2] ? [h,2]
+ela>[1,2] is [h,2]
 
 True
 
@@ -154,12 +154,12 @@ ela>h
 1
 }}}
 
-The result of such operation is always a boolean value, either `true` or `false` - and that is one of the most serious differences between `?` operator and a `match` expression. With `?` operator if you specify a pattern that doesn't match no runtime exception is raised - you simple have `false` as a result of its evaluation.
+The result of such operation is always a boolean value, either `true` or `false` - and that is one of the most serious differences between `is` operator and a `match` expression. With `is` operator if you specify a pattern that doesn't match no runtime exception is raised - you simple have `false` as a result of its evaluation.
 
-You can use `?` operator to declare local variables as well. The rules are pretty straightforward here. As you can see from the example above an expression `[1,2] ? [h,2]` evaluated in a global scope has declared a global immutable variable `h`. However if you try to use `?` operator as a condition for `if...else` expression the binding scope will change:
+You can use `is` operator to declare local variables as well. The rules are pretty straightforward here. As you can see from the example above an expression `[1,2] is [h,2]` evaluated in a global scope has declared a global immutable variable `h`. However if you try to use `is` operator as a condition for `if...else` expression the binding scope will change:
 
 {{{
-ela>if [1,2] ? [head,2] then cout head else cout "I don't know what it is."
+ela>if [1,2] is [head,2] then cout head else cout "I don't know what it is."
 
 1
 
@@ -477,7 +477,7 @@ end
 
 You are simply putting a back apostrophe without a tag name and as a result you have a pattern that will match any tag name. However it will fail if a given value is not tagged.
 
-Remember that you can omit parenthesis aroung variant patterns only when using `match` expressions and `?` operator. In all other cases parenthesis are required:
+Remember that you can omit parenthesis aroung variant patterns only when using `match` expressions and `is` operator. In all other cases parenthesis are required:
 
 {{{
 let (`Some x) = `Some 42
@@ -491,8 +491,8 @@ This pattern allows to check data type of a provided value. It fails if a given 
 
 {{{
 match x with
-x ? int = "You have int";
-x ? long = "You have long"
+?int = "You have int";
+?long = "You have long"
 end
 }}}
 
@@ -549,4 +549,4 @@ failed because of the following reason: This type of conversion is not supported
         in memory at line: 1, col: 19
 }}}
 
-Also this pattern requires parenthesis when it is used in `let` and `where` bindings and through `?` operator.
+Also this pattern requires parenthesis when it is used in `let` and `where` bindings and through `is` operator.

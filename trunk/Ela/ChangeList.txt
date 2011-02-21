@@ -1,3 +1,8 @@
+0.8.5.6:Change:Type check pattern now has syntax '?typename' instead of 'x ? typename'. This syntax is used in all constructs, e.g. 'x is ?typename' (used to be 'x ? typename', the '?' operator was used for both 'short match' expression and type check pattern).
+0.8.5.5:Change:Operator '?' is now replaced by 'is'.
+0.8.5.4:Fix:Pretty printing is corrected for type check pattern when check is done against traits.
+0.8.5.3:Change:A new 'Tag' trait added and now operations with polymorphic variants are performed through this trait.
+0.8.5.2:Fix:Now Ela allows to use '[]' pattern in the middle of head/tail pattern (e.g. 'x[]xs'). This is a completely legal situation (nil list beign an element of another list) but was treated as an error.
 0.8.5.1:Change:A built-in function 'ignore' is decomissioned.
 0.8.5.0:Release:Release of Ela 0.8.5
 0.8.4.12:Change:The syntax for comprehension is changed, now '\\' operator is used instead of '@', e.g. [x \\ x <- [1..10]].

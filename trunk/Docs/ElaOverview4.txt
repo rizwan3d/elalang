@@ -500,6 +500,20 @@ ela>"boo":tuple
 (1,7): Error ELA319: Casting to the type 'tuple' is not supported.
 }}}
 
+===Tag===
+
+_Tag_ trait is supported by polymorphic variants. It defines a single operation that allows to obtain a tag of a given value. There is no much else I can say about this trait. As you usual you will catch an error if you try to query a tag of a value that doesn't support this trait:
+
+{{{
+ela>let wrongValue = (1,2)
+
+ela>match wrongValue with `Some x = x end
+
+(1,24): Error ELA909: A value '(1,2)' of type 'tuple' doesn't support trait 'Tag' 
+(it doesn't support a notion of 'tag').
+        in memory at line: 1, col: 24
+}}}
+
 ==How to use this knowledge==
 
 In reality you can program in Ela and don't even think about traits at all. Such trick won't work with Haskell that has a similar "type class" concept. But Ela is a dynamic language which already gives a lot of freedom in operations with types. However if you want to master programming in Ela you should definitely familiarize yourself with the trait concept. Ela comes with a rich set of built-in operations and traits is they way how you can use them in a more effective and generic manner.

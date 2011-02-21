@@ -86,7 +86,7 @@ TOKENS
 	BASE = "base".
 	MATCH = "match".
 	ASAMP = "@".
-	IS = "?".	
+	IS = "is".	
 	LET = "let".
 	PRIVATE = "private".
 	OPEN = "open".	
@@ -200,7 +200,7 @@ PRODUCTIONS
 			)
 			|
 			(
-				"?" 
+				IS 
 				(. ot = t; .)
 				IsOperatorPattern<out pat>
 				(. exp = GetPartialFun(new ElaIs(ot) { Expression = hiddenVar, Pattern = pat }); .)
@@ -392,7 +392,9 @@ PRODUCTIONS
 			| ListPattern<out pat>
 			| ArrayPattern<out pat>
 			| RecordPattern<out pat>
-			| IsPattern<out pat>
+			| IdentPattern<out pat>
+			| TraitPattern<out pat>
+			| TypeCheckPattern<out pat>
 		).
 			
 	AsPattern<out ElaPattern pat> =
@@ -477,7 +479,7 @@ PRODUCTIONS
 	IsOperatorPattern<out ElaPattern pat> = 
 		(. pat = null; .)
 		(
-			ident (. pat = new ElaIsPattern(t) { TypeAffinity = GetType(t.val) }; .)
+			TypeCheckPattern<out pat>
 			|
 			LiteralPattern<out pat>
 			|
@@ -528,30 +530,19 @@ PRODUCTIONS
 			isp.Traits = trait;
 			pat = isp;
 		.).
+		
+	TypeCheckPattern<out ElaPattern pat> = 
+		(. 
+			var eis = new ElaIsPattern(t);
+			pat = eis; 			
+		.)
+		"?" ident 
+		(. eis.TypeAffinity = GetType(t.val); .).		
 						
-	IsPattern<out ElaPattern pat> =
+	IdentPattern<out ElaPattern pat> =
 		(. pat = null; .)
 		ident (. var name = t.val; .)
 		(			
-			(
-				"?"
-				(
-					(
-						ident 
-						(. 
-							var typ = new ElaIsPattern(t) { VariableName = name }; 
-							typ.TypeAffinity = GetType(t.val); 
-							pat = typ;
-						.)
-					)
-					|
-					(
-						TraitPattern<out pat>
-						(. ((ElaIsPattern)pat).VariableName = name; .)
-					)
-				)
-			)
-			|
 			(
 				":" 
 				(. var cst = new ElaCastPattern(t) { VariableName = name }; pat = cst; .)
@@ -1598,7 +1589,7 @@ PRODUCTIONS
 				|
 				(
 					(. var pat = default(ElaPattern); .)
-					"?" IsOperatorPattern<out pat> 
+					IS IsOperatorPattern<out pat> 
 					(. exp = new ElaIs(t) { Expression = exp, Pattern = pat }; .)
 				)
 				|

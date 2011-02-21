@@ -336,15 +336,6 @@ namespace Ela.Compilation
 							}
 							else
 								CheckType(pushSys, tp.TypeAffinity, nextLab);
-
-							if (tp.VariableName != null)
-							{
-								var patVar = GetLocalVariable(tp.VariableName);
-								var addr = !patVar.IsEmpty() ? patVar.Address :
-									AddVariable(tp.VariableName, tp, flags, -1);
-								cw.Emit(Op.Pushvar, pushSys);
-								cw.Emit(Op.Popvar, addr);
-							}
 						}
 					}
 					break;
@@ -454,45 +445,34 @@ namespace Ela.Compilation
 					var e = els[i];
 					var isEnd = i == len - 1;
 
-					if (!isEnd && e.Type == ElaNodeType.NilPattern)
-						AddError(ElaCompilerError.MatchHeadTailPatternNil, e, FormatNode(pexp));
+					if (!isEnd)
+					{
+						cw.Emit(Op.Dup);
+						cw.Emit(Op.Popvar, pushSys);
+						cw.Emit(Op.Head);
+					}
+
+					if (e.Type == ElaNodeType.VariablePattern)
+					{
+						var nm = ((ElaVariablePattern)e).Name;
+						var a = GetMatchVariable(nm, hints, flags, e);
+						cw.Emit(Op.Popvar, a);
+					}
+					else if (e.Type == ElaNodeType.DefaultPattern)
+						cw.Emit(Op.Pop);
 					else
 					{
-						if (!isEnd)
-						{
-							cw.Emit(Op.Dup);
-							cw.Emit(Op.Popvar, pushSys);
-							cw.Emit(Op.Head);
-						}
+						var newSys = AddVariable();
+						cw.Emit(Op.Popvar, newSys);
+						CompilePattern(newSys, null, e, map, nextLab, flags, hints);
+					}
 
-						if (e.Type == ElaNodeType.VariablePattern)
-						{
-							var nm = ((ElaVariablePattern)e).Name;
-							var a = GetMatchVariable(nm, hints, flags, e);
-							cw.Emit(Op.Popvar, a);
-						}
-						else if (e.Type == ElaNodeType.DefaultPattern)
-							cw.Emit(Op.Pop);
-						else
-						{
-							var newSys = AddVariable();
-							cw.Emit(Op.Popvar, newSys);
-							CompilePattern(newSys, null, e, map, /*isEnd ? nextLab : errLab*/nextLab, flags, hints);
-						}
-
-						if (!isEnd)
-						{
-							cw.Emit(Op.Pushvar, pushSys);
-							cw.Emit(Op.Tail);
-						}
+					if (!isEnd)
+					{
+						cw.Emit(Op.Pushvar, pushSys);
+						cw.Emit(Op.Tail);
 					}
 				}
-
-				//cw.Emit(Op.Br, sucLab);
-				//cw.MarkLabel(errLab);
-				//cw.Emit(Op.Pop);
-				//cw.Emit(Op.Br, nextLab);
-				//cw.MarkLabel(sucLab);
 			}
 		}
 

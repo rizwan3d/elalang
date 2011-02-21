@@ -5,8 +5,8 @@
     where t = (& 2 + 2) end
     
 let lazyList {eqt} =
-    eqt (lst ? (_::_::(x?lazy)))
-    $ eqt (lst ? (1::5::xs))
+    eqt (lst is (_::_::(?lazy)))
+    $ eqt (lst is (1::5::xs))
     where lst = 1 :: (& 2 + 3) :: (& 44 - 40) end
     
 let memoization {eq} =
@@ -19,6 +19,6 @@ let memoization {eq} =
     
 let typeCheck {eqt} =
 	let t = (& 2 * 2) in
-	eqt (t ? lazy)
+	eqt (t is ?lazy)
     $ t + 0
-    $ eqt (t ? int)
+    $ eqt (t is ?int)

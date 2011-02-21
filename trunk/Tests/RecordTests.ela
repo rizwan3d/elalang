@@ -24,4 +24,4 @@ let changeItem {eq} =
 
 let typeCheck {eqt} =
 	let rec' = {x=0} in
-	eqt (rec' ? record)
+	eqt (rec' is ?record)

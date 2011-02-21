@@ -60,4 +60,4 @@ let iterateItems {eqt} =
 
 let typeCheck {eqt} =
 	let list = [0, 1] in
-	eqt (list ? list)
+	eqt (list is ?list)

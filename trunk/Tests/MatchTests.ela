@@ -65,14 +65,14 @@ let variantMatch {eqt} =
     end
     
 let typeCheckMatch {eqt} =
-    eqt (match 1 with x ? int = true; _ = false end)
-    $ eqt (match (1,2) with x ? tuple = true; _ = false end)
-    $ eqt (match [1,2] with x ? list = true; _ = false end)
+    eqt (match 1 with ?int = true; _ = false end)
+    $ eqt (match (1,2) with ?tuple = true; _ = false end)
+    $ eqt (match [1,2] with ?list = true; _ = false end)
     
 let traitCheckMatch {eqt} =
-    eqt (match 1 with x ? <Num,Eq> = true; _ = false end)
-    $ eqt (match (1,2) with x ? <Get,Len> = true; _ = false end)
-    $ eqt (match [1,2] with x ? <Fold,Cons> = true; _ = false end)
+    eqt (match 1 with <Num,Eq> = true; _ = false end)
+    $ eqt (match (1,2) with <Get,Len> = true; _ = false end)
+    $ eqt (match [1,2] with <Fold,Cons> = true; _ = false end)
     
 let castMatch {eqt} =
     eqt (match "1" with x:int = x == 1; _ = false end)
@@ -110,14 +110,14 @@ let guards3 {eqt} =
     end  
     
 let shortMatch {eq,eqt} =
-    if v ? (x,2,3) then
+    if v is (x,2,3) then
         eq x 1
     else
         eqt false
     where v = (1,2,3) end 
     
 let shortMatch2 {eq,eqt} =
-    if v ? (`Some [x,2]) then
+    if v is (`Some [x,2]) then
         eq x 12
     else
         eqt false

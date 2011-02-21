@@ -134,5 +134,5 @@ let assign {eq,eqt} =
         $ x <- 24.12
         $ eq x 24.12
         $ x <- [1,2]
-        $ eqt (x ? [1,2])
+        $ eqt (x is [1,2])
     )

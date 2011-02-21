@@ -21,7 +21,7 @@ namespace Ela
 
 		Gen = 0x80,
 
-		// = 0x100,
+		Tag = 0x100,
 
 		Bound = 0x200,
 

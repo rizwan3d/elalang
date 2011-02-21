@@ -51,8 +51,8 @@ let succPred {eq} =
     
 let concat {eq,eqt} =
     eq (("H", "w")++("e","o")) ("He", "wo")
-    $ eqt (t.[0] ? [1,2,3,4])
-    $ eqt (t.[1] ? [|10,20,30,40|])
+    $ eqt (t.[0] is [1,2,3,4])
+    $ eqt (t.[1] is [|10,20,30,40|])
     where t = ([1,2],[|10,20|])++([3,4],[|30,40|]) end
     
 let flat {eq} =
@@ -67,4 +67,4 @@ let changeItem {eqt} =
 
 let typeCheck {eqt} =
 	let tup  = (0,) in
-	eqt (tup ? tuple)
+	eqt (tup is ?tuple)

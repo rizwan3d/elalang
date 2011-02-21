@@ -1,5 +1,6 @@
 ﻿using System;
 using Ela.Parsing;
+using System.Text;
 
 namespace Ela.CodeModel
 {
@@ -22,7 +23,17 @@ namespace Ela.CodeModel
 		#region Methods
 		public override string ToString()
 		{
-			return VariableName + "?" + TypeAffinity.GetShortForm();
+			return Traits != ElaTraits.None ? FormatTraitList() : TypeAffinity.GetShortForm();
+		}
+
+
+		private string FormatTraitList()
+		{
+			var sb = new StringBuilder();
+			sb.Append('<');
+			sb.Append(Traits.ToString().Replace('|', ','));
+			sb.Append('>');
+			return sb.ToString();
 		}
 		#endregion
 
@@ -31,8 +42,6 @@ namespace Ela.CodeModel
 		public ObjectType TypeAffinity { get; set; }
 
 		public ElaTraits Traits { get; set; }
-
-		public string VariableName { get; set; }
 		#endregion
 	}
 }

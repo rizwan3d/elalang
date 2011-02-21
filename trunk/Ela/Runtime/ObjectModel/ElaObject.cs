@@ -49,12 +49,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		internal virtual string GetTag()
-		{
-			return String.Empty;
-		}
-
-
 		private string ThisToString(ElaValue first, ElaValue second, ExecutionContext ctx)
 		{
 			return first.Ref == this ? first.Ref.Show(first, ctx, ShowInfo.Default) :
@@ -346,6 +340,13 @@ namespace Ela.Runtime.ObjectModel
 		{
 			ctx.Fail(ElaRuntimeError.TraitThunk, ToString(), ((ObjectType)TypeId).GetShortForm());
 			return Default();
+		}
+
+
+		protected internal virtual string GetTag(ExecutionContext ctx)
+		{
+			ctx.Fail(ElaRuntimeError.TraitTag, ToString(), ((ObjectType)TypeId).GetShortForm());
+			return String.Empty;
 		}
 		#endregion
 

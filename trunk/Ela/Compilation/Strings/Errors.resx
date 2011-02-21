@@ -153,9 +153,6 @@
   <data name="MatchEntryTypingFailed" xml:space="preserve">
     <value>Data types of a match entry {0} are incompatible with previous entries.</value>
   </data>
-  <data name="MatchHeadTailPatternNil" xml:space="preserve">
-    <value>Match entry {0} is invalid. A list nil constructor ([]) can only be used at the end of a head/tail (x::xs) pattern.</value>
-  </data>
   <data name="MatchNotSupportedInFor" xml:space="preserve">
     <value>An expression: {0} is invalid. Pattern matching is not allowed in for/to and for/downto cycles.</value>
   </data>

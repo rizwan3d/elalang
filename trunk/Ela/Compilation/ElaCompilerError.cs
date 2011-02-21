@@ -55,7 +55,7 @@ namespace Ela.Compilation
 
 		// = 323,
 
-		MatchHeadTailPatternNil = 324,
+		// = 324,
 
 		OperatorAlreadyDeclared = 325,
 

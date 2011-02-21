@@ -1,16 +1,16 @@
 let simple {eqt} =
-    eqt <| v ? (`Some)
-    $ eqt <| v2 ? (`Some 2)
-    $ eqt <| v3 ? (`None)
+    eqt <| v is (`Some)
+    $ eqt <| v2 is (`Some 2)
+    $ eqt <| v3 is (`None)
     where v = `Some and
           v2 = `Some 2 and
           v3 = `None
     end 
     
 let simple2 {eqt} = 
-    eqt <| v ? (`Some (12, _))
-    $ eqt <| v2 ? (`Some (1::x::xs))
-    $ eqt <| v3 ? (`Some [|1,2,3|])
+    eqt <| v is (`Some (12, _))
+    $ eqt <| v2 is (`Some (1::x::xs))
+    $ eqt <| v3 is (`Some [|1,2,3|])
     where v = `Some (12, 20) and
           v2 = `Some [1,2,3] and
           v3 = `Some [|1,2,3|]
@@ -40,13 +40,13 @@ let transparency2 {eq} =
     end
     
 let transparency3 {eqt} =
-    eqt ((100::v) ? (100::xs))   
+    eqt ((100::v) is (100::xs))   
     $ v2.insert 0 100
-    $ eqt (v2 ? [|100,1,2,3|])
+    $ eqt (v2 is [|100,1,2,3|])
     where v = [1,2,3,4] and
           v2 = [|1,2,3|]
     end
     
 let typeCheck {eqt} =
 	let vr  = `None in
-	eqt (vr ? variant)
+	eqt (vr is ?variant)

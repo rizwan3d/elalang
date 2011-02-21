@@ -1047,7 +1047,7 @@ namespace Ela.Runtime
 					case Op.Skiphtag:
 						right = evalStack.Pop().Id(ctx);
 
-						if (!String.IsNullOrEmpty(right.Ref.GetTag()))
+						if (!String.IsNullOrEmpty(right.Ref.GetTag(ctx)))
 						{
 							if (ctx.Failed)
 							{
@@ -1063,7 +1063,7 @@ namespace Ela.Runtime
 					case Op.Skiptag:
 						right = evalStack.Pop().Id(ctx);
 
-						if (frame.Strings[opd] == right.Ref.GetTag())
+						if (frame.Strings[opd] == right.Ref.GetTag(ctx))
 						{
 							if (ctx.Failed)
 							{

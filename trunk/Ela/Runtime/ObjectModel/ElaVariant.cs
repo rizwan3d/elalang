@@ -7,7 +7,7 @@ namespace Ela.Runtime.ObjectModel
 	public class ElaVariant : ElaObject
 	{
 		#region Construction
-		public ElaVariant(string tag, ElaValue value) : base(ObjectType.Variant, value.Ref.Traits)
+		public ElaVariant(string tag, ElaValue value) : base(ObjectType.Variant, value.Ref.Traits | ElaTraits.Tag)
 		{
 			Tag = tag;
 			Value = value;
@@ -15,15 +15,12 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Methods
-		internal override string GetTag()
+		#region Traits
+		protected internal override string GetTag(ExecutionContext ctx)
 		{
 			return Tag;
 		}
-		#endregion
-
-
-		#region Traits
+		
 		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return Value.Ref.Equals(Self(left), Self(right), ctx);
