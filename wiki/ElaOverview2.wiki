@@ -656,7 +656,7 @@ But now we know that when Ela will finally calculate our lazy expression a conso
 Let's see what happens if we pass `thunk` variable to the function as follows:
 
 {{{
-ela>let isThunk x = if x ? lazy then "Yep, it's lazy!" else "No, it's not!"
+ela>let isThunk x = if x is lazy then "Yep, it's lazy!" else "No, it's not!"
 
 ela>isThunk thunk
 
@@ -691,7 +691,7 @@ ela>isThunk thunk
 
 No, it's not!
 
-ela>thunk ? int
+ela>thunk is ?int
 
 True
 }}}
@@ -1138,7 +1138,7 @@ Polymorphic variants are used very widely in Ela. In many cases they are a much 
 {{{
 ela>let cellp = `Cellphone { Model="E75", Maker="Nokia", Color="Black" }
 
-ela>if cellp ? (`Cellphone {Model="E75"}) then "This is a E75 smartphone!" else
+ela>if cellp is (`Cellphone {Model="E75"}) then "This is a E75 smartphone!" else
 "Don't know what is is."
 
 This is a E75 smartphone!
