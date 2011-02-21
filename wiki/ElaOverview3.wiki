@@ -55,10 +55,10 @@ ela>\x y -> x + y
 <f>:*->*->*
 }}}
 
-If you have a value and you want to check if a given value is of type function you can use `?` operator like so (I will describe the `?` operator with more detail in the next chapter):
+If you have a value and you want to check if a given value is of type function you can use `is` operator like so (I will describe the `is` operator with more detail in one of the next chapters):
 
 {{{
-ela>myFun ? fun
+ela>myFun is ?fun
 
 True
 }}}
