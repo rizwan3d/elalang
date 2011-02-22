@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Linq;
-using Ela.Linking;
 using System.Collections.Generic;
-using Ela.Runtime.ObjectModel;
+using System.Linq;
+using System.Text;
+using Ela.Linking;
 using Ela.Runtime;
+using Ela.Runtime.ObjectModel;
 
 namespace Ela.StandardLibrary
 {
@@ -42,6 +43,7 @@ namespace Ela.StandardLibrary
 			Add<Int32,String,String>("insert", Insert);
 			Add<Char,Int32,String,String>("padRight", PadRight);
 			Add<Char,Int32,String,String>("padLeft", PadLeft);
+            Add<IEnumerable<ElaValue>,String>("fromSeq", FromSeq);
 		}
 
 
@@ -181,6 +183,17 @@ namespace Ela.StandardLibrary
 		{
 			return str.PadLeft(totalWidth, c);
 		}
+
+
+        public string FromSeq(IEnumerable<ElaValue> list)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var e in list)
+                sb.Append(e.AsChar());
+
+            return sb.ToString();
+        }
 		#endregion
 	}
 }

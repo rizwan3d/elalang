@@ -329,7 +329,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		public virtual ElaValue Call(ElaValue value, ExecutionContext ctx)
+		protected internal virtual ElaValue Call(ElaValue value, ExecutionContext ctx)
 		{
 			ctx.Fail(ElaRuntimeError.TraitCall, ToString(), ((ObjectType)TypeId).GetShortForm());
 			return Default();

@@ -1,3 +1,13 @@
+0.8.5.16:Fix:Implementation of 'Eq' trait in ElaVariant now correctly processes a situation when both compared values are variants (previously a comparison like '`Foo 42 == `Bar 42' would result to 'true'.
+0.8.5.15:Fix:Now ElaValue.FromObject doesn't fail if a provided value is a null reference. An ElaUnit value is used in such case.
+0.8.5.14:Fix:Bug fix in a conversion method - a conversion used to fail when target and source types were the same.
+0.8.5.13:New:ElaVariant now has static methods 'Some' and 'None' that simplify creation of Option-type variants.
+0.8.5.12:New:Now ElaValue exposes all trait methods that can be used to operate with traits supported by a wrapped object.
+0.8.5.11:Change:A 'Call' method that supports 'Call' trait made protected interal as all other trait methods.
+0.8.5.10:New:A new 'Is<T>' and 'As<T>' methods added to ElaValue that can be used to test type of a wrapped object and convert it directly.
+0.8.5.9:New:A 'ReferenceEquals' method added to ElaValue that can be used to perform fast reference comparison (without the need to convert to object first).
+0.8.5.8:Fix:A bug in type conversion logic for ElaValue has fixed - it didn't correctly processes all the possible values for the target type and as a result conversion from ElaObject to a comparible type wasn't supported.
+0.8.5.7:Fix:Now type conversion for ElaValue can correctly handle a situation when a requested conversion is from ElaValue to ElaValue.
 0.8.5.6:Change:Type check pattern now has syntax '?typename' instead of 'x ? typename'. This syntax is used in all constructs, e.g. 'x is ?typename' (used to be 'x ? typename', the '?' operator was used for both 'short match' expression and type check pattern).
 0.8.5.5:Change:Operator '?' is now replaced by 'is'.
 0.8.5.4:Fix:Pretty printing is corrected for type check pattern when check is done against traits.

@@ -1,1 +1,7 @@
-0.1.0.0:Release:Release of 0.1.0.0
+0.0.0.7:New:Real module is implemented.
+0.0.0.6:New:Con (wrapper for Console) module is implemented.
+0.0.0.5:New:Guid module is implemented.
+0.0.0.4:New:Char module is implemented.
+0.0.0.3:New:StringBuilder module is implemented.
+0.0.0.2:New:String module is implemented.
+0.0.0.1:New:Initial version of Core module is implemented.

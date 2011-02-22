@@ -7,6 +7,16 @@ namespace Ela.Runtime.ObjectModel
 	public class ElaVariant : ElaObject
 	{
 		#region Construction
+        private const string SOME = "Some";
+        private const string NONE = "None";
+        private static readonly ElaVariant noneVariant = new ElaVariant(NONE, new ElaValue(ElaUnit.Instance));
+
+        public ElaVariant(string tag) : this(tag, new ElaValue(ElaUnit.Instance))
+        {
+
+        }
+
+
 		public ElaVariant(string tag, ElaValue value) : base(ObjectType.Variant, value.Ref.Traits | ElaTraits.Tag)
 		{
 			Tag = tag;
@@ -23,13 +33,23 @@ namespace Ela.Runtime.ObjectModel
 		
 		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return Value.Ref.Equals(Self(left), Self(right), ctx);
+			var res = Value.Ref.Equals(Self(left), Self(right), ctx);
+
+            if (left.Type == ElaMachine.VAR && right.Type == ElaMachine.VAR)
+				return new ElaValue(res.AsBoolean() && left.Ref.GetTag(ctx) == right.Ref.GetTag(ctx));
+			
+			return res;
 		}
 
 
 		protected internal override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return Value.Ref.NotEquals(Self(left), Self(right), ctx);
+			var res = Value.Ref.NotEquals(Self(left), Self(right), ctx);
+
+            if (left.Type == ElaMachine.VAR && right.Type == ElaMachine.VAR)
+				return new ElaValue(res.AsBoolean() && left.Ref.GetTag(ctx) == right.Ref.GetTag(ctx));
+			
+			return res;
 		}
 
 
@@ -258,7 +278,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		public override ElaValue Call(ElaValue value, ExecutionContext ctx)
+		protected internal override ElaValue Call(ElaValue value, ExecutionContext ctx)
 		{
 			return Value.Ref.Call(value, ctx);
 		}
@@ -321,8 +341,28 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Properties
-		public ElaValue Value { get; protected set; }
+        #region Methods
+        public static ElaVariant Some(ElaValue value)
+        {
+            return new ElaVariant(SOME, value);
+        }
+
+
+        public static ElaVariant Some<T>(T value)
+        {
+            return new ElaVariant(SOME, ElaValue.FromObject(value));
+        }
+
+
+        public static ElaVariant None()
+        {
+            return noneVariant;
+        }
+        #endregion
+
+
+        #region Properties
+        public ElaValue Value { get; protected set; }
 
 		public string Tag { get; protected set; }
 		#endregion

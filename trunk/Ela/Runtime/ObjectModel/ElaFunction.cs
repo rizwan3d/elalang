@@ -50,7 +50,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Traits
-		public override ElaValue Call(ElaValue value, ExecutionContext ctx)
+		protected internal override ElaValue Call(ElaValue value, ExecutionContext ctx)
 		{
 			try
 			{
