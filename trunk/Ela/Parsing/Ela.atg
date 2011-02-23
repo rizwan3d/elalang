@@ -890,6 +890,8 @@ PRODUCTIONS
 			var inExp = default(ElaExpression);
 		.)
 		LET [VariableAttributes<out flags>] VariableDeclarationBody<flags, out exp>
+		/*(. if (((ElaBinding)exp).InitExpression.Type == ElaNodeType.FunctionLiteral && la.kind != _IN) .)
+		ENDS*/
 		[
 			IN Expr<out inExp> 
 			(. ((ElaBinding)exp).In = inExp; .)
