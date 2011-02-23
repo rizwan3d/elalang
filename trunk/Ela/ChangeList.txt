@@ -3,7 +3,7 @@
 0.8.5.14:Fix:Bug fix in a conversion method - a conversion used to fail when target and source types were the same.
 0.8.5.13:New:ElaVariant now has static methods 'Some' and 'None' that simplify creation of Option-type variants.
 0.8.5.12:New:Now ElaValue exposes all trait methods that can be used to operate with traits supported by a wrapped object.
-0.8.5.11:Change:A 'Call' method that supports 'Call' trait made protected interal as all other trait methods.
+0.8.5.11:Change:A 'Call' method that supports 'Call' trait made protected internal as all other trait methods.
 0.8.5.10:New:A new 'Is<T>' and 'As<T>' methods added to ElaValue that can be used to test type of a wrapped object and convert it directly.
 0.8.5.9:New:A 'ReferenceEquals' method added to ElaValue that can be used to perform fast reference comparison (without the need to convert to object first).
 0.8.5.8:Fix:A bug in type conversion logic for ElaValue has fixed - it didn't correctly processes all the possible values for the target type and as a result conversion from ElaObject to a comparible type wasn't supported.
