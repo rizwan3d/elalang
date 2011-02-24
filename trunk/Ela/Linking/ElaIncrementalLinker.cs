@@ -48,7 +48,7 @@ namespace Ela.Linking
 		{
 			Messages.Clear();
 			Success = true;
-			var mod = new ModuleReference(Path.GetFileNameWithoutExtension(MemoryFile));
+			var mod = new ModuleReference(Path.GetFileNameWithoutExtension(RootFile != null ? RootFile.Name : MemoryFile));
 			var frame = default(CodeFrame);
 			var scope = default(Scope);
 			var scratch = true;

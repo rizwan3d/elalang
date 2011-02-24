@@ -1,3 +1,4 @@
+0.8.5.24:Fix:Module name wasn't preserved when using incremental linker (and as a result didn't show up in call stack).
 0.8.5.23:Fix:A critical error in built-in 'flip' function fixed - it corrupted functions when applied to external functions.
 0.8.5.22:Change:ElaCallException is decomissioned. Instead new ElaRuntimeException should be used by external methods (it allows to specify an exception category that is translated by Ela into variant tag).
 0.8.5.21:New:Now Ela types implement 'Compare' method (which is exposed to public through implementation of IComparable<> interface in ElaValue).
