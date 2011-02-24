@@ -130,6 +130,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="elac.exe.config" />
     <Compile Include="InteractiveCommands.cs" />
     <Compile Include="Options\ElaOptionError.cs" />
     <Compile Include="Options\ElaOptionException.cs" />

@@ -1,3 +1,4 @@
+0.0.1.0:Release:Release of 0.0.1
 0.0.0.10:New:Initial version of Shell module is implemented.
 0.0.0.9:New:Map module is implemented.
 0.0.0.8:New:MutableMap module is implemented.
