@@ -17,6 +17,18 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
+		#region Methods
+		internal override int Compare(ElaValue @this, ElaValue other)
+		{
+			return other.DataType == ObjectType.Integer ? @this.I4.CompareTo(other.I4) :
+				other.DataType == ObjectType.Long ? ((Int64)@this.I4).CompareTo(other.AsLong()) :
+				other.DataType == ObjectType.Single ? ((Single)@this.I4).CompareTo(other.DirectGetReal()) :
+				other.DataType == ObjectType.Double ? ((Double)@this.I4).CompareTo(other.AsDouble()) :
+				-1;
+		}
+		#endregion
+
+
 		#region Traits
 		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{

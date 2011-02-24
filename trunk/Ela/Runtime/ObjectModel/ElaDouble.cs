@@ -20,6 +20,16 @@ namespace Ela.Runtime.ObjectModel
         {
             return InternalValue.GetHashCode();
         }
+
+
+		internal override int Compare(ElaValue @this, ElaValue other)
+		{
+			return other.DataType == ObjectType.Single ? InternalValue.CompareTo(other.AsSingle()) :
+				other.DataType == ObjectType.Integer ? InternalValue.CompareTo((Double)other.I4) :
+				other.DataType == ObjectType.Long ? InternalValue.CompareTo((Double)other.AsLong()) :
+				other.DataType == ObjectType.Double ? InternalValue.CompareTo(((ElaDouble)other.Ref).InternalValue) :
+				-1;
+		}
         #endregion
 
 

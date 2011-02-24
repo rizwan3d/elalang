@@ -16,6 +16,14 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
+		#region Methods
+		internal override int Compare(ElaValue @this, ElaValue other)
+		{
+			return other.DataType == ObjectType.Boolean ? @this.I4 - other.I4 : -1;
+		}
+		#endregion
+
+
 		#region Traits
 		internal override bool Bool(ElaValue @this, ExecutionContext ctx)
 		{

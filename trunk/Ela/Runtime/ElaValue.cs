@@ -7,7 +7,7 @@ using System.Collections;
 
 namespace Ela.Runtime
 {
-	public struct ElaValue
+	public struct ElaValue : IComparable<ElaValue>
 	{
 		#region Construction
 		public ElaValue(ElaObject val)
@@ -77,6 +77,12 @@ namespace Ela.Runtime
 
 
 		#region Methods
+		public int CompareTo(ElaValue other)
+		{
+			return Ref.Compare(this, other);
+		}
+
+
 		public override string ToString()
 		{
 			return Ref.Show(this, ElaObject.DummyContext, new ShowInfo(0, 40));

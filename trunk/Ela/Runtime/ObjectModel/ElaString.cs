@@ -26,6 +26,15 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
+		#region Methods
+		internal override int Compare(ElaValue @this, ElaValue other)
+		{
+			return other.DataType == ObjectType.String ? buffer.CompareTo(((ElaString)other.Ref).buffer) :
+				-1;
+		}
+		#endregion
+
+
 		#region Traits
 		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{

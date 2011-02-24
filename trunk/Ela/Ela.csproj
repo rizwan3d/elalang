@@ -164,6 +164,7 @@
     <Compile Include="IReadOnlyMap.cs" />
     <Compile Include="Compilation\OpSizeHelper.cs" />
     <Compile Include="ElaTranslationException.cs" />
+    <Compile Include="Runtime\ElaRuntimeException.cs" />
     <Compile Include="Runtime\ObjectModel\DelegateFunction.cs" />
     <Compile Include="Linking\ElaLinkerError.cs" />
     <Compile Include="Linking\ElaLinkerException.cs" />
@@ -284,7 +285,6 @@
     <Compile Include="Parsing\ParserResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runtime\CallPoint.cs" />
-    <Compile Include="Runtime\ElaCallException.cs" />
     <Compile Include="Runtime\ElaCodeException.cs" />
     <Compile Include="Runtime\ElaMachine.cs">
       <SubType>Code</SubType>
@@ -409,7 +409,6 @@
     <PreBuildEvent>
     </PreBuildEvent>
     <PostBuildEvent>"$(SolutionDir)Binaries\Coco.exe" -N "$(ProjectDir)Parsing\Ela.atg"
-"$(SolutionDir)Binaries\vgen.exe" "$(ProjectDir)ChangeList.txt" "$(ProjectDir)Properties\VersionInfo.cs"
-xcopy "$(ProjectDir)ChangeList.txt" "$(SolutionDir)\Binaries\ReleaseBuild\" /y</PostBuildEvent>
+"$(SolutionDir)Binaries\vgen.exe" "$(ProjectDir)ChangeList.txt" "$(ProjectDir)Properties\VersionInfo.cs"</PostBuildEvent>
   </PropertyGroup>
 </Project>

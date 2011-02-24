@@ -1331,7 +1331,7 @@ namespace Ela.Runtime
 							}
 
 							var fun = (ElaFunction)right.Ref;
-							fun = fun.CloneFast();
+							fun = fun.Captures != null ? fun.CloneFast() : fun.Clone();
 							fun.Flip = !fun.Flip;
 							evalStack.Replace(new ElaValue(fun));
 						}
@@ -1807,7 +1807,11 @@ namespace Ela.Runtime
 				}
 
 				stack.Push(funObj.Call(arr));
-			}			
+			}
+			catch (ElaRuntimeException ex)
+			{
+				ExecuteFail(new ElaError(ex.Category, ex.Message), thread, stack);
+			}
 			catch (Exception ex)
 			{
 				ExecuteFail(new ElaError(ElaRuntimeError.CallFailed, ex.Message), thread, stack);

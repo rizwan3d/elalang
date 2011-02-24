@@ -64,7 +64,7 @@ namespace Ela.Library.Collections
 
                 if (!Map.TryGetValue(index, out val))
                 {
-                    ctx.Fail(NOKEY, String.Format("An element with a key '{0}' doesn't exist.", index));
+                    ctx.Fail(NOKEY, String.Format("An element with a Key '{0}' doesn't exist.", index));
                     return Default();
                 }
                 
