@@ -14,6 +14,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        public override int GetHashCode()
+        {
+            return Value.Ref != null ? Value.GetHashCode() : 0;
+        }
+
+
 		public string AsString()
 		{
 			return Force().AsString();

@@ -342,6 +342,12 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Methods
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }
+
+
         public static ElaVariant Some(ElaValue value)
         {
             return new ElaVariant(SOME, value);

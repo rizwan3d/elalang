@@ -1,5 +1,6 @@
 ﻿using Ela.Linking;
-using Ela.StandardLibrary;
+using Ela.Library.General;
+using Ela.Library.Collections;
 
 [assembly: ElaModule("CoreInternal", typeof(CoreInternalModule))]
 
@@ -10,3 +11,5 @@ using Ela.StandardLibrary;
 [assembly: ElaModule("Guid", typeof(GuidModule))]
 [assembly: ElaModule("Real", typeof(RealModule))]
 [assembly: ElaModule("Con", typeof(ConModule))]
+
+[assembly: ElaModule("Map", typeof(MapModule))]

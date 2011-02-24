@@ -515,7 +515,7 @@ namespace Ela.Compilation
 			if (seq.Type == ElaNodeType.ArrayPattern)
 				CheckType(pushSys, ObjectType.Array, nextLab);
 			else if (pushSys != -1 && tuple == null)
-				Silent(pushSys, nextLab, hints, ElaTraits.Get|ElaTraits.Len);
+				Silent(pushSys, nextLab, hints, ElaTraits.Get|ElaTraits.Len|ElaTraits.Seq);
 			
 			if (tuple != null)
 			{

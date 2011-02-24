@@ -341,7 +341,7 @@ let point () = { mutable x = 0, mutable y = 0 }
 
 ===Tuple pattern===
 
-Tuple pattern in spite of its name can be used to match any value that has a notion of length and supports an access to its elements by index. These are tuples at the first place, records, arrays and even linked lists. If a given value supports traits _Len_ and _Get_ it is good enough for the tuple patern.
+Tuple pattern in spite of its name can be used to match any value that has a notion of length and supports an access to its elements by index. These are tuples at the first place, records, arrays and even linked lists. If a given value supports traits _Len_, _Seq_ and _Get_ it is good enough for the tuple patern.
 
 Tuple pattern uses a tuple literal as follows:
 

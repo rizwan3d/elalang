@@ -260,6 +260,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        public override int GetHashCode()
+        {
+            return buffer.GetHashCode();
+        }
+
+
 		public IEnumerator<ElaValue> GetEnumerator()
 		{
 			foreach (var c in GetValue())

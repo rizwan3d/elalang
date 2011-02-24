@@ -514,6 +514,26 @@ ela>match wrongValue with `Some x = x end
         in memory at line: 1, col: 24
 }}}
 
+===Seq===
+
+This one is somewhat different from the rest of the traits. It doesn't define even a single method but is used to specify that a particular type or value supports a sequential access to its elements.
+
+That is a true statement for such standard types as tuples or arrays. You can obtain an element from both tuple or array using an indexer syntax, however indexer in Ela is not limited to just integer number and you can also use strings, virtually any value of any type as an index:
+
+{{{
+ela>let testRec = {x=42}
+
+ela>testRec.["x"]
+
+42
+}}}
+
+Because of it the sole fact that a given value supports 'Get' trait doesn't really say much - we just know that we can use an indexer but we don't really know what types of indices are supported.
+
+This knowledge is required for a tuple pattern which assumes that a provided value has a finite number of elements and all its elements are ordered and can be obtained using a sequential index. And that is how 'Seq' trait appears to be useful. If our given value does support both 'Len' and 'Get' but doesn't support 'Seq' (which is a completely legal situation with, for example, hash table) than tuple pattern is not applicable for it.
+
+Other built-in data types, except of tuples and arrays, that support 'Seq' trait are records and linked lists.
+
 ==How to use this knowledge==
 
 In reality you can program in Ela and don't even think about traits at all. Such trick won't work with Haskell that has a similar "type class" concept. But Ela is a dynamic language which already gives a lot of freedom in operations with types. However if you want to master programming in Ela you should definitely familiarize yourself with the trait concept. Ela comes with a rich set of built-in operations and traits is they way how you can use them in a more effective and generic manner.

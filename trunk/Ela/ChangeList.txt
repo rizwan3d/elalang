@@ -1,3 +1,7 @@
+0.8.5.20:New:A standard 'Equals' function is implemented in ElaValue (it delegates to 'Eq' trait implementation of a particular type).
+0.8.5.19:New:A hashing function ('GetHashCode') is implemented for all Ela types where it is reasonable to have one.
+0.8.5.18:Change:'Seq' trait makes its return. It is used to mark a type as a one that supports a sequential access to its elements (and is normally coupled with 'Get').
+0.8.5.17:Change:Syntax of 'trait check' pattern is changed from '<Foo,Bar>' to '?(Foo,Bar)'.
 0.8.5.16:Fix:Implementation of 'Eq' trait in ElaVariant now correctly processes a situation when both compared values are variants (previously a comparison like '`Foo 42 == `Bar 42' would result to 'true'.
 0.8.5.15:Fix:Now ElaValue.FromObject doesn't fail if a provided value is a null reference. An ElaUnit value is used in such case.
 0.8.5.14:Fix:Bug fix in a conversion method - a conversion used to fail when target and source types were the same.

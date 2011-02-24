@@ -83,6 +83,25 @@ namespace Ela.Runtime
 		}
 
 
+        public override int GetHashCode()
+        {
+            switch (Ref.TypeId)
+            {
+                case ElaMachine.INT: return I4.GetHashCode();
+                case ElaMachine.REA: return DirectGetReal().GetHashCode();
+                case ElaMachine.CHR: return ((Char)I4).GetHashCode();
+                case ElaMachine.BYT: return (I4 == 1).GetHashCode();
+                default: return Ref.GetHashCode();
+            }
+        }
+
+
+        public override bool Equals(object obj)
+        {
+            return obj is ElaValue ? Equals(this, (ElaValue)obj, ElaObject.DummyContext).AsBoolean() : false;
+        }
+
+
 		internal ElaValue Id(ExecutionContext ctx)
 		{
 			return (Ref.Traits & ElaTraits.Thunk) == ElaTraits.Thunk ? Ref.Force(ctx) : this;

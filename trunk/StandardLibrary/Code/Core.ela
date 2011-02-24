@@ -56,6 +56,8 @@ let minValue x y | x <= y = x;
 
 let round = CoreInternal.round
 
+let rnd = CoreInternal.rnd
+
 let pi = CoreInternal.pi
 
 let e = CoreInternal.e

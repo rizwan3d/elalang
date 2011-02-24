@@ -393,7 +393,6 @@ PRODUCTIONS
 			| ArrayPattern<out pat>
 			| RecordPattern<out pat>
 			| IdentPattern<out pat>
-			| TraitPattern<out pat>
 			| TypeCheckPattern<out pat>
 		).
 			
@@ -490,30 +489,22 @@ PRODUCTIONS
 			ArrayPattern<out pat>
 			|
 			UnitPattern<out pat>
-			|
-			TraitPattern<out pat>
 		).
 		
-	TraitPattern<out ElaPattern pat> =
+	TypeCheckPattern<out ElaPattern pat> = 
 		(. 
-			var trait = default(ElaTraits); 
-			var isp = new ElaIsPattern(t);
+			var eis = new ElaIsPattern(t);
 			var tmp = default(ElaTraits);
+			pat = eis; 			
 		.)
+		"?" 
 		(
-			"<"
-				ident 
-				(. 
-					tmp = Builtins.Trait(t.val); 
-					
-					if (tmp == ElaTraits.None) {
-						AddError(ElaParserError.UnknownTrait, t.val);
-					}
-					
-					trait |= tmp;
-				.)
-				{ 
-					"," ident 
+			ident (. eis.TypeAffinity = GetType(t.val); .)
+			|
+			(
+				(. .)
+				"("
+					ident 
 					(. 
 						tmp = Builtins.Trait(t.val); 
 						
@@ -521,23 +512,23 @@ PRODUCTIONS
 							AddError(ElaParserError.UnknownTrait, t.val);
 						}
 						
-						trait |= tmp;
+						eis.Traits |= tmp;
 					.)
-				}
-			">"
-		)
-		(.
-			isp.Traits = trait;
-			pat = isp;
-		.).
-		
-	TypeCheckPattern<out ElaPattern pat> = 
-		(. 
-			var eis = new ElaIsPattern(t);
-			pat = eis; 			
-		.)
-		"?" ident 
-		(. eis.TypeAffinity = GetType(t.val); .).		
+					{ 
+						"," ident 
+						(. 
+							tmp = Builtins.Trait(t.val); 
+							
+							if (tmp == ElaTraits.None) {
+								AddError(ElaParserError.UnknownTrait, t.val);
+							}
+							
+							eis.Traits |= tmp;
+						.)
+					}
+				")"
+			)
+		).		
 						
 	IdentPattern<out ElaPattern pat> =
 		(. pat = null; .)

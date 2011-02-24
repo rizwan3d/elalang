@@ -11,7 +11,7 @@ namespace Ela.Runtime.ObjectModel
 	{
 		#region Construction
 		private const int DEFAULT_SIZE = 4;
-		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Len | ElaTraits.Get | ElaTraits.Set | ElaTraits.Gen | ElaTraits.Fold | ElaTraits.Concat | ElaTraits.Convert | ElaTraits.Show | ElaTraits.FieldGet;
+		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Len | ElaTraits.Get | ElaTraits.Set | ElaTraits.Gen | ElaTraits.Fold | ElaTraits.Concat | ElaTraits.Convert | ElaTraits.Show | ElaTraits.FieldGet | ElaTraits.Seq;
 		private int size;
 		private ElaValue[] array;
 		private int headIndex;

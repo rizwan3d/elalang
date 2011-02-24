@@ -8,7 +8,7 @@
     <ProjectGuid>{AFD398CA-09A8-486A-9C65-EDC4954F08C0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Ela.StandardLibrary</RootNamespace>
+    <RootNamespace>Ela.Library</RootNamespace>
     <AssemblyName>elalib</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -113,17 +113,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CharModule.cs" />
-    <Compile Include="ConModule.cs" />
-    <Compile Include="CoreInternal.cs" />
-    <Compile Include="DebugModule.cs" />
-    <Compile Include="GuidModule.cs" />
+    <Compile Include="Collections\MapModule.cs" />
+    <Compile Include="General\CharModule.cs" />
+    <Compile Include="General\ConModule.cs" />
+    <Compile Include="General\CoreInternalModule.cs" />
+    <Compile Include="General\DebugModule.cs" />
+    <Compile Include="General\GuidModule.cs" />
     <Compile Include="Modules.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\VersionInfo.cs" />
-    <Compile Include="RealModule.cs" />
-    <Compile Include="StringBuilderModule.cs" />
-    <Compile Include="StringModule.cs" />
+    <Compile Include="General\RealModule.cs" />
+    <Compile Include="General\StringBuilderModule.cs" />
+    <Compile Include="General\StringModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Ela\Ela.csproj">

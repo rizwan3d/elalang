@@ -18,6 +18,14 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
+        #region Methods
+        public override int GetHashCode()
+        {
+            return 0;
+        }
+        #endregion
+
+
 		#region Traits
 		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{

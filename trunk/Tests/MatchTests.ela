@@ -70,9 +70,9 @@ let typeCheckMatch {eqt} =
     $ eqt (match [1,2] with ?list = true; _ = false end)
     
 let traitCheckMatch {eqt} =
-    eqt (match 1 with <Num,Eq> = true; _ = false end)
-    $ eqt (match (1,2) with <Get,Len> = true; _ = false end)
-    $ eqt (match [1,2] with <Fold,Cons> = true; _ = false end)
+    eqt (match 1 with ?(Num,Eq) = true; _ = false end)
+    $ eqt (match (1,2) with ?(Get,Len) = true; _ = false end)
+    $ eqt (match [1,2] with ?(Fold,Cons) = true; _ = false end)
     
 let castMatch {eqt} =
     eqt (match "1" with x:int = x == 1; _ = false end)

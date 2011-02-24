@@ -15,8 +15,16 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Traits
-		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+        #region Methods
+        public override int GetHashCode()
+        {
+            return InternalValue.GetHashCode();
+        }
+        #endregion
+
+
+        #region Traits
+        protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.Type <= ElaMachine.DBL)
 			{
