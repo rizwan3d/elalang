@@ -12,5 +12,5 @@ using Ela.Library.Collections;
 [assembly: ElaModule("Real", typeof(RealModule))]
 [assembly: ElaModule("Con", typeof(ConModule))]
 
-[assembly: ElaModule("Map", typeof(MapModule))]
+[assembly: ElaModule("MutableMap", typeof(MutableMapModule))]
 [assembly: ElaModule("Stack", typeof(StackModule))]
