@@ -13,3 +13,4 @@ using Ela.Library.Collections;
 [assembly: ElaModule("Con", typeof(ConModule))]
 
 [assembly: ElaModule("Map", typeof(MapModule))]
+[assembly: ElaModule("Stack", typeof(StackModule))]

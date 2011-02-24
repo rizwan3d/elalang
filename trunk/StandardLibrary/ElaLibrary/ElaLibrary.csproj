@@ -114,6 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections\MapModule.cs" />
+    <Compile Include="Collections\StackModule.cs" />
     <Compile Include="General\CharModule.cs" />
     <Compile Include="General\ConModule.cs" />
     <Compile Include="General\CoreInternalModule.cs" />

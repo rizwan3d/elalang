@@ -1,3 +1,4 @@
+0.0.0.9:New:Stack module is implemented.
 0.0.0.8:New:Map module is implemented.
 0.0.0.7:New:Real module is implemented.
 0.0.0.6:New:Con (wrapper for Console) module is implemented.
