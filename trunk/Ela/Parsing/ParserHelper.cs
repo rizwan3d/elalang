@@ -42,6 +42,12 @@ namespace Ela.Parsing
 		//}
 
 
+		private bool RequireSemicolon()
+		{
+			return la.kind != _EOF && la.kind != _LET && la.kind != _OPEN && t.kind != _SEMI && t.kind != _ENDS;
+		}
+
+
 		private void SetFunMetadata(ElaBinding varExp, ElaExpression cexp, ElaVariableFlags flags)
 		{
 			if (cexp != null)

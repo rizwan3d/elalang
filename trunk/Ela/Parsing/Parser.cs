@@ -1299,6 +1299,8 @@ internal sealed partial class Parser {
 			VariableAttributes(out flags);
 		}
 		VariableDeclarationBody(flags, out exp);
+		if (((ElaBinding)exp).InitExpression.Type == ElaNodeType.FunctionLiteral && la.kind != _IN || la.kind == _ENDS) 
+		Expect(53);
 		if (la.kind == 25) {
 			Get();
 			Expr(out inExp);
@@ -2394,27 +2396,31 @@ internal sealed partial class Parser {
 	}
 
 	void Ela() {
-		if (StartOf(7)) {
-			var exp = default(ElaExpression); 
-			EmbExpr(out exp);
-			Expression = exp; 
-		} else if (la.kind == 32 || la.kind == 34) {
-			var b = new ElaBlock(t);
-			Expression = b;
-			
-			DeclarationBlock(b);
-		} else SynErr(129);
+		var b = new ElaBlock(t);
+		Expression = b;
+		
+		DeclarationBlock(b);
 	}
 
 	void DeclarationBlock(ElaBlock b) {
 		var exp = default(ElaExpression); 
 		if (la.kind == 32) {
 			RootLetBinding(out exp);
+			if (RequireSemicolon()) 
+			Expect(10);
 		} else if (la.kind == 34) {
 			IncludeStat(out exp);
-		} else SynErr(130);
+			if (RequireSemicolon()) 
+			Expect(10);
+		} else if (StartOf(7)) {
+			EmbExpr(out exp);
+			if (RequireSemicolon()) 
+			Expect(10);
+		} else if (la.kind == 10) {
+			Get();
+		} else SynErr(129);
 		b.Expressions.Add(exp); 
-		if (la.kind == 32 || la.kind == 34) {
+		if (StartOf(17)) {
 			DeclarationBlock(b);
 		}
 	}
@@ -2447,7 +2453,8 @@ internal sealed partial class Parser {
 		{x,T,x,x, x,T,T,T, T,x,x,T, x,T,x,T, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,T,T, x,x,x,T, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,x,x, x,x,x,x, x,x,x},
-		{x,T,T,T, x,T,T,T, T,x,x,T, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x}
+		{x,T,T,T, x,T,T,T, T,x,x,T, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x},
+		{x,T,T,T, x,T,T,T, T,x,T,T, x,T,x,T, x,x,T,x, x,x,x,x, x,x,x,x, T,T,x,x, T,x,T,x, T,x,T,T, x,x,T,T, T,T,T,T, T,T,x,x, x,x,T,T, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x}
 
 	};
 } // end Parser
@@ -2594,8 +2601,7 @@ internal sealed class Errors {
 			case 126: s = "invalid FuncOperator"; break;
 			case 127: s = "invalid EmbExpr"; break;
 			case 128: s = "invalid IterExpr"; break;
-			case 129: s = "invalid Ela"; break;
-			case 130: s = "invalid DeclarationBlock"; break;
+			case 129: s = "invalid DeclarationBlock"; break;
 
 			default: s = "error " + n; break;
 		}

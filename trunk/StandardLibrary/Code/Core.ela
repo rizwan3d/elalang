@@ -2,13 +2,13 @@
     Ela core module
     Created in 2011 by Basil Voronkov
 */
-
 open CoreInternal[elalib]
 
 /* MATH */
 
 let abs x | x >= 0 = x;
           | else   = --x
+end
 
 let exp = CoreInternal.exp
 
@@ -17,6 +17,7 @@ let gcd 0 0 = fail "Core.gcd: gcd 0 0 is undefined";
               where gcd' x 0 = x;
                          x y = gcd' y (x % y)
               end
+end
               
 let cos = CoreInternal.cos
 
@@ -29,6 +30,7 @@ let quot = CoreInternal.quot
 let lcm _ 0 = 0;
         0 _ = 0;
         x y = abs ((x `quot` gcd x y) * y)
+end
 
 let floor = CoreInternal.floor
 
@@ -38,21 +40,23 @@ let subtract = flip (-)
 
 let atan = CoreInternal.atan
 
-let sqrt x = x ** 0.5
+let sqrt x = x ** 0.5 end
 
 let truncate = CoreInternal.truncate
 
 let log = CoreInternal.log
 
-let even x = x % 2 == 0
+let even x = x % 2 == 0 end
 
-let odd x = x % 2 <> 0
+let odd x = x % 2 <> 0 end
 
 let maxValue x y | x >= y = x;
                  | else   = y
+end
 
 let minValue x y | x <= y = x;
                  | else   = y
+end
 
 let round = CoreInternal.round
 
@@ -65,183 +69,209 @@ let e = CoreInternal.e
 
 /* LIST FUNCTIONS */
 
-let !! x y = x.[y]
+let !! x y = x.[y] end
 
 let head x::_ = x;
-         []   = fail "Core.head: Empty list"
+         []   = fail "Core.head: Empty list" 
+end
 
 let tail _::xs = xs;
          []    = fail "Core.tail: Empty list"
+end
 
 let last x::[] = x;
          _::xs = last xs;
          []    = fail "Core.last: Empty list"
+end
 
 let init x::[] = [];
          x::xs = x :: init xs;
          []    = fail "Core.init: Empty list"
+end
 
-let nil _::_ = false; [] = true
+let nil _::_ = false; [] = true end
 
 let takeWhile f x::xs | f x  = x :: takeWhile f xs;
                       | else = [];
               f []           = []
+end
 
 let take 0 _     = [];
          n x::xs = x :: take (n - 1) xs;
         _ []    = []
+end
 
 let skip 0 xs    = xs;
          n _::xs = skip (n - 1) xs;
          _ []    = []
+end
 
 let each f x::xs = f x $ each f xs;
          _ []    = ()
+end
        
 let map f x::xs = f x :: map f xs;
         _ []    = []
+end
         
 let map' f x::xs = f x :: (& map' f xs);
          _ []    = []
+end
            
 let filter p x::xs | p x  = x :: filter p xs;
                    | else = filter p xs;
            _ []           = []
+end
 
 let filter' p x::xs | p x  = x :: (& filter' p xs);
                     | else = filter' p xs;
             _ []           = []
+end
 
 let foldl f z x::xs = foldl f (f z x) xs;
           _ z []    = z
+end
        
 let foldr f z x::xs = f x (foldr f z xs);
           _ z []    = z
+end
 
-let concat xs = foldr (++) [] xs
+let concat xs = foldr (++) [] xs end
 
-let product xs = foldl (*) 1 xs
+let product xs = foldl (*) 1 xs end
 
 let reverse = foldl (flip (::)) []
         
 let zipWith z x::xs y::ys = z x y :: zipWith z xs ys;
             _ _     _     = []
+end
 
 let any f x::xs | f x  = true;
                 | else = any f xs;
         _ []           = false
+end
         
 let all f x::xs | f x  = all f xs;
                 | else = false;
         _ []           = false
+end
 
-let sum xs = foldl (+) 0 xs
+let sum xs = foldl (+) 0 xs end
 
 let splitAt 0 xs            = ([],xs);
             _ []            = ([],[]);
             n x::xs | n > 0 = (x::xs',xs2')
                               where (xs',xs2') = splitAt (n-1) xs end;
             _ _             = fail "Core.splitAt: negative argument"
+end
 
 let span p [] = ([],[]);
          p (x::xs')@xs | p x  = (x::ys, zs);
                        | else = ([],xs)
                        where (ys,zs) = span p xs' end
+end
 
 let breakList p xs = span p' xs
                      where p' x = not (p x) end
+end
 
 let drop 0 xs            = xs;
          _ []            = [];
         n _::xs | n > 0  = drop (n-1) xs;
          _ _             = fail "Core.drop: negative argument"
+end
 
 let dropWhile p [] = [];
               p x::xs | p x  = dropWhile p xs;
                       | else = x::xs
+end
 
 let index lst = index' 0 lst
                 where index' n x::xs = index' (n+1) xs;
                              n []    = n
                 end
+end
 
-let elem x = any (==x)
+let elem x = any (==x) end
 
-let notElem x = all (<>x)
+let notElem x = all (<>x) end
 
-let repeat x = x :: (& repeat x)
+let repeat x = x :: (& repeat x) end
 
 let cycle head::tail = head :: (& cycle' tail)
                        where cycle' x::xs = x :: (& cycle' xs);
                                     []    = head :: (& cycle' tail)
                        end
+end
 
-let iterate f x = x :: (& iterate f (f x))
+let iterate f x = x :: (& iterate f (f x)) end
 
-let replicate n x = take n (repeat x)
+let replicate n x = take n (repeat x) end
 
-let concatMap f = concat << map f
+let concatMap f = concat << map f end
 
-let minimum x::xs = foldl minValue x xs
+let minimum x::xs = foldl minValue x xs end
 
-let maximum x::xs = foldl maxValue x xs
+let maximum x::xs = foldl maxValue x xs end
 
 
 /* TUPLE FUNCTIONS */
 
-let => x y = (x, y)
+let => x y = (x, y) end
 
-let fst (x, _) = x
+let fst (x, _) = x end
 
-let snd (_, y) = y
+let snd (_, y) = y end
 
-let fst3 (x, _, _) = x
+let fst3 (x, _, _) = x end
 
-let snd3 (_, y, _) = y
+let snd3 (_, y, _) = y end
 
 
 /* COMBINATORS */
 
 /* id, const and sub are SKI combinators */
-let id x = x //I
+let id x = x end//I
 
-let const x _ = x //K
+let const x _ = x end//K
 
-let sub x y z = x z (y z) //S
+let sub x y z = x z (y z) end//S
 
 /* fixed point combinator with non strict behavior;
     strict version of this function is as follows:
     let fix f x = f (fix f) x */
-let fix f = f (& fix f)
+let fix f = f (& fix f) end
 
 
 /* MISC */
 
 /* currying and uncurrying for functions with pairs and
     with triples. */
-let curry f x y = f (x, y)
+let curry f x y = f (x, y) end
 
-let uncurry f (x, y) = f x y
+let uncurry f (x, y) = f x y end
 
-let curry3 f x y z = f (x, y, z)
+let curry3 f x y z = f (x, y, z) end
 
-let uncurry3 f (x, y, z) = f x y z
+let uncurry3 f (x, y, z) = f x y z end
 
 /* a function with a recursive definition that can be
     evaluated solely for the side effects of it first argument.
     rec can be used for the function 'f' of one argument, rec2 - 
     for the function 'f' of two arguments. */
-let rec f x = f x $ rec
+let rec f x = f x $ rec end
 
-let rec2 f x y = f x y $ rec2
+let rec2 f x y = f x y $ rec2 end
 
 let until p f x | p x  = x;
                 | else = until p f (f x)
+end
 
 let compare x y | x == y = `EQ;
                 | x <= y = `LT;
                 | else   = `GT
+end
 
-let chr (x ? int) = x:char
+let chr (?int)@x = x:char end
 
-let ord (x ? char) = x:int
+let ord (?char)@x = x:int end

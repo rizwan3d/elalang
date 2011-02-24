@@ -881,8 +881,8 @@ PRODUCTIONS
 			var inExp = default(ElaExpression);
 		.)
 		LET [VariableAttributes<out flags>] VariableDeclarationBody<flags, out exp>
-		/*(. if (((ElaBinding)exp).InitExpression.Type == ElaNodeType.FunctionLiteral && la.kind != _IN) .)
-		ENDS*/
+		(. if (((ElaBinding)exp).InitExpression.Type == ElaNodeType.FunctionLiteral && la.kind != _IN || la.kind == _ENDS) .)
+		ENDS
 		[
 			IN Expr<out inExp> 
 			(. ((ElaBinding)exp).In = inExp; .)
@@ -1983,27 +1983,21 @@ PRODUCTIONS
 		
 	Ela = 
 		(
-			(
-				(. var exp = default(ElaExpression); .)
-				EmbExpr<out exp> 
-				(. Expression = exp; .)
-			)
-			| 
-			(
-				(.
-					var b = new ElaBlock(t);
-					Expression = b;
-				.)
-				DeclarationBlock<b>
-			)
+			(.
+				var b = new ElaBlock(t);
+				Expression = b;
+			.)
+			DeclarationBlock<b>
 		).		
 		
 	DeclarationBlock<ElaBlock b> =
 		(. var exp = default(ElaExpression); .)
 		(
 			(	
-				RootLetBinding<out exp>
-				| IncludeStat<out exp>
+				RootLetBinding<out exp> (. if (RequireSemicolon()) .) SEMI
+				| IncludeStat<out exp> (. if (RequireSemicolon()) .) SEMI
+				| EmbExpr<out exp> (. if (RequireSemicolon()) .) SEMI
+				| SEMI
 			)
 			(. b.Expressions.Add(exp); .)
 			[ DeclarationBlock<b> ]
