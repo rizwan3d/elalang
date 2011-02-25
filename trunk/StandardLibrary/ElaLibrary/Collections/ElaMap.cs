@@ -13,11 +13,6 @@ namespace Ela.Library.Collections
         #region Construction
         public static readonly ElaMap Empty = new ElaMap(AvlTree.Empty);
 
-        public ElaMap() : this(AvlTree.Empty)
-        {
-
-        }
-
         internal ElaMap(AvlTree tree) : base(ElaTraits.Eq | ElaTraits.Show | ElaTraits.Get | ElaTraits.Len)
         {
             Tree = tree;
@@ -26,7 +21,7 @@ namespace Ela.Library.Collections
 
 
         #region Methods
-        public ElaMap Add(ElaValue key, ElaValue value)
+		public ElaMap Add(ElaValue key, ElaValue value)
         {
             return new ElaMap(Tree.Add(key, value));
         }

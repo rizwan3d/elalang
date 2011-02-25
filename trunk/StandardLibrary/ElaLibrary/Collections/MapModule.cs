@@ -40,19 +40,19 @@ namespace Ela.Library.Collections
 
 		public ElaMap Add(ElaValue key, ElaValue value, ElaMap map)
 		{
-			return new ElaMap(map.Tree.Add(key, value));
+			return map.Add(key, value);
 		}
 
 
 		public ElaMap Remove(ElaValue key, ElaMap map)
 		{
-			return new ElaMap(map.Tree.Remove(key));
+			return map.Remove(key);
 		}
 
 
 		public bool Contains(ElaValue key, ElaMap map)
 		{
-			return !map.Tree.Search(key).IsEmpty;
+			return map.Contains(key);
 		}
 
 

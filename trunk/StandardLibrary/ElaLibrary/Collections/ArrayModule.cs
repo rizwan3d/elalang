@@ -23,8 +23,8 @@ namespace Ela.Library.Collections
 			Add<ElaArray>("empty", CreateEmptyArray);
 			Add<IEnumerable<ElaValue>,ElaArray>("array", CreateArray);
             Add<ElaValue,ElaArray,ElaUnit>("add", Add);
-            Add<Int32,ElaArray,ElaUnit>("removeAt", RemoveAt);
-            Add<Int32,ElaValue,ElaArray,ElaUnit>("insert", Insert);
+            Add<Int32,ElaArray,Boolean>("removeAt", RemoveAt);
+            Add<Int32,ElaValue,ElaArray,Boolean>("insert", Insert);
             Add<ElaArray,ElaUnit>("clear", Clear);
             Add<Int32,ElaArray,ElaVariant>("get", Get);
         }
@@ -49,17 +49,15 @@ namespace Ela.Library.Collections
         }
 
 
-        public ElaUnit RemoveAt(int index, ElaArray arr)
+        public bool RemoveAt(int index, ElaArray arr)
         {
-            arr.Remove(index);
-            return ElaUnit.Instance;
+            return arr.Remove(index);
         }
 
 
-        public ElaUnit Insert(int index, ElaValue value, ElaArray arr)
+        public bool Insert(int index, ElaValue value, ElaArray arr)
         {
-            arr.Insert(index, value);
-            return ElaUnit.Instance;
+            return arr.Insert(index, value);
         }
 
 

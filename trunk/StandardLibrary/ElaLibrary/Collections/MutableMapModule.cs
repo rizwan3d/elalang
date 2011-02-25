@@ -2,7 +2,6 @@
 using Ela.Linking;
 using Ela.Runtime;
 using Ela.Runtime.ObjectModel;
-using System.Collections.Generic;
 
 namespace Ela.Library.Collections
 {
@@ -13,11 +12,6 @@ namespace Ela.Library.Collections
         {
 
         }
-        #endregion
-
-
-        #region Nested Classes
-        
         #endregion
 
 

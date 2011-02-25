@@ -1,3 +1,4 @@
+0.8.6.9:Change:ElaArray now moved from the built-in types to the standard library. Arrcons op code, array literal, array pattern, etc. are decomissioned.
 0.8.6.8:Change:Now 'end' is required for global 'let' binding that are used to declare functions. If a global 'let' binding is used to associate a name with a value other than function an 'end' keyword is allowed but not required.
 0.8.6.7:Change:'Tagval' op code renamed to 'Untag'.
 0.8.6.6:Fix:'Tag' trait didn't have a full implementation. The direct casting to ElaVariant still took place for the 'untag' operation. A new 'Untag' method added to the trait 'Tag' to avoid this.

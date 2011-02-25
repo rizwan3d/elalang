@@ -1,3 +1,5 @@
+0.0.1.7:New:ElaSet type now supports 'Cons' trait.
+0.0.1.6:Change:ElaSet type is now made usable from .NET code as well.
 0.0.1.5:New:ElaArray now supports 'Cons' trait.
 0.0.1.4:Change:ElaMutableMap is now made usable from .NET code as well.
 0.0.1.3:Change:ElaMap type is now made usable from .NET code as well.
