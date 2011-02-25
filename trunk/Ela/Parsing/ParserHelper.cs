@@ -59,7 +59,7 @@ namespace Ela.Parsing
 					((ElaFunctionLiteral)cexp).Name = varExp.VariableName;
 					varExp.VariableFlags |= ElaVariableFlags.Function;
 				}
-				else if (cexp.Type < ElaNodeType.FunctionLiteral && imm && varExp.VariableName != null)
+				else if ((cexp.Type < ElaNodeType.FunctionLiteral || cexp.Type == ElaNodeType.Primitive) && imm && varExp.VariableName != null)
 					varExp.VariableFlags |= ElaVariableFlags.ObjectLiteral;
 			}
 		}
