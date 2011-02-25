@@ -30,6 +30,13 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return Tag;
 		}
+
+
+        protected internal override ElaValue Untag(ExecutionContext ctx)
+        {
+            return Value;
+        }
+
 		
 		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{

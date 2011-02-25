@@ -22,7 +22,7 @@ namespace Ela.CodeModel
 		#region Methods
 		public override string ToString()
 		{
-			var format = Initial.Type == ElaNodeType.ArrayLiteral ? "[|{0}|]" : "[{0}]";
+			var format = "[{0}]";
 
 			return String.Format(format, First.ToString() +
 				(Second != null ? "," + Second : String.Empty) +

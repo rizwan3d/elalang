@@ -15,7 +15,6 @@ namespace Ela
 		private const string BOOL = "bool";
 		private const string RECORD = "record";
 		private const string TUPLE = "tuple";
-		private const string ARRAY = "array";
 		private const string LIST = "list";
 		private const string FUN = "fun";
 		private const string UNIT = "unit";
@@ -38,7 +37,6 @@ namespace Ela
 				case ObjectType.Double: return DOUBLE;
 				case ObjectType.Boolean: return BOOL;
 				case ObjectType.String: return STRING;
-				case ObjectType.Array: return ARRAY;
 				case ObjectType.List: return LIST;
 				case ObjectType.Tuple: return TUPLE;
 				case ObjectType.Record: return RECORD;

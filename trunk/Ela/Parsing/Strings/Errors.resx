@@ -288,9 +288,6 @@
   <data name="ExpectedArgumentIdentToken" xml:space="preserve">
     <value>Invalid argument syntax. An argument should be a valid identifier starting from '$' symbol.</value>
   </data>
-  <data name="ExpectedArrayBrace" xml:space="preserve">
-    <value>Invalid array literal, a brace '[|' or '|]' is missing.</value>
-  </data>
   <data name="ExpectedDot" xml:space="preserve">
     <value>A member access operator '.' is expected.</value>
   </data>

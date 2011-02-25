@@ -6,7 +6,7 @@ namespace Ela.Linking
 	public abstract class ObjectFile
 	{
 		#region Construction
-		private const int VERSION = 6;
+		private const int VERSION = 7;
 
 		protected ObjectFile(FileInfo file)
 		{

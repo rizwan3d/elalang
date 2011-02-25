@@ -132,7 +132,6 @@ namespace Ela.Parsing
 				val == "double" ? ObjectType.Double :
 				val == "string" ? ObjectType.String :
 				val == "list" ? ObjectType.List :
-				val == "array" ? ObjectType.Array :
 				val == "record" ? ObjectType.Record :
 				val == "tuple" ? ObjectType.Tuple :
 				val == "fun" ? ObjectType.Function :

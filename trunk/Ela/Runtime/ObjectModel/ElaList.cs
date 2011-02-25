@@ -12,22 +12,13 @@ namespace Ela.Runtime.ObjectModel
 		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Len | ElaTraits.Gen | ElaTraits.Fold | ElaTraits.Cons | ElaTraits.Concat | ElaTraits.Convert | ElaTraits.Seq;
 		internal static readonly ElaList Nil = new ElaList(null, new ElaValue(ElaUnit.Instance));
 
-		public ElaList(object value)
-			: this(Nil, ElaValue.FromObject(value))
+		public ElaList(ElaObject next, object value) : this(next, ElaValue.FromObject(value))
 		{
 
 		}
 
 
-		public ElaList(ElaObject next, object value)
-			: this(next, ElaValue.FromObject(value))
-		{
-
-		}
-
-
-		public ElaList(ElaObject next, ElaValue value)
-			: base(ObjectType.List, TRAITS)
+		public ElaList(ElaObject next, ElaValue value) : base(ObjectType.List, TRAITS)
 		{
 			InternalNext = next;
 			InternalValue = value;
@@ -207,7 +198,7 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue GenerateFinalize(ExecutionContext ctx)
 		{
-			return new ElaValue(Reverse());
+            return new ElaValue(Reverse());
 		}
 		#endregion
 
@@ -245,6 +236,12 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return ElaList.Nil;
 		}
+
+
+        public bool HasLazyTail()
+        {
+            return InternalNext != null && (InternalNext.Traits & ElaTraits.Thunk) == ElaTraits.Thunk;
+        }
 		
 
 		public ElaList Reverse()
@@ -260,6 +257,25 @@ namespace Ela.Runtime.ObjectModel
 
 			return newLst;
 		}
+
+
+        public IEnumerable<ElaValue> GetEagerPart()
+        {
+            if (this != Nil)
+            {
+                ElaObject xs = this;
+
+                do
+                {
+                    yield return xs.Head(ElaObject.DummyContext).Id(DummyContext);
+                    xs = xs.Tail(ElaObject.DummyContext).Ref;
+
+                    if ((xs.Traits & ElaTraits.Fold) != ElaTraits.Fold)
+                        yield break;
+                }
+                while (!xs.IsNil(ElaObject.DummyContext));
+            }
+        }
 
 
 		public IEnumerator<ElaValue> GetEnumerator()
@@ -291,25 +307,38 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Properties
-		internal ElaValue InternalValue;
+		internal protected ElaValue InternalValue;
 
-		internal ElaObject InternalNext;
+		internal protected ElaObject InternalNext;
 
-		public ElaList Next
+		public virtual ElaList Next
 		{
 			get
 			{
-				return InternalNext != null && InternalNext.TypeId == ElaMachine.LST ?
-					(ElaList)InternalNext : null;
+                if (InternalNext == null)
+                    return null;
+                else if ((InternalNext.Traits & ElaTraits.Thunk) == ElaTraits.Thunk)
+                {
+                    var val = InternalNext.Force(DummyContext);
+
+                    if (val.Type == ElaMachine.LST)
+                        return (ElaList)val.Ref;
+                    else
+                        return new ElaList(ElaList.Nil, val);
+                }
+                else if (InternalNext.TypeId == ElaMachine.LST)
+                    return (ElaList)InternalNext;
+                else
+                    return null;
 			}
 		}
 
-		public ElaValue Value
+		public virtual ElaValue Value
 		{
 			get { return InternalValue; }
 		}
 
-		public int Length
+		public virtual int Length
 		{
 			get { return GetLength(DummyContext).AsInteger(); }
 		}

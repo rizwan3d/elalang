@@ -46,7 +46,6 @@ namespace Ela.Runtime
 		internal const int DBL = (Int32)ObjectType.Double;
 		internal const int STR = (Int32)ObjectType.String;
 		internal const int LST = (Int32)ObjectType.List;
-		internal const int ARR = (Int32)ObjectType.Array;
 		internal const int TUP = (Int32)ObjectType.Tuple;
 		internal const int REC = (Int32)ObjectType.Record;
 		internal const int FUN = (Int32)ObjectType.Function;
@@ -881,8 +880,8 @@ namespace Ela.Runtime
 							goto SWITCH_MEM;
 						}
 						break;
-					case Op.Tagval:
-						evalStack.Replace(((ElaVariant)evalStack.Peek().Ref).Value);
+					case Op.Untag:
+						evalStack.Replace(evalStack.Peek().Ref.Untag(ctx));
 						break;
 					#endregion
 
@@ -1260,9 +1259,6 @@ namespace Ela.Runtime
 						break;
 					case Op.Newrec:
 						evalStack.Push(new ElaValue(new ElaRecord(opd)));
-						break;
-					case Op.Newarr:
-						evalStack.Push(new ElaValue(new ElaArray(4)));
 						break;
 					case Op.Newtup:
 						evalStack.Push(new ElaValue(new ElaTuple(opd)));

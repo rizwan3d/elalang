@@ -136,7 +136,6 @@ namespace Ela.CodeModel
 			return p.Type == ElaNodeType.VariableReference ||
 				p.Type == ElaNodeType.Primitive ||
 				p.Type == ElaNodeType.ListLiteral ||
-				p.Type == ElaNodeType.ArrayLiteral ||
 				p.Type == ElaNodeType.RecordLiteral ||
 				p.Type == ElaNodeType.TupleLiteral ||
 				p.Type == ElaNodeType.Argument ||

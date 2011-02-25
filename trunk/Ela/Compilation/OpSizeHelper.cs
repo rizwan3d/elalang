@@ -49,7 +49,6 @@ namespace Ela.Compilation
 			1, //Newlazy
 			1, //Newlist
 			1, //Newmod
-			1, //Newarr
 			1, //Newtup_2
 			1, //Cout
 			1, //Typeid

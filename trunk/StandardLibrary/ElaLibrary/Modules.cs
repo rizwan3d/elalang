@@ -15,3 +15,4 @@ using Ela.Library.Collections;
 
 [assembly: ElaModule("MutableMap", typeof(MutableMapModule))]
 [assembly: ElaModule("Map", typeof(MapModule))]
+[assembly: ElaModule("Set", typeof(SetModule))]

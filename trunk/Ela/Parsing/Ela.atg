@@ -68,8 +68,6 @@ TOKENS
 	RBRA = "}".
 	LILB = "[".
 	LIRB = "]".
-	ARLB = "[|".
-	ARRB = "|]".
 	
 	ARROW = "->".
 	LAMBDA = "\\".
@@ -122,7 +120,6 @@ PRODUCTIONS
 			Primitive<out exp>
 			| RecordLiteral<out exp>
 			| ListLiteral<out exp>
-			| ArrayLiteral<out exp>
 			| TupleLiteral<out exp>
 			| SimpleExpr<out exp>					
 		).
@@ -390,7 +387,6 @@ PRODUCTIONS
 			| UnitPattern<out pat>
 			| LiteralPattern<out pat> 
 			| ListPattern<out pat>
-			| ArrayPattern<out pat>
 			| RecordPattern<out pat>
 			| IdentPattern<out pat>
 			| TypeCheckPattern<out pat>
@@ -409,23 +405,6 @@ PRODUCTIONS
 				ident (. asPat.Name = t.val; .)
 			]		
 		).
-
-	ArrayPattern<out ElaPattern pat> = 		
-		(.
-			var seq = new ElaArrayPattern(t); 
-			var cpat = default(ElaPattern);
-			pat = seq;
-		.)
-		"[|"
-			(
-				AsPattern<out cpat> 
-				(.  seq.Patterns.Add(cpat);  .)
-				{ 
-					"," AsPattern<out cpat> 
-					(. seq.Patterns.Add(cpat); .)
-				}
-			)
-		"|]".
 		
 	UnitPattern<out ElaPattern pat> = 
 		(.
@@ -454,8 +433,6 @@ PRODUCTIONS
 			|
 			ListPattern<out pat>
 			|
-			ArrayPattern<out pat>
-			|
 			"(" ParenPattern<out pat> ")" 
 		).		
 		
@@ -470,8 +447,6 @@ PRODUCTIONS
 			|
 			ListPattern<out pat>
 			|
-			ArrayPattern<out pat>
-			|
 			UnitPattern<out pat>
 		).
 		
@@ -485,8 +460,6 @@ PRODUCTIONS
 			RecordPattern<out pat>
 			|
 			ListPattern<out pat>
-			|
-			ArrayPattern<out pat>
 			|
 			UnitPattern<out pat>
 		).
@@ -825,44 +798,6 @@ PRODUCTIONS
 					exp = new ElaListLiteral(ot);
 			.)
 		"]".
-		
-	ArrayLiteral<out ElaExpression exp> = 
-		"[|"
-			(. 
-				var list = default(List<ElaExpression>);
-				var comp = default(ElaComprehension);
-				var rng = default(ElaRange);
-				var ot = t;
-				
-				exp = null;
-			.)
-			[ 
-				(
-					ParamList<out list, out comp, out rng> 
-					(. 
-						if (list != null)
-						{
-							var arrExp = new ElaArrayLiteral(ot) { Values = list };
-							exp = arrExp;	
-						}
-						else if (comp != null)
-						{
-							comp.Initial = new ElaArrayLiteral(ot);
-							exp = comp;
-						}
-						else if (rng != null)
-						{
-							rng.Initial = new ElaArrayLiteral(ot);
-							exp = rng;
-						}
-					.)
-				)
-			]
-			(.
-				if (exp == null)
-					exp = new ElaArrayLiteral(ot);
-			.)
-		"|]".
 					
 	LetBinding<out ElaExpression exp> = 
 		(. 

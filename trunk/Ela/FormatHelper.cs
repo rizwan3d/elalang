@@ -6,10 +6,10 @@ using Ela.Runtime.ObjectModel;
 
 namespace Ela
 {
-	internal static class FormatHelper
+	public static class FormatHelper
 	{
 		#region Methods
-		internal static string FormatEnumerable(IEnumerable<ElaValue> seq, ExecutionContext ctx, ShowInfo info)
+        public static string FormatEnumerable(IEnumerable<ElaValue> seq, ExecutionContext ctx, ShowInfo info)
 		{
 			var sb = new StringBuilder();
 			var c = 0;

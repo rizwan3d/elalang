@@ -12,7 +12,7 @@ namespace Ela.Runtime.Reflection
 		
 		internal ElaRecordInfo(ElaRecord obj) : base(4, obj)
 		{
-			AddField(3, FIELDS, new ElaValue(new ElaArray(obj.GetKeys().ToArray())));
+			AddField(3, FIELDS, new ElaValue(ElaList.FromEnumerable(obj.GetKeys().ToArray())));
 		}
 		#endregion
 

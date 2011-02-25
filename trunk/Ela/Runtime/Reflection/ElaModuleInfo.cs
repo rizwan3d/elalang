@@ -34,8 +34,8 @@ namespace Ela.Runtime.Reflection
 			this.variables = variables;
 			this.references = references;
 
-			AddField(3, GLOBALS, new ElaValue(new ElaArray(GetGlobalVariables())));
-			AddField(4, REFERENCES, new ElaValue(new ElaArray(GetReferences())));
+			AddField(3, GLOBALS, new ElaValue(ElaList.FromEnumerable(GetGlobalVariables())));
+			AddField(4, REFERENCES, new ElaValue(ElaList.FromEnumerable(GetReferences())));
 			AddField(5, ASSEMBLY, new ElaValue(Assembly));
 			AddField(6, HANDLE, new ElaValue(Handle));
 			AddField(7, NAME, new ElaValue(Name));

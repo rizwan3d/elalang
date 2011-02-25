@@ -1,3 +1,13 @@
+0.8.6.10:Change:ElaArray is now removed from built-in types. This change involves: removal of op code Arrcons, removal of AST objects (array literal and array pattern are decomissioned), compilation and VM logic changes, ElaValue public method changes, etc. Array will be still accessible through standard library.
+0.8.6.9:Change:Now statements in the global scope should be separated by semicolons. It also allows to use expressions (as statements) at the top level. Semicolon can be optionally omitted in the following cases: when a statements ends with 'end' keyword, when a statement is a last statement in a file, when a next statement is either 'open' directive or 'let' binding. In other words you have a possibility to write code in the same manner as before - with only declarations on the top level and with no semicolons, - but you also can use expressions in the top level if needed.
+0.8.6.8:Change:Now 'end' is required for global 'let' binding that are used to declare functions. If a global 'let' binding is used to associate a name with a value other than function an 'end' keyword is allowed but not required.
+0.8.6.7:Change:'Tagval' op code renamed to 'Untag'.
+0.8.6.6:Fix:'Tag' trait didn't have a full implementation. The direct casting to ElaVariant still took place for the 'untag' operation. A new 'Untag' method added to the trait 'Tag' to avoid this.
+0.8.6.5:Change:FormatHelper class made public so it can be used when implementing 'Show' trait for custom types.
+0.8.6.4:New:A new 'GetEagerPart' method added to ElaList that returns IEnumerable<ElaValue> only for the part of the list that is already evaluated.
+0.8.6.3:New:A new public 'Traits' property added to ElaValue (previously it was impossible to check traits of a given value from .NET code).
+0.8.6.2:New:A new public 'HasLazyTail' method added to ElaList which allows to determine if a list tail is a thunk.
+0.8.6.1:New:Now lazy lists can be fully used from .NET code - ElaList.Next correctly processes a situation when a list is lazy and forces thunk evaluation.
 0.8.6.0:Release:Release of Ela 0.8.6
 0.8.5.24:Fix:Module name wasn't preserved when using incremental linker (and as a result didn't show up in call stack).
 0.8.5.23:Fix:A critical error in built-in 'flip' function fixed - it corrupted functions when applied to external functions.

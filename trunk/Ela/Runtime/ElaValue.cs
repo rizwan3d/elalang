@@ -108,7 +108,7 @@ namespace Ela.Runtime
         }
 
 
-		internal ElaValue Id(ExecutionContext ctx)
+		public ElaValue Id(ExecutionContext ctx)
 		{
 			return (Ref.Traits & ElaTraits.Thunk) == ElaTraits.Thunk ? Ref.Force(ctx) : this;
 		}
@@ -148,13 +148,13 @@ namespace Ela.Runtime
 		}
 
 
-        public bool Is<T>()
+        public bool Is<T>() where T : ElaObject
         {
             return Ref is T;
         }
 
 
-        public T As<T>() where T : class
+        public T As<T>() where T : ElaObject
         {
             return Ref as T;
         }
@@ -188,16 +188,6 @@ namespace Ela.Runtime
                 return new ElaValue((String)value);
             else if (value is ElaValue)
                 return (ElaValue)value;
-            else if (value is Array)
-            {
-                var arr = (Array)value;
-                var ret = new ElaArray(arr.Length);
-
-                for (var i = 0; i < arr.Length; i++)
-                    ret.Add(ElaValue.FromObject(arr.GetValue(i)));
-
-                return new ElaValue(ret);
-            }
             else if (value is IEnumerable)
                 return new ElaValue(ElaList.FromEnumerable((IEnumerable)value));
             else
@@ -205,14 +195,14 @@ namespace Ela.Runtime
 		}
 
 
-		public T ChangeType<T>()
+		public T Convert<T>()
 		{
 			var ti = typeof(T);
-			return (T)ChangeType(ti);
+			return (T)Convert(ti);
 		}
 
 
-		public object ChangeType(Type ti)
+		public object Convert(Type ti)
 		{
 			var ctx = new ExecutionContext();
 			var type = default(ObjectType);
@@ -231,8 +221,6 @@ namespace Ela.Runtime
                 type = ObjectType.String;
             else if (ti == typeof(Char))
                 type = ObjectType.Char;
-            else if (ti == typeof(ElaArray))
-                type = ObjectType.Array;
             else if (ti == typeof(ElaList))
                 type = ObjectType.List;
             else if (ti == typeof(ElaRecord))
@@ -287,7 +275,7 @@ namespace Ela.Runtime
 
 			foreach (var e in seq)
 			{
-				var o = e.ChangeType(el);
+				var o = e.Convert(el);
 				arr.SetValue(o, i++);
 			}
 
@@ -301,7 +289,6 @@ namespace Ela.Runtime
 		{
 			switch (DataType)
 			{
-				case ObjectType.Array: return AsArray();
 				case ObjectType.Boolean: return AsBoolean();
 				case ObjectType.Char: return AsChar();
 				case ObjectType.Double: return AsDouble();
@@ -398,17 +385,6 @@ namespace Ela.Runtime
 				return ((ElaLazy)Ref).AsLong();
 			else
 				throw InvalidCast(ObjectType.Long, DataType);
-		}
-
-
-		public ElaArray AsArray()
-		{
-			if (DataType == ObjectType.Array)
-				return (ElaArray)Ref;
-			else if (DataType == ObjectType.Lazy)
-				return ((ElaLazy)Ref).AsArray();
-			else
-				throw InvalidCast(ObjectType.Array, DataType);
 		}
 
 
@@ -723,6 +699,12 @@ namespace Ela.Runtime
         {
             return Ref.GetTag(ctx);
         }
+
+
+        public ElaValue Untag(ExecutionContext ctx)
+        {
+            return Ref.Untag(ctx);
+        }
         #endregion
         
 
@@ -744,6 +726,12 @@ namespace Ela.Runtime
 		{
 			get { return Ref.TypeId; }
 		}
+
+
+        public ElaTraits Traits
+        {
+            get { return Ref.Traits; }
+        }
 		#endregion
 	}
 }

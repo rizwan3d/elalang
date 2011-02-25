@@ -62,12 +62,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		public ElaArray AsArray()
-		{
-			return Force().AsArray();
-		}
-
-
 		public ElaList AsList()
 		{
 			return Force().AsList();
@@ -96,7 +90,6 @@ namespace Ela.Runtime.ObjectModel
 		{
 			switch (Force().DataType)
 			{
-				case ObjectType.Array: return Value.AsArray();
 				case ObjectType.Boolean: return Value.AsBoolean();
 				case ObjectType.Char: return Value.AsChar();
 				case ObjectType.Double: return Value.AsDouble();

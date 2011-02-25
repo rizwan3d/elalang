@@ -147,8 +147,6 @@ namespace Ela.Parsing
 				case Parser._RBRA: return ElaParserError.ExpectedCurlyBrace;
 				case Parser._LILB: return ElaParserError.ExpectedSquareBrace;
 				case Parser._LIRB: return ElaParserError.ExpectedSquareBrace;
-				case Parser._ARLB: return ElaParserError.ExpectedArrayBrace;
-				case Parser._ARRB: return ElaParserError.ExpectedArrayBrace;
 				case Parser._ARROW: return ElaParserError.ExpectedArrow;
 				case Parser._LAMBDA: return ElaParserError.ExpectedLambda;
 				case Parser._EQ: return ElaParserError.ExpectedEq;

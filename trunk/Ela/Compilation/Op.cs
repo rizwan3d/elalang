@@ -90,8 +90,6 @@ namespace Ela.Compilation
 
 		Newmod,
 
-		Newarr,
-
 		Newtup_2,
 
 		Cout,
@@ -134,7 +132,7 @@ namespace Ela.Compilation
 
 		Show,
 
-		Tagval,
+		Untag,
 
 		Skiphtag,
 

@@ -438,23 +438,6 @@ namespace Ela.Compilation
 
 					}
 					break;
-				case ElaNodeType.ArrayLiteral:
-					{
-						var p = (ElaArrayLiteral)exp;
-
-						AddLinePragma(p);
-						cw.Emit(Op.Newarr);
-
-						for (var i = 0; i < p.Values.Count; i++)
-						{
-							CompileExpression(p.Values[i], map, Hints.None);
-							cw.Emit(Op.Gen);
-						}
-					
-						if ((hints & Hints.Left) == Hints.Left)
-							AddValueNotUsed(p);
-					}
-					break;
 				case ElaNodeType.ListLiteral:
 					{
 						var p = (ElaListLiteral)exp;

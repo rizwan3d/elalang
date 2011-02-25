@@ -354,6 +354,13 @@ namespace Ela.Runtime.ObjectModel
 			ctx.Fail(ElaRuntimeError.TraitTag, ToString(), ((ObjectType)TypeId).GetShortForm());
 			return String.Empty;
 		}
+
+
+        protected internal virtual ElaValue Untag(ExecutionContext ctx)
+        {
+            ctx.Fail(ElaRuntimeError.TraitTag, ToString(), ((ObjectType)TypeId).GetShortForm());
+            return Default();
+        }
 		#endregion
 
 

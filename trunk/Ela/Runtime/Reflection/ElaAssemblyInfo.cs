@@ -81,7 +81,7 @@ namespace Ela.Runtime.Reflection
 
 			public override ElaValue Call(params ElaValue[] args)
 			{
-				return new ElaValue(new ElaArray(obj.Assembly.EnumerateModules().Select(
+				return new ElaValue(ElaList.FromEnumerable(obj.Assembly.EnumerateModules().Select(
 					m => new ElaModule(obj.Assembly.GetModuleHandle(m), obj.vm)).ToArray()));
 			}
 		}
@@ -114,7 +114,7 @@ namespace Ela.Runtime.Reflection
 
 			public override ElaValue Call(params ElaValue[] args)
 			{
-				return new ElaValue(new ElaArray(asm.EnumerateArguments().ToArray()));
+				return new ElaValue(ElaList.FromEnumerable(asm.EnumerateArguments().ToArray()));
 			}
 		}
 

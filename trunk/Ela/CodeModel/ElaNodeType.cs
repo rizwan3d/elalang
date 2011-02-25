@@ -9,7 +9,7 @@ namespace Ela.CodeModel
 
 		ListLiteral = 1,
 
-		ArrayLiteral = 2,
+		// = 2,
 
 		RecordLiteral = 3,
 
@@ -107,8 +107,6 @@ namespace Ela.CodeModel
 		SeqPattern,
 
 		RecordPattern,
-
-		ArrayPattern,
 
 		FieldPattern,
 

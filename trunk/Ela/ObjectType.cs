@@ -27,7 +27,7 @@ namespace Ela
 		List = 9,
 
 		
-		Array = 10,
+		// = 10,
 
 		Tuple = 11,
 

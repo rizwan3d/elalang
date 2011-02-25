@@ -50,7 +50,7 @@ namespace Ela.Runtime.ObjectModel
 
 		public override ElaValue Call(params ElaValue[] args)
 		{
-			return ElaValue.FromObject(func(args[0].ChangeType<T1>()));
+			return ElaValue.FromObject(func(args[0].Convert<T1>()));
 		}
 
 		public override ElaFunction Clone()
@@ -70,7 +70,7 @@ namespace Ela.Runtime.ObjectModel
 
 		public override ElaValue Call(params ElaValue[] args)
 		{
-			return ElaValue.FromObject(func(args[0].ChangeType<T1>(), args[1].ChangeType<T2>()));
+			return ElaValue.FromObject(func(args[0].Convert<T1>(), args[1].Convert<T2>()));
 		}
 
 		public override ElaFunction Clone()
@@ -90,7 +90,7 @@ namespace Ela.Runtime.ObjectModel
 
 		public override ElaValue Call(params ElaValue[] args)
 		{
-			return ElaValue.FromObject(func(args[0].ChangeType<T1>(), args[1].ChangeType<T2>(), args[2].ChangeType<T3>()));
+			return ElaValue.FromObject(func(args[0].Convert<T1>(), args[1].Convert<T2>(), args[2].Convert<T3>()));
 		}
 
 		public override ElaFunction Clone()
@@ -110,7 +110,7 @@ namespace Ela.Runtime.ObjectModel
 
 		public override ElaValue Call(params ElaValue[] args)
 		{
-			return ElaValue.FromObject(func(args[0].ChangeType<T1>(), args[1].ChangeType<T2>(), args[2].ChangeType<T3>(), args[3].ChangeType<T4>()));
+			return ElaValue.FromObject(func(args[0].Convert<T1>(), args[1].Convert<T2>(), args[2].Convert<T3>(), args[3].Convert<T4>()));
 		}
 
 		public override ElaFunction Clone()

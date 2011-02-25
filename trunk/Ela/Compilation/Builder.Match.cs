@@ -249,7 +249,7 @@ namespace Ela.Compilation
 						if (vp.Pattern != null)
 						{
 							cw.Emit(Op.Pushvar, pushSys);
-							cw.Emit(Op.Tagval);
+							cw.Emit(Op.Untag);
 							cw.Emit(Op.Popvar, pushSys);
 							CompilePattern(pushSys, null, vp.Pattern, map, nextLab, flags, hints);
 						}
@@ -260,7 +260,6 @@ namespace Ela.Compilation
 						var cp = (ElaCastPattern)patExp;
 
 						if (tuple != null &&
-							cp.TypeAffinity != ObjectType.Array &&
 							cp.TypeAffinity != ObjectType.Tuple &&
 							cp.TypeAffinity != ObjectType.String &&
 							cp.TypeAffinity != ObjectType.List &&
@@ -362,7 +361,6 @@ namespace Ela.Compilation
 				case ElaNodeType.RecordPattern:
 					CompileRecordPattern(pushSys, tuple, (ElaRecordPattern)patExp, map, nextLab, flags, hints);
 					break;
-				case ElaNodeType.ArrayPattern:
 				case ElaNodeType.PatternGroup:
 				case ElaNodeType.SeqPattern:
 					CompileSequencePattern(pushSys, tuple, (ElaTuplePattern)patExp, map, nextLab, flags, hints);
@@ -512,9 +510,7 @@ namespace Ela.Compilation
 		{
 			var len = seq.Patterns.Count;
 
-			if (seq.Type == ElaNodeType.ArrayPattern)
-				CheckType(pushSys, ObjectType.Array, nextLab);
-			else if (pushSys != -1 && tuple == null)
+			if (pushSys != -1 && tuple == null)
 				Silent(pushSys, nextLab, hints, ElaTraits.Get|ElaTraits.Len|ElaTraits.Seq);
 			
 			if (tuple != null)
@@ -590,7 +586,6 @@ namespace Ela.Compilation
 			switch (pat.Type)
 			{
 				case ElaNodeType.SeqPattern:
-				case ElaNodeType.ArrayPattern:
 				case ElaNodeType.HeadTailPattern:
 					return BuildSeqPatternTree((ElaTuplePattern)pat, tree);
 				case ElaNodeType.AsPattern:

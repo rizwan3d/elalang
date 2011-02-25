@@ -1,3 +1,7 @@
+0.0.1.4:Change:ElaMutableMap is now made usable from .NET code as well.
+0.0.1.3:Change:ElaMap type is now made usable from .NET code as well.
+0.0.1.2:New:Array module is implemented (an implementation of array that used to be built-in moved to the library and rearranged as a module).
+0.0.1.1:New:Set module is implemented.
 0.0.1.0:Release:Release of 0.0.1
 0.0.0.10:New:Initial version of Shell module is implemented.
 0.0.0.9:New:Map module is implemented.

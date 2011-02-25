@@ -72,7 +72,7 @@ namespace Ela.Parsing
 
 		ExpectedIsOperator = 122,
 
-		ExpectedArrayBrace = 123,
+		// = 123,
 
 		ExpectedKeywordLet = 124,
 
