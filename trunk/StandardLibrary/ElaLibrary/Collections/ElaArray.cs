@@ -10,7 +10,7 @@ namespace Ela.Library.Collections
 	{
 		#region Construction
 		private const int DEFAULT_SIZE = 4;
-		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Len | ElaTraits.Get | ElaTraits.Set | ElaTraits.Gen | ElaTraits.Fold | ElaTraits.Concat | ElaTraits.Show | ElaTraits.Seq;
+		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Len | ElaTraits.Get | ElaTraits.Set | ElaTraits.Gen | ElaTraits.Fold | ElaTraits.Concat | ElaTraits.Show | ElaTraits.Seq | ElaTraits.Cons;
 		private int size;
 		private ElaValue[] array;
 		private int headIndex;
@@ -64,8 +64,7 @@ namespace Ela.Library.Collections
 			this.headIndex = headIndex;
 		}
 		#endregion
-
-
+		
 
 		#region Traits
 		protected override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -188,6 +187,25 @@ namespace Ela.Library.Collections
 		protected override string Show(ExecutionContext ctx, ShowInfo info)
 		{
 			return "array[" + FormatHelper.FormatEnumerable((IEnumerable<ElaValue>)this, ctx, info) + "]";
+		}
+
+
+		protected override ElaValue Cons(ElaObject instance, ElaValue value, ExecutionContext ctx)
+		{
+			var arr = (ElaArray)instance;
+
+			if (arr == null)
+			{
+				ctx.Fail("InvalidType", "Invalid type! Expected array.");
+				return Default();
+			}
+
+			if (arr.Length == 0)
+				arr.Add(value);
+			else
+				arr.Insert(0, value);
+
+			return new ElaValue(arr);
 		}
 		#endregion
 

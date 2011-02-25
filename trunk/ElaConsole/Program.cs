@@ -380,7 +380,7 @@ namespace ElaConsole
 		private static void Warmup()//GIT
 		{
 			var tlk = new ElaIncrementalLinker(new LinkerOptions(), CompilerOptions.Default);
-			tlk.SetSource("{x=[[|0|]]}");
+			tlk.SetSource("{x=[0]}");
 			var res = tlk.Build();
 			new ElaMachine(res.Assembly).Run(); 
 		}

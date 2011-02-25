@@ -20,13 +20,20 @@ namespace Ela.Library.Collections
         #region Methods
         public override void Initialize()
         {
-            Add<IEnumerable<ElaValue>,ElaArray>("array", CreateArray);
+			Add<ElaArray>("empty", CreateEmptyArray);
+			Add<IEnumerable<ElaValue>,ElaArray>("array", CreateArray);
             Add<ElaValue,ElaArray,ElaUnit>("add", Add);
             Add<Int32,ElaArray,ElaUnit>("removeAt", RemoveAt);
             Add<Int32,ElaValue,ElaArray,ElaUnit>("insert", Insert);
             Add<ElaArray,ElaUnit>("clear", Clear);
             Add<Int32,ElaArray,ElaVariant>("get", Get);
         }
+
+
+		public ElaArray CreateEmptyArray()
+		{
+			return new ElaArray();
+		}
 
 
         public ElaArray CreateArray(IEnumerable<ElaValue> seq)
