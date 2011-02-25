@@ -200,8 +200,12 @@ namespace Ela.Library.Collections
 				return Default();
 			}
 
-			if (arr.Length == 0 && arr.headIndex > 0)
-				arr = new ElaArray();
+			if (arr.headIndex > 0)
+			{
+				var newArr = new ElaArray();
+				arr.Copy(arr.headIndex, newArr);
+				arr = newArr;
+			}
 
 			if (arr.Length == 0)
 				arr.Add(value);
@@ -298,10 +302,10 @@ namespace Ela.Library.Collections
 		}
 
 
-		internal void Copy(int offset, ElaArray elaList)
+		internal void Copy(int offset, ElaArray elaArr)
 		{
-			Array.Copy(elaList.array, 0, array, offset + headIndex, elaList.Length);
-			size += elaList.size;
+			Array.Copy(elaArr.array, 0, array, offset, elaArr.Length);
+			size += elaArr.size;
 		}
 
 
