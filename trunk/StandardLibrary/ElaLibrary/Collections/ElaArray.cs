@@ -200,6 +200,9 @@ namespace Ela.Library.Collections
 				return Default();
 			}
 
+			if (arr.Length == 0 && arr.headIndex > 0)
+				arr = new ElaArray();
+
 			if (arr.Length == 0)
 				arr.Add(value);
 			else
