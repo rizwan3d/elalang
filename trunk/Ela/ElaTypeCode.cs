@@ -2,7 +2,7 @@
 
 namespace Ela
 {
-	public enum ObjectType
+	public enum ElaTypeCode
 	{
 		None = 0,
 

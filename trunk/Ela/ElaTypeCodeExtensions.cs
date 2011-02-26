@@ -2,7 +2,7 @@
 
 namespace Ela
 {
-	public static class ObjectTypeExtensions
+	public static class ElaTypeCodeExtensions
 	{
 		#region Construction
 		private const string ERR = "INVALID";
@@ -26,26 +26,26 @@ namespace Ela
 
 
 		#region Methods
-		public static string GetShortForm(this ObjectType @this)
+		public static string GetShortForm(this ElaTypeCode @this)
 		{
 			switch (@this)
 			{
-				case ObjectType.Char: return CHAR;
-				case ObjectType.Integer: return INT;
-				case ObjectType.Long: return LONG;
-				case ObjectType.Single: return SINGLE;
-				case ObjectType.Double: return DOUBLE;
-				case ObjectType.Boolean: return BOOL;
-				case ObjectType.String: return STRING;
-				case ObjectType.List: return LIST;
-				case ObjectType.Tuple: return TUPLE;
-				case ObjectType.Record: return RECORD;
-				case ObjectType.Function: return FUN;
-				case ObjectType.Unit: return UNIT;
-				case ObjectType.Module: return MOD;
-				case ObjectType.Object: return OBJ;
-				case ObjectType.Lazy: return LAZ;
-				case ObjectType.Variant: return VAR;
+				case ElaTypeCode.Char: return CHAR;
+				case ElaTypeCode.Integer: return INT;
+				case ElaTypeCode.Long: return LONG;
+				case ElaTypeCode.Single: return SINGLE;
+				case ElaTypeCode.Double: return DOUBLE;
+				case ElaTypeCode.Boolean: return BOOL;
+				case ElaTypeCode.String: return STRING;
+				case ElaTypeCode.List: return LIST;
+				case ElaTypeCode.Tuple: return TUPLE;
+				case ElaTypeCode.Record: return RECORD;
+				case ElaTypeCode.Function: return FUN;
+				case ElaTypeCode.Unit: return UNIT;
+				case ElaTypeCode.Module: return MOD;
+				case ElaTypeCode.Object: return OBJ;
+				case ElaTypeCode.Lazy: return LAZ;
+				case ElaTypeCode.Variant: return VAR;
 				default: return ERR;
 			}
 		}
