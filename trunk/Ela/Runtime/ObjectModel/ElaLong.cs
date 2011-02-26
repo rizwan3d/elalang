@@ -8,7 +8,7 @@ namespace Ela.Runtime.ObjectModel
 		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Ord | ElaTraits.Bound | ElaTraits.Enum | 
 			ElaTraits.Show | ElaTraits.Convert | ElaTraits.Neg | ElaTraits.Num | ElaTraits.Bit;
 
-		public ElaLong(long value) : base(ObjectType.Long, TRAITS)
+		public ElaLong(long value) : base(ElaTypeCode.Long, TRAITS)
 		{
 			InternalValue = value;
 		}
@@ -24,10 +24,10 @@ namespace Ela.Runtime.ObjectModel
 
 		internal override int Compare(ElaValue @this, ElaValue other)
 		{
-			return other.DataType == ObjectType.Integer ? InternalValue.CompareTo(other.I4) :
-				other.DataType == ObjectType.Long ? InternalValue.CompareTo(((ElaLong)other.Ref).InternalValue) :
-				other.DataType == ObjectType.Single ? ((Single)InternalValue).CompareTo(other.DirectGetReal()) :
-				other.DataType == ObjectType.Double ? ((Double)InternalValue).CompareTo(other.AsDouble()) :
+			return other.TypeCode == ElaTypeCode.Integer ? InternalValue.CompareTo(other.I4) :
+				other.TypeCode == ElaTypeCode.Long ? InternalValue.CompareTo(((ElaLong)other.Ref).InternalValue) :
+				other.TypeCode == ElaTypeCode.Single ? ((Single)InternalValue).CompareTo(other.DirectGetReal()) :
+				other.TypeCode == ElaTypeCode.Double ? ((Double)InternalValue).CompareTo(other.AsDouble()) :
 				-1;
 		}
         #endregion
@@ -36,9 +36,9 @@ namespace Ela.Runtime.ObjectModel
 		#region Traits
 		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type <= ElaMachine.LNG)
+			if (left.TypeId <= ElaMachine.LNG)
 			{
-				if (right.Type <= ElaMachine.LNG)
+				if (right.TypeId <= ElaMachine.LNG)
 					return new ElaValue(left.GetLong() == right.GetLong());
 				else 
 					return right.Ref.Equals(left, right, ctx);
@@ -51,9 +51,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type <= ElaMachine.LNG)
+			if (left.TypeId <= ElaMachine.LNG)
 			{
-				if (right.Type <= ElaMachine.LNG)
+				if (right.TypeId <= ElaMachine.LNG)
 					return new ElaValue(left.GetLong() != right.GetLong());
 				else
 					return right.Ref.NotEquals(left, right, ctx);
@@ -66,9 +66,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type <= ElaMachine.LNG)
+			if (left.TypeId <= ElaMachine.LNG)
 			{
-				if (right.Type <= ElaMachine.LNG)
+				if (right.TypeId <= ElaMachine.LNG)
 					return new ElaValue(left.GetLong() > right.GetLong());
 				else
 					return right.Ref.Greater(left, right, ctx);
@@ -81,9 +81,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type <= ElaMachine.LNG)
+			if (left.TypeId <= ElaMachine.LNG)
 			{
-				if (right.Type <= ElaMachine.LNG)
+				if (right.TypeId <= ElaMachine.LNG)
 					return new ElaValue(left.GetLong() < right.GetLong());
 				else
 					return right.Ref.Lesser(left, right, ctx);
@@ -96,9 +96,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue GreaterEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type <= ElaMachine.LNG)
+			if (left.TypeId <= ElaMachine.LNG)
 			{
-				if (right.Type <= ElaMachine.LNG)
+				if (right.TypeId <= ElaMachine.LNG)
 					return new ElaValue(left.GetLong() >= right.GetLong());
 				else
 					return right.Ref.GreaterEquals(left, right, ctx);
@@ -111,9 +111,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue LesserEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type <= ElaMachine.LNG)
+			if (left.TypeId <= ElaMachine.LNG)
 			{
-				if (right.Type <= ElaMachine.LNG)
+				if (right.TypeId <= ElaMachine.LNG)
 					return new ElaValue(left.GetLong() >= right.GetLong());
 				else
 					return right.Ref.LesserEquals(left, right, ctx);
@@ -166,16 +166,16 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ObjectType type, ExecutionContext ctx)
+		protected internal override ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
 		{
 			switch (type)
 			{
-				case ObjectType.Integer: return new ElaValue((Int32)InternalValue);
-				case ObjectType.Single: return new ElaValue((float)InternalValue);
-				case ObjectType.Double: return new ElaValue((Double)InternalValue);
-				case ObjectType.Long: return new ElaValue(InternalValue);
-				case ObjectType.Char: return new ElaValue((Char)InternalValue);
-				case ObjectType.String: return new ElaValue(Show(ctx, ShowInfo.Default));
+				case ElaTypeCode.Integer: return new ElaValue((Int32)InternalValue);
+				case ElaTypeCode.Single: return new ElaValue((float)InternalValue);
+				case ElaTypeCode.Double: return new ElaValue((Double)InternalValue);
+				case ElaTypeCode.Long: return new ElaValue(InternalValue);
+				case ElaTypeCode.Char: return new ElaValue((Char)InternalValue);
+				case ElaTypeCode.String: return new ElaValue(Show(ctx, ShowInfo.Default));
 				default:
 					ctx.ConversionFailed(new ElaValue(this), type);
 					return Default();
@@ -191,9 +191,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Add(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type <= ElaMachine.LNG)
+			if (left.TypeId <= ElaMachine.LNG)
 			{
-				if (right.Type <= ElaMachine.LNG)
+				if (right.TypeId <= ElaMachine.LNG)
 					return new ElaValue(left.GetLong() + right.GetLong());
 				else
 					return right.Ref.Add(left, right, ctx);
@@ -206,9 +206,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Subtract(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type <= ElaMachine.LNG)
+			if (left.TypeId <= ElaMachine.LNG)
 			{
-				if (right.Type <= ElaMachine.LNG)
+				if (right.TypeId <= ElaMachine.LNG)
 					return new ElaValue(left.GetLong() - right.GetLong());
 				else
 					return right.Ref.Subtract(left, right, ctx);
@@ -221,9 +221,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Multiply(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type <= ElaMachine.LNG)
+			if (left.TypeId <= ElaMachine.LNG)
 			{
-				if (right.Type <= ElaMachine.LNG)
+				if (right.TypeId <= ElaMachine.LNG)
 					return new ElaValue(left.GetLong() * right.GetLong());
 				else
 					return right.Ref.Multiply(left, right, ctx);
@@ -236,9 +236,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Divide(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type <= ElaMachine.LNG)
+			if (left.TypeId <= ElaMachine.LNG)
 			{
-				if (right.Type <= ElaMachine.LNG)
+				if (right.TypeId <= ElaMachine.LNG)
 				{
 					var lng = right.GetLong();
 
@@ -261,9 +261,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Modulus(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type <= ElaMachine.LNG)
+			if (left.TypeId <= ElaMachine.LNG)
 			{
-				if (right.Type <= ElaMachine.LNG)
+				if (right.TypeId <= ElaMachine.LNG)
 				{
 					var lng = right.GetLong();
 
@@ -286,9 +286,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Power(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type <= ElaMachine.LNG)
+			if (left.TypeId <= ElaMachine.LNG)
 			{
-				if (right.Type <= ElaMachine.LNG)
+				if (right.TypeId <= ElaMachine.LNG)
 					return new ElaValue((Int64)Math.Pow(left.GetLong(), right.GetLong()));
 				else
 					return right.Ref.Power(left, right, ctx);
@@ -301,9 +301,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue BitwiseAnd(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type <= ElaMachine.LNG)
+			if (left.TypeId <= ElaMachine.LNG)
 			{
-				if (right.Type <= ElaMachine.LNG)
+				if (right.TypeId <= ElaMachine.LNG)
 					return new ElaValue(left.GetLong() & right.GetLong());
 				else
 					return right.Ref.BitwiseAnd(left, right, ctx);
@@ -316,9 +316,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue BitwiseOr(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type <= ElaMachine.LNG)
+			if (left.TypeId <= ElaMachine.LNG)
 			{
-				if (right.Type <= ElaMachine.LNG)
+				if (right.TypeId <= ElaMachine.LNG)
 					return new ElaValue(left.GetLong() | right.GetLong());
 				else
 					return right.Ref.BitwiseOr(left, right, ctx);
@@ -331,9 +331,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue BitwiseXor(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type <= ElaMachine.LNG)
+			if (left.TypeId <= ElaMachine.LNG)
 			{
-				if (right.Type <= ElaMachine.LNG)
+				if (right.TypeId <= ElaMachine.LNG)
 					return new ElaValue(left.GetLong() ^ right.GetLong());
 				else
 					return right.Ref.BitwiseXor(left, right, ctx);
@@ -352,9 +352,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue ShiftLeft(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type <= ElaMachine.LNG)
+			if (left.TypeId <= ElaMachine.LNG)
 			{
-				if (right.Type <= ElaMachine.LNG)
+				if (right.TypeId <= ElaMachine.LNG)
 					return new ElaValue(left.GetLong() << (int)right.GetLong());
 				else
 					return right.Ref.ShiftLeft(left, right, ctx);
@@ -367,9 +367,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue ShiftRight(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type <= ElaMachine.LNG)
+			if (left.TypeId <= ElaMachine.LNG)
 			{
-				if (right.Type <= ElaMachine.LNG)
+				if (right.TypeId <= ElaMachine.LNG)
 					return new ElaValue(left.GetLong() >> (int)right.GetLong());
 				else
 					return right.Ref.ShiftLeft(left, right, ctx);

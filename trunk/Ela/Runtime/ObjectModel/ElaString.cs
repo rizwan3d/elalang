@@ -18,7 +18,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		private ElaString(string value, int headIndex) : base(ObjectType.String, TRAITS)
+		private ElaString(string value, int headIndex) : base(ElaTypeCode.String, TRAITS)
 		{
 			this.buffer = value ?? String.Empty;
 			this.headIndex = headIndex;
@@ -29,7 +29,7 @@ namespace Ela.Runtime.ObjectModel
 		#region Methods
 		internal override int Compare(ElaValue @this, ElaValue other)
 		{
-			return other.DataType == ObjectType.String ? buffer.CompareTo(((ElaString)other.Ref).buffer) :
+			return other.TypeCode == ElaTypeCode.String ? buffer.CompareTo(((ElaString)other.Ref).buffer) :
 				-1;
 		}
 		#endregion
@@ -38,20 +38,20 @@ namespace Ela.Runtime.ObjectModel
 		#region Traits
 		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return new ElaValue(left.Type == right.Type && left.AsString() == right.AsString());
+			return new ElaValue(left.TypeId == right.TypeId && left.AsString() == right.AsString());
 		}
 
 
 		protected internal override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return new ElaValue(left.Type != right.Type || left.AsString() != right.AsString());
+			return new ElaValue(left.TypeId != right.TypeId || left.AsString() != right.AsString());
 		}
 
 
 		protected internal override ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type == ElaMachine.STR)
-				return right.Type == ElaMachine.STR ? new ElaValue(left.AsString().CompareTo(right.AsString()) > 0) :
+			if (left.TypeId == ElaMachine.STR)
+				return right.TypeId == ElaMachine.STR ? new ElaValue(left.AsString().CompareTo(right.AsString()) > 0) :
 					right.Ref.Greater(left, right, ctx);
 			else
 			{
@@ -63,8 +63,8 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type == ElaMachine.STR)
-				return right.Type == ElaMachine.STR ? new ElaValue(left.AsString().CompareTo(right.AsString()) < 0) :
+			if (left.TypeId == ElaMachine.STR)
+				return right.TypeId == ElaMachine.STR ? new ElaValue(left.AsString().CompareTo(right.AsString()) < 0) :
 					right.Ref.Lesser(left, right, ctx);
 			else
 			{
@@ -76,8 +76,8 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue GreaterEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type == ElaMachine.STR)
-				return right.Type == ElaMachine.STR ? new ElaValue(left.AsString().CompareTo(right.AsString()) >= 0) :
+			if (left.TypeId == ElaMachine.STR)
+				return right.TypeId == ElaMachine.STR ? new ElaValue(left.AsString().CompareTo(right.AsString()) >= 0) :
 					right.Ref.GreaterEquals(left, right, ctx);
 			else
 			{
@@ -89,8 +89,8 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue LesserEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type == ElaMachine.STR)
-				return right.Type == ElaMachine.STR ? new ElaValue(left.AsString().CompareTo(right.AsString()) <= 0) :
+			if (left.TypeId == ElaMachine.STR)
+				return right.TypeId == ElaMachine.STR ? new ElaValue(left.AsString().CompareTo(right.AsString()) <= 0) :
 					right.Ref.LesserEquals(left, right, ctx);
 			else
 			{
@@ -108,9 +108,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue GetValue(ElaValue key, ExecutionContext ctx)
 		{
-			if (key.Type != ElaMachine.INT)
+			if (key.TypeId != ElaMachine.INT)
 			{
-				ctx.InvalidIndexType(key.DataType);
+				ctx.InvalidIndexType(key);
 				return base.GetValue(key, ctx);
 			}
 
@@ -128,9 +128,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type == ElaMachine.STR)
+			if (left.TypeId == ElaMachine.STR)
 			{
-				if (right.Type == ElaMachine.STR)
+				if (right.TypeId == ElaMachine.STR)
 					return new ElaValue(new ElaString(left.AsString() + right.AsString()));
 				else
 					return right.Ref.Concatenate(left, right, ctx);
@@ -143,16 +143,16 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ObjectType type, ExecutionContext ctx)
+		protected internal override ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
 		{
-			if (type == ObjectType.String)
+			if (type == ElaTypeCode.String)
 				return new ElaValue(this);
-			else if (type == ObjectType.Char)
+			else if (type == ElaTypeCode.Char)
 			{
 				var val = GetValue();
 				return val.Length > 0 ? new ElaValue(val[0]) : new ElaValue('\0');
 			}
-			else if (type == ObjectType.Integer)
+			else if (type == ElaTypeCode.Integer)
 			{
 				try
 				{
@@ -164,7 +164,7 @@ namespace Ela.Runtime.ObjectModel
 					return base.Convert(type, ctx);
 				}
 			}
-			else if (type == ObjectType.Long)
+			else if (type == ElaTypeCode.Long)
 			{
 				try
 				{
@@ -176,7 +176,7 @@ namespace Ela.Runtime.ObjectModel
 					return base.Convert(type, ctx);
 				}
 			}
-			else if (type == ObjectType.Single)
+			else if (type == ElaTypeCode.Single)
 			{
 				try
 				{
@@ -188,7 +188,7 @@ namespace Ela.Runtime.ObjectModel
 					return base.Convert(type, ctx);
 				}
 			}
-			else if (type == ObjectType.Double)
+			else if (type == ElaTypeCode.Double)
 			{
 				try
 				{
@@ -200,7 +200,7 @@ namespace Ela.Runtime.ObjectModel
 					return base.Convert(type, ctx);
 				}
 			}
-			else if (type == ObjectType.Boolean)
+			else if (type == ElaTypeCode.Boolean)
 			{
 				try
 				{
@@ -253,13 +253,13 @@ namespace Ela.Runtime.ObjectModel
 
 			if (nextStr == null)
 			{
-				ctx.InvalidType(ObjectType.String, (ObjectType)next.TypeId);
+				ctx.InvalidType(GetTypeName(), new ElaValue(next));
 				return Default();
 			}
 
-			if (value.DataType != ObjectType.String && value.DataType != ObjectType.Char)
+			if (value.TypeCode != ElaTypeCode.String && value.TypeCode != ElaTypeCode.Char)
 			{
-				ctx.InvalidType(ObjectType.String, value.DataType);
+				ctx.InvalidType(GetTypeName(), value);
 				return Default();
 			}
 

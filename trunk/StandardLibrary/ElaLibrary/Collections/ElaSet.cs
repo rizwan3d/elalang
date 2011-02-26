@@ -11,7 +11,8 @@ namespace Ela.Library.Collections
 	{
 		#region Construction
 		public static readonly ElaSet Empty = new ElaSet(AvlTree.Empty);
-
+		private const string TYPENAME = "set";
+		
 		internal ElaSet(AvlTree tree) : base(ElaTraits.Eq | ElaTraits.Show | ElaTraits.Len | ElaTraits.Fold | ElaTraits.Gen | ElaTraits.Cons)
 		{
 			Tree = tree;
@@ -20,6 +21,12 @@ namespace Ela.Library.Collections
 
 
 		#region Methods
+		protected override string GetTypeName()
+		{
+			return TYPENAME;
+		}
+
+
 		public static ElaSet FromEnumerable(IEnumerable<ElaValue> seq)
 		{
 			var set = ElaSet.Empty;
@@ -142,7 +149,7 @@ namespace Ela.Library.Collections
 
 			if (next == null)
 			{
-				ctx.Fail("InvalidType", "Invalid type! Expected set.");
+				ctx.InvalidType(GetTypeName(), new ElaValue(instance));
 				return Default();
 			}
 

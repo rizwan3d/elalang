@@ -31,7 +31,7 @@ namespace Ela.CodeModel
 		#region Properties
 		public ElaExpression Expression { get; set; }
 
-		public ObjectType CastAffinity { get; set; }
+		public ElaTypeCode CastAffinity { get; set; }
 		#endregion
 	}
 }

@@ -39,7 +39,7 @@ namespace Ela.CodeModel
 
 
 		#region Properties
-		public ObjectType TypeAffinity { get; set; }
+		public ElaTypeCode TypeAffinity { get; set; }
 
 		public ElaTraits Traits { get; set; }
 		#endregion

@@ -1,4 +1,4 @@
-let +: x y = x:string ++ y:string
+let +: x y = x:string ++ y:string end
 
 let assert =
 	{
@@ -14,14 +14,17 @@ let assert =
     where op' m op x y | op x y = ();
                        | else   = raise AssertFailed (m)
     end
-    
+end
+
 let funData fun = (funName fun, fun)
                   where funName f = t.module.name ++ "." ++ t.name
                                     where t = type f end
                   end
+end
     
 let regFun fun lst = fd :: lst
                      where fd = funData fun end
+end
 	
 let regFuns mod lst = each' funData (is ?fun) vals
                       where vals = [ v.value \\ v <- (type mod).globals ] and
@@ -29,6 +32,7 @@ let regFuns mod lst = each' funData (is ?fun) vals
                                             | else = each' f p xs;
                                   _ _ []           = lst
                       end
+end
 
 let run lst = (res, failed)
         where exec (n, f) = try (f assert $ n, true, "") with 
@@ -43,6 +47,7 @@ let run lst = (res, failed)
               res = run' lst and
               failed = count (\(_,y,_) -> not y) 0 res
         end
+end
 	
 let fmt prf (tests, failed) =
 	let tag' true = "Success "; false = "FAILED " and
@@ -55,3 +60,4 @@ let fmt prf (tests, failed) =
     $ prf ("Executed tests: " +: (length tests))
     $ prf ("Successful tests: " +: (length tests - failed))
     $ prf ("Failed tests: " +: failed)
+end

@@ -36,13 +36,13 @@ namespace Ela.CodeModel
 			{
 				switch (Value.LiteralType)
 				{
-					case ObjectType.Integer: 
-					case ObjectType.Long: return ElaPatternAffinity.Integer;
-					case ObjectType.Single: 
-					case ObjectType.Double: return ElaPatternAffinity.Float;
-					case ObjectType.Char: return ElaPatternAffinity.Char;
-					case ObjectType.String: return ElaPatternAffinity.String;
-					case ObjectType.Boolean: return ElaPatternAffinity.Boolean;
+					case ElaTypeCode.Integer: 
+					case ElaTypeCode.Long: return ElaPatternAffinity.Integer;
+					case ElaTypeCode.Single: 
+					case ElaTypeCode.Double: return ElaPatternAffinity.Float;
+					case ElaTypeCode.Char: return ElaPatternAffinity.Char;
+					case ElaTypeCode.String: return ElaPatternAffinity.String;
+					case ElaTypeCode.Boolean: return ElaPatternAffinity.Boolean;
 					default: return ElaPatternAffinity.Any;
 				}
 			}

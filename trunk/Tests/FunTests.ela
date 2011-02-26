@@ -6,11 +6,13 @@
           sum2 = sum 2 and
           sum3 = sum 3
     end
+end
 
 let partial2 {eq} =
     eq (((fun 2) 3) 4) 20
     $ eq (fun 2 3 4) 20
     where fun x y = \z -> z * x + z * y end
+end
     
 let partial3 {eq} =
     let f1 = fun 10 12 and
@@ -20,6 +22,7 @@ let partial3 {eq} =
     $ eq (((f2 2) 3) 4) 10
     $ eq (f3 7) 30
     where fun x y z k = x + y + z + k end
+end
     
 let partial4 {eq} =
     eq (fun 2 2 4 2 1) 11
@@ -27,11 +30,13 @@ let partial4 {eq} =
                   | else   = fun r
                   where r = x + y end
     end
+end
     
 let closure1 {eq} = 
     let x = 2 in
     let fun () = eq x 2 in
     fun ()
+end
     
 let closure2 {eq} = 
     let mutable x = 0 in
@@ -41,16 +46,19 @@ let closure2 {eq} =
     $ eq (fun ()) 1
     $ x <- x + 2
     $ eq (fun ()) 3
+end
     
 let flipped1 {eq} = 
     eq (sub 3 2) 1
     $ eq (flip sub 3 2) (--1)
     where sub x y = x - y end
+end
     
 let flipped2 {eq} = 
     eq (sub 3 2 1) 0
     $ eq (flip sub 3 2 (--1)) 0
     where sub x y z = x - y - z end
+end
     
 let partialOperators {eq} =
     eq (add' 7 2) 9
@@ -66,4 +74,4 @@ let partialOperators {eq} =
           div = (/) and
           div2 = (8/)
     end
-    
+end 

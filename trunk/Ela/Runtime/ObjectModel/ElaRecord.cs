@@ -21,7 +21,7 @@ namespace Ela.Runtime.ObjectModel
 			Immutable
 		}
 
-		public ElaRecord(params ElaRecordField[] fields) : base(fields.Length, ObjectType.Record, TRAITS)
+		public ElaRecord(params ElaRecordField[] fields) : base(fields.Length, ElaTypeCode.Record, TRAITS)
 		{
 			keys = new string[fields.Length];
 			flags = new bool[fields.Length];
@@ -31,7 +31,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		internal ElaRecord(int size) : base(size, ObjectType.Record, TRAITS)
+		internal ElaRecord(int size) : base(size, ElaTypeCode.Record, TRAITS)
 		{
 			keys = new string[size];
 			flags = new bool[size];
@@ -44,9 +44,9 @@ namespace Ela.Runtime.ObjectModel
 		{
 			key = key.Id(ctx);
 
-			if (key.Type == ElaMachine.STR)
+			if (key.TypeId == ElaMachine.STR)
 				return GetField(key.AsString(), ctx);
-			else if (key.Type == ElaMachine.INT)
+			else if (key.TypeId == ElaMachine.INT)
 			{
 				if (key.I4 != -1 && key.I4 < Values.Length)
 					return Values[key.I4];
@@ -57,7 +57,7 @@ namespace Ela.Runtime.ObjectModel
 				}
 			}
 
-			ctx.InvalidIndexType(key.DataType);
+			ctx.InvalidIndexType(key);
 			return Default();
 		}
 
@@ -67,12 +67,12 @@ namespace Ela.Runtime.ObjectModel
 			index = index.Id(ctx);
 			var res = SetResult.None;
 
-			if (index.Type == ElaMachine.STR)
+			if (index.TypeId == ElaMachine.STR)
 				res = SetValue(index.Ref.ToString(), value);
-			else if (index.Type == ElaMachine.INT)
+			else if (index.TypeId == ElaMachine.INT)
 				res = SetValue(index.I4, value);
 			else
-				ctx.InvalidIndexType(index.DataType);
+				ctx.InvalidIndexType(index);
 
 			if (res == SetResult.OutOfRange)
 				ctx.IndexOutOfRange(index, new ElaValue(this));
@@ -110,11 +110,11 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ObjectType type, ExecutionContext ctx)
+		protected internal override ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
 		{
-			if (type == ObjectType.Record)
+			if (type == ElaTypeCode.Record)
 				return new ElaValue(this);
-			else if (type == ObjectType.Tuple)
+			else if (type == ElaTypeCode.Tuple)
 				return new ElaValue(new ElaTuple(Values));
 			else
 			{
@@ -155,14 +155,14 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitGen, ToString(), ((ObjectType)TypeId).GetShortForm());
+			ctx.Fail(ElaRuntimeError.TraitGen, ToString(), ((ElaTypeCode)TypeId).GetShortForm());
 			return Default();
 		}
 
 
 		protected internal override ElaValue GenerateFinalize(ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitGen, ToString(), ((ObjectType)TypeId).GetShortForm());
+			ctx.Fail(ElaRuntimeError.TraitGen, ToString(), ((ElaTypeCode)TypeId).GetShortForm());
 			return Default();
 		}
 		#endregion

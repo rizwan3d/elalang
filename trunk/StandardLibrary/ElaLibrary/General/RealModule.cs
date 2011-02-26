@@ -27,8 +27,8 @@ namespace Ela.Library.General
         public bool IsInfinity(ElaValue val)
         {
             return
-                val.DataType == ObjectType.Double ? Double.IsInfinity((Double)val.AsObject()) :
-                val.DataType == ObjectType.Single ? Single.IsInfinity((Single)val.AsObject()) :
+                val.TypeCode == ElaTypeCode.Double ? Double.IsInfinity((Double)val.AsObject()) :
+                val.TypeCode == ElaTypeCode.Single ? Single.IsInfinity((Single)val.AsObject()) :
                 false;
         }
 
@@ -36,8 +36,8 @@ namespace Ela.Library.General
         public bool IsNan(ElaValue val)
         {
             return
-                val.DataType == ObjectType.Double ? Double.IsNaN((Double)val.AsObject()) :
-                val.DataType == ObjectType.Single ? Single.IsNaN((Single)val.AsObject()) :
+                val.TypeCode == ElaTypeCode.Double ? Double.IsNaN((Double)val.AsObject()) :
+                val.TypeCode == ElaTypeCode.Single ? Single.IsNaN((Single)val.AsObject()) :
                 false;
         }
 
@@ -45,8 +45,8 @@ namespace Ela.Library.General
         public bool IsNegativeInfinity(ElaValue val)
         {
             return
-                val.DataType == ObjectType.Double ? Double.IsNegativeInfinity((Double)val.AsObject()) :
-                val.DataType == ObjectType.Single ? Single.IsNegativeInfinity((Single)val.AsObject()) :
+                val.TypeCode == ElaTypeCode.Double ? Double.IsNegativeInfinity((Double)val.AsObject()) :
+                val.TypeCode == ElaTypeCode.Single ? Single.IsNegativeInfinity((Single)val.AsObject()) :
                 false;
         }
 
@@ -54,8 +54,8 @@ namespace Ela.Library.General
         public bool IsPositiveInfinity(ElaValue val)
         {
             return
-                val.DataType == ObjectType.Double ? Double.IsPositiveInfinity((Double)val.AsObject()) :
-                val.DataType == ObjectType.Single ? Single.IsPositiveInfinity((Single)val.AsObject()) :
+                val.TypeCode == ElaTypeCode.Double ? Double.IsPositiveInfinity((Double)val.AsObject()) :
+                val.TypeCode == ElaTypeCode.Single ? Single.IsPositiveInfinity((Single)val.AsObject()) :
                 false;
         }
         #endregion

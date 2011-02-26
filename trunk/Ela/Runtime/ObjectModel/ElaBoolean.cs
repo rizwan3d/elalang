@@ -9,7 +9,7 @@ namespace Ela.Runtime.ObjectModel
 
 		internal static readonly ElaBoolean Instance = new ElaBoolean();
 
-		private ElaBoolean() : base(ObjectType.Boolean, TRAITS)
+		private ElaBoolean() : base(ElaTypeCode.Boolean, TRAITS)
 		{
 
 		}
@@ -19,7 +19,7 @@ namespace Ela.Runtime.ObjectModel
 		#region Methods
 		internal override int Compare(ElaValue @this, ElaValue other)
 		{
-			return other.DataType == ObjectType.Boolean ? @this.I4 - other.I4 : -1;
+			return other.TypeCode == ElaTypeCode.Boolean ? @this.I4 - other.I4 : -1;
 		}
 		#endregion
 
@@ -33,8 +33,8 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type == ElaMachine.BYT)
-				return right.Type == ElaMachine.BYT ? new ElaValue(left.I4 == right.I4) :
+			if (left.TypeId == ElaMachine.BYT)
+				return right.TypeId == ElaMachine.BYT ? new ElaValue(left.I4 == right.I4) :
 					right.Ref.Equals(left, right, ctx);
 			else
 			{
@@ -46,8 +46,8 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type == ElaMachine.BYT)
-				return right.Type == ElaMachine.BYT ? new ElaValue(left.I4 != right.I4) :
+			if (left.TypeId == ElaMachine.BYT)
+				return right.TypeId == ElaMachine.BYT ? new ElaValue(left.I4 != right.I4) :
 					right.Ref.NotEquals(left, right, ctx);
 			else
 			{
@@ -63,17 +63,17 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		internal override ElaValue Convert(ElaValue @this, ObjectType type, ExecutionContext ctx)
+		internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
 		{
 			switch (type)
 			{
-				case ObjectType.Boolean: return new ElaValue(@this.I4, this);
-				case ObjectType.Integer: return new ElaValue(@this.I4);
-				case ObjectType.Single: return new ElaValue((float)@this.I4);
-				case ObjectType.Double: return new ElaValue((double)@this.I4);
-				case ObjectType.Long: return new ElaValue((long)@this.I4);
-				case ObjectType.Char: return new ElaValue((char)@this.I4);
-				case ObjectType.String: return new ElaValue(Show(@this, ctx, ShowInfo.Default));
+				case ElaTypeCode.Boolean: return new ElaValue(@this.I4, this);
+				case ElaTypeCode.Integer: return new ElaValue(@this.I4);
+				case ElaTypeCode.Single: return new ElaValue((float)@this.I4);
+				case ElaTypeCode.Double: return new ElaValue((double)@this.I4);
+				case ElaTypeCode.Long: return new ElaValue((long)@this.I4);
+				case ElaTypeCode.Char: return new ElaValue((char)@this.I4);
+				case ElaTypeCode.String: return new ElaValue(Show(@this, ctx, ShowInfo.Default));
 				default:
 					ctx.ConversionFailed(@this, type);
 					return base.Convert(type, ctx);

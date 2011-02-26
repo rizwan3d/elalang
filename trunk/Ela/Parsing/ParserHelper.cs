@@ -25,14 +25,14 @@ namespace Ela.Parsing
 		//    if (la.kind == _ENDS)
 		//        return true;
 
-		//    if (exp.Type == ElaNodeType.Binding)
+		//    if (exp.TypeId == ElaNodeType.Binding)
 		//    {
 		//        var vexp = (ElaBinding)exp;
 				
 		//        if (vexp.And != null)
 		//            return true;
 
-		//        if (vexp.InitExpression.Type != ElaNodeType.FunctionLiteral)
+		//        if (vexp.InitExpression.TypeId != ElaNodeType.FunctionLiteral)
 		//            return false;
 				
 		//        return ((ElaFunctionLiteral)vexp.InitExpression).Body.Entries.Count > 1;
@@ -121,33 +121,33 @@ namespace Ela.Parsing
 		}
 
 
-		private ObjectType GetType(string val)
+		private ElaTypeCode GetType(string val)
 		{
 			return
-				val == "int" ? ObjectType.Integer :
-				val == "single" ? ObjectType.Single :
-				val == "bool" ? ObjectType.Boolean :
-				val == "char" ? ObjectType.Char :
-				val == "long" ? ObjectType.Long :
-				val == "double" ? ObjectType.Double :
-				val == "string" ? ObjectType.String :
-				val == "list" ? ObjectType.List :
-				val == "record" ? ObjectType.Record :
-				val == "tuple" ? ObjectType.Tuple :
-				val == "fun" ? ObjectType.Function :
-				val == "object" ? ObjectType.Object :
-				val == "unit" ? ObjectType.Unit :
-				val == "module" ? ObjectType.Module :
-				val == "lazy" ? ObjectType.Lazy :
-				val == "variant" ? ObjectType.Variant :
+				val == "int" ? ElaTypeCode.Integer :
+				val == "single" ? ElaTypeCode.Single :
+				val == "bool" ? ElaTypeCode.Boolean :
+				val == "char" ? ElaTypeCode.Char :
+				val == "long" ? ElaTypeCode.Long :
+				val == "double" ? ElaTypeCode.Double :
+				val == "string" ? ElaTypeCode.String :
+				val == "list" ? ElaTypeCode.List :
+				val == "record" ? ElaTypeCode.Record :
+				val == "tuple" ? ElaTypeCode.Tuple :
+				val == "fun" ? ElaTypeCode.Function :
+				val == "object" ? ElaTypeCode.Object :
+				val == "unit" ? ElaTypeCode.Unit :
+				val == "module" ? ElaTypeCode.Module :
+				val == "lazy" ? ElaTypeCode.Lazy :
+				val == "variant" ? ElaTypeCode.Variant :
 				TypeError(val);
 		}
 
 
-		private ObjectType TypeError(string val)
+		private ElaTypeCode TypeError(string val)
 		{
 			AddError(ElaParserError.UnknownConversionType, val);
-			return ObjectType.None;
+			return ElaTypeCode.None;
 		}
 
 

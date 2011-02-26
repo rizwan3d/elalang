@@ -11,7 +11,7 @@ namespace Ela.Runtime.ObjectModel
 		private const string STR = "()";
 		public static readonly ElaUnit Instance = new ElaUnit();
 
-		private ElaUnit() : base(ObjectType.Unit, ElaTraits.Eq | ElaTraits.Show)
+		private ElaUnit() : base(ElaTypeCode.Unit, ElaTraits.Eq | ElaTraits.Show)
 		{
 
 		}

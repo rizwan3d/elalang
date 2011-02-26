@@ -17,7 +17,7 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-		public ElaVariant(string tag, ElaValue value) : base(ObjectType.Variant, value.Ref.Traits | ElaTraits.Tag)
+		public ElaVariant(string tag, ElaValue value) : base(ElaTypeCode.Variant, value.Ref.Traits | ElaTraits.Tag)
 		{
 			Tag = tag;
 			Value = value;
@@ -42,7 +42,7 @@ namespace Ela.Runtime.ObjectModel
 		{
 			var res = Value.Ref.Equals(Self(left), Self(right), ctx);
 
-            if (left.Type == ElaMachine.VAR && right.Type == ElaMachine.VAR)
+            if (left.TypeId == ElaMachine.VAR && right.TypeId == ElaMachine.VAR)
 				return new ElaValue(res.AsBoolean() && left.Ref.GetTag(ctx) == right.Ref.GetTag(ctx));
 			
 			return res;
@@ -53,7 +53,7 @@ namespace Ela.Runtime.ObjectModel
 		{
 			var res = Value.Ref.NotEquals(Self(left), Self(right), ctx);
 
-            if (left.Type == ElaMachine.VAR && right.Type == ElaMachine.VAR)
+            if (left.TypeId == ElaMachine.VAR && right.TypeId == ElaMachine.VAR)
 				return new ElaValue(res.AsBoolean() && left.Ref.GetTag(ctx) == right.Ref.GetTag(ctx));
 			
 			return res;
@@ -276,9 +276,9 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ObjectType type, ExecutionContext ctx)
+		protected internal override ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
 		{
-			if (type == ObjectType.Variant)
+			if (type == ElaTypeCode.Variant)
 				return new ElaValue(this);
 			else
 				return Value.Ref.Convert(type, ctx);
@@ -341,7 +341,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		internal override ElaValue Convert(ElaValue @this, ObjectType type, ExecutionContext ctx)
+		internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
 		{
 			return Value.Ref.Convert(Value, type, ctx);
 		}

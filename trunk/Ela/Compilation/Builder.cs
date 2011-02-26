@@ -673,7 +673,7 @@ namespace Ela.Compilation
 		{
 			switch (val.LiteralType)
 			{
-				case ObjectType.String:
+				case ElaTypeCode.String:
 					var str = val.AsString();
 
 					if (str.Length == 0)
@@ -681,10 +681,10 @@ namespace Ela.Compilation
 					else
 						cw.Emit(Op.Pushstr, AddString(str));
 					break;
-				case ObjectType.Char:
+				case ElaTypeCode.Char:
 					cw.Emit(Op.PushCh, val.AsInteger());
 					break;
-				case ObjectType.Integer:
+				case ElaTypeCode.Integer:
 					var v = val.AsInteger();
 
 					if (v == 0)
@@ -692,20 +692,20 @@ namespace Ela.Compilation
 					else
 						cw.Emit(Op.PushI4, v);
 					break;
-				case ObjectType.Long:
+				case ElaTypeCode.Long:
 					cw.Emit(Op.PushI4, val.GetData().I4_1);
 					cw.Emit(Op.PushI4, val.GetData().I4_2);
 					cw.Emit(Op.NewI8);
 					break;
-				case ObjectType.Single:
+				case ElaTypeCode.Single:
 					cw.Emit(Op.PushR4, val.GetData().I4_1);
 					break;
-				case ObjectType.Double:
+				case ElaTypeCode.Double:
 					cw.Emit(Op.PushI4, val.GetData().I4_1);
 					cw.Emit(Op.PushI4, val.GetData().I4_2);
 					cw.Emit(Op.NewR8);
 					break;
-				case ObjectType.Boolean:
+				case ElaTypeCode.Boolean:
 					cw.Emit(val.AsBoolean() ? Op.PushI1_1 : Op.PushI1_0);
 					break;
 				default:
@@ -715,17 +715,17 @@ namespace Ela.Compilation
 		}
 
 
-		private void AddConv(ObjectType aff, ElaExpression exp)
+		private void AddConv(ElaTypeCode aff, ElaExpression exp)
 		{
 			switch (aff)
 			{
-				case ObjectType.Integer:
-				case ObjectType.Long:
-				case ObjectType.Single:
-				case ObjectType.Double:
-				case ObjectType.Boolean:
-				case ObjectType.String:
-				case ObjectType.Char:
+				case ElaTypeCode.Integer:
+				case ElaTypeCode.Long:
+				case ElaTypeCode.Single:
+				case ElaTypeCode.Double:
+				case ElaTypeCode.Boolean:
+				case ElaTypeCode.String:
+				case ElaTypeCode.Char:
 					cw.Emit(Op.Conv, (Int32)aff);
 					break;
 				default:

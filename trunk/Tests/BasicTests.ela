@@ -9,6 +9,7 @@ let equals {eq,eqt,eqf} =
 	$ eq typ1 typ1 
 	$ eq "first" "first" 
 	$ eq 'f' 'f'
+end
 
 let notEquals {neq} =
 	  neq 2 3 
@@ -18,6 +19,7 @@ let notEquals {neq} =
 	$ neq typ1 typ2 
 	$ neq "first" "second" 
 	$ neq 'f' 'F'
+end
 	
 let notEquals2 {eqt} =
 	  eqt (typ1 <> typ2)
@@ -26,6 +28,7 @@ let notEquals2 {eqt} =
 	$ eqt (true <> false)
 	$ eqt ("first" <> "second") 
 	$ eqt ('F' <> 'f')
+end
 		
 let compare {eqt} =
 	  eqt (12.3 - 12.3 < .001)
@@ -36,6 +39,7 @@ let compare {eqt} =
 	$ eqt (12 >= 12)
 	$ eqt (45 <= 46)
 	$ eqt (45 <= 45)
+end
 
 let simpleMath {eq,gt,lt} =
 	  eq (2 + 2) 4 
@@ -49,22 +53,26 @@ let simpleMath {eq,gt,lt} =
 	$ gt (25d / 2.0) 12.0 
 	$ eq (25 % 2) 1 
 	$ eq (3 ** 2) 9
+end
 	
 let concat {eq} =
 	  eq ("1" ++ "&" ++ "2") "1&2"
 	$ eq ('A':string ++ 'B':string ++ 'C':string) "ABC"
+end
 	
 let priorities {eq} =
 	  eq (2 + 2 * 3) 8 
 	$ eq (14 / 2 + 4 * 6) 31 
 	$ eq (2 + 6 / 3) 4 
 	$ eq (1 + 12 - 4 / 2 + 144 * 24 / 12) 299
+end
 	
 let boolOperators {eq,neq} =
 	  neq (2 == 2 && 3 <> 3) 
 	$ eq (2 <> 2 || 44 == 44) 
 	$ eq (124 > 123 || 3 == 3 && true) 
 	$ eq (1 > 2 && 2 < 1 || 1 == 1)
+end
 	
 let pipeOperators {eq} =
 	let fun1 x y = x + y in
@@ -72,6 +80,7 @@ let pipeOperators {eq} =
     let fun3 x = x - 2 in
 	  eq (fun1 2 2 |> fun2 |> fun3) 6 
 	$ eq (fun2 <| fun1 2 2) 8
+end
 	
 let compositionOperators {eq} =
 	let fun1 x = x + 2 in
@@ -80,28 +89,33 @@ let compositionOperators {eq} =
     let comp1 = fun1 >> fun2 >> fun3 in
     let comp2 = fun3 << fun2 << fun1 in
 	eq (comp1 2) 6 $ eq (comp2 2) 6
+end
     
 let bitwiseOperators {eq} =
     let v = 2 ||| (12 <<< 8) in
       eq v 3074
     $ eq (v &&& 255) 2
     $ eq (v >>> 8) 12
+end
 
 let bitwiseOperators2 {eq} = 
     let v = 0x02 ||| 0x04 in
       eq v 6
     $ eq (v ^^^ 0x04) 2
+end
     
 let cast {eq} = 
       eq ("123":int) 123
     $ eq ("12.2":single) 12.2
     $ eq (124:string) "124"
     $ eq ("True":bool) true
+end
     
 let bitNot {eq} =
       eq (~~~2) (--3)
     $ eq (~~~124) (--125)
     $ eq (~~~(--3)) 2
+end
     
 let unaryMinus {eq} =
       eq (--3) (0-3)
@@ -109,6 +123,7 @@ let unaryMinus {eq} =
     $ eq (--2.2) (0-2.2)
     $ eq (--45L) (0-45L)
     $ eq (--42.42D) (0-42.42D)
+end
     
 let swap {eq} = 
     let mutable x = 12 and y = "Hello" in
@@ -117,14 +132,16 @@ let swap {eq} =
         $ eq x "Hello"
         $ eq y 12    
     )
+end
     
 let swap2 {eq} =
-    let mutable arr = [|1,2,3|] and i = 0 in
+    let mutable arr = {mutable x=1,mutable y=2,mutable z=3} and i = 0 in
     (
         arr.[0] <-> arr.[i <- i + 1 $ i]
         $ eq arr.[0] 2
         $ eq arr.[1] 1
     )    
+end
     
 let assign {eq,eqt} =
     let mutable x = 12 in
@@ -136,3 +153,4 @@ let assign {eq,eqt} =
         $ x <- [1,2]
         $ eqt (x is [1,2])
     )
+end 

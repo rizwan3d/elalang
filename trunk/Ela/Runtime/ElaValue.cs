@@ -114,11 +114,17 @@ namespace Ela.Runtime
 		}
 
 
+		internal string GetTypeName()
+		{
+			return Ref.GetTypeName();
+		}
+
+
 		internal float GetReal()
 		{
-			if (DataType == ObjectType.Integer)
+			if (TypeCode == ElaTypeCode.Integer)
 				return (Single)I4;
-			else if (DataType == ObjectType.Long)
+			else if (TypeCode == ElaTypeCode.Long)
 				return (Single)((ElaLong)Ref).InternalValue;
 
 			return DirectGetReal();
@@ -135,16 +141,16 @@ namespace Ela.Runtime
 
 		internal double GetDouble()
 		{
-			return DataType == ObjectType.Double ? ((ElaDouble)Ref).InternalValue :
-				DataType == ObjectType.Single ? DirectGetReal() :
-				DataType == ObjectType.Long ? ((ElaLong)Ref).InternalValue :
+			return TypeCode == ElaTypeCode.Double ? ((ElaDouble)Ref).InternalValue :
+				TypeCode == ElaTypeCode.Single ? DirectGetReal() :
+				TypeCode == ElaTypeCode.Long ? ((ElaLong)Ref).InternalValue :
 				(Double)I4;
 		}
 
 
 		internal long GetLong()
 		{
-			return DataType == ObjectType.Long ? ((ElaLong)Ref).InternalValue : I4;				
+			return TypeCode == ElaTypeCode.Long ? ((ElaLong)Ref).InternalValue : I4;				
 		}
 
 
@@ -205,44 +211,44 @@ namespace Ela.Runtime
 		public object Convert(Type ti)
 		{
 			var ctx = new ExecutionContext();
-			var type = default(ObjectType);
+			var type = default(ElaTypeCode);
 
             if (ti == typeof(Int32))
-                type = ObjectType.Integer;
+                type = ElaTypeCode.Integer;
             else if (ti == typeof(Single))
-                type = ObjectType.Single;
+                type = ElaTypeCode.Single;
             else if (ti == typeof(Int64))
-                type = ObjectType.Long;
+                type = ElaTypeCode.Long;
             else if (ti == typeof(Double))
-                type = ObjectType.Double;
+                type = ElaTypeCode.Double;
             else if (ti == typeof(Boolean))
-                type = ObjectType.Boolean;
+                type = ElaTypeCode.Boolean;
             else if (ti == typeof(String))
-                type = ObjectType.String;
+                type = ElaTypeCode.String;
             else if (ti == typeof(Char))
-                type = ObjectType.Char;
+                type = ElaTypeCode.Char;
             else if (ti == typeof(ElaList))
-                type = ObjectType.List;
+                type = ElaTypeCode.List;
             else if (ti == typeof(ElaRecord))
-                type = ObjectType.Record;
+                type = ElaTypeCode.Record;
             else if (ti == typeof(ElaTuple))
-                type = ObjectType.Tuple;
+                type = ElaTypeCode.Tuple;
             else if (ti == typeof(ElaVariant))
-                type = ObjectType.Variant;
+                type = ElaTypeCode.Variant;
             else if (ti == typeof(ElaFunction))
-                type = ObjectType.Function;
+                type = ElaTypeCode.Function;
             else if (ti == typeof(ElaModule))
-                type = ObjectType.Module;
+                type = ElaTypeCode.Module;
             else if (ti == typeof(ElaValue))
                 return this;
             else
             {
                 if (ti == typeof(ElaUnit))
                 {
-                    if (DataType == ObjectType.Unit)
+                    if (TypeCode == ElaTypeCode.Unit)
                         return ElaUnit.Instance;
                     else
-                        throw InvalidCast(DataType, type);
+                        throw InvalidCast(TypeCode, type);
                 }
                 else if (ti == typeof(ElaObject))
                     return Ref;
@@ -254,13 +260,13 @@ namespace Ela.Runtime
                     return System.Convert.ChangeType(Ref, ti);
             }
 
-            if (type == DataType)
+            if (type == TypeCode)
                 return AsObject();
 
 			var ret = Ref.Convert(this, type, ctx).AsObject();
 
 			if (ctx.Failed)
-				throw InvalidCast(DataType, type);
+				throw InvalidCast(TypeCode, type);
 
 			return ret;
 		}
@@ -287,21 +293,21 @@ namespace Ela.Runtime
 		#region Cast Methods
 		public object AsObject()
 		{
-			switch (DataType)
+			switch (TypeCode)
 			{
-				case ObjectType.Boolean: return AsBoolean();
-				case ObjectType.Char: return AsChar();
-				case ObjectType.Double: return AsDouble();
-				case ObjectType.Function: return AsFunction();
-				case ObjectType.Integer: return AsInteger();
-				case ObjectType.List: return AsList();
-				case ObjectType.Long: return AsLong();
-				case ObjectType.Record: return AsRecord();
-				case ObjectType.Single: return AsSingle();
-				case ObjectType.String: return AsString();
-				case ObjectType.Tuple: return AsTuple();
-				case ObjectType.Unit: return null;
-				case ObjectType.Lazy: return ((ElaLazy)Ref).AsObject();
+				case ElaTypeCode.Boolean: return AsBoolean();
+				case ElaTypeCode.Char: return AsChar();
+				case ElaTypeCode.Double: return AsDouble();
+				case ElaTypeCode.Function: return AsFunction();
+				case ElaTypeCode.Integer: return AsInteger();
+				case ElaTypeCode.List: return AsList();
+				case ElaTypeCode.Long: return AsLong();
+				case ElaTypeCode.Record: return AsRecord();
+				case ElaTypeCode.Single: return AsSingle();
+				case ElaTypeCode.String: return AsString();
+				case ElaTypeCode.Tuple: return AsTuple();
+				case ElaTypeCode.Unit: return null;
+				case ElaTypeCode.Lazy: return ((ElaLazy)Ref).AsObject();
 				default:
 					if (Ref == null)
 						throw new NotSupportedException();
@@ -313,135 +319,135 @@ namespace Ela.Runtime
 
 		public string AsString()
 		{
-			if (DataType == ObjectType.String)
+			if (TypeCode == ElaTypeCode.String)
 				return ((ElaString)Ref).GetValue();
-			else if (DataType == ObjectType.Lazy)
+			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsString();
 			else
-				throw InvalidCast(ObjectType.String, DataType);
+				throw InvalidCast(ElaTypeCode.String, TypeCode);
 		}
 
 
 		public bool AsBoolean()
 		{
-			if (DataType == ObjectType.Boolean)
+			if (TypeCode == ElaTypeCode.Boolean)
 				return I4 > 0;
-			else if (DataType == ObjectType.Lazy)
+			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsBoolean();
 			else
-				throw InvalidCast(ObjectType.Boolean, DataType);
+				throw InvalidCast(ElaTypeCode.Boolean, TypeCode);
 		}
 
 
 		public char AsChar()
 		{
-			if (DataType == ObjectType.Char)
+			if (TypeCode == ElaTypeCode.Char)
 				return (Char)I4;
-			else if (DataType == ObjectType.Lazy)
+			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsChar();
 			else
-				throw InvalidCast(ObjectType.Char, DataType);
+				throw InvalidCast(ElaTypeCode.Char, TypeCode);
 		}
 
 
 		public double AsDouble()
 		{
-			if (DataType == ObjectType.Double)
+			if (TypeCode == ElaTypeCode.Double)
 				return ((ElaDouble)Ref).InternalValue;
-			else if (DataType == ObjectType.Lazy)
+			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsDouble();
 			else
-				throw InvalidCast(ObjectType.Double, DataType);
+				throw InvalidCast(ElaTypeCode.Double, TypeCode);
 		}
 
 
 		public float AsSingle()
 		{
-			if (DataType == ObjectType.Single)
+			if (TypeCode == ElaTypeCode.Single)
 				return GetReal();
-			else if (DataType == ObjectType.Lazy)
+			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsSingle();
 			else
-				throw InvalidCast(ObjectType.Single, DataType);
+				throw InvalidCast(ElaTypeCode.Single, TypeCode);
 		}
 
 
 		public int AsInteger()
 		{
-			if (DataType == ObjectType.Integer)
+			if (TypeCode == ElaTypeCode.Integer)
 				return I4;
-			else if (DataType == ObjectType.Lazy)
+			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsInteger();
 			else
-				throw InvalidCast(ObjectType.Integer, DataType);
+				throw InvalidCast(ElaTypeCode.Integer, TypeCode);
 		}
 
 
 		public long AsLong()
 		{
-			if (DataType == ObjectType.Long)
+			if (TypeCode == ElaTypeCode.Long)
 				return ((ElaLong)Ref).InternalValue;
-			else if (DataType == ObjectType.Lazy)
+			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsLong();
 			else
-				throw InvalidCast(ObjectType.Long, DataType);
+				throw InvalidCast(ElaTypeCode.Long, TypeCode);
 		}
 
 
 		public ElaList AsList()
 		{
-			if (DataType == ObjectType.List)
+			if (TypeCode == ElaTypeCode.List)
 				return (ElaList)Ref;
-			else if (DataType == ObjectType.Lazy)
+			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsList();
 			else
-				throw InvalidCast(ObjectType.List, DataType);
+				throw InvalidCast(ElaTypeCode.List, TypeCode);
 		}
 
 
 		public ElaTuple AsTuple()
 		{
-			if (DataType == ObjectType.Tuple)
+			if (TypeCode == ElaTypeCode.Tuple)
 				return (ElaTuple)Ref;
-			else if (DataType == ObjectType.Lazy)
+			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsTuple();
 			else
-				throw InvalidCast(ObjectType.Tuple, DataType);
+				throw InvalidCast(ElaTypeCode.Tuple, TypeCode);
 		}
 
 
 		public ElaRecord AsRecord()
 		{
-			if (DataType == ObjectType.Record)
+			if (TypeCode == ElaTypeCode.Record)
 				return (ElaRecord)Ref;
-			else if (DataType == ObjectType.Lazy)
+			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsRecord();
 			else
-				throw InvalidCast(ObjectType.Record, DataType);
+				throw InvalidCast(ElaTypeCode.Record, TypeCode);
 		}
 
 
 		public ElaFunction AsFunction()
 		{
-			if (DataType == ObjectType.Function)
+			if (TypeCode == ElaTypeCode.Function)
 				return (ElaFunction)Ref;
-			else if (DataType == ObjectType.Lazy)
+			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsFunction();
 			else
-				throw InvalidCast(ObjectType.Function, DataType);
+				throw InvalidCast(ElaTypeCode.Function, TypeCode);
 		}
 
 
 		public ElaUnit AsUnit()
 		{
-			if (DataType == ObjectType.Unit)
+			if (TypeCode == ElaTypeCode.Unit)
 				return (ElaUnit)Ref;
 			else
-				throw InvalidCast(ObjectType.Unit, DataType);
+				throw InvalidCast(ElaTypeCode.Unit, TypeCode);
 		}
 
 
-		private InvalidCastException InvalidCast(ObjectType target, ObjectType source)
+		private InvalidCastException InvalidCast(ElaTypeCode target, ElaTypeCode source)
 		{
 			return new InvalidCastException(Strings.GetMessage("InvalidCast", source.GetShortForm(), target.GetShortForm()));
 		}
@@ -677,7 +683,7 @@ namespace Ela.Runtime
         }
 
 
-        public ElaValue Convert(ObjectType type, ExecutionContext ctx)
+        public ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
         {
             return Ref.Convert(type, ctx);
         }
@@ -716,13 +722,13 @@ namespace Ela.Runtime
 
 
 		#region Properties
-		public ObjectType DataType
+		public ElaTypeCode TypeCode
 		{
-			get { return Ref != null ? (ObjectType)Type : ObjectType.None; }
+			get { return Ref != null ? (ElaTypeCode)TypeId : ElaTypeCode.None; }
 		}
 
 
-		internal int Type
+		internal int TypeId
 		{
 			get { return Ref.TypeId; }
 		}

@@ -13,7 +13,7 @@ namespace Ela.CodeModel
 			data = new Conv();
 			data.I4_1 = val;
 			str = null;
-			LiteralType = ObjectType.Integer;
+			LiteralType = ElaTypeCode.Integer;
 		}
 
 
@@ -22,7 +22,7 @@ namespace Ela.CodeModel
 			data = new Conv();
 			data.R4 = val;
 			str = null;
-			LiteralType = ObjectType.Single;
+			LiteralType = ElaTypeCode.Single;
 		}
 
 
@@ -30,7 +30,7 @@ namespace Ela.CodeModel
 		{
 			data = new Conv();
 			str = val;
-			LiteralType = ObjectType.String;
+			LiteralType = ElaTypeCode.String;
 		}
 
 
@@ -39,7 +39,7 @@ namespace Ela.CodeModel
 			data = new Conv();
 			data.I4_1 = val ? 1 : 0;
 			str = null;
-			LiteralType = ObjectType.Boolean;
+			LiteralType = ElaTypeCode.Boolean;
 		}
 
 
@@ -48,7 +48,7 @@ namespace Ela.CodeModel
 			data = new Conv();
 			data.I4_1 = (Int32)val;
 			str = null;
-			LiteralType = ObjectType.Char;	
+			LiteralType = ElaTypeCode.Char;	
 		}
 
 
@@ -57,7 +57,7 @@ namespace Ela.CodeModel
 			data = new Conv();
 			data.I8 = val;
 			str = null;
-			LiteralType = ObjectType.Long;	
+			LiteralType = ElaTypeCode.Long;	
 		}
 
 
@@ -66,11 +66,11 @@ namespace Ela.CodeModel
 			data = new Conv();
 			data.R8 = val;
 			str = null;
-			LiteralType = ObjectType.Double;	
+			LiteralType = ElaTypeCode.Double;	
 		}
 
 
-		public ElaLiteralValue(ObjectType type)
+		public ElaLiteralValue(ElaTypeCode type)
 		{
 			data = new Conv();
 			str = null;
@@ -130,13 +130,13 @@ namespace Ela.CodeModel
 
 		public ElaLiteralValue MakeNegative()
 		{
-			if (LiteralType == ObjectType.Integer)
+			if (LiteralType == ElaTypeCode.Integer)
 				return new ElaLiteralValue(-AsInteger());
-			else if (LiteralType == ObjectType.Long)
+			else if (LiteralType == ElaTypeCode.Long)
 				return new ElaLiteralValue(-AsLong());
-			else if (LiteralType == ObjectType.Single)
+			else if (LiteralType == ElaTypeCode.Single)
 				return new ElaLiteralValue(-AsReal());
-			else if (LiteralType == ObjectType.Double)
+			else if (LiteralType == ElaTypeCode.Double)
 				return new ElaLiteralValue(-AsDouble());
 			else
 				throw new NotSupportedException();
@@ -147,13 +147,13 @@ namespace Ela.CodeModel
 		{
 			switch (LiteralType)
 			{
-				case ObjectType.Integer: return AsInteger().ToString(Culture.NumberFormat);
-				case ObjectType.Long: return AsLong().ToString(Culture.NumberFormat) + "L";
-				case ObjectType.Boolean: return AsBoolean().ToString().ToLower();
-				case ObjectType.Char: return "'" + AsChar().ToString() + "'";
-				case ObjectType.Single: return AsReal().ToString(Culture.NumberFormat);
-				case ObjectType.Double: return AsDouble().ToString(Culture.NumberFormat) + "D";
-				case ObjectType.String: return "\"" + AsString() + "\"";
+				case ElaTypeCode.Integer: return AsInteger().ToString(Culture.NumberFormat);
+				case ElaTypeCode.Long: return AsLong().ToString(Culture.NumberFormat) + "L";
+				case ElaTypeCode.Boolean: return AsBoolean().ToString().ToLower();
+				case ElaTypeCode.Char: return "'" + AsChar().ToString() + "'";
+				case ElaTypeCode.Single: return AsReal().ToString(Culture.NumberFormat);
+				case ElaTypeCode.Double: return AsDouble().ToString(Culture.NumberFormat) + "D";
+				case ElaTypeCode.String: return "\"" + AsString() + "\"";
 				default: return String.Empty;
 			}
 		}
@@ -161,7 +161,7 @@ namespace Ela.CodeModel
 
 
 		#region Fields
-		public readonly ObjectType LiteralType;
+		public readonly ElaTypeCode LiteralType;
 		#endregion
 	}
 }

@@ -46,9 +46,9 @@ namespace Ela.Library.General
             }
 
 
-            protected override ElaValue Convert(ObjectType type, ExecutionContext ctx)
+            protected override ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
             {
-                if (type == ObjectType.String)
+                if (type == ElaTypeCode.String)
                     return new ElaValue(Builder.ToString());
                 
                 ctx.ConversionFailed(new ElaValue(this), type);
@@ -87,7 +87,7 @@ namespace Ela.Library.General
 
         public ElaStringBuilder CreateBuilder(ElaValue val)
         {
-            var init = val.DataType != ObjectType.Unit ?
+            var init = val.TypeCode != ElaTypeCode.Unit ?
                 val.ToString() : String.Empty;
             return new ElaStringBuilder(new StringBuilder(init));
         }

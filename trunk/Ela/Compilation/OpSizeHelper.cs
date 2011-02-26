@@ -63,7 +63,7 @@ namespace Ela.Compilation
 			1, //Throw
 			1, //Rethrow
 			1, //Force
-			1, //Type
+			1, //TypeId
 			1, //Isnil
 			1, //Succ
 			1, //Pred

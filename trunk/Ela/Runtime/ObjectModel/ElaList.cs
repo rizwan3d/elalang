@@ -18,7 +18,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		public ElaList(ElaObject next, ElaValue value) : base(ObjectType.List, TRAITS)
+		public ElaList(ElaObject next, ElaValue value) : base(ElaTypeCode.List, TRAITS)
 		{
 			InternalNext = next;
 			InternalValue = value;
@@ -76,9 +76,9 @@ namespace Ela.Runtime.ObjectModel
 		{
 			index = index.Id(ctx);
 
-			if (index.Type != ElaMachine.INT)
+			if (index.TypeId != ElaMachine.INT)
 			{
-				ctx.InvalidIndexType(index.DataType);
+				ctx.InvalidIndexType(index);
 				return base.GetValue(index, ctx);
 			}
 			else if (index.I4 < 0)
@@ -145,16 +145,16 @@ namespace Ela.Runtime.ObjectModel
 			if (next is ElaList || (next.Traits & ElaTraits.Thunk) == ElaTraits.Thunk)
 				return new ElaValue(new ElaList(next, value));
 
-			ctx.Fail(ElaRuntimeError.InvalidType, ObjectType.List, (ObjectType)next.TypeId);
+			ctx.Fail(ElaRuntimeError.InvalidType, ElaTypeCode.List, (ElaTypeCode)next.TypeId);
 			return Default();
 		}
 
 
 		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Type == ElaMachine.LST)
+			if (left.TypeId == ElaMachine.LST)
 			{
-				if (right.Type == ElaMachine.LST)
+				if (right.TypeId == ElaMachine.LST)
 				{
 					var list = (ElaList)right.Ref;
 
@@ -174,9 +174,9 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ObjectType type, ExecutionContext ctx)
+		protected internal override ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
 		{
-			if (type == ObjectType.List)
+			if (type == ElaTypeCode.List)
 				return new ElaValue(this);
 
 			ctx.ConversionFailed(new ElaValue(this), type);
@@ -321,7 +321,7 @@ namespace Ela.Runtime.ObjectModel
                 {
                     var val = InternalNext.Force(DummyContext);
 
-                    if (val.Type == ElaMachine.LST)
+                    if (val.TypeId == ElaMachine.LST)
                         return (ElaList)val.Ref;
                     else
                         return new ElaList(ElaList.Nil, val);

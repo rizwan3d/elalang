@@ -10,6 +10,7 @@ namespace Ela.Library.Collections
 	{
 		#region Construction
 		private const int DEFAULT_SIZE = 4;
+		private const string TYPENAME = "array";
 		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Len | ElaTraits.Get | ElaTraits.Set | ElaTraits.Gen | ElaTraits.Fold | ElaTraits.Concat | ElaTraits.Show | ElaTraits.Seq | ElaTraits.Cons;
 		private int size;
 		private ElaValue[] array;
@@ -89,9 +90,9 @@ namespace Ela.Library.Collections
 		{
 			index = index.Id(ctx);
 
-			if (index.DataType != ObjectType.Integer)
+			if (index.TypeCode != ElaTypeCode.Integer)
 			{
-				ctx.InvalidIndexType(index.DataType);
+				ctx.InvalidIndexType(index);
 				return Default();
 			}
 
@@ -111,9 +112,9 @@ namespace Ela.Library.Collections
 		{
 			index = index.Id(ctx);
 
-			if (index.DataType != ObjectType.Integer)
+			if (index.TypeCode != ElaTypeCode.Integer)
 			{
-				ctx.InvalidIndexType(index.DataType);
+				ctx.InvalidIndexType(index);
 				return;
 			}
 
@@ -196,7 +197,7 @@ namespace Ela.Library.Collections
 
 			if (arr == null)
 			{
-				ctx.Fail("InvalidType", "Invalid type! Expected array.");
+				ctx.InvalidType(GetTypeName(), new ElaValue(instance));
 				return Default();
 			}
 
@@ -218,6 +219,12 @@ namespace Ela.Library.Collections
 
 
 		#region Methods
+		protected override string GetTypeName()
+		{
+			return TYPENAME;
+		}
+
+
 		public IEnumerator<ElaValue> GetEnumerator()
 		{
 			for (var i = 0; i < Length; i++)

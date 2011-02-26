@@ -13,33 +13,33 @@ namespace Ela.Runtime.ObjectModel
 		private const ElaTraits TRAITS = ElaTraits.Ord | ElaTraits.Enum | ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Gen | ElaTraits.Len | ElaTraits.Convert | ElaTraits.Num | ElaTraits.Bit | ElaTraits.Bool | ElaTraits.Neg | ElaTraits.Concat | ElaTraits.Seq;
 		private int cons;
 		
-		public ElaTuple(params object[] args) : base(ObjectType.Tuple, TRAITS)
+		public ElaTuple(params object[] args) : base(ElaTypeCode.Tuple, TRAITS)
 		{
 			Values = args.Select(o => ElaValue.FromObject(o)).ToArray();
 			cons = args.Length;
 		}
 
 
-		public ElaTuple(params ElaValue[] args) : base(ObjectType.Tuple, TRAITS)
+		public ElaTuple(params ElaValue[] args) : base(ElaTypeCode.Tuple, TRAITS)
 		{
 			Values = args;
 			cons = args.Length;
 		}
 
 
-		internal ElaTuple(int size) : this(size, ObjectType.Tuple, TRAITS)
+		internal ElaTuple(int size) : this(size, ElaTypeCode.Tuple, TRAITS)
 		{
 
 		}
 
 		
-		internal ElaTuple(int size, ObjectType type, ElaTraits traits) : base(type, traits)
+		internal ElaTuple(int size, ElaTypeCode type, ElaTraits traits) : base(type, traits)
 		{
 			Values = new ElaValue[size];
 		}
 
 
-		private ElaTuple() : base(ObjectType.Tuple, TRAITS)
+		private ElaTuple() : base(ElaTypeCode.Tuple, TRAITS)
 		{
 
 		}
@@ -192,7 +192,7 @@ namespace Ela.Runtime.ObjectModel
 
 			for (var i = 0; i < Length; i++)
 			{
-				var left = Values[i].Type == ElaMachine.LAZ ?
+				var left = Values[i].TypeId == ElaMachine.LAZ ?
 					((ElaLazy)Values[i].Ref).Force() : Values[i];
 				
 				tuple.Values[i] = left.Ref.Successor(left, ctx);
@@ -209,7 +209,7 @@ namespace Ela.Runtime.ObjectModel
 
 			for (var i = 0; i < Length; i++)
 			{
-				var left = Values[i].Type == ElaMachine.LAZ ?
+				var left = Values[i].TypeId == ElaMachine.LAZ ?
 					((ElaLazy)Values[i].Ref).Force() : Values[i];
 				
 				tuple.Values[i] = left.Ref.Predecessor(left, ctx);
@@ -226,7 +226,7 @@ namespace Ela.Runtime.ObjectModel
 			if (lt == null)
 				return Default();
 			
-			if (right.Type != ElaMachine.TUP && right.Type != ElaMachine.REC)
+			if (right.TypeId != ElaMachine.TUP && right.TypeId != ElaMachine.REC)
 			{
 				var ret = new ElaTuple(Length);
 				ret.cons = Length;
@@ -270,7 +270,7 @@ namespace Ela.Runtime.ObjectModel
 			if (lt == null)
 				return Default();
 			
-			if (right.Type != ElaMachine.TUP && right.Type != ElaMachine.REC)
+			if (right.TypeId != ElaMachine.TUP && right.TypeId != ElaMachine.REC)
 			{
 				var ret = new ElaTuple(Length);
 				ret.cons = Length;
@@ -314,7 +314,7 @@ namespace Ela.Runtime.ObjectModel
 			if (lt == null)
 				return Default();
 			
-			if (right.Type != ElaMachine.TUP && right.Type != ElaMachine.REC)
+			if (right.TypeId != ElaMachine.TUP && right.TypeId != ElaMachine.REC)
 			{
 				var ret = new ElaTuple(Length);
 				ret.cons = Length;
@@ -358,7 +358,7 @@ namespace Ela.Runtime.ObjectModel
 			if (lt == null)
 				return Default();
 			
-			if (right.Type != ElaMachine.TUP && right.Type != ElaMachine.REC)
+			if (right.TypeId != ElaMachine.TUP && right.TypeId != ElaMachine.REC)
 			{
 				var ret = new ElaTuple(Length);
 				ret.cons = Length;
@@ -402,7 +402,7 @@ namespace Ela.Runtime.ObjectModel
 			if (lt == null)
 				return Default();
 			
-			if (right.Type != ElaMachine.TUP && right.Type != ElaMachine.REC)
+			if (right.TypeId != ElaMachine.TUP && right.TypeId != ElaMachine.REC)
 			{
 				var ret = new ElaTuple(Length);
 				ret.cons = Length;
@@ -446,7 +446,7 @@ namespace Ela.Runtime.ObjectModel
 			if (lt == null)
 				return Default();
 			
-			if (right.Type != ElaMachine.TUP && right.Type != ElaMachine.REC)
+			if (right.TypeId != ElaMachine.TUP && right.TypeId != ElaMachine.REC)
 			{
 				var ret = new ElaTuple(Length);
 				ret.cons = Length;
@@ -490,7 +490,7 @@ namespace Ela.Runtime.ObjectModel
 			if (lt == null)
 				return Default();
 			
-			if (right.Type != ElaMachine.TUP && right.Type != ElaMachine.REC)
+			if (right.TypeId != ElaMachine.TUP && right.TypeId != ElaMachine.REC)
 			{
 				var ret = new ElaTuple(Length);
 				ret.cons = Length;
@@ -534,7 +534,7 @@ namespace Ela.Runtime.ObjectModel
 			if (lt == null)
 				return Default();
 			
-			if (right.Type != ElaMachine.TUP && right.Type != ElaMachine.REC)
+			if (right.TypeId != ElaMachine.TUP && right.TypeId != ElaMachine.REC)
 			{
 				var ret = new ElaTuple(Length);
 				ret.cons = Length;
@@ -578,7 +578,7 @@ namespace Ela.Runtime.ObjectModel
 			if (lt == null)
 				return Default();
 			
-			if (right.Type != ElaMachine.TUP && right.Type != ElaMachine.REC)
+			if (right.TypeId != ElaMachine.TUP && right.TypeId != ElaMachine.REC)
 			{
 				var ret = new ElaTuple(Length);
 				ret.cons = Length;
@@ -622,7 +622,7 @@ namespace Ela.Runtime.ObjectModel
 
 			for (var i = 0; i < Length; i++)
 			{
-				var left = Values[i].Type == ElaMachine.LAZ ?
+				var left = Values[i].TypeId == ElaMachine.LAZ ?
 					((ElaLazy)Values[i].Ref).Force() : Values[i];
 
 				ret.Values[i] = left.Ref.BitwiseNot(left, ctx);
@@ -679,7 +679,7 @@ namespace Ela.Runtime.ObjectModel
 
 			for (var i = 0; i < Length; i++)
 			{
-				var left = Values[i].Type == ElaMachine.LAZ ?
+				var left = Values[i].TypeId == ElaMachine.LAZ ?
 					((ElaLazy)Values[i].Ref).Force() : Values[i];
 
 				if (!left.Ref.Bool(left, ctx))
@@ -697,7 +697,7 @@ namespace Ela.Runtime.ObjectModel
 
 			for (var i = 0; i < Length; i++)
 			{
-				var left = Values[i].Type == ElaMachine.LAZ ?
+				var left = Values[i].TypeId == ElaMachine.LAZ ?
 					((ElaLazy)Values[i].Ref).Force() : Values[i];
 
 				ret.Values[i] = left.Ref.Negate(left, ctx);
@@ -714,7 +714,7 @@ namespace Ela.Runtime.ObjectModel
 			if (lt == null)
 				return Default();
 			
-			if (right.Type != ElaMachine.TUP && right.Type != ElaMachine.REC)
+			if (right.TypeId != ElaMachine.TUP && right.TypeId != ElaMachine.REC)
 			{
 				var ret = new ElaTuple(Length);
 				ret.cons = Length;
@@ -759,9 +759,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue GetValue(ElaValue key, ExecutionContext ctx)
 		{
-			if (key.Type != ElaMachine.INT)
+			if (key.TypeId != ElaMachine.INT)
 			{
-				ctx.InvalidIndexType(key.DataType);
+				ctx.InvalidIndexType(key);
 				return Default();
 			}
 
@@ -773,9 +773,9 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ObjectType type, ExecutionContext ctx)
+		protected internal override ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
 		{
-			if (type == ObjectType.Tuple)
+			if (type == ElaTypeCode.Tuple)
 				return new ElaValue(this);
 
 			ctx.ConversionFailed(new ElaValue(this), type);
@@ -840,7 +840,7 @@ namespace Ela.Runtime.ObjectModel
 
 		internal void InternalSetValue(ElaValue value)
 		{
-			if (value.Type == ElaMachine.TUP)
+			if (value.TypeId == ElaMachine.TUP)
 			{
 				var other = (ElaTuple)value.Ref;
 				var arr = new ElaValue[Length + other.Length + (Values.Length - Length - 1)];
@@ -874,7 +874,7 @@ namespace Ela.Runtime.ObjectModel
 
 			if (t == null)
 			{
-				ctx.InvalidType(ObjectType.Tuple, other.DataType);
+				ctx.InvalidType(GetTypeName(), other);
 				return null;
 			}
 

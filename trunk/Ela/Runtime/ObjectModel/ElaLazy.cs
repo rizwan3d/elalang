@@ -5,7 +5,7 @@ namespace Ela.Runtime.ObjectModel
 	internal sealed class ElaLazy : ElaObject
 	{
 		#region Construction
-		internal ElaLazy(ElaFunction function) : base(ObjectType.Lazy, ElaTraits.Thunk)
+		internal ElaLazy(ElaFunction function) : base(ElaTypeCode.Lazy, ElaTraits.Thunk)
 		{
 			Function = function;
 			_value = default(ElaValue);
@@ -88,21 +88,21 @@ namespace Ela.Runtime.ObjectModel
 
 		public object AsObject()
 		{
-			switch (Force().DataType)
+			switch (Force().TypeCode)
 			{
-				case ObjectType.Boolean: return Value.AsBoolean();
-				case ObjectType.Char: return Value.AsChar();
-				case ObjectType.Double: return Value.AsDouble();
-				case ObjectType.Function: return Value.AsFunction();
-				case ObjectType.Integer: return Value.AsInteger();
-				case ObjectType.List: return Value.AsList();
-				case ObjectType.Long: return Value.AsLong();
-				case ObjectType.Record: return Value.AsRecord();
-				case ObjectType.Single: return Value.AsSingle();
-				case ObjectType.String: return Value.AsString();
-				case ObjectType.Tuple: return Value.AsTuple();
-				case ObjectType.Unit: return null;
-				case ObjectType.Lazy: return Value.AsObject();
+				case ElaTypeCode.Boolean: return Value.AsBoolean();
+				case ElaTypeCode.Char: return Value.AsChar();
+				case ElaTypeCode.Double: return Value.AsDouble();
+				case ElaTypeCode.Function: return Value.AsFunction();
+				case ElaTypeCode.Integer: return Value.AsInteger();
+				case ElaTypeCode.List: return Value.AsList();
+				case ElaTypeCode.Long: return Value.AsLong();
+				case ElaTypeCode.Record: return Value.AsRecord();
+				case ElaTypeCode.Single: return Value.AsSingle();
+				case ElaTypeCode.String: return Value.AsString();
+				case ElaTypeCode.Tuple: return Value.AsTuple();
+				case ElaTypeCode.Unit: return null;
+				case ElaTypeCode.Lazy: return Value.AsObject();
 				default:
 					if (Value.Ref != null)
 						return Value.Ref;

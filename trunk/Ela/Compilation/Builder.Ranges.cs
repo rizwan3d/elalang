@@ -39,9 +39,9 @@ namespace Ela.Compilation
 			var snd = range.Second != null ? (ElaPrimitive)range.Second : null;
 			var lst = (ElaPrimitive)range.Last;
 
-			if (fst.Value.LiteralType != ObjectType.Integer ||
-				(snd != null && snd.Value.LiteralType != ObjectType.Integer) ||
-				lst.Value.LiteralType != ObjectType.Integer)
+			if (fst.Value.LiteralType != ElaTypeCode.Integer ||
+				(snd != null && snd.Value.LiteralType != ElaTypeCode.Integer) ||
+				lst.Value.LiteralType != ElaTypeCode.Integer)
 				return false;
 
 			var fstVal = fst.Value.AsInteger();

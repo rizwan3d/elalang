@@ -3,11 +3,13 @@
     $ eq t 4
     $ eqt (t == 4)
     where t = (& 2 + 2) end
+end
     
 let lazyList {eqt} =
     eqt (lst is (_::_::(?lazy)))
     $ eqt (lst is (1::5::xs))
     where lst = 1 :: (& 2 + 3) :: (& 44 - 40) end
+end
     
 let memoization {eq} =
     let mutable x = 0 in
@@ -16,9 +18,11 @@ let memoization {eq} =
       t + 0
     $ t + 1
     $ eq x 1
+end
     
 let typeCheck {eqt} =
 	let t = (& 2 * 2) in
 	eqt (t is ?lazy)
     $ t + 0
     $ eqt (t is ?int)
+end 

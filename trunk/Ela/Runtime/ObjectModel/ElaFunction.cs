@@ -20,7 +20,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 		
 		
-		protected ElaFunction(int parCount) : base(ObjectType.Function, TRAITS)
+		protected ElaFunction(int parCount) : base(ElaTypeCode.Function, TRAITS)
 		{
 			if (parCount == 0)
 				parCount = 1;
@@ -32,7 +32,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 		
-		internal ElaFunction(int handle, int module, int parCount, FastList<ElaValue[]> captures, ElaMachine vm) : base(ObjectType.Function, TRAITS)
+		internal ElaFunction(int handle, int module, int parCount, FastList<ElaValue[]> captures, ElaMachine vm) : base(ElaTypeCode.Function, TRAITS)
 		{
 			Handle = handle;
 			ModuleHandle = module;
@@ -42,7 +42,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		private ElaFunction(ElaValue[] pars) : base(ObjectType.Function, TRAITS)
+		private ElaFunction(ElaValue[] pars) : base(ElaTypeCode.Function, TRAITS)
 		{
 			Parameters = pars;
 		}

@@ -9,7 +9,8 @@ namespace Ela.Library.Collections
     {
         #region Construction
         private const string NOKEY = "NoKey";
-
+		private const string TYPENAME = "mutableMap";
+		
         public ElaMutableMap() : base(ElaTraits.Eq | ElaTraits.Show | ElaTraits.Get | ElaTraits.Set | ElaTraits.Convert | ElaTraits.Len)
         {
             Map = new Dictionary<ElaValue,ElaValue>();
@@ -18,7 +19,13 @@ namespace Ela.Library.Collections
 
 
         #region Methods
-        public void Add(ElaValue key, ElaValue value)
+		protected override string GetTypeName()
+		{
+			return TYPENAME;
+		}
+
+
+		public void Add(ElaValue key, ElaValue value)
         {
             Map.Add(key, value);
         }
@@ -60,9 +67,9 @@ namespace Ela.Library.Collections
         }
 
 
-        protected override ElaValue Convert(ObjectType type, ExecutionContext ctx)
+        protected override ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
         {
-            if (type == ObjectType.Record)
+            if (type == ElaTypeCode.Record)
                 return new ElaValue(ConvertToRecord());
 
             ctx.ConversionFailed(new ElaValue(this), type);
@@ -76,7 +83,7 @@ namespace Ela.Library.Collections
 
             if (!Map.TryGetValue(index, out val))
             {
-                ctx.Fail(NOKEY, String.Format("An element with a Key '{0}' doesn't exist.", index));
+                ctx.Fail(NOKEY, String.Format("An element with a key '{0}' doesn't exist.", index));
                 return Default();
             }
 

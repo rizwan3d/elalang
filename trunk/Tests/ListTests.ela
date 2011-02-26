@@ -4,12 +4,14 @@
     $ eq list.[0] 'E'
     $ eq list.[1] 'l'
     $ eq list.[2] 'a'
+end
 
 let cons {eq} =
 	let list = 0::1::2::3::[] in
     eq (length list) 4
     $ eq list.[0] 0
     $ eq list.[3] 3
+end
 
 let headTail {eq} =
 	let head x::xs = x and
@@ -19,12 +21,14 @@ let headTail {eq} =
     eq (head list) 0
     $ eq ((tail list) |> length) 3
     $ eq (tail list).[0] 1
+end
 
 let changeItem {eqt=eqt} =
 	try 
         (let list = [0] in list.[0] <- 1)
         $ eqt false
 	with _ = eqt true end
+end
 
 let concatLists {eq} =
 	let list1 = ['E', 'l', 'a'] and
@@ -37,6 +41,7 @@ let concatLists {eq} =
 		str <- str ++ e:string)
         
     $ eq str "Elalang"
+end
 
 let iterateItems {eqt} =
 	let list = [0, 1, 2, 3] in
@@ -57,7 +62,9 @@ let iterateItems {eqt} =
     )
         
     $ eqt b
+end
 
 let typeCheck {eqt} =
 	let list = [0, 1] in
 	eqt (list is ?list)
+end 

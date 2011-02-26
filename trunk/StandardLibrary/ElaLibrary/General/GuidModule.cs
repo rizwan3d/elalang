@@ -70,9 +70,9 @@ namespace Ela.Library.General
             }
 
 
-            protected override ElaValue Convert(ObjectType type, ExecutionContext ctx)
+            protected override ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
             {
-                if (type == ObjectType.String)
+                if (type == ElaTypeCode.String)
                     return new ElaValue(Value.ToString());
                 else
                 {

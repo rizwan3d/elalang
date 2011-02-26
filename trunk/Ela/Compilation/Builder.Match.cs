@@ -260,10 +260,10 @@ namespace Ela.Compilation
 						var cp = (ElaCastPattern)patExp;
 
 						if (tuple != null &&
-							cp.TypeAffinity != ObjectType.Tuple &&
-							cp.TypeAffinity != ObjectType.String &&
-							cp.TypeAffinity != ObjectType.List &&
-							cp.TypeAffinity != ObjectType.Record)
+							cp.TypeAffinity != ElaTypeCode.Tuple &&
+							cp.TypeAffinity != ElaTypeCode.String &&
+							cp.TypeAffinity != ElaTypeCode.List &&
+							cp.TypeAffinity != ElaTypeCode.Record)
 							MatchEntryAlwaysFail(cp, nextLab);
 						else
 						{
@@ -288,7 +288,7 @@ namespace Ela.Compilation
 						if (tuple != null)
 							MatchEntryAlwaysFail(patExp, nextLab);
 						else
-							CheckType(pushSys, ObjectType.Unit, nextLab);
+							CheckType(pushSys, ElaTypeCode.Unit, nextLab);
 					}
 					break;
 				case ElaNodeType.AsPattern:
@@ -323,7 +323,7 @@ namespace Ela.Compilation
 					{
 						var tp = (ElaIsPattern)patExp;
 
-						if (tuple != null && tp.TypeAffinity != ObjectType.Tuple && tp.TypeAffinity != ObjectType.None )
+						if (tuple != null && tp.TypeAffinity != ElaTypeCode.Tuple && tp.TypeAffinity != ElaTypeCode.None )
 							MatchEntryAlwaysFail(patExp, nextLab);
 						else if (tuple == null)
 						{
@@ -580,7 +580,7 @@ namespace Ela.Compilation
 		#endregion
 
 
-		#region Type Checker
+		#region TypeId Checker
 		private bool BuildPatternTree(ElaPattern pat, PatternTree tree)
 		{
 			switch (pat.Type)
@@ -650,7 +650,7 @@ namespace Ela.Compilation
 
 
 		#region Helper
-		private void CheckType(int pushSys, ObjectType type, Label nextLab)
+		private void CheckType(int pushSys, ElaTypeCode type, Label nextLab)
 		{
 			cw.Emit(Op.Pushvar, pushSys);
 			cw.Emit(Op.Typeid);

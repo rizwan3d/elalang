@@ -8,10 +8,12 @@ let literalMatch {eqt} =
     $ eqt (match "Hello" with "Hello" = true; _ = false end)
     $ eqt (match true with true = true; _ = false end)
     $ eqt (match false with false = true; _ = false end)
+end
 
 let varMatch {eqt} = 
     eqt (match 42 with x = x == 42 end)
     $ eqt (match 'H' with y = y == 'H' end)
+end
     
 let listMatch {eqt} =
     eqt (match lst with x::xs = true; _ = false end)
@@ -21,35 +23,34 @@ let listMatch {eqt} =
     $ eqt (match lst with 1::2::3::[] = false; _ = true end)
     $ eqt (match lst with x::y::z::xs = x == 1 && y == 2 && z == 3; _ = true end)
     where lst = [1,2,3,4,5] end 
+end
     
 let listMatch2 {eqt} =
     eqt (match lst with [1,2,3] = false; _ = true end)
     $ eqt (match lst with [1,2,3,4,5] = true; _ = false end)
     $ eqt (match lst with [x,y,z,4,5] = x == 1 && y == 2 && z == 3; _ = false end)
     where lst = [1,2,3,4,5] end 
+end
     
 let tupleMatch {eqt} =
     eqt (match tup with (1,2,3) = true; _ = false end)
     $ eqt (match tup with (1,2) = false; _ = true end)
     $ eqt (match tup with (x,y,z) = x == 1 && y == 2 && z == 3; _ = false end)
     where tup = (1,2,3) end
-    
-let arrayMatch {eqt} =
-    eqt (match arr with [|1,2,3|] = false; _ = true end)
-    $ eqt (match arr with [|1,2,3,4,5|] = true; _ = false end)
-    $ eqt (match arr with [|x,y,z,4,5|] = x == 1 && y == 2 && z == 3; _ = false end)
-    where arr = [|1,2,3,4,5|] end 
-    
+end
+
 let recordMatch {eqt} =
     eqt (match rec with (1,2,3) = true; _ = false end)
     $ eqt (match rec with {x=1,z=3,y=2} = true; _ = false end)
     $ eqt (match rec with {x=1,y=2} = true; _ = false end)
     $ eqt (match rec with {x,y,z} = x == 1 && y == 2 && z == 3; _ = false end)
     where rec = {x=1,y=2,z=3} end
+end
     
 let unitMatch {eqt} =
     eqt (match () with () = true; _ = false end)
     $ eqt (match 123 with () = false; _ = true end)
+end
     
 let variantMatch {eqt} =
     eqt (match s with `Some = true; _ = false end)
@@ -63,24 +64,29 @@ let variantMatch {eqt} =
           s2 = `Some (1,2,3) and
           n = `None
     end
+end
     
 let typeCheckMatch {eqt} =
     eqt (match 1 with ?int = true; _ = false end)
     $ eqt (match (1,2) with ?tuple = true; _ = false end)
     $ eqt (match [1,2] with ?list = true; _ = false end)
+end
     
 let traitCheckMatch {eqt} =
     eqt (match 1 with ?(Num,Eq) = true; _ = false end)
     $ eqt (match (1,2) with ?(Get,Len) = true; _ = false end)
     $ eqt (match [1,2] with ?(Fold,Cons) = true; _ = false end)
+end
     
 let castMatch {eqt} =
     eqt (match "1" with x:int = x == 1; _ = false end)
     $ eqt (match 1 with x:string = x == "1"; _ = false end)
+end
     
 let asMatch {eqt} =
     eqt (match 4 with 4@n = n == 4; _ = false end)
     $ eqt (match (1,2) with (1,2)@t = t == (1,2); _ = false end)
+end
     
 let guards {eqt} =
     eqt v
@@ -89,6 +95,7 @@ let guards {eqt} =
                       | z > x && x + z == y = true
               end
     end
+end
     
 let guards2 {eqt} =
     eqt v
@@ -98,6 +105,7 @@ let guards2 {eqt} =
                     | else  = true
               end
     end 
+end
     
 let guards3 {eqt} =
     eqt v
@@ -108,6 +116,7 @@ let guards3 {eqt} =
                     where r = x - y end
               end
     end  
+end
     
 let shortMatch {eq,eqt} =
     if v is (x,2,3) then
@@ -115,6 +124,7 @@ let shortMatch {eq,eqt} =
     else
         eqt false
     where v = (1,2,3) end 
+end
     
 let shortMatch2 {eq,eqt} =
     if v is (`Some [x,2]) then
@@ -122,3 +132,4 @@ let shortMatch2 {eq,eqt} =
     else
         eqt false
     where v = `Some [12,2] end 
+end 

@@ -18,65 +18,65 @@ namespace Ela.Runtime
 		#region Methods
 		public void InvalidFormat(string format, ElaValue value)
 		{
-			Fail(ElaRuntimeError.InvalidFormat, format, value.ToString(), value.DataType.GetShortForm());
+			Fail(ElaRuntimeError.InvalidFormat, format, value.ToString(), value.GetTypeName());
 		}
 
 
 		public void DivideByZero(ElaValue value)
 		{
-			Fail(ElaRuntimeError.DivideByZero, value.ToString(), value.DataType.GetShortForm());
+			Fail(ElaRuntimeError.DivideByZero, value.ToString(), value.GetTypeName());
 		}
 
 
 		public void InvalidRightOperand(ElaValue left, ElaValue right, ElaTraits trait)
 		{
-			Fail(ElaRuntimeError.RightOperand, right.ToString(), right.DataType.GetShortForm(),
-				left.ToString(), left.DataType.GetShortForm(), trait.ToString());
+			Fail(ElaRuntimeError.RightOperand, right.ToString(), right.GetTypeName(),
+				left.ToString(), left.GetTypeName(), trait.ToString());
 		}
 
 
 		public void InvalidLeftOperand(ElaValue left, ElaValue right, ElaTraits trait)
 		{
-			Fail(ElaRuntimeError.LeftOperand, left.ToString(), left.DataType.GetShortForm(), 
-				right.ToString(), right.DataType.GetShortForm(), trait.ToString());
+			Fail(ElaRuntimeError.LeftOperand, left.ToString(), left.GetTypeName(), 
+				right.ToString(), right.GetTypeName(), trait.ToString());
 		}
 
 
-		public void ConversionFailed(ElaValue source, ObjectType target)
+		public void ConversionFailed(ElaValue source, ElaTypeCode target)
 		{
 			ConversionFailed(source, target, Strings.GetMessage("NotSupported"));
 		}
 
 
-		public void ConversionFailed(ElaValue source, ObjectType target, string reason)
+		public void ConversionFailed(ElaValue source, ElaTypeCode target, string reason)
 		{
-			Fail(ElaRuntimeError.ConversionFailed, source.ToString(), source.DataType.GetShortForm(), 
+			Fail(ElaRuntimeError.ConversionFailed, source.ToString(), source.GetTypeName(), 
 				target.GetShortForm(), reason);
 		}
 
 
-		public void InvalidIndexType(ObjectType type)
+		public void InvalidIndexType(ElaValue index)
 		{
-			Fail(ElaRuntimeError.InvalidIndexType, type.GetShortForm());
+			Fail(ElaRuntimeError.InvalidIndexType, index.GetTypeName());
 		}
 
 
 		public void IndexOutOfRange(ElaValue index, ElaValue obj)
 		{
-			Fail(ElaRuntimeError.IndexOutOfRange, index.ToString(), index.DataType.GetShortForm(),
-				obj.ToString(), obj.DataType.GetShortForm());
+			Fail(ElaRuntimeError.IndexOutOfRange, index.ToString(), index.GetTypeName(),
+				obj.ToString(), obj.GetTypeName());
 		}
 
 
-		public void InvalidType(ObjectType expected, ObjectType given)
+		public void InvalidType(string expected, ElaValue given)
 		{
-			Fail(ElaRuntimeError.InvalidType, expected.GetShortForm(), given.GetShortForm());
+			Fail(ElaRuntimeError.InvalidType, expected, given.GetTypeName());
 		}
 
 
 		public void UnknownField(string field, ElaValue val)
 		{
-			Fail(ElaRuntimeError.UnknownField, field, val.ToString(), val.DataType.GetShortForm());
+			Fail(ElaRuntimeError.UnknownField, field, val.ToString(), val.GetTypeName());
 		}
 
 

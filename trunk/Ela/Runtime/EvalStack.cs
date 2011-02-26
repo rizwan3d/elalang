@@ -62,7 +62,7 @@ namespace Ela.Runtime
 		{
 			--size;
 
-			if (array[size].Type > 5)
+			if (array[size].TypeId > 5)
 				array[size].Ref = null;
 		}
 
@@ -77,7 +77,7 @@ namespace Ela.Runtime
 		{
 			--size;
 
-			if (array[size].Type > 5)
+			if (array[size].TypeId > 5)
 			{
 				var ret = array[size];
 				array[size].Ref = null;

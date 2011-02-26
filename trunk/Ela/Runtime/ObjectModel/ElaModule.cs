@@ -12,7 +12,7 @@ namespace Ela.Runtime.ObjectModel
 		private const string MODULE = "[module:{0}]";
 		private ElaMachine vm;
 
-		internal ElaModule(int handle, ElaMachine vm) : base(ObjectType.Module, ElaTraits.Eq | ElaTraits.Show)
+		internal ElaModule(int handle, ElaMachine vm) : base(ElaTypeCode.Module, ElaTraits.Eq | ElaTraits.Show)
 		{
 			Handle = handle;
 			this.vm = vm;
@@ -23,14 +23,14 @@ namespace Ela.Runtime.ObjectModel
 		#region Traits
 		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return new ElaValue(left.DataType == right.DataType &&
+			return new ElaValue(left.TypeCode == right.TypeCode &&
 				((ElaModule)left.Ref).Handle == ((ElaModule)right.Ref).Handle);
 		}
 
 
 		protected internal override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return new ElaValue(left.DataType != right.DataType ||
+			return new ElaValue(left.TypeCode != right.TypeCode ||
 				((ElaModule)left.Ref).Handle != ((ElaModule)right.Ref).Handle);
 		}
 

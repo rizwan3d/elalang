@@ -60,9 +60,9 @@ namespace Ela.Runtime.Reflection
 
 
 		#region Properties
-		public ObjectType TypeCode
+		public ElaTypeCode TypeCode
 		{
-			get { return (ObjectType)obj.TypeId; }
+			get { return (ElaTypeCode)obj.TypeId; }
 		}
 
 
@@ -70,8 +70,8 @@ namespace Ela.Runtime.Reflection
 		{
 			get
 			{
-				return TypeCode != ObjectType.Integer && TypeCode != ObjectType.Char &&
-					TypeCode != ObjectType.Boolean && TypeCode != ObjectType.Single;
+				return TypeCode != ElaTypeCode.Integer && TypeCode != ElaTypeCode.Char &&
+					TypeCode != ElaTypeCode.Boolean && TypeCode != ElaTypeCode.Single;
 			}
 		}
 		#endregion
