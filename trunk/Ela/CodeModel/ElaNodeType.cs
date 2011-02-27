@@ -104,7 +104,7 @@ namespace Ela.CodeModel
 
 		HeadTailPattern,
 
-		SeqPattern,
+		TuplePattern,
 
 		RecordPattern,
 

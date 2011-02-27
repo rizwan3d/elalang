@@ -147,7 +147,7 @@ namespace Ela.Compilation
 				var addr = -1;
 				var tuple = default(ElaTupleLiteral);
 
-				if (s.InitExpression.Type == ElaNodeType.TupleLiteral && s.Pattern.Type == ElaNodeType.SeqPattern && s.Where == null)
+				if (s.InitExpression.Type == ElaNodeType.TupleLiteral && s.Pattern.Type == ElaNodeType.TuplePattern && s.Where == null)
 					tuple = (ElaTupleLiteral)s.InitExpression;
 				else
 				{

@@ -76,6 +76,9 @@ namespace Ela.CodeModel
 				sb.Append(In.ToString());
 			}
 
+			if (InitExpression.Type == ElaNodeType.FunctionLiteral)
+				sb.Append(" end");
+
 			return sb.ToString();
 		}
 		#endregion

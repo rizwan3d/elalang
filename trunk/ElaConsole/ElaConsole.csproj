@@ -142,6 +142,8 @@
     <Compile Include="MessageHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\VersionInfo.cs" />
+    <Compile Include="TypeChecker.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Help.txt" />
@@ -177,6 +179,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="ConsoleChangeList.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -186,7 +191,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>IF EXIST "$(SolutionDir)Binaries\ReleaseBuild\elac.vshost.exe" del "$(SolutionDir)Binaries\ReleaseBuild\elac.vshost.exe" /q
-IF EXIST "$(SolutionDir)Binaries\ReleaseBuild\elac.exe.config" del "$(SolutionDir)Binaries\ReleaseBuild\elac.exe.config" /q</PostBuildEvent>
+    <PostBuildEvent>"$(SolutionDir)Binaries\vgen.exe" "$(ProjectDir)ConsoleChangeList.txt" "$(ProjectDir)Properties\VersionInfo.cs"</PostBuildEvent>
   </PropertyGroup>
 </Project>

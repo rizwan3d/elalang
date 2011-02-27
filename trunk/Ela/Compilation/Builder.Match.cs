@@ -362,7 +362,7 @@ namespace Ela.Compilation
 					CompileRecordPattern(pushSys, tuple, (ElaRecordPattern)patExp, map, nextLab, flags, hints);
 					break;
 				case ElaNodeType.PatternGroup:
-				case ElaNodeType.SeqPattern:
+				case ElaNodeType.TuplePattern:
 					CompileSequencePattern(pushSys, tuple, (ElaTuplePattern)patExp, map, nextLab, flags, hints);
 					break;
 				case ElaNodeType.DefaultPattern:
@@ -585,7 +585,7 @@ namespace Ela.Compilation
 		{
 			switch (pat.Type)
 			{
-				case ElaNodeType.SeqPattern:
+				case ElaNodeType.TuplePattern:
 				case ElaNodeType.HeadTailPattern:
 					return BuildSeqPatternTree((ElaTuplePattern)pat, tree);
 				case ElaNodeType.AsPattern:

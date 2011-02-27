@@ -1,3 +1,4 @@
+0.8.6.12:Fix:Multiple corrections in Ela AST pretty printing logic.
 0.8.6.11:New:Now all Ela types expose a GetTypeName method that is used internally by Ela machine to determine type name.
 0.8.6.10:Change:Verification of function application at compile time is enhanced - it will now generate warning for all attempts to call something different than function if it was directly initialized with a literal.
 0.8.6.9:Change:ElaArray now moved from the built-in types to the standard library. Arrcons op code, array literal, array pattern, etc. are decomissioned.

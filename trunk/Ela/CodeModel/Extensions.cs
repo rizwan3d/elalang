@@ -109,12 +109,7 @@ namespace Ela.CodeModel
 			sb.AppendLine();
 			sb.Append(" where ");
 			sb.Append(bind.ToString(true));
-
-			if (bind.And != null ||
-				(bind.InitExpression.Type == ElaNodeType.FunctionLiteral &&
-				((ElaFunctionLiteral)bind.InitExpression).Body.Entries.Count > 1))
-				sb.Append(" end");
-
+			sb.Append(" end");
 			return sb.ToString();
 		}
 

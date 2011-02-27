@@ -70,7 +70,7 @@ namespace Ela.Compilation
 				var parCount = seq != null ? seq.Patterns.Count : 1;
 				var tupPat = default(ElaTuplePattern);
 
-				if (parCount == 1 && fe.Pattern.Type == ElaNodeType.SeqPattern && fe.Guard == null &&
+				if (parCount == 1 && fe.Pattern.Type == ElaNodeType.TuplePattern && fe.Guard == null &&
 					(tupPat = (ElaTuplePattern)fe.Pattern).IsSimple())
 				{
 					cw.Emit(Op.Tupex, tupPat.Patterns.Count);
