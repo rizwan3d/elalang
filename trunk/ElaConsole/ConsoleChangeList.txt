@@ -1,0 +1,3 @@
+0.8.0.2:New:Now console banner shows an operative system under which a console is running.
+0.8.0.1:New:An initial version of Ela type checker is implemented.
+0.8.0.0:Release:Release of Ela Console 0.8.0
