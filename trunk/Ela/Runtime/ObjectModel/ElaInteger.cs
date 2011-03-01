@@ -18,7 +18,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
-		internal override int Compare(ElaValue @this, ElaValue other)
+        internal protected override int Compare(ElaValue @this, ElaValue other)
 		{
 			return other.TypeCode == ElaTypeCode.Integer ? @this.I4.CompareTo(other.I4) :
 				other.TypeCode == ElaTypeCode.Long ? ((Int64)@this.I4).CompareTo(other.AsLong()) :

@@ -22,7 +22,7 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-		internal override int Compare(ElaValue @this, ElaValue other)
+        internal protected override int Compare(ElaValue @this, ElaValue other)
 		{
 			return other.TypeCode == ElaTypeCode.Integer ? InternalValue.CompareTo(other.I4) :
 				other.TypeCode == ElaTypeCode.Long ? InternalValue.CompareTo(((ElaLong)other.Ref).InternalValue) :

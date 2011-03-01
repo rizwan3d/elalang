@@ -27,7 +27,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
-		internal override int Compare(ElaValue @this, ElaValue other)
+        internal protected override int Compare(ElaValue @this, ElaValue other)
 		{
 			return other.TypeCode == ElaTypeCode.String ? buffer.CompareTo(((ElaString)other.Ref).buffer) :
 				-1;

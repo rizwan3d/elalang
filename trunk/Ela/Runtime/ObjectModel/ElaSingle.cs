@@ -18,7 +18,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
-		internal override int Compare(ElaValue @this, ElaValue other)
+        internal protected override int Compare(ElaValue @this, ElaValue other)
 		{
 			return other.TypeCode == ElaTypeCode.Single ? @this.DirectGetReal().CompareTo(other.DirectGetReal()) :
 				other.TypeCode == ElaTypeCode.Integer ? @this.DirectGetReal().CompareTo((Single)other.I4) :

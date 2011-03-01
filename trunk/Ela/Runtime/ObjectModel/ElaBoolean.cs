@@ -17,7 +17,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
-		internal override int Compare(ElaValue @this, ElaValue other)
+        internal protected override int Compare(ElaValue @this, ElaValue other)
 		{
 			return other.TypeCode == ElaTypeCode.Boolean ? @this.I4 - other.I4 : -1;
 		}

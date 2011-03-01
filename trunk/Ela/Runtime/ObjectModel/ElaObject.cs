@@ -31,7 +31,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		internal virtual int Compare(ElaValue @this, ElaValue other)
+		internal protected virtual int Compare(ElaValue @this, ElaValue other)
 		{
 			return @this.Ref == other.Ref ? 0 : -1;
 		}

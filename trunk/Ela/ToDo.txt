@@ -1,3 +1,4 @@
 ﻿1. Possibly change syntax for partial application of operators, e.g. instead of (+2) use <+2>.
 2. Make type conversion operator (:) extendable (probably through pervasives).
 3. Move all reflection API to the standard library.
+4. Think about inability to convert to other than built-in types.
