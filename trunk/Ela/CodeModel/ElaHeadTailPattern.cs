@@ -46,7 +46,7 @@ namespace Ela.CodeModel
 		#region Properties
 		internal override ElaPatternAffinity Affinity
 		{
-			get { return ElaPatternAffinity.List; }
+			get { return ElaPatternAffinity.Fold|ElaPatternAffinity.Any; }
 		}
 		#endregion
 	}

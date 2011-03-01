@@ -598,11 +598,14 @@ namespace Ela.Compilation
 
 		private bool BuildGenericPatternTree(ElaPattern pat, PatternTree tree)
 		{
-			if (tree.Affinity == ElaPatternAffinity.Any)
-				tree.Affinity = pat.Affinity;
-			else if (tree.Affinity != pat.Affinity &&
-				pat.Affinity != ElaPatternAffinity.Any)
-				return false;
+            var hasAny = (pat.Affinity & ElaPatternAffinity.Any) == ElaPatternAffinity.Any;
+            var paff = hasAny ? pat.Affinity ^ ElaPatternAffinity.Any : pat.Affinity;
+
+			if ((tree.Affinity & ElaPatternAffinity.Any) == ElaPatternAffinity.Any ||
+                tree.Affinity == ElaPatternAffinity.None)
+				tree.Affinity |= paff;
+            else if ((tree.Affinity & paff) != paff && !hasAny)
+                    return false;
 
 			return true;
 		}
@@ -610,10 +613,8 @@ namespace Ela.Compilation
 
 		private bool BuildSeqPatternTree(ElaTuplePattern pat, PatternTree tree)
 		{
-			if (tree.Affinity == ElaPatternAffinity.Any)
-				tree.Affinity = pat.Affinity;
-			else if (tree.Affinity != pat.Affinity)
-				return false;
+            if (!BuildGenericPatternTree(pat, tree))
+                return false;
 
 			if (pat.HasChildren)
 			{

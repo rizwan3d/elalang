@@ -39,9 +39,9 @@ namespace Ela.CodeModel
 					case ElaTypeCode.Integer: 
 					case ElaTypeCode.Long: return ElaPatternAffinity.Integer;
 					case ElaTypeCode.Single: 
-					case ElaTypeCode.Double: return ElaPatternAffinity.Float;
+					case ElaTypeCode.Double: return ElaPatternAffinity.Real;
 					case ElaTypeCode.Char: return ElaPatternAffinity.Char;
-					case ElaTypeCode.String: return ElaPatternAffinity.String;
+					case ElaTypeCode.String: return ElaPatternAffinity.String|ElaPatternAffinity.Sequence|ElaPatternAffinity.Fold;
 					case ElaTypeCode.Boolean: return ElaPatternAffinity.Boolean;
 					default: return ElaPatternAffinity.Any;
 				}

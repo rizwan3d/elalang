@@ -606,25 +606,28 @@ PRODUCTIONS
 	LiteralPattern<out ElaPattern pat> =
 		(
 			(. 
-				var val = new ElaLiteralPattern(t); 
-				pat = val;
+				var lit = default(ElaLiteralValue);
+				pat = null;
 			.) 
 			(
-				stringTok (. val.Value = ParseString(t.val); .)
-				| charTok (. val.Value = ParseChar(t.val); .)
-				| intTok (. val.Value = ParseInt(t.val); .)
-				| realTok (. val.Value = ParseReal(t.val); .)
+				stringTok (. lit = ParseString(t.val); .)
+				| charTok (. lit = ParseChar(t.val); .)
+				| intTok (. lit = ParseInt(t.val); .)
+				| realTok (. lit = ParseReal(t.val); .)
 				|
 				(
 					"--"
 					(
-						intTok (. val.Value = ParseInt(t.val).MakeNegative(); .)
-						| realTok (. val.Value = ParseReal(t.val).MakeNegative(); .)
+						intTok (. lit = ParseInt(t.val).MakeNegative(); .)
+						| realTok (. lit = ParseReal(t.val).MakeNegative(); .)
 					)
 				)
-				| "true" (. val.Value = new ElaLiteralValue(true); .)
-				| "false" (. val.Value = new ElaLiteralValue(false); .)
+				| "true" (. lit = new ElaLiteralValue(true); .)
+				| "false" (. lit = new ElaLiteralValue(false); .)
 			)
+			(.
+				pat = new ElaLiteralPattern(t) { Value = lit };				
+			.)
 		).		
 			
 	ListPattern<out ElaPattern pat> = 

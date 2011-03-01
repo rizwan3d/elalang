@@ -784,53 +784,55 @@ internal sealed partial class Parser {
 	}
 
 	void LiteralPattern(out ElaPattern pat) {
-		var val = new ElaLiteralPattern(t); 
-		pat = val;
+		var lit = default(ElaLiteralValue);
+		pat = null;
 		
 		switch (la.kind) {
 		case 7: {
 			Get();
-			val.Value = ParseString(t.val); 
+			lit = ParseString(t.val); 
 			break;
 		}
 		case 8: {
 			Get();
-			val.Value = ParseChar(t.val); 
+			lit = ParseChar(t.val); 
 			break;
 		}
 		case 5: {
 			Get();
-			val.Value = ParseInt(t.val); 
+			lit = ParseInt(t.val); 
 			break;
 		}
 		case 6: {
 			Get();
-			val.Value = ParseReal(t.val); 
+			lit = ParseReal(t.val); 
 			break;
 		}
 		case 61: {
 			Get();
 			if (la.kind == 5) {
 				Get();
-				val.Value = ParseInt(t.val).MakeNegative(); 
+				lit = ParseInt(t.val).MakeNegative(); 
 			} else if (la.kind == 6) {
 				Get();
-				val.Value = ParseReal(t.val).MakeNegative(); 
+				lit = ParseReal(t.val).MakeNegative(); 
 			} else SynErr(105);
 			break;
 		}
 		case 45: {
 			Get();
-			val.Value = new ElaLiteralValue(true); 
+			lit = new ElaLiteralValue(true); 
 			break;
 		}
 		case 46: {
 			Get();
-			val.Value = new ElaLiteralValue(false); 
+			lit = new ElaLiteralValue(false); 
 			break;
 		}
 		default: SynErr(106); break;
 		}
+		pat = new ElaLiteralPattern(t) { Value = lit };				
+		
 	}
 
 	void ListPattern(out ElaPattern pat) {

@@ -1,3 +1,5 @@
+0.8.6.14:Fix:Location information corrected for the literal patterns.
+0.8.6.13:Fix:Pattern type check logic corrected in according to the recent type system changes (it used to generate errors for the correct cases).
 0.8.6.12:Fix:Multiple corrections in Ela AST pretty printing logic.
 0.8.6.11:New:Now all Ela types expose a GetTypeName method that is used internally by Ela machine to determine type name.
 0.8.6.10:Change:Verification of function application at compile time is enhanced - it will now generate warning for all attempts to call something different than function if it was directly initialized with a literal.

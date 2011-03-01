@@ -2,26 +2,27 @@
 
 namespace Ela.CodeModel
 {
+    [Flags]
 	internal enum ElaPatternAffinity
 	{
-		Any = 0x00,
+        None = 0x00,
 
-		Integer = 0x02,
+		Any = 0x02,
 
-		String = 0x04,
+		Integer = 0x04,
 
-		Char = 0x08,
+		String = 0x08,
 
-		Float = 0x10,
+		Char = 0x10,
+
+		Real = 0x20,
 				
-		Boolean = 0x80,
+		Boolean = 0x40,
 
-		List = 0x100,
+		Fold = 0x80,
 
-		Array = 0x200,
+		Sequence = 0x100,
 
-		Sequence = 0x400,
-
-		Symbol = 0x800
+        Record = 0x200
 	}
 }
