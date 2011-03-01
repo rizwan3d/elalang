@@ -227,6 +227,20 @@ let fst3 (x, _, _) = x end
 
 let snd3 (_, y, _) = y end
 
+let swap (x, y) = (y, x) end
+
+let swap3 (x, y, z) = (y, x, z) end
+
+/* currying and uncurrying for functions with pairs and
+    with triples. */
+let curry f x y = f (x, y) end
+
+let uncurry f (x, y) = f x y end
+
+let curry3 f x y z = f (x, y, z) end
+
+let uncurry3 f (x, y, z) = f x y z end
+
 
 /* COMBINATORS */
 
@@ -242,18 +256,10 @@ let sub x y z = x z (y z) end//S
     let fix f x = f (fix f) x */
 let fix f = f (& fix f) end
 
+let on cmb f x y = f x `cmb` f y end
+
 
 /* MISC */
-
-/* currying and uncurrying for functions with pairs and
-    with triples. */
-let curry f x y = f (x, y) end
-
-let uncurry f (x, y) = f x y end
-
-let curry3 f x y z = f (x, y, z) end
-
-let uncurry3 f (x, y, z) = f x y z end
 
 /* a function with a recursive definition that can be
     evaluated solely for the side effects of it first argument.

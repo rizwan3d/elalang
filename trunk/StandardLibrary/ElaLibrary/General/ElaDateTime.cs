@@ -8,9 +8,9 @@ namespace Ela.Library.General
     public sealed class ElaDateTime : ElaObject
     {
         #region Construction
-        private const string DEFAULT_FORMAT = "dd/MM/yyyy HH:mm:ss";
         private const string TYPE_NAME = "dateTime";
-        private static readonly CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
+		internal const string DEFAULT_FORMAT = "dd/MM/yyyy HH:mm:ss";
+		internal static readonly CultureInfo Culture = CultureInfo.CreateSpecificCulture("en-US");
 
         public ElaDateTime(DateTime dateTime) : this(dateTime.ToUniversalTime().Ticks)
         {
@@ -107,7 +107,7 @@ namespace Ela.Library.General
         protected override string Show(ExecutionContext ctx, ShowInfo info)
         {
             var format = info.Format ?? DEFAULT_FORMAT;
-            return new DateTime(Ticks).ToString(format, culture.DateTimeFormat);
+            return new DateTime(Ticks).ToString(format, Culture.DateTimeFormat);
         }
 
 

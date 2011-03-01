@@ -9,7 +9,9 @@ namespace Ela.Runtime.ObjectModel
 		#region Construction
         private const string SOME = "Some";
         private const string NONE = "None";
-        private static readonly ElaVariant noneVariant = new ElaVariant(NONE, new ElaValue(ElaUnit.Instance));
+		private const string LEFT = "Left";
+		private const string RIGHT = "Right";        
+		private static readonly ElaVariant noneVariant = new ElaVariant(NONE, new ElaValue(ElaUnit.Instance));
 
         public ElaVariant(string tag) : this(tag, new ElaValue(ElaUnit.Instance))
         {
@@ -371,6 +373,30 @@ namespace Ela.Runtime.ObjectModel
         {
             return noneVariant;
         }
+
+
+		public static ElaVariant Left(ElaValue value)
+		{
+			return new ElaVariant(LEFT, value);
+		}
+
+
+		public static ElaVariant Left<T>(T value)
+		{
+			return new ElaVariant(LEFT, ElaValue.FromObject(value));
+		}
+
+
+		public static ElaVariant Right(ElaValue value)
+		{
+			return new ElaVariant(RIGHT, value);
+		}
+
+
+		public static ElaVariant Right<T>(T value)
+		{
+			return new ElaVariant(RIGHT, ElaValue.FromObject(value));
+		}
         #endregion
 
 
