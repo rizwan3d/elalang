@@ -84,7 +84,6 @@ namespace Ela.Library.Collections
 		#endregion
 
 
-
 		#region Traits
 		protected override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{

@@ -14,7 +14,7 @@ namespace Ela.Library.Collections
         public static readonly ElaMap Empty = new ElaMap(AvlTree.Empty);
 		private const string TYPENAME = "map";
 		
-        internal ElaMap(AvlTree tree) : base(ElaTraits.Eq | ElaTraits.Show | ElaTraits.Get | ElaTraits.Len)
+        internal ElaMap(AvlTree tree) : base(ElaTraits.Eq | ElaTraits.Show | ElaTraits.Get | ElaTraits.Len | ElaTraits.Convert)
         {
             Tree = tree;
         }
@@ -109,6 +109,28 @@ namespace Ela.Library.Collections
         protected override ElaValue GetLength(ExecutionContext ctx)
         {
             return new ElaValue(Tree.Enumerate().Count());
+        }
+
+
+        protected override ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
+        {
+            if (type == ElaTypeCode.Record)
+                return new ElaValue(ConvertToRecord());
+
+            ctx.ConversionFailed(new ElaValue(this), type);
+            return Default();
+        }
+
+
+        private ElaRecord ConvertToRecord()
+        {
+            var fields = new ElaRecordField[Length];
+            var c = 0;
+
+            foreach (var kv in Tree.Enumerate())
+                fields[c++] = new ElaRecordField(kv.Key.ToString(), kv.Value, false);
+
+            return new ElaRecord(fields);
         }
         #endregion
 

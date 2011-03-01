@@ -1,3 +1,4 @@
+0.0.1.9:New:Now ElaMap (immutable map) supports 'Convert' trait and a conversion to record.
 0.0.1.8:Change:Core module modified in accordance to the language syntax changes.
 0.0.1.7:New:ElaSet type now supports 'Cons' trait.
 0.0.1.6:Change:ElaSet type is now made usable from .NET code as well.
