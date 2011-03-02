@@ -215,6 +215,12 @@ namespace Ela.Library.Collections
 
 			return new ElaValue(arr);
 		}
+
+
+		protected override ElaValue Nil(ExecutionContext ctx)
+		{
+			return new ElaValue(new ElaArray());
+		}
 		#endregion
 
 

@@ -73,6 +73,7 @@ namespace Ela.Compilation
 			0, //Tagval
 			0, //Skiphtag
 			-1, //Ceqref
+			0, //Nil
 
 			0, //Skiptag
 			0, //Isfun

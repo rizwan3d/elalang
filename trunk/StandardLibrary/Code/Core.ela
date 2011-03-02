@@ -89,7 +89,7 @@ let init x::[] = [];
          []    = fail "Core.init: Empty list"
 end
 
-let nil _::_ = false; [] = true end
+let isNil _::_ = false; [] = true end
 
 let takeWhile f x::xs | f x  = x :: takeWhile f xs;
                       | else = [];
@@ -135,6 +135,8 @@ end
 let foldr f z x::xs = f x (foldr f z xs);
           _ z []    = z
 end
+
+let fold f xs = foldr f (nil xs) xs end
 
 let concat xs = foldr (++) [] xs end
 

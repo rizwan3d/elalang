@@ -10,7 +10,7 @@ namespace Ela.Runtime.ObjectModel
 	{
 		#region Construction
 		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Len | ElaTraits.Gen | ElaTraits.Fold | ElaTraits.Cons | ElaTraits.Concat | ElaTraits.Convert | ElaTraits.Ix;
-		internal static readonly ElaList Nil = new ElaList(null, new ElaValue(ElaUnit.Instance));
+		internal static readonly ElaList Empty = new ElaList(null, new ElaValue(ElaUnit.Instance));
 
 		public ElaList(ElaObject next, object value) : this(next, ElaValue.FromObject(value))
 		{
@@ -136,7 +136,7 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override bool IsNil(ExecutionContext ctx)
 		{
-			return this == Nil;
+			return this == Empty;
 		}
 
 
@@ -147,6 +147,12 @@ namespace Ela.Runtime.ObjectModel
 
 			ctx.Fail(ElaRuntimeError.InvalidType, ElaTypeCode.List, (ElaTypeCode)next.TypeId);
 			return Default();
+		}
+
+
+		protected internal override ElaValue Nil(ExecutionContext ctx)
+		{
+			return new ElaValue(Empty);
 		}
 
 
@@ -206,7 +212,7 @@ namespace Ela.Runtime.ObjectModel
 		#region Methods
 		public static ElaList FromEnumerable(IEnumerable seq)
 		{
-			var list = ElaList.Nil;
+			var list = ElaList.Empty;
 
 			foreach (var e in seq)
 				list = new ElaList(list, ElaValue.FromObject(e));
@@ -223,7 +229,7 @@ namespace Ela.Runtime.ObjectModel
 
 		public static ElaList FromEnumerable(IEnumerable<ElaValue> seq)
 		{
-			var list = ElaList.Nil;
+			var list = ElaList.Empty;
 
 			foreach (var e in seq.Reverse())
 				list = new ElaList(list, e);
@@ -234,7 +240,7 @@ namespace Ela.Runtime.ObjectModel
 
 		public static ElaList GetNil()
 		{
-			return ElaList.Nil;
+			return ElaList.Empty;
 		}
 
 
@@ -257,10 +263,10 @@ namespace Ela.Runtime.ObjectModel
 
 		public ElaList Reverse()
 		{
-			var newLst = ElaList.Nil;
+			var newLst = ElaList.Empty;
 			var lst = this;
 
-			while (lst != ElaList.Nil)
+			while (lst != ElaList.Empty)
 			{
 				newLst = new ElaList(newLst, lst.Value);
 				lst = lst.Next;
@@ -272,7 +278,7 @@ namespace Ela.Runtime.ObjectModel
 
         public IEnumerable<ElaValue> GetEagerPart()
         {
-            if (this != Nil)
+            if (this != Empty)
             {
                 ElaObject xs = this;
 
@@ -291,7 +297,7 @@ namespace Ela.Runtime.ObjectModel
 
 		public IEnumerator<ElaValue> GetEnumerator()
 		{
-			if (this != Nil)
+			if (this != Empty)
 			{
 				ElaObject xs = this;
 
@@ -335,7 +341,7 @@ namespace Ela.Runtime.ObjectModel
                     if (val.TypeId == ElaMachine.LST)
                         return (ElaList)val.Ref;
                     else
-                        return new ElaList(ElaList.Nil, val);
+                        return new ElaList(ElaList.Empty, val);
                 }
                 else if (InternalNext.TypeId == ElaMachine.LST)
                     return (ElaList)InternalNext;

@@ -154,6 +154,12 @@ namespace Ela.Library.Collections
 
 			return new ElaValue(next.Add(value));
 		}
+
+
+		protected override ElaValue Nil(ExecutionContext ctx)
+		{
+			return new ElaValue(Empty);
+		}
 		#endregion
 
 

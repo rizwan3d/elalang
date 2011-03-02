@@ -669,6 +669,12 @@ namespace Ela.Runtime
                         }
 
                         evalStack.Replace(right.Ref == left.Ref);
+
+						if (ctx.Failed)
+						{
+							ExecuteThrow(thread, evalStack);
+							goto SWITCH_MEM;
+						}
                         break;
 					case Op.Trait:
 						evalStack.Replace(new ElaValue(((Int32)evalStack.Peek().Id(ctx).Ref.Traits & opd) == opd));
@@ -860,6 +866,15 @@ namespace Ela.Runtime
 						break;
 					case Op.Head:
 						evalStack.Replace(evalStack.Peek().Id(ctx).Ref.Head(ctx));
+
+						if (ctx.Failed)
+						{
+							ExecuteThrow(thread, evalStack);
+							goto SWITCH_MEM;
+						}
+						break;
+					case Op.Nil:
+						evalStack.Replace(evalStack.Peek().Id(ctx).Nil(ctx));
 
 						if (ctx.Failed)
 						{
@@ -1289,7 +1304,7 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Newlist:
-						evalStack.Push(new ElaValue(ElaList.Nil));
+						evalStack.Push(new ElaValue(ElaList.Empty));
 						break;
 					case Op.Newrec:
 						evalStack.Push(new ElaValue(new ElaRecord(opd)));

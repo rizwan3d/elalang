@@ -205,6 +205,9 @@ namespace Ela.Compilation
 				case ElaBuiltinFunctionKind.Flip:
 					cw.Emit(Op.Flip);
 					break;
+				case ElaBuiltinFunctionKind.Nil:
+					cw.Emit(Op.Nil);
+					break;
 				case ElaBuiltinFunctionKind.Show:
 					cw.Emit(Op.Pushstr_0);
 					cw.Emit(Op.Show);

@@ -309,6 +309,13 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
+		protected internal virtual ElaValue Nil(ExecutionContext ctx)
+		{
+			ctx.Fail(ElaRuntimeError.TraitCons, ToString(), ((ElaTypeCode)TypeId).GetShortForm());
+			return Default();
+		}
+
+
 		protected internal virtual ElaValue Generate(ElaValue value, ExecutionContext ctx)
 		{
 			ctx.Fail(ElaRuntimeError.TraitGen, ToString(), ((ElaTypeCode)TypeId).GetShortForm());

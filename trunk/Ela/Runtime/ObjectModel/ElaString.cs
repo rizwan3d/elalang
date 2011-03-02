@@ -265,6 +265,12 @@ namespace Ela.Runtime.ObjectModel
 
 			return new ElaValue(new ElaString(value.ToString() + nextStr));
 		}
+
+
+		protected internal override ElaValue Nil(ExecutionContext ctx)
+		{
+			return new ElaValue(new ElaString(String.Empty));
+		}
 		#endregion
 
 

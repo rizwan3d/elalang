@@ -653,6 +653,12 @@ namespace Ela.Runtime
         }
 
 
+		public ElaValue Nil(ExecutionContext ctx)
+		{
+			return Ref.Nil(ctx);
+		}
+
+
         public ElaValue Generate(ElaValue value, ExecutionContext ctx)
         {
             return Ref.Generate(value, ctx);

@@ -138,6 +138,8 @@ namespace Ela.Compilation
 
         Ceqref,
 
+		Nil,
+
 
 		Skiptag,
 

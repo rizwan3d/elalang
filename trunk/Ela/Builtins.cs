@@ -25,6 +25,7 @@ namespace Ela
 				case "show": return ElaBuiltinFunctionKind.Show;
 				case "showf": return ElaBuiltinFunctionKind.Showf;
                 case "ref": return ElaBuiltinFunctionKind.Ref;
+				case "nil": return ElaBuiltinFunctionKind.Nil;
 				default: return ElaBuiltinFunctionKind.None;
 			}
 		}

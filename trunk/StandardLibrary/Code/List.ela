@@ -1,15 +1,55 @@
+open Core foldr, fold, id
+
+/*  takes an element and a sequence and intersperses that element between the elements of the sequence:
+intersperse ',' "abcde" = "a,b,c,d,e" */
 let intersperse e x::([]@n) = x :: intersperse e n;
 				e x::xs 	= x :: e :: intersperse e xs;
 				_ []@n		= n
 end
 
+/* transposes the rows and columns of its argument:
+transpose [[1,2,3],[4,5,6]] = [[1,4],[2,5],[3,6]] */
 let transpose []::xs      = transpose xs;
 			  (x::xs)::ys = (x :: [h \\ (h::_) <- ys]) :: transpose (xs :: [t \\ (_::t) <- ys]);
-			  []          = []			
+			  []@n        = n
 end
 
-//An optimized version of 'let concat x::xs = x ++ concat xs; [] = [] end'.
-let concat x::xs = con x (concat xs)
-		   where con x::xs n = x :: con xs n;  [] n = n end;
-		   []    = []
+/* concatenate a list of lists */
+let concat x::xs = x ++ concat xs; 
+           []@n  = n
 end
+
+/* reates a list from a list generating function by application of 
+this function on all elements in a list passed as the second argument. */ 
+let concatMap f x::xs = f x :: concatMap f xs; 
+              _ []@n  = n
+end
+
+/* inserts the given sequence in between the sequences and concatenates the result. */
+let intercalate xs xss = concat (intersperse xs xss) end
+
+/* returns the list of all subsequences of the argument, except for the empty list:
+nonEmptySubsequences [1,2] = [[1],[2],[1,2]] */
+let nonEmptySubsequences x::xs = (x::(nil xs)) :: fold f (nonEmptySubsequences xs)
+                         where f ys r = ys :: (x :: ys) :: r end;
+                         []    = []
+end
+
+/* returns the list of all subsequences of the argument:
+subsequences [1,2] = [[], [1],[2],[1,2]] */
+let subsequences xs = (nil xs) :: nonEmptySubsequences xs end 
+
+/* returns a sequence with all permutations of the argument:
+permutations "abc" == ["abc","bac","cba","bca","cab","acb"] */
+let permutations 
+    []@n = n;
+    xs0  = xs0 :: perms xs0 []
+       where perms []    _   = [];
+                   t::ts is' = foldr interleave (perms ts (t::is')) (permutations is')
+                               where interleave xs r       = let (_,zs) = interleave' id xs r in zs and
+                                     interleave' _ [] r    = (ts, r);
+                                                 f y::ys r = let (us,zs) = interleave' (f << (y::)) ys r
+                                                             in  (y::us, f (t::y::us) :: zs)
+                               end
+       end
+end 

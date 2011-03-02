@@ -1,3 +1,4 @@
+0.8.6.25:New:Trait 'Cons' extended with a 'Nil' method that can be used to get a 'nil' instance of an entity. Also a new built-in 'nil' function is added to is mapped to this action.
 0.8.6.24:New:Not is is possible to create pervasives (such as custom operators) from foreign modules (modules written in .NET).
 0.8.6.23:New:A new built-in function 'ref' added (along with new op code Ceqref). This function can be used to test two given object using reference equality.
 0.8.6.22:Fix:A bug fixed in compilation logic of head/tail pattern for patterns that are combined from two nested patterns. A typical example of a case when this bug could be reproduced is when you have a head/tail pattern that ends with (xs@n) - in such as case 'n' variable wasn't declared at all.

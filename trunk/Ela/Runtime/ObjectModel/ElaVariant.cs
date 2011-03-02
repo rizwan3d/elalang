@@ -242,6 +242,12 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
+		protected internal override ElaValue Nil(ExecutionContext ctx)
+		{
+			return Value.Ref.Nil(ctx);
+		}
+
+
 		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
 		{
 			return Value.Ref.Generate(value, ctx);

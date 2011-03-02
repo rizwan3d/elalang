@@ -155,7 +155,7 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue Tail(ExecutionContext ctx)
 		{
 			return Value.Ref != null && (Value.Ref.Traits & ElaTraits.Fold) == ElaTraits.Fold ? Value.Ref.Tail(ctx) : 
-				new ElaValue(ElaList.Nil);
+				new ElaValue(ElaList.Empty);
 		}
 
 
