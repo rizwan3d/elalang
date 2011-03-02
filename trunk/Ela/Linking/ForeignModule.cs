@@ -1,8 +1,9 @@
 ﻿using System;
-using Ela.Compilation;
-using Ela.Runtime.ObjectModel;
-using Ela.Runtime;
+using System.Collections.Generic;
 using Ela.CodeModel;
+using Ela.Compilation;
+using Ela.Runtime;
+using Ela.Runtime.ObjectModel;
 
 namespace Ela.Linking
 {
@@ -10,6 +11,7 @@ namespace Ela.Linking
 	{
 		#region Construction
 		private FastList<ElaValue> locals;
+        private Dictionary<String,Int32> pervasives;
 		private Scope scope;
 
 		protected ForeignModule()
@@ -29,6 +31,11 @@ namespace Ela.Linking
 			var frame = new IntrinsicFrame(locals.ToArray());
 			frame.Layouts.Add(new MemoryLayout(locals.Count, 0, 0));
 			frame.GlobalScope = scope;
+
+            if (pervasives != null)
+                foreach (var kv in pervasives)
+                    frame.DeclaredPervasives.Add(kv.Key, 0 | kv.Value << 8);
+            
 			return frame;
 		}
 
@@ -109,6 +116,28 @@ namespace Ela.Linking
 		{
 			Add(name, new ElaValue(new DelegateFunction<T1,T2,T3,T4,T5>(name, fun)));
 		}
+
+
+        protected void AddPervasive(string name, ElaObject value)
+        {
+            AddPervasive(name, new ElaValue(value));
+        }
+
+
+        protected void AddPervasive(string name, ElaValue value)
+        {
+            if (pervasives == null || !pervasives.ContainsKey(name))
+            {
+                var addr = locals.Count;
+                scope.Locals.Add(name, new ScopeVar(ElaVariableFlags.Immutable, addr, -1));
+                locals.Add(value);
+
+                if (pervasives == null)
+                    pervasives = new Dictionary<String,Int32>();
+
+                pervasives.Add(name, addr);
+            }
+        }
 
 
 		private void Add(string name, ElaValue value)

@@ -56,7 +56,7 @@ namespace Ela.Runtime
 
 		InvalidIndexType = 824,
 
-		// = 825,
+		RefEqualsNotSupported = 825,
 
 		// = 826,
 

@@ -136,7 +136,7 @@ namespace Ela.Compilation
 
 		Skiphtag,
 
-
+        Ceqref,
 
 
 		Skiptag,

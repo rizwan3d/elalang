@@ -89,9 +89,9 @@ namespace Ela.Compilation
 
 		internal FastList<String> Strings { get; private set; }
 
-		internal Dictionary<String, Int32> DeclaredPervasives { get; private set; }
+		internal Dictionary<String,Int32> DeclaredPervasives { get; private set; }
 
-		internal Dictionary<String, Int32> ReferencedPervasives { get; private set; }
+		internal Dictionary<String,Int32> ReferencedPervasives { get; private set; }
 		#endregion
 	}
 }

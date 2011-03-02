@@ -53,6 +53,28 @@ namespace Ela.Runtime
 		internal const int MOD = (Int32)ElaTypeCode.Module;
 		internal const int LAZ = (Int32)ElaTypeCode.Lazy;
 		internal const int VAR = (Int32)ElaTypeCode.Variant;
+
+        private static bool[] structs =
+        {
+            false,//None
+		    true,//Integer
+		    false,//Long
+		    true,//Single
+		    false,//Double
+		    true,//Boolean
+		    true,//Char
+            false,//String
+            false,//Unit
+            false,//List
+            false,//<Empty>
+            false,//Tuple
+            false,//Record
+            false,//Function
+            false,//Object
+            false,//Module
+            false,//Lazy
+            false,//Variant
+        };
 		#endregion
 
 
@@ -70,14 +92,14 @@ namespace Ela.Runtime
 			{
 				throw;
 			}
-            //catch (Exception ex)
-            //{
-            //    var op = MainThread.Module != null && MainThread.Offset > 0 &&
-            //        MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
-            //        MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
+            catch (Exception ex)
+            {
+                var op = MainThread.Module != null && MainThread.Offset > 0 &&
+                    MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
+                    MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
 
-            //    throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
-            //}
+                throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
+            }
 
 			var evalStack = MainThread.CallStack[0].Stack;
 
@@ -636,6 +658,18 @@ namespace Ela.Runtime
 					#endregion
 
 					#region Comparison Operations
+                    case Op.Ceqref:
+                        right = evalStack.Pop();
+                        left = evalStack.Peek();
+
+                        if (structs[right.TypeId] || structs[left.TypeId])
+                        {
+                            ExecuteFail(ElaRuntimeError.RefEqualsNotSupported, thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+
+                        evalStack.Replace(right.Ref == left.Ref);
+                        break;
 					case Op.Trait:
 						evalStack.Replace(new ElaValue(((Int32)evalStack.Peek().Id(ctx).Ref.Traits & opd) == opd));
 
@@ -1543,19 +1577,22 @@ namespace Ela.Runtime
 							{
 								var frm = asm.GetModule(hdl);
 
-								if (frm is IntrinsicFrame)
-									modules[hdl] = ((IntrinsicFrame)frm).Memory;
-								else
-								{
-									i4 = frm.Layouts[0].Size;
-									var loc = new ElaValue[i4];
-									modules[hdl] = loc;
-									callStack.Peek().BreakAddress = thread.Offset;
-									callStack.Push(new CallPoint(hdl, new EvalStack(frm.Layouts[0].StackSize), loc, FastList<ElaValue[]>.Empty));
-									thread.SwitchModule(hdl);
-									thread.Offset = 0;
-									goto SWITCH_MEM;
-								}
+                                if (frm is IntrinsicFrame)
+                                {
+                                    modules[hdl] = ((IntrinsicFrame)frm).Memory;
+                                    ReadPervasives(thread, frm, hdl);
+                                }
+                                else
+                                {
+                                    i4 = frm.Layouts[0].Size;
+                                    var loc = new ElaValue[i4];
+                                    modules[hdl] = loc;
+                                    callStack.Peek().BreakAddress = thread.Offset;
+                                    callStack.Push(new CallPoint(hdl, new EvalStack(frm.Layouts[0].StackSize), loc, FastList<ElaValue[]>.Empty));
+                                    thread.SwitchModule(hdl);
+                                    thread.Offset = 0;
+                                    goto SWITCH_MEM;
+                                }
 							}
 						}
 						break;

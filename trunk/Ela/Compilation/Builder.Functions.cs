@@ -213,6 +213,10 @@ namespace Ela.Compilation
 					pars = 2;
 					cw.Emit(Op.Show);
 					break;
+                case ElaBuiltinFunctionKind.Ref:
+                    pars = 2;
+                    cw.Emit(Op.Ceqref);
+                    break;
 				case ElaBuiltinFunctionKind.Operator:
 					pars = 2;
 

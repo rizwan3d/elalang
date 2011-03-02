@@ -162,6 +162,9 @@
   <data name="PrivateVariable" xml:space="preserve">
     <value>The name '{0}' is declared as private and cannot be referenced.</value>
   </data>
+  <data name="RefEqualsNotSupported" xml:space="preserve">
+    <value>Testing for reference equality is not supported for built-in types int, single, boolean and char.</value>
+  </data>
   <data name="RightOperand" xml:space="preserve">
     <value>The value '{0}' of type '{1}' is not a valid right operand for the value '{2}' of type '{3}' in an operation defined in trait '{4}'.</value>
   </data>

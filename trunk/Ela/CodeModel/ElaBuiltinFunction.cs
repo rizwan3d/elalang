@@ -55,7 +55,8 @@ namespace Ela.CodeModel
 			get
 			{
 				return _kind == ElaBuiltinFunctionKind.Operator || 
-					_kind == ElaBuiltinFunctionKind.Showf ? 2 : 1;
+					_kind == ElaBuiltinFunctionKind.Showf ||
+                    _kind == ElaBuiltinFunctionKind.Ref ? 2 : 1;
 			}
 		}
 		#endregion

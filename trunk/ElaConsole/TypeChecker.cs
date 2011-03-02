@@ -397,7 +397,8 @@ namespace ElaConsole
 					funType.FunctionType.Add(new TypeTag(GetTraits(ElaTypeCode.String), true));
 					break;
 				case ElaBuiltinFunctionKind.Showf:
-					funType.FunctionType.Add(new TypeTag(ElaTraits.Show, false));
+                    funType.FunctionType.Add(new TypeTag(GetTraits(ElaTypeCode.String), true));
+                    funType.FunctionType.Add(new TypeTag(ElaTraits.Show, false));
 					funType.FunctionType.Add(new TypeTag(GetTraits(ElaTypeCode.String), true));
 					break;
 				case ElaBuiltinFunctionKind.Succ:
@@ -412,6 +413,11 @@ namespace ElaConsole
 					funType.FunctionType.Add(TypeTag.Any());
 					funType.FunctionType.Add(TypeTag.Any());
 					break;
+                case ElaBuiltinFunctionKind.Ref:
+                    funType.FunctionType.Add(TypeTag.Any());
+                    funType.FunctionType.Add(TypeTag.Any());
+                    funType.FunctionType.Add(TypeTag.Any());
+                    break;
 			}
 
 			return funType;
