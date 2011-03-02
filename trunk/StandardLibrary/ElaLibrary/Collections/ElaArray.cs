@@ -11,7 +11,7 @@ namespace Ela.Library.Collections
 		#region Construction
 		private const int DEFAULT_SIZE = 4;
 		private const string TYPENAME = "array";
-		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Len | ElaTraits.Get | ElaTraits.Set | ElaTraits.Gen | ElaTraits.Fold | ElaTraits.Concat | ElaTraits.Show | ElaTraits.Seq | ElaTraits.Cons;
+		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Len | ElaTraits.Get | ElaTraits.Set | ElaTraits.Gen | ElaTraits.Fold | ElaTraits.Concat | ElaTraits.Show | ElaTraits.Ix | ElaTraits.Cons;
 		private int size;
 		private ElaValue[] array;
 		private int headIndex;

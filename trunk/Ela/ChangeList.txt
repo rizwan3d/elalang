@@ -1,3 +1,7 @@
+0.8.6.22:Fix:A bug fixed in compilation logic of head/tail pattern for patterns that are combined from two nested patterns. A typical example of a case when this bug could be reproduced is when you have a head/tail pattern that ends with (xs@n) - in such as case 'n' variable wasn't declared at all.
+0.8.6.21:Change:Trait 'Seq' renamed to 'Ix'.
+0.8.6.20:New:A new public 'Concatenate' method added to ElaList (method can be used from .NET code to concatenate two lists).
+0.8.6.19:New:A new public 'IsNilList' method added to ElaObject (method can be used from .NET code to determine if a given object is a nil list).
 0.8.6.18:Change:Ela reflection API is fully refactored.
 0.8.6.17:New:Methods Left and Some added to ElaVariant to simplify construction of 'Either' variant (for operation in .NET code).
 0.8.6.16:Change:Method for comparison (ElaObject.Compare) can now be overriden by the types defined outside of Ela core assembly.

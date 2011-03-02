@@ -9,7 +9,7 @@ namespace Ela.Runtime.ObjectModel
 	public class ElaList : ElaObject, IEnumerable<ElaValue>
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Len | ElaTraits.Gen | ElaTraits.Fold | ElaTraits.Cons | ElaTraits.Concat | ElaTraits.Convert | ElaTraits.Seq;
+		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Len | ElaTraits.Gen | ElaTraits.Fold | ElaTraits.Cons | ElaTraits.Concat | ElaTraits.Convert | ElaTraits.Ix;
 		internal static readonly ElaList Nil = new ElaList(null, new ElaValue(ElaUnit.Instance));
 
 		public ElaList(ElaObject next, object value) : this(next, ElaValue.FromObject(value))
@@ -236,6 +236,17 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return ElaList.Nil;
 		}
+
+
+        public ElaList Concatenate(ElaList other)
+        {
+            var list = other;
+
+            foreach (var e in Reverse())
+                list = new ElaList(list, e);
+
+            return list;
+        }
 
 
         public bool HasLazyTail()

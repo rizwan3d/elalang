@@ -593,7 +593,7 @@ namespace ElaConsole
 						foreach (var e in tup.Patterns)
 							GetPatternType(e, scope);
 
-						return new TypeTag(ElaTraits.Get|ElaTraits.Seq|ElaTraits.Len, false);
+						return new TypeTag(ElaTraits.Get|ElaTraits.Ix|ElaTraits.Len, false);
 					}
 				case ElaNodeType.UnitPattern:
 					return new TypeTag(GetTraits(ElaTypeCode.Unit), true);

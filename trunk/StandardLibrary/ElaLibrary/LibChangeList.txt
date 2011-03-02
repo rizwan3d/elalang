@@ -1,6 +1,7 @@
+0.0.1.13:New:An initial version of Queue module is implemented (including ElaQueue type).
 0.0.1.12:New:New 'swap' and 'swap3' functions (swapping elements of tuples) added to Core module.
 0.0.1.11:New:New 'on' function (that replicates Haskell's Data.Function.on) added to Core module.
-0.0.1.10:New:An initial version of DateTime module implemented (include ElaDateTime type).
+0.0.1.10:New:An initial version of DateTime module implemented (including ElaDateTime type).
 0.0.1.9:New:Now ElaMap (immutable map) supports 'Convert' trait and a conversion to record.
 0.0.1.8:Change:Core module modified in accordance to the language syntax changes.
 0.0.1.7:New:ElaSet type now supports 'Cons' trait.

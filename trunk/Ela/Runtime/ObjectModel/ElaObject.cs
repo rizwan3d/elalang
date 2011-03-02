@@ -40,6 +40,12 @@ namespace Ela.Runtime.ObjectModel
             return info;
 		}
 
+        
+        public bool IsNilList()
+        {
+            return IsNil(DummyContext);
+        }
+
 
 		internal protected virtual int Compare(ElaValue @this, ElaValue other)
 		{

@@ -12,7 +12,7 @@ namespace Ela.Runtime.ObjectModel
         private List<String> keys;
         private List<ElaValue> values;
 
-		internal ElaTypeInfo() : base(ElaTraits.Eq|ElaTraits.Show|ElaTraits.FieldGet|ElaTraits.Get|ElaTraits.Len|ElaTraits.Seq)
+		internal ElaTypeInfo() : base(ElaTraits.Eq|ElaTraits.Show|ElaTraits.FieldGet|ElaTraits.Get|ElaTraits.Len|ElaTraits.Ix)
 		{
             keys = new List<String>();
             values = new List<ElaValue>();

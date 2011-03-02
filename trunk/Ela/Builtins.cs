@@ -51,7 +51,7 @@ namespace Ela
 				case "Neg": return ElaTraits.Neg;
 				case "Num": return ElaTraits.Num;
 				case "Ord": return ElaTraits.Ord;
-                case "Seq": return ElaTraits.Seq;
+                case "Ix": return ElaTraits.Ix;
 				case "Set": return ElaTraits.Set;
 				case "Show": return ElaTraits.Show;
 				case "Thunk": return ElaTraits.Thunk;

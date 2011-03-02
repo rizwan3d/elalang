@@ -37,7 +37,7 @@ namespace Ela
 
 		Thunk = 0x8000,
 
-		Seq = 0x10000,
+		Ix = 0x10000,
 
 		Fold = 0x20000,
 

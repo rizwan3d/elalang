@@ -9,7 +9,7 @@ namespace Ela.Runtime.ObjectModel
 	public class ElaTuple : ElaObject, IEnumerable<ElaValue>
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Ord | ElaTraits.Enum | ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Gen | ElaTraits.Len | ElaTraits.Convert | ElaTraits.Num | ElaTraits.Bit | ElaTraits.Bool | ElaTraits.Neg | ElaTraits.Concat | ElaTraits.Seq;
+		private const ElaTraits TRAITS = ElaTraits.Ord | ElaTraits.Enum | ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Gen | ElaTraits.Len | ElaTraits.Convert | ElaTraits.Num | ElaTraits.Bit | ElaTraits.Bool | ElaTraits.Neg | ElaTraits.Concat | ElaTraits.Ix;
 		private int cons;
 		
 		public ElaTuple(params object[] args) : base(ElaTypeCode.Tuple, TRAITS)

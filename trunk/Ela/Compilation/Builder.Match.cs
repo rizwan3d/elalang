@@ -392,7 +392,9 @@ namespace Ela.Compilation
 		private void CompileHeadTailPattern(int pushSys, ElaHeadTailPattern pexp, LabelMap map, Label nextLab, ElaVariableFlags flags, Hints hints)
 		{
 			if (pexp.Patterns.Count == 2 && currentCounter < 250 &&
-				(pexp.Patterns[0].Type == ElaNodeType.VariablePattern || pexp.Patterns[0].Type == ElaNodeType.DefaultPattern))
+				(pexp.Patterns[0].Type == ElaNodeType.VariablePattern || pexp.Patterns[0].Type == ElaNodeType.DefaultPattern) &&
+                (pexp.Patterns[1].Type == ElaNodeType.VariablePattern || pexp.Patterns[1].Type == ElaNodeType.DefaultPattern ||
+                pexp.Patterns[1].Type == ElaNodeType.NilPattern))
 			{
 				Silent(pushSys, nextLab, hints, ElaTraits.Fold);
 
@@ -511,7 +513,7 @@ namespace Ela.Compilation
 			var len = seq.Patterns.Count;
 
 			if (pushSys != -1 && tuple == null)
-				Silent(pushSys, nextLab, hints, ElaTraits.Get|ElaTraits.Len|ElaTraits.Seq);
+				Silent(pushSys, nextLab, hints, ElaTraits.Get|ElaTraits.Len|ElaTraits.Ix);
 			
 			if (tuple != null)
 			{

@@ -9,7 +9,7 @@ namespace Ela.Runtime.ObjectModel
 	{
 		#region Construction
         private const string FIELDS = "fields";
-        private const ElaTraits TRAITS = ElaTraits.Ord | ElaTraits.Enum | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Set | ElaTraits.Len | ElaTraits.FieldGet | ElaTraits.FieldSet | ElaTraits.Convert | ElaTraits.Show | ElaTraits.Seq;
+        private const ElaTraits TRAITS = ElaTraits.Ord | ElaTraits.Enum | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Set | ElaTraits.Len | ElaTraits.FieldGet | ElaTraits.FieldSet | ElaTraits.Convert | ElaTraits.Show | ElaTraits.Ix;
 		private string[] keys;
 		private bool[] flags;
 
