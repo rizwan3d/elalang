@@ -1,0 +1,15 @@
+let intersperse e x::([]@n) = x :: intersperse e n;
+				e x::xs 	= x :: e :: intersperse e xs;
+				_ []@n		= n
+end
+
+let transpose []::xs      = transpose xs;
+			  (x::xs)::ys = (x :: [h \\ (h::_) <- ys]) :: transpose (xs :: [t \\ (_::t) <- ys]);
+			  []          = []			
+end
+
+//An optimized version of 'let concat x::xs = x ++ concat xs; [] = [] end'.
+let concat x::xs = con x (concat xs)
+		   where con x::xs n = x :: con xs n;  [] n = n end;
+		   []    = []
+end
