@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Ela.Runtime.Reflection;
 
 namespace Ela.Runtime.ObjectModel
 {
@@ -10,7 +9,8 @@ namespace Ela.Runtime.ObjectModel
         private const string SOME = "Some";
         private const string NONE = "None";
 		private const string LEFT = "Left";
-		private const string RIGHT = "Right";        
+		private const string RIGHT = "Right";
+        private const string TAG = "tag";
 		private static readonly ElaVariant noneVariant = new ElaVariant(NONE, new ElaValue(ElaUnit.Instance));
 
         public ElaVariant(string tag) : this(tag, new ElaValue(ElaUnit.Instance))
@@ -354,6 +354,14 @@ namespace Ela.Runtime.ObjectModel
         public override int GetHashCode()
         {
             return Value.GetHashCode();
+        }
+
+
+        public override ElaTypeInfo GetTypeInfo()
+        {
+            var info = base.GetTypeInfo();
+            info.AddField(TAG, Tag);
+            return info;
         }
 
 

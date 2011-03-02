@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using Ela.Debug;
-using Ela.Runtime.Reflection;
 
 namespace Ela.Runtime.ObjectModel
 {
 	public class ElaRecord : ElaTuple
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Ord | ElaTraits.Enum | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Set | ElaTraits.Len | ElaTraits.FieldGet | ElaTraits.FieldSet | ElaTraits.Convert | ElaTraits.Show | ElaTraits.Seq;
+        private const string FIELDS = "fields";
+        private const ElaTraits TRAITS = ElaTraits.Ord | ElaTraits.Enum | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Set | ElaTraits.Len | ElaTraits.FieldGet | ElaTraits.FieldSet | ElaTraits.Convert | ElaTraits.Show | ElaTraits.Seq;
 		private string[] keys;
 		private bool[] flags;
 
@@ -171,7 +171,9 @@ namespace Ela.Runtime.ObjectModel
 		#region Methods
 		public override ElaTypeInfo GetTypeInfo()
 		{
-			return new ElaRecordInfo(this);
+            var info = base.GetTypeInfo();
+            info.AddField(FIELDS, keys);
+            return info;
 		}
 
 

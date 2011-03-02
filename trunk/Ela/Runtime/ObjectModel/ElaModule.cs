@@ -2,14 +2,37 @@
 using System.Collections.Generic;
 using Ela.CodeModel;
 using Ela.Linking;
-using Ela.Runtime.Reflection;
+using Ela.Compilation;
 
 namespace Ela.Runtime.ObjectModel
 {
 	public sealed class ElaModule : ElaObject
 	{
 		#region Construction
-		private const string MODULE = "[module:{0}]";
+        private const string GLOBALS = "globals";
+        private const string REFERENCES = "references";
+        private const string ASSEMBLY = "assembly";
+        private const string HANDLE = "handle";
+        private const string NAME = "name";
+        private const string CODEBASE = "codeBase";
+        private const string ISNATIVE = "isNative";
+        private const string ISMAINMODULE = "isMainModule";
+
+        private const string ADDRESS = "address";
+        private const string VARNAME = "name";
+        private const string ISIMMUTABLE = "isImmutable";
+        private const string ISPRIVATE = "isPrivate";
+        private const string VALUE = "value";
+
+        private const string MODULENAME = "moduleName";
+        private const string DLLNAME = "dllName";
+        private const string ALIAS = "alias";
+        private const string PATH = "path";
+
+        private const string MODULECOUNT = "moduleCount";
+        private const string ARGCOUNT = "argumentCount";
+		
+        private const string MODULE = "[module:{0}]";
 		private ElaMachine vm;
 
 		internal ElaModule(int handle, ElaMachine vm) : base(ElaTypeCode.Module, ElaTraits.Eq | ElaTraits.Show)
@@ -45,36 +68,66 @@ namespace Ela.Runtime.ObjectModel
 		#region Methods
 		public override ElaTypeInfo GetTypeInfo()
 		{
-			if (vm != null)
-			{
-				var frame = vm.Assembly.GetModule(Handle);
-				var name = vm.Assembly.GetModuleName(Handle);
+            var frame = vm != null ? vm.Assembly.GetModule(Handle) : null;
+            var name = vm != null ? vm.Assembly.GetModuleName(Handle) : null;
 
-				var variables = new List<ElaVariableInfo>();
-
-				foreach (var v in frame.GlobalScope.EnumerateNames())
-				{
-					var sv = frame.GlobalScope.GetVariable(v);
-					var val = vm.GetVariableByHandle(Handle, sv.Address);
-
-					if (val.Ref != null)
-						variables.Add(new ElaVariableInfo(Handle, sv.Address, v, val,
-							(sv.Flags & ElaVariableFlags.Immutable) == ElaVariableFlags.Immutable,
-							(sv.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private));
-				}
-
-				var refs = new List<ElaReferenceInfo>();
-
-				foreach (var kv in frame.References)
-					refs.Add(new ElaReferenceInfo(kv.Value.ModuleName, kv.Value.DllName, kv.Key, 
-						String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), kv.Value.Path)));
-
-				return new ElaModuleInfo(this, vm, Handle, name,
-					frame.File != null ? frame.File.FullName : null, !(frame is IntrinsicFrame), variables, refs);
-			}
-			else
-				return new ElaModuleInfo(this, null, Handle, null, null, false, null, null);
+            var info = base.GetTypeInfo();
+            info.AddField(GLOBALS, GetVariables(frame));
+            info.AddField(REFERENCES, GetReferences(frame));
+            info.AddField(ASSEMBLY, GetAssemblyInfo());
+            info.AddField(HANDLE, Handle);
+            info.AddField(NAME, name);
+            info.AddField(CODEBASE, frame != null && frame.File != null ? frame.File.FullName : null);
+            info.AddField(ISNATIVE, frame != null ? new ElaValue(!(frame is IntrinsicFrame)) : new ElaValue(ElaUnit.Instance));
+            info.AddField(ISMAINMODULE, Handle == 0);
+            return info;
 		}
+
+
+        private IEnumerable<ElaRecord> GetVariables(CodeFrame frame)
+        {
+            if (frame != null)
+            {
+                foreach (var v in frame.GlobalScope.EnumerateNames())
+                {
+                    var sv = frame.GlobalScope.GetVariable(v);
+                    var val = vm.GetVariableByHandle(Handle, sv.Address);
+
+                    if (val.Ref != null)
+                        yield return new ElaRecord(
+                            new ElaRecordField(ADDRESS, sv.Address, false),
+                            new ElaRecordField(VARNAME, v, false),
+                            new ElaRecordField(VALUE, val, false),
+                            new ElaRecordField(ISIMMUTABLE, (sv.Flags & ElaVariableFlags.Immutable) == ElaVariableFlags.Immutable, false),
+                            new ElaRecordField(ISPRIVATE, (sv.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private, false));
+                }
+            }
+        }
+
+
+        private IEnumerable<ElaRecord> GetReferences(CodeFrame frame)
+        {
+            if (frame != null)
+            {
+                foreach (var kv in frame.References)
+                    yield return new ElaRecord(
+                        new ElaRecordField(MODULENAME, kv.Value.ModuleName, false),
+                        new ElaRecordField(DLLNAME, kv.Value.DllName, false),
+                        new ElaRecordField(ALIAS, kv.Key, false),
+                        new ElaRecordField(PATH, String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), kv.Value.Path), false));
+            }
+        }
+
+
+        private ElaObject GetAssemblyInfo()
+        {
+            if (vm != null)
+                return new ElaRecord(
+                    new ElaRecordField(MODULECOUNT, vm.Assembly.ModuleCount, false),
+                    new ElaRecordField(ARGCOUNT, vm.Assembly.ArgumentCount, false));
+            else
+                return ElaUnit.Instance;
+        }
 		#endregion
 
 

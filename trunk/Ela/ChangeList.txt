@@ -1,3 +1,4 @@
+0.8.6.18:Change:Ela reflection API is fully refactored.
 0.8.6.17:New:Methods Left and Some added to ElaVariant to simplify construction of 'Either' variant (for operation in .NET code).
 0.8.6.16:Change:Method for comparison (ElaObject.Compare) can now be overriden by the types defined outside of Ela core assembly.
 0.8.6.15:Fix:Now ElaString supports 'Seq' trait (which supported by string as soon as it represents an ordered structure of elements).

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Ela.Runtime.Reflection;
 
 namespace Ela.Runtime.ObjectModel
 {
@@ -9,7 +8,10 @@ namespace Ela.Runtime.ObjectModel
 		#region Construction
 		internal static readonly ExecutionContext DummyContext = new ExecutionContext();
 		internal const string UNDEF = "<unknown>";
-		
+        private const string TYPENAME = "typeName";
+        private const string TYPECODE = "typeCode";
+        private const string ISBYREF = "byRef";
+
 		protected ElaObject(ElaTraits traits) : this(ElaTypeCode.Object, traits)
 		{
 			
@@ -27,7 +29,15 @@ namespace Ela.Runtime.ObjectModel
 		#region Methods
 		public virtual ElaTypeInfo GetTypeInfo()
 		{
-			return new ElaTypeInfo(this);
+            var info = new ElaTypeInfo();
+            info.AddField(TYPENAME, GetTypeName());
+            info.AddField(TYPECODE, TypeId);
+            info.AddField(ISBYREF, 
+                TypeId == ElaMachine.INT ||
+                TypeId == ElaMachine.CHR ||
+                TypeId == ElaMachine.REA ||
+                TypeId == ElaMachine.BYT);
+            return info;
 		}
 
 

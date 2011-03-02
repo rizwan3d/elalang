@@ -7,7 +7,7 @@ using System.Collections;
 
 namespace Ela.Runtime
 {
-	public struct ElaValue : IComparable<ElaValue>
+	public struct ElaValue : IComparable<ElaValue>, IEquatable<ElaValue>
 	{
 		#region Construction
 		public ElaValue(ElaObject val)
@@ -108,13 +108,19 @@ namespace Ela.Runtime
         }
 
 
+        public bool Equals(ElaValue other)
+        {
+            return Equals(this, other, ElaObject.DummyContext).AsBoolean();
+        }
+
+
 		public ElaValue Id(ExecutionContext ctx)
 		{
 			return (Ref.Traits & ElaTraits.Thunk) == ElaTraits.Thunk ? Ref.Force(ctx) : this;
 		}
 
 
-		internal string GetTypeName()
+		public string GetTypeName()
 		{
 			return Ref.GetTypeName();
 		}

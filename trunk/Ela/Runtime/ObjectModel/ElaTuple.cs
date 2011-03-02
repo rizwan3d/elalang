@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Ela.Runtime.Reflection;
 using Ela.Debug;
 
 namespace Ela.Runtime.ObjectModel
@@ -817,12 +816,6 @@ namespace Ela.Runtime.ObjectModel
 		internal ElaValue FastGet(int index)
 		{
 			return index < Length ? Values[index] : Default();
-		}
-		
-		
-		public override ElaTypeInfo GetTypeInfo()
-		{
-			return new ElaTupleInfo(this);
 		}
 
 

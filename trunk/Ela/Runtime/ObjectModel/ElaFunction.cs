@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using Ela.Debug;
-using Ela.Runtime.Reflection;
 
 namespace Ela.Runtime.ObjectModel
 {
@@ -13,6 +12,13 @@ namespace Ela.Runtime.ObjectModel
 		private static readonly ElaValue[] defaultParams = new ElaValue[] { new ElaValue(ElaUnit.Instance) };
 		private static readonly ElaValue[] emptyParams = new ElaValue[0];
 		private const string DEF_NAME = "<f>";
+        private const string MODULE = "module";
+        private const string HANDLE = "handle";
+        private const string NAME = "name";
+        private const string PARAMS = "parameters";
+        private const string ISNATIVE = "isNative";
+        private const string ISGLOBAL = "isGlobal";
+        private const string ISPARTIAL = "isPartial";
 
 		protected ElaFunction() : this(1)
 		{
@@ -224,8 +230,15 @@ namespace Ela.Runtime.ObjectModel
 
 		public override ElaTypeInfo GetTypeInfo()
 		{
-			return new ElaFunctionInfo(this, vm != null ? (ElaModuleInfo)new ElaModule(ModuleHandle, vm).GetTypeInfo() : null, 
-				Handle, GetFunctionName(), Parameters.Length + 1 - AppliedParameters, vm != null, vm == null || Captures.Count == 1, AppliedParameters > 0);
+			var info = base.GetTypeInfo();
+            info.AddField(MODULE, new ElaModule(ModuleHandle, vm).GetTypeInfo());
+            info.AddField(HANDLE, Handle);
+            info.AddField(NAME, GetFunctionName());
+            info.AddField(PARAMS, Parameters.Length + 1 - AppliedParameters);
+            info.AddField(ISNATIVE, vm != null);
+            info.AddField(ISGLOBAL, vm == null || Captures.Count == 1);
+            info.AddField(ISPARTIAL, AppliedParameters > 0);
+            return info;
 		}
 
 
