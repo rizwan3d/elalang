@@ -1,4 +1,4 @@
-open Core foldr, foldl, fold, id
+open Core foldr, foldl, fold, any, id
 
 /*  takes an element and a sequence and intersperses that element between the elements of the sequence:
 intersperse ',' "abcde" = "a,b,c,d,e" */
@@ -51,3 +51,8 @@ let groupBy eq x::xs = (x::ys) :: groupBy eq zs
 end
 
 let group =  groupBy (==)
+
+/* takes the list intersection of two lists. */
+let intersectBy eq xs ys =  [x \\ x <- xs | any (eq x) ys] end
+
+let intersect = intersectBy (==)
