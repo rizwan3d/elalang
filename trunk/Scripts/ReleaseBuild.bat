@@ -9,6 +9,6 @@ xcopy ..\Binaries\elalib.dll ..\Binaries\ReleaseBuild\lib
 
 cd ..\Binaries\ReleaseBuild
 
-..\7za.exe a -tzip Ela-%1.zip ..\..\ElaConsole\elac.exe.config ..\..\Ela\ChangeList.txt ..\..\ElaConsole\ConsoleChangeList.txt ..\ela.dll ..\elac.exe lib\*.*
+..\7za.exe a -tzip Ela-%1.zip ..\..\ElaConsole\elac.exe.config ..\..\Ela\ChangeList.txt ..\..\ElaConsole\ConsoleChangeList.txt ..\ela.dll ..\..\Docs\License.txt ..\elac.exe lib\*.*
 
 echo "Release package successfully created"
