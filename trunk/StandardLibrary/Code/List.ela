@@ -3,8 +3,8 @@ open Core foldr, foldl, fold, any, id
 /*  takes an element and a sequence and intersperses that element between the elements of the sequence:
 intersperse ',' "abcde" = "a,b,c,d,e" */
 let intersperse e x::([]@n) = x :: intersperse e n;
-                e x::xs 	= x :: e :: intersperse e xs;
-                _ []@n		= n
+                e x::xs     = x :: e :: intersperse e xs;
+                _ []@n      = n
 end
 
 /* transposes the rows and columns of its argument:

@@ -8,8 +8,6 @@ namespace Ela.CodeModel
 
 		Typeid,
 
-		Cout,
-
 		Not,
 
 		Flip,

@@ -356,10 +356,6 @@ namespace ElaConsole
 					funType.FunctionType.Add(new TypeTag(ElaTraits.Bit, false));
 					funType.FunctionType.Add(new TypeTag(ElaTraits.Bit, false));
 					break;
-				case ElaBuiltinFunctionKind.Cout:
-					funType.FunctionType.Add(new TypeTag(ElaTraits.Show, false));
-					funType.FunctionType.Add(TypeTag.Unit());
-					break;
 				case ElaBuiltinFunctionKind.Flip:
 					funType.FunctionType.Add(new TypeTag(ElaTraits.Call, false));
 					funType.FunctionType.Add(new TypeTag(ElaTraits.Call, false));

@@ -92,8 +92,6 @@ namespace Ela.Compilation
 
 		Newtup_2,
 
-		Cout,
-
 		Typeid,
 
 		Stop,

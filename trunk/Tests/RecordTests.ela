@@ -15,6 +15,15 @@ let fromLiteral2 {eq} =
     where rec' = {"font-color"="red","text-decoration"="none"} end
 end
 
+let equals {eq,neq} =
+    eq r1 r2
+    $ neq r1 r3
+    where r1 = {x=1,y="word",z='c'} and
+          r2 = {x=1,y="word",z='c'} and
+          r3 = {x=1,y="WORD",z='C'}
+    end
+end
+
 let changeItem {eq} =
 	let rec' = {mutable x=1} in
     rec'.x <- 2

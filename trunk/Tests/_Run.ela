@@ -1,4 +1,6 @@
-﻿open Test
+﻿open Test reg = regFuns, fmt, run
+open Con writen
+
 open BasicTests
 open FunTests
 open RangeTests
@@ -11,19 +13,18 @@ open ComprehensionTests
 open ThunkTests
 open MatchTests
 
-let lst = [] 
-	|> Test.regFuns BasicTests
-    |> Test.regFuns FunTests
-    |> Test.regFuns RangeTests
-	|> Test.regFuns ListTests
-	|> Test.regFuns TupleTests
-	|> Test.regFuns RecordTests
-    |> Test.regFuns VariantTests
-	|> Test.regFuns ComplexTests
-    |> Test.regFuns ComprehensionTests
-    |> Test.regFuns ThunkTests
-    |> Test.regFuns MatchTests
-	
-let _ = Test.fmt cout <| Test.run lst
+let _ = [] 
+    |> reg BasicTests
+    |> reg FunTests
+    |> reg RangeTests
+    |> reg ListTests
+    |> reg TupleTests
+    |> reg RecordTests
+    |> reg VariantTests
+    |> reg ComplexTests
+    |> reg ComprehensionTests
+    |> reg ThunkTests
+    |> reg MatchTests
 
-
+    |> run
+    |> fmt writen

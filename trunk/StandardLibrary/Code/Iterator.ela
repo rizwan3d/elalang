@@ -13,9 +13,17 @@ let iter ?(Get,Len,Ix)@arr = iter' {mutable ix=0} arr
         x                  = fail "iter: not supported: " ++ (show x)
 end
 
-let foreach f xs = for' (iter xs)
-                   where for' it | r is (`Some x) = f x $ for' it;
-                                 | else           = ()
-                                 where r = it () end
-                   end
+let each f xs = for' (iter xs)
+               where for' it | r is (`Some x) = f x $ for' it;
+                             | else           = ()
+                             where r = it () end
+               end
 end
+
+let when p it | r is (`Some x), p x = `Some x;
+              | r is (`Some)        = when p it;
+              | r is (`None)        = `None
+              where r = it () end
+end
+
+let project f it = f <| it () end

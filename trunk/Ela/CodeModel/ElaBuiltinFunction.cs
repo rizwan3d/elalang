@@ -39,13 +39,7 @@ namespace Ela.CodeModel
 		public ElaBuiltinFunctionKind Kind
 		{
 			get { return _kind; }
-			set
-			{
-				_kind = value;
-
-				if (_kind == ElaBuiltinFunctionKind.Cout)
-					Flags = ElaExpressionFlags.ReturnsUnit;
-			}
+			set { _kind = value; }
 		}
 
 		public ElaOperator Operator { get; set; }

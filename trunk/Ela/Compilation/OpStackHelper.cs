@@ -50,7 +50,6 @@ namespace Ela.Compilation
 			1, //Newlist
 			1, //Newmod
 			-1, //Newtup_2
-			-1, //Cout
 			0, //Typeid
 			0, //Stop
 			-1, //NewI8

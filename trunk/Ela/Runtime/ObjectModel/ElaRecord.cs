@@ -184,6 +184,12 @@ namespace Ela.Runtime.ObjectModel
 			sb.Append('}');
 			return sb.ToString();
 		}
+
+
+        protected internal override ElaValue GetLength(ExecutionContext ctx)
+        {
+            return new ElaValue(keys.Length);
+        }
 		#endregion
 
 

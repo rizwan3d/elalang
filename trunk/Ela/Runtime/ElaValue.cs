@@ -85,7 +85,7 @@ namespace Ela.Runtime
 
 		public override string ToString()
 		{
-			return Ref.Show(this, ElaObject.DummyContext, new ShowInfo(0, 40));
+			return Ref.Show(this, ElaObject.DummyContext, ShowInfo.Default);
 		}
 
 

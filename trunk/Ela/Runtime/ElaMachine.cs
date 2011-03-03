@@ -1506,16 +1506,6 @@ namespace Ela.Runtime
 							}
 						}
 						break;
-					case Op.Cout:
-						right = evalStack.Pop().Id(ctx);
-						Console.WriteLine(right.Ref.Show(right, ctx, ShowInfo.Debug));
-
-						if (ctx.Failed)
-						{
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
-						break;
 					case Op.Isfun:
 						right = evalStack.Peek().Id(ctx);
 
