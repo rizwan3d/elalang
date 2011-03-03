@@ -425,15 +425,14 @@ PRODUCTIONS
 	BindingPattern<out string name, out ElaPattern pat> =
 		(. pat = null; name = null; .)
 		(
-			ident (. name = t.val; .)
-			|
-			DefaultPattern<out pat>
-			|
-			RecordPattern<out pat>
-			|
-			ListPattern<out pat>
-			|
-			"(" ParenPattern<out pat> ")" 
+			AsPattern<out pat>
+			(.
+				if (pat.Type == ElaNodeType.VariablePattern)
+				{
+					name = ((ElaVariablePattern)pat).Name;
+					pat = null;
+				}
+			.)
 		).		
 		
 	ForeachPattern<out ElaPattern pat> =

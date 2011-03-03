@@ -1,5 +1,5 @@
 /* 
-    Ela core module
+    Ela Core module
     Created in 2011 by Basil Voronkov
 */
 open CoreInternal[elalib]
@@ -92,18 +92,18 @@ end
 let isNil _::_ = false; [] = true end
 
 let takeWhile f x::xs | f x  = x :: takeWhile f xs;
-                      | else = [];
-              f []           = []
+                      | else = nil xs;
+              f []@n         = n
 end
 
-let take 0 _     = [];
+let take 0 xs    = nil xs;
          n x::xs = x :: take (n - 1) xs;
-        _ []    = []
+        _ []@n   = n
 end
 
 let skip 0 xs    = xs;
          n _::xs = skip (n - 1) xs;
-         _ []    = []
+         _ []@n  = n
 end
 
 let each f x::xs = f x $ each f xs;
@@ -111,21 +111,21 @@ let each f x::xs = f x $ each f xs;
 end
        
 let map f x::xs = f x :: map f xs;
-        _ []    = []
+        _ []@n  = n
 end
         
 let map' f x::xs = f x :: (& map' f xs);
-         _ []    = []
+         _ []@n  = n
 end
            
 let filter p x::xs | p x  = x :: filter p xs;
                    | else = filter p xs;
-           _ []           = []
+           _ []@n         = n
 end
 
 let filter' p x::xs | p x  = x :: (& filter' p xs);
                     | else = filter' p xs;
-            _ []           = []
+            _ []@n         = n
 end
 
 let foldl f z x::xs = foldl f (f z x) xs;
@@ -138,14 +138,44 @@ end
 
 let fold f xs = foldr f (nil xs) xs end
 
-let concat xs = foldr (++) [] xs end
+let concat x::xs = x ++ concat xs; 
+           []@n  = n
+end
 
-let product xs = foldl (*) 1 xs end
+let concatMap f x::xs = f x :: concatMap f xs; 
+              _ []@n  = n
+end
 
-let reverse = foldl (flip (::)) []
+let sum xs = sum' 0 xs
+             where sum' s x::xs = sum' (s + x) xs;
+                        s []    = s
+             end
+end
+
+let product xs = product' 1 xs
+                 where product' p x::xs = product' (p * x) xs;
+                                p []    = p
+                 end
+end
+
+let minimum x::xs = minimum' x xs
+                    where minimum' v x::xs | x < v = minimum' x xs;
+                                           | else  = minimum' v xs;
+                                   v []            = v
+                    end
+end
+
+let maximum x::xs = maximum' x xs
+                    where maximum' v x::xs | x > v = maximum' x xs;
+                                           | else  = maximum' v xs;
+                                   v []            = v
+                    end
+end
+
+let reverse xs = foldl (flip (::)) (nil xs) xs end
         
 let zipWith z x::xs y::ys = z x y :: zipWith z xs ys;
-            _ _     _     = []
+            _ _     ys    = nil ys
 end
 
 let any f x::xs | f x  = true;
@@ -158,18 +188,16 @@ let all f x::xs | f x  = all f xs;
         _ []           = false
 end
 
-let sum xs = foldl (+) 0 xs end
-
-let splitAt 0 xs            = ([],xs);
-            _ []            = ([],[]);
+let splitAt 0 xs            = (nil xs,xs);
+            _ []@n          = (n,n);
             n x::xs | n > 0 = (x::xs',xs2')
                               where (xs',xs2') = splitAt (n-1) xs end;
             _ _             = fail "Core.splitAt: negative argument"
 end
 
-let span p [] = ([],[]);
+let span p []@n = (n,n);
          p (x::xs')@xs | p x  = (x::ys, zs);
-                       | else = ([],xs)
+                       | else = (nil xs,xs)
                        where (ys,zs) = span p xs' end
 end
 
@@ -178,25 +206,39 @@ let breakList p xs = span p' xs
 end
 
 let drop 0 xs            = xs;
-         _ []            = [];
+         _ []@n          = n;
         n _::xs | n > 0  = drop (n-1) xs;
          _ _             = fail "Core.drop: negative argument"
 end
 
-let dropWhile p [] = [];
+let dropWhile p []@n = n;
               p x::xs | p x  = dropWhile p xs;
                       | else = x::xs
 end
 
-let index lst = index' 0 lst
-                where index' n x::xs = index' (n+1) xs;
-                             n []    = n
-                end
+let index e lst = index' 0 lst
+                  where index' n x::xs | x <> e = index' (n+1) xs;
+                                       | else   = n;
+                               n []    = n
+                  end
 end
 
 let elem x = any (==x) end
 
+let elemBy _  _ []    = false;
+           eq y x::xs = y `eq` x || elemBy eq y xs
+end
+
 let notElem x = all (<>x) end
+
+let scanl f q x::xs = scanl f (f q x) xs;
+          _ _ []@n  = []
+end
+
+let scanr f q0 []@n  = q0::n;
+          f q0 x::xs = f x q :: qs
+                       where (q::_)@qs = scanr f q0 xs end
+end
 
 let repeat x = x :: (& repeat x) end
 
@@ -210,12 +252,21 @@ let iterate f x = x :: (& iterate f (f x)) end
 
 let replicate n x = take n (repeat x) end
 
-let concatMap f = concat << map f end
+let deleteBy p x y::ys | p x y  = ys;
+                       | else   = y :: deleteBy p x ys;
+             _ _ []@n           = n
+end
 
-let minimum x::xs = foldl minValue x xs end
+let delete = deleteBy (==)
 
-let maximum x::xs = foldl maxValue x xs end
+let nubBy eq xs = nubBy' xs (nil xs)
+    where nubBy' []@n _ = n;
+                 y::ys xs | elemBy eq y xs = nubBy' ys xs;
+                          | else           = y :: nubBy' ys (y::xs)
+    end
+end
 
+let nub = nubBy (==)
 
 /* TUPLE FUNCTIONS */
 

@@ -934,20 +934,13 @@ internal sealed partial class Parser {
 
 	void BindingPattern(out string name, out ElaPattern pat) {
 		pat = null; name = null; 
-		if (la.kind == 1) {
-			Get();
-			name = t.val; 
-		} else if (la.kind == 52) {
-			DefaultPattern(out pat);
-		} else if (la.kind == 11) {
-			RecordPattern(out pat);
-		} else if (la.kind == 13) {
-			ListPattern(out pat);
-		} else if (la.kind == 53) {
-			Get();
-			ParenPattern(out pat);
-			Expect(54);
-		} else SynErr(109);
+		AsPattern(out pat);
+		if (pat.Type == ElaNodeType.VariablePattern)
+		{
+			name = ((ElaVariablePattern)pat).Name;
+			pat = null;
+		}
+		
 	}
 
 	void ForeachPattern(out ElaPattern pat) {
@@ -964,7 +957,7 @@ internal sealed partial class Parser {
 			ListPattern(out pat);
 		} else if (la.kind == 53) {
 			UnitPattern(out pat);
-		} else SynErr(110);
+		} else SynErr(109);
 	}
 
 	void FieldPattern(out ElaFieldPattern fld) {
@@ -989,7 +982,7 @@ internal sealed partial class Parser {
 			
 			fld.Value = cpat; 
 			
-		} else SynErr(111);
+		} else SynErr(110);
 	}
 
 	void RecordField(out ElaFieldDeclaration fld) {
@@ -1013,7 +1006,7 @@ internal sealed partial class Parser {
 			Expect(17);
 			Expr(out cexp);
 			fld.FieldValue = cexp; 
-		} else SynErr(112);
+		} else SynErr(111);
 	}
 
 	void RangeExpr(ElaExpression first, ElaExpression sec, out ElaRange rng) {
@@ -1055,7 +1048,7 @@ internal sealed partial class Parser {
 						Expr(out exp);
 						list.Add(exp); 
 					}
-				} else SynErr(113);
+				} else SynErr(112);
 			}
 		}
 		if (list == null && comp == null && rng == null && exp != null)
@@ -1106,7 +1099,7 @@ internal sealed partial class Parser {
 				Get();
 				flags ^= ElaVariableFlags.Immutable; 
 			}
-		} else SynErr(114);
+		} else SynErr(113);
 	}
 
 	void VariableDeclarationBody(ElaVariableFlags flags, out ElaExpression exp) {
@@ -1114,7 +1107,7 @@ internal sealed partial class Parser {
 		exp = varExp;
 		var cexp = default(ElaExpression); 
 		
-		if (StartOf(15)) {
+		if (StartOf(13)) {
 			var pat = default(ElaPattern); string name = null; 
 			BindingPattern(out name, out pat);
 			if (name != null)
@@ -1122,7 +1115,7 @@ internal sealed partial class Parser {
 			else
 				varExp.Pattern = pat; 
 			
-			if (StartOf(16)) {
+			if (StartOf(15)) {
 				if (StartOf(13)) {
 					if (name == null) AddError(ElaParserError.InvalidFunctionDeclaration); 
 					FunExpr(out cexp);
@@ -1161,7 +1154,7 @@ internal sealed partial class Parser {
 			((ElaFunctionLiteral)cexp).FunctionType = ElaFunctionType.Operator; 
 			((ElaFunctionLiteral)cexp).Name = varExp.VariableName;
 			
-		} else SynErr(115);
+		} else SynErr(114);
 		if (la.kind == 50) {
 			Get();
 			VariableDeclarationBody(flags, out exp);
@@ -1224,7 +1217,7 @@ internal sealed partial class Parser {
 			if (name == null) AddError(ElaParserError.InvalidFunctionDeclaration); 
 			FunExpr(out cexp);
 			varExp.InitExpression = cexp; 
-		} else SynErr(116);
+		} else SynErr(115);
 		SetFunMetadata(varExp, cexp, ElaVariableFlags.Immutable); 
 		if (la.kind == 50) {
 			var cd = default(ElaExpression); 
@@ -1271,7 +1264,7 @@ internal sealed partial class Parser {
 			Expect(17);
 			Expr(out cexp);
 			cond.False = cexp; 
-		} else SynErr(117);
+		} else SynErr(116);
 	}
 
 	void FunExpr(out ElaExpression exp) {
@@ -1350,7 +1343,7 @@ internal sealed partial class Parser {
 		}
 		if (la.kind == 10) {
 			Get();
-			if (StartOf(16)) {
+			if (StartOf(15)) {
 				ChildFunBodyExpr(match);
 			}
 		}
@@ -1394,7 +1387,7 @@ internal sealed partial class Parser {
 		}
 		if (la.kind == 10) {
 			Get();
-			if (StartOf(16)) {
+			if (StartOf(15)) {
 				ChildFunBodyExpr(match);
 			}
 		}
@@ -1451,7 +1444,7 @@ internal sealed partial class Parser {
 			} else if (la.kind == 7) {
 				Get();
 				inc.DllName = ReadString(t.val); 
-			} else SynErr(118);
+			} else SynErr(117);
 			Expect(14);
 		}
 		if (la.kind == 28) {
@@ -1472,7 +1465,7 @@ internal sealed partial class Parser {
 		} else if (la.kind == 7) {
 			Get();
 			val = ReadString(t.val); 
-		} else SynErr(119);
+		} else SynErr(118);
 		path.Add(val); 
 		if (la.kind == 22) {
 			Get();
@@ -1537,7 +1530,7 @@ internal sealed partial class Parser {
 		} else if (la.kind == 25) {
 			Get();
 			it.ForType = ElaForType.ForDownto; 
-		} else SynErr(120);
+		} else SynErr(119);
 		Expr(out cexp);
 		it.Target = cexp; 
 		Expect(35);
@@ -1687,7 +1680,7 @@ internal sealed partial class Parser {
 
 	void EqExpr(out ElaExpression exp) {
 		ShiftExpr(out exp);
-		while (StartOf(17)) {
+		while (StartOf(16)) {
 			var cexp = default(ElaExpression); 
 			var op = default(ElaOperator);
 			
@@ -1822,7 +1815,7 @@ internal sealed partial class Parser {
 
 	void MulExpr(out ElaExpression exp) {
 		CastExpr(out exp);
-		while (StartOf(18)) {
+		while (StartOf(17)) {
 			var cexp = default(ElaExpression); 
 			var op = default(ElaOperator);
 			
@@ -1999,7 +1992,7 @@ internal sealed partial class Parser {
 		exp = null; 
 		if (la.kind == 61) {
 			Get();
-			if (StartOf(19)) {
+			if (StartOf(18)) {
 				Application(out exp);
 			}
 			if (exp == null)
@@ -2009,7 +2002,7 @@ internal sealed partial class Parser {
 			
 		} else if (la.kind == 89) {
 			Get();
-			if (StartOf(19)) {
+			if (StartOf(18)) {
 				Application(out exp);
 			}
 			if (exp == null)
@@ -2017,9 +2010,9 @@ internal sealed partial class Parser {
 			else
 				exp = new ElaUnary(t) { Expression = exp, Operator = ElaUnaryOperator.BitwiseNot };
 			
-		} else if (StartOf(19)) {
+		} else if (StartOf(18)) {
 			Application(out exp);
-		} else SynErr(121);
+		} else SynErr(120);
 	}
 
 	void Application(out ElaExpression exp) {
@@ -2043,7 +2036,7 @@ internal sealed partial class Parser {
 			}
 		} else if (la.kind == 2) {
 			VariantLiteral(out exp);
-		} else SynErr(122);
+		} else SynErr(121);
 	}
 
 	void AccessExpr(out ElaExpression exp) {
@@ -2062,7 +2055,7 @@ internal sealed partial class Parser {
 			} else if (la.kind == 1) {
 				Get();
 				exp = new ElaFieldReference(t) { FieldName = t.val, TargetObject = exp }; 
-			} else SynErr(123);
+			} else SynErr(122);
 		}
 	}
 
@@ -2184,7 +2177,7 @@ internal sealed partial class Parser {
 			op = ElaOperator.Concat; 
 			break;
 		}
-		default: SynErr(124); break;
+		default: SynErr(123); break;
 		}
 	}
 
@@ -2238,7 +2231,7 @@ internal sealed partial class Parser {
 			FailExpr(out exp);
 			break;
 		}
-		default: SynErr(125); break;
+		default: SynErr(124); break;
 		}
 	}
 
@@ -2248,7 +2241,7 @@ internal sealed partial class Parser {
 			WhileExpr(out exp);
 		} else if (la.kind == 36) {
 			ForExpr(out exp);
-		} else SynErr(126);
+		} else SynErr(125);
 	}
 
 	void ComprehensionEntry(ElaExpression body, out ElaFor it) {
@@ -2300,9 +2293,9 @@ internal sealed partial class Parser {
 			Expect(10);
 		} else if (la.kind == 10) {
 			Get();
-		} else SynErr(127);
+		} else SynErr(126);
 		b.Expressions.Add(exp); 
-		if (StartOf(20)) {
+		if (StartOf(19)) {
 			DeclarationBlock(b);
 		}
 	}
@@ -2333,8 +2326,7 @@ internal sealed partial class Parser {
 		{x,T,T,x, x,T,T,T, T,x,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, T,T,x,x, x,x,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,T,T,T, x,T,T,T, T,x,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x},
 		{x,T,x,x, x,T,T,T, T,x,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, T,T,x,x, x,x,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,x,x, x,T,T,T, T,x,x,T, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, T,T,T,x, T,T,x,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,x,x, x,x,x,x, x,x,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,T,x,x, x,T,T,T, T,x,x,T, T,T,T,T, x,T,x,x, x,x,x,T, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,T,T, T,T,T,x, T,T,x,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,T,x,x, x,T,T,T, T,x,x,T, x,T,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, T,T,x,x, x,T,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, x,x,x,x, x,x,x,x, x},
@@ -2466,25 +2458,24 @@ internal sealed class Errors {
 			case 106: s = "invalid LiteralPattern"; break;
 			case 107: s = "invalid IdentPattern"; break;
 			case 108: s = "invalid TypeCheckPattern"; break;
-			case 109: s = "invalid BindingPattern"; break;
-			case 110: s = "invalid ForeachPattern"; break;
-			case 111: s = "invalid FieldPattern"; break;
-			case 112: s = "invalid RecordField"; break;
-			case 113: s = "invalid ParamList"; break;
-			case 114: s = "invalid VariableAttributes"; break;
-			case 115: s = "invalid VariableDeclarationBody"; break;
-			case 116: s = "invalid WhereBindingBody"; break;
-			case 117: s = "invalid BindingGuardList"; break;
-			case 118: s = "invalid IncludeStat"; break;
-			case 119: s = "invalid Qualident"; break;
-			case 120: s = "invalid ForExpr"; break;
-			case 121: s = "invalid UnaryExpr"; break;
-			case 122: s = "invalid Application"; break;
-			case 123: s = "invalid AccessExpr"; break;
-			case 124: s = "invalid FuncOperator"; break;
-			case 125: s = "invalid EmbExpr"; break;
-			case 126: s = "invalid IterExpr"; break;
-			case 127: s = "invalid DeclarationBlock"; break;
+			case 109: s = "invalid ForeachPattern"; break;
+			case 110: s = "invalid FieldPattern"; break;
+			case 111: s = "invalid RecordField"; break;
+			case 112: s = "invalid ParamList"; break;
+			case 113: s = "invalid VariableAttributes"; break;
+			case 114: s = "invalid VariableDeclarationBody"; break;
+			case 115: s = "invalid WhereBindingBody"; break;
+			case 116: s = "invalid BindingGuardList"; break;
+			case 117: s = "invalid IncludeStat"; break;
+			case 118: s = "invalid Qualident"; break;
+			case 119: s = "invalid ForExpr"; break;
+			case 120: s = "invalid UnaryExpr"; break;
+			case 121: s = "invalid Application"; break;
+			case 122: s = "invalid AccessExpr"; break;
+			case 123: s = "invalid FuncOperator"; break;
+			case 124: s = "invalid EmbExpr"; break;
+			case 125: s = "invalid IterExpr"; break;
+			case 126: s = "invalid DeclarationBlock"; break;
 
 			default: s = "error " + n; break;
 		}

@@ -5,13 +5,15 @@ using Ela.Debug;
 
 namespace Ela.Runtime.ObjectModel
 {
-	public class ElaRecord : ElaTuple
+	public class ElaRecord : ElaObject
 	{
 		#region Construction
         private const string FIELDS = "fields";
-        private const ElaTraits TRAITS = ElaTraits.Ord | ElaTraits.Enum | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Set | ElaTraits.Len | ElaTraits.FieldGet | ElaTraits.FieldSet | ElaTraits.Convert | ElaTraits.Show | ElaTraits.Ix;
+        private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Get | ElaTraits.Set | ElaTraits.Len | ElaTraits.FieldGet | ElaTraits.FieldSet | ElaTraits.Convert | ElaTraits.Show | ElaTraits.Ix;
 		private string[] keys;
+        private ElaValue[] values;
 		private bool[] flags;
+        private int cons;
 
 		private enum SetResult
 		{
@@ -21,9 +23,10 @@ namespace Ela.Runtime.ObjectModel
 			Immutable
 		}
 
-		public ElaRecord(params ElaRecordField[] fields) : base(fields.Length, ElaTypeCode.Record, TRAITS)
+		public ElaRecord(params ElaRecordField[] fields) : base(ElaTypeCode.Record, TRAITS)
 		{
 			keys = new string[fields.Length];
+            values = new ElaValue[fields.Length];
 			flags = new bool[fields.Length];
 
 			for (var i = 0; i < fields.Length; i++)
@@ -31,15 +34,45 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		internal ElaRecord(int size) : base(size, ElaTypeCode.Record, TRAITS)
+		internal ElaRecord(int size) : base(ElaTypeCode.Record, TRAITS)
 		{
 			keys = new string[size];
 			flags = new bool[size];
+            values = new ElaValue[size];
 		}
 		#endregion
 
 
 		#region Traits
+        protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return new ElaValue(Eq(left, right, ctx));
+        }
+
+
+        protected internal override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return new ElaValue(!Eq(left, right, ctx));
+        }
+
+
+        private bool Eq(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            if (left.Ref == right.Ref)
+                return true;
+
+            var lt = left.Ref as ElaRecord;
+            var rt = right.Ref as ElaRecord;
+
+            if (lt == null || rt == null || rt.Length != lt.Length || 
+                !(EqHelper.ListEquals(rt.keys, lt.keys)) ||
+                !(EqHelper.ListEquals(rt.values, lt.values)))
+                return false;
+
+            return true;
+        }
+
+
 		protected internal override ElaValue GetValue(ElaValue key, ExecutionContext ctx)
 		{
 			key = key.Id(ctx);
@@ -48,8 +81,8 @@ namespace Ela.Runtime.ObjectModel
 				return GetField(key.AsString(), ctx);
 			else if (key.TypeId == ElaMachine.INT)
 			{
-				if (key.I4 != -1 && key.I4 < Values.Length)
-					return Values[key.I4];
+				if (key.I4 != -1 && key.I4 < values.Length)
+					return values[key.I4];
 				else
 				{
 					ctx.IndexOutOfRange(key, new ElaValue(this));
@@ -85,8 +118,8 @@ namespace Ela.Runtime.ObjectModel
 		{
 			var index = GetOrdinal(field);
 
-			if (index != -1 && index < Values.Length)
-				return Values[index];
+			if (index != -1 && index < values.Length)
+				return values[index];
 
 			ctx.UnknownField(field, new ElaValue(this));
 			return Default();
@@ -115,7 +148,7 @@ namespace Ela.Runtime.ObjectModel
 			if (type == ElaTypeCode.Record)
 				return new ElaValue(this);
 			else if (type == ElaTypeCode.Tuple)
-				return new ElaValue(new ElaTuple(Values));
+				return new ElaValue(new ElaTuple(values));
 			else
 			{
 				ctx.ConversionFailed(new ElaValue(this), type);
@@ -151,20 +184,6 @@ namespace Ela.Runtime.ObjectModel
 			sb.Append('}');
 			return sb.ToString();
 		}
-
-
-		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
-		{
-			ctx.Fail(ElaRuntimeError.TraitGen, ToString(), ((ElaTypeCode)TypeId).GetShortForm());
-			return Default();
-		}
-
-
-		protected internal override ElaValue GenerateFinalize(ExecutionContext ctx)
-		{
-			ctx.Fail(ElaRuntimeError.TraitGen, ToString(), ((ElaTypeCode)TypeId).GetShortForm());
-			return Default();
-		}
 		#endregion
 
 
@@ -191,22 +210,17 @@ namespace Ela.Runtime.ObjectModel
 
 		internal void AddField(string key, bool mutable, ElaValue value)
 		{
-			keys[base.Length] = key;
-			flags[base.Length] = mutable;
-			base.InternalSetValue(value);
-		}
-
-
-		internal void AddField(int index, string key, ElaValue value)
-		{
-			AddField(index, key, false, value);
+            keys[cons] = key;
+            flags[cons] = mutable;
+			values[cons] = value;
+            cons++;
 		}
 
 
 		internal void AddField(int index, string key, bool mutable, ElaValue value)
 		{
 			keys[index] = key;
-			Values[index] = value;
+			values[index] = value;
 			flags[index] = mutable;
 		}
 
@@ -230,12 +244,12 @@ namespace Ela.Runtime.ObjectModel
 
 		private SetResult SetValue(int index, ElaValue value)
 		{
-			if (index > -1 && index < Values.Length)
+			if (index > -1 && index < values.Length)
 			{
 				if (!flags[index])
 					return SetResult.Immutable;
 
-				Values[index] = value;
+				values[index] = value;
 				return SetResult.Done;
 			}
 			else
@@ -245,14 +259,20 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Properties
+        public int Length
+        {
+            get { return keys.Length; }
+        }
+
+
 		public ElaValue this[string key]
 		{
 			get
 			{
 				var index = GetOrdinal(key);
 
-				if (index > -1 && index < Values.Length)
-					return Values[index];
+				if (index > -1 && index < values.Length)
+					return values[index];
 				else
 					throw new IndexOutOfRangeException();
 			}
@@ -268,12 +288,12 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		public new ElaValue this[int index]
+		public ElaValue this[int index]
 		{
 			get
 			{
-				if (index > -1 && index < Values.Length)
-					return Values[index];
+				if (index > -1 && index < values.Length)
+					return values[index];
 				else
 					throw new IndexOutOfRangeException();
 			}

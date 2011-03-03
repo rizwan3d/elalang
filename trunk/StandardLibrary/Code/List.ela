@@ -1,32 +1,21 @@
-open Core foldr, fold, id
+open Core foldr, foldl, fold, id
 
 /*  takes an element and a sequence and intersperses that element between the elements of the sequence:
 intersperse ',' "abcde" = "a,b,c,d,e" */
 let intersperse e x::([]@n) = x :: intersperse e n;
-				e x::xs 	= x :: e :: intersperse e xs;
-				_ []@n		= n
+                e x::xs 	= x :: e :: intersperse e xs;
+                _ []@n		= n
 end
 
 /* transposes the rows and columns of its argument:
 transpose [[1,2,3],[4,5,6]] = [[1,4],[2,5],[3,6]] */
 let transpose []::xs      = transpose xs;
-			  (x::xs)::ys = (x :: [h \\ (h::_) <- ys]) :: transpose (xs :: [t \\ (_::t) <- ys]);
-			  []@n        = n
-end
-
-/* concatenate a list of lists */
-let concat x::xs = x ++ concat xs; 
-           []@n  = n
-end
-
-/* reates a list from a list generating function by application of 
-this function on all elements in a list passed as the second argument. */ 
-let concatMap f x::xs = f x :: concatMap f xs; 
-              _ []@n  = n
+              (x::xs)::ys = (x :: [h \\ (h::_) <- ys]) :: transpose (xs :: [t \\ (_::t) <- ys]);
+              []@n        = n
 end
 
 /* inserts the given sequence in between the sequences and concatenates the result. */
-let intercalate xs xss = concat (intersperse xs xss) end
+let intercalate xs xss = Core.concat (intersperse xs xss) end
 
 /* returns the list of all subsequences of the argument, except for the empty list:
 nonEmptySubsequences [1,2] = [[1],[2],[1,2]] */
@@ -52,4 +41,13 @@ let permutations
                                                              in  (y::us, f (t::y::us) :: zs)
                                end
        end
-end 
+end
+
+/* takes a predicate and two lists and returns the first list with the first 
+occurrence of each element of the second list removed. */
+let groupBy eq x::xs = (x::ys) :: groupBy eq zs
+                       where (ys,zs) = Core.span (eq x) xs end;
+            _  []@n  =  n
+end
+
+let group =  groupBy (==)

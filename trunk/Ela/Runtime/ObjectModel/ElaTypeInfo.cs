@@ -112,21 +112,8 @@ namespace Ela.Runtime.ObjectModel
         private bool CompareInfos(ElaTypeInfo left, ElaTypeInfo right)
         {
             return left.GetTypeName() == right.GetTypeName() &&
-                CompareLists(left.keys, right.keys) &&
-                CompareLists(left.values, right.values);
-        }
-
-
-        private bool CompareLists<T>(List<T> left, List<T> right) where T : IEquatable<T>
-        {
-            if (left.Count != right.Count)
-                return false;
-
-            for (var i = 0; i < left.Count; i++)
-                if (!left[i].Equals(right[i]))
-                    return false;
-
-            return true;
+                EqHelper.ListEquals(left.keys, right.keys) &&
+                EqHelper.ListEquals(left.values, right.values);
         }
 
 
