@@ -13,10 +13,11 @@ namespace Ela
 		{
 			var sb = new StringBuilder();
 			var c = 0;
+            var maxLen = info.SequenceLength;
 
 			foreach (var v in seq)
 			{
-				if (info.SequenceLength > 0 && c > info.SequenceLength)
+				if (info.SequenceLength > 0 && c > maxLen)
 				{
 					sb.Append("...");
 					break;
