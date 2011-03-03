@@ -14,7 +14,7 @@ namespace Ela.Library.Collections
         private ElaList forward;
         private ElaList backward;
 
-        internal ElaQueue(ElaList forward, ElaList backward) : base(ElaTraits.Eq|ElaTraits.Show|ElaTraits.Len|ElaTraits.Convert|ElaTraits.Fold)
+        internal ElaQueue(ElaList forward, ElaList backward) : base(ElaTraits.Eq|ElaTraits.Show|ElaTraits.Len|ElaTraits.Convert|ElaTraits.Fold|ElaTraits.Cons)
         {
             this.forward = forward;
             this.backward = backward;
@@ -85,6 +85,26 @@ namespace Ela.Library.Collections
             ctx.ConversionFailed(new ElaValue(this), type);
             return Default();
         }
+
+
+		protected override ElaValue Cons(ElaObject instance, ElaValue value, ExecutionContext ctx)
+		{
+			var q = instance as ElaQueue;
+
+			if (q == null)
+			{
+				ctx.InvalidType(GetTypeName(), new ElaValue(instance));
+				return Default();
+			}
+
+			return new ElaValue(q.Enqueue(value));			
+		}
+
+
+		protected override ElaValue Nil(ExecutionContext ctx)
+		{
+			return new ElaValue(ElaQueue.Empty);
+		}
 
 
         public ElaList ToList()

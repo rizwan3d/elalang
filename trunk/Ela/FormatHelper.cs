@@ -13,13 +13,15 @@ namespace Ela
 		{
 			var sb = new StringBuilder();
 			var c = 0;
+			var ud = false;
             var maxLen = info.SequenceLength;
 
 			foreach (var v in seq)
 			{
-				if (info.SequenceLength > 0 && c > maxLen)
+				if (maxLen > 0 && c > maxLen)
 				{
 					sb.Append("...");
+					ud = true;
 					break;
 				}
 
@@ -29,6 +31,9 @@ namespace Ela
 				if (v.Ref != null)
 					sb.Append(v.Ref.Show(v, ctx, info));
 			}
+
+			if (!ud && seq is ChunkEnumerable)
+				sb.Append("...");
 
 			return sb.ToString();
 		}

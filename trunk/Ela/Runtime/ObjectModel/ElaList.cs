@@ -192,7 +192,7 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override string Show(ExecutionContext ctx, ShowInfo info)
 		{
-			return "[" + FormatHelper.FormatEnumerable((IEnumerable<ElaValue>)this, ctx, info) + "]";
+			return "[" + FormatHelper.FormatEnumerable(new ChunkEnumerable(AsConstrainedSequence()), ctx, info) + "]";
 		}
 
 
@@ -319,6 +319,35 @@ namespace Ela.Runtime.ObjectModel
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
+		}
+
+
+		private IEnumerable<ElaValue> AsConstrainedSequence()
+		{
+			var count = 0;
+
+			if (this != Empty)
+			{
+				ElaObject xs = this;
+
+				do
+				{
+					yield return xs.Head(ElaObject.DummyContext).Id(DummyContext);
+					count++;
+					xs = xs.Tail(ElaObject.DummyContext).Ref;
+
+					if ((xs.Traits & ElaTraits.Thunk) == ElaTraits.Thunk)
+					{
+						if (count < 50)
+							xs.Force(ElaObject.DummyContext);
+						else
+							yield break;
+					}
+					else if ((xs.Traits & ElaTraits.Fold) != ElaTraits.Fold)
+						yield break;
+				}
+				while (!xs.IsNil(ElaObject.DummyContext));
+			}
 		}
 		#endregion
 
