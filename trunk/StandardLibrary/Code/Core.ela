@@ -259,6 +259,13 @@ end
 
 let delete = deleteBy (==)
 
+let insertBy _   x []@n = x::n;
+             cmp x (y::ys')@ys | cmp x y is (`GT) = y :: insertBy cmp x ys';
+                               | else             = x :: ys
+end
+
+let insert = insertBy compare
+
 let nubBy eq xs = nubBy' xs (nil xs)
     where nubBy' []@n _ = n;
                  y::ys xs | elemBy eq y xs = nubBy' ys xs;

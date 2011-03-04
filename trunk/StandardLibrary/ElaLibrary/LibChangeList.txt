@@ -1,3 +1,4 @@
+0.0.1.28:New:Functions 'insert' and 'insertBy' added to Core module.
 0.0.1.27:New:Iterator module is implemented.
 0.0.1.26:New:An initial version of List module is implemented.
 0.0.1.25:New:Functions 'nub' and 'nubBy' added to Core module.
