@@ -35,7 +35,7 @@ namespace Ela.Runtime.ObjectModel
         private const string MODULE = "[module:{0}]";
 		private ElaMachine vm;
 
-		internal ElaModule(int handle, ElaMachine vm) : base(ElaTypeCode.Module, ElaTraits.Eq | ElaTraits.Show)
+		internal ElaModule(int handle, ElaMachine vm) : base(ElaTypeCode.Module, ElaTraits.Eq|ElaTraits.Show|ElaTraits.FieldGet)
 		{
 			Handle = handle;
 			this.vm = vm;
@@ -61,6 +61,51 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override string Show(ExecutionContext ctx, ShowInfo info)
 		{
 			return String.Format(MODULE, vm != null ? vm.Assembly.GetModuleName(Handle) : String.Empty);
+		}
+
+
+		protected internal override ElaValue GetField(string field, ExecutionContext ctx)
+		{
+			if (vm != null)
+			{
+				var frame = vm.Assembly.GetModule(Handle);
+				ScopeVar sc;
+
+				if (!frame.GlobalScope.Locals.TryGetValue(field, out sc))
+				{
+					ctx.UnknownField(field, new ElaValue(this));
+					return Default();
+				}
+
+				if ((sc.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private)
+				{
+					ctx.Fail(new ElaError(ElaRuntimeError.PrivateVariable, field));
+					return Default();
+				}
+
+				return vm.modules[Handle][sc.Address];
+			}
+
+			ctx.UnknownField(field, new ElaValue(this));
+			return Default();
+		}
+
+
+		protected internal override bool HasField(string field, ExecutionContext ctx)
+		{
+			if (vm != null)
+			{
+				var frame = vm.Assembly.GetModule(Handle);
+				ScopeVar sc;
+
+				if (!frame.GlobalScope.Locals.TryGetValue(field, out sc) || 
+					(sc.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private)
+					return false;
+
+				return true;
+			}
+
+			return false;
 		}
 		#endregion
 

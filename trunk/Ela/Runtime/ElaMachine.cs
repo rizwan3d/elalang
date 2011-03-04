@@ -15,7 +15,7 @@ namespace Ela.Runtime
 	public sealed class ElaMachine
 	{
 		#region Construction
-		private ElaValue[][] modules;
+		internal ElaValue[][] modules;
 		private Pervasive[][] pervasives;
 		private CodeAssembly asm;
 		private object syncRoot = new Object();
