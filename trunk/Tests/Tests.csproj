@@ -43,7 +43,6 @@
   </Target>
   -->
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="BasicTests.ela" />
     <None Include="ComplexTests.ela" />
     <None Include="ComprehensionTests.ela" />

@@ -2,7 +2,10 @@
 
 ==Introduction==
 
-In this chapter we will review functions in Ela - their pecularities and operations available for them. We are also going to use Ela Interactive Console as in previous chapter. However it is not always convinient to type function declarations directly in interactive mode - this is fully supported and works good for short function declarations however you might find more complex function declarations written in a single line quite cumbersome. That is why we are going to write such functions in a separate file.
+In this chapter we will review functions in Ela - their pecularities and operations available for them. 
+We are also going to use Ela Interactive Console as in previous chapter. 
+
+However it is not always convinient to type function declarations directly in interactive mode - this is fully supported and works good for short function declarations however you might find more complex function declarations written in a single line quite cumbersome. That is why we are going to write such functions in a separate file.
 
 This is what you need to do: create a file named _Samples.ela_ and place it in the folder where you have your Ela Console executable (_elac.exe_). In order to import declarations from this file you need to use `open` directive like so:
 
