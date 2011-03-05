@@ -30,13 +30,13 @@ namespace Ela.CodeModel
 				sb.Append(Pattern.ToString());
 
 			if (Guard != null)
-				sb.Append(Guard.ToStringAsGuard());
+                sb.Append(Format.ExpressionToStringAsGuard(Guard));
 			
 			sb.Append(" = ");
 			sb.Append(Expression.ToString());
 
 			if (Where != null)
-				sb.Append(((ElaBinding)Where).ToStringAsWhere());
+				sb.Append(Format.ExpressionToStringAsGuard((ElaBinding)Where));
 
 			return sb.ToString();
 		}

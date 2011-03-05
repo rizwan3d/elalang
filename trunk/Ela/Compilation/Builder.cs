@@ -729,7 +729,7 @@ namespace Ela.Compilation
 					cw.Emit(Op.Conv, (Int32)aff);
 					break;
 				default:
-					AddError(ElaCompilerError.CastNotSupported, exp, aff.GetShortForm());
+					AddError(ElaCompilerError.CastNotSupported, exp, TypeCodeFormat.GetShortForm(aff));
 					break;
 			}
 		}

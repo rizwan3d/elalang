@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Ela.Runtime;
 using Ela.Runtime.ObjectModel;
@@ -48,7 +47,8 @@ namespace Ela.Library.Collections
 
         public IEnumerator<ElaValue> GetEnumerator()
         {
-            return Tree.Enumerate().Select(e => e.Value).GetEnumerator();
+            foreach (var kv in Tree.Enumerate())
+                yield return kv.Value;
         }
 
 
@@ -108,7 +108,7 @@ namespace Ela.Library.Collections
 
         protected override ElaValue GetLength(ExecutionContext ctx)
         {
-            return new ElaValue(Tree.Enumerate().Count());
+            return new ElaValue(Length);
         }
 
 
@@ -140,7 +140,15 @@ namespace Ela.Library.Collections
 
         public int Length
         {
-            get { return Tree.Enumerate().Count(); }
+            get
+            {
+                var c = 0;
+
+                foreach (var e in Tree.Enumerate())
+                    c++;
+
+                return c;
+            }
         }
         #endregion
     }

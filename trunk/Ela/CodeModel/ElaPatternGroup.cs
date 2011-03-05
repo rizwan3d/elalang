@@ -31,9 +31,8 @@ namespace Ela.CodeModel
 				if (c++ > 0)
 					sb.Append(" ");
 
-				if (f.Type == ElaNodeType.VariantPattern ||
-					f.Type == ElaNodeType.HeadTailPattern)
-					sb.Append(f.ToString().PutInBraces());
+				if (f.Type == ElaNodeType.VariantPattern || f.Type == ElaNodeType.HeadTailPattern)
+                    sb.Append(Format.PutInBraces(f.ToString()));
 				else
 					sb.Append(f.ToString());
 			}

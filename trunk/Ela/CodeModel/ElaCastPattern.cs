@@ -22,7 +22,7 @@ namespace Ela.CodeModel
 		#region Methods
 		public override string ToString()
 		{
-			return VariableName + ":" + TypeAffinity.GetShortForm();
+            return VariableName + ":" + TypeCodeFormat.GetShortForm(TypeAffinity);
 		}
 		#endregion
 

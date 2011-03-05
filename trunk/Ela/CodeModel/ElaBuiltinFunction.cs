@@ -28,7 +28,7 @@ namespace Ela.CodeModel
 		#region Methods
 		public override string ToString()
 		{
-			return (Kind == ElaBuiltinFunctionKind.Operator ? Operator.AsString().PutInBraces() :
+			return (Kind == ElaBuiltinFunctionKind.Operator ? Format.PutInBraces(Format.OperatorAsString(Operator)) :
 				Kind.ToString().ToLower());
 		}
 		#endregion

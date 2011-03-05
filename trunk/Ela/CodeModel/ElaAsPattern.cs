@@ -22,7 +22,7 @@ namespace Ela.CodeModel
 		#region Methods
 		public override string ToString()
 		{
-			return Pattern.PutInBraces() + "@" + Name;
+            return Format.PutInBraces(Pattern) + "@" + Name;
 		}
 		#endregion
 

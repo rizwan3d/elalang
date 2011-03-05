@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using Microsoft.Win32;
+using System.Collections;
 
 namespace VersionTracker
 {
@@ -314,9 +314,14 @@ namespace VersionTracker
 			{
 				using (var sr = new StreamWriter(File.Open(CurrentFile, FileMode.Create)))
 				{
-					foreach (var r in grid.Rows.Cast<DataGridViewRow>().OrderByDescending(
-						r => GetVersion(r.Cells[0].Value)))
+                    var arr = new ArrayList(grid.Rows).ToArray();
+                    Array.Sort(arr, (l,r) => -GetVersion(((DataGridViewRow)l).Cells[0].Value).
+                        CompareTo(GetVersion(((DataGridViewRow)r).Cells[0].Value)));
+
+					foreach (var o in arr)
 					{
+                        var r = (DataGridViewRow)o;
+
 						if (r.Index < grid.Rows.Count - 1 || r.Cells[2].Value != null)
 						{
 							sr.WriteLine(String.Format("{0}:{1}:{2}",

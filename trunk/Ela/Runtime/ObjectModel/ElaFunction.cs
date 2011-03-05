@@ -105,61 +105,61 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Static Methods
-		public static ElaFunction Create<T1>(Func<T1> fun)
+		public static ElaFunction Create<T1>(ElaFun<T1> fun)
 		{
 			return new DelegateFunction<T1>(DEF_NAME, fun);
 		}
 
 
-		public static ElaFunction Create<T1,T2>(Func<T1,T2> fun)
+		public static ElaFunction Create<T1,T2>(ElaFun<T1,T2> fun)
 		{
 			return new DelegateFunction<T1,T2>(DEF_NAME, fun);
 		}
 
 
-		public static ElaFunction Create<T1,T2,T3>(Func<T1,T2,T3> fun)
+		public static ElaFunction Create<T1,T2,T3>(ElaFun<T1,T2,T3> fun)
 		{
 			return new DelegateFunction<T1,T2,T3>(DEF_NAME, fun);
 		}
 
 
-		public static ElaFunction Create<T1,T2,T3,T4>(Func<T1,T2,T3,T4> fun)
+		public static ElaFunction Create<T1,T2,T3,T4>(ElaFun<T1,T2,T3,T4> fun)
 		{
 			return new DelegateFunction<T1,T2,T3,T4>(DEF_NAME, fun);
 		}
 
 
-		public static ElaFunction Create<T1,T2,T3,T4,T5>(Func<T1,T2,T3,T4,T5> fun)
+		public static ElaFunction Create<T1,T2,T3,T4,T5>(ElaFun<T1,T2,T3,T4,T5> fun)
 		{
 			return new DelegateFunction<T1,T2,T3,T4,T5>(DEF_NAME, fun);
 		}
 
 
-		public static ElaFunction Create<T1>(string name, Func<T1> fun)
+		public static ElaFunction Create<T1>(string name, ElaFun<T1> fun)
 		{
 			return new DelegateFunction<T1>(name, fun);
 		}
 
 
-		public static ElaFunction Create<T1,T2>(string name, Func<T1,T2> fun)
+		public static ElaFunction Create<T1,T2>(string name, ElaFun<T1,T2> fun)
 		{
 			return new DelegateFunction<T1,T2>(name, fun);
 		}
 
 
-		public static ElaFunction Create<T1,T2,T3>(string name, Func<T1,T2,T3> fun)
+		public static ElaFunction Create<T1,T2,T3>(string name, ElaFun<T1,T2,T3> fun)
 		{
 			return new DelegateFunction<T1,T2,T3>(name, fun);
 		}
 
 
-		public static ElaFunction Create<T1,T2,T3,T4>(string name, Func<T1,T2,T3,T4> fun)
+		public static ElaFunction Create<T1,T2,T3,T4>(string name, ElaFun<T1,T2,T3,T4> fun)
 		{
 			return new DelegateFunction<T1,T2,T3,T4>(name, fun);
 		}
 
 
-		public static ElaFunction Create<T1,T2,T3,T4,T5>(string name, Func<T1,T2,T3,T4,T5> fun)
+		public static ElaFunction Create<T1,T2,T3,T4,T5>(string name, ElaFun<T1,T2,T3,T4,T5> fun)
 		{
 			return new DelegateFunction<T1,T2,T3,T4,T5>(name, fun);
 		}

@@ -35,7 +35,7 @@ namespace Ela.CodeModel
 			if (FlipParameters)
 				sb.Append('(');
 
-			var simple = Target.IsSimpleExpression();
+            var simple = Format.IsSimpleExpression(Target);
 
 			if (!simple)
 				sb.Append('(');
@@ -47,10 +47,10 @@ namespace Ela.CodeModel
 
 			foreach (var p in Parameters)
 			{
-				if (p.IsSimpleExpression())
+                if (Format.IsSimpleExpression(p))
 					sb.Append(" " + p.ToString());
 				else
-					sb.Append(" " + p.PutInBraces());
+                    sb.Append(" " + Format.PutInBraces(p));
 			}
 
 			if (FlipParameters)

@@ -1,3 +1,4 @@
+0.8.6.31:Change:Multiple code refactorings in order to support .NET 2.0 as a minimum requirement (C# 3.0 is still a minimum version of compiler that is needed to build Ela projects).
 0.8.6.30:New:Now ElaModule supports trait 'FieldGet'.
 0.8.6.29:Change:Now printing infinite lists (using 'show' trait and built-in formatter helper) cannot cycle - looping through the list will always stop after first 50 elements. If one needs to show more elements than these elements should be explicitely taken from list before that ('take').
 0.8.6.28:Change:Built-in function 'cout' (along with corresponding op code) is decomissioned. One should should use Con module for console output.

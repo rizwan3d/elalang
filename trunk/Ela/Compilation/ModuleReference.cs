@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace Ela.Compilation
@@ -37,7 +36,7 @@ namespace Ela.Compilation
 
 		private string BuildFullName(string name)
 		{
-			return Path.Count() == 0 ? name :
+			return Path.Length == 0 ? name :
 				String.Concat(String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), Path), 
 					System.IO.Path.DirectorySeparatorChar, name);
 		}

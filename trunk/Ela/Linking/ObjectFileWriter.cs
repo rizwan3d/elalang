@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using Ela.Compilation;
 
 namespace Ela.Linking
@@ -33,7 +32,7 @@ namespace Ela.Linking
 				bw.Write(kv.Key);
 				bw.Write(kv.Value.ModuleName);
 				bw.Write(kv.Value.DllName);
-				bw.Write(kv.Value.Path.Count());
+				bw.Write(kv.Value.Path.Length);
 				
 				foreach (var p in kv.Value.Path)
 					bw.Write(p);

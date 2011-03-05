@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Ela.Compilation;
 using Ela.Runtime;
 
@@ -92,7 +91,11 @@ namespace Ela.Linking
 
 		public string GetModuleName(int handle)
 		{
-			return moduleMap.First(kv => kv.Value == handle).Key;
+			foreach (var kv in moduleMap)
+                if (kv.Value == handle)
+                    return kv.Key;
+
+            return null;
 		}
 
 
@@ -111,13 +114,13 @@ namespace Ela.Linking
 
 		public IEnumerable<String> EnumerateModules()
 		{
-			return moduleMap.Keys.Cast<String>();
+			return moduleMap.Keys;
 		}
 
 
 		public IEnumerable<String> EnumerateArguments()
 		{
-			return arguments.Keys.Cast<String>();
+			return arguments.Keys;
 		}
 
 

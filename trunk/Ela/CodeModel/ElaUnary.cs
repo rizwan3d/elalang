@@ -22,7 +22,7 @@ namespace Ela.CodeModel
 		#region Methods
 		public override string ToString()
 		{
-			return Operator.AsString() + Expression.PutInBracesComplex();
+            return Format.OperatorAsString(Operator) + Format.PutInBracesComplex(Expression);
 		}
 		#endregion
 

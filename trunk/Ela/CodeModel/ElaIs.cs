@@ -22,8 +22,8 @@ namespace Ela.CodeModel
 		#region Methods
 		public override string ToString()
 		{
-			return Expression + (Pattern.Type == ElaNodeType.IsPattern ? String.Empty :  " ? ") + 
-				Pattern.PutInBracesComplex();
+			return Expression + (Pattern.Type == ElaNodeType.IsPattern ? String.Empty :  " ? ") +
+                Format.PutInBracesComplex(Pattern);
 		}
 		#endregion
 

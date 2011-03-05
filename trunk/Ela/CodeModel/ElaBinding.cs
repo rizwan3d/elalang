@@ -48,7 +48,7 @@ namespace Ela.CodeModel
 				(VariableFlags & ElaVariableFlags.Immutable) == ElaVariableFlags.Immutable)
 			{
 				var fun = (ElaFunctionLiteral)InitExpression;
-				sb.Append(fun.ToStringAsFunction());
+                sb.Append(Format.FunctionToString(fun));
 			}
 			else
 			{
@@ -62,7 +62,7 @@ namespace Ela.CodeModel
 			}
 
 			if (Where != null)
-				sb.Append(Where.ToStringAsWhere());
+                sb.Append(Format.BindingToStringAsWhere(Where));
 
 			if (And != null)
 			{

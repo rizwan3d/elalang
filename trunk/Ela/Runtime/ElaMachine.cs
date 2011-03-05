@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
@@ -813,7 +812,7 @@ namespace Ela.Runtime
 								((ElaRecord)rec.Ref).AddField(right.AsString(), mut.I4 == 1, left);
 							else
 							{
-								InvalidType(left, thread, evalStack, ElaTypeCode.Record.GetShortForm());
+								InvalidType(left, thread, evalStack, TypeCodeFormat.GetShortForm(ElaTypeCode.Record));
 								goto SWITCH_MEM;
 							}
 						}
@@ -1371,7 +1370,7 @@ namespace Ela.Runtime
 							if (right.TypeId != FUN)
 							{
 								evalStack.PopVoid();
-								ExecuteFail(new ElaError(ElaRuntimeError.ExpectedFunction, right.TypeCode.GetShortForm()), thread, evalStack);
+								ExecuteFail(new ElaError(ElaRuntimeError.ExpectedFunction, TypeCodeFormat.GetShortForm(right.TypeCode)), thread, evalStack);
 								goto SWITCH_MEM;
 							}
 
@@ -1493,7 +1492,7 @@ namespace Ela.Runtime
 
 							if (left.TypeId != STR)
 							{
-								InvalidType(left, thread, evalStack, ElaTypeCode.String.GetShortForm());
+                                InvalidType(left, thread, evalStack, TypeCodeFormat.GetShortForm(ElaTypeCode.String));
 								goto SWITCH_MEM;
 							}
 
@@ -1753,7 +1752,8 @@ namespace Ela.Runtime
 					return false;
 				}
 				else
-					ExecuteFail(new ElaError(ElaRuntimeError.ExpectedFunction, ((ElaTypeCode)fun.TypeId).GetShortForm()), thread, stack);
+					ExecuteFail(new ElaError(ElaRuntimeError.ExpectedFunction, TypeCodeFormat.GetShortForm((ElaTypeCode)fun.TypeId)), 
+                        thread, stack);
 
 				return true;
 			}
@@ -1977,7 +1977,7 @@ namespace Ela.Runtime
 		private void ConversionFailed(ElaValue val, int target, string err, WorkerThread thread, EvalStack evalStack)
 		{
 			ExecuteFail(new ElaError(ElaRuntimeError.ConversionFailed, val.GetTypeName(),
-				((ElaTypeCode)target).GetShortForm(), err), thread, evalStack);
+				TypeCodeFormat.GetShortForm((ElaTypeCode)target), err), thread, evalStack);
 		}
 
 

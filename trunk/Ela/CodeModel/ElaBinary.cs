@@ -24,10 +24,10 @@ namespace Ela.CodeModel
 		#region Methods
 		public override string ToString()
 		{
-			var str = Left.PutInBracesComplex() + " " +
-				(Operator == ElaOperator.Custom ? CustomOperator : Operator.AsString()) +
-				" " + Right.PutInBracesComplex();
-			return Left.IsHiddenVar() || Right.IsHiddenVar() ? str.PutInBraces() : str;
+            var str = Format.PutInBracesComplex(Left) + " " +
+                (Operator == ElaOperator.Custom ? CustomOperator : Format.OperatorAsString(Operator)) +
+                " " + Format.PutInBracesComplex(Right);
+            return Format.IsHiddenVar(Left) || Format.IsHiddenVar(Right) ? Format.PutInBraces(str) : str;
 		}
 		#endregion
 

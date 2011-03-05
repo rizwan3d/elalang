@@ -22,7 +22,7 @@ namespace Ela.CodeModel
 		#region Methods
 		public override string ToString()
 		{
-			return (TargetObject.IsSimpleExpression() ? TargetObject.ToString() : TargetObject.PutInBraces()) +
+            return (Format.IsSimpleExpression(TargetObject) ? TargetObject.ToString() : Format.PutInBraces(TargetObject)) +
 				"." + FieldName;
 		}
 		#endregion

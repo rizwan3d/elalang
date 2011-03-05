@@ -26,10 +26,10 @@ namespace Ela.CodeModel
 			var sb = new StringBuilder();
 			sb.Append("for ");
 
-			sb.Append(Pattern.PutInBracesComplex());
+            sb.Append(Format.PutInBracesComplex(Pattern));
 
 			if (Guard != null)
-				sb.Append(Guard.ToStringAsGuard());
+                sb.Append(Format.ExpressionToStringAsGuard(Guard));
 
 			if (InitExpression != null)
 			{

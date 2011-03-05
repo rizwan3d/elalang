@@ -2,6 +2,12 @@
 
 namespace Ela.Runtime.ObjectModel
 {
+    public delegate R ElaFun<R>();
+    public delegate R ElaFun<T,R>(T arg1);
+    public delegate R ElaFun<T1,T2,R>(T1 arg1, T2 arg2);
+    public delegate R ElaFun<T1,T2,T3,R>(T1 arg1, T2 arg2, T3 arg3);
+    public delegate R ElaFun<T1,T2,T3,T4,R>(T1 arg1, T2 arg2, T3 arg3, T4 arg4);
+
 	internal abstract class DelegateFunction : ElaFunction
 	{
 		protected DelegateFunction(int args, string name) : base(args)
@@ -20,9 +26,9 @@ namespace Ela.Runtime.ObjectModel
 
 	internal sealed class DelegateFunction<T1> : DelegateFunction
 	{
-		private Func<T1> func;
+		private ElaFun<T1> func;
 
-		internal DelegateFunction(string name, Func<T1> func) : base(1, name)
+		internal DelegateFunction(string name, ElaFun<T1> func) : base(1, name)
 		{
 			this.func = func;
 		}
@@ -41,9 +47,9 @@ namespace Ela.Runtime.ObjectModel
 
 	internal sealed class DelegateFunction<T1,T2> : DelegateFunction
 	{
-		private Func<T1,T2> func;
+        private ElaFun<T1,T2> func;
 
-		internal DelegateFunction(string name, Func<T1,T2> func) : base(1, name)
+		internal DelegateFunction(string name, ElaFun<T1,T2> func) : base(1, name)
 		{
 			this.func = func;
 		}
@@ -61,9 +67,9 @@ namespace Ela.Runtime.ObjectModel
 
 	internal sealed class DelegateFunction<T1,T2,T3> : DelegateFunction
 	{
-		private Func<T1,T2,T3> func;
+		private ElaFun<T1,T2,T3> func;
 
-		internal DelegateFunction(string name, Func<T1,T2,T3> func) : base(2, name)
+		internal DelegateFunction(string name, ElaFun<T1,T2,T3> func) : base(2, name)
 		{
 			this.func = func;
 		}
@@ -81,9 +87,9 @@ namespace Ela.Runtime.ObjectModel
 
 	internal sealed class DelegateFunction<T1,T2,T3,T4> : DelegateFunction
 	{
-		private Func<T1,T2,T3,T4> func;
+		private ElaFun<T1,T2,T3,T4> func;
 
-		internal DelegateFunction(string name, Func<T1,T2,T3,T4> func) : base(3, name)
+		internal DelegateFunction(string name, ElaFun<T1,T2,T3,T4> func) : base(3, name)
 		{
 			this.func = func;
 		}
@@ -101,9 +107,9 @@ namespace Ela.Runtime.ObjectModel
 
 	internal sealed class DelegateFunction<T1,T2,T3,T4,T5> : DelegateFunction
 	{
-		private Func<T1,T2,T3,T4,T5> func;
+		private ElaFun<T1,T2,T3,T4,T5> func;
 
-		internal DelegateFunction(string name, Func<T1,T2,T3,T4,T5> func) : base(4, name)
+		internal DelegateFunction(string name, ElaFun<T1,T2,T3,T4,T5> func) : base(4, name)
 		{
 			this.func = func;
 		}

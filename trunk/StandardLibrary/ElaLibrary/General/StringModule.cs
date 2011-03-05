@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Ela.Linking;
 using Ela.Runtime;
@@ -67,7 +66,7 @@ namespace Ela.Library.General
 
 		public string TrimChars(char[] cz, string val)
 		{
-			return val.Trim(cz.ToArray());
+			return val.Trim(cz);
 		}
 
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace Ela.Debug
@@ -17,11 +16,15 @@ namespace Ela.Debug
 		#region Methods
 		public FunSym GetFunSymByHandle(int handle)
 		{
-			return Symbols.Functions.FirstOrDefault(f => f.Handle == handle);
+			for (var i = 0; i < Symbols.Functions.Count; i++)
+                if (Symbols.Functions[i].Handle == handle)
+                    return Symbols.Functions[i];
+
+            return null;
 		}
 
 
-		public FunSym FindFunSym(int offset)
+        public FunSym FindFunSym(int offset)
 		{
 			var fun = default(FunSym);
 

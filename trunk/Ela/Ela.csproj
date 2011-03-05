@@ -3,18 +3,20 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7BDF4A1E-DFFF-4AE5-BD2D-1B1F4BE84B1D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Ela</RootNamespace>
     <AssemblyName>Ela</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
     <NoStdLib>False</NoStdLib>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TargetFrameworkSubset>
+    </TargetFrameworkSubset>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -107,9 +109,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -139,7 +138,7 @@
     <Compile Include="CodeModel\ElaUnitLiteral.cs" />
     <Compile Include="CodeModel\ElaVariantLiteral.cs" />
     <Compile Include="CodeModel\ElaVariantPattern.cs" />
-    <Compile Include="CodeModel\Extensions.cs" />
+    <Compile Include="CodeModel\Format.cs" />
     <Compile Include="Compilation\Builder.Declarations.cs" />
     <Compile Include="Compilation\Builder.Cycles.cs" />
     <Compile Include="Compilation\Builder.Match.cs" />
@@ -308,7 +307,7 @@
     <Compile Include="Runtime\ObjectModel\ElaRecord.cs" />
     <Compile Include="ElaTraits.cs" />
     <Compile Include="Runtime\ObjectModel\ElaTuple.cs" />
-    <Compile Include="ElaTypeCodeExtensions.cs" />
+    <Compile Include="TypeCodeFormat.cs" />
     <Compile Include="Runtime\ObjectModel\ElaVariant.cs" />
     <Compile Include="Runtime\ObjectModel\ChunkEnumerable.cs" />
     <Compile Include="Runtime\Pervasive.cs" />
@@ -354,6 +353,7 @@
     <EmbeddedResource Include="Runtime\Strings\Messages.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="Parsing\Ela.atg">
       <DependentUpon>ElaParser.cs</DependentUpon>
     </None>

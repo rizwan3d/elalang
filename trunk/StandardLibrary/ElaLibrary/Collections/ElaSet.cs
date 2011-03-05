@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Ela.Runtime;
 using Ela.Runtime.ObjectModel;
 
@@ -43,7 +42,17 @@ namespace Ela.Library.Collections
 
 		public static ElaSet FromEnumerable(IEnumerable seq)
 		{
-			return FromEnumerable(seq.OfType<Object>().Select(o => ElaValue.FromObject(o)));
+			var set = ElaSet.Empty;
+
+            foreach (var o in seq)
+            {
+                var v = ElaValue.FromObject(o);
+
+                if (set.Tree.Search(v).IsEmpty)
+                    set = new ElaSet(set.Tree.Add(v, default(ElaValue)));
+            }
+
+            return set;
 		}
 
 
@@ -73,7 +82,8 @@ namespace Ela.Library.Collections
 
 		public IEnumerator<ElaValue> GetEnumerator()
 		{
-			return Tree.Enumerate().Select(e => e.Key).GetEnumerator();
+			foreach (var kv in Tree.Enumerate())
+                yield return kv.Key;
 		}
 
 
@@ -105,7 +115,7 @@ namespace Ela.Library.Collections
 
 		protected override ElaValue GetLength(ExecutionContext ctx)
 		{
-			return new ElaValue(Tree.Enumerate().Count());
+			return new ElaValue(Length);
 		}
 
 
@@ -165,6 +175,19 @@ namespace Ela.Library.Collections
 
 		#region Properties
 		internal AvlTree Tree { get; private set; }
+
+        public int Length
+        {
+            get
+            {
+                var c = 0;
+
+                foreach (var e in Tree.Enumerate())
+                    c++;
+
+                return c;
+            }
+        }
 		#endregion
 	}
 }

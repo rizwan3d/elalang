@@ -50,8 +50,8 @@ namespace Ela.Runtime
 
 		public void ConversionFailed(ElaValue source, ElaTypeCode target, string reason)
 		{
-			Fail(ElaRuntimeError.ConversionFailed, source.ToString(), source.GetTypeName(), 
-				target.GetShortForm(), reason);
+			Fail(ElaRuntimeError.ConversionFailed, source.ToString(), source.GetTypeName(),
+                TypeCodeFormat.GetShortForm(target), reason);
 		}
 
 

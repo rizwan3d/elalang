@@ -23,7 +23,7 @@ namespace Ela.CodeModel
 		public override string ToString()
 		{
 			return (Mutable ? "mutable " : String.Empty) +
-				FieldName + "=" + (FieldValue.IsSimpleExpression() ? FieldValue.ToString() : FieldValue.PutInBraces());
+                FieldName + "=" + (Format.IsSimpleExpression(FieldValue) ? FieldValue.ToString() : Format.PutInBraces(FieldValue));
 		}
 		#endregion
 

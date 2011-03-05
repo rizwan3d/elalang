@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Ela.Parsing;
 
@@ -29,7 +28,7 @@ namespace Ela.CodeModel
 				Initial.Type == ElaNodeType.ListLiteral ? "[{0}]" :
 				Initial.ToString() + " @@ " + "[{0}]";
 
-			return String.Format(format, Generator.ToStringAsComprehension());
+            return String.Format(format, Format.ForToStringAsComprehension(Generator));
 		}
 		#endregion
 

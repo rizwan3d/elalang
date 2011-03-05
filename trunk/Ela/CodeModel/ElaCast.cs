@@ -22,8 +22,8 @@ namespace Ela.CodeModel
 		#region Methods
 		public override string ToString()
 		{
-			return (Expression.IsSimpleExpression() ? Expression.ToString() : Expression.PutInBraces()) +
-				":" + CastAffinity.GetShortForm();
+            return (Format.IsSimpleExpression(Expression) ? Expression.ToString() : Format.PutInBraces(Expression)) +
+				":" + TypeCodeFormat.GetShortForm(CastAffinity);
 		}
 		#endregion
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Ela.Debug;
 
 namespace Ela.Runtime.ObjectModel
@@ -14,7 +13,11 @@ namespace Ela.Runtime.ObjectModel
 		
 		public ElaTuple(params object[] args) : base(ElaTypeCode.Tuple, TRAITS)
 		{
-			Values = args.Select(o => ElaValue.FromObject(o)).ToArray();
+			Values = new ElaValue[args.Length];
+
+            for (var i = 0; i < args.Length; i++)
+                Values[i] = ElaValue.FromObject(args[i]);
+
 			cons = args.Length;
 		}
 
@@ -821,11 +824,12 @@ namespace Ela.Runtime.ObjectModel
 
 		public IEnumerator<ElaValue> GetEnumerator()
 		{
-			return Values.Take(Values.Length).GetEnumerator();
+			for (var i = 0; i < Values.Length; i++)
+                yield return Values[i];
 		}
 
 
-		IEnumerator IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}

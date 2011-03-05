@@ -23,7 +23,7 @@ namespace Ela.CodeModel
 		#region Methods
 		public override string ToString()
 		{
-			return Traits != ElaTraits.None ? FormatTraitList() : TypeAffinity.GetShortForm();
+			return Traits != ElaTraits.None ? FormatTraitList() : TypeCodeFormat.GetShortForm(TypeAffinity);
 		}
 
 

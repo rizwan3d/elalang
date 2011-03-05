@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Ela.Linking;
 using Ela.Runtime;
 using Ela.Runtime.ObjectModel;
@@ -38,7 +37,12 @@ namespace Ela.Library.Collections
 
         public ElaArray CreateArray(IEnumerable<ElaValue> seq)
         {
-            return new ElaArray(seq.ToArray());
+            var lst = new List<ElaValue>();
+
+            foreach (var v in seq)
+                lst.Add(v);
+
+            return new ElaArray(lst.ToArray());
         }
 
 

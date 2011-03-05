@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using Ela.Debug;
@@ -221,20 +220,14 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		public static ElaList FromEnumerable(IEnumerable<Object> seq)
-		{
-			return FromEnumerable(seq.Select<Object,ElaValue>(ElaValue.FromObject));
-		}
-
-
 		public static ElaList FromEnumerable(IEnumerable<ElaValue> seq)
 		{
 			var list = ElaList.Empty;
 
-			foreach (var e in seq.Reverse())
+			foreach (var e in seq)
 				list = new ElaList(list, e);
 
-			return list;
+			return list.Reverse();
 		}
 
 

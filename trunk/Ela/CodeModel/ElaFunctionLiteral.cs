@@ -41,7 +41,7 @@ namespace Ela.CodeModel
 		public override string ToString()
 		{
 			if (FunctionType == ElaFunctionType.Operator || Body.Entries.Count > 0)
-				return "let " + this.ToStringAsFunction();
+				return "let " + Format.FunctionToString(this);
 			else
 			{
 				var pat = Body.Entries[0].Pattern;

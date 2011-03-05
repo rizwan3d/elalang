@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Ela.Runtime.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
@@ -455,7 +454,8 @@ namespace Ela.Runtime
 
 		private InvalidCastException InvalidCast(ElaTypeCode target, ElaTypeCode source)
 		{
-			return new InvalidCastException(Strings.GetMessage("InvalidCast", source.GetShortForm(), target.GetShortForm()));
+            return new InvalidCastException(Strings.GetMessage("InvalidCast", TypeCodeFormat.GetShortForm(source), 
+                TypeCodeFormat.GetShortForm(target)));
 		}
 		#endregion
 

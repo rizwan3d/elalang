@@ -22,7 +22,7 @@ namespace Ela.CodeModel
 		#region Methods
 		public override string ToString()
 		{
-			return TargetObject.PutInBracesComplex() + ".[" + Index.ToString() + "]";
+            return Format.PutInBracesComplex(TargetObject) + ".[" + Index.ToString() + "]";
 		}
 		#endregion
 

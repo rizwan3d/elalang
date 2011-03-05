@@ -33,7 +33,7 @@ namespace Ela.CodeModel
 					sb.Append("::");
 
 				if (f.Type == ElaNodeType.HeadTailPattern)
-					sb.Append(f.PutInBraces());
+                    sb.Append(Format.PutInBraces(f));
 				else
 					sb.Append(f.ToString());
 			}
