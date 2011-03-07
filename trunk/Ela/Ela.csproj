@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7BDF4A1E-DFFF-4AE5-BD2D-1B1F4BE84B1D}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -109,12 +109,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -126,6 +120,7 @@
     <Compile Include="CodeModel\ElaBuiltinFunctionKind.cs" />
     <Compile Include="CodeModel\ElaComprehension.cs" />
     <Compile Include="CodeModel\ElaCustomOperator.cs" />
+    <Compile Include="CodeModel\ElaGenerator.cs" />
     <Compile Include="CodeModel\ElaLazyLiteral.cs" />
     <Compile Include="CodeModel\ElaNilPattern.cs" />
     <Compile Include="CodeModel\ElaOtherwiseGuard.cs" />
@@ -140,7 +135,7 @@
     <Compile Include="CodeModel\ElaVariantPattern.cs" />
     <Compile Include="CodeModel\Format.cs" />
     <Compile Include="Compilation\Builder.Declarations.cs" />
-    <Compile Include="Compilation\Builder.Cycles.cs" />
+    <Compile Include="Compilation\Builder.Generators.cs" />
     <Compile Include="Compilation\Builder.Match.cs" />
     <Compile Include="Compilation\Builder.Operators.cs" />
     <Compile Include="Compilation\Builder.Ranges.cs" />
@@ -179,8 +174,6 @@
     <Compile Include="CodeModel\ElaAsPattern.cs" />
     <Compile Include="CodeModel\ElaDefaultPattern.cs" />
     <Compile Include="CodeModel\ElaFieldPattern.cs" />
-    <Compile Include="CodeModel\ElaFor.cs" />
-    <Compile Include="CodeModel\ElaForType.cs" />
     <Compile Include="CodeModel\ElaFunctionType.cs" />
     <Compile Include="CodeModel\ElaHeadTailPattern.cs" />
     <Compile Include="CodeModel\ElaImportedName.cs" />
@@ -191,10 +184,8 @@
     <Compile Include="CodeModel\ElaBaseReference.cs" />
     <Compile Include="CodeModel\ElaBinary.cs" />
     <Compile Include="CodeModel\ElaOperator.cs" />
-    <Compile Include="CodeModel\ElaBreak.cs" />
     <Compile Include="CodeModel\ElaCast.cs" />
     <Compile Include="CodeModel\ElaCondition.cs" />
-    <Compile Include="CodeModel\ElaContinue.cs" />
     <Compile Include="CodeModel\ElaExpression.cs" />
     <Compile Include="CodeModel\ElaExpressionFlags.cs" />
     <Compile Include="CodeModel\ElaFieldReference.cs" />
@@ -213,7 +204,6 @@
     <Compile Include="CodeModel\ElaPattern.cs" />
     <Compile Include="CodeModel\ElaPlaceholder.cs" />
     <Compile Include="CodeModel\ElaPrimitive.cs" />
-    <Compile Include="CodeModel\ElaReturn.cs" />
     <Compile Include="CodeModel\ElaRaise.cs" />
     <Compile Include="CodeModel\ElaIs.cs" />
     <Compile Include="CodeModel\ElaVariablePattern.cs" />
@@ -221,7 +211,6 @@
     <Compile Include="CodeModel\ElaVariableFlags.cs" />
     <Compile Include="CodeModel\ElaVariableReference.cs" />
     <Compile Include="CodeModel\ElaUnitPattern.cs" />
-    <Compile Include="CodeModel\ElaWhile.cs" />
     <Compile Include="Compilation\CodeFrame.cs" />
     <Compile Include="Compilation\CodeWriter.cs" />
     <Compile Include="Compilation\Builder.cs" />
@@ -309,7 +298,6 @@
     <Compile Include="Runtime\ObjectModel\ElaTuple.cs" />
     <Compile Include="TypeCodeFormat.cs" />
     <Compile Include="Runtime\ObjectModel\ElaVariant.cs" />
-    <Compile Include="Runtime\ObjectModel\ChunkEnumerable.cs" />
     <Compile Include="Runtime\Pervasive.cs" />
     <Compile Include="Runtime\ElaValue.cs" />
     <Compile Include="Runtime\ObjectModel\ElaTypeInfo.cs" />

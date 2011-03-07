@@ -28,17 +28,27 @@ namespace Ela.CodeModel
 				Initial.Type == ElaNodeType.ListLiteral ? "[{0}]" :
 				Initial.ToString() + " @@ " + "[{0}]";
 
-            return String.Format(format, Format.ForToStringAsComprehension(Generator));
+            return String.Format(format, Generator.ToString());
 		}
 		#endregion
 
 
 		#region Properties
-		public ElaFor Generator { get; set; }
+		public ElaGenerator Generator { get; set; }
 
 		public ElaExpression Initial { get; set; }
 
 		public bool Lazy { get; set; }
+		
+		public ElaPattern Pattern { get; set; }
+
+		public ElaExpression Guard { get; set; }
+
+		public ElaExpression Target { get; set; }
+
+		public ElaExpression Body { get; set; }
+
+		public ElaExpression InitExpression { get; set; }
 		#endregion
 	}
 }

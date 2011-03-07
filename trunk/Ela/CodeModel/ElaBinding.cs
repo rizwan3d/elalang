@@ -39,13 +39,9 @@ namespace Ela.CodeModel
 
 				if ((VariableFlags & ElaVariableFlags.Private) == ElaVariableFlags.Private)
 					sb.Append("private ");
-
-				if ((VariableFlags & ElaVariableFlags.Immutable) != ElaVariableFlags.Immutable)
-					sb.Append("mutable ");
 			}
 
-			if (InitExpression.Type == ElaNodeType.FunctionLiteral &&
-				(VariableFlags & ElaVariableFlags.Immutable) == ElaVariableFlags.Immutable)
+			if (InitExpression.Type == ElaNodeType.FunctionLiteral)
 			{
 				var fun = (ElaFunctionLiteral)InitExpression;
                 sb.Append(Format.FunctionToString(fun));

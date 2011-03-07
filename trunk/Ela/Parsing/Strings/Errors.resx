@@ -141,26 +141,11 @@
   <data name="ExpectedKeywordBase" xml:space="preserve">
     <value>Expected keyword 'base'.</value>
   </data>
-  <data name="ExpectedKeywordBreak" xml:space="preserve">
-    <value>Expected keyword 'break'.</value>
-  </data>
   <data name="ExpectedKeywordCatch" xml:space="preserve">
     <value>Expected keyword 'catch'.</value>
   </data>
-  <data name="ExpectedKeywordContinue" xml:space="preserve">
-    <value>Expected keyword 'continue'.</value>
-  </data>
-  <data name="ExpectedKeywordDo" xml:space="preserve">
-    <value>Expected keyword 'do'.</value>
-  </data>
-  <data name="ExpectedKeywordDownto" xml:space="preserve">
-    <value>Invaid 'for' cycle syntax. Expected keyword 'downto'.</value>
-  </data>
   <data name="ExpectedKeywordElse" xml:space="preserve">
     <value>A conditional expression (if/else) is missing a required 'else' clause.</value>
-  </data>
-  <data name="ExpectedKeywordFor" xml:space="preserve">
-    <value>Expected keyword 'for'.</value>
   </data>
   <data name="ExpectedKeywordIf" xml:space="preserve">
     <value>Expected keyword 'if'.</value>
@@ -183,20 +168,11 @@
   <data name="ExpectedKeywordPrivate" xml:space="preserve">
     <value>Expected keyword 'private'.</value>
   </data>
-  <data name="ExpectedKeywordReturn" xml:space="preserve">
-    <value>Expected keyword 'return'.</value>
-  </data>
   <data name="ExpectedKeywordRaise" xml:space="preserve">
     <value>Expected keyword 'raise'.</value>
   </data>
-  <data name="ExpectedKeywordTo" xml:space="preserve">
-    <value>Invaid 'for' cycle syntax. Expected keyword 'to'.</value>
-  </data>
   <data name="ExpectedKeywordTry" xml:space="preserve">
-    <value>A try/catch expression is missing a required 'catch' clause.</value>
-  </data>
-  <data name="ExpectedKeywordWhile" xml:space="preserve">
-    <value>Expected keyword 'while'.</value>
+    <value>Expected keyword 'try'.</value>
   </data>
   <data name="ExpectedKeywordWith" xml:space="preserve">
     <value>Expected keyword 'with'.</value>
@@ -305,9 +281,6 @@
   </data>
   <data name="ExpectedKeywordFail" xml:space="preserve">
     <value>Expected keyword 'fail'.</value>
-  </data>
-  <data name="ExpectedKeywordMutable" xml:space="preserve">
-    <value>Expected keyword 'mutable'.</value>
   </data>
   <data name="ExpectedKeywordThen" xml:space="preserve">
     <value>Invalid syntax of a conditional (if/else) expression. A required 'then' clause is missing.</value>

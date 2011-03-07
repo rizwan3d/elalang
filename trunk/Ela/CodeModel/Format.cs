@@ -49,36 +49,9 @@ namespace Ela.CodeModel
 		}
 
 
-		public static string ForToStringAsComprehension(ElaFor @for)
-		{
-			var sb = new StringBuilder();
-			var sel = GetSelect(@for, sb);
-			return sel.ToString() + " @ " + sb.ToString();
-		}
-
-
 		public static string ExpressionToStringAsGuard(ElaExpression p)
 		{
 			return " | " + p;
-		}
-
-
-		private static ElaExpression GetSelect(ElaFor @for, StringBuilder sb)
-		{
-			sb.Append(@for.Pattern.ToString());
-			sb.Append(" <- ");
-			sb.Append(@for.Target.ToString());
-
-			if (@for.Guard != null)
-                sb.Append(ExpressionToStringAsGuard(@for.Guard));
-			
-			if (@for.Body.Type == ElaNodeType.For)
-			{
-				sb.Append(", ");
-				return GetSelect((ElaFor)@for.Body, sb);
-			}
-			else
-				return @for.Body;
 		}
 
 

@@ -13,19 +13,19 @@ namespace Ela.Compilation
 
 		OperatorInvalidDeclaration = 302,
 
-		StrictModeMutableGlobal = 303,
+		// = 303,
 
 		// = 304,
 
-		ReturnInGlobal = 305,
+		// = 305,
 
-		BreakNotAllowed = 306,
+		// = 306,
 
-		ContinueNotAllowed = 307,
+		// = 307,
 
-		ForeachNoInitialization = 308,
+		// = 308,
 
-		BreakExecutionNotAllowed = 309,
+		// = 309,
 
 		BaseNotAllowed = 310,
 

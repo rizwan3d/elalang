@@ -15,7 +15,7 @@ namespace Ela.Compilation
 
 		MatchEntryAlwaysFail = 403,
 		
-		OperatorAsMutable = 404,
+		// = 404,
 
 		// = 405, 
 		

@@ -53,19 +53,9 @@ namespace Ela.CodeModel
 
 		BaseReference,
 		
-		For,
-
-		While,
-
-		Break,
-
 		Condition,
 
-		Continue,
-
 		Try,
-
-		Return,
 
 		Binding,
 
@@ -86,6 +76,8 @@ namespace Ela.CodeModel
 		CustomOperator,
 
 		Comprehension,
+
+		Generator,
 
 
 		OtherwiseGuard,

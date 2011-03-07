@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AssignImmutableVariable" xml:space="preserve">
-    <value>Unable to change a value of an immutable variable '{0}'.</value>
+    <value>Unable to change a value bound to the name '{0}'.</value>
   </data>
   <data name="BaseNotAllowed" xml:space="preserve">
     <value>Keyword 'base' is not valid in this context.</value>
@@ -126,23 +126,11 @@
   <data name="BaseVariableNotFound" xml:space="preserve">
     <value>A name '{0}' is not defined in the parent scope (referenced using 'base').</value>
   </data>
-  <data name="BreakExecutionNotAllowed" xml:space="preserve">
-    <value>An expression breaks execution and is not allowed in this context.</value>
-  </data>
-  <data name="BreakNotAllowed" xml:space="preserve">
-    <value>Expression 'break' is not allowed in this context.</value>
-  </data>
   <data name="CastNotSupported" xml:space="preserve">
     <value>Casting to the type '{0}' is not supported.</value>
   </data>
-  <data name="ContinueNotAllowed" xml:space="preserve">
-    <value>Expression 'continue' is not allowed in this context.</value>
-  </data>
   <data name="ElseGuardNotValid" xml:space="preserve">
     <value>An 'else' guard is not valid in this context.</value>
-  </data>
-  <data name="ForeachNoInitialization" xml:space="preserve">
-    <value>Initialization expression is not supported in for/in cycles.</value>
   </data>
   <data name="InfiniteRangeOnlyList" xml:space="preserve">
     <value>Range: {0} is invalid. Only lists can be generated using infinite ranges.</value>
@@ -174,12 +162,6 @@
   <data name="PlaceholderNotValid" xml:space="preserve">
     <value>An expression '_' is not valid in this context.</value>
   </data>
-  <data name="ReturnInGlobal" xml:space="preserve">
-    <value>Expression 'return' is allowed only inside functions.</value>
-  </data>
-  <data name="StrictModeMutableGlobal" xml:space="preserve">
-    <value>Unable to declare a mutable global scope variable when the strict mode is on.</value>
-  </data>
   <data name="UnableAssignExpression" xml:space="preserve">
     <value>Unable to assign a value to the expression {0}.</value>
   </data>
@@ -190,6 +172,6 @@
     <value>Variable '{0}' is already declared.</value>
   </data>
   <data name="VariableDeclarationInitMissing" xml:space="preserve">
-    <value>Variables cannot be declared without initialization.</value>
+    <value>Names cannot be declared without initialization.</value>
   </data>
 </root>

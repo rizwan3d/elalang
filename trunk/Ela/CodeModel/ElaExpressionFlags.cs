@@ -9,8 +9,6 @@ namespace Ela.CodeModel
 
 		Assignable = 0x02,
 
-		ReturnsUnit = 0x04,
-
-		BreaksExecution = 0x08
+		ReturnsUnit = 0x04
 	}
 }

@@ -29,8 +29,6 @@ namespace Ela.Compilation
 		public bool GenerateDebugInfo { get; set; }
 
 		public bool Optimize { get; set; }
-
-		public bool StrictMode { get; set; }
 		#endregion
 	}
 }

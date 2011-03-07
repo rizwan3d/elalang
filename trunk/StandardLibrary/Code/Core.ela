@@ -2,7 +2,7 @@
     Ela Core module
     Created in 2011 by Basil Voronkov
 */
-open CoreInternal[elalib]
+open CoreInternal#elalib
 
 /* MATH */
 
@@ -10,7 +10,7 @@ let abs x | x >= 0 = x;
           | else   = --x
 end
 
-let exp = CoreInternal.exp
+let exp = CoreInternal.exp end
 
 let gcd 0 0 = fail "Core.gcd: gcd 0 0 is undefined";
         x y = gcd' (abs x) (abs y)
@@ -19,32 +19,32 @@ let gcd 0 0 = fail "Core.gcd: gcd 0 0 is undefined";
               end
 end
               
-let cos = CoreInternal.cos
+let cos = CoreInternal.cos end
 
-let sin = CoreInternal.sin
+let sin = CoreInternal.sin end
 
-let tan = CoreInternal.tan
+let tan = CoreInternal.tan end
 
-let quot = CoreInternal.quot
+let quot = CoreInternal.quot end
 
 let lcm _ 0 = 0;
         0 _ = 0;
         x y = abs ((x `quot` gcd x y) * y)
 end
 
-let floor = CoreInternal.floor
+let floor = CoreInternal.floor end
 
-let ceiling = CoreInternal.ceiling
+let ceiling = CoreInternal.ceiling end
 
-let subtract = flip (-)
+let subtract = flip (-) end
 
-let atan = CoreInternal.atan
+let atan = CoreInternal.atan end
 
 let sqrt x = x ** 0.5 end
 
-let truncate = CoreInternal.truncate
+let truncate = CoreInternal.truncate end
 
-let log = CoreInternal.log
+let log = CoreInternal.log end
 
 let even x = x % 2 == 0 end
 
@@ -58,13 +58,38 @@ let minValue x y | x <= y = x;
                  | else   = y
 end
 
-let round = CoreInternal.round
+let round = CoreInternal.round end
 
-let rnd = CoreInternal.rnd
+let rnd = CoreInternal.rnd end
 
-let pi = CoreInternal.pi
+let pi = CoreInternal.pi end
 
-let e = CoreInternal.e
+let e = CoreInternal.e end
+
+
+/* Basic */
+
+/* a function with a recursive definition that can be
+    evaluated solely for the side effects of it first argument.
+    rec can be used for the function 'f' of one argument, rec2 - 
+    for the function 'f' of two arguments. */
+let rec f x = f x $ rec end
+
+let rec2 f x y = f x y $ rec2 end
+
+let until p f x | p x  = x;
+                | else = until p f (f x)
+end
+
+let compare x y | x == y = `EQ;
+                | x <= y = `LT;
+                | else   = `GT
+end
+
+let chr (?int)@x = x:char end
+
+let ord (?char)@x = x:int end
+
 
 
 /* LIST FUNCTIONS */
@@ -257,14 +282,14 @@ let deleteBy p x y::ys | p x y  = ys;
              _ _ []@n           = n
 end
 
-let delete = deleteBy (==)
+let delete = deleteBy (==) end
 
 let insertBy _   x []@n = x::n;
              cmp x (y::ys')@ys | cmp x y is (`GT) = y :: insertBy cmp x ys';
                                | else             = x :: ys
 end
 
-let insert = insertBy compare
+let insert = insertBy compare end
 
 let nubBy eq xs = nubBy' xs (nil xs)
     where nubBy' []@n _ = n;
@@ -273,7 +298,7 @@ let nubBy eq xs = nubBy' xs (nil xs)
     end
 end
 
-let nub = nubBy (==)
+let nub = nubBy (==) end
 
 
 /* TUPLE FUNCTIONS */
@@ -318,27 +343,3 @@ let sub x y z = x z (y z) end//S
 let fix f = f (& fix f) end
 
 let on cmb f x y = f x `cmb` f y end
-
-
-/* MISC */
-
-/* a function with a recursive definition that can be
-    evaluated solely for the side effects of it first argument.
-    rec can be used for the function 'f' of one argument, rec2 - 
-    for the function 'f' of two arguments. */
-let rec f x = f x $ rec end
-
-let rec2 f x y = f x y $ rec2 end
-
-let until p f x | p x  = x;
-                | else = until p f (f x)
-end
-
-let compare x y | x == y = `EQ;
-                | x <= y = `LT;
-                | else   = `GT
-end
-
-let chr (?int)@x = x:char end
-
-let ord (?char)@x = x:int end

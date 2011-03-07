@@ -7,7 +7,7 @@ namespace Ela.CodeModel
 	{
 		None = 0x00,
 
-		Immutable = 0x01,
+		// = 0x01,
 
 		Private = 0x02,
 

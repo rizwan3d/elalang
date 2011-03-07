@@ -15,9 +15,8 @@ CHARACTERS
 	op = "!%&*+-.:/<=>?@^|~".
 
 TOKENS
-	ident = letter { letter | digit }
-		| "'" letter { letter | digit }
-		| letter { letter | digit } "'".	
+	ident = letter { letter | digit | "'" }
+		| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ].	
 	
 	variantTok = "`"(
 				letter { letter | digit }
@@ -79,8 +78,6 @@ TOKENS
 	
 	DOT = ".".
 	IN = "in".
-	UPTO = "to".
-	DOWNTO = "downto".
 	BASE = "base".
 	MATCH = "match".
 	ASAMP = "@".
@@ -89,22 +86,15 @@ TOKENS
 	PRIVATE = "private".
 	OPEN = "open".	
 	WITH = "with".
-	WHILE = "while".
-	DO = "do".
-	FOR = "for".
 	IFS = "if".
 	ELSE = "else".
 	THEN = "then".
 	RAISE = "raise".
-	RETURN = "return".
-	BREAK = "break".
-	CONTINUE = "continue".
 	TRY = "try".
 	TRUE = "true".
 	FALSE = "false".
 	FAIL = "fail".
 	WHERE = "where".
-	MUTABLE = "mutable".
 	
 	AND = "and".
 	ENDS = "end".
@@ -504,15 +494,17 @@ PRODUCTIONS
 						
 	IdentPattern<out ElaPattern pat> =
 		(. pat = null; .)
-		ident (. var name = t.val; .)
 		(			
-			(
+			ident (. var name = t.val; .)
+			[
 				":" 
 				(. var cst = new ElaCastPattern(t) { VariableName = name }; pat = cst; .)
 				ident (. cst.TypeAffinity = GetType(t.val); .)
-			)
-			|
-			(. pat = new ElaVariablePattern(t) { Name = t.val }; .)
+			]			
+			(. 
+				if (pat == null)
+					pat = new ElaVariablePattern(t) { Name = t.val }; 
+			.)
 		).	
 		
 	RecordPattern<out ElaPattern pat> = 
@@ -680,7 +672,7 @@ PRODUCTIONS
 			var mutable = false;
 		.)
 		(
-			[ "mutable" (. mutable = true; .) ]
+			[ "!" (. mutable = true; .) ]
 			(
 				(
 					ident 
@@ -804,47 +796,40 @@ PRODUCTIONS
 	LetBinding<out ElaExpression exp> = 
 		(. 
 			exp = null; 
-			var flags = ElaVariableFlags.Immutable;
 			var inExp = default(ElaExpression);
+			var flags = default(ElaVariableFlags);
 		.)
 		LET [VariableAttributes<out flags>] VariableDeclarationBody<flags, out exp>
 		IN Expr<out inExp> 
-		(. ((ElaBinding)exp).In = inExp; .).					
+		(. ((ElaBinding)exp).In = inExp; .).
 		
 	RootLetBinding<out ElaExpression exp> = 
 		(. 
 			exp = null; 
-			var flags = ElaVariableFlags.Immutable;
 			var inExp = default(ElaExpression);
+			var flags = default(ElaVariableFlags);
 		.)
-		LET [VariableAttributes<out flags>] VariableDeclarationBody<flags, out exp>
-		(. if (((ElaBinding)exp).InitExpression.Type == ElaNodeType.FunctionLiteral && la.kind != _IN || la.kind == _ENDS) .)
-		ENDS
-		[
-			IN Expr<out inExp> 
-			(. ((ElaBinding)exp).In = inExp; .)
-		].
-		
-	VariableAttributes<out ElaVariableFlags flags> =
-		(. flags = ElaVariableFlags.Immutable; .)
 		(
+			LET [VariableAttributes<out flags>] VariableDeclarationBody<flags, out exp>
 			(
-				"mutable" (. flags ^= ElaVariableFlags.Immutable; .)
-				[ "private" (. flags |= ElaVariableFlags.Private; .) ]
-			)
-			|
-			(
-				"private" (. flags |= ElaVariableFlags.Private; .)				
-				[ "mutable" (. flags ^= ElaVariableFlags.Immutable; .) ]
+				ENDS
+				|
+				(
+					IN Expr<out inExp> 
+					(. ((ElaBinding)exp).In = inExp; .)	
+					ENDS
+				)
 			)
 		).
-			
+		
+	VariableAttributes<out ElaVariableFlags flags> =
+		"private" (. flags = ElaVariableFlags.Private; .).			
 		
 	WhereBinding<out ElaExpression exp> = WHERE WhereBindingBody<out exp> ENDS.
 	
 	WhereBindingBody<out ElaExpression exp> =
 		(. 
-			var varExp = new ElaBinding(t) { VariableFlags = ElaVariableFlags.Immutable }; 
+			var varExp = new ElaBinding(t); 
 			exp = varExp;
 			var cexp = default(ElaExpression); 
 		.)		
@@ -883,7 +868,7 @@ PRODUCTIONS
 						(. varExp.InitExpression = cexp; .)
 					)
 				)
-				(. SetFunMetadata(varExp, cexp, ElaVariableFlags.Immutable); .)
+				(. SetFunMetadata(varExp, cexp); .)
 			)
 			[ 
 				(. var cd = default(ElaExpression); .)
@@ -977,7 +962,7 @@ PRODUCTIONS
 						]
 					)
 				]
-				(. SetFunMetadata(varExp, cexp, flags); .)
+				(. SetFunMetadata(varExp, cexp); .)
 			)
 			|
 			(
@@ -1172,16 +1157,15 @@ PRODUCTIONS
 				exp = inc;
 			.)	
 			[
-				"["
+				"#"
 				(
 					ident (. inc.DllName = t.val; .)
 					| 
 					stringTok (. inc.DllName = ReadString(t.val); .)
 				)
-				"]"
 			]		
 			[ "@" ident (. inc.Alias = t.val; .) ]
-			[ IncludeImports<inc> ]
+			[ WITH IncludeImports<inc> ]
 		).
 		
 	Qualident<. List<String> path .> = 
@@ -1203,46 +1187,6 @@ PRODUCTIONS
 			[ "=" ident (. imp.ExternalName = t.val; .) ]
 		)
 		[ "," IncludeImports<inc> ].
-				
-	WhileExpr<out ElaExpression exp> = 
-		(
-			WHILE
-			(.
-				var wex = new ElaWhile(t);
-				exp = wex;
-				var cexp = default(ElaExpression);
-			.)
-			Expr<out cexp> (. wex.Condition = cexp; .)
-			DO Expr<out cexp>
-			(. wex.Body = cexp; .)
-		).
-		
-	ForExpr<out ElaExpression exp> = 
-		FOR
-		(. 
-			var ot = t;
-			var it = new ElaFor(t);
-			exp = it;
-			var cexp = default(ElaExpression);
-			var pat = default(ElaPattern);
-		.)
-		(
-			ForeachPattern<out pat> 			
-			[ "=" BinaryExpr<out cexp> (. it.InitExpression = cexp; .) ]
-			[ 
-				Guard<out cexp>
-				(. it.Guard = cexp; .)				
-			]	
-			(. it.Pattern = pat; .)
-			(
-				IN (. it.ForType = ElaForType.Foreach; .)
-				| UPTO (. it.ForType = ElaForType.ForTo; .)
-				| DOWNTO (. it.ForType = ElaForType.ForDownto; .)
-			)
-			Expr<out cexp> (. it.Target = cexp; .)
-		)
-		DO Expr<out cexp>
-		(. it.Body = cexp; .).
 	
 	IfExpr<out ElaExpression exp> = 
 		IFS
@@ -1282,18 +1226,6 @@ PRODUCTIONS
 			r.Expression = cexp; 
 			r.ErrorCode = "Failure"; 
 		.).	
-		
-	ReturnExpr<out ElaExpression exp> = 
-		RETURN 
-		(. var cexp = default(ElaExpression);.)
-		Expr<out cexp>
-		(. exp = new ElaReturn(t) { Expression = cexp }; .).		
-		
-	BreakExpr<out ElaExpression exp> = 
-		BREAK (. exp = new ElaBreak(t); .).
-			
-	ContinueExpr<out ElaExpression exp> = 
-		CONTINUE (. exp = new ElaContinue(t); .).
 		
 	TryExpr<out ElaExpression exp> =
 		TRY
@@ -1845,13 +1777,7 @@ PRODUCTIONS
 		( 
 			BinaryExpr<out exp>
 			| IfExpr<out exp>
-			| LambdaExpr<out exp>
-			
-			| IterExpr<out exp>
-			| ReturnExpr<out exp>
-			| BreakExpr<out exp>
-			| ContinueExpr<out exp>
-			
+			| LambdaExpr<out exp>			
 			| RaiseExpr<out exp>
 			| FailExpr<out exp>
 		).
@@ -1876,27 +1802,18 @@ PRODUCTIONS
 				.)
 			")"
 		).
-		
-	IterExpr<out ElaExpression exp> =
-		(. exp = null; .)
-		(
-			WhileExpr<out exp>	
-			| ForExpr<out exp>
-		).
 	
 	ComprehensionExpr<ElaExpression sel, out ElaComprehension exp> =
 		(. 	
-			var it = default(ElaFor); 
+			var it = default(ElaGenerator); 
 			var ot = t;		
 		.)
 		"\\\\" ComprehensionEntry<sel, out it>
 		(. exp = new ElaComprehension(ot) { Generator = it }; .).
 		
-	ComprehensionEntry<ElaExpression body, out ElaFor it> =
+	ComprehensionEntry<ElaExpression body, out ElaGenerator it> =
 		(.
-			it = new ElaFor(t) { 
-				ForType = ElaForType.Foreach
-			};
+			it = new ElaGenerator(t);
 			var cexp = default(ElaExpression);
 			var pat = default(ElaPattern);
 		.)
@@ -1913,7 +1830,7 @@ PRODUCTIONS
 		)
 		(. it.Body = body; .)
 		[ 
-			(. var cit = default(ElaFor); .)
+			(. var cit = default(ElaGenerator); .)
 			"," ComprehensionEntry<body, out cit>
 			(. it.Body = cit; .)
 		].
@@ -1931,10 +1848,32 @@ PRODUCTIONS
 		(. var exp = default(ElaExpression); .)
 		(
 			(	
-				RootLetBinding<out exp> (. if (RequireSemicolon()) .) SEMI
-				| IncludeStat<out exp> (. if (RequireSemicolon()) .) SEMI
-				| EmbExpr<out exp> (. if (RequireSemicolon()) .) SEMI
-				| SEMI
+				( 
+					RootLetBinding<out exp>
+					(. b.Expressions.Add(exp); .) 
+					[ DeclarationBlock<b> ]
+				)
+				| 
+				( 
+					IncludeStat<out exp>
+					(. b.Expressions.Add(exp); .)
+					[ DeclarationBlock<b> ]
+				)
+				| 
+				(
+					EmbExpr<out exp>
+					(. b.Expressions.Add(exp); .)
+					[ SimpleDeclarationBlock<b> ]
+				)
+			)
+		).
+		
+	SimpleDeclarationBlock<ElaBlock b> =
+		(. var exp = default(ElaExpression); .)
+		(
+			(	
+				RootLetBinding<out exp>
+				| IncludeStat<out exp>
 			)
 			(. b.Expressions.Add(exp); .)
 			[ DeclarationBlock<b> ]

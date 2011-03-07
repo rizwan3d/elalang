@@ -47,7 +47,7 @@ namespace Ela.Compilation
 			frame.Layouts.Add(new MemoryLayout(0, 0, 1));
 
 			cw.StartFrame(0);
-			var map = new LabelMap(Label.Empty);
+			var map = new LabelMap();
 			CompileExpression(expr, map, Hints.Scope);
 			cw.Emit(Op.Stop);
 			cw.CompileOpList();
@@ -150,22 +150,6 @@ namespace Ela.Compilation
 							AddValueNotUsed(s);
 					}
 					break;
-				case ElaNodeType.While:
-					{
-						var s = (ElaWhile)exp;
-						CompileWhile(s, map, hints);						
-					}
-					break;
-				case ElaNodeType.For:
-					{
-						var s = (ElaFor)exp;
-
-						if (s.ForType == ElaForType.Foreach)
-							CompileForeach(s, map, hints);
-						else
-							CompileFor(s, map, hints);
-					}
-					break;
 				case ElaNodeType.Comprehension:
 					{
 						var c = (ElaComprehension)exp;
@@ -176,7 +160,7 @@ namespace Ela.Compilation
 						else
 						{
 							CompileExpression(c.Initial, map, Hints.None);
-							CompileExpression(c.Generator, map, Hints.Comp);
+							CompileGenerator(c.Generator, map, Hints.None);
 							AddLinePragma(c);
 							cw.Emit(Op.Genfin);
 						}
@@ -206,7 +190,7 @@ namespace Ela.Compilation
 									AddLinePragma(im);
 									cw.Emit(Op.Pushvar, addr);
 									cw.Emit(Op.Pushfld, AddString(im.ExternalName));
-									var varAddr = AddVariable(im.LocalName, im, ElaVariableFlags.Immutable, -1);
+									var varAddr = AddVariable(im.LocalName, im, ElaVariableFlags.None, -1);
 									cw.Emit(Op.Popvar, varAddr);
 								}
 							}
@@ -261,41 +245,6 @@ namespace Ela.Compilation
 							cw.Emit(Op.Nop);
 							EndScope();
 						}
-					}
-					break;
-				case ElaNodeType.Return:
-					if (map.Exit.IsEmpty())
-						AddError(ElaCompilerError.ReturnInGlobal, exp);
-					else
-					{
-						var s = (ElaReturn)exp;
-						CompileExpression(s.Expression, map, Hints.None);
-						AddLinePragma(s);
-						cw.Emit(Op.Br, map.Exit);
-					}
-					break;
-				case ElaNodeType.Break:
-					if (map.BlockEnd.IsEmpty())
-						AddError(ElaCompilerError.BreakNotAllowed, exp);
-					else
-					{
-						AddLinePragma(exp);
-						cw.Emit(Op.Br, map.BlockEnd);
-
-						if ((hints & Hints.Left) != Hints.Left)
-							cw.Emit(Op.Pushunit);
-					}
-					break;
-				case ElaNodeType.Continue:
-					if (map.BlockStart.IsEmpty())
-						AddError(ElaCompilerError.ContinueNotAllowed, exp);
-					else
-					{
-						AddLinePragma(exp);
-						cw.Emit(Op.Br, map.BlockStart);
-
-						if ((hints & Hints.Left) != Hints.Left)
-							cw.Emit(Op.Pushunit);
 					}
 					break;
 				case ElaNodeType.Condition:
@@ -407,13 +356,10 @@ namespace Ela.Compilation
 							{
 								AddLinePragma(p);
 
-								if ((hints & Hints.Left) == Hints.Left &&
-									(hints & Hints.Assign) == Hints.Assign)
+								if ((hints & Hints.Left) == Hints.Left && (hints & Hints.Assign) == Hints.Assign)
 								{
-									if ((var.Flags & ElaVariableFlags.Immutable) == ElaVariableFlags.Immutable)
-										AddError(ElaCompilerError.AssignImmutableVariable, p, p.FieldName);
-									else
-										cw.Emit(Op.Popvar, var.Address);
+									AddError(ElaCompilerError.AssignImmutableVariable, p, p.FieldName);
+									AddHint(ElaCompilerHint.UseReferenceCell, p);
 								}
 								else
 									cw.Emit(Op.Pushvar, var.Address);
@@ -539,16 +485,10 @@ namespace Ela.Compilation
 						{
 							addr = scopeVar.Address;
 
-							if ((hints & Hints.Left) == Hints.Left &&
-								(hints & Hints.Assign) == Hints.Assign)
+							if ((hints & Hints.Left) == Hints.Left && (hints & Hints.Assign) == Hints.Assign)
 							{
-								if ((scopeVar.Flags & ElaVariableFlags.Immutable) == ElaVariableFlags.Immutable)
-								{
-									AddError(ElaCompilerError.AssignImmutableVariable, exp, v.VariableName);
-									AddHint(ElaCompilerHint.UseVarInsteadOfLet, exp);
-								}
-								else
-									cw.Emit(Op.Popvar, addr);
+								AddError(ElaCompilerError.AssignImmutableVariable, exp, v.VariableName);
+								AddHint(ElaCompilerHint.UseReferenceCell, exp);
 							}
 							else
 							{
@@ -607,7 +547,7 @@ namespace Ela.Compilation
 						var exit = cw.DefineLabel();
 
 						AddLinePragma(v);
-						CompilePattern(addr, null, v.Pattern, map, next, ElaVariableFlags.Immutable, hints | Hints.Silent);
+						CompilePattern(addr, null, v.Pattern, map, next, ElaVariableFlags.None, hints | Hints.Silent);
 						cw.Emit(Op.PushI1_1);
 						cw.Emit(Op.Br, exit);
 						cw.MarkLabel(next);
@@ -975,9 +915,6 @@ namespace Ela.Compilation
 
 			if (CurrentScope.Parent != null)
 				AddError(ElaCompilerError.OperatorOnlyInGlobal, s);
-
-			if ((s.VariableFlags & ElaVariableFlags.Immutable) != ElaVariableFlags.Immutable)
-				AddWarning(ElaCompilerWarning.OperatorAsMutable, s);
 
 			CompileExpression(s.InitExpression, map, Hints.None);
 			AddLinePragma(s);

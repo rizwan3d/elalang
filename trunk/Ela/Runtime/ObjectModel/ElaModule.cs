@@ -20,7 +20,6 @@ namespace Ela.Runtime.ObjectModel
 
         private const string ADDRESS = "address";
         private const string VARNAME = "name";
-        private const string ISIMMUTABLE = "isImmutable";
         private const string ISPRIVATE = "isPrivate";
         private const string VALUE = "value";
 
@@ -143,7 +142,6 @@ namespace Ela.Runtime.ObjectModel
                             new ElaRecordField(ADDRESS, sv.Address, false),
                             new ElaRecordField(VARNAME, v, false),
                             new ElaRecordField(VALUE, val, false),
-                            new ElaRecordField(ISIMMUTABLE, (sv.Flags & ElaVariableFlags.Immutable) == ElaVariableFlags.Immutable, false),
                             new ElaRecordField(ISPRIVATE, (sv.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private, false));
                 }
             }

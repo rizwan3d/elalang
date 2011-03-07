@@ -153,8 +153,6 @@ namespace Ela.Parsing
 				case Parser._SEQ: return ElaParserError.ExpectedSeq;
 				case Parser._DOT: return ElaParserError.ExpectedDot;
 				case Parser._IN: return ElaParserError.ExpectedKeywordIn;
-				case Parser._UPTO: return ElaParserError.ExpectedKeywordTo;
-				case Parser._DOWNTO: return ElaParserError.ExpectedKeywordDownto;
 				case Parser._BASE: return ElaParserError.ExpectedKeywordBase;
 				case Parser._MATCH: return ElaParserError.ExpectedKeywordMatch;
 				case Parser._ASAMP: return ElaParserError.ExpectedKeywordAsAmp;
@@ -164,16 +162,10 @@ namespace Ela.Parsing
 				case Parser._PRIVATE: return ElaParserError.ExpectedKeywordPrivate;
 				case Parser._OPEN: return ElaParserError.ExpectedKeywordOpen;
 				case Parser._WITH: return ElaParserError.ExpectedKeywordWith;
-				case Parser._WHILE: return ElaParserError.ExpectedKeywordWhile;
-				case Parser._DO: return ElaParserError.ExpectedKeywordDo;
-				case Parser._FOR: return ElaParserError.ExpectedKeywordFor;
 				case Parser._IFS: return ElaParserError.ExpectedKeywordIf;
 				case Parser._ELSE: return ElaParserError.ExpectedKeywordElse;
 				case Parser._THEN: return ElaParserError.ExpectedKeywordThen;				
 				case Parser._RAISE: return ElaParserError.ExpectedKeywordRaise;
-				case Parser._RETURN: return ElaParserError.ExpectedKeywordReturn;
-				case Parser._BREAK: return ElaParserError.ExpectedKeywordBreak;
-				case Parser._CONTINUE: return ElaParserError.ExpectedKeywordContinue;
 				case Parser._TRY: return ElaParserError.ExpectedKeywordTry;
 				case Parser._TRUE: return ElaParserError.ExpectedBooleanToken;
 				case Parser._FALSE: return ElaParserError.ExpectedBooleanToken;				
@@ -181,7 +173,6 @@ namespace Ela.Parsing
 				case Parser._WHERE: return ElaParserError.ExpectedKeywordWhere;
 				case Parser._AND: return ElaParserError.ExpectedKeywordAnd;
 				case Parser._ENDS: return ElaParserError.ExpectedKeywordEnd;
-				case Parser._MUTABLE: return ElaParserError.ExpectedKeywordMutable;
 				case Parser._COMPO: return ElaParserError.ExpectedComprehensionSlash;
 				default: return ElaParserError.ExpectedToken;
 			}

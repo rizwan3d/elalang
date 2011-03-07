@@ -12,7 +12,7 @@ namespace Ela.Compilation
 			var pars = dec.ParameterCount;
 			StartFun(dec.Name, pars);
 
-			var map = new LabelMap(cw.DefineLabel());
+			var map = new LabelMap();
 			var funSkipLabel = cw.DefineLabel();
 			var startLabel = cw.DefineLabel();
 			cw.Emit(Op.Br, funSkipLabel);
@@ -50,7 +50,6 @@ namespace Ela.Compilation
 			EndScope();
 			EndSection();
 
-			cw.MarkLabel(map.Exit);
 			cw.Emit(Op.Ret);
 			cw.MarkLabel(funSkipLabel);
 
@@ -82,8 +81,7 @@ namespace Ela.Compilation
 						if (p.Type == ElaNodeType.DefaultPattern)
 							AddVariable();
 						else
-							AddVariable(((ElaVariablePattern)p).Name, p,
-								ElaVariableFlags.Immutable | ElaVariableFlags.Parameter, -1);
+							AddVariable(((ElaVariablePattern)p).Name, p, ElaVariableFlags.Parameter, -1);
 					}
 				}
 				else
@@ -104,7 +102,7 @@ namespace Ela.Compilation
 							cw.Emit(Op.Popvar, addr);
 							var nextLab = cw.DefineLabel();
 							var skipLab = cw.DefineLabel();
-							CompilePattern(addr, null, e, map, nextLab, ElaVariableFlags.Immutable, Hints.FunBody);
+							CompilePattern(addr, null, e, map, nextLab, ElaVariableFlags.None, Hints.FunBody);
 							cw.Emit(Op.Br, skipLab);
 							cw.MarkLabel(nextLab);
 							cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
@@ -133,8 +131,7 @@ namespace Ela.Compilation
 					var v = (ElaVariableReference)t.Parameters[i];
 					var addr = AddVariable(v.VariableName, v,
 						v.VariableName[0] == '$' ?
-						(ElaVariableFlags.SpecialName | ElaVariableFlags.Parameter) :
-						(ElaVariableFlags.Immutable | ElaVariableFlags.Parameter), -1);
+						(ElaVariableFlags.SpecialName | ElaVariableFlags.Parameter) : ElaVariableFlags.Parameter, -1);
 					cw.Emit(Op.Popvar, addr);
 				}
 			}
@@ -353,7 +350,7 @@ namespace Ela.Compilation
 		#region Helper
 		private void AddParameter(ElaVariablePattern exp)
 		{
-			var addr = AddVariable(exp.Name, exp, ElaVariableFlags.Immutable | ElaVariableFlags.Parameter, -1);
+			var addr = AddVariable(exp.Name, exp, ElaVariableFlags.Parameter, -1);
 			cw.Emit(Op.Popvar, addr);
 		}
 		#endregion

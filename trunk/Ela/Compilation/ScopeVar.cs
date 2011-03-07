@@ -8,7 +8,7 @@ namespace Ela.Compilation
 		#region Construction
 		internal static readonly ScopeVar Empty = new ScopeVar(ElaVariableFlags.None, -1, -1);
 
-		internal ScopeVar(int address) : this(ElaVariableFlags.Immutable, address, -1)
+		internal ScopeVar(int address) : this(ElaVariableFlags.None, address, -1)
 		{
 
 		}

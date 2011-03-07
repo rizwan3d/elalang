@@ -176,7 +176,7 @@ namespace Ela.Runtime.ObjectModel
 					sb.Append(",");
 
 				if (flags[c - 1])
-					sb.Append("mutable ");
+					sb.Append("!");
 
 				sb.AppendFormat("{0}={1}", k, this[k].Ref.Show(this[k], ctx, info));
 			}

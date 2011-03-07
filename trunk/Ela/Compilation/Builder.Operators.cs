@@ -31,7 +31,8 @@ namespace Ela.Compilation
 				((hints & Hints.Scope) == Hints.Scope ? Hints.Scope : Hints.None) |
 				((hints & Hints.Nested) == Hints.Nested ? Hints.Nested : Hints.None);
 
-			if (bin.Operator != ElaOperator.CompBackward && bin.Operator != ElaOperator.CompForward && bin.Operator != ElaOperator.Assign)
+			if (bin.Operator != ElaOperator.CompBackward && bin.Operator != ElaOperator.CompForward && bin.Operator != ElaOperator.Assign &&
+				bin.Operator != ElaOperator.Equals && bin.Operator != ElaOperator.NotEquals)
 			{
 				if (bin.Left != null &&
 					(bin.Left.Flags & ElaExpressionFlags.ReturnsUnit) == ElaExpressionFlags.ReturnsUnit)
@@ -42,14 +43,7 @@ namespace Ela.Compilation
 					AddWarning(ElaCompilerWarning.UnitAlwaysFail, bin.Right);
 			}
 
-			if (bin.Left != null &&
-				(bin.Left.Flags & ElaExpressionFlags.BreaksExecution) == ElaExpressionFlags.BreaksExecution)
-				AddError(ElaCompilerError.BreakExecutionNotAllowed, bin.Left);
-			else if (bin.Right != null &&
-				(bin.Right.Flags & ElaExpressionFlags.BreaksExecution) == ElaExpressionFlags.BreaksExecution)
-				AddError(ElaCompilerError.BreakExecutionNotAllowed, bin.Right);
-			else if (bin.Operator == ElaOperator.CompBackward ||
-				bin.Operator == ElaOperator.CompForward)
+			if (bin.Operator == ElaOperator.CompBackward || bin.Operator == ElaOperator.CompForward)
 			{
 				exprData = CompileComposition(bin, map, newHints);
 
@@ -57,13 +51,9 @@ namespace Ela.Compilation
 					AddValueNotUsed(bin);
 			}
 			else if (bin.Operator == ElaOperator.Swap)
-			{
 				CompileSwap(bin, map, hints);
-			}
 			else if (bin.Operator == ElaOperator.Assign)
-			{
 				CompileAssign(bin, bin.Left, bin.Right, hints, map);
-			}
 			else
 			{
 				if (bin.Operator != ElaOperator.Custom)

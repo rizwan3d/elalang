@@ -9,7 +9,7 @@ namespace Ela.Compilation
 		
 		// = 500,
 
-		UseVarInsteadOfLet = 501,
+		UseReferenceCell = 501,
 
 		MatchEntryTypingFailed = 502,
 

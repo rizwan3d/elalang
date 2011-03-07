@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Ela.Debug;
+using System.Text;
 
 namespace Ela.Runtime.ObjectModel
 {
@@ -191,7 +192,50 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override string Show(ExecutionContext ctx, ShowInfo info)
 		{
-			return "[" + FormatHelper.FormatEnumerable(new ChunkEnumerable(AsConstrainedSequence()), ctx, info) + "]";
+			var maxLen = info.SequenceLength;
+			var sb = new StringBuilder();
+			sb.Append('[');
+			var count = 0;
+
+			if (this != Empty)
+			{
+				ElaObject xs = this;
+
+				do
+				{
+					if (maxLen > 0 && count > maxLen)
+					{
+						sb.Append("...");
+						break;
+					}
+					
+					var v = xs.Head(ElaObject.DummyContext).Id(DummyContext);
+
+					if (count > 0)
+						sb.Append(',');
+
+					sb.Append(v.Show(ctx, info));
+					count++;
+					xs = xs.Tail(ElaObject.DummyContext).Ref;
+
+					if ((xs.Traits & ElaTraits.Thunk) == ElaTraits.Thunk)
+					{
+						if (count < 50)
+							xs.Force(ElaObject.DummyContext);
+						else
+						{
+							sb.Append("...");
+							break;
+						}
+					}
+					else if ((xs.Traits & ElaTraits.Fold) != ElaTraits.Fold)
+						break;
+				}
+				while (!xs.IsNil(ElaObject.DummyContext));
+			}
+
+			sb.Append(']');
+			return sb.ToString();
 		}
 
 
@@ -312,35 +356,6 @@ namespace Ela.Runtime.ObjectModel
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
-		}
-
-
-		private IEnumerable<ElaValue> AsConstrainedSequence()
-		{
-			var count = 0;
-
-			if (this != Empty)
-			{
-				ElaObject xs = this;
-
-				do
-				{
-					yield return xs.Head(ElaObject.DummyContext).Id(DummyContext);
-					count++;
-					xs = xs.Tail(ElaObject.DummyContext).Ref;
-
-					if ((xs.Traits & ElaTraits.Thunk) == ElaTraits.Thunk)
-					{
-						if (count < 50)
-							xs.Force(ElaObject.DummyContext);
-						else
-							yield break;
-					}
-					else if ((xs.Traits & ElaTraits.Fold) != ElaTraits.Fold)
-						yield break;
-				}
-				while (!xs.IsNil(ElaObject.DummyContext));
-			}
 		}
 		#endregion
 

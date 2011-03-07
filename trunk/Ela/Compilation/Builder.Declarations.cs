@@ -9,8 +9,6 @@ namespace Ela.Compilation
 		#region Main
 		private void CompileDeclaration(ElaBinding s, LabelMap map, Hints hints)
 		{
-			var ro = (s.VariableFlags & ElaVariableFlags.Immutable) == ElaVariableFlags.Immutable;
-
 			if (s.InitExpression == null)
 				AddError(ElaCompilerError.VariableDeclarationInitMissing, s);
 
@@ -21,9 +19,6 @@ namespace Ela.Compilation
 			
 			if (s.Pattern == null)
 			{
-				if (options.StrictMode && CurrentScope.Parent == null && !ro)
-					AddError(ElaCompilerError.StrictModeMutableGlobal, s, s.VariableName);
-
 				var addr = -1;
 				var addSym = false;
 				
@@ -67,7 +62,7 @@ namespace Ela.Compilation
 				var ed = s.InitExpression != null ? CompileExpression(s.InitExpression, map, Hints.None) : default(ExprData);
 				var fc = ed.Type == DataKind.FunCurry || ed.Type == DataKind.FunParams;
 
-				if (ed.Type == DataKind.FunParams && addSym && ro)
+				if (ed.Type == DataKind.FunParams && addSym)
 				{
 					pdb.StartFunction(s.VariableName, po, ed.Data);
 					pdb.EndFunction(-1, cw.Offset);

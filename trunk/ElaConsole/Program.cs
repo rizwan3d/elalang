@@ -359,7 +359,6 @@ namespace ElaConsole
 					WarningsAsErrors = opt.WarningsAsErrors,
 					NoWarnings = opt.NoWarnings,
 					ShowHints = !opt.SupressHints,
-					StrictMode = opt.StrictMode,
 					GenerateDebugInfo = opt.Debug,
 					Optimize = !opt.DisableOptimization
 				};

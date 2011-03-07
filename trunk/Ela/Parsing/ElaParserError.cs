@@ -56,9 +56,9 @@ namespace Ela.Parsing
 
 		ExpectedKeywordIn = 114,
 
-		ExpectedKeywordTo = 115,
+		// = 115,
 
-		ExpectedKeywordDownto = 116,
+		ExpectedKeywordWith = 116,
 
 		ExpectedKeywordOn = 117,
 
@@ -82,19 +82,19 @@ namespace Ela.Parsing
 
 		// = 127,
 
-		ExpectedKeywordWith = 128,
+		// = 128,
 
 		ExpectedKeywordCout = 129,
 
 		ExpectedKeywordTypeof = 130,
 
-		ExpectedKeywordWhile = 131,
+		// = 131,
 
 		ExpectedEq = 132,
 
-		ExpectedKeywordDo = 133,
+		// = 133,
 
-		ExpectedKeywordFor = 134,
+		// = 134,
 
 		ExpectedKeywordIf = 135,
 
@@ -104,11 +104,11 @@ namespace Ela.Parsing
 
 		ExpectedKeywordYield = 138,
 
-		ExpectedKeywordReturn = 139,
+		// = 139,
 
-		ExpectedKeywordBreak = 140,
+		// = 140,
 
-		ExpectedKeywordContinue = 141,
+		// = 141,
 
 		ExpectedKeywordRaise = 142,
 
@@ -136,7 +136,7 @@ namespace Ela.Parsing
 
 		ExpectedKeywordEnd = 154,
 
-		ExpectedKeywordMutable = 155,
+		// = 155,
 
 		ExpectedKeywordAsAmp = 156,
 

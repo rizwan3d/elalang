@@ -1,11 +1,11 @@
-let iter ?(Get,Len,Ix)@arr = iter' {mutable ix=0} arr
+let iter ?(Get,Len,Ix)@arr = iter' {!ix=0} arr
         where iter' cell arr () | n < len = cell.ix <- cell.ix + 1 $ `Some (arr.[n]);
                                 | else    = `None
                                 where n   = cell.ix and
                                       len = length arr
                                 end
         end;
-         ?(Fold)@xs        = iter' {mutable xs=xs}
+         ?(Fold)@xs        = iter' {!xs=xs}
         where iter' cell () | l is (x::xs) = cell.xs <- xs $ `Some x;
                             | else         = `None
                             where l = cell.xs end
@@ -26,4 +26,4 @@ let when p it | r is (`Some x), p x = `Some x;
               where r = it () end
 end
 
-let project f it = f <| it () end
+let project f it = f <| it () end 

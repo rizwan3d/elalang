@@ -13,7 +13,7 @@ namespace Ela.Compilation
 
 		Scope = 0x04,
 
-		Comp = 0x08,
+		// = 0x08,
 
 		// = 0x10,
 

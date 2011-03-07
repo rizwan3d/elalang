@@ -45,19 +45,13 @@ namespace ElaConsole
 
 			if (bin.VariableName != null)
 			{
-				var type = default(TypeTag);
-				
-				if ((bin.VariableFlags & ElaVariableFlags.Immutable) == ElaVariableFlags.Immutable)
-				{
-					var tt = GetExpressionType(bin.InitExpression, scope);
+				var type = default(TypeTag);				
+				var tt = GetExpressionType(bin.InitExpression, scope);
 
-					if (!tt.Complete)
-						type = new TypeTag(tt.Traits, false);
-					else
-						type = tt;
-				}
+				if (!tt.Complete)
+					type = new TypeTag(tt.Traits, false);
 				else
-					type = TypeTag.Any();
+					type = tt;
 
 				parent.LocalBindings.Add(bin.VariableName, new Binding(bin.VariableName, type));
 			}
@@ -147,7 +141,6 @@ namespace ElaConsole
 
 						return type;
 					}
-				case ElaNodeType.Break: return TypeTag.Unit();
 				case ElaNodeType.BuiltinFunction:
 					{
 						var bf = (ElaBuiltinFunction)exp;
@@ -172,7 +165,6 @@ namespace ElaConsole
 						var type2 = GetExpressionType(@if.False, scope);
 						return type1.Traits != type2.Traits ? new TypeTag(type1.Traits | type2.Traits, false) : type1;
 					}
-				case ElaNodeType.Continue: return TypeTag.Unit();
 				case ElaNodeType.CustomOperator: return null; //TODO
 				case ElaNodeType.FieldReference:
 					{
@@ -192,7 +184,6 @@ namespace ElaConsole
 							return TypeTag.Any();
 						}
 					}
-				case ElaNodeType.For: return TypeTag.Unit();
 				case ElaNodeType.FunctionCall:
 					{
 						var call = (ElaFunctionCall)exp;
@@ -249,7 +240,6 @@ namespace ElaConsole
 
 						return ret;
 					}
-				case ElaNodeType.Return: return TypeTag.Unit();
 				case ElaNodeType.Try:
 					{
 						var @try = (ElaTry)exp;
@@ -298,7 +288,6 @@ namespace ElaConsole
 						ret.FunctionType = type.FunctionType;
 						return ret;
 					}
-				case ElaNodeType.While: return TypeTag.Unit();
 				default: return TypeTag.Any();
 			}
 		}

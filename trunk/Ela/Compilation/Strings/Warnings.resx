@@ -132,9 +132,6 @@
   <data name="MatchNextEntryIgnored" xml:space="preserve">
     <value>This entry matches any value. All next match entries will be ignored.</value>
   </data>
-  <data name="OperatorAsMutable" xml:space="preserve">
-    <value>You cannot redefine an operator, declare it as an immutable value using 'let'.</value>
-  </data>
   <data name="UnitAlwaysFail" xml:space="preserve">
     <value>An expression is of type 'unit' and will always cause code to fail with an error.</value>
   </data>

@@ -93,7 +93,7 @@ namespace Ela.Compilation
 				else if (e.Pattern == null)
 				{
 					if (prevEntry != null && prevEntry.Pattern != null)
-						CompilePattern(serv, tuple, prevEntry.Pattern, map, next, ElaVariableFlags.Immutable, hints);
+						CompilePattern(serv, tuple, prevEntry.Pattern, map, next, ElaVariableFlags.None, hints);
 					
 					if (!nextGuard.IsEmpty())
 						cw.MarkLabel(nextGuard);
@@ -155,7 +155,7 @@ namespace Ela.Compilation
 					}
 
 					var mc = Errors.Count;
-					CompilePattern(serv, tuple, e.Pattern, map, next, ElaVariableFlags.Immutable, hints);
+					CompilePattern(serv, tuple, e.Pattern, map, next, ElaVariableFlags.None, hints);
 
 					if (Errors.Count == mc)
 					{

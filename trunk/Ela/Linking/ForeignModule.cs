@@ -129,7 +129,7 @@ namespace Ela.Linking
             if (pervasives == null || !pervasives.ContainsKey(name))
             {
                 var addr = locals.Count;
-                scope.Locals.Add(name, new ScopeVar(ElaVariableFlags.Immutable, addr, -1));
+                scope.Locals.Add(name, new ScopeVar(ElaVariableFlags.None, addr, -1));
                 locals.Add(value);
 
                 if (pervasives == null)
@@ -142,7 +142,7 @@ namespace Ela.Linking
 
 		private void Add(string name, ElaValue value)
 		{
-			scope.Locals.Add(name, new ScopeVar(ElaVariableFlags.Immutable, locals.Count, -1));
+			scope.Locals.Add(name, new ScopeVar(ElaVariableFlags.None, locals.Count, -1));
 			locals.Add(value);
 		}
 		#endregion

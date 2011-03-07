@@ -78,9 +78,6 @@ namespace ElaConsole.Options
 
 		[CommandLineOption("noOpt")]
 		public bool DisableOptimization { get; set; }
-
-		[CommandLineOption("strict")]
-		public bool StrictMode { get; set; }
 		#endregion
 
 

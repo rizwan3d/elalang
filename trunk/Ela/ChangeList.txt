@@ -1,3 +1,13 @@
+0.8.6.41:Fix:A warning ELA400 (UnitAlwaysFail) could be generated in an incorrect case (when applying 'Eq' trait to unit which is legal).
+0.8.6.40:Change:Now one can write expressions directly in the global scope.
+0.8.6.39:Change:Syntax for 'module open' directive is changed from 'open Foo[dllname] as MyFoo with x,y' to 'open Foo#dllname@MyFoo with x,y'.
+0.8.6.38:Fix:Minor fixes in implementation of 'Show' trait for ElaList.
+0.8.6.37:Change:All imperative cycles including 'for-to', 'for-downto', 'for-in' and 'while' are decomissioned. Also 'return', 'break' and 'continue' keywords are removed.
+0.8.6.36:Change:Syntax for mutable record fields changed from '{mutable x=...}' to '{!x=...}'.
+0.8.6.35:Change:Strict compiler mode is decomissioned (it only enforced errors on global mutable variables which are useless as soon as there are no mutable variables at all).
+0.8.6.34:Change:Ela doesn't support mutable variables anymore. One should use reference cells to achieve the same effect, e.g. '{!value=...}'.
+0.8.6.33:Fix:Parse could crash on a binding expression without initialization block, e.g. 'let foo'.
+0.8.6.32:Change:Minor corrections in compiler error messages.
 0.8.6.31:Change:Multiple code refactorings in order to support .NET 2.0 as a minimum requirement (C# 3.0 is still a minimum version of compiler that is needed to build Ela projects).
 0.8.6.30:New:Now ElaModule supports trait 'FieldGet'.
 0.8.6.29:Change:Now printing infinite lists (using 'show' trait and built-in formatter helper) cannot cycle - looping through the list will always stop after first 50 elements. If one needs to show more elements than these elements should be explicitely taken from list before that ('take').
@@ -21,7 +31,7 @@
 0.8.6.11:New:Now all Ela types expose a GetTypeName method that is used internally by Ela machine to determine type name.
 0.8.6.10:Change:Verification of function application at compile time is enhanced - it will now generate warning for all attempts to call something different than function if it was directly initialized with a literal.
 0.8.6.9:Change:ElaArray now moved from the built-in types to the standard library. Arrcons op code, array literal, array pattern, etc. are decomissioned.
-0.8.6.8:Change:Now 'end' is required for global 'let' binding that are used to declare functions. If a global 'let' binding is used to associate a name with a value other than function an 'end' keyword is allowed but not required.
+0.8.6.8:Change:Now 'end' is required for all global 'let' bindings.
 0.8.6.7:Change:'Tagval' op code renamed to 'Untag'.
 0.8.6.6:Fix:'Tag' trait didn't have a full implementation. The direct casting to ElaVariant still took place for the 'untag' operation. A new 'Untag' method added to the trait 'Tag' to avoid this.
 0.8.6.5:Change:FormatHelper class made public so it can be used when implementing 'Show' trait for custom types.

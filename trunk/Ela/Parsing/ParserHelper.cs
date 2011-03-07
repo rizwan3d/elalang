@@ -48,18 +48,16 @@ namespace Ela.Parsing
 		}
 
 
-		private void SetFunMetadata(ElaBinding varExp, ElaExpression cexp, ElaVariableFlags flags)
+		private void SetFunMetadata(ElaBinding varExp, ElaExpression cexp)
 		{
 			if (cexp != null)
 			{
-				var imm = (flags & ElaVariableFlags.Immutable) == ElaVariableFlags.Immutable;
-
-				if (cexp.Type == ElaNodeType.FunctionLiteral && imm && varExp.VariableName != null)
+				if (cexp.Type == ElaNodeType.FunctionLiteral && varExp.VariableName != null)
 				{
 					((ElaFunctionLiteral)cexp).Name = varExp.VariableName;
 					varExp.VariableFlags |= ElaVariableFlags.Function;
 				}
-				else if ((cexp.Type < ElaNodeType.FunctionLiteral || cexp.Type == ElaNodeType.Primitive) && imm && varExp.VariableName != null)
+				else if ((cexp.Type < ElaNodeType.FunctionLiteral || cexp.Type == ElaNodeType.Primitive) && varExp.VariableName != null)
 					varExp.VariableFlags |= ElaVariableFlags.ObjectLiteral;
 			}
 		}
