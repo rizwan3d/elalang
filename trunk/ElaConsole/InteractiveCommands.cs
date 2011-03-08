@@ -44,6 +44,9 @@ namespace ElaConsole
 				case "clear":
 					Console.Clear();
 					break;
+				case "exit":
+					Environment.Exit(0);
+					break;
 			}
 		}
 

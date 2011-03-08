@@ -106,7 +106,6 @@ namespace ElaConsole
 			{
 				Console.WriteLine("Interactive mode");
 				Console.WriteLine("Enter expressions and press <Return> to execute.");
-				Console.WriteLine("Press Ctrl+C to exit.");
 				Console.WriteLine();
 			}
 
@@ -118,11 +117,8 @@ namespace ElaConsole
 			if (!opt.Silent)
 			{
 				Console.WriteLine();
-				var oc = Console.ForegroundColor;
-				Console.ForegroundColor = ConsoleColor.White;
 				var prompt = String.IsNullOrEmpty(opt.Prompt) ? "ela" : opt.Prompt;
 				Console.Write(prompt + ">");
-				Console.ForegroundColor = oc;
 			}
 		}
 
@@ -196,15 +192,7 @@ namespace ElaConsole
 
 		private void WriteMessage(string msg, MessageType type)
 		{
-			var col = Console.ForegroundColor;
-
-			var newCol = type == MessageType.Error ? ConsoleColor.Red :
-				type == MessageType.Warning ? ConsoleColor.Yellow :
-				ConsoleColor.White;
-
-			Console.ForegroundColor = newCol;
 			Console.WriteLine(msg);
-			Console.ForegroundColor = col;
 		}
 		#endregion
 	}

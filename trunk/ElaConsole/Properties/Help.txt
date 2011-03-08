@@ -102,6 +102,8 @@ the elac.config file.
 			interactive session.
 			
 #clear			Clears the console window.
+
+#exit			Exit Ela Console.
 			
 #help			Print this help from interactive mode.
 
