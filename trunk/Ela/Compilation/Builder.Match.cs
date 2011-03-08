@@ -10,7 +10,7 @@ namespace Ela.Compilation
 		#region Main
 		private void CompileMatch(ElaMatch exp, ElaExpression matchExp, LabelMap map, Hints hints)
 		{
-			var aff = new ElaPatternAffinity[0];
+			//var aff = new ElaPatternAffinity[0];
 			var serv = -1;
 			var tuple = default(ElaTupleLiteral);
 
@@ -404,8 +404,7 @@ namespace Ela.Compilation
 				var pe1 = pexp.Patterns[0];
 				var pe2 = pexp.Patterns[1];
 				var v1 = 0;
-				var v2 = 0;
-
+				
 				if (pe1.Type == ElaNodeType.VariablePattern)
 					v1 = GetMatchVariable(((ElaVariablePattern)pe1).Name, newHints, flags, pe1);
 				else
@@ -414,9 +413,9 @@ namespace Ela.Compilation
 				if (pe2.Type == ElaNodeType.VariablePattern || pe2.Type == ElaNodeType.DefaultPattern)
 				{
 					if (pe2.Type == ElaNodeType.VariablePattern)
-						v2 = GetMatchVariable(((ElaVariablePattern)pe2).Name, newHints, flags, pe2);
+						GetMatchVariable(((ElaVariablePattern)pe2).Name, newHints, flags, pe2); //v2
 					else
-						v2 = AddVariable();
+						AddVariable(); //v2
 
 					cw.Emit(Op.Skiptl, v1 >> 8);
 				}
@@ -436,9 +435,6 @@ namespace Ela.Compilation
 				var els = pexp.Patterns;
 				var len = els.Count;
 				cw.Emit(Op.Pushvar, pushSys);
-
-				var errLab = cw.DefineLabel();
-				var sucLab = cw.DefineLabel();
 
 				for (var i = 0; i < len; i++)
 				{

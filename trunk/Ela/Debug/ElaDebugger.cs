@@ -36,7 +36,6 @@ namespace Ela.Debug
 				return retval;
 
 			var mem = default(StackPoint);
-			var list = new List<CallFrame>();
 			var first = true;
 			var offset = 0;
 

@@ -217,7 +217,6 @@ namespace ElaConsole
 
 		private static int InterpretFile()
 		{
-			var source = String.Empty;
 			var res = default(LinkerResult);
 			
 			if (opt.ShowBuildTime) //GIT

@@ -17,8 +17,7 @@ namespace Ela.Runtime
 		internal ElaValue[][] modules;
 		private Pervasive[][] pervasives;
 		private CodeAssembly asm;
-		private object syncRoot = new Object();
-
+		
 		public ElaMachine(CodeAssembly asm)
 		{
 			this.asm = asm;
@@ -1403,7 +1402,7 @@ namespace Ela.Runtime
 						break;
 					case Op.Ret:
 						{
-							var nm = callStack.Pop();
+							callStack.Pop();
 
 							if (callStack.Count > 0)
 							{

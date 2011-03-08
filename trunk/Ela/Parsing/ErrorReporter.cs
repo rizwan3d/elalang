@@ -9,7 +9,6 @@ namespace Ela.Parsing
 		internal static ElaMessage CreateMessage(int error, string message, int line, int col)
 		{
 			var arr = message.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-			var arg = String.Empty;
 			var err = ElaParserError.InvalidSyntax;
 			var msg = String.Empty;
 			

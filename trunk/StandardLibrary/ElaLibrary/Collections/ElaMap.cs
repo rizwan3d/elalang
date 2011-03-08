@@ -144,7 +144,7 @@ namespace Ela.Library.Collections
             {
                 var c = 0;
 
-                foreach (var e in Tree.Enumerate())
+                foreach (var _ in Tree.Enumerate())
                     c++;
 
                 return c;

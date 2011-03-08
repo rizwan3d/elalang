@@ -32,8 +32,6 @@ namespace Ela.Compilation
 			if (flag != FunFlag.Lazy)
 				CompileParameters(dec, map);
 
-			var expr = dec.Body.Entries.Count > 1 ? null : dec.Body.Entries[0].Expression;
-
 			if (dec.Body.Entries.Count > 1)
 				CompileMatch(dec.Body, dec.Body.Expression, map, Hints.Tail | Hints.Scope | Hints.FunBody);
 			else

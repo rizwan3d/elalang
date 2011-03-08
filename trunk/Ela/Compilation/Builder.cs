@@ -477,14 +477,11 @@ namespace Ela.Compilation
 						var v = (ElaVariableReference)exp;
 						AddLinePragma(v);
 						var scopeVar = default(ScopeVar);
-						var addr = 0;
-
+						
 						if ((scopeVar = GetVariable(v.VariableName)).IsEmpty())
 							AddError(ElaCompilerError.UndefinedVariable, v, v.VariableName);
 						else
 						{
-							addr = scopeVar.Address;
-
 							if ((hints & Hints.Left) == Hints.Left && (hints & Hints.Assign) == Hints.Assign)
 							{
 								AddError(ElaCompilerError.AssignImmutableVariable, exp, v.VariableName);
