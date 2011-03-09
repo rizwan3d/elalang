@@ -42,7 +42,7 @@ As soon as Ela is a functional language function is a core data type in Ela type
 Ela uses its own convention to represent function types. As soon as all parameter and return type deduction logic is normally deferred until runtime (and first function application) Ela uses an asteriks symbol instead of type names:
 
 {{{
-ela>let myFun x y = x $ y
+ela>let myFun x y = x $ y end
 
 ela>myFun
 
@@ -78,6 +78,7 @@ Higher order functions are functions that operate with other functions - accepts
 {{{
 let foldl f z x::xs = foldl f (f z x) xs;           
           _ z []    = z 
+end
 }}}
 
 As you can see `foldl` accepts three arguments - a function, an initial value and a list. The first argument is a function for two arguments. What `foldl` does is iterating through the list and calling a given function on each list element (it provides initial `z` as a first argument and a current list element as a second).
@@ -89,19 +90,19 @@ Imagine that wee need to sum all elements of a list. You don't have to code all 
 {{{
 ela>#reload Samples
 
-ela>let sum = Samples.foldl (+) 0 
+ela>let sum = Samples.foldl (+) 0 end
 }}}
 
 Here we have created a new function by combining existing functions - `foldl` and `+` operator which is also a function as you remember. If you are having troubles understaning our `sum` function above that is OK, we will review its pecularities later. For now you can find its alternative version below:
 
 {{{
-let sum lst = Samples.foldl (\x y -> x + y) 0 lst
+let sum lst = Samples.foldl (\x y -> x + y) 0 lst end
 }}}
 
 Let's move forward. Now we have a different task - we need to reverse elements of a given list. And you know what? We still don't need to write its implementation from scratch:
 
 {{{
-ela>let reverse = Samples.foldl (flip (::)) []
+ela>let reverse = Samples.foldl (flip (::)) [] end
 }}}
 
 Basically this is what makes a language functional - instead of coding the sequence of actions to operate with data you operate with functions, create new functions by combining existing functions. As a result instead of working with data and _thinking data_ you think in terms of functions and what functions you need to combine to achieve your goal.
@@ -113,9 +114,9 @@ All Ela functions with absolutely no exceptions are closures. We have touched th
 Functions that are able to perform such a trick are called _closures_. It is important to understand that closures don't capture simply the variable value but the variable itself - you can think of it as of a possibility to refer directly to the parent scope variable within your function body. You should also be careful with it when operating with mutable values (like arrays) or mutable variables. All assignments to a variable or a variable value will be immediatly reflected in your closure function:
 
 {{{
-ela>let mutable x = 0
+ela>let mutable x = 0 end
 
-ela>let printIt () = cout x
+ela>let printIt () = cout x end
 
 ela>printIt ()
 
@@ -137,7 +138,7 @@ Closures are pretty useful even if you program in a pure functional way, with no
 As you probably remember from the very first chapter, all Ela functions accept just a single parameter. If you want to implement a function that can operate with several parameters you can create a chain of nested functions like so:
 
 {{{
-ela>let sum3 = \x -> \y -> \z -> x + y + z
+ela>let sum3 = \x -> \y -> \z -> x + y + z end
 
 ela>sum3 2 3 4
 
@@ -149,13 +150,13 @@ ela>sum3 2 3 4
 Functions like `sum3` are called _curried_ functions. As you can see a curried function creates a closure for each subsequent argument and if you need a function for three arguments you will have a chain of three closures as above, for four arguments - chain of four closures, etc. Also as you should probably remember there is a syntax sugar that simplifies declaration of such functions. Using this alternate syntactic construct the `sum3` function can be declared like so:
 
 {{{
-let sum3 = \x y z = x + y + z
+let sum3 = \x y z = x + y + z end
 }}}
 
 Or even like so:
 
 {{{
-let sum3 x y z = x + y + z
+let sum3 x y z = x + y + z end
 }}}
 
 Also because function application operation is left associative you don't have to always use parenthesis when calling a function with several arguments, i.e. `((sum 2) 3) 4` is fully equivalent to `sum 2 3 4`, but, hey, you should probably know this already!
@@ -169,6 +170,7 @@ How we can implement this function? As usual we can start with a more generic on
 {{{
 let zipWith z x::xs y::ys = z x y :: zipWith z xs ys;             
             _ _     _     = [] 
+end
 }}}
 
 As you can see besides two lists `zipWith` also accepts a function as a very first argument and this function gets applied to elements of both first and second list when a resulting list is constructed. Using `zipWith` we can seamlessly create our target `zip` function:
@@ -176,7 +178,7 @@ As you can see besides two lists `zipWith` also accepts a function as a very fir
 {{{
 ela>#reload Samples
 
-ela>let zip = Samples.zipWith (\x y -> (x, y))
+ela>let zip = Samples.zipWith (\x y -> (x, y)) end
 
 ela>zip [1,2,3] ['a','b','c']
 
@@ -189,6 +191,7 @@ A more straightforward example is a `take` function:
 let take 0 _     = [];          
          n x::xs = x :: take (n - 1) xs; 	     
 		 _ []    = [] 
+end
 }}}
 
 Copy this function to _Samples.ela_. What do we see here? A `take` function accepts a number of elements and a list and returns a specified number of elements from this list. OK, let's assume that we have a pretty huge list and we need only first five entries from it, here is what we can do:
@@ -196,7 +199,7 @@ Copy this function to _Samples.ela_. What do we see here? A `take` function acce
 {{{
 ela>#reload Samples
 
-ela>let hugeList = buildList 10000 0 where buildList s n | s > nn = nn :: buildList s nn where nn = n + 1 end; | else = [] end
+ela>let hugeList = buildList 10000 0 where buildList s n | s > nn = nn :: buildList s nn where nn = n + 1 end; | else = [] end end
 
 ela>Samples.take 5 hugeList
 
@@ -206,7 +209,7 @@ ela>Samples.take 5 hugeList
 It works however if you need to perform this operation frequently it is probably not very practical to always hardcode the number of items that you want to fetch. As usual you can create a specific version of `take` function like so:
 
 {{{
-ela>let take5 = Samples.take 5
+ela>let take5 = Samples.take 5 end
 
 ela>take5 hugeList
 
@@ -223,6 +226,7 @@ There are several cases when this possibility can be useful. Let's say that we h
 let any f x::xs | f x  = true;                 
                 | else = any f xs;         
 	    f []           = false  		
+end
 }}}
 
 And now type the following in console:
@@ -230,7 +234,7 @@ And now type the following in console:
 {{{
 ela>#reload Samples
 
-ela>let elem x = Samples.any (==x) 
+ela>let elem x = Samples.any (==x) end
 }}}
 
 Just a quick note - as you can see an `elem` function is defined through a more generic `any` function. The latter one accepts a predicate and a list and tests whether any element of a list satisfies a given predicate. The `elem` function simply defines this predicate as a function that performs a comparison of the provided value with a list element. As I've alredy mentioned above this is pretty typical style of programming in Ela.
@@ -266,7 +270,7 @@ Again it is important to remember that in order to apply an operator using prefi
 In fact the title of this section is a little bit misleading - infix and prefix forms are not the only possibilities. You can also apply both functions and operators using _postfix_ form. Postfix means that an argument is placed before the function or operator name. This is how it might look:
 
 {{{
-ela>let isEven x = x % 2 == 0
+ela>let isEven x = x % 2 == 0 end
 
 ela>(12 `isEven`)
 
@@ -286,7 +290,7 @@ ela>(2+)
 
 <f>:*->*
 
-ela>let sum2 = (2+)
+ela>let sum2 = (2+) end
 
 ela>sum2 3
 
@@ -296,13 +300,13 @@ ela>sum2 3
 The support for the postfix form is really important when it comes to operators as soon as it unveals a very convinient way to partially apply operators. If you partially apply an operator using postfix form than the very first argument gets "fixed". If you use a prefix form than the second argument is "fixed":
 
 {{{
-ela>let div1 = (5-)
+ela>let div1 = (5-) end
 
 ela>div1 3
 
 2
 
-ela>let div2 = (-5) //this is equivalent to: (-) 5
+ela>let div2 = (-5) end //this is equivalent to: (-) 5
 
 ela>div2 7
 
@@ -324,7 +328,7 @@ Declaration of custom operators is no way different from regular function declar
 Let's see some examples of custom operators:
 
 {{{
-ela>let !! x y = x.[y]
+ela>let !! x y = x.[y] end
 
 ela>hugeList !! 2
 
@@ -334,7 +338,7 @@ ela>(!!) hugeList 50
 
 50
 
-ela>let ^^ x = x * 2
+ela>let ^^ x = x * 2 end
 
 ela>(122 ^^)
 
@@ -359,6 +363,7 @@ let skip n lst = match (n, lst) with
 				 (n, _::xs) = skip (n - 1) xs;
 				 (_, [])    = []
 				 end
+end
 }}}
 
 This is a function that accepts number of elements, a list, skips the specified number of elements and return the resulting list.
@@ -369,6 +374,7 @@ As you can see we had to repeat parameter names twice (when even a single time i
 let skip 0 xs    = xs;          
          n _::xs = skip (n - 1) xs;          
 		 _ []    = [] 
+end
 }}}
 
 It is probably obvious that this declaration is a way better than the previous one. Here we use patterns as a parameter list and declare a separate function body for each set of patterns.
@@ -380,9 +386,9 @@ I am really going to be short with these ones as we already have touched the bas
 But this is not a case for Ela. It is important to understand that the only different between a function created using lambda syntax and a regular function declaration is that the latter one is always bound to a specific name. You are also free to declare named functions using lambda syntax. For example the following declarations are completely equivalent:
 
 {{{
-let sum x y = x + y
+let sum x y = x + y end
 
-let sum = \x y -> x + y
+let sum = \x y -> x + y end
 }}}
 
 These is only the syntactic difference between the two. For Ela compiler those are just two ways to say the same thing.
@@ -427,7 +433,7 @@ Function application is most important and the most basic operation available fo
 Pipe operators are yet another way to apply a function to its arguments. Ela has two pipe operators - backward pipe operator `<|` and forward pipe operator `|>`. For example we have a function `doubleMe` that is defined like so:
 
 {{{
-ela>let doubleMe x = x + x
+ela>let doubleMe x = x + x end
 }}}
 
 This is how you can call it using regular application syntax and pipe operators:
@@ -458,9 +464,11 @@ This is a typical pattern when you have a chain of function calls. Let's see how
 let when f x::xs | f x  = x :: when f xs;
                  | else = when f xs;
 	     _ []			= []
+end
 
 let project f x::xs = f x :: project f xs;
             _ []    = []
+end
 }}}
 
 Here we have two functions - the first filters a given list using a given predicate and the second performs a list projection - applies a given function to all list elements. And this is a pretty typical scenario when you work with collections - fetch elements based on the certain condition and perform some transformations on the result list. This is how you can do it with forward pipe operator:
@@ -492,19 +500,19 @@ As with pipes Ela has two function composition operators - forward composition `
 If somebody will have to define an operator similar to, say, forward composition it might look like so:
 
 {{{
-let >> f g x = g(f x)
+let >> f g x = g(f x) end
 }}}
 
 As you can an implementation is pretty straightforward - we accept one function, another one and call the latter with the results of the first function application. Let's see it in action:
 
 {{{
-ela>let sqrt x = x * x
+ela>let sqrt x = x * x end
 
-ela>let neg x = --x
+ela>let neg x = --x end
 
-ela>let div x = x / 2
+ela>let div x = x / 2 end
 
-ela>let c = sqrt >> neg >> div
+ela>let c = sqrt >> neg >> div end
 
 ela>c 42
 
@@ -514,7 +522,7 @@ ela>c 42
 Backward composition works in a similar manner but in reverse order:
 
 {{{
-ela>let c2 = div << neg << sqrt
+ela>let c2 = div << neg << sqrt end
 
 ela>c2 42
 
@@ -524,7 +532,7 @@ ela>c2 42
 Now let's see how we can rewrite the sample from the previous section using composition operators:
 
 {{{
-ela>let qry = Samples.when (>5) >> Samples.project (**2)
+ela>let qry = Samples.when (>5) >> Samples.project (**2) end
 
 ela>qry lst
 

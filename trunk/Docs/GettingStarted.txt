@@ -135,7 +135,7 @@ And now you can seamlessly use this module from Ela:
 {{{
 open Math
 
-let r = Math.rnd 0 42
+let r = Math.rnd 0 42 end
 }}}
 
 You can also compile your module into regular .NET assembly, reference _Ela.dll_ and specify the following attribute:

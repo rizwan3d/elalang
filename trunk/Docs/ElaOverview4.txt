@@ -28,7 +28,7 @@ ela>(3,4) <> (3,4,5)
 True
 }}}
 
-However some other data types such as lists and arrays are compared by reference:
+However some other data types such as lists are compared by reference:
 
 {{{
 ela>[1,2] == [1,2]
@@ -38,7 +38,7 @@ False
 
 When you create two lists with the same elements you still have two different lists, data structures for them are allocated separately therefore when we try to compare these lists using reference equality by asking "if these two expressions point to the _same_ list" we obviously get false as a result.
 
-Ela has a limited set of types that are compared using reference equality: linked lists, arrays, modules and functions. All other data types, including strings, variants and records are compared using structural equality.
+Ela has a limited set of types that are compared using reference equality: linked lists, modules and functions. All other data types, including strings, variants and records are compared using structural equality.
 
 ===Show===
 
@@ -104,7 +104,7 @@ ela>length (1,2)
 2
 }}}
 
-_Len_ is supported by lists, arrays, tuples and records. Again you are going to catch an error if you try to use it with any other data type.
+_Len_ is supported by lists, tuples and records. Again you are going to catch an error if you try to use it with any other data type.
 
 ===Get===
 
@@ -112,7 +112,7 @@ Types that implement _Get_ trait support an indexer operation which can be used 
 
 {{{
 
-ela>let tup' = (1,2)
+ela>let tup' = (1,2) end
 
 ela>tup'.[1]
 
@@ -129,14 +129,14 @@ ela>tup'.[1] <- 3
         in memory at line: 1, col: 6
 }}}
 
-Other data types that support _Get_ trait are lists, arrays and records.
+Other data types that support _Get_ trait are lists and records.
 
 ===Set===
 
-_Set_ trait allows you to perform assignment through indexer - that is exactly the operation that tuples don't support. As soon as Ela is a functional language assignment is not a popular operation and only two data types implement it. These are arrays and records. Also if you want to change record fields through an indexer you have to declare them as mutable first:
+_Set_ trait allows you to perform assignment through indexer - that is exactly the operation that tuples don't support. As soon as Ela is a functional language assignment is not a popular operation and only two data types implement it. These are records. Also if you want to change record fields through an indexer you have to declare them as mutable first:
 
 {{{
-ela>let rec = {mutable x = 0, y=0}
+ela>let rec = {!x = 0, y=0} end
 
 ela>rec.[1] <- 1
 
@@ -157,9 +157,9 @@ This trait defines a single operation - function call, which is supported by the
 
 ===Gen===
 
-This one is a more complicated trait. It allows your data type to be generated using ranges and comprehensions. Only lists, arrays, records and tuples support this trait. Let's start from ranges.
+This one is a more complicated trait. It allows your data type to be generated using ranges and comprehensions. Only lists, records and tuples support this trait. Let's start from ranges.
 
-Ranges in Ela are arithmetic sequences that can be used to create lists, arrays and tuples. You only have to specify a first element, a last element, and (optionally) a second element in a sequence that will be used to calculate stepping:
+Ranges in Ela are arithmetic sequences that can be used to create lists and tuples. You only have to specify a first element, a last element, and (optionally) a second element in a sequence that will be used to calculate stepping:
 
 {{{
 ela>[1..5]
@@ -211,19 +211,6 @@ You can even create ranges with tuples:
 ela>[(1,2)..(5,6)]
 
 [(1,2),(2,3),(3,4),(4,5),(5,6)]
-}}}
-
-In all the code samples above I was using ranges to generate a linked list however you can also create an array using the same technique (however infinite arrays are not supported):
-
-{{{
-ela>[|1.. |]
-
-(1,3): Error ELA320: Range: '[|1..|]' is invalid. Only lists can be generated us
-ing infinite ranges.
-
-ela>[|1..5|]
-
-[|1,2,3,4,5|]
 }}}
 
 Comprehension is a slightly more complex concept. Comprehension can be used to generate sequences of elements based on certain conditions with transformation of selected values. They are somewhat similar to C# Linq expressions but with a completely different notation.
@@ -278,24 +265,16 @@ ela>[& x \\ x <- [1..]]
 31,32,33,34,35,36,37,38,39,40,41...]
 }}}
 
-You can use comprehensions to generate arrays as well:
-
-{{{
-ela>[|x * 2 \\ x <- [1..10] | x % 2 == 0, x > 5|]
-
-[|12,16,20|]
-}}}
-
 Basically all these constructs are just syntax sugar for a comprehension operator `@@` that is used like so:
 
 {{{
-ela>[||] @@ [1..5]
+ela>[] @@ [1..5]
 
-[|1,2,3,4,5|]
+[1,2,3,4,5]
 
-ela>[||] @@ [x * 2 \\ x <- [1..10] | x % 2 == 0, x > 5]
+ela>[] @@ [x * 2 \\ x <- [1..10] | x % 2 == 0, x > 5]
 
-[|12,16,20|]
+[12,16,20]
 }}}
 
 And with tuples:
@@ -306,7 +285,7 @@ ela>(0,) @@ [x \\ x <- [1..10] | x % 2 == 0]
 (0,2,4,6,8,10)
 }}}
 
-But tuples, arrays and lists are the only data types that are supported. If you try to use a comprehension operator with some other data type you are going to get a runtime error:
+But tuples and lists are the only data types that are supported. If you try to use a comprehension operator with some other data type you are going to get a runtime error:
 
 {{{
 ela>"bar" @@ [x \\ x <- [1..10] | x % 2 == 0]
@@ -394,7 +373,7 @@ ela>(1,2) ||| (3,4)
 
 ===Concat===
 
-_Concat_ trait lets you concatenate entities. Entities here include lists, arrays and strings. Remember an error that we've caught trying to sum two strings using `+` operator? That is the right way to do that:
+_Concat_ trait lets you concatenate entities. Entities here include lists and strings. Remember an error that we've caught trying to sum two strings using `+` operator? That is the right way to do that:
 
 {{{
 ela>"Hello," ++ " world!"
@@ -408,10 +387,10 @@ This one is implemented by lazy data type and its primary goal is to signal to E
 
 ===Fold===
 
-_Fold_ trait is used by pattern matching. If a provided value implements _Fold_ it means that Ela can "fold" it, in other words - to deconstruct using `::` operator. Having this as a trait really simplifies the work with some of the data types. For example you can fold strings and even arrays. They both can pretend to be lists when it is really needed. Let's see _Fold_ in action:
+_Fold_ trait is used by pattern matching. If a provided value implements _Fold_ it means that Ela can "fold" it, in other words - to deconstruct using `::` operator. Having this as a trait really simplifies the work with some of the data types. For example you can fold strings. They both can pretend to be lists when it is really needed. Let's see _Fold_ in action:
 
 {{{
-ela>let foldl f z x::xs = foldl f (f z x) xs; _ z [] = z
+ela>let foldl f z x::xs = foldl f (f z x) xs; _ z [] = z end
 
 ela>foldl (+) 0 [1,2,3]
 
@@ -426,32 +405,20 @@ ela>foldl (\x y -> x:int + y:int) 0 "abac"
 391
 }}}
 
-_Fold_ trait is really important in Ela. Ela doesn't have a concept of iterators of which you probably have heard already if you ever programmed in C# or JavaScript. Basically iterators are not really needed in a functional language where a task of iterating through a sequence of elements is normally implemented through a recursion. However if you want to write generic code that can effectively iterate over containers of different types you definitely need some kind of an abstraction that can be used to work with lists, arrays, strings in a similar fashion. And _Fold_ is exactly the abstraction we are need here.
+_Fold_ trait is really important in Ela. Ela doesn't have a concept of iterators of which you probably have heard already if you ever programmed in C# or JavaScript. Basically iterators are not really needed in a functional language where a task of iterating through a sequence of elements is normally implemented through a recursion. However if you want to write generic code that can effectively iterate over containers of different types you definitely need some kind of an abstraction that can be used to work with lists, strings in a similar fashion. And _Fold_ is exactly the abstraction we are need here.
 
 ===FieldGet===
 
 This trait defines a single operation - obtain a value of a field using `.` (dot) operator. It is pretty similar to the _Get_ trait and supports only read operation, not an assignment.
 
-The data type that supports `FieldGet` trait in the first place is record. Another one is an array that as you remember exposes a set fields with functions for modification of its content in place:
+The data type that supports `FieldGet` trait in the first place is record:
 
 {{{
-ela>let arr = [||]
+ela>let rec = {x=42} end
 
-ela>arr.add
+ela>rec.x
 
-<f>:*->*
-}}}
-
-This works but not assignment is allowed:
-
-{{{
-ela>arr.add <- ()
-
-(1,12): Warning ELA400: An expression is of type 'unit' and will always cause co
-de to fail with an error.
-(1,5): Error ELA903: A value '[||]' of type 'array' doesn't support trait 'FieldGet' 
-(write field operation).
-        in memory at line: 1, col: 5
+42
 }}}
 
 Module is the last data type that support _FieldGet_trait.
@@ -461,11 +428,11 @@ Module is the last data type that support _FieldGet_trait.
 This one is normally paired with _FieldGet_ and allows to change a value of a particular field using `.` operator. Record is the only data type that supports it. Again in order to enable assignment operation you first should declare record fields as mutable:
 
 {{{
-ela>let rec = {mutable x=0, y=0}
+ela>let rec = {!x=0, y=0} end
 
 ela>rec.y <- 1
 
-(1,5): Error ELA816: Field 'y' of the record '{mutable x=1,y=0}' is immutable and 
+(1,5): Error ELA816: Field 'y' of the record '{!x=1,y=0}' is immutable and 
 cannot be changed.
         in memory at line: 1, col: 5
 
@@ -492,7 +459,7 @@ ela>1::2::(& 2 + 2)
 
 ===Convert===
 
-_Convert_ trait defines a type conversion operation that is performed using `:` operator. All Ela data types except of unit support it. However having support of this trait doesn't neccessarily mean that none of the requested conversions will fail. For example you can't convert lists to arrays or strings to tuples:
+_Convert_ trait defines a type conversion operation that is performed using `:` operator. All Ela data types except of unit support it. However having support of this trait doesn't neccessarily mean that none of the requested conversions will fail. For example you can't strings to tuples:
 
 {{{
 ela>"boo":tuple
@@ -505,7 +472,7 @@ ela>"boo":tuple
 _Tag_ trait is supported by polymorphic variants. It defines a single operation that allows to obtain a tag of a given value. There is no much else I can say about this trait. As you usual you will catch an error if you try to query a tag of a value that doesn't support this trait:
 
 {{{
-ela>let wrongValue = (1,2)
+ela>let wrongValue = (1,2) end
 
 ela>match wrongValue with `Some x = x end
 
@@ -518,10 +485,10 @@ ela>match wrongValue with `Some x = x end
 
 This one is somewhat different from the rest of the traits. It doesn't define even a single method but is used to specify that a particular type or value supports a sequential access to its elements.
 
-That is a true statement for such standard types as tuples or arrays. You can obtain an element from both tuple or array using an indexer syntax, however indexer in Ela is not limited to just integer number and you can also use strings, virtually any value of any type as an index:
+That is a true statement for such standard types as tuples. You can obtain an element from tuple using an indexer syntax, however indexer in Ela is not limited to just integer number and you can also use strings, virtually any value of any type as an index:
 
 {{{
-ela>let testRec = {x=42}
+ela>let testRec = {x=42} end
 
 ela>testRec.["x"]
 
@@ -532,7 +499,7 @@ Because of it the sole fact that a given value supports 'Get' trait doesn't real
 
 This knowledge is required for a tuple pattern which assumes that a provided value has a finite number of elements and all its elements are ordered and can be obtained using a sequential index. And that is how 'Seq' trait appears to be useful. If our given value does support both 'Len' and 'Get' but doesn't support 'Seq' (which is a completely legal situation with, for example, hash table) than tuple pattern is not applicable for it.
 
-Other built-in data types, except of tuples and arrays, that support 'Seq' trait are records and linked lists.
+Other built-in data types, except of tuples, that support 'Seq' trait are records and linked lists.
 
 ==How to use this knowledge==
 

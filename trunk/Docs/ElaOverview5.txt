@@ -8,7 +8,7 @@ This chapter contains an overview of pattern matching constructs that are availa
 
 You are probably aware of `switch` statement which is adopted by most of C style programming languages. It is not a very powerful programming construct and has a lot of limitations such as support for matching only against constant values but it does improve code readability in many cases in comparison with a chain of `if..else` statements. Why? The reason is that `switch` is more declarative - instead of coding a sequence of conditions you simply put an expression and a list of its possible values beneath it. 
 
-However as I've mentioned before `switch` is a pretty limited construct. If you need something more complex than compare two integers or check an enumeration value than you have to stick with the regular imperative condition operator. But what if you have a `switch` with no limitations at all? What if you can match against not only simple values but complex as well such as arrays, records, lists? What if you can use nested patterns in your matches and check whether a provided value is, say, a list which elements are tuples which elements are strings - and all of this in a single expression? What if you can not only compare the values but also declare variables on the fly, e.g. test if a first element of your array satisfies a specified condition and bind a second one to a variable `x` - and again with a single short and readable expression?
+However as I've mentioned before `switch` is a pretty limited construct. If you need something more complex than compare two integers or check an enumeration value than you have to stick with the regular imperative condition operator. But what if you have a `switch` with no limitations at all? What if you can match against not only simple values but complex as well such as records, lists? What if you can use nested patterns in your matches and check whether a provided value is, say, a list which elements are tuples which elements are strings - and all of this in a single expression? What if you can not only compare the values but also declare variables on the fly, e.g. test if a first element of your list satisfies a specified condition and bind a second one to a variable `x` - and again with a single short and readable expression?
 
 I believe that the answer to all these questions is pretty obvious. If you have such a powerful `switch` construct you will probably use it all the time. And that is exactly what happens in Ela. Ela _pattern matching_ is `switch` on steroids. In Ela code you can see pattern matching everywhere, as soon as it makes your code more dense and improves readability at the same time. As a result there are quite a few of language constructs that enable you to do pattern matching.
 
@@ -19,7 +19,7 @@ I believe that the answer to all these questions is pretty obvious. If you have 
 The basic language construct that can be used to do pattern matching is a `match` expression. Its syntax is somewhat similar to the well known `switch` statement:
 
 {{{
-let x = 42
+let x = 42 end
 
 match x with
 42 = "That's the right answer!";
@@ -128,6 +128,7 @@ let checkAnswer x "Answer" | x == 42 = "That's the right answer!";
 						         odd  = not even
 						   end
                 _  _                 = "You are doing something wrong!"
+end
 }}}
 
 For the default match entry you have to specify a default pattern for each parameter. And you shouldn't terminate the whole construct with `end` keyword.
@@ -175,7 +176,7 @@ In this case the scope of the `head` variable declared inside pattern is limited
 Another way to do pattern matching is when you declare variables using `let` or `where` constructs. You always have a possibility to specify a pattern instead of a variable name like so:
 
 {{{
-ela>let [|x,y|] = [|12,24|]
+ela>let [x,y] = [12,24] end
 
 ela>x
 
@@ -189,7 +190,7 @@ ela>y
 Frequently this is a convinient way to declare several variables at once using tuple pattern:
 
 {{{
-ela>let (num, str) = (42, "Answer")
+ela>let (num, str) = (42, "Answer") end
 
 ela>num
 
@@ -207,10 +208,11 @@ It is important to remember that when you pattern match in binding constructs an
 However you can still use multiple guards in `let` and `where` bindings like so:
 
 {{{
-let y = 2
+let y = 2 end
 
 let x | y > 0 = y;
 	  | else  = 0
+end
 }}}
 
 When guards are used inside `let` and `where` bindings an `else` clause is mandatory.
@@ -239,6 +241,7 @@ Also in many cases this pattern is nested within other patterns as you have seen
 let filter f x::xs | f x  = x :: filter f xs;
                    | else = filter f xs;
            _ []           = []
+end
 }}}
 
 Here you can see a pattern `x::xs` that matches against a linked list with `x` and `xs` being variable patterns.
@@ -260,7 +263,7 @@ end
 And the second one:
 
 {{{
-let (_,x) = (1,2)
+let (_,x) = (1,2) end
 }}}
 
 Here we say that we are aware that a matched value is a pair but we don't really need the first value - so ignore it and bind the `x` variable to the second element. You can see a similar approach in the `filter` function definition above where we don't need to use a predicate function in the very last match clause - therefore we don't bind it to the `f` variable like before but simply ignore it.
@@ -271,6 +274,7 @@ Doing so is not mandatory and the definition like so:
 let filter f x::xs | f x  = x :: filter f xs;
                    | else = filter f xs;
            f []           = []
+end
 }}}
 
 is completely legal. However here we are basically declaring a variable that is not used, which is not a good practice in many languages, functional and imperative.
@@ -280,7 +284,7 @@ is completely legal. However here we are basically declaring a variable that is 
 _As_ pattern is used to bind the whole matched expression to a specific variable. It is different from the regular variable pattern because with _as_ you always have a pattern nested in it and therefore you are matching and binding at the same time like so:
 
 {{{
-let (x::xs)@lst = [1..10]
+let (x::xs)@lst = [1..10] end
 }}}
 
 Here we are binding the first element of our list to `x`, the tail to `xs` and the whole list to `lst` variable.
@@ -292,7 +296,7 @@ Grouping pattern is used in the same way as a regular grouping construct in your
 In certain cases grouping pattern is required for disambiguation. For example:
 
 {{{
-let fun (`Some x) = x
+let fun (`Some x) = x end
 }}}
 
 Here we have a function `fun` that accepts a single argument which is a polymorphic variant. Without parenthesis it will be unclear whether this is a function for a single argument or for two arguments (the first is a variant with no value which is perfectly valid and the second - any value that binds to `x`).
@@ -341,7 +345,7 @@ let point () = { mutable x = 0, mutable y = 0 }
 
 ===Tuple pattern===
 
-Tuple pattern in spite of its name can be used to match any value that has a notion of length and supports an access to its elements by index. These are tuples at the first place, records, arrays and even linked lists. If a given value supports traits _Len_, _Seq_ and _Get_ it is good enough for the tuple patern.
+Tuple pattern in spite of its name can be used to match any value that has a notion of length and supports an access to its elements by index. These are tuples at the first place, records and even linked lists. If a given value supports traits _Len_, _Seq_ and _Get_ it is good enough for the tuple patern.
 
 Tuple pattern uses a tuple literal as follows:
 
@@ -360,26 +364,16 @@ If you want to match a tuple with just a single element you should put a trailin
 let (x,) = (1,)
 }}}
 
-===Array pattern===
-
-Array pattern is like tuple pattern with the exception that it can be only used to match arrays. The trick with traits won't work here - this pattern basically tests the type of a given value first, before doing anything else:
-
-{{{
-let [| (1,2), x |] = [| (1,2), 3 |]
-}}}
-
-By the way nn this example you can see multiple nesting of patterns - our `let` binding requires the initialization value to be of type `array` with the tuple as the first element.
-
 ===Record pattern===
 
-Record pattern is used for records but it is pretty diffrent in its behavior from tuple and array paterns. Record pattern doesn't calculate the length of a provided value. What it does is checking whether a given record has a specified field.
+Record pattern is used for records but it is pretty diffrent in its behavior from tuple pattern. Record pattern doesn't calculate the length of a provided value. What it does is checking whether a given record has a specified field.
 
 In fact this pattern can be used not just for records but for any value that support _FieldGet_ trait.
 
 {{{
-let rec = {x = 1, y = 2}
+let rec = {x = 1, y = 2} end
 
-let {x = x', y = y'} = rec
+let {x = x', y = y'} = rec end
 }}}
 
 Here we test if a record `rec` contains fields `x` and `y` and if it is true bind value of `x` field to the variable `x'` and value of `y` field to the variable `y'`. If our record contains some additional fields that are not listed in the pattern this is perfectly OK and the match would still be a success. However if a record is missing either `x` or `y` field we will have a runtime error.
@@ -387,13 +381,13 @@ Here we test if a record `rec` contains fields `x` and `y` and if it is true bin
 As usual you can nest patterns here as well:
 
 {{{
-let {x=(x',y'),y=[| (1,2), "Hello", z |]} = rec
+let {x=(x',y'),y=[ (1,2), "Hello", z ]} = rec end
 }}}
 
 In a case when you need to bind record fields to the variables of the same name there is a shorter syntax for doing so:
 
 {{{
-let {x,y} = rec //the same as let {x=x,y=y} = rec
+let {x,y} = rec //the same as let {x=x,y=y} = rec end
 }}}
 
 ===Head and tail pattern===
@@ -401,9 +395,9 @@ let {x,y} = rec //the same as let {x=x,y=y} = rec
 This is one of the most frequently used patterns in Ela. You have seen its application many times before. This pattern is used to deconstruct a list by splitting it into head and tail like so:
 
 {{{
-let (x::xs) = [1,2,3]
+let (x::xs) = [1,2,3] end
 
-let (y::y2::ys) = [1,2,3,4,5]
+let (y::y2::ys) = [1,2,3,4,5] end
 }}}
 
 This pattern can be of an arbitrary length. In pattern `y::y2::ys` the variables `y` and `y2` are bound to the first and second list elements and `ys` is bound to the list tail - the rest of the list excluding the first two items. 
@@ -413,27 +407,27 @@ Head and tail pattern doesn't calculate the whole list length and as a result it
 Again nesting is perfectly legal with this pattern:
 
 {{{
-let (1,2)::{x,y}::xs = someList
+let (1,2)::{x,y}::xs = someList end
 }}}
 
 When you need to match all the list elements and therefore to make sure that a provided list is of a particular length you can put a nil list literal at the end of the pattern like so:
 
 {{{
-let (x::y::[]) = [1,2]
+let (x::y::[]) = [1,2] end
 }}}
 
 In this code sample we are matching against a list that contains exactly two elements. If we have a list with a different number of elements a match will fail.
 
 Don't forget to use parenthesis around this pattern when you use in `let` and `where` bindings. In all other cases parenthesis are not required.
 
-As usual head and tail pattern can be used to match any value, not all linked lists, that support _Fold_ trait. For example these are strings and even arrays. 
+As usual head and tail pattern can be used to match any value, not all linked lists, that support _Fold_ trait. For example these are strings. 
 
 ===List pattern===
 
 List pattern is just a syntax sugar for the head and tail pattern. For example, the following pattern:
 
 {{{
-let [x,y] = [1,2]
+let [x,y] = [1,2] end
 }}}
 
 is completely equivalent to the code sample in the previous section but tends to be a little bit shorter and visual.
@@ -480,9 +474,9 @@ You are simply putting a back apostrophe without a tag name and as a result you 
 Remember that you can omit parenthesis aroung variant patterns only when using `match` expressions and `is` operator. In all other cases parenthesis are required:
 
 {{{
-let (`Some x) = `Some 42
+let (`Some x) = `Some 42 end
 
-let unbox (`Box x) = x
+let unbox (`Box x) = x end
 }}}
 
 ===Type check pattern===
@@ -507,7 +501,6 @@ All data types in Ela have special internal names. Here they are:
   * _tuple_ - Tuples
   * _list_ - Linked lists
   * _record_ - Records
-  * _array_ - Arrays
   * _variant_ - polymorphic variants
   * _lazy_ - Lazy expressions, or thunks
   * _modules_ - Modules
@@ -521,9 +514,9 @@ This pattern allows you to check whether a provided value supports specified tra
 
 {{{
 match x with
-<Len,Get> = "Might be a tuple";
-<Len,FieldGet> = "Most probably a record";
-<Num> = "Might be a number. Or a tuple"
+?(Len,Get) = "Might be a tuple";
+?(Len,FieldGet) = "Most probably a record";
+?(Num) = "Might be a number. Or a tuple"
 end
 }}}
 
@@ -534,7 +527,7 @@ You can find a description of all supported traits in the previous chapter.
 This pattern doesn't perform any verifications. On the contrary it tries to convert a given value to the specified type. It has the following syntax:
 
 {{{
-let (x:int) = "42"
+let (x:int) = "42" end
 }}}
 
 Here we are trying to bind variable `x` to the value `"42"` of type string. However thanks to the type enforcement pattern this value gets converted to 32-bit integer and `x` is actually assigned with an integer value.
@@ -542,7 +535,7 @@ Here we are trying to bind variable `x` to the value `"42"` of type string. Howe
 You should be careful with this pattern however. In many cases it is not possible to convert one type to another (e.g. there is no meaningful conversion between linked list and a floating point number) and in such cases a runtime error is raised:
 
 {{{
-ela>let (y:single) = [1,2,3]
+ela>let (y:single) = [1,2,3] end
 
 (1,19): Error ELA802: Conversion of value '[1,2,3]' of type 'list' to type 'single' 
 failed because of the following reason: This type of conversion is not supported..

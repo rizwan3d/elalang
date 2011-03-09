@@ -208,7 +208,7 @@
     <value>A value '{0}' of type '{1}' doesn't support trait 'FieldGet' (read field operation).</value>
   </data>
   <data name="TraitFieldSet" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'FieldGet' (write field operation).</value>
+    <value>A value '{0}' of type '{1}' doesn't support trait 'FieldSet' (write field operation).</value>
   </data>
   <data name="TraitFold" xml:space="preserve">
     <value>A value '{0}' of type '{1}' doesn't support trait 'Fold' (head, tail and nil operations).</value>

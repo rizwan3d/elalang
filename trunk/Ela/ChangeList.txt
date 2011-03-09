@@ -1,3 +1,4 @@
+0.8.6.42:Fix:Corrections in error message for 'TraitFieldSet' run time error.
 0.8.6.41:Fix:A warning ELA400 (UnitAlwaysFail) could be generated in an incorrect case (when applying 'Eq' trait to unit which is legal).
 0.8.6.40:Change:Now one can write expressions directly in the global scope.
 0.8.6.39:Change:Syntax for 'module open' directive is changed from 'open Foo[dllname] as MyFoo with x,y' to 'open Foo#dllname@MyFoo with x,y'.

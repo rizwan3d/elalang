@@ -9,12 +9,11 @@ Ela doesn't require installation, just extract it and copy the files to any fold
 If you don't specify a file name to execute, Ela Console is lunched in an interactive mode. You should see the following banner (depending on the Ela version and runtime environment):
 
 {{{
-Ela Interpreter version 0.8.1.0
-Running CLR 2.0.50727.4952 64-bit
+Ela Interpreter version 0.8.7.0
+Running CLR 2.0.50727.4952 64-bit (Microsoft Windows NT 6.1.7600.0)
 
 Interactive mode
 Enter expressions and press <Return> to execute.
-Press Ctrl+C to exit.
 
 ela>
 }}}
@@ -40,9 +39,9 @@ But that is not the only cool thing.
 With interactive mode you can compose your programs chunk by chunk. Ela interpreter "remembers" all the previous declarations you did:
 
 {{{
-ela>let x = 2
+ela>let x = 2 end
 
-ela>let y = x + 2
+ela>let y = x + 2 end
 
 ela>y
 
@@ -54,7 +53,7 @@ ela>y
 While in interactive mode if you enter code that doesn't even compile you will see an error message (or several messages and warnings if you did something really bad) and of course such code is never executed:
 
 {{{
-ela>let z = x1 + 2
+ela>let z = x1 + 2 end
 
 (1,9): Error ELA313: Undefined name 'x1'.
 }}}
@@ -70,7 +69,7 @@ ela>z
 However if you write code that fails at runtime like so
 
 {{{
-ela>let z = 12 / 0
+ela>let z = 12 / 0 end
 
 (1,14): Error ELA803: Division by zero of value '12' of type 'int'.
         in <memory> at line: 1, col: 14
@@ -84,7 +83,7 @@ That is probably all you need to know about Ela interactive mode right now. Enou
 
 == Data types ==
 
-Ela comes with a wide collection of built-in data types. The basic types includes boolean and unit types, four numeric types, linked lists that we've tested a little bit in a previous article, dynamic indexed arrays, strings, chars, tuples, records, variant data types and of course functions. We will reviews all these data types in this section.
+Ela comes with a wide collection of built-in data types. The basic types includes boolean and unit types, four numeric types, linked lists that we've tested a little bit in a previous article, strings, chars, tuples, records, variant data types and of course functions. We will reviews all these data types in this section.
 
 === Boolean type ===
 
@@ -93,9 +92,9 @@ Most of modern programming languages have a notion of a boolean data type (which
 You can create a boolean value using the literal form. Try the following in Ela Console:
 
 {{{
-ela>let b = true
+ela>let b = true end
 
-ela>let b2 = false
+ela>let b2 = false end
 
 ela>b
 
@@ -109,7 +108,7 @@ False
 Ela doesn't allow implicit conversions between booleans and integers therefore the following code is not correct:
 
 {{{
-ela>let zero = 0
+ela>let zero = 0 end
 
 ela>if zero then "zero" else "not zero"
 
@@ -169,16 +168,16 @@ The last thing to mention about boolean operators is that unlike many other oper
 
 === Unit type ===
 
-Unit is somewhat similar to the notion of _void_ from C style languages. It is different in certain aspects however. In Ela `unit` is a real data type and you can create a value of this type. This is a first class value in a sense that you can pass it as an argument to a function, return it from a function, add it as an element to array, etc. Unit even has it own literal in Ela. This is how you can create a value of type `unit`:
+Unit is somewhat similar to the notion of _void_ from C style languages. It is different in certain aspects however. In Ela `unit` is a real data type and you can create a value of this type. This is a first class value in a sense that you can pass it as an argument to a function, return it from a function, add it as an element to list, etc. Unit even has it own literal in Ela. This is how you can create a value of type `unit`:
 
 {{{
-ela>let u = ()
+ela>let u = () end
 }}}
 
-Unit is an immutable data type - you cannot change it in place like you do with an array (and there is nothing to change really). Because of this there is only one global instance of `unit`. If you create two values of type `unit` and try to test them for equality this will always evaluate to `true`:
+Unit is an immutable data type - you cannot change it in place (and there is nothing to change really). Because of this there is only one global instance of `unit`. If you create two values of type `unit` and try to test them for equality this will always evaluate to `true`:
 
 {{{
-ela>let u2 = ()
+ela>let u2 = () end
 
 ela>u == u2
 
@@ -192,6 +191,7 @@ The real application for `unit` is when there is no other meaningful value. Let'
 {{{
 let each f x::xs = f x $ each f xs;
          _ []    = ()
+end
 }}} 
 
 I hope that this definition is clear for you. 
@@ -201,7 +201,7 @@ As you can see we have defined this function by pattern matching as we did with 
 Another good example is a function that doesn't accept any arguments. As you know you cannot really declare one in Ela. However in certain cases when writing code with side effects you might need it. And this is how you can use `unit` to accomplish this task:
 
 {{{
-let nonsense () = ()
+let nonsense () = () end
 }}}
 
 Here we have a `nonsense` function that accepts one argument of type `unit` and returns `unit`. This function is defined by pattern matching. As you remember from previous article with pattern matching you can use literal forms not only to create objects but to match against them as well. And that is exactly what we see here. A pattern `()` is used to match against a value of type `unit`. If you try to pass a value of other type a match will fail. This is how you can legally call this `nonsense` function:
@@ -227,7 +227,7 @@ ela>nonsense 0
 In other words we haven't tricked anyone here. We have created a function that accepts one argument and it truly does however by using `unit` we simply say that we don't really need anything meaningful with this argument and we are perfectly OK to accept a unit. What you see here is just a convention of representing functions without arguments. Of course you can do it differently like so:
 
 {{{
-let nonsense2 _ = ()
+let nonsense2 _ = () end
 }}}
 
 Here we used a "throw away" pattern which we also have seen before. It might seem as a good alternative but in reality it is not because you will be able to apply this function to a value of any type which is quite misleading:
@@ -240,7 +240,7 @@ ela>nonsense2 0
 ela>nonsense2 "Hello, world!"
 }}}
 
-In the conclusion of this section I should say that it is important to understand here that unlike many other languages Ela doesn't have a notion of `null`. That is because Ela is a dynamically typed language and the type is not associated with variable but with the value itself. In other words it is not correct to say that in the code like `let u = ()` we have a variable `u` of type `unit`. In reality what we have here is a value of type `unit` which is bound to the name `u`. As a result you cannot declare a variable of type, say, array and assign it to a `null` like you do in C# or similar languages. The `unit` type might seem as something similar to the `null` which might be used as its replacement however `unit` is not `null` and is not here to serve the same purposes as `null`. You can use it only when no other value is applicable. That is it. And it is a typical case for the functions with side effects when in C# you will have a procedure that returns void or accepts zero arguments. Ela doesn't have `null` and it doesn't need `null`. Also Ela doesn't have a lot of problems connected with `null` such as annoying "null reference" exceptions. If you used `null` in functions as a return value to denote that there is "nothing" we can return please bear in mind: a much better way to do the same thing exists in Ela, polymorphic variants. Don't worry, we'll deal with them a little bit later.
+In the conclusion of this section I should say that it is important to understand here that unlike many other languages Ela doesn't have a notion of `null`. That is because Ela is a dynamically typed language and the type is not associated with variable but with the value itself. In other words it is not correct to say that in the code like `let u = ()` we have a variable `u` of type `unit`. In reality what we have here is a value of type `unit` which is bound to the name `u`. As a result you cannot declare a variable of type, say, list and assign it to a `null` like you do in C# or similar languages. The `unit` type might seem as something similar to the `null` which might be used as its replacement however `unit` is not `null` and is not here to serve the same purposes as `null`. You can use it only when no other value is applicable. That is it. And it is a typical case for the functions with side effects when in C# you will have a procedure that returns void or accepts zero arguments. Ela doesn't have `null` and it doesn't need `null`. Also Ela doesn't have a lot of problems connected with `null` such as annoying "null reference" exceptions. If you used `null` in functions as a return value to denote that there is "nothing" we can return please bear in mind: a much better way to do the same thing exists in Ela, polymorphic variants. Don't worry, we'll deal with them a little bit later.
 
 === Numeric types ===
 
@@ -249,13 +249,13 @@ Ela has four built-in numeric types - signed 32-bit integers (`int`), signed 64-
 This is how you create values of these types:
 
 {{{
-ela>let int = 42
+ela>let int = 42 end
 
-ela>let long = 42L
+ela>let long = 42L end
 
-ela>let single = 1.42
+ela>let single = 1.42 end
 
-ela>let double = 1.42D
+ela>let double = 1.42D end
 }}}
 
 You have probably noticed the postfixes `L` and `D`. A postfix `L` is used to denote that you need a value of type `long` and `D` - that you need `double`, not just `single` which is used by default.
@@ -332,7 +332,7 @@ ela>--42 //Finally, a correct negation syntax
 Types `int` and `long` also support bitwise operations such as _bitwise and_ (`&&&`), _bitwise or_ (`|||`), _bitwise xor_ (`^^^`), _left shift_ (`<<<`), _right shift_ (`>>>`) and _bitwise not_ (`~~~`). These have the same behavior as operators `&`, `|`, `^`, `<<`, `>>` and `~` in C however their priority is different. Operators `&&&`, `|||` and `^^^` have one of the highest priorities among Ela operators:
 
 {{{
-ela>let sn = 48 ||| (134 <<< 8)
+ela>let sn = 48 ||| (134 <<< 8) end
 
 ela>sn
 
@@ -380,7 +380,7 @@ The functions `succ`, `pred`, `max` and `min` are built-in Ela functions. Beside
 Ela like some other languages doesn't perform overflow check so you should be careful with your calculations. Here is simple example of factorial calculation that overflows:
 
 {{{
-ela>let factorial 0 = 1; n = n * factorial (n - 1) //naive implementation of factorial function
+ela>let factorial 0 = 1; n = n * factorial (n - 1) end //naive implementation of factorial function
 
 ela>factorial 13 //works OK
 
@@ -398,7 +398,7 @@ Strings and chars are yet another couple of data types that should be well known
 Strings in Ela are unicode sequences of characters. In the current implementation they do map directly to the .NET Framework data type System.String. This is how you can create a string in Ela:
 
 {{{
-ela>let str = "Hello, world!"
+ela>let str = "Hello, world!" end
 
 ela>str
 
@@ -408,7 +408,7 @@ Hello, world!
 Strings in Ela (as well as chars) support C style escape codes. For example this is how you can create a two line string with double quotes:
 
 {{{
-ela>let str2 = "Hello,\r\n\"Basil\""
+ela>let str2 = "Hello,\r\n\"Basil\"" end
 
 ela>str2
 
@@ -449,7 +449,7 @@ True
 You can also use built-in `length` function to calculate string length:
 
 {{{
-ela>let str = "Hello, world!"
+ela>let str = "Hello, world!" end
 
 ela>length str
 
@@ -520,10 +520,10 @@ class LinkedList<T>
 }
 }}}
 
-That is really it. As soon as list is an immutable data structure - you cannot change it in place like you do with an array - an empty (_nil_) list is represented as a "global" value. You don't have to create it "on demand" as soon as it never gets change and therefore can be initialized just once and used everywhere. As a result when you create an empty list in Ela nothing actually gets created - you just reference this special global _nil_ variable. This is how you can do that:
+That is really it. As soon as list is an immutable data structure an empty (_nil_) list is represented as a "global" value. You don't have to create it "on demand" as soon as it never gets change and therefore can be initialized just once and used everywhere. As a result when you create an empty list in Ela nothing actually gets created - you just reference this special global _nil_ variable. This is how you can do that:
 
 {{{
-let lst = []
+let lst = [] end
 }}}
 
 A `[]` is a special literal form that is used to denote an empty list.
@@ -543,7 +543,7 @@ var lst = new LinkedList(43, new LinkedList(42, LinkedList.Nil));
 As you can see it looks quite cumbersome. That is why Ela has a special operator `::` that can be used to construct lists. Let's try it in console:
 
 {{{
->let lst = 43::(42::[])
+>let lst = 43::(42::[]) end
 
 [43,42]
 }}}
@@ -551,7 +551,7 @@ As you can see it looks quite cumbersome. That is why Ela has a special operator
 An operator `::` is called a list construction operator and it is right associative. It means that can omit braces from the previous sample and get exactly the same result:
 
 {{{
->let lst2 = 43::42::[]
+>let lst2 = 43::42::[] end
 
 [43,42]
 }}}
@@ -559,7 +559,7 @@ An operator `::` is called a list construction operator and it is right associat
 There is also a syntax sugar for this operator - as soon as it is still not visual enough for list construction - a special literal form of the list. The code above can also be written like so:
 
 {{{
-let lst2 = [43, 42]
+let lst2 = [43, 42] end
 }}}
 
 Another useful operator that can be used with lists is a _concatenation operator_. This is how you can use it:
@@ -587,7 +587,7 @@ As soon as every list element holds a reference to the next element lists come u
 However Ela is a functional language and it doesn't even have a concept of iterators that you might've heard of in such languages as C#. In Ela one should use recursion instead of cycles. And that is again the place where _pattern matching_ becomes really helpful. As you remember from the previous article pattern matching allows us to deconstruct an element using its literal syntax which is in a case of linked lists a construction operator `::`. Here is a simple example of how you can iterate over list elements:
 
 {{{
-ela>let iter f x::xs = f x $ iter f xs; _ []    = ()
+ela>let iter f x::xs = f x $ iter f xs; _ [] = () end
 }}}
 
 This function is basically an alternative to imperative cycle and you can use it like so (the following example prints all list elements to console):
@@ -611,7 +611,7 @@ The last pattern `x::y::[]` is used to match a list that has _exactly_ two eleme
 Another example of how you write a function that iterates over list elements using recursion and pattern matching:
 
 {{{
-ela>let length' _::xs = 1 + length' xs; [] = 0
+ela>let length' _::xs = 1 + length' xs; [] = 0 end
 
 ela>length' [1,2,3,4,5]
 
@@ -631,12 +631,12 @@ ela>length [1,2,3,4,5]
 Another useful operation that is available for lists is an ability to obtain a list element by its index. This is done by using indexing syntax like so:
 
 {{{
-ela>let newList = [0,1,2,3,4]
+ela>let newList = [0,1,2,3,4] end
 
 ela>newList.[2]
 }}}
 
-You should also remember that accessing list elements by index is not a very effective operation. We have to iterate through the whole list and count each iteration - that is really the only way to do it. If you need to access elements by index frequently you might consider to use a different data structure instead - e.g. _array_ which has a constant access time.
+You should also remember that accessing list elements by index is not a very effective operation. We have to iterate through the whole list and count each iteration - that is really the only way to do it. If you need to access elements by index frequently you might consider to use a different data structure instead - e.g. _tuple_ which has a constant access time.
 
 === Thunks and lazy lists ===
 
@@ -645,7 +645,7 @@ Thunks allow you to do deferred evaluation. With this data type you mark a certa
 This is how you can initialize a thunk in Ela:
 
 {{{
-ela>let thunk = (& let temp = 2 + 2 in cout temp $ temp)
+ela>let thunk = (& let temp = 2 + 2 in cout temp $ temp) end
 }}} 
 
 As you can see we have an expression that initializes a local variable with a result of an addition of two numbers, prints this result to the output and returns it. But when you copy the code above to Ela Console you see nothing. That is because an expression in `(& ... )` braces is not evaluated. Instead an instance of a special data type is created that wraps this expression and `thunk` variable is initialized with an instance of this data type.
@@ -655,7 +655,7 @@ But now we know that when Ela will finally calculate our lazy expression a conso
 Let's see what happens if we pass `thunk` variable to the function as follows:
 
 {{{
-ela>let isThunk x = if x is lazy then "Yep, it's lazy!" else "No, it's not!"
+ela>let isThunk x = if x is lazy then "Yep, it's lazy!" else "No, it's not!" end
 
 ela>isThunk thunk
 
@@ -700,13 +700,13 @@ Thunks are also useful when you need to create a lazy list - that is a linked li
 Let's try this. First we will need to declare a pretty typical `take` function that can take a specified amount of elements from a given list:
 
 {{{
-ela>let take 0 _ = []; n x::xs = x :: take (n - 1) xs; _ []    = []
+ela>let take 0 _ = []; n x::xs = x :: take (n - 1) xs; _ [] = [] end
 }}}
 
 Now we need to create our infinite list. We can do it through a function that accepts a number, increments it and uses the result to create list elements:
 
 {{{
-ela>let inf x = y :: (& inf y) where y = x + 1 end
+ela>let inf x = y :: (& inf y) where y = x + 1 end end
 
 ela>let lst = inf 0
 }}}
@@ -719,79 +719,6 @@ ela>take 10 lst
 [1,2,3,4,5,6,7,8,9,10]
 }}}
 
-=== Arrays ===
-
-Arrays in Ela are pretty similar to such type as `ArrayList` in .NET Framework. These are basically dynamic indexed polymorphic arrays. This is how you can create one:
-
-{{{
-ela>let arr = [|1,2,3,4,5|]
-
-ela>arr
-
-[|1,2,3,4,5|]
-}}}
-
-Arrays also support indexing operator and you can use built-in `length` function to calculate their length:
-
-{{{
-ela>arr.[4]
-
-5
-
-ela>arr.[1+2]
-
-4
-
-ela>length arr
-
-5
-}}}
-
-Besides this arrays support a set of specific functions that allow to perform its modification in-place. These are functions `add`, `removeAt`, `insert` and `clear`. These functions are exposed as array fields. Field access in Ela is pretty similar to that one in C style languages.
-
-Let's see which functions are supported by arrays.
-
-Function `add` accepts a single arguments, appends it to the end of the list and returns `unit`:
-
-{{{
-ela>arr.add 6
-
-ela>arr
-
-[|1,2,3,4,5,6|]
-}}}
-
-Function `insert` allows you to insert elements into the list at a given position. The first argument is a zero based position, the second argument is a value to insert and the return value is `unit`:
-
-{{{
-ela>arr.insert 1 100
-
-ela>arr
-
-[|1,100,2,3,4,5,6|]
-}}}
-
-Function `removeAt` removes an element from a given position. It takes a position index and returns `unit`:
-
-{{{
-ela>arr.removeAt 1
-
-ela>arr
-
-[|1,2,3,4,5,6|]
-}}}
-
-And `clear` function just allows you to remove all elements from the list:
-
-{{{
-ela>arr.clear ()
-
-ela>arr
-
-[||]
-}}}
-
-That is basically all that you should know about arrays.
 
 === Tuples ===
 
@@ -800,9 +727,9 @@ Tuples are yet another fundamental data type in Ela. Well, probably not that fun
 This is how you can create a tuple in Ela:
 
 {{{
-ela>let t = (1,2,3)
+ela>let t = (1,2,3) end
 
-ela>let t1 = (1,)
+ela>let t1 = (1,) end
 
 ela>t1
 
@@ -822,7 +749,7 @@ ela>match t with (1,2,x) = x end
 
 3
 
-ela>let (y,) = t1
+ela>let (y,) = t1 end
 
 ela>y
 
@@ -832,7 +759,7 @@ ela>y
 Tuples are really useful in certain cases. For example with tuples and pattern matching you can initialize multiple variables with a single expression like so:
 
 {{{
-ela>let (x1, y1, z1) = (1, "Hello, world", 42.12)
+ela>let (x1, y1, z1) = (1, "Hello, world", 42.12) end
 
 ela>x1
 
@@ -850,7 +777,7 @@ ela>z1
 You can return multiple values from a function:
 
 {{{
-ela>let divMod x y = (x / y, x % y)
+ela>let divMod x y = (x / y, x % y) end
 
 ela>divMod 43 12
 
@@ -862,7 +789,7 @@ In the example above I have created a function that accepts two arguments, divid
 You can also use tuples to pass grouped arguments to a function:
 
 {{{
-ela>let sumTup (x, y) = x + y
+ela>let sumTup (x, y) = x + y end
 
 ela>sumTup (1, 3)
 
@@ -882,7 +809,7 @@ ela>sumTup 1 4
 You can think that `sumTup` declaration is equivalent to the following:
 
 {{{
-ela>let sumTup2 t = t.[0] + t.[1]
+ela>let sumTup2 t = t.[0] + t.[1] end
 }}}
 
 However it is not. We can see why in a simple test:
@@ -904,7 +831,7 @@ As you remember `t` is a tuple with three elements that we have declared before.
 And here comes our original `sumTup` function. As you can see it doesn't really want to accept a three element tuple. That is because a three element tuple doesn't match the pattern in the function declaration where we have explicitly specified that we want a pair of elements, not a triple. This is how we can make it work:
 
 {{{
-ela>let t2 = (12, 24)
+ela>let t2 = (12, 24) end
 
 ela>sumTup t2
 
@@ -931,7 +858,7 @@ ela>length t2
 2
 }}}
 
-Length calculation is a pretty efficient operation with tuples - pretty much like with arrays. Tuples don't have any built-in fields like arrays however they might be a much more powerful data structure in certain cases.
+Length calculation is a pretty efficient operation with tuples - pretty much like with arrays. 
 
 A cool thing about tuples is that they support a lot of standard operators including comparison operators, arithmetic operators, bitwise, `succ` and `pred` functions and event concatenation operator. How all these things work with tuples? Let's take a look:
 
@@ -967,7 +894,7 @@ The first thing you should know about records is that records _are_ tuples. They
 Records in Ela are created like so:
 
 {{{
-ela>let r = {x = 1, y = 2 }
+ela>let r = {x = 1, y = 2 } end
 
 ela>r
 
@@ -989,7 +916,7 @@ ela>r.y
 You can also declare a record with field names that are not valid Ela identifiers (i.e. contain special characters or spaces):
 
 {{{
-ela>let style = {"text-decoration" = "underline"}
+ela>let style = {"text-decoration" = "underline"} end
 
 ela>style
 
@@ -1019,7 +946,7 @@ ela>sumTup r
 Of course there is more specific pattern that is applied to records only. This pattern allows you to both match a record with the specified fields and bind values of these fields to local variables:
 
 {{{
-ela>let {x=x',y=y'} = r
+ela>let {x=x',y=y'} = r end
 
 ela>x'
 
@@ -1044,21 +971,21 @@ cannot be changed.
         in memory at line: 1, col: 3
 }}}
 
-In order to make such an operation possible you have to explicitly declare a particular field as mutable using a `mutable` keyword:
+In order to make such an operation possible you have to explicitly declare a particular field as mutable using a `!` operator:
 
 {{{
-ela>let recMut = { mutable x = 1, y = 2 }
+ela>let recMut = { !x = 1, y = 2 }
 
 ela>recMut.x <- 2
 
 ela>recMut.y <- 3
 
-<memory>(1,8): Error ELA816: Field 'y' of the record '{mutable x=2,y=2}' is immutable and cannot be changed.
+<memory>(1,8): Error ELA816: Field 'y' of the record '{!x=2,y=2}' is immutable and cannot be changed.
         in memory at line: 1, col: 8
 
 ela>recMut
 
-{mutable x=2,y=2}
+{!x=2,y=2}
 }}}
 
 And that is basically all you should know about records.
@@ -1086,6 +1013,7 @@ Ela doesn't have nullable types. But Ela has something that might be a little bi
 let getOdd x | r > 0 = `Odd r;
              | else  = `Even
              where r = x % 2 end
+end
 }}}
 
 In Ela you can also create a wrapping structure that can be used to attach any custom tag to a value if you want to associate some additional data with this value that can be used in further analysis. You can also attach a tag to _unit_ (in a case if there is no meaningful value for the particular situation). It is done like so: ``None ()` or even shorter like so: ``None` - these two expressions are equivalent.
@@ -1095,19 +1023,19 @@ And that is what we have done in the example above - for an odd value we attach 
 As usual you can pattern match agains variants using their literal syntax:
 
 {{{
-ela>let getOdd x | r > 0 = `Odd r; | else = `Even where r = x % 2 end
+ela>let getOdd x | r > 0 = `Odd r; | else = `Even where r = x % 2 end end
 
 ela>match getOdd 13 with `Odd x = x; `Even = 0 end
 
 1
 }}}
 
-Tags can be attached to values of any types - it can be arrays, tuples, lists, records - whatever you can think of. When pattern matching you should specify a tag name followed by pattern that is used to match against a value to which this tag is attached. Function `getOdd` uses a simple integer literal pattern but it can be head/tail pattern, array pattern, tuple pattern, etc.
+Tags can be attached to values of any types - it can be lists, tuples, lists, records - whatever you can think of. When pattern matching you should specify a tag name followed by pattern that is used to match against a value to which this tag is attached. Function `getOdd` uses a simple integer literal pattern but it can be head/tail pattern, list pattern, tuple pattern, etc.
 
 Another cool thing about variants is that they are completely transparent for the client code. Let's see what it means:
 
 {{{
-ela>let rem = getOdd 15
+ela>let rem = getOdd 15 end
 
 ela>rem
 
@@ -1125,7 +1053,7 @@ False
 If you try to perform any operation with a variant this operation will be actually performed with the wrapped value. So if you have a variant that wraps an integer you can still use all your arithmetic functions with this variant:
 
 {{{
-ela>let pow x y = x ** y
+ela>let pow x y = x ** y end
 
 ela>pow (`SomeNumber 14) (`AnotherNumber 5)
 
@@ -1135,7 +1063,7 @@ ela>pow (`SomeNumber 14) (`AnotherNumber 5)
 Polymorphic variants are used very widely in Ela. In many cases they are a much better alternative to exceptions (which are also supported in Ela but used less extensively than in languages like C#). Moreover variants are actually the only way how you can create your own data types in Ela:
 
 {{{
-ela>let cellp = `Cellphone { Model="E75", Maker="Nokia", Color="Black" }
+ela>let cellp = `Cellphone { Model="E75", Maker="Nokia", Color="Black" } end
 
 ela>if cellp is (`Cellphone {Model="E75"}) then "This is a E75 smartphone!" else
 "Don't know what is is."
@@ -1154,7 +1082,7 @@ I assume that you are already acquainted with the concept of modules from other 
 You can reference Ela modules within your code using `open <Module Name>` statement. Let's see that in action. Create a file `Foo.ela` in the same directory where you have your `elac.exe` executable, and place the following code into this file:
 
 {{{
-let message = "Hello from Foo!"
+let message = "Hello from Foo!" end
 }}}
 
 Now we can open this module directly from interactive console like so:
@@ -1180,9 +1108,9 @@ Yes, it works. By default Ela looks for referenced modules in the directory wher
 However it is not always practical to alter configuration in order to open module from other than default directory. That is why you can specify a module path directly in the `open` statement. Let's test it. Create an _Includes_ directory nearby _elac.exe_ and create a `Bar.ela` file inside it with the following code:
 
 {{{
-let message = "Hello from Bar!"
+let message = "Hello from Bar!" end
 
-let message2 = "See you, Bar!"
+let message2 = "See you, Bar!" end
 }}}
 
 Now let's try to open it from Ela Console:
@@ -1216,7 +1144,7 @@ Hello from Foo!
 Last but not least you can provide an import list directly inside the `open` statement:
 
 {{{
-ela>open Includes.Bar@Bar2 message, message2
+ela>open Includes.Bar@Bar2 with message, message2
 
 ela>message
 
@@ -1230,7 +1158,7 @@ See you, Bar!
 By doing so you actually declare local module variables that are initialized by corresponding variables from another module. You can also give them different names if you wish so:
 
 {{{
-open Bar myMessage = message, myMessage2 = message2
+open Bar with myMessage = message, myMessage2 = message2
 }}}
 
 That is all that you should know about `open` statement. However you might still be wondering why this section is placed in the chapter about data type. That is because modules are first class values in Ela.
@@ -1238,7 +1166,7 @@ That is all that you should know about `open` statement. However you might still
 It means that you can treat module like any other value. For example you can assign it to a variable:
 
 {{{
-ela>let mod = Bar
+ela>let mod = Bar end
 
 ela>mod
 
@@ -1248,7 +1176,7 @@ ela>mod
 Or you can pass an instance of a module to a function:
 
 {{{
-ela>let getMsg mod = mod.message
+ela>let getMsg mod = mod.message end
 
 ela>getMsg Foo
 
