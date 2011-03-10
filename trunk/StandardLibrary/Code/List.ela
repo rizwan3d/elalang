@@ -1,37 +1,181 @@
-open Core with foldr, foldl, fold, any, id
+/* 
+    Ela Core module
+    Created in 2011 by Basil Voronkov
+    
+    This module contains versions of some Seq related functions
+    from Core module that require an input object to be (Seq,Cons).
+    Functions in this module lower the requirement to just Seq but
+    return list - not (Seq,Cons) as functions from Core.
+*/
+open Core with elemBy, foldr, foldl, id
+
+//Seq->list
+let init x::[]     = [];
+         x::xs	   = x :: init xs;
+         []        = fail "Core.init: Empty list"
+end
+
+//Call->Seq->list
+let takeWhile f x::xs | f x  = x :: takeWhile f xs;
+                      | else = [];
+              f []           = []
+end
+
+//Num->Seq->list
+let take 0 xs    = [];
+         n x::xs = x :: take (n - 1) xs;
+        _ []     = []
+end
+
+//Num->Seq->list
+let skip 0 xs    = xs;
+         n _::xs = skip (n - 1) xs;
+         _ []    = []
+end
+       
+//Call->Seq->list
+let map f x::xs = f x :: map f xs;
+        _ []    = []
+end
+           
+//Call->Seq->list
+let filter p x::xs | p x  = x :: filter p xs;
+                   | else = filter p xs;
+           _ []           = [] 
+end
+
+//Call->Seq->a
+let fold f xs = foldr f [] xs end
+
+//(Seq,Concat)->list
+let concat x::xs = x ++ concat xs; 
+           []    = []
+end
+
+//Call->Seq->list
+let concatMap f x::xs = f x :: concatMap f xs; 
+              _ []    = []
+end
+
+//Seq->list
+let reverse xs = foldl (flip (::)) [] xs end
+        
+//Call->Seq->Seq->list
+let zipWith z x::xs y::ys = z x y :: zipWith z xs ys;
+            _ _     ys    = []
+end
+
+//Num->Seq->tuple[list]
+let splitAt 0 xs            = ([],xs);
+            _ []            = ([],[]);
+            n x::xs | n > 0 = (x::xs',xs2')
+                              where (xs',xs2') = splitAt (n-1) xs end;
+            _ _             = fail "List.splitAt: negative argument"
+end
+
+//Call->Seq->tuple[list]
+let span p [] = ([],[]);
+         p (x::xs')@xs | p x  = (x::ys, zs);
+                       | else = ([],xs)
+                       where (ys,zs) = span p xs' end
+end
+
+//Call->Seq->tuple[list]
+let breakList p xs = span p' xs
+                     where p' x = not (p x) end
+end
+
+//Num->Seq->list
+let drop 0 xs            = xs;
+         _ []            = [];
+        n _::xs | n > 0  = drop (n-1) xs;
+         _ _             = fail "List.drop: negative argument"
+end
+
+//Call->Seq->[]
+let dropWhile p []   = [];
+              p x::xs | p x  = dropWhile p xs;
+                      | else = x::xs
+end
+
+//Call->a->Seq->list
+let scanl f q x::xs = scanl f (f q x) xs;
+          _ _ []    = []
+end
+
+//Call->a->Seq->list
+let scanr f q0 []    = [q0];
+          f q0 x::xs = f x q :: qs
+                       where (q::_)@qs = scanr f q0 xs end
+end
+
+//Call->a->Seq->list
+let deleteBy p x y::ys | p x y  = ys;
+                       | else   = y :: deleteBy p x ys;
+             _ _ []             = []
+end
+
+//a->Seq->list
+let delete = deleteBy (==) end
+
+//Call->a->Seq->list
+let insertBy _   x [] = [x];
+             cmp x (y::ys')@ys | cmp x y is (`GT) = y :: insertBy cmp x ys';
+                               | else             = x :: ys
+end
+
+//a->Seq->list
+let insert = insertBy Core.compare end
+
+//Call->Seq->list
+let nubBy eq xs = nubBy' xs []
+    where nubBy' [] _ = [];
+                 y::ys xs | elemBy eq y xs = nubBy' ys xs;
+                          | else           = y :: nubBy' ys (y::xs)
+    end
+end
+
+//Seq->list
+let nub = nubBy (==) end
 
 /*  takes an element and a sequence and intersperses that element between the elements of the sequence:
 intersperse ',' "abcde" = "a,b,c,d,e" */
-let intersperse e x::([]@n) = x :: intersperse e n;
-                e x::xs     = x :: e :: intersperse e xs;
-                _ []@n      = n
+//a->Seq->list
+let intersperse e x::[] = x :: intersperse e [];
+                e x::xs = x :: e :: intersperse e xs;
+                _ []    = []
 end
 
 /* transposes the rows and columns of its argument:
 transpose [[1,2,3],[4,5,6]] = [[1,4],[2,5],[3,6]] */
+//Seq->list
 let transpose []::xs      = transpose xs;
               (x::xs)::ys = (x :: [h \\ (h::_) <- ys]) :: transpose (xs :: [t \\ (_::t) <- ys]);
-              []@n        = n
+              []          = []
 end
 
 /* inserts the given sequence in between the sequences and concatenates the result. */
-let intercalate xs xss = Core.concat (intersperse xs xss) end
+//Seq->list
+let intercalate xs xss = concat (intersperse xs xss) end
 
 /* returns the list of all subsequences of the argument, except for the empty list:
 nonEmptySubsequences [1,2] = [[1],[2],[1,2]] */
-let nonEmptySubsequences x::xs = (x::(nil xs)) :: fold f (nonEmptySubsequences xs)
+//Seq->list
+let nonEmptySubsequences x::xs = [x] :: fold f (nonEmptySubsequences xs)
                          where f ys r = ys :: (x :: ys) :: r end;
-                         []    = []
+                         [] = []
 end
 
 /* returns the list of all subsequences of the argument:
 subsequences [1,2] = [[], [1],[2],[1,2]] */
-let subsequences xs = (nil xs) :: nonEmptySubsequences xs end 
+//Seq->list
+let subsequences xs = [] :: nonEmptySubsequences xs end 
 
 /* returns a sequence with all permutations of the argument:
 permutations "abc" == ["abc","bac","cba","bca","cab","acb"] */
+//Seq->list
 let permutations 
-    []@n = n;
+    []   = [];
     xs0  = xs0 :: perms xs0 []
        where perms []    _   = [];
                    t::ts is' = foldr interleave (perms ts (t::is')) (permutations is')
@@ -45,14 +189,11 @@ end
 
 /* takes a predicate and two lists and returns the first list with the first 
 occurrence of each element of the second list removed. */
+//Call->Seq->list
 let groupBy eq x::xs = (x::ys) :: groupBy eq zs
-                       where (ys,zs) = Core.span (eq x) xs end;
-            _  []@n  =  n
+                       where (ys,zs) = span (eq x) xs end;
+            _  []    = []
 end
 
+//Seq->list
 let group =  groupBy (==) end
-
-/* takes the list intersection of two lists. */
-let intersectBy eq xs ys =  [x \\ x <- xs | any (eq x) ys] end
-
-let intersect = intersectBy (==) end 

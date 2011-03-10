@@ -1,3 +1,8 @@
+0.0.1.33:New:Functions 'intersectBy' and 'intersect' added to Core module.
+0.0.1.32:New:Functions 'groupBy' and 'group' added to Core module.
+0.0.1.31:New:Function 'permutations' added to Core module.
+0.0.1.30:New:Functions 'intercalate', 'nonEmptySubsequences', 'subsequences' added to Core module.
+0.0.1.29:New:Functions 'intersperse' and 'transpose' added to Core module.
 0.0.1.28:New:Functions 'insert' and 'insertBy' added to Core module.
 0.0.1.27:New:Iterator module is implemented.
 0.0.1.26:New:An initial version of List module is implemented.

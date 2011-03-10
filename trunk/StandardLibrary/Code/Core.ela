@@ -91,98 +91,136 @@ let chr (?int)@x = x:char end
 let ord (?char)@x = x:int end
 
 
+/* COMBINATORS */
+
+/* id, const and sub are SKI combinators */
+let id x = x end//I
+
+let const x _ = x end//K
+
+let sub x y z = x z (y z) end//S
+
+/* fixed point combinator with non strict behavior;
+    strict version of this function is as follows:
+    let fix f x = f (fix f) x */
+let fix f = f (& fix f) end
+
+let on cmb f x y = f x `cmb` f y end
+
 
 /* LIST FUNCTIONS */
 
+//Ix->a->a
 let !! x y = x.[y] end
 
+//Seq->a
 let head x::_ = x;
          []   = fail "Core.head: Empty list" 
 end
 
+//Seq->Seq
 let tail _::xs = xs;
          []    = fail "Core.tail: Empty list"
 end
 
+//Seq->a
 let last x::[] = x;
          _::xs = last xs;
          []    = fail "Core.last: Empty list"
 end
 
-let init x::[] = [];
-         x::xs = x :: init xs;
-         []    = fail "Core.init: Empty list"
+//(Seq,Cons)->(Seq,Cons)
+let init x::([]@n) = n;
+         x::xs	   = x :: init xs;
+         []        = fail "Core.init: Empty list"
 end
 
+//Seq->Bool
 let isNil _::_ = false; [] = true end
 
+//Call->(Seq,Cons)->(Seq,Cons)
 let takeWhile f x::xs | f x  = x :: takeWhile f xs;
                       | else = nil xs;
               f []@n         = n
 end
 
+//Num->(Seq,Cons)->(Seq,Cons)
 let take 0 xs    = nil xs;
          n x::xs = x :: take (n - 1) xs;
         _ []@n   = n
 end
 
+//Num->(Seq,Cons)->(Seq,Cons)
 let skip 0 xs    = xs;
          n _::xs = skip (n - 1) xs;
          _ []@n  = n
 end
 
+//Call->Seq->u
 let each f x::xs = f x $ each f xs;
          _ []    = ()
 end
        
+//Call->(Seq,Cons)->(Seq,Cons)
 let map f x::xs = f x :: map f xs;
         _ []@n  = n
 end
         
+//Call->Seq->list
 let map' f x::xs = f x :: (& map' f xs);
-         _ []@n  = n
+         _ []    = []
 end
            
+//Call->(Seq,Cons)->(Seq,Cons)
 let filter p x::xs | p x  = x :: filter p xs;
                    | else = filter p xs;
            _ []@n         = n
 end
 
+//Call->Seq->list
 let filter' p x::xs | p x  = x :: (& filter' p xs);
                     | else = filter' p xs;
             _ []@n         = n
 end
 
+//Call->a->Seq->a
 let foldl f z x::xs = foldl f (f z x) xs;
           _ z []    = z
 end
        
+//Call->a->Seq->a
 let foldr f z x::xs = f x (foldr f z xs);
           _ z []    = z
 end
 
+//Call->(Seq,Cons)->a
 let fold f xs = foldr f (nil xs) xs end
 
+//(Seq,Cons,Concat)->(Seq,Cons,Concat)
 let concat x::xs = x ++ concat xs; 
            []@n  = n
 end
 
+//Call->(Seq,Cons)->(Seq,Cons)
 let concatMap f x::xs = f x :: concatMap f xs; 
               _ []@n  = n
 end
 
+//Seq[Num]->Num
 let sum xs = sum' 0 xs
              where sum' s x::xs = sum' (s + x) xs;
                         s []    = s
              end
 end
 
+//Seq[Num]->Num
 let product xs = product' 1 xs
                  where product' p x::xs = product' (p * x) xs;
                                 p []    = p
                  end
 end
 
+//Seq[Ord]->Ord
 let minimum x::xs = minimum' x xs
                     where minimum' v x::xs | x < v = minimum' x xs;
                                            | else  = minimum' v xs;
@@ -190,6 +228,7 @@ let minimum x::xs = minimum' x xs
                     end
 end
 
+//Seq[Ord]->Ord
 let maximum x::xs = maximum' x xs
                     where maximum' v x::xs | x > v = maximum' x xs;
                                            | else  = maximum' v xs;
@@ -197,22 +236,27 @@ let maximum x::xs = maximum' x xs
                     end
 end
 
+//(Seq,Cons)->(Seq,Cons)
 let reverse xs = foldl (flip (::)) (nil xs) xs end
         
+//Call->(Seq,Cons)->(Seq,Cons)->(Seq,Cons)
 let zipWith z x::xs y::ys = z x y :: zipWith z xs ys;
             _ _     ys    = nil ys
 end
 
+//Call->Seq->bool
 let any f x::xs | f x  = true;
                 | else = any f xs;
         _ []           = false
 end
         
+//Call->Seq->bool
 let all f x::xs | f x  = all f xs;
                 | else = false;
         _ []           = false
 end
 
+//Num->(Seq,Cons)->tuple[(Seq,Cons)]
 let splitAt 0 xs            = (nil xs,xs);
             _ []@n          = (n,n);
             n x::xs | n > 0 = (x::xs',xs2')
@@ -220,27 +264,32 @@ let splitAt 0 xs            = (nil xs,xs);
             _ _             = fail "Core.splitAt: negative argument"
 end
 
+//Call->(Seq,Cons)->tuple[(Seq,Cons)]
 let span p []@n = (n,n);
          p (x::xs')@xs | p x  = (x::ys, zs);
                        | else = (nil xs,xs)
                        where (ys,zs) = span p xs' end
 end
 
+//Call->(Seq,Cons)->tuple[(Seq,Cons)]
 let breakList p xs = span p' xs
                      where p' x = not (p x) end
 end
 
+//Num->(Seq,Cons)->(Seq,Cons)
 let drop 0 xs            = xs;
          _ []@n          = n;
         n _::xs | n > 0  = drop (n-1) xs;
          _ _             = fail "Core.drop: negative argument"
 end
 
+//Call->(Seq,Cons)->(Seq,Cons)
 let dropWhile p []@n = n;
               p x::xs | p x  = dropWhile p xs;
                       | else = x::xs
 end
 
+//Ord->Seq->int
 let index e lst = index' 0 lst
                   where index' n x::xs | x <> e = index' (n+1) xs;
                                        | else   = n;
@@ -248,49 +297,63 @@ let index e lst = index' 0 lst
                   end
 end
 
+//Eq->Seq->bool
 let elem x = any (==x) end
 
+//Call->a->Seq->bool
 let elemBy _  _ []    = false;
            eq y x::xs = y `eq` x || elemBy eq y xs
 end
 
+//Eq->Seq->bool
 let notElem x = all (<>x) end
 
+//Call->a->(Seq,Cons)->(Seq,Cons)
 let scanl f q x::xs = scanl f (f q x) xs;
-          _ _ []@n  = []
+          _ _ []@n  = n
 end
 
+//Call->a->(Seq,Cons)->(Seq,Cons)
 let scanr f q0 []@n  = q0::n;
           f q0 x::xs = f x q :: qs
                        where (q::_)@qs = scanr f q0 xs end
 end
 
+//a->list
 let repeat x = x :: (& repeat x) end
 
+//Seq->list
 let cycle head::tail = head :: (& cycle' tail)
                        where cycle' x::xs = x :: (& cycle' xs);
                                     []    = head :: (& cycle' tail)
                        end
 end
 
+//Call->a->list
 let iterate f x = x :: (& iterate f (f x)) end
 
+//Ord->Ord->list
 let replicate n x = take n (repeat x) end
 
+//Call->a->(Seq,Cons)->(Seq,Cons)
 let deleteBy p x y::ys | p x y  = ys;
                        | else   = y :: deleteBy p x ys;
              _ _ []@n           = n
 end
 
+//a->(Seq,Cons)->(Seq,Cons)
 let delete = deleteBy (==) end
 
+//Call->a->(Seq,Cons)->(Seq,Cons)
 let insertBy _   x []@n = x::n;
              cmp x (y::ys')@ys | cmp x y is (`GT) = y :: insertBy cmp x ys';
                                | else             = x :: ys
 end
 
+//a->(Seq,Cons)->(Seq,Cons)
 let insert = insertBy compare end
 
+//Call->(Seq,Cons)->(Seq,Cons)
 let nubBy eq xs = nubBy' xs (nil xs)
     where nubBy' []@n _ = n;
                  y::ys xs | elemBy eq y xs = nubBy' ys xs;
@@ -298,7 +361,75 @@ let nubBy eq xs = nubBy' xs (nil xs)
     end
 end
 
+//(Seq,Cons)->(Seq,Cons)
 let nub = nubBy (==) end
+
+/*  takes an element and a sequence and intersperses that element between the elements of the sequence:
+intersperse ',' "abcde" = "a,b,c,d,e" */
+//a->(Seq,Cons)->(Seq,Cons)
+let intersperse e x::([]@n) = x :: intersperse e n;
+                e x::xs     = x :: e :: intersperse e xs;
+                _ []@n      = n
+end
+
+/* transposes the rows and columns of its argument:
+transpose [[1,2,3],[4,5,6]] = [[1,4],[2,5],[3,6]] */
+//(Seq,Cons)->(Seq,Cons)
+let transpose []::xs      = transpose xs;
+              (x::xs)::ys = (x :: [h \\ (h::_) <- ys]) :: transpose (xs :: [t \\ (_::t) <- ys]);
+              []@n        = n
+end
+
+/* inserts the given sequence in between the sequences and concatenates the result. */
+//(Seq,Cons)->(Seq,Cons)
+let intercalate xs xss = concat (intersperse xs xss) end
+
+/* returns the list of all subsequences of the argument, except for the empty list:
+nonEmptySubsequences [1,2] = [[1],[2],[1,2]] */
+//(Seq,Cons)->(Seq,Cons)
+let nonEmptySubsequences x::xs = (x::(nil xs)) :: fold f (nonEmptySubsequences xs)
+                         where f ys r = ys :: (x :: ys) :: r end;
+                         []@n  = n
+end
+
+/* returns the list of all subsequences of the argument:
+subsequences [1,2] = [[], [1],[2],[1,2]] */
+//(Seq,Cons)->(Seq,Cons)
+let subsequences xs = (nil xs) :: nonEmptySubsequences xs end 
+
+/* returns a sequence with all permutations of the argument:
+permutations "abc" == ["abc","bac","cba","bca","cab","acb"] */
+//(Seq,Cons)->(Seq,Cons)
+let permutations 
+    []@n = n;
+    xs0  = xs0 :: perms xs0 []
+       where perms []    _   = [];
+                   t::ts is' = foldr interleave (perms ts (t::is')) (permutations is')
+                               where interleave xs r       = let (_,zs) = interleave' id xs r in zs and
+                                     interleave' _ [] r    = (ts, r);
+                                                 f y::ys r = let (us,zs) = interleave' (f << (y::)) ys r
+                                                             in  (y::us, f (t::y::us) :: zs)
+                               end
+       end
+end
+
+/* takes a predicate and two lists and returns the first list with the first 
+occurrence of each element of the second list removed. */
+//Call->(Seq,Cons)->(Seq,Cons)
+let groupBy eq x::xs = (x::ys) :: groupBy eq zs
+                       where (ys,zs) = span (eq x) xs end;
+            _  []@n  =  n
+end
+
+//(Seq,Cons)->(Seq,Cons)
+let group =  groupBy (==) end
+
+/* takes the list intersection of two lists. */
+//Call->Seq->Seq
+let intersectBy eq xs ys =  [x \\ x <- xs | any (eq x) ys] end
+
+//Seq->Seq
+let intersect = intersectBy (==) end 
 
 
 /* TUPLE FUNCTIONS */
@@ -326,20 +457,3 @@ let uncurry f (x, y) = f x y end
 let curry3 f x y z = f (x, y, z) end
 
 let uncurry3 f (x, y, z) = f x y z end
-
-
-/* COMBINATORS */
-
-/* id, const and sub are SKI combinators */
-let id x = x end//I
-
-let const x _ = x end//K
-
-let sub x y z = x z (y z) end//S
-
-/* fixed point combinator with non strict behavior;
-    strict version of this function is as follows:
-    let fix f x = f (fix f) x */
-let fix f = f (& fix f) end
-
-let on cmb f x y = f x `cmb` f y end

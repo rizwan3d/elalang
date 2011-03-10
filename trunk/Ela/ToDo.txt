@@ -2,3 +2,30 @@
 2. Make type conversion operator (:) extendable (probably through pervasives).
 3. Move all reflection API to the standard library.==Reconsidered. API refactored but will remain the part of Ela core.
 4. Think about inability to convert to other than built-in types.
+
+=====
+
+Lazy evaluation is an evaluation strategy that defers evulation of an expression until its value is actually needed. In many cases it may be seen as an optimization technique that ensures that all evaluations are perform on demand only.
+There are programming languages (like Haskell or Clean) where lazy evaluation is an evaluation strategy that is used by default.
+Lazy evaluation is closely connected with language purity - with the lack of side effects. This connection comes from the fact that with laziness there is no strict order in which your code is evaluated. That is something that might cause certain difficulties in understanding the logic flow if you still thinking in an imperative style developed through programming in languages with eager evaluation (such as C#).
+The key thing here is that pure functional language don't even try to expression the logic flow, the sequence of computations and other imperative things. In a pure language you have a set of declarations - such as pure functions declarations - which don't depend from each other, don't change global state or use any external resources and therefore the can be evaluated in any order. 
+That is important. When you code doesn't have a mutatitive state the order of evaluation doesn't matter. Imagine that you have a simple code in C#:
+
+var x = Math.Sin(8765.12) * 2;
+var y = Math.Tan(233) / 3;
+var result = y + x;
+
+Expressions that are used to initiliaze variables x and y are pure. Calculation of sinus and tangent are functions without any side effects - they return the same result for the same argument all the time. That is true for multiplication and deletion. In C# these expression are evaluated in order - first we calculate the value of x, then - the value of y. However there is absolutely no difference in which particular order these particular expressions will be evaluated. You can calculated y before x - and the result will be the same. In fact in a pure functional language y will be indeed calculated before x - because addition operation is usually left associative and y is the first operand.
+With all these precious knowledge you can now look at the small code sample above differently. There is no order. There is a set of declarations. And it doesn't matter when exactly initialization blocks in these declarations are evaluated. Simply because it doesn't change anything.
+
+But as you know C# is not a pure functional language. So as Ela and many other languages from the functional family. As long as you allow certain impurity in your code and therefore make possible for the expressions to depend from each other an implicit "by default" laziness is definitely not the way to go. Lazy code with side effects is a nightmare for a programmer. I hope I don't have to explain why.
+However even in impure languages you can writen crystal clean and pure code. You can easily do it in C#. And you can surely do it in Ela.
+As long as you still can write pure code simply dropping lazy evaluation feature doesn't seem like a right decision. (Moreover without it it will be impossible to do a lot of things such as to represent infinite data structures - but we will talk about it later). But it is absolutelu clear that implicit lazy evaluation (like in Haskell) is not acceptable either.
+The solution is obvious - we need an explicit way to mark certain block of code as the one that should be evaluated in a lazy manner.
+Ela has a special data type - thunks - that provides a support for lazy evaluation.
+
+==When to use==
+
+Thunks may seem as an optimization and in many case they can be used in such a way however they may even degrade your code performance in many others. That is because thunks do generate additional overhead - for their initialization, operation and so forth. In Ela this overhead is not too high and you won't notice it in most cases - so do not afraid to use thunks wherever you need them. However in certain cases you might want to evaluate whether thunks are really needed. If you already have a pure expression and it truly doesn't matter when this expression gets evaluated evaluating it right away may be a good choice - especially if you need a result of this evaluation just once.
+Thunks are really useful in the case when, depending on your logic, some values may not be evaluated at all.
+Another unique application of thunks are lazy (and infinite as a particular case of laziness) data structures which can be implemented with thunks and, for example, linked lists.
