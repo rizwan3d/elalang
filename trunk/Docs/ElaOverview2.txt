@@ -708,7 +708,7 @@ Now we need to create our infinite list. We can do it through a function that ac
 {{{
 ela>let inf x = y :: (& inf y) where y = x + 1 end end
 
-ela>let lst = inf 0
+ela>let lst = inf 0 end
 }}}
 
 OK, but what we can do with an infinite list? For example we can take a finite number of elements from it using our previously defined `take` function:
