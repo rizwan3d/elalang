@@ -1,3 +1,5 @@
+0.8.6.44:Fix:A critical bug fixed in compilation logic of guards in pattern matching constructs.
+0.8.6.43:Fix:A critical bug fixed in compilation logic of head/tail pattern.
 0.8.6.42:Fix:Corrections in error message for 'TraitFieldSet' run time error.
 0.8.6.41:Fix:A warning ELA400 (UnitAlwaysFail) could be generated in an incorrect case (when applying 'Eq' trait to unit which is legal).
 0.8.6.40:Change:Now one can write expressions directly in the global scope.

@@ -321,12 +321,57 @@ internal sealed class Scanner {
 	void CheckLiteral() {
 -->literals
 	}
-
+	
+	bool nl = true;
+	FastStack<Int32> istack = new FastStack<Int32>();
+	int expectIndent = 0;
+	int indent = -1;
+		
+	internal void InjectBlock() {
+		istack.Push(col);
+		expectIndent = col;
+		indent = -1;
+		nl = false;
+	}
+	
+	/*internal Token CreateStartBlock() {
+		var to = new Token();
+		to.pos = pos; to.col = col; to.line = line; 
+		to.kind = Parser._SBLOCK;
+		return to;
+	}*/
+		
 	Token NextToken() {
 		while (ch == ' ' ||
 -->scan1
-		) NextCh();
+		) {
+			if (ch == ' ' && nl)
+				indent++;
+			else if (ch == '\r' || ch == '\n'){			
+				nl = true;
+				indent = 0;
+			}
+			else
+				nl = false;
+			
+			NextCh();
+		}
 -->scan2
+
+		if (indent > -1 && indent < expectIndent) {
+			t = new Token();
+			t.pos = pos; t.col = col; t.line = line; 
+			t.kind = Parser._EBLOCK;
+			istack.Pop();
+			
+			if (istack.Count > 0)
+				expectIndent = istack.Peek();
+			else
+				indent = expectIndent = -1;
+				
+			return t;
+		}
+
 		int recKind = noSym;
 		int recEnd = pos;
 		t = new Token();
@@ -335,6 +380,20 @@ internal sealed class Scanner {
 		if (start.ContainsKey(ch)) { state = (int) start[ch]; }
 		else { state = 0; }
 		tlen = 0; AddCh();
+		
+		if (state == -1 && istack.Count > 0) {
+			t = new Token();
+			t.pos = pos; t.col = col; t.line = line; 
+			t.kind = Parser._EBLOCK;
+			istack.Pop();
+			
+			if (istack.Count > 0)
+				expectIndent = istack.Peek();
+			else
+				indent = expectIndent = -1;
+				
+			return t;
+		}
 		
 		switch (state) {
 			case -1: { t.kind = eofSym; break; } // NextCh already done

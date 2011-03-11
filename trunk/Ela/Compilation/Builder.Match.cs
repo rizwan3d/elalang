@@ -138,6 +138,7 @@ namespace Ela.Compilation
 						{
 							cw.MarkLabel(nextGuard);
 							cw.Emit(Op.Nop);
+                            nextGuard = Label.Empty;
 						}
 
 						cw.MarkLabel(next);
@@ -435,6 +436,13 @@ namespace Ela.Compilation
 				var els = pexp.Patterns;
 				var len = els.Count;
 				cw.Emit(Op.Pushvar, pushSys);
+
+                if (len > 2)
+                {
+                    pushSys = AddVariable();
+                    cw.Emit(Op.Dup);
+                    cw.Emit(Op.Popvar, pushSys);
+                }
 
 				for (var i = 0; i < len; i++)
 				{

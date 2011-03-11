@@ -68,6 +68,7 @@ TOKENS
 	LILB = "[".
 	LIRB = "]".
 	
+	PIPE = "|".
 	ARROW = "->".
 	LAMBDA = "\\".
 	EQ = "=".
@@ -98,6 +99,8 @@ TOKENS
 	
 	AND = "and".
 	ENDS = "end".
+	
+	EBLOCK = "}}".
 	
 COMMENTS FROM "//" TO lf
 COMMENTS FROM "/*" TO "*/"
@@ -272,6 +275,7 @@ PRODUCTIONS
 	/* Match */
 	
 	MatchExpr<out ElaExpression exp> = 
+		(. scanner.InjectBlock(); .)
 		MATCH
 		(. 
 			var match = new ElaMatch(t);
@@ -281,9 +285,16 @@ PRODUCTIONS
 		Expr<out cexp> (. match.Expression = cexp; .)
 		WITH
 		(
-			MatchEntry<match> { SEMI [MatchEntry<match>] }
+			(. scanner.InjectBlock(); .)
+			MatchEntry<match> 
+			EBLOCK
+			{ 
+				(. scanner.InjectBlock(); .)
+				MatchEntry<match> 
+				EBLOCK
+			}
 		)		
-		ENDS.
+		EBLOCK.
 					
 	MatchEntry<ElaMatch match> = 
 		(. var cexp = default(ElaExpression); .)
@@ -799,8 +810,9 @@ PRODUCTIONS
 			var inExp = default(ElaExpression);
 			var flags = default(ElaVariableFlags);
 		.)
-		LET [VariableAttributes<out flags>] VariableDeclarationBody<flags, out exp>
-		IN Expr<out inExp> 
+		LET [VariableAttributes<out flags>] 
+		VariableDeclarationBody<flags, out exp>
+		IN Expr<out inExp>
 		(. ((ElaBinding)exp).In = inExp; .).
 		
 	RootLetBinding<out ElaExpression exp> = 
@@ -810,22 +822,24 @@ PRODUCTIONS
 			var flags = default(ElaVariableFlags);
 		.)
 		(
-			LET [VariableAttributes<out flags>] VariableDeclarationBody<flags, out exp>
-			(
-				ENDS
-				|
-				(
-					IN Expr<out inExp> 
-					(. ((ElaBinding)exp).In = inExp; .)	
-					ENDS
-				)
-			)
+			(. scanner.InjectBlock(); .) 
+			LET 
+			[VariableAttributes<out flags>] 
+			VariableDeclarationBody<flags, out exp>
+			EBLOCK
+			/*[
+				IN Expr<out inExp> 
+				(. ((ElaBinding)exp).In = inExp; .)	
+			]*/			
 		).
 		
 	VariableAttributes<out ElaVariableFlags flags> =
 		"private" (. flags = ElaVariableFlags.Private; .).			
 		
-	WhereBinding<out ElaExpression exp> = WHERE WhereBindingBody<out exp> ENDS.
+	WhereBinding<out ElaExpression exp> = 
+		(. scanner.InjectBlock(); .) WHERE 
+		WhereBindingBody<out exp> 
+		EBLOCK.
 	
 	WhereBindingBody<out ElaExpression exp> =
 		(. 
@@ -857,7 +871,7 @@ PRODUCTIONS
 							varExp.InitExpression = cond;
 						.)
 						(
-							"|" BindingGuard<out gexp> (. cond.Condition = gexp; .) "=" Expr<out cexp3> (. cond.True = cexp3; .) SEMI
+							"|" BindingGuard<out gexp> (. cond.Condition = gexp; .) "=" Expr<out cexp3> (. cond.True = cexp3; .)
 							BindingGuardList<ref cond>
 						)
 					)
@@ -907,7 +921,7 @@ PRODUCTIONS
 						cond = newCond;
 					.)
 					BindingGuard<out gexp> (. cond.Condition = gexp; .) "=" Expr<out cexp> (. cond.True = cexp; .)
-					[ SEMI BindingGuardList<ref cond> ]
+					[ BindingGuardList<ref cond> ]
 				)
 				|
 				(
@@ -947,7 +961,7 @@ PRODUCTIONS
 							varExp.InitExpression = cond;
 						.)
 						(
-							"|" BindingGuard<out gexp> (. cond.Condition = gexp; .) "=" Expr<out cexp3> (. cond.True = cexp3; .) SEMI
+							"|" BindingGuard<out gexp> (. cond.Condition = gexp; .) "=" Expr<out cexp3> (. cond.True = cexp3; .)
 							BindingGuardList<ref cond>
 						)
 					)
@@ -1030,11 +1044,11 @@ PRODUCTIONS
 			var ot = t;
 			var pat = default(ElaPattern);
 			var seq = default(ElaPatternGroup);
-			var cexp = default(ElaExpression);
-			
+			var cexp = default(ElaExpression);			
 			var entry = new ElaMatchEntry(t);
 			match.Entries.Add(entry);
 		.)
+		(. scanner.InjectBlock(); .)
 		(
 			(	
 				FuncPattern<out pat> (. entry.Pattern = pat; .)
@@ -1063,7 +1077,11 @@ PRODUCTIONS
 				(. entry.Expression = fexp; .)
 			)
 			[ WhereBinding<out cexp> (. entry.Where = cexp; .) ]
-			[ SEMI [ChildFunBodyExpr<match>] ]
+			(. if (la.kind != _PIPE) .) EBLOCK
+			[ 
+				(FunBodyExpr<match>)
+				| ChildFunBodyExpr<match>
+			]
 		).
 		
 	ChildFunBodyExpr<ElaMatch match> =
@@ -1076,26 +1094,8 @@ PRODUCTIONS
 			match.Entries.Add(entry);
 		.)
 		(
-			[	
-				FuncPattern<out pat> (. entry.Pattern = pat; .)
-				{ 
-					FuncPattern<out pat> 
-					(. 
-						if (seq == null)
-						{
-							seq = new ElaPatternGroup(ot);
-							seq.Patterns.Add(entry.Pattern);
-							entry.Pattern = seq;							
-						}
-					
-						seq.Patterns.Add(pat); 
-					.) 
-				} 				
-			]
-			[
-				Guard<out cexp>
-				(. entry.Guard = cexp; .)
-			]
+			Guard<out cexp>
+			(. entry.Guard = cexp; .)
 			"=" 
 			(
 				(. var fexp = default(ElaExpression); .)
@@ -1103,7 +1103,11 @@ PRODUCTIONS
 				(. entry.Expression = fexp; .)
 			)
 			[ WhereBinding<out cexp> (. entry.Where = cexp; .) ]
-			[ SEMI [ChildFunBodyExpr<match>] ]
+			(. if (la.kind != _PIPE) .)EBLOCK
+			[ 
+				( FunBodyExpr<match>)
+				| ChildFunBodyExpr<match>
+			]
 		).
 		
 	LambdaBodyExpr<ElaMatch match> =
@@ -1228,6 +1232,7 @@ PRODUCTIONS
 		.).	
 		
 	TryExpr<out ElaExpression exp> =
+		(. scanner.InjectBlock(); .)
 		TRY
 		(. 
 			var ot = t;
@@ -1238,9 +1243,16 @@ PRODUCTIONS
 		Expr<out cexp> (. match.Expression = cexp; .)
 		WITH
 		(
-			MatchEntry<match> { SEMI [MatchEntry<match>] }
-		)
-		ENDS.
+			(. scanner.InjectBlock(); .)
+			MatchEntry<match> 
+			EBLOCK
+			{ 
+				(. scanner.InjectBlock(); .)
+				MatchEntry<match> 
+				EBLOCK
+			}
+		)	
+		EBLOCK.
 			
 	/* Expr */
 		
