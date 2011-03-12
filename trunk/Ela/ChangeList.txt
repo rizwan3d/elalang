@@ -1,3 +1,6 @@
+0.8.6.47:Fix:A bug in functional literal compilation logic fixed - it could cause stack corruption when used on a left side of an expression.
+0.8.6.46:Fix:Parser could crush on a syntax error binding pattern.
+0.8.6.45:Fix:A bug in range compilation logic fixed - it didn't take into account situations when range is used at the left hand side and as a result generate code could cause stack corruption.
 0.8.6.44:Fix:A critical bug fixed in compilation logic of guards in pattern matching constructs.
 0.8.6.43:Fix:A critical bug fixed in compilation logic of head/tail pattern.
 0.8.6.42:Fix:Corrections in error message for 'TraitFieldSet' run time error.

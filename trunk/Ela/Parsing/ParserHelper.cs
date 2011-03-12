@@ -20,6 +20,21 @@ namespace Ela.Parsing
 		}
 
 
+		private bool RequireEndBlock()
+		{
+			if (la.kind == _PIPE)
+				return false;
+
+			if (la.kind == _AND || la.kind == _IN)
+			{
+				scanner.PopIndent();
+				return false;
+			}
+
+			return true;
+		}
+
+
 		//private bool RequireEnd(ElaExpression exp)
 		//{
 		//    if (la.kind == _ENDS)

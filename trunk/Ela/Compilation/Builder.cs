@@ -67,6 +67,9 @@ namespace Ela.Compilation
 					{
 						var r = (ElaRange)exp;
 						CompileRange(exp, r, map, hints);
+
+						if ((hints & Hints.Left) == Hints.Left)
+							AddValueNotUsed(r);
 					}
 					break;
 				case ElaNodeType.VariantLiteral:
@@ -207,13 +210,13 @@ namespace Ela.Compilation
 					}
 					break;
 				case ElaNodeType.FunctionLiteral:
-					if ((hints & Hints.Left) == Hints.Left)
-						AddValueNotUsed(exp);
-					else
 					{
 						var f = (ElaFunctionLiteral)exp;
 						CompileFunction(f, FunFlag.None);
 						exprData = new ExprData(DataKind.FunParams, f.ParameterCount);
+
+						if ((hints & Hints.Left) == Hints.Left)
+							AddValueNotUsed(exp);
 					}
 					break;
 				case ElaNodeType.Binding:

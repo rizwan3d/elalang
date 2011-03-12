@@ -8,18 +8,24 @@ namespace Ela.Parsing
 		#region Methods
 		internal static ElaMessage CreateMessage(int error, string message, int line, int col)
 		{
-			var arr = message.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 			var err = ElaParserError.InvalidSyntax;
 			var msg = String.Empty;
-			
-			if (arr.Length == 2)
+
+			if (error == -1)
+				err = ElaParserError.TabNotAllowed;
+			else
 			{
-				var head = arr[0].Trim('\"');
-				var tail = arr[1].Trim('\"');
-				var exp = tail == "expected";
-				msg = exp ? head : tail;
-				err = exp ? ExpectToken(error, head) : InvalidToken(error, tail);
-			}
+				var arr = message.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+				if (arr.Length == 2)
+				{
+					var head = arr[0].Trim('\"');
+					var tail = arr[1].Trim('\"');
+					var exp = tail == "expected";
+					msg = exp ? head : tail;
+					err = exp ? ExpectToken(error, head) : InvalidToken(error, tail);
+				}
+			}			
 
 			return new ElaMessage(Strings.GetMessage(err, msg), MessageType.Error, (Int32)err, line, col);
 		}

@@ -104,7 +104,7 @@ TOKENS
 	
 COMMENTS FROM "//" TO lf
 COMMENTS FROM "/*" TO "*/"
-IGNORE cr + lf + tab
+IGNORE cr + lf
 
 PRODUCTIONS
 	Literal<out ElaExpression exp> = 
@@ -428,7 +428,7 @@ PRODUCTIONS
 		(
 			AsPattern<out pat>
 			(.
-				if (pat.Type == ElaNodeType.VariablePattern)
+				if (pat != null && pat.Type == ElaNodeType.VariablePattern)
 				{
 					name = ((ElaVariablePattern)pat).Name;
 					pat = null;
@@ -822,22 +822,25 @@ PRODUCTIONS
 			var flags = default(ElaVariableFlags);
 		.)
 		(
-			(. scanner.InjectBlock(); .) 
 			LET 
 			[VariableAttributes<out flags>] 
+			(. scanner.InjectBlock(); .) 
 			VariableDeclarationBody<flags, out exp>
 			EBLOCK
-			/*[
+			[
+				(. scanner.InjectBlock(); .)
 				IN Expr<out inExp> 
 				(. ((ElaBinding)exp).In = inExp; .)	
-			]*/			
+				EBLOCK
+			]			
 		).
 		
 	VariableAttributes<out ElaVariableFlags flags> =
 		"private" (. flags = ElaVariableFlags.Private; .).			
 		
 	WhereBinding<out ElaExpression exp> = 
-		(. scanner.InjectBlock(); .) WHERE 
+		(. scanner.InjectBlock(); .) 
+		WHERE 
 		WhereBindingBody<out exp> 
 		EBLOCK.
 	
@@ -1077,7 +1080,7 @@ PRODUCTIONS
 				(. entry.Expression = fexp; .)
 			)
 			[ WhereBinding<out cexp> (. entry.Where = cexp; .) ]
-			(. if (la.kind != _PIPE) .) EBLOCK
+			(. if (RequireEndBlock()) .) EBLOCK
 			[ 
 				(FunBodyExpr<match>)
 				| ChildFunBodyExpr<match>
@@ -1087,8 +1090,6 @@ PRODUCTIONS
 	ChildFunBodyExpr<ElaMatch match> =
 		(.
 			var ot = t;
-			var pat = default(ElaPattern);
-			var seq = default(ElaPatternGroup);
 			var cexp = default(ElaExpression);
 			var entry = new ElaMatchEntry(t);
 			match.Entries.Add(entry);
@@ -1103,7 +1104,7 @@ PRODUCTIONS
 				(. entry.Expression = fexp; .)
 			)
 			[ WhereBinding<out cexp> (. entry.Where = cexp; .) ]
-			(. if (la.kind != _PIPE) .)EBLOCK
+			(. if (RequireEndBlock()) .)EBLOCK
 			[ 
 				( FunBodyExpr<match>)
 				| ChildFunBodyExpr<match>
@@ -1862,33 +1863,22 @@ PRODUCTIONS
 			(	
 				( 
 					RootLetBinding<out exp>
-					(. b.Expressions.Add(exp); .) 
-					[ DeclarationBlock<b> ]
+					(. b.Expressions.Add(exp); .)
 				)
 				| 
 				( 
 					IncludeStat<out exp>
-					(. b.Expressions.Add(exp); .)
-					[ DeclarationBlock<b> ]
+					(. b.Expressions.Add(exp); .)					
 				)
 				| 
 				(
+					(. scanner.InjectBlock(); .)
 					EmbExpr<out exp>
 					(. b.Expressions.Add(exp); .)
-					[ SimpleDeclarationBlock<b> ]
+					EBLOCK
 				)
 			)
-		).
-		
-	SimpleDeclarationBlock<ElaBlock b> =
-		(. var exp = default(ElaExpression); .)
-		(
-			(	
-				RootLetBinding<out exp>
-				| IncludeStat<out exp>
-			)
-			(. b.Expressions.Add(exp); .)
-			[ DeclarationBlock<b> ]
-		).
+		)
+		[ DeclarationBlock<b> ].
 		
 END Ela.

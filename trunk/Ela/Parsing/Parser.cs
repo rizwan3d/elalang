@@ -934,7 +934,7 @@ internal sealed partial class Parser {
 	void BindingPattern(out string name, out ElaPattern pat) {
 		pat = null; name = null; 
 		AsPattern(out pat);
-		if (pat.Type == ElaNodeType.VariablePattern)
+		if (pat != null && pat.Type == ElaNodeType.VariablePattern)
 		{
 			name = ((ElaVariablePattern)pat).Name;
 			pat = null;
@@ -1153,13 +1153,20 @@ internal sealed partial class Parser {
 		var inExp = default(ElaExpression);
 		var flags = default(ElaVariableFlags);
 		
-		scanner.InjectBlock(); 
 		Expect(29);
 		if (la.kind == 30) {
 			VariableAttributes(out flags);
 		}
+		scanner.InjectBlock(); 
 		VariableDeclarationBody(flags, out exp);
 		Expect(44);
+		if (la.kind == 24) {
+			scanner.InjectBlock(); 
+			Get();
+			Expr(out inExp);
+			((ElaBinding)exp).In = inExp; 
+			Expect(44);
+		}
 	}
 
 	void WhereBindingBody(out ElaExpression exp) {
@@ -1318,7 +1325,7 @@ internal sealed partial class Parser {
 			WhereBinding(out cexp);
 			entry.Where = cexp; 
 		}
-		if (la.kind != _PIPE) 
+		if (RequireEndBlock()) 
 		Expect(44);
 		if (StartOf(15)) {
 			if (StartOf(13)) {
@@ -1331,8 +1338,6 @@ internal sealed partial class Parser {
 
 	void ChildFunBodyExpr(ElaMatch match) {
 		var ot = t;
-		var pat = default(ElaPattern);
-		var seq = default(ElaPatternGroup);
 		var cexp = default(ElaExpression);
 		var entry = new ElaMatchEntry(t);
 		match.Entries.Add(entry);
@@ -1347,7 +1352,7 @@ internal sealed partial class Parser {
 			WhereBinding(out cexp);
 			entry.Where = cexp; 
 		}
-		if (la.kind != _PIPE) 
+		if (RequireEndBlock()) 
 		Expect(44);
 		if (StartOf(15)) {
 			if (StartOf(13)) {
@@ -2142,32 +2147,15 @@ internal sealed partial class Parser {
 		if (la.kind == 29) {
 			RootLetBinding(out exp);
 			b.Expressions.Add(exp); 
-			if (StartOf(19)) {
-				DeclarationBlock(b);
-			}
 		} else if (la.kind == 31) {
 			IncludeStat(out exp);
 			b.Expressions.Add(exp); 
-			if (StartOf(19)) {
-				DeclarationBlock(b);
-			}
 		} else if (StartOf(10)) {
+			scanner.InjectBlock(); 
 			EmbExpr(out exp);
 			b.Expressions.Add(exp); 
-			if (la.kind == 29 || la.kind == 31) {
-				SimpleDeclarationBlock(b);
-			}
+			Expect(44);
 		} else SynErr(116);
-	}
-
-	void SimpleDeclarationBlock(ElaBlock b) {
-		var exp = default(ElaExpression); 
-		if (la.kind == 29) {
-			RootLetBinding(out exp);
-		} else if (la.kind == 31) {
-			IncludeStat(out exp);
-		} else SynErr(117);
-		b.Expressions.Add(exp); 
 		if (StartOf(19)) {
 			DeclarationBlock(b);
 		}
@@ -2339,12 +2327,15 @@ internal sealed class Errors {
 			case 114: s = "invalid FuncOperator"; break;
 			case 115: s = "invalid EmbExpr"; break;
 			case 116: s = "invalid DeclarationBlock"; break;
-			case 117: s = "invalid SimpleDeclarationBlock"; break;
 
 			default: s = "error " + n; break;
 		}
 		
 		parser.errorCount++;
+		
+		if (parser.la.val == "\t" || parser.t.val == "\t")
+			n = -1;
+		
 		ErrorList.Add(ErrorReporter.CreateMessage(n, s, line, col));
 	}
 	

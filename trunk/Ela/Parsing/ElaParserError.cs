@@ -24,6 +24,8 @@ namespace Ela.Parsing
 
 		ComprehensionOpInvalidOperand = 9,
 
+		TabNotAllowed = 10,
+
 
 
 		ExpectedToken = 100,

@@ -480,4 +480,7 @@
   <data name="ExpectedComprehensionSlash" xml:space="preserve">
     <value>Expected operator '\\'.</value>
   </data>
+  <data name="TabNotAllowed" xml:space="preserve">
+    <value>Tab character is not allowed. Use spaces for indentation.</value>
+  </data>
 </root>

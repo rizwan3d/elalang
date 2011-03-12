@@ -437,6 +437,15 @@ internal sealed class Scanner {
 	FastStack<Int32> istack = new FastStack<Int32>();
 	int expectIndent = 0;
 	int indent = -1;
+	
+	internal void PopIndent() {
+		if (istack.Count > 0) {
+			istack.Pop();
+			expectIndent = istack.Count > 0 ? istack.Peek() : -1;
+		}
+		else
+			expectIndent = -1;		
+	}
 		
 	internal void InjectBlock() {
 		istack.Push(col);
@@ -445,16 +454,9 @@ internal sealed class Scanner {
 		nl = false;
 	}
 	
-	/*internal Token CreateStartBlock() {
-		var to = new Token();
-		to.pos = pos; to.col = col; to.line = line; 
-		to.kind = Parser._SBLOCK;
-		return to;
-	}*/
-		
 	Token NextToken() {
 		while (ch == ' ' ||
-			ch >= 9 && ch <= 10 || ch == 13
+			ch == 10 || ch == 13
 		) {
 			if (ch == ' ' && nl)
 				indent++;
