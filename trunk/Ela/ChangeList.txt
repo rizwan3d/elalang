@@ -1,43 +1,42 @@
-0.8.6.47:Fix:A bug in functional literal compilation logic fixed - it could cause stack corruption when used on a left side of an expression.
-0.8.6.46:Fix:Parser could crush on a syntax error binding pattern.
-0.8.6.45:Fix:A bug in range compilation logic fixed - it didn't take into account situations when range is used at the left hand side and as a result generate code could cause stack corruption.
-0.8.6.44:Fix:A critical bug fixed in compilation logic of guards in pattern matching constructs.
-0.8.6.43:Fix:A critical bug fixed in compilation logic of head/tail pattern.
-0.8.6.42:Fix:Corrections in error message for 'TraitFieldSet' run time error.
-0.8.6.41:Fix:A warning ELA400 (UnitAlwaysFail) could be generated in an incorrect case (when applying 'Eq' trait to unit which is legal).
-0.8.6.40:Change:Now one can write expressions directly in the global scope.
-0.8.6.39:Change:Syntax for 'module open' directive is changed from 'open Foo[dllname] as MyFoo with x,y' to 'open Foo#dllname@MyFoo with x,y'.
-0.8.6.38:Fix:Minor fixes in implementation of 'Show' trait for ElaList.
-0.8.6.37:Change:All imperative cycles including 'for-to', 'for-downto', 'for-in' and 'while' are decomissioned. Also 'return', 'break' and 'continue' keywords are removed.
-0.8.6.36:Change:Syntax for mutable record fields changed from '{mutable x=...}' to '{!x=...}'.
-0.8.6.35:Change:Strict compiler mode is decomissioned (it only enforced errors on global mutable variables which are useless as soon as there are no mutable variables at all).
-0.8.6.34:Change:Ela doesn't support mutable variables anymore. One should use reference cells to achieve the same effect, e.g. '{!value=...}'.
-0.8.6.33:Fix:Parse could crash on a binding expression without initialization block, e.g. 'let foo'.
-0.8.6.32:Change:Minor corrections in compiler error messages.
-0.8.6.31:Change:Multiple code refactorings in order to support .NET 2.0 as a minimum requirement (C# 3.0 is still a minimum version of compiler that is needed to build Ela projects).
-0.8.6.30:New:Now ElaModule supports trait 'FieldGet'.
-0.8.6.29:Change:Now printing infinite lists (using 'show' trait and built-in formatter helper) cannot cycle - looping through the list will always stop after first 50 elements. If one needs to show more elements than these elements should be explicitely taken from list before that ('take').
-0.8.6.28:Change:Built-in function 'cout' (along with corresponding op code) is decomissioned. One should should use Con module for console output.
-0.8.6.27:Change:ElaRecord fully refactored. Now it doesn't inherit ElaTuple. Also support for 'Ord' and 'Num' traits is dropped. However records still provide structural equality.
-0.8.6.26:Change:Pattern matching in bindings ('let' and 'where') has changed. Now all patterns except of variant pattern can be used without extra parenthesis.
-0.8.6.25:New:Trait 'Cons' extended with a 'Nil' method that can be used to get a 'nil' instance of an entity. Also a new built-in 'nil' function is added to is mapped to this action.
-0.8.6.24:New:Not is is possible to create pervasives (such as custom operators) from foreign modules (modules written in .NET).
-0.8.6.23:New:A new built-in function 'ref' added (along with new op code Ceqref). This function can be used to test two given object using reference equality.
-0.8.6.22:Fix:A bug fixed in compilation logic of head/tail pattern for patterns that are combined from two nested patterns. A typical example of a case when this bug could be reproduced is when you have a head/tail pattern that ends with (xs@n) - in such as case 'n' variable wasn't declared at all.
-0.8.6.21:Change:Trait 'Seq' renamed to 'Ix'.
-0.8.6.20:New:A new public 'Concatenate' method added to ElaList (method can be used from .NET code to concatenate two lists).
-0.8.6.19:New:A new public 'IsNilList' method added to ElaObject (method can be used from .NET code to determine if a given object is a nil list).
-0.8.6.18:Change:Ela reflection API is fully refactored.
-0.8.6.17:New:Methods Left and Some added to ElaVariant to simplify construction of 'Either' variant (for operation in .NET code).
-0.8.6.16:Change:Method for comparison (ElaObject.Compare) can now be overriden by the types defined outside of Ela core assembly.
-0.8.6.15:Fix:Now ElaString supports 'Seq' trait (which supported by string as soon as it represents an ordered structure of elements).
-0.8.6.14:Fix:Location information corrected for the literal patterns.
-0.8.6.13:Fix:Pattern type check logic corrected in according to the recent type system changes (it used to generate errors for the correct cases).
-0.8.6.12:Fix:Multiple corrections in Ela AST pretty printing logic.
-0.8.6.11:New:Now all Ela types expose a GetTypeName method that is used internally by Ela machine to determine type name.
-0.8.6.10:Change:Verification of function application at compile time is enhanced - it will now generate warning for all attempts to call something different than function if it was directly initialized with a literal.
-0.8.6.9:Change:ElaArray now moved from the built-in types to the standard library. Arrcons op code, array literal, array pattern, etc. are decomissioned.
-0.8.6.8:Change:Now 'end' is required for all global 'let' bindings.
+0.8.6.46:Fix:A bug in functional literal compilation logic fixed - it could cause stack corruption when used on a left side of an expression.
+0.8.6.45:Fix:Parser could crush on a syntax error binding pattern.
+0.8.6.44:Fix:A bug in range compilation logic fixed - it didn't take into account situations when range is used at the left hand side and as a result generate code could cause stack corruption.
+0.8.6.43:Fix:A critical bug fixed in compilation logic of guards in pattern matching constructs.
+0.8.6.42:Fix:A critical bug fixed in compilation logic of head/tail pattern.
+0.8.6.41:Fix:Corrections in error message for 'TraitFieldSet' run time error.
+0.8.6.40:Fix:A warning ELA400 (UnitAlwaysFail) could be generated in an incorrect case (when applying 'Eq' trait to unit which is legal).
+0.8.6.39:Change:Now one can write expressions directly in the global scope.
+0.8.6.38:Change:Syntax for 'module open' directive is changed from 'open Foo[dllname] as MyFoo with x,y' to 'open Foo#dllname@MyFoo with x,y'.
+0.8.6.37:Fix:Minor fixes in implementation of 'Show' trait for ElaList.
+0.8.6.36:Change:All imperative cycles including 'for-to', 'for-downto', 'for-in' and 'while' are decomissioned. Also 'return', 'break' and 'continue' keywords are removed.
+0.8.6.35:Change:Syntax for mutable record fields changed from '{mutable x=...}' to '{!x=...}'.
+0.8.6.34:Change:Strict compiler mode is decomissioned (it only enforced errors on global mutable variables which are useless as soon as there are no mutable variables at all).
+0.8.6.33:Change:Ela doesn't support mutable variables anymore. One should use reference cells to achieve the same effect, e.g. '{!value=...}'.
+0.8.6.32:Fix:Parse could crash on a binding expression without initialization block, e.g. 'let foo'.
+0.8.6.31:Change:Minor corrections in compiler error messages.
+0.8.6.30:Change:Multiple code refactorings in order to support .NET 2.0 as a minimum requirement (C# 3.0 is still a minimum version of compiler that is needed to build Ela projects).
+0.8.6.29:New:Now ElaModule supports trait 'FieldGet'.
+0.8.6.28:Change:Now printing infinite lists (using 'show' trait and built-in formatter helper) cannot cycle - looping through the list will always stop after first 50 elements. If one needs to show more elements than these elements should be explicitely taken from list before that ('take').
+0.8.6.27:Change:Built-in function 'cout' (along with corresponding op code) is decomissioned. One should should use Con module for console output.
+0.8.6.26:Change:ElaRecord fully refactored. Now it doesn't inherit ElaTuple. Also support for 'Ord' and 'Num' traits is dropped. However records still provide structural equality.
+0.8.6.25:Change:Pattern matching in bindings ('let' and 'where') has changed. Now all patterns except of variant pattern can be used without extra parenthesis.
+0.8.6.24:New:Trait 'Cons' extended with a 'Nil' method that can be used to get a 'nil' instance of an entity. Also a new built-in 'nil' function is added to is mapped to this action.
+0.8.6.23:New:Not is is possible to create pervasives (such as custom operators) from foreign modules (modules written in .NET).
+0.8.6.22:New:A new built-in function 'ref' added (along with new op code Ceqref). This function can be used to test two given object using reference equality.
+0.8.6.21:Fix:A bug fixed in compilation logic of head/tail pattern for patterns that are combined from two nested patterns. A typical example of a case when this bug could be reproduced is when you have a head/tail pattern that ends with (xs@n) - in such as case 'n' variable wasn't declared at all.
+0.8.6.20:Change:Trait 'Seq' renamed to 'Ix'.
+0.8.6.19:New:A new public 'Concatenate' method added to ElaList (method can be used from .NET code to concatenate two lists).
+0.8.6.18:New:A new public 'IsNilList' method added to ElaObject (method can be used from .NET code to determine if a given object is a nil list).
+0.8.6.17:Change:Ela reflection API is fully refactored.
+0.8.6.16:New:Methods Left and Some added to ElaVariant to simplify construction of 'Either' variant (for operation in .NET code).
+0.8.6.15:Change:Method for comparison (ElaObject.Compare) can now be overriden by the types defined outside of Ela core assembly.
+0.8.6.14:Fix:Now ElaString supports 'Seq' trait (which supported by string as soon as it represents an ordered structure of elements).
+0.8.6.13:Fix:Location information corrected for the literal patterns.
+0.8.6.12:Fix:Pattern type check logic corrected in according to the recent type system changes (it used to generate errors for the correct cases).
+0.8.6.11:Fix:Multiple corrections in Ela AST pretty printing logic.
+0.8.6.10:New:Now all Ela types expose a GetTypeName method that is used internally by Ela machine to determine type name.
+0.8.6.9:Change:Verification of function application at compile time is enhanced - it will now generate warning for all attempts to call something different than function if it was directly initialized with a literal.
+0.8.6.8:Change:ElaArray now moved from the built-in types to the standard library. Arrcons op code, array literal, array pattern, etc. are decomissioned.
 0.8.6.7:Change:'Tagval' op code renamed to 'Untag'.
 0.8.6.6:Fix:'Tag' trait didn't have a full implementation. The direct casting to ElaVariant still took place for the 'untag' operation. A new 'Untag' method added to the trait 'Tag' to avoid this.
 0.8.6.5:Change:FormatHelper class made public so it can be used when implementing 'Show' trait for custom types.

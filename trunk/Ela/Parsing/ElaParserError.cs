@@ -52,7 +52,7 @@ namespace Ela.Parsing
 
 		ExpectedFunctionToken = 110,
 
-		ExpectedSemicolon = 111,
+		// = 111,
 
 		ExpectedCurlyBrace = 112,
 
@@ -138,7 +138,7 @@ namespace Ela.Parsing
 
 		ExpectedKeywordAnd = 153,
 
-		ExpectedKeywordEnd = 154,
+		// = 154,
 
 		// = 155,
 

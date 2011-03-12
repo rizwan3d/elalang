@@ -147,7 +147,6 @@ namespace Ela.Parsing
 				case Parser._stringTok: return ElaParserError.ExpectedStringToken;
 				case Parser._charTok: return ElaParserError.ExpectedCharToken;
 				case Parser._operatorTok: return ElaParserError.ExpectedOperatorToken;
-				case Parser._SEMI: return ElaParserError.ExpectedSemicolon;
 				case Parser._LBRA: return ElaParserError.ExpectedCurlyBrace;
 				case Parser._RBRA: return ElaParserError.ExpectedCurlyBrace;
 				case Parser._LILB: return ElaParserError.ExpectedSquareBrace;
@@ -177,7 +176,6 @@ namespace Ela.Parsing
 				case Parser._FAIL: return ElaParserError.ExpectedKeywordFail;
 				case Parser._WHERE: return ElaParserError.ExpectedKeywordWhere;
 				case Parser._AND: return ElaParserError.ExpectedKeywordAnd;
-				case Parser._ENDS: return ElaParserError.ExpectedKeywordEnd;
 				case Parser._COMPO: return ElaParserError.ExpectedComprehensionSlash;
 				default: return ElaParserError.ExpectedToken;
 			}

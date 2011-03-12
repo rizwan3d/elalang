@@ -186,9 +186,6 @@
   <data name="ExpectedRealToken" xml:space="preserve">
     <value>Invalid floating point number syntax.</value>
   </data>
-  <data name="ExpectedSemicolon" xml:space="preserve">
-    <value>A semicolon character ';' is missing.</value>
-  </data>
   <data name="ExpectedStringToken" xml:space="preserve">
     <value>Invalid string syntax.</value>
   </data>
@@ -269,9 +266,6 @@
   </data>
   <data name="ExpectedKeywordAnd" xml:space="preserve">
     <value>Expected keyword 'and'.</value>
-  </data>
-  <data name="ExpectedKeywordEnd" xml:space="preserve">
-    <value>Invalid syntax, a required 'end' keyword is missing.</value>
   </data>
   <data name="ExpectedKeywordFail" xml:space="preserve">
     <value>Expected keyword 'fail'.</value>

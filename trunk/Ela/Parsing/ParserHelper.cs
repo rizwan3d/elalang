@@ -22,6 +22,9 @@ namespace Ela.Parsing
 
 		private bool RequireEndBlock()
 		{
+			if (la.kind == _EBLOCK)
+				return true;
+
 			if (la.kind == _PIPE)
 				return false;
 
@@ -32,34 +35,6 @@ namespace Ela.Parsing
 			}
 
 			return true;
-		}
-
-
-		//private bool RequireEnd(ElaExpression exp)
-		//{
-		//    if (la.kind == _ENDS)
-		//        return true;
-
-		//    if (exp.TypeId == ElaNodeType.Binding)
-		//    {
-		//        var vexp = (ElaBinding)exp;
-				
-		//        if (vexp.And != null)
-		//            return true;
-
-		//        if (vexp.InitExpression.TypeId != ElaNodeType.FunctionLiteral)
-		//            return false;
-				
-		//        return ((ElaFunctionLiteral)vexp.InitExpression).Body.Entries.Count > 1;
-		//    }
-		//    else
-		//        return true;
-		//}
-
-
-		private bool RequireSemicolon()
-		{
-			return la.kind != _EOF && la.kind != _LET && la.kind != _OPEN && t.kind != _SEMI && t.kind != _ENDS;
 		}
 
 

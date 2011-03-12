@@ -62,7 +62,6 @@ TOKENS
 				"'".
 	operatorTok = op { op }.
 	
-	SEMI = ";".
 	LBRA = "{".
 	RBRA = "}".
 	LILB = "[".
@@ -98,15 +97,16 @@ TOKENS
 	WHERE = "where".
 	
 	AND = "and".
-	ENDS = "end".
 	
-	EBLOCK = "}}".
+	EBLOCK = ";".
 	
 COMMENTS FROM "//" TO lf
 COMMENTS FROM "/*" TO "*/"
 IGNORE cr + lf
 
 PRODUCTIONS
+	EndBlock = EBLOCK (. if (!t.virt) scanner.PopIndent(); .).
+
 	Literal<out ElaExpression exp> = 
 		(. exp = null; .)
 		(	
@@ -287,14 +287,14 @@ PRODUCTIONS
 		(
 			(. scanner.InjectBlock(); .)
 			MatchEntry<match> 
-			EBLOCK
+			EndBlock
 			{ 
 				(. scanner.InjectBlock(); .)
 				MatchEntry<match> 
-				EBLOCK
+				EndBlock
 			}
 		)		
-		EBLOCK.
+		EndBlock.
 					
 	MatchEntry<ElaMatch match> = 
 		(. var cexp = default(ElaExpression); .)
@@ -826,12 +826,12 @@ PRODUCTIONS
 			[VariableAttributes<out flags>] 
 			(. scanner.InjectBlock(); .) 
 			VariableDeclarationBody<flags, out exp>
-			EBLOCK
+			EndBlock
 			[
 				(. scanner.InjectBlock(); .)
 				IN Expr<out inExp> 
 				(. ((ElaBinding)exp).In = inExp; .)	
-				EBLOCK
+				EndBlock
 			]			
 		).
 		
@@ -842,7 +842,7 @@ PRODUCTIONS
 		(. scanner.InjectBlock(); .) 
 		WHERE 
 		WhereBindingBody<out exp> 
-		EBLOCK.
+		EndBlock.
 	
 	WhereBindingBody<out ElaExpression exp> =
 		(. 
@@ -1080,7 +1080,7 @@ PRODUCTIONS
 				(. entry.Expression = fexp; .)
 			)
 			[ WhereBinding<out cexp> (. entry.Where = cexp; .) ]
-			(. if (RequireEndBlock()) .) EBLOCK
+			(. if (RequireEndBlock()) .) EndBlock
 			[ 
 				(FunBodyExpr<match>)
 				| ChildFunBodyExpr<match>
@@ -1104,7 +1104,7 @@ PRODUCTIONS
 				(. entry.Expression = fexp; .)
 			)
 			[ WhereBinding<out cexp> (. entry.Where = cexp; .) ]
-			(. if (RequireEndBlock()) .)EBLOCK
+			(. if (RequireEndBlock()) .)EndBlock
 			[ 
 				( FunBodyExpr<match>)
 				| ChildFunBodyExpr<match>
@@ -1246,14 +1246,14 @@ PRODUCTIONS
 		(
 			(. scanner.InjectBlock(); .)
 			MatchEntry<match> 
-			EBLOCK
+			EndBlock
 			{ 
 				(. scanner.InjectBlock(); .)
 				MatchEntry<match> 
-				EBLOCK
+				EndBlock
 			}
 		)	
-		EBLOCK.
+		EndBlock.
 			
 	/* Expr */
 		
@@ -1875,7 +1875,7 @@ PRODUCTIONS
 					(. scanner.InjectBlock(); .)
 					EmbExpr<out exp>
 					(. b.Expressions.Add(exp); .)
-					EBLOCK
+					EndBlock
 				)
 			)
 		)

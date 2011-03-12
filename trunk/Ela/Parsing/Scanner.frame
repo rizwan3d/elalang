@@ -39,6 +39,7 @@ internal sealed class Token {
 	public int col;     // token column (starting at 1)
 	public int line;    // token line (starting at 1)
 	public string val;  // token value
+	public bool virt;
 	public Token next;  // ML 2005-03-11 Tokens are kept in linked list
 }
 
@@ -362,7 +363,7 @@ internal sealed class Scanner {
 
 		if (indent > -1 && indent < expectIndent) {
 			t = new Token();
-			t.pos = pos; t.col = col; t.line = line; 
+			t.pos = pos; t.col = col; t.line = line; t.virt = true;
 			t.kind = Parser._EBLOCK;
 			istack.Pop();
 			
@@ -385,7 +386,7 @@ internal sealed class Scanner {
 		
 		if (state == -1 && istack.Count > 0) {
 			t = new Token();
-			t.pos = pos; t.col = col; t.line = line; 
+			t.pos = pos; t.col = col; t.line = line; t.virt = true;
 			t.kind = Parser._EBLOCK;
 			istack.Pop();
 			
