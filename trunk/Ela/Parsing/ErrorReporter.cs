@@ -13,6 +13,8 @@ namespace Ela.Parsing
 
 			if (error == -1)
 				err = ElaParserError.TabNotAllowed;
+			else if (error == Parser._EBLOCK)
+				err = ElaParserError.IncorrectIndentation;
 			else
 			{
 				var arr = message.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -87,8 +89,6 @@ namespace Ela.Parsing
 				case "LambdaExpr": return ElaParserError.InvalidLambda;
 				case "IncludeStat": return ElaParserError.InvalidInclude;
 				case "IncludeImports": return ElaParserError.InvalidInclude;
-				case "WhileExpr": return ElaParserError.InvalidWhile;
-				case "ForExpr": return ElaParserError.InvalidFor;
 				case "IfExpr": return ElaParserError.InvalidIf;
 				case "RaiseExpr": return ElaParserError.InvalidRaise;
 				case "FailExpr": return ElaParserError.InvalidFail;

@@ -2,22 +2,22 @@
 let private typ2 = [1,2]
 
 let equals {eq,eqt,eqf} =
-                          eqt (2 == 2)
-                        $ eqt (12L == 12)
-                        $ eqt true
-                        $ eqf false 
-                        $ eq typ1 typ1 
-                        $ eq "first" "first" 
-                        $ eq 'f' 'f'
+              eqt (2 == 2)
+            $ eqt (12L == 12)
+            $ eqt true
+            $ eqf false 
+            $ eq typ1 typ1 
+            $ eq "first" "first" 
+            $ eq 'f' 'f'
 
 let notEquals {neq} =
-                         neq 2 3 
-                       $ neq 12L 13
-                       $ neq true false
-                       $ neq false true
-                       $ neq typ1 typ2 
-                       $ neq "first" "second" 
-                       $ neq 'f' 'F'
+                 neq 2 3 
+               $ neq 12L 13
+               $ neq true false
+               $ neq false true
+               $ neq typ1 typ2 
+               $ neq "first" "second" 
+               $ neq 'f' 'F'
 
 let notEquals2 {eqt} =
                       eqt (typ1 <> typ2)

@@ -127,7 +127,7 @@
     <value>Invalid record literal. A curly brace '{{' or '}}' is expected.</value>
   </data>
   <data name="ExpectedEof" xml:space="preserve">
-    <value>End of file missing. Probably a required 'end' clause or parenthesis is missing.</value>
+    <value>End of file missing.</value>
   </data>
   <data name="ExpectedIdentifierToken" xml:space="preserve">
     <value>Invalid identifier syntax. Probably identifier contains an invalid character.</value>
@@ -187,7 +187,7 @@
     <value>Invalid floating point number syntax.</value>
   </data>
   <data name="ExpectedSemicolon" xml:space="preserve">
-    <value>A semicolon character ';' is missing. Semicolons are required to separate match entries from each other.</value>
+    <value>A semicolon character ';' is missing.</value>
   </data>
   <data name="ExpectedStringToken" xml:space="preserve">
     <value>Invalid string syntax.</value>
@@ -209,9 +209,6 @@
   </data>
   <data name="InvalidForeachPattern" xml:space="preserve">
     <value>Invalid syntax for a pattern matching inside for/in cycle.</value>
-  </data>
-  <data name="InvalidFor" xml:space="preserve">
-    <value>Invalid syntax for the 'for' cycle.</value>
   </data>
   <data name="InvalidFunctionDeclaration" xml:space="preserve">
     <value>Invalid function declaration, function name is missing.</value>
@@ -251,9 +248,6 @@
   </data>
   <data name="InvalidUnary" xml:space="preserve">
     <value>Invalid unary expression.</value>
-  </data>
-  <data name="InvalidWhile" xml:space="preserve">
-    <value>Invalid syntax for the 'while' cycle.</value>
   </data>
   <data name="UnknownConversionType" xml:space="preserve">
     <value>Unknown type '{0}'. An expression should be one of the standard Ela types.</value>
@@ -482,5 +476,8 @@
   </data>
   <data name="TabNotAllowed" xml:space="preserve">
     <value>Tab character is not allowed. Use spaces for indentation.</value>
+  </data>
+  <data name="IncorrectIndentation" xml:space="preserve">
+    <value>Indentation is incorrect. Try to indent or outdent token.</value>
   </data>
 </root>

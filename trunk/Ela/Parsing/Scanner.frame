@@ -337,8 +337,8 @@ internal sealed class Scanner {
 	}
 		
 	internal void InjectBlock() {
-		istack.Push(col);
-		expectIndent = col;
+		istack.Push(t.col);
+		expectIndent = t.col;
 		indent = -1;
 		nl = false;
 	}

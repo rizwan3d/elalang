@@ -26,6 +26,8 @@ namespace Ela.Parsing
 
 		TabNotAllowed = 10,
 
+		IncorrectIndentation = 11,
+
 
 
 		ExpectedToken = 100,
@@ -180,11 +182,11 @@ namespace Ela.Parsing
 
 		InvalidLazy = 216,
 
-		InvalidWhile = 217,
+		// = 217,
 
 		InvalidFail = 218,
 
-		InvalidFor = 219,
+		// = 219,
 
 		InvalidTry = 220,
 
