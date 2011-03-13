@@ -1,3 +1,6 @@
+0.8.6.49:Change:Ela supports optional "no layout" mode when semicolons are used as a replacement for indentation (will be useful in interactive mode).
+0.8.6.48:Change:Ela now supports entering expressions directly at the top level.
+0.8.6.47:Change:A new layout based syntax is implemented. Keyword 'end' is not longer required for 'let' and 'where' bindings (as well as for 'match' and 'try' expressions). Also semicolons are not required between match entries.
 0.8.6.46:Fix:A bug in functional literal compilation logic fixed - it could cause stack corruption when used on a left side of an expression.
 0.8.6.45:Fix:Parser could crush on a syntax error binding pattern.
 0.8.6.44:Fix:A bug in range compilation logic fixed - it didn't take into account situations when range is used at the left hand side and as a result generate code could cause stack corruption.

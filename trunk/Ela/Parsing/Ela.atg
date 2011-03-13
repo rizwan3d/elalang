@@ -1202,7 +1202,7 @@ PRODUCTIONS
 		.)
 		Expr<out cexp> (. cond.Condition = cexp; .)
 		THEN Expr<out cexp> (. cond.True = cexp; .)
-		ELSE Expr<out cexp> (. cond.False = cexp; .).
+		WEAK ELSE Expr<out cexp> (. cond.False = cexp; .).
     
 	RaiseExpr<out ElaExpression exp> = 
 		RAISE
@@ -1864,21 +1864,33 @@ PRODUCTIONS
 				( 
 					RootLetBinding<out exp>
 					(. b.Expressions.Add(exp); .)
+					[ DeclarationBlock<b> ]
 				)
 				| 
 				( 
 					IncludeStat<out exp>
 					(. b.Expressions.Add(exp); .)					
+					[ DeclarationBlock<b> ]
 				)
 				| 
 				(
-					(. scanner.InjectBlock(); .)
 					EmbExpr<out exp>
 					(. b.Expressions.Add(exp); .)
-					EndBlock
+					[ SimpleDeclarationBlock<b> ]
 				)
 			)
-		)
-		[ DeclarationBlock<b> ].
+		).		
+	
+		
+	SimpleDeclarationBlock<ElaBlock b> =
+		(. var exp = default(ElaExpression); .)
+		(
+			(	
+				RootLetBinding<out exp>
+				| IncludeStat<out exp>
+			)
+			(. b.Expressions.Add(exp); .)
+			[ DeclarationBlock<b> ]
+		).		
 		
 END Ela.

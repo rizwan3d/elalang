@@ -1473,7 +1473,7 @@ internal sealed partial class Parser {
 		Expect(34);
 		Expr(out cexp);
 		cond.True = cexp; 
-		Expect(33);
+		ExpectWeak(33, 16);
 		Expr(out cexp);
 		cond.False = cexp; 
 	}
@@ -1587,7 +1587,7 @@ internal sealed partial class Parser {
 
 	void EqExpr(out ElaExpression exp) {
 		ShiftExpr(out exp);
-		while (StartOf(16)) {
+		while (StartOf(17)) {
 			var cexp = default(ElaExpression); 
 			var op = default(ElaOperator);
 			
@@ -1722,7 +1722,7 @@ internal sealed partial class Parser {
 
 	void MulExpr(out ElaExpression exp) {
 		CastExpr(out exp);
-		while (StartOf(17)) {
+		while (StartOf(18)) {
 			var cexp = default(ElaExpression); 
 			var op = default(ElaOperator);
 			
@@ -1899,7 +1899,7 @@ internal sealed partial class Parser {
 		exp = null; 
 		if (la.kind == 51) {
 			Get();
-			if (StartOf(18)) {
+			if (StartOf(19)) {
 				Application(out exp);
 			}
 			if (exp == null)
@@ -1909,7 +1909,7 @@ internal sealed partial class Parser {
 			
 		} else if (la.kind == 81) {
 			Get();
-			if (StartOf(18)) {
+			if (StartOf(19)) {
 				Application(out exp);
 			}
 			if (exp == null)
@@ -1917,7 +1917,7 @@ internal sealed partial class Parser {
 			else
 				exp = new ElaUnary(t) { Expression = exp, Operator = ElaUnaryOperator.BitwiseNot };
 			
-		} else if (StartOf(18)) {
+		} else if (StartOf(19)) {
 			Application(out exp);
 		} else SynErr(109);
 	}
@@ -2150,16 +2150,33 @@ internal sealed partial class Parser {
 		if (la.kind == 28) {
 			RootLetBinding(out exp);
 			b.Expressions.Add(exp); 
+			if (StartOf(20)) {
+				DeclarationBlock(b);
+			}
 		} else if (la.kind == 30) {
 			IncludeStat(out exp);
 			b.Expressions.Add(exp); 
+			if (StartOf(20)) {
+				DeclarationBlock(b);
+			}
 		} else if (StartOf(10)) {
-			scanner.InjectBlock(); 
 			EmbExpr(out exp);
 			b.Expressions.Add(exp); 
-			EndBlock();
+			if (la.kind == 28 || la.kind == 30) {
+				SimpleDeclarationBlock(b);
+			}
 		} else SynErr(114);
-		if (StartOf(19)) {
+	}
+
+	void SimpleDeclarationBlock(ElaBlock b) {
+		var exp = default(ElaExpression); 
+		if (la.kind == 28) {
+			RootLetBinding(out exp);
+		} else if (la.kind == 30) {
+			IncludeStat(out exp);
+		} else SynErr(115);
+		b.Expressions.Add(exp); 
+		if (StartOf(20)) {
 			DeclarationBlock(b);
 		}
 	}
@@ -2192,6 +2209,7 @@ internal sealed partial class Parser {
 		{x,T,x,x, x,T,T,T, T,x,T,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,T,x,x, x,T,T,T, T,x,T,x, T,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,T,x,x, x,T,T,T, T,x,T,x, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{T,T,T,T, x,T,T,T, T,x,T,x, T,x,x,x, T,x,x,x, x,x,x,x, T,T,x,x, T,x,x,x, T,x,x,T, T,T,T,T, x,x,x,T, T,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, x,x,x,x, x,x,x,x, x},
 		{x,T,T,T, x,T,T,T, T,x,T,x, T,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x},
@@ -2328,6 +2346,7 @@ internal sealed class Errors {
 			case 112: s = "invalid FuncOperator"; break;
 			case 113: s = "invalid EmbExpr"; break;
 			case 114: s = "invalid DeclarationBlock"; break;
+			case 115: s = "invalid SimpleDeclarationBlock"; break;
 
 			default: s = "error " + n; break;
 		}
