@@ -41,6 +41,7 @@ namespace Ela.Linking
 				var alias = bw.ReadString();
 				var modName = bw.ReadString();
 				var dllName = bw.ReadString();
+                dllName = dllName.Length == 0 ? null : dllName;
 				var pl = bw.ReadInt32();
 				var list = new string[pl];
 

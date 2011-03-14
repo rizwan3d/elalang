@@ -1,3 +1,5 @@
+0.8.6.51:New:Now Ela linker can accept files with no extension, files with .ela extension and files with .elaobj extension as primary module. It will always first try to read object file and only then - to compile a file.
+0.8.6.50:Fix:An error in object file reader and writer is fixed that could cause a linker crush or incorrect module deserialization because of an error in they way how module references were processed.
 0.8.6.49:Change:Ela supports optional "no layout" mode when semicolons are used as a replacement for indentation (will be useful in interactive mode).
 0.8.6.48:Change:Ela now supports entering expressions directly at the top level.
 0.8.6.47:Change:A new layout based syntax is implemented. Keyword 'end' is not longer required for 'let' and 'where' bindings (as well as for 'match' and 'try' expressions). Also semicolons are not required between match entries.

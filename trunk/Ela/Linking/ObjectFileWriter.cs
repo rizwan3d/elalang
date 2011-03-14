@@ -31,7 +31,7 @@ namespace Ela.Linking
 			{
 				bw.Write(kv.Key);
 				bw.Write(kv.Value.ModuleName);
-				bw.Write(kv.Value.DllName);
+				bw.Write(kv.Value.DllName ?? String.Empty);
 				bw.Write(kv.Value.Path.Length);
 				
 				foreach (var p in kv.Value.Path)

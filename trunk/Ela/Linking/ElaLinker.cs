@@ -117,7 +117,10 @@ namespace Ela.Linking
 			}
 			catch (ElaException ex)
 			{
-				AddError(ElaLinkerError.ObjectFileReadFailed, fi, mod.Line, mod.Column, fi.Name, ex.Message);
+				AddError(ElaLinkerError.ObjectFileReadFailed, fi, 
+                    mod != null ? mod.Line : 0, 
+                    mod != null ? mod.Column : 0, 
+                    fi.Name, ex.Message);
 				return null;
 			}
 		}
@@ -297,9 +300,20 @@ namespace Ela.Linking
 		internal CodeFrame Build(ModuleReference mod, FileInfo file, string source, 
 			CodeFrame frame, Scope scope)
 		{
-			var pRes = Parse(file, source);
-			var ret = default(CodeFrame);
+            var ret = default(CodeFrame);
+           
+            if (file != null && file == RootFile)
+            {
+                if (!CheckRootFile(out ret))
+                    return null;
+                else if (ret != null)
+                    return ret;
 
+                file = RootFile;
+            }
+
+			var pRes = Parse(file, source);
+			
 			if (pRes.Success)
 			{
 				var cRes = Compile(file, pRes.Expression, frame, scope);
@@ -325,6 +339,32 @@ namespace Ela.Linking
 						RootFile != null ? RootFile.Name : "<" + MemoryFile + ">"));
 			return ret;
 		}
+
+
+        internal bool CheckRootFile(out CodeFrame frame)
+        {
+            frame = null;
+            var fnWex = Path.GetFileNameWithoutExtension(RootFile.FullName);
+            
+            var fnObj = new FileInfo(Path.Combine(RootFile.DirectoryName, fnWex + OBJEXT));
+            var fnSrc = new FileInfo(Path.Combine(RootFile.DirectoryName, fnWex + EXT));
+            RootFile = fnSrc;
+
+            if (fnObj.Exists && (fnSrc.Exists && fnSrc.LastWriteTime <= fnObj.LastWriteTime) ||
+                !fnSrc.Exists)
+            {
+                frame = ReadObjectFile(null, fnObj);
+                return true;
+            }
+            
+            if (!fnSrc.Exists && !fnObj.Exists)
+            {
+                AddError(ElaLinkerError.UnresolvedModule, RootFile, 0, 0);
+                return false;
+            }
+
+            return true;
+        }
 
 
 		internal CompilerResult Compile(FileInfo file, ElaExpression expr, CodeFrame frame, Scope scope)

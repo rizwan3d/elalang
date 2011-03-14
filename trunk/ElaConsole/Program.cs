@@ -55,23 +55,47 @@ namespace ElaConsole
 				{
 					helper.PrintInteractiveModeLogo();
 					StartInteractiveMode();
+                    return R_OK;
 				}
-				else if (!File.Exists(opt.FileName))
-				{
-					helper.PrintError("File '{0}' doesn't exist.", opt.FileName);
-					return R_ERR;
-				}
-				else
-				{
-					if (opt.Compile)
-						return Compile();
-					else
-						return InterpretFile();
-				}
+
+                if (opt.Compile)
+                {
+                    if (!CheckExists(opt.FileName))
+                    {
+                        helper.PrintError("File '{0}' doesn't exist.", opt.FileName);
+                        return R_ERR;
+                    }
+
+                    return Compile();
+                }
+                else
+                    return InterpretFile();
 			}
 
 			return R_OK;
 		}
+
+
+        private static bool CheckExists(string fileName)
+        {
+            var fi = new FileInfo(fileName);
+
+            if (!fi.Exists)
+            {
+                var fext = Path.GetFileName(fileName);
+
+                if (fext.ToUpper().EndsWith(".ELA"))
+                    return false;
+                else
+                {
+                    opt.FileName = Path.Combine(fi.DirectoryName,
+                        Path.GetFileNameWithoutExtension(fileName) + ".ela");
+                    return CheckExists(opt.FileName);
+                }
+            }
+            else
+                return true;
+        }
 
 
 		private static int Compile()
