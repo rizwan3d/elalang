@@ -3,29 +3,108 @@
 3. Move all reflection API to the standard library.==Reconsidered. API refactored but will remain the part of Ela core.
 4. Think about inability to convert to other than built-in types.
 
-=====
+Exceptions in Ela
 
-Lazy evaluation is an evaluation strategy that defers evulation of an expression until its value is actually needed. In many cases it may be seen as an optimization technique that ensures that all evaluations are perform on demand only.
-There are programming languages (like Haskell or Clean) where lazy evaluation is an evaluation strategy that is used by default.
-Lazy evaluation is closely connected with language purity - with the lack of side effects. This connection comes from the fact that with laziness there is no strict order in which your code is evaluated. That is something that might cause certain difficulties in understanding the logic flow if you still thinking in an imperative style developed through programming in languages with eager evaluation (such as C#).
-The key thing here is that pure functional language don't even try to expression the logic flow, the sequence of computations and other imperative things. In a pure language you have a set of declarations - such as pure functions declarations - which don't depend from each other, don't change global state or use any external resources and therefore the can be evaluated in any order. 
-That is important. When you code doesn't have a mutatitive state the order of evaluation doesn't matter. Imagine that you have a simple code in C#:
+Ela uses so called structured exception handling model. If you program in C# (or F# or C++ or JavaScript) you should be aware with this concept. In Ela you can mark a certain block of code as beign executed in a controlled appartment and specify an action that is triggered if an exception occurs.
+It is really pretty similar to the exception handling model to which you got used in C#. The main differences are how exception handling logic in Ela is organized and how exceptions are used in generate (which might somewhat differ from the patterns that you use in C# code).
+In this chapter I will tell you about the Ela try expression that is used for exception handling, about a built-in data structure that is used to represent exceptions, about constructs that allows you to generate exceptions and, finally, about typical use cases for exceptions in Ela.
 
-var x = Math.Sin(8765.12) * 2;
-var y = Math.Tan(233) / 3;
-var result = y + x;
+Exception object
 
-Expressions that are used to initiliaze variables x and y are pure. Calculation of sinus and tangent are functions without any side effects - they return the same result for the same argument all the time. That is true for multiplication and deletion. In C# these expression are evaluated in order - first we calculate the value of x, then - the value of y. However there is absolutely no difference in which particular order these particular expressions will be evaluated. You can calculated y before x - and the result will be the same. In fact in a pure functional language y will be indeed calculated before x - because addition operation is usually left associative and y is the first operand.
-With all these precious knowledge you can now look at the small code sample above differently. There is no order. There is a set of declarations. And it doesn't matter when exactly initialization blocks in these declarations are evaluated. Simply because it doesn't change anything.
+As you probably know there are a lot of languages that support structured exception handling but don't constraint a type of an exception that can be generated. A typical example here is C++. For example you can throw an integer or a string as an exception. Such approach does give you some additional flexibility in designing your exception handling model but it leads to obvious problems as well. When you are catching exception thrown by a thrid party library you never what exactly it might be. Some custom type, some standard type, random integer number?
+That is the reason why C# (and some other languages as well) introduce a special Exception type which becomes the only type that can be thrown and handled. It does simplify the situation a lot. You still have an ability to define your custom exception classes by inheriting from Exception and all your exceptions can be handled and processed in a client code in a similar manner.
+But that is what we have in C#. Ela doesn't support object oriented programming, doesn't have a notion of class and doesn't even have types in the same meaning as C# does. However a pretty similar exception handling strategy is available in Ela as well. How it even works?
+I hope you remember a chapter about variants. And that is exactly what is used to represent exceptions in Ela. You don't have to define any custom exception classes, inherit from a System.Exception class - which is not possible in Ela anyway. When in C# you would use exception type to differentiate between different exceptions - if you want to catch only a particular set of them - in Ela you would use variant tags with exactly the same purpose.
+Basically an exception object in Ela is pretty straightforward - that is any custom tag which is always attached to a string. A tag is used for machine analysis and a string to represent human readable description of an exception. That's it.
+As you remember variants can be easily analyzed using pattern matching. And that is why exception handling construct in Ela resembles the known match expression.
 
-But as you know C# is not a pure functional language. So as Ela and many other languages from the functional family. As long as you allow certain impurity in your code and therefore make possible for the expressions to depend from each other an implicit "by default" laziness is definitely not the way to go. Lazy code with side effects is a nightmare for a programmer. I hope I don't have to explain why.
-However even in impure languages you can writen crystal clean and pure code. You can easily do it in C#. And you can surely do it in Ela.
-As long as you still can write pure code simply dropping lazy evaluation feature doesn't seem like a right decision. (Moreover without it it will be impossible to do a lot of things such as to represent infinite data structures - but we will talk about it later). But it is absolutelu clear that implicit lazy evaluation (like in Haskell) is not acceptable either.
-The solution is obvious - we need an explicit way to mark certain block of code as the one that should be evaluated in a lazy manner.
-Ela has a special data type - thunks - that provides a support for lazy evaluation.
+Try expression
 
-==When to use==
+Let's start from a small example. We want to implement a safe deletion operator - the one that doesn't generate an exception when you divide an integer value by zero and simply returns zero in such a case. This is how we can do it using exception handling:
 
-Thunks may seem as an optimization and in many case they can be used in such a way however they may even degrade your code performance in many others. That is because thunks do generate additional overhead - for their initialization, operation and so forth. In Ela this overhead is not too high and you won't notice it in most cases - so do not afraid to use thunks wherever you need them. However in certain cases you might want to evaluate whether thunks are really needed. If you already have a pure expression and it truly doesn't matter when this expression gets evaluated evaluating it right away may be a good choice - especially if you need a result of this evaluation just once.
-Thunks are really useful in the case when, depending on your logic, some values may not be evaluated at all.
-Another unique application of thunks are lazy (and infinite as a particular case of laziness) data structures which can be implemented with thunks and, for example, linked lists.
+ela>let div x y = try x / y with `DivideByZero = 0
+
+ela>4 `div` 2
+
+2
+
+ela>2 `div` 0
+
+0
+
+It might not be a perfect example of using exceptions but we have a completely different task here.
+As you can see try expression is pretty similar to match expression - the only difference that is starts with try, not with match keyword. Also try expression uses the same indenting rules as match expression. This is how we can writen this function in multiple lines using indenting:
+
+let div x y = 
+            try x / y with
+                `DivideByZero = 0
+
+Unlike try...catch statement in C# try in Ela is an expression and it always returns a value. If nothing bad happens it returns a result of an evaluation of an expression between try and with keywords. If something bad does happen it will act just like a regular match construct by evaluating a match entry that fits an exception object.
+You ca surely use several entries like with regular match expression:
+
+ela>try 2 / 0 with `DivideByZero = 0; `IndexOutOfRange = --1
+
+0
+
+OK, but what happens if all our entries don't match? With regular pattern matching construct you will have a special "match failed" exception. However try behavior is a little bit different. An exception simply won't be caught at all. This behavior is similar to that of try...catch construct in C#:
+
+ela>try 2/ 0 with `IndexOutOfRange = --1
+
+(1,8): Error ELA803: Division by zero of value '2' of type 'int'.
+        in memory at line: 1, col: 8
+
+Note: You can see that everything is fair here. Stack trace is preserve and exception points to the line of code where it actually occured.
+
+What else we can say about try expression? As you can see you can match against exception objects exactly in the same manner as against regular variants. It is possible to specify only the tag name like we did in all the code samples above and ignored the tagged value. But of course you can also unpack the tagged value if you wish so.
+
+Let's create another version of div function. This one is not going to return zero in a case of an errorneous calculation but instread will yield a string containing a description of an occured exception:
+
+ela>let div' x y = try x / y with `DivideByZero m = m
+
+ela>div' 2 0
+
+Division by zero of value '2' of type 'int'.
+
+If you want to catch all exceptions you can use either the default pattern or (which is a better approach) you can match against any variant (by omitting the variant name). This is how we can implement a higher order function that applies a supplied function and catches all exceptions that might be raised:
+
+ela>let catchAll f x y = try f x y with ` m = m
+
+This function catches everything and returns a description of an error. Let's test it:
+
+ela>catchAll (/) 2 0
+
+Division by zero of value '2' of type 'int'.
+
+ela>catchAll (\x y -> x.[y]) (1,) 1
+
+Index '1' of type 'int' was out of range on object '(1,)' of type 'tuple'.
+
+
+Generating exceptions
+
+Catching exceptions is only part of the job. Sometimes you might need to generate your own exceptions as well. Ela has two constructs that can be used for such purpose - raise and fail.
+
+First of all you should remember - both of these constructs might look like a function call but are instead special syntax. With raise construct you can specify your own tag for an exception and (optionally) an expression (which is always enclosed in parenthesis) which will be evaluated to an exception message. This is how it looks like:
+
+ela>raise SomethingBad
+
+(1,1): Error ELA999: SomethingBad
+        in memory at line: 1, col: 1
+
+
+ela>raise SomethingBad ("Not sure what went wrong but I have a bad feeling about it")
+
+(1,1): Error ELA999: SomethingBad: Not sure what went wrong but I have a bad feeling 
+about it
+        in memory at line: 1, col: 1
+        
+Please bear in mind that as soon as raise construct is a special syntax you don't need a back apostrophe for the exception tag name. Adding it would result to a syntax error.
+
+Another construct is fail. It is much simpler than raise and allows you to generate exceptions that always have one standard exception tag Fail. An example:
+
+ela>fail "Can't work anymore!"
+
+(1,1): Error ELA999: Failure: Can't work anymore!
+        in memory at line: 1, col: 1
+        
+Both raise and fail can be used as expression but they always yield unit.

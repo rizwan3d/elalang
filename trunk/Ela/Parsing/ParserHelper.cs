@@ -101,10 +101,16 @@ namespace Ela.Parsing
 		private ElaExpression GetPartialFun(ElaExpression exp)
 		{
 			var m = new ElaMatch { Expression = hiddenVar };
-			m.SetLinePragma(exp.Line, exp.Column);
-			m.Entries.Add(new ElaMatchEntry { Expression = exp, Pattern = hiddenPattern });			
+			
+            if (exp != null)
+                m.SetLinePragma(exp.Line, exp.Column);
+			
+            m.Entries.Add(new ElaMatchEntry { Expression = exp, Pattern = hiddenPattern });			
 			var ret = new ElaFunctionLiteral() { Body = m };
-			ret.SetLinePragma(exp.Line, exp.Column);
+			
+            if (exp != null)
+                ret.SetLinePragma(exp.Line, exp.Column);
+
 			return ret;
 		}
 
