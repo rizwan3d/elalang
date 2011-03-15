@@ -6,10 +6,11 @@ namespace Ela.Parsing
 	internal static class ErrorReporter
 	{
 		#region Methods
-		internal static ElaMessage CreateMessage(int error, string message, int line, int col)
+		internal static ElaMessage CreateMessage(int error, string message, int line, int col, Token tok)
 		{
-			var err = ElaParserError.InvalidSyntax;
-			var msg = String.Empty;
+			var err = String.IsNullOrEmpty(tok.val) ? ElaParserError.InvalidSyntax :
+				ElaParserError.InvalidSyntaxUnexpectedSymbol;
+			var msg = tok.val;
 
 			if (error == -1)
 				err = ElaParserError.TabNotAllowed;
@@ -24,8 +25,14 @@ namespace Ela.Parsing
 					var head = arr[0].Trim('\"');
 					var tail = arr[1].Trim('\"');
 					var exp = tail == "expected";
-					msg = exp ? head : tail;
-					err = exp ? ExpectToken(error, head) : InvalidToken(error, tail);
+
+					var e = exp ? ExpectToken(error, head) : InvalidToken(error, tail);
+
+					if (e != ElaParserError.InvalidRoot || err != ElaParserError.InvalidSyntaxUnexpectedSymbol)
+					{
+						err = e;
+						msg = exp ? head : tail;
+					}
 				}
 			}			
 

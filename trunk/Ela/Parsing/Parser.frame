@@ -147,7 +147,7 @@ internal sealed class Errors {
 		if (parser.la.val == "\t" || parser.t.val == "\t")
 			n = -1;
 		
-		ErrorList.Add(ErrorReporter.CreateMessage(n, s, line, col));
+		ErrorList.Add(ErrorReporter.CreateMessage(n, s, line, col, parser.la));
 	}
 	
 	

@@ -28,6 +28,8 @@ namespace Ela.Parsing
 
 		IncorrectIndentation = 11,
 
+		InvalidSyntaxUnexpectedSymbol = 12,
+
 
 
 		ExpectedToken = 100,

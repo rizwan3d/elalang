@@ -1,3 +1,5 @@
+0.8.6.54:Change:Parsing rules for 'match' and 'try' expressions are changed. Now they are not 'simple' expressions anymore and cannot be used in function application without parenthesis.
+0.8.6.53:Change:Minor enhancements in parser error reporting.
 0.8.6.52:Fix:A bug in parser fixed - parser could crash if you try to use an operator as a function when an operator is not a function but is a special form.
 0.8.6.51:New:Now Ela linker can accept files with no extension, files with .ela extension and files with .elaobj extension as primary module. It will always first try to read object file and only then - to compile a file.
 0.8.6.50:Fix:An error in object file reader and writer is fixed that could cause a linker crush or incorrect module deserialization because of an error in they way how module references were processed.

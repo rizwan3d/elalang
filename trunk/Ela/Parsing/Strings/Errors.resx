@@ -474,4 +474,7 @@
   <data name="IncorrectIndentation" xml:space="preserve">
     <value>Indentation is incorrect. Try to indent or outdent token.</value>
   </data>
+  <data name="InvalidSyntaxUnexpectedSymbol" xml:space="preserve">
+    <value>Invalid syntax. Unexpected symbol '{0}'.</value>
+  </data>
 </root>

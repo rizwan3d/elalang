@@ -123,8 +123,6 @@ PRODUCTIONS
 			ArgumentReference<out exp>
 			| BaseReference<out exp>
 			| VariableReference<out exp>			
-			| MatchExpr<out exp>		
-			| TryExpr<out exp>
 			| LazyExpr<out exp>	
 		).
 		
@@ -1793,6 +1791,8 @@ PRODUCTIONS
 			| LambdaExpr<out exp>			
 			| RaiseExpr<out exp>
 			| FailExpr<out exp>
+			| MatchExpr<out exp>		
+			| TryExpr<out exp>			
 		).
 	
 	Expr<out ElaExpression exp> = 
