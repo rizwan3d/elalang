@@ -472,7 +472,7 @@
     <value>Tab character is not allowed. Use spaces for indentation.</value>
   </data>
   <data name="IncorrectIndentation" xml:space="preserve">
-    <value>Indentation is incorrect. Try to indent or outdent token.</value>
+    <value>Syntax error. Possibly indentation is incorrect. Try to indent or outdent token.</value>
   </data>
   <data name="InvalidSyntaxUnexpectedSymbol" xml:space="preserve">
     <value>Invalid syntax. Unexpected symbol '{0}'.</value>
