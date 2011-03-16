@@ -26,6 +26,12 @@ namespace Ela.Linking
 		public abstract void Initialize();
 
 
+		public virtual void Close()
+		{
+
+		}
+
+
 		internal IntrinsicFrame Compile()
 		{
 			var frame = new IntrinsicFrame(locals.ToArray());

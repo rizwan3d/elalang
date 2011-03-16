@@ -51,25 +51,33 @@ namespace ElaConsole
 			}
 			else
 			{
-				if (String.IsNullOrEmpty(opt.FileName))
+				try
 				{
-					helper.PrintInteractiveModeLogo();
-					StartInteractiveMode();
-                    return R_OK;
+					if (String.IsNullOrEmpty(opt.FileName))
+					{
+						helper.PrintInteractiveModeLogo();
+						StartInteractiveMode();
+						return R_OK;
+					}
+
+					if (opt.Compile)
+					{
+						if (!CheckExists(opt.FileName))
+						{
+							helper.PrintError("File '{0}' doesn't exist.", opt.FileName);
+							return R_ERR;
+						}
+
+						return Compile();
+					}
+					else
+						return InterpretFile();
 				}
-
-                if (opt.Compile)
-                {
-                    if (!CheckExists(opt.FileName))
-                    {
-                        helper.PrintError("File '{0}' doesn't exist.", opt.FileName);
-                        return R_ERR;
-                    }
-
-                    return Compile();
-                }
-                else
-                    return InterpretFile();
+				finally
+				{
+					if (vm != null)
+						vm.Dispose();
+				}
 			}
 
 			return R_OK;

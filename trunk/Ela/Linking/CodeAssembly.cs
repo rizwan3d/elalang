@@ -13,6 +13,7 @@ namespace Ela.Linking
 		
 		private Dictionary<String,Int32> moduleMap;
 		private FastList<CodeFrame> modules;
+		private FastList<ForeignModule> foreignModules;
 		private Dictionary<String,ElaValue> arguments;
 		
 		public static readonly CodeAssembly Empty = new CodeAssembly(CodeFrame.Empty);
@@ -27,6 +28,7 @@ namespace Ela.Linking
 		internal CodeAssembly()
 		{
 			modules = new FastList<CodeFrame>();
+			foreignModules = new FastList<ForeignModule>();
 			moduleMap = new Dictionary<String,Int32>();
 			arguments = new Dictionary<String,ElaValue>();
 		}
@@ -37,7 +39,15 @@ namespace Ela.Linking
 		public bool AddModule(string name, ForeignModule module)
 		{
 			var frame = module.Compile();
+			foreignModules.Add(module);
 			return AddModule(name, frame);
+		}
+
+
+
+		internal void RegisterForeignModule(ForeignModule module)
+		{
+			foreignModules.Add(module);
 		}
 
 
@@ -109,6 +119,12 @@ namespace Ela.Linking
 			}
 			else
 				return false;
+		}
+
+
+		public IEnumerable<ForeignModule> EnumerateForeignModules()
+		{
+			return foreignModules;
 		}
 
 

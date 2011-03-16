@@ -220,9 +220,9 @@ namespace Ela.Compilation
 						CompileComposition(null, map, hints);
 					}
 					else if (fun.Operator == ElaOperator.CompForward)
-					{
 						CompileComposition(null, map, hints);
-					}
+					else if (fun.Operator == ElaOperator.Sequence)
+						cw.Emit(Op.Pop);
 					else
 					{
 						cw.Emit(Op.Swap);

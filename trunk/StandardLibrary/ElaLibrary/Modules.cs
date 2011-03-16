@@ -13,6 +13,7 @@ using Ela.Library.Collections;
 [assembly: ElaModule("DateTime", typeof(DateTimeModule))]
 [assembly: ElaModule("Con", typeof(ConModule))]
 [assembly: ElaModule("Shell", typeof(ShellModule))]
+[assembly: ElaModule("Async", typeof(AsyncModule))]
 
 [assembly: ElaModule("MutableMap", typeof(MutableMapModule))]
 [assembly: ElaModule("Map", typeof(MapModule))]

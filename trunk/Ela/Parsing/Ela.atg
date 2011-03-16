@@ -1717,6 +1717,7 @@ PRODUCTIONS
 			| "<<<" (. op = ElaOperator.ShiftLeft; .)
 			| ">>>" (. op = ElaOperator.ShiftRight; .)			
 			| "++" (. op = ElaOperator.Concat; .)
+			| "$" (. op = ElaOperator.Sequence; .)
 		).
 		
 	OperatorExpr<out ElaExpression exp> =

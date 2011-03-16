@@ -129,9 +129,9 @@ namespace Ela.Library.Collections
         {
             var f = forward.Next;
 
-            if (!f.IsNilList())
+            if (!new ElaValue(f).IsNil(null))
                 return new ElaQueue(f, backward);
-            else if (backward.IsNilList())
+            else if (new ElaValue(backward).IsNil(null))
                 return ElaQueue.Empty;
             else
                 return new ElaQueue(backward.Reverse(), ElaList.GetNil());

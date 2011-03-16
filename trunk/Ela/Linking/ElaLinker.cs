@@ -278,6 +278,7 @@ namespace Ela.Linking
 				try
 				{
 					obj.Initialize();
+					Assembly.RegisterForeignModule(obj);
 					frame = obj.Compile();
 				}
 				catch (Exception ex)

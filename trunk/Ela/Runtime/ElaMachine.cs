@@ -11,7 +11,7 @@ using Ela.Runtime.ObjectModel;
 
 namespace Ela.Runtime
 {
-	public sealed class ElaMachine
+	public sealed class ElaMachine : IDisposable
 	{
 		#region Construction
 		internal ElaValue[][] modules;
@@ -77,6 +77,27 @@ namespace Ela.Runtime
 
 
 		#region Public Methods
+		public void Dispose()
+		{
+			var ex = default(Exception);
+
+			foreach (var m in asm.EnumerateForeignModules())
+			{
+				try
+				{
+					m.Close();
+				}
+				catch (Exception e)
+				{
+					ex = e;
+				}
+			}
+
+			if (ex != null)
+				throw ex;
+		}
+
+
 		public ExecutionResult Run()
 		{
 			MainThread.Offset = MainThread.Offset == 0 ? 0 : MainThread.Offset;

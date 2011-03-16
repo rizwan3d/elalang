@@ -1,3 +1,4 @@
+0.0.1.34:New:An initial version of Async module is implemented.
 0.0.1.33:New:Functions 'intersectBy' and 'intersect' added to Core module.
 0.0.1.32:New:Functions 'groupBy' and 'group' added to Core module.
 0.0.1.31:New:Function 'permutations' added to Core module.
@@ -16,8 +17,8 @@
 0.0.1.17:New:A new 'concatMap' function added to Core module.
 0.0.1.16:Change:All Core functions that work with lists are rewritten to be more generic (now they return not lists but containers of the same type as the passed container).
 0.0.1.15:Change:Implementation of Core.concat function optimized.
-0.0.1.14:Change:Function 'nil' in Core module renamed to 'isNil'.
 0.0.1.14:New:A new 'fold' function added to Core module (simplified version of foldr).
+0.0.1.14:Change:Function 'nil' in Core module renamed to 'isNil'.
 0.0.1.13:New:An initial version of Queue module is implemented (including ElaQueue type).
 0.0.1.12:New:New 'swap' and 'swap3' functions (swapping elements of tuples) added to Core module.
 0.0.1.11:New:New 'on' function (that replicates Haskell's Data.Function.on) added to Core module.
