@@ -779,7 +779,7 @@ internal sealed class Scanner {
 				else {t.kind = 44; break;}
 
 		}
-		t.val = new String(tval, 0, tlen);
+		t.val = new String(tval, 0, tlen);		
 		return t;
 	}
 	

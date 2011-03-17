@@ -409,7 +409,7 @@ internal sealed class Scanner {
 			} // NextCh already done
 -->scan3
 		}
-		t.val = new String(tval, 0, tlen);
+		t.val = new String(tval, 0, tlen);		
 		return t;
 	}
 	

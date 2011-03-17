@@ -820,9 +820,9 @@ PRODUCTIONS
 			var flags = default(ElaVariableFlags);
 		.)
 		(
+			(. scanner.InjectBlock(); .) 
 			LET 
 			[VariableAttributes<out flags>] 
-			(. scanner.InjectBlock(); .) 
 			VariableDeclarationBody<flags, out exp>
 			EndBlock
 			[
@@ -1102,7 +1102,7 @@ PRODUCTIONS
 				(. entry.Expression = fexp; .)
 			)
 			[ WhereBinding<out cexp> (. entry.Where = cexp; .) ]
-			(. if (RequireEndBlock()) .)EndBlock
+			(. if (RequireEndBlock()) .) EndBlock
 			[ 
 				( FunBodyExpr<match>)
 				| ChildFunBodyExpr<match>

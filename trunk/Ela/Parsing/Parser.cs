@@ -1116,11 +1116,11 @@ internal sealed partial class Parser {
 		var inExp = default(ElaExpression);
 		var flags = default(ElaVariableFlags);
 		
+		scanner.InjectBlock(); 
 		Expect(28);
 		if (la.kind == 29) {
 			VariableAttributes(out flags);
 		}
-		scanner.InjectBlock(); 
 		VariableDeclarationBody(flags, out exp);
 		EndBlock();
 		if (la.kind == 23) {
