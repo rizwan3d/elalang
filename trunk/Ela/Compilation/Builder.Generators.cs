@@ -51,7 +51,9 @@ namespace Ela.Compilation
 			if (s.Body != null)
 			{
 				CompileExpression(s.Body, newMap, Hints.Scope);
-				cw.Emit(Op.Gen);
+
+				if (s.Body.Type != ElaNodeType.Generator)
+					cw.Emit(Op.Gen);
 			}
 
 			cw.Emit(Op.Br, iter);

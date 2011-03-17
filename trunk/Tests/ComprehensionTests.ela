@@ -1,68 +1,57 @@
 ﻿let listSimple {eq} =
-    eq (length li) 5
-    $ eq li.[0] 2
-    $ eq li.[4] 10
-    where li = [x \\ x <- [1..10] | x % 2 == 0] end
-end
+                eq (length li) 5
+                $ eq li.[0] 2
+                $ eq li.[4] 10
+                where li = [x \\ x <- [1..10] | x % 2 == 0] 
    
 let listSimple2 {eq} = 
-    eq (length li) 3
-    $ eq li.[0] 6
-    $ eq li.[2] 10
-    where li = [x \\ x <- [1..10] | x % 2 == 0, x > 4] end
-end
+                    eq (length li) 3
+                    $ eq li.[0] 6
+                    $ eq li.[2] 10
+                    where li = [x \\ x <- [1..10] | x % 2 == 0, x > 4]
     
 let listSelect1 {eq} =
-    eq (length li) 2
-    $ eq li.[0] 12
-    $ eq li.[1] 16
-    where li = [x * 2 \\ x <- [1..10] | x % 2 == 0, x > 4, x < 10] end
-end
+                    eq (length li) 2
+                    $ eq li.[0] 12
+                    $ eq li.[1] 16
+                    where li = [x * 2 \\ x <- [1..10] | x % 2 == 0, x > 4, x < 10] 
 
 let listSelect2 {eq} =
-    eq (length lst1) 2
-    $ eq lst1.[0] 7
-    $ eq lst1.[1] 9
-    $ eq (length lst2) 1
-    $ eq lst2.[0] 7
-    where lst1 = [x + y \\ (x,y) <- [(1,2)..(4,5)] | x > 2] and
-          lst2 = [x + y \\ (x,y) <- [(1,2)..(4,5)] | x > 2, y < 5]
-    end
-end
+                    eq (length lst1) 2
+                    $ eq lst1.[0] 7
+                    $ eq lst1.[1] 9
+                    $ eq (length lst2) 1
+                    $ eq lst2.[0] 7
+                    where lst1 = [x + y \\ (x,y) <- [(1,2)..(4,5)] | x > 2] and
+                          lst2 = [x + y \\ (x,y) <- [(1,2)..(4,5)] | x > 2, y < 5]
     
 let listSelect3 {eq} =
-    eq (length li) 4
-    $ eq li.[0] 2
-    $ eq li.[3] 8
-    where li = [y \\ (x::y::[]) <- [[1,2],[3,4],[5,6],[7,8]] | y % 2 == 0] end
-end
+                    eq (length li) 4
+                    $ eq li.[0] 2
+                    $ eq li.[3] 8
+                    where li = [y \\ (x::y::[]) <- [[1,2],[3,4],[5,6],[7,8]] | y % 2 == 0]
 
 let listMultiple1 {eq} =
-    eq (length li) 50
-    $ eq li.[0] (1,11)
-    $ eq li.[10] (3,11)
-    $ eq li.[49] (10,20)
-    where li = [(x,y) \\ x <- [1..10], y <- [11..20] | (x + y) % 2 == 0] end
-end
+                    eq (length li) 50
+                    $ eq li.[0] (1,11)
+                    $ eq li.[10] (3,11)
+                    $ eq li.[49] (10,20)
+                    where li = [(x,y) \\ x <- [1..10], y <- [11..20] | (x + y) % 2 == 0]
     
 let listMultiple2 {eq} =
-    eq (length li) 2
-    $ eq li.[0] {id=1,n='a',y=1}
-    $ eq li.[1] {id=2,n='b',y=2}
-    where li = [{id=x.id,n=x.n,y=y} \\ x <- [{id=1,n='a'},{id=2,n='b'}], y <- [1..10] | x.id == y] end
-end
+                    eq (length li) 2
+                    $ eq li.[0] {id=1,n='a',y=1}
+                    $ eq li.[1] {id=2,n='b',y=2}
+                    where li = [{id=x.id,n=x.n,y=y} \\ x <- [{id=1,n='a'},{id=2,n='b'}], y <- [1..10] | x.id == y]
     
 let listLazy1 {eqt} =
-    eqt (li is (2::4::6::xs))
-    where li = [& x \\ x <- [1..] | x % 2 == 0] end
-end
+                eqt (li is (2::4::6::xs))
+                where li = [& x \\ x <- [1..] | x % 2 == 0]
     
 let listLazy2 {eqt} =
-    eqt (li is ((1,499)::(1,498)::(1,497)::xs))
-    where li = [& (x,y) \\ x <- [1..], y <- [1000,999..] | y < 500] end
-end
+                eqt (li is ((1,499)::(1,498)::(1,497)::xs))
+                where li = [& (x,y) \\ x <- [1..], y <- [1000,999..] | y < 500]
     
 let compOperator {eqt} =
-    eqt (lst is [2,4,6,8,10])
-    where lst = [] @@ [x \\ x <- [1..10] | x % 2 == 0] end 
-end 
+                    eqt (lst is [2,4,6,8,10])
+                    where lst = [] @@ [x \\ x <- [1..10] | x % 2 == 0]

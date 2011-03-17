@@ -63,6 +63,14 @@ namespace Ela.Compilation
 
 			switch (exp.Type)
 			{
+				case ElaNodeType.Generator:
+					{
+						CompileGenerator((ElaGenerator)exp, map, hints);
+
+						if ((hints & Hints.Left) == Hints.Left)
+							AddValueNotUsed(exp);
+					}
+					break;
 				case ElaNodeType.Range:
 					{
 						var r = (ElaRange)exp;

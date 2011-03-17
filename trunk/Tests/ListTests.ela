@@ -1,70 +1,30 @@
 ﻿let fromLiteral {eq} =
-	let list = ['E', 'l', 'a'] in
-    eq (length list) 3
-    $ eq list.[0] 'E'
-    $ eq list.[1] 'l'
-    $ eq list.[2] 'a'
-end
+                    let list = ['E', 'l', 'a'] in
+                    eq (length list) 3
+                    $ eq list.[0] 'E'
+                    $ eq list.[1] 'l'
+                    $ eq list.[2] 'a'
 
 let cons {eq} =
-	let list = 0::1::2::3::[] in
-    eq (length list) 4
-    $ eq list.[0] 0
-    $ eq list.[3] 3
-end
+            let list = 0::1::2::3::[] in
+            eq (length list) 4
+            $ eq list.[0] 0
+            $ eq list.[3] 3
 
 let headTail {eq} =
-	let head x::xs = x and
-        tail x::xs = xs and
-        list = [0, 1, 2, 3]
-    in
-    eq (head list) 0
-    $ eq ((tail list) |> length) 3
-    $ eq (tail list).[0] 1
-end
+                let head x::xs = x and
+                    tail x::xs = xs and
+                    list = [0, 1, 2, 3]
+                in
+                eq (head list) 0
+                $ eq ((tail list) |> length) 3
+                $ eq (tail list).[0] 1
 
 let changeItem {eqt=eqt} =
-	try 
-        (let list = [0] in list.[0] <- 1)
-        $ eqt false
-	with _ = eqt true end
-end
-
-let concatLists {eq} =
-	let list1 = ['E', 'l', 'a'] and
-        list2 = [ 'l', 'a', 'n', 'g'] and
-        res = list1 ++ list2
-    in
-    let mutable str = "" in
-    
-    (for e in res do 
-		str <- str ++ e:string)
-        
-    $ eq str "Elalang"
-end
-
-let iterateItems {eqt} =
-	let list = [0, 1, 2, 3] in
-    let mutable b = true and  c = --1 in
-    
-    (for i to 3 do
-		if i <> list.[i] then
-			b <- false
-        else ()
-    )
-	
-    $
-    
-    (for e in list do
-        if ((c <- c + 1) $ c) <> e then
-            b <- false
-        else ()
-    )
-        
-    $ eqt b
-end
+                    try 
+                        (let list = [0] in list.[0] <- 1)
+                        $ eqt false with _ = eqt true
 
 let typeCheck {eqt} =
-	let list = [0, 1] in
-	eqt (list is ?list)
-end 
+                let list = [0, 1] in
+                eqt (list is ?list)

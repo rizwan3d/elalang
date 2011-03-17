@@ -1,77 +1,65 @@
 ﻿let partial1 {eq} =
-    eq (sum 2 3) 5
-    $ eq (sum2 3) 5
-    $ eq (sum3 2) 5    
-    where sum x y = x + y and 
-          sum2 = sum 2 and
-          sum3 = sum 3
-    end
-end
+                eq (sum 2 3) 5
+                $ eq (sum2 3) 5
+                $ eq (sum3 2) 5    
+                where sum x y = x + y and 
+                      sum2 = sum 2 and
+                      sum3 = sum 3
 
 let partial2 {eq} =
-    eq (((fun 2) 3) 4) 20
-    $ eq (fun 2 3 4) 20
-    where fun x y = \z -> z * x + z * y end
-end
+                eq (((fun 2) 3) 4) 20
+                $ eq (fun 2 3 4) 20
+                where fun x y = \z -> z * x + z * y
     
 let partial3 {eq} =
-    let f1 = fun 10 12 and
-        f2 = fun 1 and
-        f3 = fun 6 8 9 in
-    eq ((f1 1) 1) 24
-    $ eq (((f2 2) 3) 4) 10
-    $ eq (f3 7) 30
-    where fun x y z k = x + y + z + k end
-end
+                let f1 = fun 10 12 and
+                    f2 = fun 1 and
+                    f3 = fun 6 8 9 in
+                eq ((f1 1) 1) 24
+                $ eq (((f2 2) 3) 4) 10
+                $ eq (f3 7) 30
+                where fun x y z k = x + y + z + k
     
 let partial4 {eq} =
-    eq (fun 2 2 4 2 1) 11
-    where fun x y | r > 10 = r;
-                  | else   = fun r
-                  where r = x + y end
-    end
-end
+                eq (fun 2 2 4 2 1) 11
+                where fun x y | r > 10 = r
+                              | else   = fun r
+                              where r = x + y
     
 let closure1 {eq} = 
-    let x = 2 in
-    let fun () = eq x 2 in
-    fun ()
-end
+                let x = 2 in
+                let fun () = eq x 2 in
+                fun ()
     
 let closure2 {eq} = 
-    let mutable x = 0 in
-    let fun () = x in
-    eq (fun ()) 0
-    $ x <- x + 1
-    $ eq (fun ()) 1
-    $ x <- x + 2
-    $ eq (fun ()) 3
-end
+                let x = {!x=0} in
+                let fun () = x in
+                eq (fun ()).x 0
+                $ x.x <- x.x + 1
+                $ eq (fun ()).x 1
+                $ x.x <- x.x + 2
+                $ eq (fun ()).x 3
     
 let flipped1 {eq} = 
-    eq (sub 3 2) 1
-    $ eq (flip sub 3 2) (--1)
-    where sub x y = x - y end
-end
+                eq (sub 3 2) 1
+                $ eq (flip sub 3 2) (--1)
+                where sub x y = x - y
     
 let flipped2 {eq} = 
-    eq (sub 3 2 1) 0
-    $ eq (flip sub 3 2 (--1)) 0
-    where sub x y z = x - y - z end
-end
+                eq (sub 3 2 1) 0
+                $ eq (flip sub 3 2 (--1)) 0
+                where sub x y z = x - y - z
     
 let partialOperators {eq} =
-    eq (add' 7 2) 9
-    $ eq (add2 3) 5
-    $ eq (sub 5 4) 1
-    $ eq (sub2 9) 7
-    $ eq (div 6 3) 2
-    $ eq (div2 2) 4
-    where add' = (+) and
-          add2 = (+2) and
-          sub = (-) and
-          sub2 = (-2) and
-          div = (/) and
-          div2 = (8/)
-    end
-end 
+                        eq (add' 7 2) 9
+                        $ eq (add2 3) 5
+                        $ eq (sub 5 4) 1
+                        $ eq (sub2 9) 7
+                        $ eq (div 6 3) 2
+                        $ eq (div2 2) 4
+                        where add' = (+) and
+                              add2 = (+2) and
+                              sub = (-) and
+                              sub2 = (-2) and
+                              div = (/) and
+                              div2 = (8/)

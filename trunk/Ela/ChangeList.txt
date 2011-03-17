@@ -1,3 +1,4 @@
+0.8.6.56:Fix:A critical error in compilation logic of comprehensions is fixed - multiple generators used to crash Ela machine.
 0.8.6.55:Change:Now ForeignModule has a Close method that is called when Ela machine is disposed (Ela machine implements IDisposable for that and now it is mandatory to dispose it).
 0.8.6.54:New:A sequencing operator '$' is now a function.
 0.8.6.53:Change:Parsing rules for 'match' and 'try' expressions are changed. Now they are not 'simple' expressions anymore and cannot be used in function application without parenthesis.

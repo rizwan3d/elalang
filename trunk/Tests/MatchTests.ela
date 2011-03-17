@@ -1,135 +1,111 @@
 let literalMatch {eqt} = 
-    eqt (match 1 with 1 = true; _ = false end)
-    $ eqt (match 124 with 124 = true; _ = false end)
-    $ eqt (match 240L with 240L = true; _ = false end)
-    $ eqt (match 42.42 with 42.42 = true; _ = false end)
-    $ eqt (match 412.42D with 412.42D = true; _ = false end)
-    $ eqt (match 'c' with 'c' = true; _ = false end)
-    $ eqt (match "Hello" with "Hello" = true; _ = false end)
-    $ eqt (match true with true = true; _ = false end)
-    $ eqt (match false with false = true; _ = false end)
-end
-
+                    eqt (match 1 with 1 = true; _ = false;;)
+                    $ eqt (match 124 with 124 = true; _ = false;;)
+                    $ eqt (match 240L with 240L = true; _ = false;;)
+                    $ eqt (match 42.42 with 42.42 = true; _ = false;;)
+                    $ eqt (match 412.42D with 412.42D = true; _ = false;;)
+                    $ eqt (match 'c' with 'c' = true; _ = false;;)
+                    $ eqt (match "Hello" with "Hello" = true; _ = false;;)
+                    $ eqt (match true with true = true; _ = false;;)
+                    $ eqt (match false with false = true; _ = false;;)
+    
 let varMatch {eqt} = 
-    eqt (match 42 with x = x == 42 end)
-    $ eqt (match 'H' with y = y == 'H' end)
-end
+                eqt (match 42 with x = x == 42;;)
+                $ eqt (match 'H' with y = y == 'H';;)
     
 let listMatch {eqt} =
-    eqt (match lst with x::xs = true; _ = false end)
-    $ eqt (match lst with 1::xs = true; _ = false end)
-    $ eqt (match lst with 1::2::3::xs = true; _ = false end)
-    $ eqt (match lst with 1::y::3::xs = y == 2; _ = false end)
-    $ eqt (match lst with 1::2::3::[] = false; _ = true end)
-    $ eqt (match lst with x::y::z::xs = x == 1 && y == 2 && z == 3; _ = true end)
-    where lst = [1,2,3,4,5] end 
-end
+                eqt (match lst with x::xs = true; _ = false;;)
+                $ eqt (match lst with 1::xs = true; _ = false;;)
+                $ eqt (match lst with 1::2::3::xs = true; _ = false;;)
+                $ eqt (match lst with 1::y::3::xs = y == 2; _ = false;;)
+                $ eqt (match lst with 1::2::3::[] = false; _ = true;;)
+                $ eqt (match lst with x::y::z::xs = x == 1 && y == 2 && z == 3; _ = true;;)
+                where lst = [1,2,3,4,5]
     
 let listMatch2 {eqt} =
-    eqt (match lst with [1,2,3] = false; _ = true end)
-    $ eqt (match lst with [1,2,3,4,5] = true; _ = false end)
-    $ eqt (match lst with [x,y,z,4,5] = x == 1 && y == 2 && z == 3; _ = false end)
-    where lst = [1,2,3,4,5] end 
-end
+                eqt (match lst with [1,2,3] = false; _ = true;;)
+                $ eqt (match lst with [1,2,3,4,5] = true; _ = false;;)
+                $ eqt (match lst with [x,y,z,4,5] = x == 1 && y == 2 && z == 3; _ = false;;)
+                where lst = [1,2,3,4,5]
     
 let tupleMatch {eqt} =
-    eqt (match tup with (1,2,3) = true; _ = false end)
-    $ eqt (match tup with (1,2) = false; _ = true end)
-    $ eqt (match tup with (x,y,z) = x == 1 && y == 2 && z == 3; _ = false end)
-    where tup = (1,2,3) end
-end
+                eqt (match tup with (1,2,3) = true; _ = false;;)
+                $ eqt (match tup with (1,2) = false; _ = true;;)
+                $ eqt (match tup with (x,y,z) = x == 1 && y == 2 && z == 3; _ = false;;)
+                where tup = (1,2,3)
 
 let recordMatch {eqt} =
-    eqt (match rec with (1,2,3) = true; _ = false end)
-    $ eqt (match rec with {x=1,z=3,y=2} = true; _ = false end)
-    $ eqt (match rec with {x=1,y=2} = true; _ = false end)
-    $ eqt (match rec with {x,y,z} = x == 1 && y == 2 && z == 3; _ = false end)
-    where rec = {x=1,y=2,z=3} end
-end
+                    eqt (match rec with (1,2,3) = true; _ = false;;)
+                    $ eqt (match rec with {x=1,z=3,y=2} = true; _ = false;;)
+                    $ eqt (match rec with {x=1,y=2} = true; _ = false;;)
+                    $ eqt (match rec with {x,y,z} = x == 1 && y == 2 && z == 3; _ = false;;)
+                    where rec = {x=1,y=2,z=3}
     
 let unitMatch {eqt} =
-    eqt (match () with () = true; _ = false end)
-    $ eqt (match 123 with () = false; _ = true end)
-end
+                eqt (match () with () = true; _ = false;;)
+                $ eqt (match 123 with () = false; _ = true;;)
     
 let variantMatch {eqt} =
-    eqt (match s with `Some = true; _ = false end)
-    $ eqt (match s with `Some 12 = true; _ = false end)
-    $ eqt (match s with `Some x = x == 12; _ = false end)
-    $ eqt (match s2 with `Some = true; _ = false end)
-    $ eqt (match s2 with `Some (1,2,3) = true; _ = false end)
-    $ eqt (match s2 with `Some x = x == (1,2,3); _ = false end)
-    $ eqt (match n with `None = true; _ = false end)
-    where s = `Some 12 and
-          s2 = `Some (1,2,3) and
-          n = `None
-    end
-end
+                    eqt (match s with `Some = true; _ = false;;)
+                    $ eqt (match s with `Some 12 = true; _ = false;;)
+                    $ eqt (match s with `Some x = x == 12; _ = false;;)
+                    $ eqt (match s2 with `Some = true; _ = false;;)
+                    $ eqt (match s2 with `Some (1,2,3) = true; _ = false;;)
+                    $ eqt (match s2 with `Some x = x == (1,2,3); _ = false;;)
+                    $ eqt (match n with `None = true; _ = false;;)
+                    where s = `Some 12 and
+                          s2 = `Some (1,2,3) and
+                          n = `None
     
 let typeCheckMatch {eqt} =
-    eqt (match 1 with ?int = true; _ = false end)
-    $ eqt (match (1,2) with ?tuple = true; _ = false end)
-    $ eqt (match [1,2] with ?list = true; _ = false end)
-end
+                    eqt (match 1 with ?int = true; _ = false;;)
+                    $ eqt (match (1,2) with ?tuple = true; _ = false;;)
+                    $ eqt (match [1,2] with ?list = true; _ = false;;)
     
 let traitCheckMatch {eqt} =
-    eqt (match 1 with ?(Num,Eq) = true; _ = false end)
-    $ eqt (match (1,2) with ?(Get,Len) = true; _ = false end)
-    $ eqt (match [1,2] with ?(Fold,Cons) = true; _ = false end)
-end
+                        eqt (match 1 with ?(Num,Eq) = true; _ = false;;)
+                        $ eqt (match (1,2) with ?(Get,Len) = true; _ = false;;)
+                        $ eqt (match [1,2] with ?(Fold,Cons) = true; _ = false;;)
     
 let castMatch {eqt} =
-    eqt (match "1" with x:int = x == 1; _ = false end)
-    $ eqt (match 1 with x:string = x == "1"; _ = false end)
-end
+                eqt (match "1" with x:int = x == 1; _ = false;;)
+                $ eqt (match 1 with x:string = x == "1"; _ = false;;)
     
 let asMatch {eqt} =
-    eqt (match 4 with 4@n = n == 4; _ = false end)
-    $ eqt (match (1,2) with (1,2)@t = t == (1,2); _ = false end)
-end
+                eqt (match 4 with 4@n = n == 4; _ = false;;)
+                $ eqt (match (1,2) with (1,2)@t = t == (1,2); _ = false;;)
     
 let guards {eqt} =
-    eqt v
-    where v = match (1,4,3) with
-              (x,y,z) | x > z = false;
-                      | z > x && x + z == y = true
-              end
-    end
-end
+            eqt v
+            where v = match (1,4,3) with
+                            (x,y,z) | x > z = false
+                                    | z > x && x + z == y = true
     
 let guards2 {eqt} =
-    eqt v
-    where v = match (10,10) with
-              (x,y) | x > y = false;
-                    | x < y = false;
-                    | else  = true
-              end
-    end 
-end
+                eqt v
+                where v = match (10,10) with
+                                (x,y) | x > y = false
+                                      | x < y = false
+                                      | else  = true
     
 let guards3 {eqt} =
-    eqt v
-    where v = match (10,2) with
-              (x,y) | r > 8 = false;
-                    | r < 8 = false;
-                    | else  = true
-                    where r = x - y end
-              end
-    end  
-end
-    
+                eqt v
+                where v = match (10,2) with
+                                (x,y) | r > 8 = false
+                                      | r < 8 = false
+                                      | else  = true
+                                      where r = x - y 
+      
 let shortMatch {eq,eqt} =
-    if v is (x,2,3) then
-        eq x 1
-    else
-        eqt false
-    where v = (1,2,3) end 
-end
+                if v is (x,2,3) then
+                    eq x 1
+                else
+                    eqt false
+                where v = (1,2,3)
     
 let shortMatch2 {eq,eqt} =
-    if v is (`Some [x,2]) then
-        eq x 12
-    else
-        eqt false
-    where v = `Some [12,2] end 
-end 
+                    if v is (`Some [x,2]) then
+                        eq x 12
+                    else
+                        eqt false
+                    where v = `Some [12,2]

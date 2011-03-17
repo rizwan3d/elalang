@@ -283,25 +283,23 @@ PRODUCTIONS
 		Expr<out cexp> (. match.Expression = cexp; .)
 		WITH
 		(
-			(. scanner.InjectBlock(); .)
-			MatchEntry<match> 
-			EndBlock
+			MatchEntry<match>
 			{ 
-				(. scanner.InjectBlock(); .)
-				MatchEntry<match> 
-				EndBlock
+				MatchEntry<match>
+				| ChildMatchEntry<match>
 			}
 		)		
 		EndBlock.
 					
 	MatchEntry<ElaMatch match> = 
 		(. var cexp = default(ElaExpression); .)
+		(. scanner.InjectBlock(); .)
 		(		
 			(. 
 				var pat = default(ElaPattern); 
 				var ot = t; 
 			.)			
-			[ RootPattern<out pat> ]
+			RootPattern<out pat>
 			(. 
 				var entry = new ElaMatchEntry(ot);
 				entry.Pattern = pat;				
@@ -319,7 +317,28 @@ PRODUCTIONS
 		[ 
 			WhereBinding<out cexp> 
 			(. entry.Where = cexp; .) 
-		].
+		]
+		(. if (RequireEndBlock()) .) EndBlock.
+		
+	ChildMatchEntry<ElaMatch match> = 
+		(. var cexp = default(ElaExpression); .)
+		(		
+			(. 
+				var entry = new ElaMatchEntry(t);
+				match.Entries.Add(entry);
+			.)
+			Guard<out cexp>
+			(. entry.Guard = cexp; .)
+			
+			"=" Expr<out cexp>
+			(. entry.Expression = cexp; .)	
+			
+			[ 
+				WhereBinding<out cexp> 
+				(. entry.Where = cexp; .) 
+			]
+		)
+		(. if (RequireEndBlock()) .) EndBlock.
 		
 	Guard<out ElaExpression exp> = 
 		(. exp = null; .)

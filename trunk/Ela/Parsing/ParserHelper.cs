@@ -28,7 +28,7 @@ namespace Ela.Parsing
 			if (la.kind == _PIPE)
 				return false;
 
-			if (la.kind == _AND)
+			if (la.kind == _AND || la.kind == _IN)
 			{
 				scanner.PopIndent();
 				return false;

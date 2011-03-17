@@ -1,5 +1,5 @@
-﻿open Test reg = regFuns, fmt, run
-open Con writen
+﻿open Test with reg = regFuns, fmt, run
+open Con with writen
 
 open BasicTests
 open FunTests

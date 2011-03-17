@@ -1,81 +1,68 @@
 ﻿let fromLiteral {eq} = 
-	let tup = ('E', 'l', 'a') in
-    eq (length tup) 3 
-    $ eq tup.[0] 'E' 
-    $ eq tup.[1] 'l'
-    $ eq tup.[2] 'a'
-end
+                    let tup = ('E', 'l', 'a') in
+                    eq (length tup) 3 
+                    $ eq tup.[0] 'E' 
+                    $ eq tup.[1] 'l'
+                    $ eq tup.[2] 'a'
 
 let fromLiteral2 {eq} =
-	let tup = ("Ela",) in
-	eq (length tup) 1 $ eq tup.[0] "Ela"
-end
+                    let tup = ("Ela",) in
+                    eq (length tup) 1 $ eq tup.[0] "Ela"
     
 let equals {eqt} =
-    eqt (t1 == t2)
-    $ eqt (t1 <> t3)
-    $ eqt (t2 <> t3)
-    $ eqt (t3 == (3,4))
-    where t1 = (1,2) and
-          t2 = (1,2) and
-          t3 = (3,4)
-    end
-end
+                eqt (t1 == t2)
+                $ eqt (t1 <> t3)
+                $ eqt (t2 <> t3)
+                $ eqt (t3 == (3,4))
+                where t1 = (1,2) and
+                      t2 = (1,2) and
+                      t3 = (3,4)
     
 let compare {eqt,eqf} =
-    eqf (t1 > t2)
-    $ eqt (t1 < t2)
-    $ eqt (t1 <= t2)
-    $ eqt (t3 > t2)
-    $ eqt (t3 >= t2)
-    $ eqt (t2 >= (3,4))    
-    where t1 = (1,2) and
-          t2 = (3,4) and
-          t3 = (5,6)
-    end
-end
+                eqf (t1 > t2)
+                $ eqt (t1 < t2)
+                $ eqt (t1 <= t2)
+                $ eqt (t3 > t2)
+                $ eqt (t3 >= t2)
+                $ eqt (t2 >= (3,4))    
+                where t1 = (1,2) and
+                      t2 = (3,4) and
+                      t3 = (5,6)
     
 let simpleMath {eq} =
-    eq ((1,2)+(2,3)) (3,5)
-    $ eq ((4,5)-(2,1)) (2,4)
-    $ eq ((8,2)*(2,5)) (16,10)
-    $ eq ((4,16)/(2,8)) (2,2)
-    $ eq ((2,3)**(2,3)) (4,27)
-    $ eq ((10,5)%(3,3)) (1,2)
-end
+                eq ((1,2)+(2,3)) (3,5)
+                $ eq ((4,5)-(2,1)) (2,4)
+                $ eq ((8,2)*(2,5)) (16,10)
+                $ eq ((4,16)/(2,8)) (2,2)
+                $ eq ((2,3)**(2,3)) (4,27)
+                $ eq ((10,5)%(3,3)) (1,2)
     
 let unary {eq} =
-    eq (--(2,1)) (--2,--1)
-    $ eq (~~~(21,4)) (--22,--5)
-end
-    
+            eq (--(2,1)) (--2,--1)
+            $ eq (~~~(21,4)) (--22,--5)
+            
 let succPred {eq} =
-    eq (succ (1,2)) (2,3)
-    $ eq (succ (42.42, 'b')) (43.42, 'c')
-    $ eq (pred (3,4)) (2,3)
-    $ eq (pred (12.1,'B')) (11.1, 'A')
-end
+                eq (succ (1,2)) (2,3)
+                $ eq (succ (42.42, 'b')) (43.42, 'c')
+                $ eq (pred (3,4)) (2,3)
+                $ eq (pred (12.1,'B')) (11.1, 'A')
     
 let concat {eq,eqt} =
-    eq (("H", "w")++("e","o")) ("He", "wo")
-    $ eqt (t.[0] is [1,2,3,4])
-    $ eqt (t.[1] is [10,20,30,40])
-    where t = ([1,2],[10,20])++([3,4],[30,40]) end
-end
+                eq (("H", "w")++("e","o")) ("He", "wo")
+                $ eqt (t.[0] is [1,2,3,4])
+                $ eqt (t.[1] is [10,20,30,40])
+                where t = ([1,2],[10,20])++([3,4],[30,40])
     
 let flat {eq} =
-    eq t (1,2,3,4,5,6)
-    where t = (1,(2,3,(4,5)),6) end
-end
+            eq t (1,2,3,4,5,6)
+            where t = (1,(2,3,(4,5)),6)
     
 let changeItem {eqt} =
-	try 
-        (let tup = [0] in tup.[0] <- 1)
-        $ eqt false
-	with _ = eqt true end
-end
+                    try 
+                        (let tup = [0] in tup.[0] <- 1)
+                        $ eqt false with 
+                        _ = eqt true
 
 let typeCheck {eqt} =
-	let tup  = (0,) in
-	eqt (tup is ?tuple)
-end
+                let tup  = (0,) in
+                eqt (tup is ?tuple)
