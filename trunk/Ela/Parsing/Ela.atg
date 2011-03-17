@@ -1874,7 +1874,9 @@ PRODUCTIONS
 				var b = new ElaBlock(t);
 				Expression = b;
 			.)
+			
 			DeclarationBlock<b>
+			{ DeclarationBlock<b> }
 		).		
 		
 	DeclarationBlock<ElaBlock b> =
@@ -1884,25 +1886,25 @@ PRODUCTIONS
 				( 
 					RootLetBinding<out exp>
 					(. b.Expressions.Add(exp); .)
-					[ DeclarationBlock<b> ]
+					//[ DeclarationBlock<b> ]
 				)
 				| 
 				( 
 					IncludeStat<out exp>
 					(. b.Expressions.Add(exp); .)					
-					[ DeclarationBlock<b> ]
+					//[ DeclarationBlock<b> ]
 				)
 				| 
 				(
-					EmbExpr<out exp>
+					EmbExpr<out exp> (. if (false) .) EBLOCK
 					(. b.Expressions.Add(exp); .)
-					[ SimpleDeclarationBlock<b> ]
+					//[ SimpleDeclarationBlock<b> ]
 				)
 			)
 		).		
 	
 		
-	SimpleDeclarationBlock<ElaBlock b> =
+	/*SimpleDeclarationBlock<ElaBlock b> =
 		(. var exp = default(ElaExpression); .)
 		(
 			(	
@@ -1911,6 +1913,6 @@ PRODUCTIONS
 			)
 			(. b.Expressions.Add(exp); .)
 			[ DeclarationBlock<b> ]
-		).		
+		).*/
 		
 END Ela.

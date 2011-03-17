@@ -2169,6 +2169,9 @@ internal sealed partial class Parser {
 		Expression = b;
 		
 		DeclarationBlock(b);
+		while (StartOf(20)) {
+			DeclarationBlock(b);
+		}
 	}
 
 	void DeclarationBlock(ElaBlock b) {
@@ -2176,35 +2179,15 @@ internal sealed partial class Parser {
 		if (la.kind == 28) {
 			RootLetBinding(out exp);
 			b.Expressions.Add(exp); 
-			if (StartOf(20)) {
-				DeclarationBlock(b);
-			}
 		} else if (la.kind == 30) {
 			IncludeStat(out exp);
 			b.Expressions.Add(exp); 
-			if (StartOf(20)) {
-				DeclarationBlock(b);
-			}
 		} else if (StartOf(9)) {
 			EmbExpr(out exp);
+			if (false) 
+			Expect(42);
 			b.Expressions.Add(exp); 
-			if (la.kind == 28 || la.kind == 30) {
-				SimpleDeclarationBlock(b);
-			}
 		} else SynErr(114);
-	}
-
-	void SimpleDeclarationBlock(ElaBlock b) {
-		var exp = default(ElaExpression); 
-		if (la.kind == 28) {
-			RootLetBinding(out exp);
-		} else if (la.kind == 30) {
-			IncludeStat(out exp);
-		} else SynErr(115);
-		b.Expressions.Add(exp); 
-		if (StartOf(20)) {
-			DeclarationBlock(b);
-		}
 	}
 
 
@@ -2372,7 +2355,6 @@ internal sealed class Errors {
 			case 112: s = "invalid FuncOperator"; break;
 			case 113: s = "invalid EmbExpr"; break;
 			case 114: s = "invalid DeclarationBlock"; break;
-			case 115: s = "invalid SimpleDeclarationBlock"; break;
 
 			default: s = "error " + n; break;
 		}
