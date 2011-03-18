@@ -1,5 +1,6 @@
 ﻿using System;
 using Ela.Parsing;
+using System.Text;
 
 namespace Ela.CodeModel
 {
@@ -37,6 +38,17 @@ namespace Ela.CodeModel
 		{
 			return null;
 		}
+
+
+		public override string ToString()
+		{
+			var sb = new StringBuilder();
+			ToString(sb);
+			return sb.ToString();
+		}
+
+
+		internal abstract void ToString(StringBuilder sb);
 		#endregion
 
 

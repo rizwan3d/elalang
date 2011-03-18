@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Ela.Parsing;
 
 namespace Ela.CodeModel
@@ -26,9 +27,9 @@ namespace Ela.CodeModel
 		}
 
 
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)
 		{
-			return VariableName[0] == '$' ? String.Empty : VariableName;
+			sb.Append(VariableName[0] == '$' ? String.Empty : VariableName);
 		}
 		#endregion
 

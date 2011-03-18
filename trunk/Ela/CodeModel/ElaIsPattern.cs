@@ -1,6 +1,6 @@
 ﻿using System;
-using Ela.Parsing;
 using System.Text;
+using Ela.Parsing;
 
 namespace Ela.CodeModel
 {
@@ -21,18 +21,19 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)
 		{
-			return Traits != ElaTraits.None ? FormatTraitList() : TypeCodeFormat.GetShortForm(TypeAffinity);
+			sb.Append('?');
+			sb.Append(Traits != ElaTraits.None ? FormatTraitList() : TypeCodeFormat.GetShortForm(TypeAffinity));
 		}
 
 
 		private string FormatTraitList()
 		{
 			var sb = new StringBuilder();
-			sb.Append('<');
+			sb.Append('(');
 			sb.Append(Traits.ToString().Replace('|', ','));
-			sb.Append('>');
+			sb.Append(')');
 			return sb.ToString();
 		}
 		#endregion

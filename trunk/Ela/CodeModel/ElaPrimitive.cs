@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Text;
 using Ela.Parsing;
+
 namespace Ela.CodeModel
 {
 	public sealed class ElaPrimitive : ElaExpression
@@ -19,9 +21,9 @@ namespace Ela.CodeModel
 		
 
 		#region Methods
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)
 		{
-			return Value.ToString();
+			sb.Append(Value.ToString());
 		}
 		#endregion
 

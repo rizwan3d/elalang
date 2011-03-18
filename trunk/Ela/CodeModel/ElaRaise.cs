@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Ela.Parsing;
 
 namespace Ela.CodeModel
@@ -20,10 +21,25 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)
 		{
-			return "raise " + ErrorCode + 
-				(Expression != null ? "(" + Expression.ToString() + ")" : String.Empty);
+			if (ErrorCode == "Failure")
+			{
+				sb.Append("fail ");
+				Expression.ToString(sb);					
+			}
+			else
+			{
+				sb.Append("raise ");
+				sb.Append(ErrorCode);
+			
+				if (Expression != null)
+				{
+					sb.Append('(');
+					Expression.ToString(sb);
+					sb.Append(')');
+				}
+			}
 		}
 		#endregion
 

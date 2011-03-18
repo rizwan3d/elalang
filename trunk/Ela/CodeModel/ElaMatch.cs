@@ -28,23 +28,39 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)
 		{
-			var sb = new StringBuilder();
-			sb.Append("match ");
-			sb.Append(Expression);
-			sb.AppendLine(" with ");
+			ToString(sb, "match");
+		}
+
+
+		internal void ToString(StringBuilder sb, string keyword)
+		{
+			sb.Append(keyword);
+			sb.Append(' ');
+			var indent = keyword.Length + 1;
+
+			Expression.ToString(sb);
+			sb.AppendLine(" with");
 			var c = 0;
+			var op = default(ElaPattern);
 
 			foreach (var p in Entries)
 			{
 				if (c++ > 0)
-					sb.Append(";\r\n");
+				{
+					sb.AppendLine();
+					sb.Append(new String(' ', 6));
+				}
 
-				sb.Append(p);
+				if (p.Pattern == null && op != null)
+					sb.Append(new String(' ', op.ToString().Length));
+
+				p.ToString(sb);
+				
+				if (p.Pattern != null) 
+					op = p.Pattern;
 			}
-
-			return sb.ToString();
 		}
 		#endregion
 

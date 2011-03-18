@@ -23,9 +23,8 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)
 		{
-			var sb = new StringBuilder();
 			sb.Append("open ");
 
 			for (var i = 0; i < Path.Count; i++)
@@ -39,10 +38,10 @@ namespace Ela.CodeModel
 			sb.Append(Name);
 
 			if (!String.IsNullOrEmpty(Alias) && Alias != Name)
-				sb.Append(" as " + Alias);
+				sb.Append("@" + Alias);
 
 			if (!String.IsNullOrEmpty(DllName))
-				sb.Append("[" + DllName + "]");
+				sb.Append("#" + DllName);
 
 			if (HasImports)
 			{
@@ -57,9 +56,6 @@ namespace Ela.CodeModel
 					sb.Append(i);
 				}
 			}
-
-			sb.AppendLine();
-			return sb.ToString();
 		}
 		#endregion
 

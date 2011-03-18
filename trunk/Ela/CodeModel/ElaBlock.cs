@@ -22,14 +22,15 @@ namespace Ela.CodeModel
 				
 
 		#region Methods
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)
 		{
-			var sb = new StringBuilder();
-
 			foreach (var e in Expressions)
-				sb.Append(e.ToString());
+			{
+				if (e.Type == ElaNodeType.Binding)
+					sb.AppendLine();
 
-			return sb.ToString();
+				sb.AppendLine(e.ToString());
+			}
 		}
 		#endregion
 

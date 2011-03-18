@@ -22,9 +22,8 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)
 		{
-			var sb = new StringBuilder();
 			var c = 0;
 
 			foreach (var f in Patterns)
@@ -37,8 +36,6 @@ namespace Ela.CodeModel
 				else
 					sb.Append(f.ToString());
 			}
-
-			return sb.ToString();
 		}
 		#endregion
 

@@ -28,10 +28,8 @@ namespace Ela.CodeModel
 		}
 
 
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)
 		{
-			var sb = new StringBuilder();
-
 			if (FlipParameters)
 				sb.Append('(');
 
@@ -55,8 +53,6 @@ namespace Ela.CodeModel
 
 			if (FlipParameters)
 				sb.Append(')');
-			
-			return sb.ToString();
 		}
 		#endregion
 

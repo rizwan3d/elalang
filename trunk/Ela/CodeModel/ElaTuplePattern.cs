@@ -37,23 +37,21 @@ namespace Ela.CodeModel
 			return true;
 		}
 
-		
-		public override string ToString()
+
+		internal override void ToString(StringBuilder sb)
 		{
-			var sb = new StringBuilder();
 			sb.Append('(');
 			var c = 0;
 
 			foreach (var f in Patterns)
 			{
 				if (c++ > 0)
-					sb.Append(", ");
-						 
-				sb.Append(f.ToString());
+					sb.Append(',');
+
+				f.ToString(sb);
 			}
 
 			sb.Append(')');
-			return sb.ToString();
 		}
 		#endregion
 

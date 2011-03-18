@@ -22,60 +22,60 @@ namespace Ela.CodeModel
 		
 
 		#region Methods
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)
 		{
-			return ToString(false);
+			ToString(sb, "let");
 		}
 
 
-		internal string ToString(bool omitLet)
+		internal void ToString(StringBuilder sb, string keyword)
 		{
-			var sb = new StringBuilder();
+			var len = sb.Length;
+			var indent = 0;
+			sb.Append(keyword);
+			sb.Append(' ');
 
-			if (!omitLet)
-			{
-				sb.AppendLine();
-				sb.Append("let ");
-
-				if ((VariableFlags & ElaVariableFlags.Private) == ElaVariableFlags.Private)
-					sb.Append("private ");
-			}
-
+			if ((VariableFlags & ElaVariableFlags.Private) == ElaVariableFlags.Private)
+				sb.Append("private ");
+			
 			if (InitExpression.Type == ElaNodeType.FunctionLiteral)
 			{
 				var fun = (ElaFunctionLiteral)InitExpression;
-                sb.Append(Format.FunctionToString(fun));
+				indent = sb.Length - len + fun.Name.Length + 1;
+				fun.ToString(sb);
 			}
 			else
 			{
 				if (!String.IsNullOrEmpty(VariableName))
 					sb.Append(VariableName);
 				else
-					sb.Append(Pattern.ToString());
+					Pattern.ToString(sb);
 
 				sb.Append(" = ");
+				indent = sb.Length - len;
 				sb.Append(InitExpression);
 			}
 
 			if (Where != null)
-                sb.Append(Format.BindingToStringAsWhere(Where));
+			{
+				sb.AppendLine();
+				sb.Append(new String(' ', indent));
+				Where.ToString(sb, "where");
+			}
 
 			if (And != null)
 			{
-				sb.Append(" and ");
-				sb.Append(And.ToString());
+				sb.AppendLine();
+				sb.Append(" et ");
+				And.ToString(sb);
 			}
 
 			if (In != null)
 			{
+				sb.AppendLine();
 				sb.Append(" in ");
 				sb.Append(In.ToString());
 			}
-
-			if (InitExpression.Type == ElaNodeType.FunctionLiteral)
-				sb.Append(" end");
-
-			return sb.ToString();
 		}
 		#endregion
 

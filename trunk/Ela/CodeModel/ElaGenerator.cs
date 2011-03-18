@@ -21,11 +21,11 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)		
 		{
-			var sb = new StringBuilder();
-			var sel = GetSelect(this, sb);
-			return sel.ToString() + " @ " + sb.ToString();
+			var sbNew = new StringBuilder();
+			var sel = GetSelect(this, sbNew);
+			sb.Append(sel.ToString() + " \\\\ " + sbNew.ToString());
 		}
 
 
@@ -36,11 +36,14 @@ namespace Ela.CodeModel
 			sb.Append(gen.Target.ToString());
 
 			if (Guard != null)
-				sb.Append(Format.ExpressionToStringAsGuard(gen.Guard));
+			{
+				sb.Append(" | ");
+				gen.Guard.ToString(sb);
+			}
 
 			if (gen.Body.Type == ElaNodeType.Generator)
 			{
-				sb.Append(", ");
+				sb.Append(',');
 				return GetSelect((ElaGenerator)gen.Body, sb);
 			}
 			else

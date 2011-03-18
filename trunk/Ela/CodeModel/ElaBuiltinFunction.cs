@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Ela.Parsing;
 
 namespace Ela.CodeModel
@@ -26,10 +27,12 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)
 		{
-			return (Kind == ElaBuiltinFunctionKind.Operator ? Format.PutInBraces(Format.OperatorAsString(Operator)) :
-				Kind.ToString().ToLower());
+			var str = Kind == ElaBuiltinFunctionKind.Operator ? 
+				Format.PutInBraces(Format.OperatorAsString(Operator)) :
+				Kind.ToString().ToLower();
+			sb.Append(str);
 		}
 		#endregion
 

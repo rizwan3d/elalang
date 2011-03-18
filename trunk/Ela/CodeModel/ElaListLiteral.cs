@@ -22,11 +22,9 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)
 		{
-			var sb = new StringBuilder();
 			sb.Append('[');
-
 			var c = 0;
 
 			foreach (var v in Values)
@@ -38,7 +36,6 @@ namespace Ela.CodeModel
 			}
 
 			sb.Append(']');
-			return sb.ToString();
 		}
 		#endregion
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Ela.Parsing;
 
 namespace Ela.CodeModel
@@ -20,9 +21,9 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)
 		{
-			return Name[0] == '$' ? String.Empty : Name;
+			sb.Append(Name[0] == '$' ? String.Empty : Name);
 		}
 		#endregion
 

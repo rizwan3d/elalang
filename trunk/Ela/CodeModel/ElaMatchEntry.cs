@@ -1,7 +1,7 @@
 ﻿using System;
-using Ela.Parsing;
 using System.Collections.Generic;
 using System.Text;
+using Ela.Parsing;
 
 namespace Ela.CodeModel
 {
@@ -22,23 +22,30 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)
 		{
-			var sb = new StringBuilder();
+			var len = sb.Length;
 
 			if (Pattern != null)
-				sb.Append(Pattern.ToString());
+				Pattern.ToString(sb);
 
 			if (Guard != null)
-                sb.Append(Format.ExpressionToStringAsGuard(Guard));
+			{
+				sb.Append(" | ");
+				Guard.ToString(sb);
+			}
 			
 			sb.Append(" = ");
-			sb.Append(Expression.ToString());
+			var indent = sb.Length - len;
+			Expression.ToString(sb);
 
 			if (Where != null)
-				sb.Append(Format.ExpressionToStringAsGuard((ElaBinding)Where));
-
-			return sb.ToString();
+			{
+				var bin = (ElaBinding)Where;
+				sb.AppendLine();
+				sb.Append(new String(' ', indent));
+				bin.ToString(sb, "where");				
+			}
 		}
 		#endregion
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using Ela.Parsing;
+using System.Text;
 
 namespace Ela.CodeModel
 {
@@ -20,10 +21,9 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)
 		{
-			return ExternalName == LocalName ? ExternalName :
-				(ExternalName + " = " + LocalName);
+			sb.Append(ExternalName == LocalName ? ExternalName : (ExternalName + " = " + LocalName));
 		}
 		#endregion
 

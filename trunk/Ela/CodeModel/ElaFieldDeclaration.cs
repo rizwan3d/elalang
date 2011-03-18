@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Ela.Parsing;
 
 namespace Ela.CodeModel
@@ -20,10 +21,12 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)		
 		{
-			return (Mutable ? "!" : String.Empty) +
-                FieldName + "=" + (Format.IsSimpleExpression(FieldValue) ? FieldValue.ToString() : Format.PutInBraces(FieldValue));
+			var str = (Mutable ? "!" : String.Empty) +
+                FieldName + "=" + 
+				(Format.IsSimpleExpression(FieldValue) ? FieldValue.ToString() : Format.PutInBraces(FieldValue));
+			sb.Append(str);
 		}
 		#endregion
 

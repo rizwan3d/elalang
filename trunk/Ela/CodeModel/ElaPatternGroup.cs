@@ -21,23 +21,20 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)
 		{
-			var sb = new StringBuilder();
 			var c = 0;
 
 			foreach (var f in Patterns)
 			{
 				if (c++ > 0)
-					sb.Append(" ");
+					sb.Append(' ');
 
 				if (f.Type == ElaNodeType.VariantPattern || f.Type == ElaNodeType.HeadTailPattern)
-                    sb.Append(Format.PutInBraces(f.ToString()));
+					sb.Append(Format.PutInBraces(f));
 				else
-					sb.Append(f.ToString());
+					f.ToString(sb);
 			}
-
-			return sb.ToString();
 		}
 		#endregion
 	}

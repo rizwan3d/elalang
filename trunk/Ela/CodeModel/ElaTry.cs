@@ -21,24 +21,9 @@ namespace Ela.CodeModel
 		
 		
 		#region Methods
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)
 		{
-			var sb = new StringBuilder();
-			sb.Append("try ");
-			sb.Append(Expression);
-			sb.AppendLine(" with");
-			var c = 0;
-
-			foreach (var p in Entries)
-			{
-				if (c++ > 0)
-					sb.Append(";\r\n");
-
-				sb.Append(p);
-			}
-
-			sb.Append(" end");
-			return sb.ToString();
+			base.ToString(sb, "try");
 		}
 		#endregion
 	}

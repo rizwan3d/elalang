@@ -43,44 +43,6 @@ namespace Ela.CodeModel
 		}
 
 
-		public static string ExpressionToStringAsGuard(ElaExpression p)
-		{
-			return " | " + p;
-		}
-
-
-		public static string FunctionToString(ElaFunctionLiteral fun)
-		{
-			var sb = new StringBuilder();
-
-			if (!String.IsNullOrEmpty(fun.Name))
-				sb.Append(fun.Name + " ");
-
-			var c = 0;
-
-			foreach (var p in fun.Body.Entries)
-			{
-				if (c++ > 0)
-					sb.Append(";\r\n");
-
-				sb.Append(p.ToString());
-			}
-
-			return sb.ToString();
-		}
-
-
-		public static string BindingToStringAsWhere(ElaBinding bind)
-		{
-			var sb = new StringBuilder();
-			sb.AppendLine();
-			sb.Append(" where ");
-			sb.Append(bind.ToString(true));
-			sb.Append(" end");
-			return sb.ToString();
-		}
-
-
 		public static string PatternToStringAsFuncPattern(ElaPattern pat)
 		{
 			if (pat == null)
@@ -95,15 +57,15 @@ namespace Ela.CodeModel
 
 		public static bool IsSimpleExpression(ElaExpression p)
 		{
-			return p.Type == ElaNodeType.VariableReference ||
+			return 
+				p == null ||
+				p.Type == ElaNodeType.VariableReference ||
 				p.Type == ElaNodeType.Primitive ||
 				p.Type == ElaNodeType.ListLiteral ||
 				p.Type == ElaNodeType.RecordLiteral ||
 				p.Type == ElaNodeType.TupleLiteral ||
 				p.Type == ElaNodeType.Argument ||
 				p.Type == ElaNodeType.BaseReference ||
-				p.Type == ElaNodeType.Match ||
-				p.Type == ElaNodeType.Try ||
 				p.Type == ElaNodeType.LazyLiteral ||
 				p.Type == ElaNodeType.BuiltinFunction ||
 				p.Type == ElaNodeType.UnitLiteral;
@@ -112,14 +74,16 @@ namespace Ela.CodeModel
 
 		public static bool IsHiddenVar(ElaExpression p)
 		{
-			return p.Type == ElaNodeType.VariableReference &&
+			return p != null && p.Type == ElaNodeType.VariableReference &&
 				((ElaVariableReference)p).VariableName[0] == '$';
 		}
 
 
 		public static string PutInBracesComplex(ElaExpression p)
 		{
-            return IsSimpleExpression(p) ? p.ToString() : PutInBraces(p.ToString());
+            return IsSimpleExpression(p) ? 
+				(p != null ? p.ToString() : String.Empty) : 
+				PutInBraces(p.ToString());
 		}
 
 

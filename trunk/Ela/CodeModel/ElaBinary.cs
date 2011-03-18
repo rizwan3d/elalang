@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Ela.Parsing;
 
 namespace Ela.CodeModel
@@ -22,12 +23,12 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)
 		{
             var str = Format.PutInBracesComplex(Left) + " " +
                 (Operator == ElaOperator.Custom ? CustomOperator : Format.OperatorAsString(Operator)) +
                 " " + Format.PutInBracesComplex(Right);
-            return Format.IsHiddenVar(Left) || Format.IsHiddenVar(Right) ? Format.PutInBraces(str) : str;
+            sb.Append(Format.IsHiddenVar(Left) || Format.IsHiddenVar(Right) ? Format.PutInBraces(str) : str);
 		}
 		#endregion
 

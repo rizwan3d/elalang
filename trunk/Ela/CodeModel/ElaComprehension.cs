@@ -22,13 +22,13 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)
 		{
 			var format = Lazy ? "[& {0}]" :
 				Initial.Type == ElaNodeType.ListLiteral ? "[{0}]" :
 				Initial.ToString() + " @@ " + "[{0}]";
 
-            return String.Format(format, Generator.ToString());
+            sb.AppendFormat(format, Generator.ToString());
 		}
 		#endregion
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Ela.Parsing;
 
 namespace Ela.CodeModel
@@ -20,14 +21,23 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		public override string ToString()
+		internal override void ToString(StringBuilder sb)
 		{
-			var format = "[{0}]";
+			sb.Append('[');
+			First.ToString(sb);
 
-			return String.Format(format, First.ToString() +
-				(Second != null ? "," + Second : String.Empty) +
-				".." +
-				(Last != null ? Last.ToString() : String.Empty));
+			if (Second != null)
+			{
+				sb.Append(',');
+				Second.ToString(sb);
+			}
+
+			sb.Append("..");
+
+			if (Last != null)
+				Last.ToString(sb);
+
+			sb.Append(']');
 		}
 		#endregion
 
