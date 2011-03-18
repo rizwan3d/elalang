@@ -10,7 +10,6 @@ namespace Ela.Compilation
 		#region Main
 		private void CompileMatch(ElaMatch exp, ElaExpression matchExp, LabelMap map, Hints hints)
 		{
-			//var aff = new ElaPatternAffinity[0];
 			var serv = -1;
 			var tuple = default(ElaTupleLiteral);
 
@@ -58,7 +57,7 @@ namespace Ela.Compilation
 			var next = Label.Empty;
 			var nextGuard = Label.Empty;
 			var newHints = (hints & Hints.Tail) == Hints.Tail ? Hints.Tail : Hints.None;
-            var tree = new PatternTree { Affinity = ElaPatternAffinity.Any };
+            var tree = new PatternTree();
 			var oldWhere = default(ElaExpression);
 			var prevEntry = default(ElaMatchEntry);
 
@@ -606,12 +605,16 @@ namespace Ela.Compilation
 		{
             var hasAny = (pat.Affinity & ElaPatternAffinity.Any) == ElaPatternAffinity.Any;
             var paff = hasAny ? pat.Affinity ^ ElaPatternAffinity.Any : pat.Affinity;
+			var addAny = hasAny && tree.Affinity == ElaPatternAffinity.None;
 
 			if ((tree.Affinity & ElaPatternAffinity.Any) == ElaPatternAffinity.Any ||
                 tree.Affinity == ElaPatternAffinity.None)
 				tree.Affinity |= paff;
             else if ((tree.Affinity & paff) != paff && !hasAny)
                     return false;
+
+			if (addAny)
+				tree.Affinity |= ElaPatternAffinity.Any;
 
 			return true;
 		}
