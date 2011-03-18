@@ -21,9 +21,16 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		internal override void ToString(StringBuilder sb)
+		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
-			sb.Append(ExternalName == LocalName ? ExternalName : (ExternalName + " = " + LocalName));
+			if (ExternalName == LocalName)
+				sb.Append(LocalName);
+			else
+			{
+				sb.Append(ExternalName);
+				sb.Append('=');
+				sb.Append(LocalName);
+			}
 		}
 		#endregion
 

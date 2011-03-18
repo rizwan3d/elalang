@@ -28,30 +28,22 @@ namespace Ela.CodeModel
 		}
 
 
-		internal override void ToString(StringBuilder sb)
+		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
-			if (FlipParameters)
+			var paren = (fmt.Flags & FmtFlags.NoParen) != FmtFlags.NoParen && FlipParameters;
+
+			if (paren)
 				sb.Append('(');
 
-            var simple = Format.IsSimpleExpression(Target);
-
-			if (!simple)
-				sb.Append('(');
-				
-			sb.Append(Target.ToString());
-
-			if (!simple)
-				sb.Append(')');
+			Format.PutInBraces(Target, sb, fmt);
 
 			foreach (var p in Parameters)
 			{
-                if (Format.IsSimpleExpression(p))
-					sb.Append(" " + p.ToString());
-				else
-                    sb.Append(" " + Format.PutInBraces(p));
+				sb.Append(' ');
+				Format.PutInBraces(p, sb, fmt);
 			}
 
-			if (FlipParameters)
+			if (paren)
 				sb.Append(')');
 		}
 		#endregion

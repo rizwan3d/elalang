@@ -21,12 +21,14 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		internal override void ToString(StringBuilder sb)		
+		internal override void ToString(StringBuilder sb, Fmt fmt)		
 		{
-			var str = (Mutable ? "!" : String.Empty) +
-                FieldName + "=" + 
-				(Format.IsSimpleExpression(FieldValue) ? FieldValue.ToString() : Format.PutInBraces(FieldValue));
-			sb.Append(str);
+			if (Mutable)
+				sb.Append('!');
+
+			sb.Append(FieldName);
+			sb.Append('=');
+			FieldValue.ToString(sb, fmt);
 		}
 		#endregion
 

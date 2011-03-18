@@ -22,16 +22,16 @@ namespace Ela.CodeModel
 		
 
 		#region Methods
-		internal override void ToString(StringBuilder sb)
+		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
-			ToString(sb, "let");
+			ToString(sb, fmt, "let");
 		}
 
 
-		internal void ToString(StringBuilder sb, string keyword)
+		internal void ToString(StringBuilder sb, Fmt fmt, string keyword)
 		{
 			var len = sb.Length;
-			var indent = 0;
+			var indent = fmt.Indent;
 			sb.Append(keyword);
 			sb.Append(' ');
 
@@ -41,40 +41,43 @@ namespace Ela.CodeModel
 			if (InitExpression.Type == ElaNodeType.FunctionLiteral)
 			{
 				var fun = (ElaFunctionLiteral)InitExpression;
-				indent = sb.Length - len + fun.Name.Length + 1;
-				fun.ToString(sb);
+				indent += sb.Length - len;
+				fun.ToString(sb, new Fmt(indent));
+				indent += fun.Name.Length + 1;				
 			}
 			else
 			{
 				if (!String.IsNullOrEmpty(VariableName))
 					sb.Append(VariableName);
 				else
-					Pattern.ToString(sb);
+					Format.PutInBraces(Pattern, sb, fmt);
 
 				sb.Append(" = ");
-				indent = sb.Length - len;
+				indent += sb.Length - len;
 				sb.Append(InitExpression);
 			}
 
 			if (Where != null)
 			{
 				sb.AppendLine();
-				sb.Append(new String(' ', indent));
-				Where.ToString(sb, "where");
+				sb.Append(' ', indent);
+				Where.ToString(sb, new Fmt(indent), "where");
 			}
 
 			if (And != null)
 			{
 				sb.AppendLine();
-				sb.Append(" et ");
-				And.ToString(sb);
+				var nfm = new Fmt(fmt.Indent + keyword.Length - 2, fmt.Flags);
+				sb.Append(' ', nfm.Indent);
+				And.ToString(sb, nfm, "et");
 			}
 
 			if (In != null)
 			{
 				sb.AppendLine();
+				sb.Append(' ', fmt.Indent);
 				sb.Append(" in ");
-				sb.Append(In.ToString());
+				In.ToString(sb, fmt);
 			}
 		}
 		#endregion

@@ -23,12 +23,30 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		internal override void ToString(StringBuilder sb)
+		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
-            var str = Format.PutInBracesComplex(Left) + " " +
-                (Operator == ElaOperator.Custom ? CustomOperator : Format.OperatorAsString(Operator)) +
-                " " + Format.PutInBracesComplex(Right);
-            sb.Append(Format.IsHiddenVar(Left) || Format.IsHiddenVar(Right) ? Format.PutInBraces(str) : str);
+            var paren = (Format.IsHiddenVar(Left) || Format.IsHiddenVar(Right)) &&
+				(fmt.Flags & FmtFlags.NoParen) != FmtFlags.NoParen;
+
+			if (paren)
+				sb.Append('(');
+
+			if (Operator == ElaOperator.Negate || Operator == ElaOperator.BitwiseNot)
+			{
+				sb.Append(Format.OperatorAsString(Operator));
+				Left.ToString(sb, fmt);
+			}
+			else
+			{
+				Left.ToString(sb, fmt);
+				sb.Append(' ');
+				sb.Append(Operator == ElaOperator.Custom ? CustomOperator : Format.OperatorAsString(Operator));
+				sb.Append(' ');
+				Right.ToString(sb, fmt);
+			}
+
+			if (paren)
+				sb.Append(')');
 		}
 		#endregion
 

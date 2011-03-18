@@ -38,7 +38,7 @@ namespace Ela.CodeModel
 		}
 
 
-		internal override void ToString(StringBuilder sb)
+		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			sb.Append('(');
 			var c = 0;
@@ -48,7 +48,7 @@ namespace Ela.CodeModel
 				if (c++ > 0)
 					sb.Append(',');
 
-				f.ToString(sb);
+				f.ToString(sb, fmt);
 			}
 
 			sb.Append(')');

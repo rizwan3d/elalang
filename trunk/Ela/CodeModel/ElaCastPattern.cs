@@ -21,9 +21,11 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		internal override void ToString(StringBuilder sb)
+		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
-            sb.Append(VariableName + ":" + TypeCodeFormat.GetShortForm(TypeAffinity));
+            sb.Append(VariableName);
+			sb.Append(':');
+			sb.Append(TypeCodeFormat.GetShortForm(TypeAffinity));
 		}
 		#endregion
 

@@ -28,20 +28,20 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		internal override void ToString(StringBuilder sb)
+		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
-			ToString(sb, "match");
+			ToString(sb, fmt, "match");
 		}
 
 
-		internal void ToString(StringBuilder sb, string keyword)
+		internal void ToString(StringBuilder sb, Fmt fmt, string keyword)
 		{
 			sb.Append(keyword);
 			sb.Append(' ');
 			var indent = keyword.Length + 1;
 
-			Expression.ToString(sb);
-			sb.AppendLine(" with");
+			Expression.ToString(sb, fmt);
+			sb.AppendLine(" with ");
 			var c = 0;
 			var op = default(ElaPattern);
 
@@ -50,13 +50,13 @@ namespace Ela.CodeModel
 				if (c++ > 0)
 				{
 					sb.AppendLine();
-					sb.Append(new String(' ', 6));
+					sb.Append(' ', 6);
 				}
 
 				if (p.Pattern == null && op != null)
-					sb.Append(new String(' ', op.ToString().Length));
+					sb.Append(' ', op.ToString().Length);
 
-				p.ToString(sb);
+				p.ToString(sb, fmt);
 				
 				if (p.Pattern != null) 
 					op = p.Pattern;

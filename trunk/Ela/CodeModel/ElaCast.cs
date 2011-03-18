@@ -21,12 +21,11 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		internal override void ToString(StringBuilder sb)
+		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
-            var str = 
-				(Format.IsSimpleExpression(Expression) ? Expression.ToString() : Format.PutInBraces(Expression)) + 
-				":" + TypeCodeFormat.GetShortForm(CastAffinity);
-			sb.Append(str);
+			Format.PutInBraces(Expression, sb, fmt);
+			sb.Append(':');
+			sb.Append(TypeCodeFormat.GetShortForm(CastAffinity));
 		}
 		#endregion
 

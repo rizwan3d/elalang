@@ -22,29 +22,35 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		internal override void ToString(StringBuilder sb)
+		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			var len = sb.Length;
+			var indent = fmt.Indent;
 
 			if (Pattern != null)
-				Pattern.ToString(sb);
-
+			{
+				if ((fmt.Flags & FmtFlags.Paren) == FmtFlags.Paren)
+					Format.PutInBraces(Pattern, sb, fmt);
+				else
+					Pattern.ToString(sb, fmt);
+			}
+			
 			if (Guard != null)
 			{
 				sb.Append(" | ");
-				Guard.ToString(sb);
+				Guard.ToString(sb, fmt);
 			}
 			
 			sb.Append(" = ");
-			var indent = sb.Length - len;
-			Expression.ToString(sb);
+			indent += sb.Length - len;
+			Expression.ToString(sb, new Fmt(indent, fmt.Flags));
 
 			if (Where != null)
 			{
 				var bin = (ElaBinding)Where;
 				sb.AppendLine();
-				sb.Append(new String(' ', indent));
-				bin.ToString(sb, "where");				
+				sb.Append(' ', indent);
+				bin.ToString(sb, new Fmt(indent), "where");				
 			}
 		}
 		#endregion

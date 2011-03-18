@@ -21,7 +21,7 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		internal override void ToString(StringBuilder sb)
+		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			var c = 0;
 
@@ -30,10 +30,7 @@ namespace Ela.CodeModel
 				if (c++ > 0)
 					sb.Append(' ');
 
-				if (f.Type == ElaNodeType.VariantPattern || f.Type == ElaNodeType.HeadTailPattern)
-					sb.Append(Format.PutInBraces(f));
-				else
-					f.ToString(sb);
+				Format.PutInBraces(f, sb, fmt);
 			}
 		}
 		#endregion

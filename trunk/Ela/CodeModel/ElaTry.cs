@@ -21,9 +21,9 @@ namespace Ela.CodeModel
 		
 		
 		#region Methods
-		internal override void ToString(StringBuilder sb)
+		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
-			base.ToString(sb, "try");
+			base.ToString(sb, fmt, "try");
 		}
 		#endregion
 	}

@@ -21,9 +21,11 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		internal override void ToString(StringBuilder sb)
+		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
-            sb.Append(Format.PutInBraces(Pattern) + "@" + Name);
+			Format.PutInBraces(Pattern, sb, fmt);
+			sb.Append('@');
+			sb.Append(Name);
 		}
 		#endregion
 

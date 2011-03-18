@@ -27,12 +27,20 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		internal override void ToString(StringBuilder sb)
+		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
-			var str = Kind == ElaBuiltinFunctionKind.Operator ? 
-				Format.PutInBraces(Format.OperatorAsString(Operator)) :
-				Kind.ToString().ToLower();
-			sb.Append(str);
+			if (Kind == ElaBuiltinFunctionKind.Operator)
+			{
+				if ((fmt.Flags & FmtFlags.NoParen) != FmtFlags.NoParen)
+					sb.Append('(');
+
+				sb.Append(Format.OperatorAsString(Operator));
+
+				if ((fmt.Flags & FmtFlags.NoParen) != FmtFlags.NoParen)
+					sb.Append(')');
+			}
+			else
+				sb.Append(Kind.ToString().ToLower());
 		}
 		#endregion
 

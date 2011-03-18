@@ -21,10 +21,11 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		internal override void ToString(StringBuilder sb)
+		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
-			var str = Expression + (Pattern.Type == ElaNodeType.IsPattern ? String.Empty :  " is ") + Format.PutInBracesComplex(Pattern);
-			sb.Append(str);
+			Format.PutInBraces(Expression, sb, fmt);
+			sb.Append(" is ");
+			Format.PutInBraces(Pattern, sb, fmt);
 		}
 		#endregion
 

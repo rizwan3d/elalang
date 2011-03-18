@@ -34,7 +34,7 @@ namespace Ela.CodeModel
 		
 
 		#region Methods
-		internal override void ToString(StringBuilder sb)
+		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			sb.Append('{');
 			var c = 0;
@@ -42,9 +42,9 @@ namespace Ela.CodeModel
 			foreach (var f in Fields)
 			{
 				if (c++ > 0)
-					sb.Append(", ");
+					sb.Append(',');
 
-				f.ToString(sb);
+				f.ToString(sb, fmt);
 			}
 
 			sb.Append('}');

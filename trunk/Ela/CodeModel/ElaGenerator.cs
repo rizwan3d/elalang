@@ -21,15 +21,15 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		internal override void ToString(StringBuilder sb)		
+		internal override void ToString(StringBuilder sb, Fmt fmt)		
 		{
 			var sbNew = new StringBuilder();
-			var sel = GetSelect(this, sbNew);
+			var sel = GetSelect(this, fmt, sbNew);
 			sb.Append(sel.ToString() + " \\\\ " + sbNew.ToString());
 		}
 
 
-		private ElaExpression GetSelect(ElaGenerator gen, StringBuilder sb)
+		private ElaExpression GetSelect(ElaGenerator gen, Fmt fmt, StringBuilder sb)
 		{
 			sb.Append(gen.Pattern.ToString());
 			sb.Append(" <- ");
@@ -38,13 +38,13 @@ namespace Ela.CodeModel
 			if (Guard != null)
 			{
 				sb.Append(" | ");
-				gen.Guard.ToString(sb);
+				gen.Guard.ToString(sb, fmt);
 			}
 
 			if (gen.Body.Type == ElaNodeType.Generator)
 			{
 				sb.Append(',');
-				return GetSelect((ElaGenerator)gen.Body, sb);
+				return GetSelect((ElaGenerator)gen.Body, fmt, sb);
 			}
 			else
 				return gen.Body;

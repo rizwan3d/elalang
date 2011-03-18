@@ -21,7 +21,7 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		internal override void ToString(StringBuilder sb)		
+		internal override void ToString(StringBuilder sb, Fmt fmt)		
 		{
 			if (Value.GetName() == Name)
 				sb.Append(Name);
@@ -29,7 +29,7 @@ namespace Ela.CodeModel
 			{
 				sb.Append(Name);
 				sb.Append('=');
-				Value.ToString(sb);
+				Value.ToString(sb, fmt);
 			}
 		}
 		#endregion

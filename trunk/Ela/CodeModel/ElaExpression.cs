@@ -43,12 +43,12 @@ namespace Ela.CodeModel
 		public override string ToString()
 		{
 			var sb = new StringBuilder();
-			ToString(sb);
+			ToString(sb, new Fmt());
 			return sb.ToString();
 		}
 
 
-		internal abstract void ToString(StringBuilder sb);
+		internal abstract void ToString(StringBuilder sb, Fmt fmt);
 		#endregion
 
 

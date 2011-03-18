@@ -21,12 +21,12 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		internal override void ToString(StringBuilder sb)
+		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			if (ErrorCode == "Failure")
 			{
 				sb.Append("fail ");
-				Expression.ToString(sb);					
+				Expression.ToString(sb, fmt);					
 			}
 			else
 			{
@@ -36,7 +36,7 @@ namespace Ela.CodeModel
 				if (Expression != null)
 				{
 					sb.Append('(');
-					Expression.ToString(sb);
+					Expression.ToString(sb, fmt.Add(FmtFlags.NoParen));
 					sb.Append(')');
 				}
 			}

@@ -3,6 +3,39 @@ using System.Text;
 
 namespace Ela.CodeModel
 {
+	internal struct Fmt
+	{
+		internal Fmt(int indent) : this(indent, FmtFlags.None)
+		{
+			
+		}
+
+
+		internal Fmt(int indent, FmtFlags flags)
+		{
+			Indent = indent;
+			Flags = flags;
+		}
+
+		internal Fmt Add(FmtFlags flag)
+		{
+			return new Fmt(Indent, Flags | flag);
+		}
+
+		internal readonly int Indent;
+		internal readonly FmtFlags Flags;
+	}
+
+
+	[Flags]
+	internal enum FmtFlags
+	{
+		None = 0x00,
+		NoParen = 0x001,
+		Paren = 0x002
+	}
+
+
 	internal static class Format
 	{
 		public static string OperatorAsString(ElaOperator op)
@@ -43,18 +76,6 @@ namespace Ela.CodeModel
 		}
 
 
-		public static string PatternToStringAsFuncPattern(ElaPattern pat)
-		{
-			if (pat == null)
-				return String.Empty;
-			else if (pat.Type == ElaNodeType.VariantPattern ||
-				pat.Type == ElaNodeType.HeadTailPattern)
-				return "(" + pat.ToString() + ")";
-			else
-				return pat.ToString();
-		}
-
-
 		public static bool IsSimpleExpression(ElaExpression p)
 		{
 			return 
@@ -79,32 +100,37 @@ namespace Ela.CodeModel
 		}
 
 
-		public static string PutInBracesComplex(ElaExpression p)
+		public static void PutInBraces(ElaExpression e, StringBuilder sb, Fmt fmt)
 		{
-            return IsSimpleExpression(p) ? 
-				(p != null ? p.ToString() : String.Empty) : 
-				PutInBraces(p.ToString());
+			var simple = IsSimpleExpression(e);
+
+			if (!simple)
+			{
+				sb.Append('(');
+				e.ToString(sb, fmt.Add(FmtFlags.NoParen));
+				sb.Append(')');
+			}
+			else
+				e.ToString(sb, fmt);				
 		}
 
 
-		public static string PutInBracesComplex(ElaPattern p)
+		public static void PutInBraces(ElaPattern e, StringBuilder sb, Fmt fmt)
 		{
-			var comp = p.Type == ElaNodeType.HeadTailPattern ||
-				p.Type == ElaNodeType.VariantPattern;
-            return !comp ? p.ToString() : PutInBraces(p.ToString());
-		}
+			var complex = e.Type == ElaNodeType.HeadTailPattern ||
+				e.Type == ElaNodeType.VariantPattern ||
+				e.Type == ElaNodeType.AsPattern ||
+				e.Type == ElaNodeType.CastPattern ||
+				e.Type == ElaNodeType.IsPattern;
 
-
-
-		public static string PutInBraces(ElaExpression p)
-		{
-            return PutInBraces(p.ToString());
-		}
-
-
-		public static string PutInBraces(string expStr)
-		{
-			return expStr[0] == '(' ? expStr : "(" + expStr + ")";
+			if (complex)
+			{
+				sb.Append('(');
+				e.ToString(sb, fmt.Add(FmtFlags.NoParen));
+				sb.Append(')');
+			}
+			else
+				e.ToString(sb, fmt);
 		}
 	}
 }

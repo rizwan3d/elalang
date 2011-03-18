@@ -27,9 +27,10 @@ namespace Ela.CodeModel
 		}
 
 
-		internal override void ToString(StringBuilder sb)
+		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
-			sb.Append(VariableName[0] == '$' ? String.Empty : VariableName);
+			if (VariableName[0] != '$')
+				sb.Append(VariableName);
 		}
 		#endregion
 

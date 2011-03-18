@@ -38,31 +38,25 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		internal override void ToString(StringBuilder sb)
+		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			if (String.IsNullOrEmpty(Name))
 			{
 				var pat = Body.Entries[0].Pattern;
 
 				if (pat.Type == ElaNodeType.VariablePattern && ((ElaVariablePattern)pat).Name[0] == '$')
-					Body.Entries[0].Expression.ToString(sb);
+					Body.Entries[0].Expression.ToString(sb, fmt);
 				else
 				{
 					sb.Append('\\');
-					Body.Entries[0].Pattern.ToString(sb);
+					Format.PutInBraces(Body.Entries[0].Pattern, sb, fmt);
 					sb.Append(" -> ");
-					Body.Entries[0].Expression.ToString(sb);
+					Body.Entries[0].Expression.ToString(sb, fmt);
 				}
 			}
 			else
 			{
-				var str = sb.ToString();
-				var idx = str.LastIndexOf('\n');
-
-				if (idx == -1)
-					idx = str.LastIndexOf('\r');
-
-				var indent = idx > 0 ? sb.Length - idx - 1 : sb.Length;
+				var indent = fmt.Indent;
 
 				sb.Append(Name);
 				sb.Append(' ');
@@ -88,8 +82,8 @@ namespace Ela.CodeModel
 					if (p.Pattern == null && op != null)
 						sb.Append(' ', op.ToString().Length);
 
-					p.ToString(sb);
-
+					p.ToString(sb, new Fmt(indent + Name.Length + 1, fmt.Flags | FmtFlags.Paren));
+					
 					if (p.Pattern != null)
 						op = p.Pattern;
 				}

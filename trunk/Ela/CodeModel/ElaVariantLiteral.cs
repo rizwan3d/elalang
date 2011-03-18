@@ -23,13 +23,16 @@ namespace Ela.CodeModel
 
 
 		#region Methods
-		internal override void ToString(StringBuilder sb)
+		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			sb.Append('`');
 			sb.Append(Tag);
 
 			if (Expression != null)
-				Expression.ToString(sb);
+			{
+				sb.Append(' ');
+				Expression.ToString(sb, fmt);
+			}
 		}
 		#endregion
 
