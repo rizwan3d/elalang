@@ -48,7 +48,7 @@ namespace Ela.CodeModel
 		{
 			get
 			{
-				return _kind == ElaBuiltinFunctionKind.Operator || 
+				return _kind == ElaBuiltinFunctionKind.Operator && Operator != ElaOperator.BitwiseNot && Operator != ElaOperator.Negate || 
 					_kind == ElaBuiltinFunctionKind.Showf ||
                     _kind == ElaBuiltinFunctionKind.Ref ? 2 : 1;
 			}

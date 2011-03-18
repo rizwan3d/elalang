@@ -394,10 +394,10 @@ internal sealed class Scanner {
 			case "false": t.kind = 38; break;
 			case "fail": t.kind = 39; break;
 			case "where": t.kind = 40; break;
-			case "and": t.kind = 41; break;
+			case "et": t.kind = 41; break;
 			case "_": t.kind = 43; break;
-			case ":": t.kind = 46; break;
-			case "?": t.kind = 49; break;
+			case "?": t.kind = 48; break;
+			case ":": t.kind = 49; break;
 			case "::": t.kind = 50; break;
 			case "--": t.kind = 51; break;
 			case "!": t.kind = 52; break;
@@ -423,12 +423,12 @@ internal sealed class Scanner {
 			case "/": t.kind = 73; break;
 			case "%": t.kind = 74; break;
 			case "**": t.kind = 75; break;
-			case "|||": t.kind = 76; break;
-			case "^^^": t.kind = 77; break;
-			case "&&&": t.kind = 78; break;
-			case "<<": t.kind = 79; break;
-			case ">>": t.kind = 80; break;
-			case "~~~": t.kind = 81; break;
+			case "~~~": t.kind = 76; break;
+			case "|||": t.kind = 77; break;
+			case "^^^": t.kind = 78; break;
+			case "&&&": t.kind = 79; break;
+			case "<<": t.kind = 80; break;
+			case ">>": t.kind = 81; break;
 			default: break;
 		}
 	}
@@ -454,6 +454,13 @@ internal sealed class Scanner {
 		nl = false;
 	}
 	
+	internal void InjectBlock(int col) {
+		istack.Push(col);
+		expectIndent = col;
+		indent = -1;
+		nl = false;
+	}
+	
 	Token NextToken() {
 		while (ch == ' ' ||
 			ch == 10 || ch == 13
@@ -471,7 +478,6 @@ internal sealed class Scanner {
 		}
 		if (ch == '/' && Comment0() ||ch == '/' && Comment1()) return NextToken();
 		int apx = 0;
-
 		if (indent > -1 && indent < expectIndent) {
 			t = new Token();
 			t.pos = pos; t.col = col; t.line = line; t.virt = true;
@@ -556,7 +562,7 @@ internal sealed class Scanner {
 			case 11:
 				recEnd = pos; recKind = 6;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 11;}
-				else if (ch == 'D' || ch == 'd') {AddCh(); goto case 22;}
+				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 22;}
 				else if (ch == 'E' || ch == 'e') {AddCh(); goto case 12;}
 				else {t.kind = 6; break;}
 			case 12:
@@ -569,12 +575,12 @@ internal sealed class Scanner {
 			case 14:
 				recEnd = pos; recKind = 6;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 14;}
-				else if (ch == 'D' || ch == 'd') {AddCh(); goto case 22;}
+				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 22;}
 				else {t.kind = 6; break;}
 			case 15:
 				recEnd = pos; recKind = 6;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 15;}
-				else if (ch == 'D' || ch == 'd') {AddCh(); goto case 22;}
+				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 22;}
 				else if (ch == 'E' || ch == 'e') {AddCh(); goto case 16;}
 				else {t.kind = 6; break;}
 			case 16:
@@ -587,7 +593,7 @@ internal sealed class Scanner {
 			case 18:
 				recEnd = pos; recKind = 6;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 18;}
-				else if (ch == 'D' || ch == 'd') {AddCh(); goto case 22;}
+				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 22;}
 				else {t.kind = 6; break;}
 			case 19:
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 21;}
@@ -599,7 +605,7 @@ internal sealed class Scanner {
 			case 21:
 				recEnd = pos; recKind = 6;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 21;}
-				else if (ch == 'D' || ch == 'd') {AddCh(); goto case 22;}
+				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 22;}
 				else {t.kind = 6; break;}
 			case 22:
 				{t.kind = 6; break;}
@@ -665,7 +671,7 @@ internal sealed class Scanner {
 				else if (ch == 'L' || ch == 'l') {AddCh(); goto case 10;}
 				else if (ch == '.') {apx++; AddCh(); goto case 56;}
 				else if (ch == 'E' || ch == 'e') {AddCh(); goto case 19;}
-				else if (ch == 'D' || ch == 'd') {AddCh(); goto case 22;}
+				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 22;}
 				else {t.kind = 5; break;}
 			case 44:
 				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 57;}
@@ -684,7 +690,7 @@ internal sealed class Scanner {
 				else if (ch == '.') {apx++; AddCh(); goto case 56;}
 				else if (ch == 'X' || ch == 'x') {AddCh(); goto case 8;}
 				else if (ch == 'E' || ch == 'e') {AddCh(); goto case 19;}
-				else if (ch == 'D' || ch == 'd') {AddCh(); goto case 22;}
+				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 22;}
 				else {t.kind = 5; break;}
 			case 47:
 				recEnd = pos; recKind = 9;
@@ -763,23 +769,23 @@ internal sealed class Scanner {
 			case 63:
 				{t.kind = 45; break;}
 			case 64:
-				{t.kind = 47; break;}
+				{t.kind = 46; break;}
 			case 65:
 				{t.kind = 55; break;}
 			case 66:
 				{t.kind = 82; break;}
 			case 67:
-				recEnd = pos; recKind = 48;
+				recEnd = pos; recKind = 47;
 				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 58;}
 				else if (ch == 39) {AddCh(); goto case 59;}
-				else {t.kind = 48; break;}
+				else {t.kind = 47; break;}
 			case 68:
 				recEnd = pos; recKind = 44;
 				if (ch == '&') {AddCh(); goto case 66;}
 				else {t.kind = 44; break;}
 
 		}
-		t.val = new String(tval, 0, tlen);		
+		t.val = new String(tval, 0, tlen);			
 		return t;
 	}
 	

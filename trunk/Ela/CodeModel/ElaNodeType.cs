@@ -25,8 +25,6 @@ namespace Ela.CodeModel
 		
 		
 
-		Unary,
-
 		Binary,
 
 		FunctionCall,

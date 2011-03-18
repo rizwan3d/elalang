@@ -6,21 +6,6 @@ namespace Ela.Compilation
 	internal sealed partial class Builder
 	{
 		#region Main
-		private void CompileUnary(ElaUnary un, LabelMap map, Hints hints)
-		{
-			CompileExpression(un.Expression, map, Hints.None);
-			AddLinePragma(un);
-
-			if (un.Operator == ElaUnaryOperator.Negate)
-				cw.Emit(Op.Neg);
-			else if (un.Operator == ElaUnaryOperator.BitwiseNot)
-				cw.Emit(Op.NotBw);
-
-			if ((hints & Hints.Left) == Hints.Left)
-				AddValueNotUsed(un);
-		}
-
-
 		private ExprData CompileBinary(ElaBinary bin, LabelMap map, Hints hints)
 		{
 			if (bin.Operator == ElaOperator.Sequence)
@@ -60,7 +45,7 @@ namespace Ela.Compilation
 				{
 					CompileExpression(bin.Left, map, newHints);
 
-					if (bin.Operator != ElaOperator.BooleanAnd && bin.Operator != ElaOperator.BooleanOr)
+					if (bin.Operator != ElaOperator.BooleanAnd && bin.Operator != ElaOperator.BooleanOr && bin.Right != null)
 						CompileExpression(bin.Right, map, newHints);
 				}
 				else
@@ -204,6 +189,12 @@ namespace Ela.Compilation
 				case ElaOperator.ConsList:
 					cw.Emit(Op.Cons);
 					break;
+                case ElaOperator.Negate:
+                    cw.Emit(Op.Neg);
+                    break;
+                case ElaOperator.BitwiseNot:
+                    cw.Emit(Op.NotBw);
+                    break;
 			}
 		}
 

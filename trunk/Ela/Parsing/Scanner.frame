@@ -344,6 +344,13 @@ internal sealed class Scanner {
 		nl = false;
 	}
 	
+	internal void InjectBlock(int col) {
+		istack.Push(col);
+		expectIndent = col;
+		indent = -1;
+		nl = false;
+	}
+	
 	Token NextToken() {
 		while (ch == ' ' ||
 -->scan1
@@ -360,7 +367,6 @@ internal sealed class Scanner {
 			NextCh();
 		}
 -->scan2
-
 		if (indent > -1 && indent < expectIndent) {
 			t = new Token();
 			t.pos = pos; t.col = col; t.line = line; t.virt = true;
@@ -409,7 +415,7 @@ internal sealed class Scanner {
 			} // NextCh already done
 -->scan3
 		}
-		t.val = new String(tval, 0, tlen);		
+		t.val = new String(tval, 0, tlen);			
 		return t;
 	}
 	

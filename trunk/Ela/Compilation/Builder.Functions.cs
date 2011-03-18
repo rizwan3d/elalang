@@ -212,7 +212,7 @@ namespace Ela.Compilation
                     cw.Emit(Op.Ceqref);
                     break;
 				case ElaBuiltinFunctionKind.Operator:
-					pars = 2;
+					pars = fun.Operator == ElaOperator.BitwiseNot || fun.Operator == ElaOperator.Negate ? 1 : 2;
 
 					if (fun.Operator == ElaOperator.CompBackward)
 					{
@@ -225,7 +225,10 @@ namespace Ela.Compilation
 						cw.Emit(Op.Pop);
 					else
 					{
-						cw.Emit(Op.Swap);
+                        if (fun.Operator != ElaOperator.Negate &&
+                            fun.Operator != ElaOperator.BitwiseNot)
+						    cw.Emit(Op.Swap);
+
 						CompileSimpleBinary(fun.Operator);
 					}
 					break;

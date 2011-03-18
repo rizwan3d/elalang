@@ -138,7 +138,7 @@ namespace Ela.Parsing
 
 		ExpectedKeywordWhere = 152,
 
-		ExpectedKeywordAnd = 153,
+		ExpectedKeywordEt = 153,
 
 		// = 154,
 
@@ -162,17 +162,17 @@ namespace Ela.Parsing
 
 		InvalidLiteralPattern = 205,
 
-		InvalidContinue = 206,
+		// = 206,
 
 		InvalidBindingPattern = 207,
 
-		InvalidForeachPattern = 208,
+		InvalidGeneratorPattern = 208,
 
 		InvalidIsOperatorPattern = 209,
 
 		InvalidRoot = 210,
 
-		InvalidBreak = 211,
+		// = 211,
 
 		InvalidAssignment = 212,
 
@@ -192,9 +192,9 @@ namespace Ela.Parsing
 
 		InvalidTry = 220,
 
-		InvalidUnary = 221,
+		// = 221,
 
-		InvalidReturn = 222,
+		// = 222,
 
 		InvalidSimpleExpression = 223,
 
@@ -222,7 +222,7 @@ namespace Ela.Parsing
 
 		InvalidFuncPattern = 235,
 
-		InvalidArrayPattern = 236,
+		// = 236,
 
 		InvalidUnitPattern = 237,
 
@@ -244,7 +244,7 @@ namespace Ela.Parsing
 
 		InvalidParamList = 246,
 
-		InvalidArray = 247,
+		// = 247,
 
 		InvalidBinding = 248,
 

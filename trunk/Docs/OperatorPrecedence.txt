@@ -2,22 +2,23 @@
 
 01. $ (Sequencing operator)
 02. <- (Assign) <-> (Swap)
-03. <| (Backward Pipe)
-04. |> (Forward Pipe)
-05. || (Boolean OR)
-06. && (Boolean AND)
-07. ==, <>, >, <, >=, <= (Comparison)
-08. >>> (Right Shift) <<< (Left Shift)
-09. ++ (Concat)
-10. :: (Cons) Right Associative
-11. + (Add) - (Subtract)
-12. * (Multiply) / (Divide) % (Modulus) ** (Power)
-13. : (Cast) ? (Match) @@ (Comprehension)
-14. Custom Operator / Function in infix form
-15. ||| (Bitwise OR)
-16. ^^^ (Bitwise XOR)
-17. &&& (Bitwise AND)
-18. << (Backward Composition)
-19. >> (Forward Composition) Right Associative
-20. Function application
-21. . (Member Access)
+03. Prefix operators, unary operators
+04. <| (Backward Pipe)
+05. |> (Forward Pipe)
+06. || (Boolean OR)
+07. && (Boolean AND)
+08. ==, <>, >, <, >=, <= (Comparison)
+09. >>> (Right Shift) <<< (Left Shift)
+10. ++ (Concat)
+11. :: (Cons) Right Associative
+12. + (Add) - (Subtract)
+13. * (Multiply) / (Divide) % (Modulus) ** (Power)
+14. : (Cast) ? (Match) @@ (Comprehension)
+15. Custom Operator / Function in infix form
+16. ||| (Bitwise OR)
+17. ^^^ (Bitwise XOR)
+18. &&& (Bitwise AND)
+19. << (Backward Composition)
+20. >> (Forward Composition) Right Associative
+21. Function application
+22. (Member Access)

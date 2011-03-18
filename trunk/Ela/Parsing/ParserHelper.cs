@@ -10,6 +10,8 @@ namespace Ela.Parsing
 	{
 		private static readonly ElaVariableReference hiddenVar = new ElaVariableReference { VariableName = "$0" };
 		private static readonly ElaVariablePattern hiddenPattern = new ElaVariablePattern { Name = "$0" };
+        private bool FALSE = false;
+        private int oldKind = 0;
 
 		#region Methods
 		private ElaExpression GetBuiltin(Token t, string value)
@@ -28,7 +30,7 @@ namespace Ela.Parsing
 			if (la.kind == _PIPE)
 				return false;
 
-			if (la.kind == _AND || la.kind == _IN)
+			if (la.kind == _ET || la.kind == _IN)
 			{
 				scanner.PopIndent();
 				return false;
@@ -38,7 +40,7 @@ namespace Ela.Parsing
 		}
 
 
-		private void SetFunMetadata(ElaBinding varExp, ElaExpression cexp)
+		private void SetObjectMetadata(ElaBinding varExp, ElaExpression cexp)
 		{
 			if (cexp != null)
 			{
@@ -51,6 +53,61 @@ namespace Ela.Parsing
 					varExp.VariableFlags |= ElaVariableFlags.ObjectLiteral;
 			}
 		}
+
+
+        private bool CheckFend(ElaBinding bin)
+        {
+            var and = la.kind != _EBLOCK && la.kind != _IN && (la.kind != _ident || la.val != bin.VariableName);
+
+            if (!and)
+            {
+                oldKind = la.kind;
+                la.kind = _EBLOCK;
+            }
+
+            return and;
+        }
+
+
+        private void RestoreLa()
+        {
+            la.kind = oldKind;
+        }
+
+
+        private void ProcessFunctionParameters(ElaFunctionLiteral mi, Token ot)
+        {
+            if (mi.Body.Entries.Count > 1)
+            {
+                var patterns = default(List<ElaPattern>);
+                var pars = 0;
+
+                if (mi.Body.Entries[0].Pattern.Type != ElaNodeType.PatternGroup)
+                    pars = 1;
+                else
+                {
+                    patterns = ((ElaPatternGroup)mi.Body.Entries[0].Pattern).Patterns;
+                    pars = patterns.Count;
+                }
+
+                var tp = new ElaTupleLiteral(ot);
+
+                for (var i = 0; i < pars; i++)
+                {
+                    if (patterns != null && patterns[i].Type == ElaNodeType.VariablePattern)
+                    {
+                        tp.Parameters.Add(new ElaVariableReference(ot)
+                        {
+                            VariableName = ((ElaVariablePattern)patterns[i]).Name
+                        });
+                    }
+                    else
+                        tp.Parameters.Add(new ElaVariableReference(ot) { VariableName = "$" + i });
+                }
+
+                mi.Body.Expression = tp;
+            }
+        }
 
 
 		private ElaExpression GetOperatorFun(ElaExpression exp, ElaOperator op, bool right)
@@ -213,7 +270,7 @@ namespace Ela.Parsing
 
 		private ElaLiteralValue ParseReal(string val, bool negate)
 		{
-			if (TrimLast(ref val, 'd', 'D'))
+            if (TrimLast(ref val, 'd', 'D'))
 			{
 				var res = default(Double);
 				
@@ -222,15 +279,15 @@ namespace Ela.Parsing
 				
 				return new ElaLiteralValue(negate ? -res : res);
 			}
-			else
-			{
-				var res = default(Single);
-				
-				if (!Single.TryParse(val, NumberStyles.Float, Culture.NumberFormat, out res))
-					AddError(ElaParserError.InvalidRealSyntax);
-				
-				return new ElaLiteralValue(negate ? -res : res);
-			}
+            else
+            {
+                var res = default(Single);
+
+                if (!Single.TryParse(val.Trim('f', 'F'), NumberStyles.Float, Culture.NumberFormat, out res))
+                    AddError(ElaParserError.InvalidRealSyntax);
+
+                return new ElaLiteralValue(negate ? -res : res);
+            }
 		}
 
 

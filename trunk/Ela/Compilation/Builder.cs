@@ -318,9 +318,6 @@ namespace Ela.Compilation
 						cw.Emit(Op.Throw);
 					}
 					break;
-				case ElaNodeType.Unary:
-					CompileUnary((ElaUnary)exp, map, hints);
-					break;
 				case ElaNodeType.Binary:
 					{
 						var ed = CompileBinary((ElaBinary)exp, map, hints);

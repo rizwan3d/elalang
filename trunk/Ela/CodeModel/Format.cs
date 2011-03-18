@@ -35,17 +35,11 @@ namespace Ela.CodeModel
 				case ElaOperator.Subtract: return "-";
 				case ElaOperator.Swap: return "<->";
 				case ElaOperator.Sequence: return "$";
+                case ElaOperator.Negate: return "--";
+                case ElaOperator.BitwiseNot: return "~~~";
 				default:
 					return String.Empty;
 			}
-		}
-
-
-		public static string OperatorAsString(ElaUnaryOperator op)
-		{
-			return op == ElaUnaryOperator.BitwiseNot ? "~~~" :
-				op == ElaUnaryOperator.Negate ? "--" :
-				String.Empty;
 		}
 
 

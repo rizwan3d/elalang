@@ -59,6 +59,10 @@ namespace Ela.CodeModel
 
 		Sequence,
 
+        Negate,
+
+        BitwiseNot,
+
 		Custom
 	}
 }

@@ -204,11 +204,11 @@
   <data name="InvalidExpression" xml:space="preserve">
     <value>Invalid expression.</value>
   </data>
-  <data name="InvalidForeachPattern" xml:space="preserve">
-    <value>Invalid syntax for a pattern matching inside for/in cycle.</value>
+  <data name="InvalidGeneratorPattern" xml:space="preserve">
+    <value>Invalid syntax for a pattern matching inside generator.</value>
   </data>
   <data name="InvalidFunctionDeclaration" xml:space="preserve">
-    <value>Invalid function declaration, function name is missing.</value>
+    <value>Invalid function declaration, function name '{0}' is invalid.</value>
   </data>
   <data name="InvalidFunction" xml:space="preserve">
     <value>Invalid function literal syntax.</value>
@@ -243,9 +243,6 @@
   <data name="InvalidTry" xml:space="preserve">
     <value>Invalid syntax for the 'try' expression.</value>
   </data>
-  <data name="InvalidUnary" xml:space="preserve">
-    <value>Invalid unary expression.</value>
-  </data>
   <data name="UnknownConversionType" xml:space="preserve">
     <value>Unknown type '{0}'. An expression should be one of the standard Ela types.</value>
   </data>
@@ -264,8 +261,8 @@
   <data name="ExpectedFunctionToken" xml:space="preserve">
     <value>Invalid infix function syntax. A infix function reference should be a valid identifier enclosed in apostrophes, e.g. `func`.</value>
   </data>
-  <data name="ExpectedKeywordAnd" xml:space="preserve">
-    <value>Expected keyword 'and'.</value>
+  <data name="ExpectedKeywordEt" xml:space="preserve">
+    <value>Expected keyword 'et'.</value>
   </data>
   <data name="ExpectedKeywordFail" xml:space="preserve">
     <value>Expected keyword 'fail'.</value>
@@ -291,12 +288,6 @@
   <data name="InvalidArgumentReference" xml:space="preserve">
     <value>Invalid argument syntax.</value>
   </data>
-  <data name="InvalidArray" xml:space="preserve">
-    <value>Invalid array declaration syntax.</value>
-  </data>
-  <data name="InvalidArrayPattern" xml:space="preserve">
-    <value>Invalid array pattern syntax.</value>
-  </data>
   <data name="InvalidBaseReference" xml:space="preserve">
     <value>Invalid 'base' reference syntax.</value>
   </data>
@@ -315,9 +306,6 @@
   <data name="InvalidBitXor" xml:space="preserve">
     <value>Invalid bitwise 'xor' expression.</value>
   </data>
-  <data name="InvalidBreak" xml:space="preserve">
-    <value>Invalid 'break' statement.</value>
-  </data>
   <data name="InvalidCast" xml:space="preserve">
     <value>Invalid cast operation syntax.</value>
   </data>
@@ -335,9 +323,6 @@
   </data>
   <data name="InvalidConsPattern" xml:space="preserve">
     <value>Invalid head/tail (e.g. 'x::xs') pattern syntax.</value>
-  </data>
-  <data name="InvalidContinue" xml:space="preserve">
-    <value>Invalid 'continue' statement.</value>
   </data>
   <data name="InvalidDefaultPattern" xml:space="preserve">
     <value>Invalid default pattern syntax.</value>
@@ -419,9 +404,6 @@
   </data>
   <data name="InvalidRecordPattern" xml:space="preserve">
     <value>Invalid record pattern syntax.</value>
-  </data>
-  <data name="InvalidReturn" xml:space="preserve">
-    <value>Invalid 'return' statement. The 'return' statement should be always specified with an expression to be returned.</value>
   </data>
   <data name="InvalidSequence" xml:space="preserve">
     <value>Invalid sequencing operation syntax.</value>

@@ -249,17 +249,6 @@ namespace ElaConsole
 					}
 				case ElaNodeType.TupleLiteral: 
 					return new TypeTag(GetTraits(ElaTypeCode.Tuple), true);
-				case ElaNodeType.Unary:
-					{
-						var un = (ElaUnary)exp;
-						var type = GetExpressionType(un.Expression, scope);
-						var extra = un.Operator == ElaUnaryOperator.BitwiseNot ? ElaTraits.Bit : ElaTraits.Neg;
-
-						if (!type.Complete)
-							type.Traits |= extra;
-
-						return (type.Traits & extra) == extra ? type : new TypeTag(type.Traits | extra, false);
-					}
 				case ElaNodeType.UnitLiteral: return TypeTag.Unit();
 				case ElaNodeType.VariableReference:
 					{
