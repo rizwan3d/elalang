@@ -1,3 +1,4 @@
+0.8.6.67:Fix:A bug in type check of patterns in pattern matching construct is fixed (string pattern and list pattern could be considered as invalid when this is a valid combination).
 0.8.6.66:Change:Ela now doesn't have any special treatment for unary operators. They are treated in the same way as binary. Unary notiation is allowed using "partial application" syntax. It changes almost nothing with the only exception that unary operators can be called using postfix notation and their priority is lowered (to the level of custom operators, still pretty high).
 0.8.6.65:Change:Partial application for operators '.', 'is', ':' and '@@' is (probably temporary) removed.
 0.8.6.64:Change:Partial application for operators as well as operator referencing as functions now don't require braces.

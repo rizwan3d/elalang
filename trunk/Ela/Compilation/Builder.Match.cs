@@ -58,7 +58,7 @@ namespace Ela.Compilation
 			var next = Label.Empty;
 			var nextGuard = Label.Empty;
 			var newHints = (hints & Hints.Tail) == Hints.Tail ? Hints.Tail : Hints.None;
-			var tree = new PatternTree();
+            var tree = new PatternTree { Affinity = ElaPatternAffinity.Any };
 			var oldWhere = default(ElaExpression);
 			var prevEntry = default(ElaMatchEntry);
 

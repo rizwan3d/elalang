@@ -1,13 +1,13 @@
 let iter ?(Get,Len,Ix)@arr = iter' {!ix=0} arr
                             where iter' cell arr () | n < len = cell.ix <- cell.ix + 1 $ `Some (arr.[n])
                                                     | else    = `None
-                                                    where n   = cell.ix and
-                                                          len = length arr
-         ?(Fold)@xs        = iter' {!xs=xs}
+                                                    where n   = cell.ix
+                                                       et len = length arr
+    iter ?(Fold)@xs        = iter' {!xs=xs}
                             where iter' cell () | l is (x::xs) = cell.xs <- xs $ `Some x
                                                 | else         = `None
                                                 where l = cell.xs
-         x                 = fail "iter: not supported: " ++ (show x)
+    iter x                 = fail "iter: not supported: " ++ (show x)
 
 let each f xs = for' (iter xs)
                where for' it | r is (`Some x) = f x $ for' it

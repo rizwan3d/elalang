@@ -1,30 +1,37 @@
 ﻿let fromLiteral {eq} =
-                    let list = ['E', 'l', 'a'] in
-                    eq (length list) 3
-                    $ eq list.[0] 'E'
-                    $ eq list.[1] 'l'
-                    $ eq list.[2] 'a'
+        let list = ['E', 'l', 'a'] in
+        eq (length list) 3
+        $ eq list.[0] 'E'
+        $ eq list.[1] 'l'
+        $ eq list.[2] 'a'
 
 let cons {eq} =
-            let list = 0::1::2::3::[] in
-            eq (length list) 4
-            $ eq list.[0] 0
-            $ eq list.[3] 3
+        let list = 0::1::2::3::[] in
+        eq (length list) 4
+        $ eq list.[0] 0
+        $ eq list.[3] 3
 
 let headTail {eq} =
-                let head x::xs = x and
-                    tail x::xs = xs and
-                    list = [0, 1, 2, 3]
-                in
-                eq (head list) 0
-                $ eq ((tail list) |> length) 3
-                $ eq (tail list).[0] 1
+        let head x::xs = x
+         et tail x::xs = xs
+         et list = [0, 1, 2, 3]
+        in
+        eq (head list) 0
+        $ eq ((tail list) |> length) 3
+        $ eq (tail list).[0] 1
+        
+let headTail2 {eqt} = eqt res
+              where lst = [1,2,3]
+                 et res = match lst with
+                                [1]   = false
+                                [1,2] = false
+                                xs    = (xs is [1,2,3])
 
 let changeItem {eqt=eqt} =
-                    try 
-                        (let list = [0] in list.[0] <- 1)
-                        $ eqt false with _ = eqt true
+        try 
+            (let list = [0] in list.[0] <- 1)
+            $ eqt false with _ = eqt true
 
 let typeCheck {eqt} =
-                let list = [0, 1] in
-                eqt (list is ?list)
+        let list = [0, 1] in
+        eqt (list is ?list)
