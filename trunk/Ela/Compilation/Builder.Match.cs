@@ -60,12 +60,21 @@ namespace Ela.Compilation
             var tree = new PatternTree();
 			var oldWhere = default(ElaExpression);
 			var prevEntry = default(ElaMatchEntry);
+			var processed = new FastList<ElaPattern>();
 
 			var plen = -1;
 
 			for (var i = 0; i < len; i++)
 			{
 				var e = exp.Entries[i];
+
+				if (e.Pattern != null && e.Guard == null)
+				{
+					foreach (var o in processed)
+						if (!e.Pattern.CanFollow(o))
+							AddWarning(ElaCompilerWarning.MatchLessSpecific, e.Pattern, e.Pattern, o);
+				}
+
 				var last = i == len - 1;
 
 				if (e.Pattern != null)
@@ -127,7 +136,7 @@ namespace Ela.Compilation
 
 					if (!BuildPatternTree(e.Pattern, tree))
 					{
-						AddError(ElaCompilerError.MatchEntryTypingFailed, e, FormatNode(e.Pattern));
+						AddWarning(ElaCompilerWarning.MatchEntryTypingFailed, e, FormatNode(e.Pattern));
 						AddHint(ElaCompilerHint.MatchEntryTypingFailed, e);
 					}
 
@@ -183,6 +192,9 @@ namespace Ela.Compilation
 				}
 
 				cw.Emit(Op.Br, end);
+
+				if (e.Pattern != null && e.Guard == null)
+					processed.Add(e.Pattern);
 			}
 
 			cw.MarkLabel(next);

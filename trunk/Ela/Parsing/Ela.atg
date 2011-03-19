@@ -1168,7 +1168,7 @@ PRODUCTIONS
 	/* Expr */
 		
 	AssignExpr<out ElaExpression exp> = 
-		PartialBinaryExpr<out exp>
+		BackwardPipeExpr<out exp>
 		{
 			(. 
 				var cexp = default(ElaExpression); 
@@ -1178,55 +1178,9 @@ PRODUCTIONS
 				"<-" (. op = ElaOperator.Assign; .)
 				| "<->" (. op = ElaOperator.Swap; .)
 			)			
-			PartialBinaryExpr<out cexp>			
+			BackwardPipeExpr<out cexp>			
 			(. exp = new ElaBinary(t) { Operator = op, Left = exp, Right = cexp }; .)
 		}.
-		
-	PartialBinaryExpr<out ElaExpression exp> =
-		(. exp = null; .)
-		(
-			(
-				(. 
-					exp = null; 
-					var ot = t;
-					var op = ElaOperator.None;
-					var opName = String.Empty;
-					var funName = String.Empty;
-				.)
-				(
-					FuncOperator<out op>
-					| operatorTok (. opName = t.val; .)
-					| funcTok (. funName = t.val.Trim('`'); .)
-				)
-				[
-					(. var nexp = default(ElaExpression); .)
-					BackwardPipeExpr<out nexp>
-					(.
-						if (op == ElaOperator.Negate || op == ElaOperator.BitwiseNot)
-							exp = new ElaBinary(ot) { Left = nexp, Operator = op };
-						else
-							exp = 
-								funName.Length != 0 ? GetPrefixFun(funName, nexp, true) :
-								opName.Length != 0 ? GetCustomOperatorFun(opName, nexp) :
-								GetOperatorFun(nexp, op, true);
-					.)
-				]
-				(.
-					if (exp == null)
-					{
-						if (opName.Length == 0 && funName.Length == 0)
-							exp = new ElaBuiltinFunction(ot) { 
-								Kind = ElaBuiltinFunctionKind.Operator,
-								Operator = op
-							};
-						else 
-							exp = new ElaCustomOperator(ot) { Operator = opName };
-					}
-				.)			
-			)
-			| 
-			BackwardPipeExpr<out exp>
-		).
 		
 	BackwardPipeExpr<out ElaExpression exp> =
 		ForwardPipeExpr<out exp>
@@ -1290,124 +1244,268 @@ PRODUCTIONS
 		}.	
 			
 	EqExpr<out ElaExpression exp> =
-		ShiftExpr<out exp>
-		{
-			(. 
-				var cexp = default(ElaExpression); 
-				var op = default(ElaOperator);
-			.)
+		(. 
+			var op = default(ElaOperator); 
+			exp = null;
+			var ot = t; 
+		.)				
+		(
 			(
-				"==" (. op = ElaOperator.Equals; .)
-				| "<>" (. op = ElaOperator.NotEquals; .)
-				| ">" (. op = ElaOperator.Greater; .)
-				| "<" (. op = ElaOperator.Lesser; .)
-				| ">=" (. op = ElaOperator.GreaterEqual; .)
-				| "<=" (. op = ElaOperator.LesserEqual; .)
+				ShiftExpr<out exp>
+				{
+					(. var cexp = default(ElaExpression); .)
+					(
+						"==" (. op = ElaOperator.Equals; .)
+						| "<>" (. op = ElaOperator.NotEquals; .)
+						| ">" (. op = ElaOperator.Greater; .)
+						| "<" (. op = ElaOperator.Lesser; .)
+						| ">=" (. op = ElaOperator.GreaterEqual; .)
+						| "<=" (. op = ElaOperator.LesserEqual; .)
+					)
+					[ ShiftExpr<out cexp> ]
+					(. 
+						if (cexp == null)
+							exp = GetOperatorFun(exp, op, false);
+						else
+							exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
+					.)
+				}
 			)
-			[ ShiftExpr<out cexp> ]
-			(. 
-				if (cexp == null)
-					exp = GetOperatorFun(exp, op, false);
-				else
-					exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
-			.)
-		}.
+			|
+			(
+				(
+					"==" (. op = ElaOperator.Equals; .)
+					| "<>" (. op = ElaOperator.NotEquals; .)
+					| ">" (. op = ElaOperator.Greater; .)
+					| "<" (. op = ElaOperator.Lesser; .)
+					| ">=" (. op = ElaOperator.GreaterEqual; .)
+					| "<=" (. op = ElaOperator.LesserEqual; .)
+				)
+				[ 
+					ShiftExpr<out exp> 
+					(. exp = GetOperatorFun(exp, op, true); .)
+				]
+				(.
+					if (exp == null)
+						exp = new ElaBuiltinFunction(ot) { 
+								Kind = ElaBuiltinFunctionKind.Operator,
+								Operator = op
+							};
+				.)
+			)
+		).
 			
 	ShiftExpr<out ElaExpression exp> =
-		ConcatExpr<out exp>
-		{
-			(. 
-				var cexp = default(ElaExpression); 
-				var op = default(ElaOperator);
-			.)
+		(. 
+			var op = default(ElaOperator); 
+			exp = null;
+			var ot = t; 
+		.)				
+		(
 			(
-				">>>" (. op = ElaOperator.ShiftRight; .) |
-				"<<<" (. op = ElaOperator.ShiftLeft; .)
+				ConcatExpr<out exp>
+				{
+					(. var cexp = default(ElaExpression); .)
+					(
+						">>>" (. op = ElaOperator.ShiftRight; .)
+						| "<<<" (. op = ElaOperator.ShiftLeft; .)
+					)
+					[ ConcatExpr<out cexp> ]
+					(. 
+						if (cexp == null)
+							exp = GetOperatorFun(exp, op, false);
+						else
+							exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
+					.)
+				}
 			)
-			[ ConcatExpr<out cexp> ]
-			(. 
-				if (cexp == null)
-					exp = GetOperatorFun(exp, op, false);
-				else
-					exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
-			.)
-		}.
+			|
+			(
+				(
+					">>>" (. op = ElaOperator.ShiftRight; .)
+					| "<<<" (. op = ElaOperator.ShiftLeft; .)
+				)
+				[ 
+					ConcatExpr<out exp> 
+					(. exp = GetOperatorFun(exp, op, true); .)
+				]
+				(.
+					if (exp == null)
+						exp = new ElaBuiltinFunction(ot) { 
+								Kind = ElaBuiltinFunctionKind.Operator,
+								Operator = op
+							};
+				.)
+			)
+		).
 				
 	ConcatExpr<out ElaExpression exp> =
-		ConsExpr<out exp>
-		{
-			(. 
-				var cexp = default(ElaExpression); 
-				var op = default(ElaOperator);
-			.)
-			"++" (. op = ElaOperator.Concat; .)
-			[ ConsExpr<out cexp> ]
-			(. 
-				if (cexp == null)
-					exp = GetOperatorFun(exp, op, false);
-				else
-					exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
-			.)
-		}.
+		(. 
+			var op = default(ElaOperator); 
+			exp = null;
+			var ot = t; 
+		.)				
+		(
+			(
+				ConsExpr<out exp>
+				{
+					(. var cexp = default(ElaExpression); .)
+					"++" (. op = ElaOperator.Concat; .)
+					[ ConsExpr<out cexp> ]
+					(. 
+						if (cexp == null)
+							exp = GetOperatorFun(exp, op, false);
+						else
+							exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
+					.)
+				}
+			)
+			|
+			(
+				"++" (. op = ElaOperator.Concat; .)
+				[ 
+					ConsExpr<out exp> 
+					(. exp = GetOperatorFun(exp, op, true); .)
+				]
+				(.
+					if (exp == null)
+						exp = new ElaBuiltinFunction(ot) { 
+								Kind = ElaBuiltinFunctionKind.Operator,
+								Operator = op
+							};
+				.)
+			)
+		).
 		
 	ConsExpr<out ElaExpression exp> =
-		AddExpr<out exp>
-		{
-			(. 
-				var cexp = default(ElaExpression); 
-				var op = default(ElaOperator);
-			.)
-			"::" (. op = ElaOperator.ConsList; .)
-			[ ConsExpr<out cexp> ]
-			(. 
-				if (cexp == null)
-					exp = GetOperatorFun(exp, op, false);
-				else
-					exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp };
-			.)
-		}.				
+		(. 
+			var op = default(ElaOperator); 
+			exp = null;
+			var ot = t; 
+		.)				
+		(
+			(
+				AddExpr<out exp>
+				{
+					(. var cexp = default(ElaExpression); .)
+					"::" (. op = ElaOperator.ConsList; .)
+					[ ConsExpr<out cexp> ]
+					(. 
+						if (cexp == null)
+							exp = GetOperatorFun(exp, op, false);
+						else
+							exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp };
+					.)
+				}			
+			)
+			|
+			(
+				"::" (. op = ElaOperator.ConsList; .)
+				[ 
+					AddExpr<out exp> 
+					(. exp = GetOperatorFun(exp, op, true); .)
+				]
+				(.
+					if (exp == null)
+						exp = new ElaBuiltinFunction(ot) { 
+								Kind = ElaBuiltinFunctionKind.Operator,
+								Operator = op
+							};
+				.)
+			)
+		).
 		
 	AddExpr<out ElaExpression exp> =
-		MulExpr<out exp>
-		{
-			(. 
-				var cexp = default(ElaExpression); 
-				var op = default(ElaOperator);
-			.)
+		(. 
+			var op = default(ElaOperator); 
+			exp = null;
+			var ot = t; 
+		.)				
+		(
 			(
-				"+" (. op = ElaOperator.Add; .) |
-				"-" (. op = ElaOperator.Subtract; .)
+				MulExpr<out exp>
+				{
+					(. var cexp = default(ElaExpression); .)
+					(
+						"+" (. op = ElaOperator.Add; .)
+						| "-" (. op = ElaOperator.Subtract; .)
+					)
+					[ MulExpr<out cexp> ]
+					(. 
+						if (cexp == null)
+							exp = GetOperatorFun(exp, op, false);
+						else
+							exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
+					.)
+				}
 			)
-			[ MulExpr<out cexp> ]
-			(. 
-				if (cexp == null)
-					exp = GetOperatorFun(exp, op, false);
-				else
-					exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
-			.)
-		}.
+			|
+			(
+				(
+					"+" (. op = ElaOperator.Add; .)
+					| "-" (. op = ElaOperator.Subtract; .)
+				)
+				[ 
+					MulExpr<out exp> 
+					(. exp = GetOperatorFun(exp, op, true); .)
+				]
+				(.
+					if (exp == null)
+						exp = new ElaBuiltinFunction(ot) { 
+								Kind = ElaBuiltinFunctionKind.Operator,
+								Operator = op
+							};
+				.)
+			)
+		).
 		
 	MulExpr<out ElaExpression exp> =
-		CastExpr<out exp>
-		{
-			(. 
-				var cexp = default(ElaExpression); 
-				var op = default(ElaOperator);
-			.)
+		(. 
+			var op = default(ElaOperator); 
+			exp = null;
+			var ot = t; 
+		.)				
+		(
 			(
-				"*" (. op = ElaOperator.Multiply; .) |
-				"/" (. op = ElaOperator.Divide; .) |
-				"%" (. op = ElaOperator.Modulus; .) |
-				"**" (. op = ElaOperator.Power; .)
+				CastExpr<out exp>
+				{
+					(. var cexp = default(ElaExpression); .)
+					(
+						"*" (. op = ElaOperator.Multiply; .)
+						| "/" (. op = ElaOperator.Divide; .)
+						| "%" (. op = ElaOperator.Modulus; .)
+						| "**" (. op = ElaOperator.Power; .)
+					)
+					[ CastExpr<out cexp> ]
+					(. 
+						if (cexp == null)
+							exp = GetOperatorFun(exp, op, false);
+						else
+							exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
+					.)
+				}
 			)
-			[ CastExpr<out cexp> ]
-			(. 
-				if (cexp == null)
-					exp = GetOperatorFun(exp, op, false);
-				else
-					exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
-			.)
-		}.
+			|
+			(
+				(
+					"*" (. op = ElaOperator.Multiply; .)
+					| "/" (. op = ElaOperator.Divide; .)
+					| "%" (. op = ElaOperator.Modulus; .)
+					| "**" (. op = ElaOperator.Power; .)
+				)
+				[ 
+					CastExpr<out exp> 
+					(. exp = GetOperatorFun(exp, op, true); .)
+				]
+				(.
+					if (exp == null)
+						exp = new ElaBuiltinFunction(ot) { 
+								Kind = ElaBuiltinFunctionKind.Operator,
+								Operator = op
+							};
+				.)
+			)
+		).
 		
 	CastExpr<out ElaExpression exp> = 
 		InfixExpr<out exp>
@@ -1456,124 +1554,302 @@ PRODUCTIONS
 		"]".
 		
 	InfixExpr<out ElaExpression exp> = 
-		BitOrExpr<out exp>
-		{
-			(. 
-				var cexp = default(ElaExpression); 
-				var op = ElaOperator.None;
-				var name = String.Empty;
-				var ot = t;
-			.)
+		(. 
+			var op = default(ElaOperator); 
+			exp = null;
+			var ot = t; 
+			var name = String.Empty;
+		.)				
+		(
 			(
-				operatorTok (. op = ElaOperator.Custom; name = t.val; .)
-				| funcTok (. name = t.val.Trim('`'); .)
-				| "--" (. op = ElaOperator.Negate; .)
-				| "~~~" (. op = ElaOperator.BitwiseNot; .)
-			)
-			[ BitOrExpr<out cexp> ]
-			(. 
-				if (op == ElaOperator.None)
+				BitOrExpr<out exp>
 				{
-					var fc = new ElaFunctionCall(ot) 
-					{ 
-						Target = GetBuiltin(ot, name)
-					};
-					fc.Parameters.Add(exp);			
-					
-					if (cexp != null)
-						fc.Parameters.Add(cexp);
-									
-					exp = fc;
+					(. 
+						var cexp = default(ElaExpression); 
+						ot = t;
+					.)
+					(
+						operatorTok (. op = ElaOperator.Custom; name = t.val; .)
+						| funcTok (. name = t.val.Trim('`'); .)
+					)
+					[ BitOrExpr<out cexp> ]
+					(. 
+						if (op == ElaOperator.None)
+						{
+							var fc = new ElaFunctionCall(ot) { 
+									Target = GetBuiltin(ot, name)
+								};
+							fc.Parameters.Add(exp);			
+							
+							if (cexp != null)
+								fc.Parameters.Add(cexp);
+											
+							exp = fc;
+						}
+						else
+							exp = new ElaBinary(t) { CustomOperator = name, Left = exp, Operator = op, Right = cexp }; 
+					.)
 				}
-				else if (op != ElaOperator.Custom)
-					exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
-				else
-					exp = new ElaBinary(t) { CustomOperator = name, Left = exp, Operator = op, Right = cexp }; 
-			.)
-		}.
+			)
+			|
+			(
+				(
+					operatorTok (. op = ElaOperator.Custom; name = t.val; .)
+					| funcTok (. name = t.val.Trim('`'); .)
+				)
+				[ 
+					BitOrExpr<out exp> 
+					(.
+						exp =
+							op == ElaOperator.Custom ? GetCustomOperatorFun(name, exp) : 
+							GetPrefixFun(name, exp, true);						
+					.)
+				]
+				(.
+					if (exp == null)
+					{
+						if (op == ElaOperator.Custom)					
+							exp = new ElaCustomOperator(ot) { Operator = name };
+						else
+							exp = new ElaVariableReference(ot) { VariableName = name };
+					}
+				.)				
+			)
+		).
 		
 	BitOrExpr<out ElaExpression exp> =
-		BitXorExpr<out exp>
-		{
-			(. var cexp = default(ElaExpression); .)
-			"|||" 
-			[ BitXorExpr<out cexp> ]
-			(. 
-				if (cexp == null)
-					exp = GetOperatorFun(exp, ElaOperator.BitwiseOr, false);
-				else
-					exp = new ElaBinary(t) { 
-						Left = exp, Operator = ElaOperator.BitwiseOr, Right = cexp }; 
-			.)
-		}.
+		(. 
+			var op = ElaOperator.BitwiseOr; 
+			exp = null;
+			var ot = t; 
+		.)				
+		(
+			(
+				BitXorExpr<out exp>
+				{
+					(. var cexp = default(ElaExpression); .)
+					"|||" 
+					[ BitXorExpr<out cexp> ]
+					(. 
+						if (cexp == null)
+							exp = GetOperatorFun(exp, op, false);
+						else
+							exp = new ElaBinary(t) { 
+								Left = exp, Operator = op, Right = cexp }; 
+					.)
+				}
+			)
+			|
+			(
+				"|||"
+				[ 
+					BitXorExpr<out exp> 
+					(. exp = GetOperatorFun(exp, op, true); .)
+				]
+				(.
+					if (exp == null)
+						exp = new ElaBuiltinFunction(ot) { 
+								Kind = ElaBuiltinFunctionKind.Operator,
+								Operator = op
+							};
+				.)
+			)
+		).
 		
 	BitXorExpr<out ElaExpression exp> =
-		BitAndExpr<out exp>
-		{
-			(. var cexp = default(ElaExpression); .)
-			"^^^" 
-			[ BitAndExpr<out cexp> ]
-			(. 
-				if (cexp == null)
-					exp = GetOperatorFun(exp, ElaOperator.BitwiseXor, false);
-				else
-					exp = new ElaBinary(t) { 
-						Left = exp, Operator = ElaOperator.BitwiseXor, Right = cexp }; 
-			.)
-		}.
+		(. 
+			var op = ElaOperator.BitwiseXor; 
+			exp = null;
+			var ot = t; 
+		.)				
+		(
+			(
+				BitAndExpr<out exp>
+				{
+					(. var cexp = default(ElaExpression); .)
+					"^^^" 
+					[ BitAndExpr<out cexp> ]
+					(. 
+						if (cexp == null)
+							exp = GetOperatorFun(exp, op, false);
+						else
+							exp = new ElaBinary(t) { 
+								Left = exp, Operator = op, Right = cexp }; 
+					.)
+				}
+			)
+			|
+			(
+				"^^^" 
+				[ 
+					BitAndExpr<out exp> 
+					(. exp = GetOperatorFun(exp, op, true); .)
+				]
+				(.
+					if (exp == null)
+						exp = new ElaBuiltinFunction(ot) { 
+								Kind = ElaBuiltinFunctionKind.Operator,
+								Operator = op
+							};
+				.)
+			)
+		).
 		
 	BitAndExpr<out ElaExpression exp> =
-		BackwardCompExpr<out exp>
-		{
-			(. var cexp = default(ElaExpression); .)
-			"&&&" 
-			[ BackwardCompExpr<out cexp> ]
-			(. 
-				if (cexp == null)
-					exp = GetOperatorFun(exp, ElaOperator.BitwiseAnd, false);
-				else
-					exp = new ElaBinary(t) { 
-						Left = exp, Operator = ElaOperator.BitwiseAnd, Right = cexp }; 
-			.)
-		}.
+		(. 
+			var op = ElaOperator.BitwiseAnd; 
+			exp = null;
+			var ot = t; 
+		.)				
+		(
+			(
+				BackwardCompExpr<out exp>
+				{
+					(. var cexp = default(ElaExpression); .)
+					"&&&" 
+					[ BackwardCompExpr<out cexp> ]
+					(. 
+						if (cexp == null)
+							exp = GetOperatorFun(exp, op, false);
+						else
+							exp = new ElaBinary(t) { 
+								Left = exp, Operator = op, Right = cexp }; 
+					.)
+				}
+			)
+			|
+			(
+				"&&&" 
+				[ 
+					BackwardCompExpr<out exp> 
+					(. exp = GetOperatorFun(exp, op, true); .)
+				]
+				(.
+					if (exp == null)
+						exp = new ElaBuiltinFunction(ot) { 
+								Kind = ElaBuiltinFunctionKind.Operator,
+								Operator = op
+							};
+				.)
+			)
+		).
 		
 	BackwardCompExpr<out ElaExpression exp> = 
-		ForwardCompExpr<out exp>
-		{
-			(. 
-				var cexp = default(ElaExpression); 
-				var op = default(ElaOperator);
-			.)
+		(. 
+			var op = default(ElaOperator); 
+			exp = null;
+			var ot = t; 
+		.)
+		(
 			(
-				"<<" (. op = ElaOperator.CompBackward; .)		
-				[ ForwardCompExpr<out cexp> ]
-				(. 
-					if (cexp == null)
-						exp = GetOperatorFun(exp, op, true);
-					else
-						exp = new ElaBinary(t) { Right = exp, Operator = op, Left = cexp }; 
+				ForwardCompExpr<out exp>
+				{
+					(. var cexp = default(ElaExpression); .)
+					(
+						"<<" (. op = ElaOperator.CompBackward; .)		
+						[ ForwardCompExpr<out cexp> ]
+						(. 
+							if (cexp == null)
+								exp = GetOperatorFun(exp, op, true);
+							else
+								exp = new ElaBinary(t) { Right = exp, Operator = op, Left = cexp }; 
+						.)
+					)
+				}
+			)
+			|
+			(
+				"<<" (. op = ElaOperator.CompBackward; .)	
+				[ 
+					ForwardCompExpr<out exp> 
+					(. exp = GetOperatorFun(exp, op, true); .)
+				]
+				(.
+					if (exp == null)
+						exp = new ElaBuiltinFunction(ot) { 
+								Kind = ElaBuiltinFunctionKind.Operator,
+								Operator = op
+							};
 				.)
 			)
-		}.
+		).
 		
 	ForwardCompExpr<out ElaExpression exp> = 
-		Application<out exp>
-		{
-			(. 
-				var cexp = default(ElaExpression); 
-				var op = default(ElaOperator);
-			.)
+		(. 
+			var op = default(ElaOperator); 
+			exp = null;
+			var ot = t; 
+		.)
+		(
+			(
+				UnaryExpr<out exp>
+				{
+					(. var cexp = default(ElaExpression); .)
+					(
+						">>" (. op = ElaOperator.CompForward; .)
+						[ ForwardCompExpr<out cexp> ]
+						(. 
+							if (cexp == null)
+								exp = GetOperatorFun(exp, op, false);
+							else
+								exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
+						.)
+					)
+				}
+			)
+			|
 			(
 				">>" (. op = ElaOperator.CompForward; .)
-				[ ForwardCompExpr<out cexp> ]
-				(. 
-					if (cexp == null)
-						exp = GetOperatorFun(exp, op, false);
-					else
-						exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
+				[ 
+					UnaryExpr<out exp> 
+					(. exp = GetOperatorFun(exp, op, true); .)
+				]
+				(.
+					if (exp == null)
+						exp = new ElaBuiltinFunction(ot) { 
+								Kind = ElaBuiltinFunctionKind.Operator,
+								Operator = op
+							};
 				.)
 			)
-		}.	
+		).
+		
+	UnaryExpr<out ElaExpression exp> = 
+		(. 
+			var op = default(ElaOperator); 
+			exp = null;
+			var ot = t; 
+		.)
+		(
+			(
+				Application<out exp>
+				{
+					(
+						"--" (. op = ElaOperator.Negate; .)
+						| "~~~" (. op = ElaOperator.BitwiseNot; .)
+					)
+					(. exp = new ElaBinary(t) { Left = exp, Operator = op }; .)
+				}
+			)
+			|
+			(
+				(
+					"--" (. op = ElaOperator.Negate; .)
+					| "~~~" (. op = ElaOperator.BitwiseNot; .)
+				)
+				[ 
+					Application<out exp> 
+					(. exp = new ElaBinary(t) { Left = exp, Operator = op }; .)
+				]
+				(.
+					if (exp == null)
+						exp = new ElaBuiltinFunction(ot) { 
+								Kind = ElaBuiltinFunctionKind.Operator,
+								Operator = op
+							};
+				.)
+			)
+		).
 		
 	Application<out ElaExpression exp> = 
 		(. exp = null; .)
@@ -1624,50 +1900,45 @@ PRODUCTIONS
 					(. exp = new ElaFieldReference(t) { FieldName = t.val, TargetObject = exp }; .)
 				)
 			)			
-		}.			
-		
-	FuncOperator<out ElaOperator op> =
-		(. op = ElaOperator.None; .)
-		(
-			"+" (. op = ElaOperator.Add; .)
-			| "-" (. op = ElaOperator.Subtract; .)
-			| "*" (. op = ElaOperator.Multiply; .)
-			| "/" (. op = ElaOperator.Divide; .)
-			| "%" (. op = ElaOperator.Modulus; .)
-			| "**" (. op = ElaOperator.Power; .)
-			| "==" (. op = ElaOperator.Equals; .)
-			| "<>" (. op = ElaOperator.NotEquals; .)
-			| ">" (. op = ElaOperator.Greater; .)
-			| "<" (. op = ElaOperator.Lesser; .)
-			| "<=" (. op = ElaOperator.LesserEqual; .)
-			| ">=" (. op = ElaOperator.GreaterEqual; .)
-			| ">>" (. op = ElaOperator.CompForward; .)
-			| "<<" (. op = ElaOperator.CompBackward; .)
-			| "::" (. op = ElaOperator.ConsList; .)			
-			| "&&" (. op = ElaOperator.BooleanAnd; .)
-			| "||" (. op = ElaOperator.BooleanOr; .)
-			| "&&&" (. op = ElaOperator.BitwiseAnd; .)
-			| "|||" (. op = ElaOperator.BitwiseOr; .)
-			| "^^^" (. op = ElaOperator.BitwiseXor; .)
-			| "<<<" (. op = ElaOperator.ShiftLeft; .)
-			| ">>>" (. op = ElaOperator.ShiftRight; .)			
-			| "++" (. op = ElaOperator.Concat; .)
-			| "$" (. op = ElaOperator.Sequence; .)
-			| "--" (. op = ElaOperator.Negate; .)
-			| "~~~" (. op = ElaOperator.BitwiseNot; .)
-		).
+		}.	
 					
 	BinaryExpr<out ElaExpression exp> = 
-		AssignExpr<out exp>
-		{
-			(. var cexp = default(ElaExpression); .)
-			"$" 
-			(. var ot = t; .)
-			AssignExpr<out cexp>
-			(. 
-				exp = new ElaBinary(ot) { Left = exp, Right = cexp, Operator = ElaOperator.Sequence };
-			.)
-		}.
+		(. 
+			var op = ElaOperator.Sequence; 
+			exp = null;
+			var ot = t; 
+		.)				
+		(
+			(
+				AssignExpr<out exp>
+				{
+					(. var cexp = default(ElaExpression); .)
+					"$" 
+					[ AssignExpr<out cexp> ]
+					(. 
+						if (cexp == null)
+							exp = GetOperatorFun(exp, op, false);
+						else
+							exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
+					.)
+				}
+			)
+			|
+			(
+				"$"
+				[ 
+					MulExpr<out exp> 
+					(. exp = GetOperatorFun(exp, op, true); .)
+				]
+				(.
+					if (exp == null)
+						exp = new ElaBuiltinFunction(ot) { 
+								Kind = ElaBuiltinFunctionKind.Operator,
+								Operator = op
+							};
+				.)
+			)
+		).	
 		
 	EmbExpr<out ElaExpression exp> = 
 		(. exp = null; .)

@@ -2,7 +2,7 @@
 
 namespace Ela.CodeModel
 {
-	public struct ElaLiteralValue
+	public struct ElaLiteralValue : IEquatable<ElaLiteralValue>
 	{
 		#region Construction
 		private Conv data;
@@ -155,6 +155,25 @@ namespace Ela.CodeModel
 				case ElaTypeCode.Double: return AsDouble().ToString(Culture.NumberFormat) + "D";
 				case ElaTypeCode.String: return "\"" + AsString() + "\"";
 				default: return String.Empty;
+			}
+		}
+
+
+		public bool Equals(ElaLiteralValue value)
+		{
+			if (LiteralType != value.LiteralType)
+				return false;
+
+			switch (LiteralType)
+			{
+				case ElaTypeCode.Integer: return AsInteger() == value.AsInteger();
+				case ElaTypeCode.Long: return AsLong() == value.AsLong();
+				case ElaTypeCode.Boolean: return AsBoolean() == value.AsBoolean();
+				case ElaTypeCode.Char: return AsChar() == value.AsChar();
+				case ElaTypeCode.Single: return AsReal() == value.AsReal();
+				case ElaTypeCode.Double: return AsDouble() == value.AsDouble();
+				case ElaTypeCode.String: return AsString() == value.AsString();
+				default: return true;
 			}
 		}
 		#endregion

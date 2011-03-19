@@ -14,20 +14,15 @@ namespace Ela.Compilation
 		MatchNextEntryIgnored = 402,
 
 		MatchEntryAlwaysFail = 403,
-		
-		// = 404,
 
-		// = 405, 
+		MatchEntryTypingFailed = 404,
+
+		MatchLessSpecific = 405, 
 		
 		ValueNotUsed = 406,
-
-
-		// = 407,
 		
-		FunctionInvalidType = 408,
+		FunctionInvalidType = 407,
 
-		// = 409,
-
-		FunctionImplicitPartial = 410,
+		FunctionImplicitPartial = 408,
 	}
 }

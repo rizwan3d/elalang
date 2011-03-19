@@ -27,6 +27,18 @@ namespace Ela.CodeModel
 			sb.Append(':');
 			sb.Append(TypeCodeFormat.GetShortForm(TypeAffinity));
 		}
+
+
+		internal override bool IsIrrefutable()
+		{
+			return true;
+		}
+
+
+		internal override bool CanFollow(ElaPattern pat)
+		{
+			return !IsIrrefutable();
+		}
 		#endregion
 
 

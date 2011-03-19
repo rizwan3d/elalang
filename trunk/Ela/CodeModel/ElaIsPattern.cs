@@ -36,6 +36,21 @@ namespace Ela.CodeModel
 			sb.Append(')');
 			return sb.ToString();
 		}
+
+
+		internal override bool CanFollow(ElaPattern pat)
+		{
+			if (pat.IsIrrefutable())
+				return false;
+
+			if (pat.Type == ElaNodeType.IsPattern)
+			{
+				var @is = (ElaIsPattern)pat;
+				return @is.Affinity != Affinity && @is.Traits != Traits;
+			}
+
+			return false;
+		}
 		#endregion
 
 

@@ -26,6 +26,18 @@ namespace Ela.CodeModel
 			if (Name[0] != '$')
 				sb.Append(Name);
 		}
+
+
+		internal override bool IsIrrefutable()
+		{
+			return true;
+		}
+
+
+		internal override bool CanFollow(ElaPattern pat)
+		{
+			return !pat.IsIrrefutable();
+		}
 		#endregion
 
 

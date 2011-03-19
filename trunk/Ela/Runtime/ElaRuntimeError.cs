@@ -58,131 +58,55 @@ namespace Ela.Runtime
 
 		RefEqualsNotSupported = 825,
 
-		// = 826,
+		TraitGet = 826,
 
-		// = 827,
+		TraitSet = 827,
 
-		// = 828,
+		TraitFieldGet = 828,
 
-		// = 829,
+		TraitFieldSet = 829,
 
-		// = 830,
+		TraitBit = 830,
 
-		// = 831,
+		TraitConcat = 831,
 
-		// = 832,
+		TraitNum = 832,
 
-		// = 833,
+		TraitOrd = 833,
 
-		// = 834,
+		TraitEq = 834,
 
-		// = 835,
+		TraitTag = 835,
 
-		// = 836,
+		TraitEnum = 836,
 
-		// = 837,
+		TraitNeg = 837,
 
-		// = 838,
+		TraitBool = 838,
 
-		// = 839,
+		TraitLen = 839,
 
-		// = 840,
+		TraitCont = 840,
 
-		// = 841,
+		TraitInsert = 841,
 
-		// = 842,
+		TraitCons = 842,
 
-		// = 843,
+		TraitIter = 843,
 
-		// = 844,
+		TraitConvert = 844,
 
-		// = 845,
+		TraitShow = 845,
 
-		// = 846,
+		TraitBound = 846,
 
-		// = 847,
+		TraitFold = 847,
 
-		// = 848,
+		TraitCall = 848,
 
-		// = 849,
+		TraitThunk = 849,
 
-		// = 850,
-
-		// = 851,
-
-		// = 852,
-
-		// = 853,
-
-		// = 854,
-
-		// = 855,
-
-		// = 856,
-
-		// = 857,
-
-		// = 858,
-
-		// = 859,
-
-		// = 860,
-
-		// = 861,
-
-		// = 862,
-
-		// = 863,
-
-		TraitGet = 900,
-
-		TraitSet = 901,
-
-		TraitFieldGet = 902,
-
-		TraitFieldSet = 903,
-
-		TraitBit = 904,
-
-		TraitConcat = 905,
-
-		TraitNum = 906,
-
-		TraitOrd = 907,
-
-		TraitEq = 908,
-
-		TraitTag = 909,
-
-		TraitEnum = 910,
-
-		TraitNeg = 911,
-
-		TraitBool = 912,
-
-		TraitLen = 913,
-
-		TraitCont = 914,
-
-		TraitInsert = 915,
-
-		TraitCons = 916,
-
-		TraitIter = 917,
-
-		TraitConvert = 918,
-
-		TraitShow = 919,
-
-		TraitBound = 920,
-
-		TraitFold = 921,
-
-		TraitCall = 922,
-
-		TraitThunk = 923,
-
-		TraitGen = 924,
+		TraitGen = 850,
 
 
 		UserCode = 999

@@ -27,6 +27,18 @@ namespace Ela.CodeModel
 			sb.Append('@');
 			sb.Append(Name);
 		}
+
+
+		internal override bool IsIrrefutable()
+		{
+			return Pattern.Type == ElaNodeType.VariablePattern || Pattern.Type == ElaNodeType.DefaultPattern;
+		}
+
+
+		internal override bool CanFollow(ElaPattern pat)
+		{
+			return Pattern.CanFollow(pat);
+		}
 		#endregion
 
 

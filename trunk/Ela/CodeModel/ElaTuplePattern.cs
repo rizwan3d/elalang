@@ -53,6 +53,32 @@ namespace Ela.CodeModel
 
 			sb.Append(')');
 		}
+
+
+		internal override bool CanFollow(ElaPattern pat)
+		{
+			if (pat.IsIrrefutable())
+				return false;
+
+			if (pat.Type == ElaNodeType.TuplePattern)
+			{
+				var tuple = (ElaTuplePattern)pat;
+				return CanFollow(tuple.Patterns, Patterns, tuple.Patterns.Count, Patterns.Count, false);
+			}
+
+			if (pat.Type == ElaNodeType.HeadTailPattern)
+			{
+				var ht = (ElaHeadTailPattern)pat;
+				var last = ht.Patterns[ht.Patterns.Count - 1];
+
+				if (!last.IsIrrefutable())
+					return CanFollow(ht.Patterns, Patterns, ht.Patterns.Count - 1, Patterns.Count, false);
+
+				return CanFollow(ht.Patterns, Patterns, ht.Patterns.Count, Patterns.Count, true);
+			}
+
+			return true;
+		}
 		#endregion
 
 

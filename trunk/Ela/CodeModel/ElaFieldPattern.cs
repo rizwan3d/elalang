@@ -32,6 +32,21 @@ namespace Ela.CodeModel
 				Value.ToString(sb, fmt);
 			}
 		}
+
+
+		internal override bool CanFollow(ElaPattern pat)
+		{
+			if (pat.IsIrrefutable())
+				return false;
+
+			if (pat.Type == ElaNodeType.FieldPattern)
+			{
+				var fld = (ElaFieldPattern)pat;
+				return Name != fld.Name || Value.CanFollow(fld.Value);
+			}
+
+			return true;
+		}
 		#endregion
 
 

@@ -25,6 +25,18 @@ namespace Ela.CodeModel
 		{
 			sb.Append('_');
 		}
+
+
+		internal override bool IsIrrefutable()
+		{
+			return true;
+		}
+
+
+		internal override bool CanFollow(ElaPattern pat)
+		{
+			return !IsIrrefutable();
+		}
 		#endregion
 	}
 }

@@ -129,6 +129,12 @@
   <data name="MatchEntryAlwaysFail" xml:space="preserve">
     <value>This pattern will never match.</value>
   </data>
+  <data name="MatchEntryTypingFailed" xml:space="preserve">
+    <value>Data type of a match entry {0} is incompatible with previous entries.</value>
+  </data>
+  <data name="MatchLessSpecific" xml:space="preserve">
+    <value>Match entry '{0}' is more specific than '{1}'. Consider moving this match entry before.</value>
+  </data>
   <data name="MatchNextEntryIgnored" xml:space="preserve">
     <value>This entry matches any value. All next match entries will be ignored.</value>
   </data>

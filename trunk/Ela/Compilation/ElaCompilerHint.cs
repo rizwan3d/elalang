@@ -7,14 +7,12 @@ namespace Ela.Compilation
 		None = 0,
 
 		
-		// = 500,
+		UseReferenceCell = 500,
 
-		UseReferenceCell = 501,
+		MatchEntryTypingFailed = 501,
 
-		MatchEntryTypingFailed = 502,
+		MatchNextEntryIgnored = 502,
 
-		MatchNextEntryIgnored = 503,
-
-		UseIgnoreToPop = 504
+		UseIgnoreToPop = 503
 	}
 }

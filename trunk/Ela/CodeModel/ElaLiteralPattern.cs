@@ -25,6 +25,21 @@ namespace Ela.CodeModel
 		{
 			sb.Append(Value);
 		}
+
+
+		internal override bool CanFollow(ElaPattern pat)
+		{
+			if (pat.IsIrrefutable())
+				return false;
+
+			if (pat.Type == ElaNodeType.LiteralPattern)
+			{
+				var lit = (ElaLiteralPattern)pat;
+				return !Value.Equals(lit.Value);				
+			}
+
+			return true;
+		}
 		#endregion
 
 

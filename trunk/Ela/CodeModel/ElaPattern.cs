@@ -20,6 +20,38 @@ namespace Ela.CodeModel
 		#endregion
 
 
+		#region Methods
+		internal abstract bool CanFollow(ElaPattern pat);
+
+		internal virtual bool IsIrrefutable()
+		{
+			return false;
+		}
+
+
+		protected bool CanFollow(List<ElaPattern> prev, List<ElaPattern> next, int prevCount, int nextCount, bool ignoreLength)
+		{
+			var len = 0;
+
+			if (!ignoreLength)
+			{
+				if (nextCount != prevCount)
+					return true;
+
+				len = nextCount;
+			}
+			else
+				len = nextCount > prevCount ? prevCount : nextCount;
+			
+			for (var i = 0; i < len; i++)
+				if (next[i].CanFollow(prev[i]))
+					return true;
+
+			return false;
+		}
+		#endregion
+
+
 		#region Properties
 		internal virtual ElaPatternAffinity Affinity { get { return ElaPatternAffinity.Any; } }
 		#endregion

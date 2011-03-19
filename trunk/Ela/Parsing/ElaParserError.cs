@@ -54,13 +54,13 @@ namespace Ela.Parsing
 
 		ExpectedFunctionToken = 110,
 
-		// = 111,
+		ExpectedCurlyBrace = 111,
 
-		ExpectedCurlyBrace = 112,
+		ExpectedArrow = 112,
 
-		ExpectedArrow = 113,
+		ExpectedKeywordIn = 113,
 
-		ExpectedKeywordIn = 114,
+		// = 114,
 
 		// = 115,
 
@@ -78,28 +78,28 @@ namespace Ela.Parsing
 
 		ExpectedIsOperator = 122,
 
-		// = 123,
+		ExpectedKeywordLet = 123,
 
-		ExpectedKeywordLet = 124,
+		ExpectedKeywordPrivate = 124,
 
-		ExpectedKeywordPrivate = 125,
+		ExpectedKeywordOpen = 125,
 
-		ExpectedKeywordOpen = 126,
+		ExpectedKeywordCout = 126,
 
-		// = 127,
+		ExpectedKeywordTypeof = 127,
 
-		// = 128,
+		ExpectedEq = 128,
 
-		ExpectedKeywordCout = 129,
+		// = 129,
 
-		ExpectedKeywordTypeof = 130,
+		// = 130,
 
 		// = 131,
 
-		ExpectedEq = 132,
+		// = 132,
 
 		// = 133,
-
+		
 		// = 134,
 
 		ExpectedKeywordIf = 135,
@@ -184,13 +184,13 @@ namespace Ela.Parsing
 
 		InvalidLazy = 216,
 
-		// = 217,
+		InvalidFail = 217,
 
-		InvalidFail = 218,
+		InvalidTry = 218,
 
 		// = 219,
 
-		InvalidTry = 220,
+		// = 220,
 
 		// = 221,
 

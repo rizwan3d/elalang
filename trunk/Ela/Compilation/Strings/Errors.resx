@@ -138,9 +138,6 @@
   <data name="MatchEntryEmptyNoGuard" xml:space="preserve">
     <value>An empty match entry should have a mandatory guard clause.</value>
   </data>
-  <data name="MatchEntryTypingFailed" xml:space="preserve">
-    <value>Data type of a match entry {0} is incompatible with previous entries.</value>
-  </data>
   <data name="MatchNotSupportedInFor" xml:space="preserve">
     <value>An expression: {0} is invalid. Pattern matching is not allowed in for/to and for/downto cycles.</value>
   </data>

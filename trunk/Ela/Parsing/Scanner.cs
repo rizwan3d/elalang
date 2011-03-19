@@ -423,12 +423,12 @@ internal sealed class Scanner {
 			case "/": t.kind = 73; break;
 			case "%": t.kind = 74; break;
 			case "**": t.kind = 75; break;
-			case "~~~": t.kind = 76; break;
-			case "|||": t.kind = 77; break;
-			case "^^^": t.kind = 78; break;
-			case "&&&": t.kind = 79; break;
-			case "<<": t.kind = 80; break;
-			case ">>": t.kind = 81; break;
+			case "|||": t.kind = 76; break;
+			case "^^^": t.kind = 77; break;
+			case "&&&": t.kind = 78; break;
+			case "<<": t.kind = 79; break;
+			case ">>": t.kind = 80; break;
+			case "~~~": t.kind = 81; break;
 			default: break;
 		}
 	}

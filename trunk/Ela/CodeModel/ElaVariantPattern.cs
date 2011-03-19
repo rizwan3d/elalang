@@ -32,6 +32,34 @@ namespace Ela.CodeModel
 				Format.PutInBraces(Pattern, sb, fmt);
 			}
 		}
+
+
+		internal override bool CanFollow(ElaPattern pat)
+		{
+			if (pat.IsIrrefutable())
+				return false;
+
+			if (pat.Type == ElaNodeType.VariantPattern)
+			{
+				var var = (ElaVariantPattern)pat;
+
+				if (var.Tag != Tag)
+					return true;
+
+				if (Pattern == null && var.Pattern == null)
+					return false;
+
+				if (Pattern == null)
+					return true;
+
+				return Pattern.CanFollow(var.Pattern);
+			}
+
+			if (Pattern != null)
+				return Pattern.CanFollow(pat);
+
+			return true;
+		}
 		#endregion
 
 
@@ -40,7 +68,10 @@ namespace Ela.CodeModel
 
 		public ElaPattern Pattern { get; set; }
 
-		internal override ElaPatternAffinity Affinity { get { return ElaPatternAffinity.Any; } }
+		internal override ElaPatternAffinity Affinity
+		{
+			get { return Pattern != null ? Pattern.Affinity : ElaPatternAffinity.Any; }
+		}
 		#endregion
 	}
 }

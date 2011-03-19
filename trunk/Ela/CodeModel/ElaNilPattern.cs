@@ -25,6 +25,12 @@ namespace Ela.CodeModel
 		{
 			sb.Append("[]");
 		}
+
+
+		internal override bool CanFollow(ElaPattern pat)
+		{
+			return !pat.IsIrrefutable() && pat.Type != ElaNodeType.NilPattern;
+		}
 		#endregion
 	}
 }
