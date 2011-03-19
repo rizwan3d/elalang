@@ -2,7 +2,7 @@
 0.8.6.69:New:Check for overlapping match entries is implemented (experimental).
 0.8.6.68:Change:Pretty printer for Ela AST is completely redesigned to support indented output.
 0.8.6.67:Fix:A bug in type check of patterns in pattern matching construct is fixed (string pattern and list pattern could be considered as invalid when this is a valid combination).
-0.8.6.66:Change:Ela now doesn't have any special treatment for unary operators. They are treated in the same way as binary. Unary notiation is allowed using "partial application" syntax. It changes almost nothing with the only exception that unary operators can be called using postfix notation and their priority is lowered (to the level of custom operators, still pretty high).
+0.8.6.66:Change:Ela now doesn't have any special treatment for unary operators. They are treated in the same way as binary. Unary notiation is allowed using "partial application" syntax. It changes almost nothing with the only exception that unary operators can be called using postfix notation.
 0.8.6.64:Change:Partial application for operators as well as operator referencing as functions now don't require braces.
 0.8.6.63:Change:Keyword 'and' is not replaced by keyword 'et'.
 0.8.6.62:Change:Now it is required to write function name before each function body.
