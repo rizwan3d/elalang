@@ -57,8 +57,7 @@ namespace Ela.Compilation
 			var next = Label.Empty;
 			var nextGuard = Label.Empty;
 			var newHints = (hints & Hints.Tail) == Hints.Tail ? Hints.Tail : Hints.None;
-            var tree = new PatternTree();
-			var oldWhere = default(ElaExpression);
+            var oldWhere = default(ElaExpression);
 			var prevEntry = default(ElaMatchEntry);
 			var processed = new FastList<ElaPattern>();
 
@@ -72,7 +71,10 @@ namespace Ela.Compilation
 				{
 					foreach (var o in processed)
 						if (!e.Pattern.CanFollow(o))
-							AddWarning(ElaCompilerWarning.MatchLessSpecific, e.Pattern, e.Pattern, o);
+						{
+							AddWarning(ElaCompilerWarning.MatchEntryNotReachable, e.Pattern, e.Pattern, o);
+							AddHint(ElaCompilerHint.MatchEntryNotReachable, e.Pattern);
+						}
 				}
 
 				var last = i == len - 1;
@@ -134,12 +136,6 @@ namespace Ela.Compilation
 					if (i != 0)
 						EndScope();
 
-					if (!BuildPatternTree(e.Pattern, tree))
-					{
-						AddWarning(ElaCompilerWarning.MatchEntryTypingFailed, e, FormatNode(e.Pattern));
-						AddHint(ElaCompilerHint.MatchEntryTypingFailed, e);
-					}
-
 					if (!next.IsEmpty())
 					{
 						if (!nextGuard.IsEmpty())
@@ -155,13 +151,6 @@ namespace Ela.Compilation
 
 					StartScope(false);
 					next = cw.DefineLabel();
-
-					if ((e.Pattern.Type == ElaNodeType.DefaultPattern || e.Pattern.Type == ElaNodeType.VariablePattern) &&
-						e.Guard == null && !last)
-					{
-						AddWarning(ElaCompilerWarning.MatchNextEntryIgnored, e);
-						AddHint(ElaCompilerHint.MatchNextEntryIgnored, e);
-					}
 
 					var mc = Errors.Count;
 					CompilePattern(serv, tuple, e.Pattern, map, next, ElaVariableFlags.None, hints);
@@ -535,7 +524,7 @@ namespace Ela.Compilation
 				if (tuple.Parameters.Count < len || tuple.Parameters.Count > len)
 				{
 					cw.Emit(Op.Br, nextLab);
-					AddWarning(ElaCompilerWarning.MatchEntryAlwaysFail, seq);
+					AddWarning(ElaCompilerWarning.MatchEntryAlwaysFail, seq, seq);
 				}
 				else
 				{
@@ -597,80 +586,6 @@ namespace Ela.Compilation
 		#endregion
 
 
-		#region TypeId Checker
-		private bool BuildPatternTree(ElaPattern pat, PatternTree tree)
-		{
-			switch (pat.Type)
-			{
-				case ElaNodeType.TuplePattern:
-				case ElaNodeType.HeadTailPattern:
-					return BuildSeqPatternTree((ElaTuplePattern)pat, tree);
-				case ElaNodeType.AsPattern:
-					return BuildPatternTree(((ElaAsPattern)pat).Pattern, tree);
-				default:
-					return BuildGenericPatternTree(pat, tree);
-			}
-		}
-
-
-		private bool BuildGenericPatternTree(ElaPattern pat, PatternTree tree)
-		{
-            var hasAny = (pat.Affinity & ElaPatternAffinity.Any) == ElaPatternAffinity.Any;
-            var paff = hasAny ? pat.Affinity ^ ElaPatternAffinity.Any : pat.Affinity;
-			var addAny = hasAny && tree.Affinity == ElaPatternAffinity.None;
-
-			if ((tree.Affinity & ElaPatternAffinity.Any) == ElaPatternAffinity.Any ||
-                tree.Affinity == ElaPatternAffinity.None)
-				tree.Affinity |= paff;
-            else if ((tree.Affinity & paff) != paff && !hasAny)
-                    return false;
-
-			if (addAny)
-				tree.Affinity |= ElaPatternAffinity.Any;
-
-			return true;
-		}
-
-
-		private bool BuildSeqPatternTree(ElaTuplePattern pat, PatternTree tree)
-		{
-            if (!BuildGenericPatternTree(pat, tree))
-                return false;
-
-			if (pat.HasChildren)
-			{
-				var c = tree;
-				var oldc = default(PatternTree);
-
-				for (var i = 0; i < pat.Patterns.Count; i++)
-				{
-					if (i == 0)
-					{
-						oldc = c;
-						c = oldc.Child;
-
-						if (c == null)
-							c = oldc.Child = new PatternTree();
-					}
-					else
-					{
-						oldc = c;
-						c = oldc.Next;
-
-						if (c == null)
-							c = oldc.Next = new PatternTree();
-					}
-
-					if (!BuildPatternTree(pat.Patterns[i], c))
-						return false;
-				}
-			}
-
-			return true;
-		}
-		#endregion
-
-
 		#region Helper
 		private void CheckType(int pushSys, ElaTypeCode type, Label nextLab)
 		{
@@ -694,7 +609,7 @@ namespace Ela.Compilation
 
 		private void MatchEntryAlwaysFail(ElaExpression exp, Label lab)
 		{
-			AddWarning(ElaCompilerWarning.MatchEntryAlwaysFail, exp);
+			AddWarning(ElaCompilerWarning.MatchEntryAlwaysFail, exp, exp);
 			cw.Emit(Op.Br, lab);
 		}
 

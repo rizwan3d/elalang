@@ -1028,7 +1028,7 @@ internal sealed partial class Parser {
 			BindingBodyOperator(varExp);
 		} else SynErr(103);
 		if (la.kind == 41) {
-			Get();
+			ExpectWeak(41, 16);
 			BindingBody(flags, out exp);
 			((ElaBinding)varExp).And = (ElaBinding)exp;
 			exp = varExp;
@@ -1048,7 +1048,7 @@ internal sealed partial class Parser {
 		}
 		BindingBody(flags, out exp);
 		if (la.kind == 23) {
-			Get();
+			ExpectWeak(23, 17);
 			Expr(out inExp);
 			((ElaBinding)exp).In = inExp; 
 			EndBlock();
@@ -1349,7 +1349,7 @@ internal sealed partial class Parser {
 		Expect(34);
 		Expr(out cexp);
 		cond.True = cexp; 
-		ExpectWeak(33, 16);
+		ExpectWeak(33, 17);
 		Expr(out cexp);
 		cond.False = cexp; 
 	}
@@ -1488,9 +1488,9 @@ internal sealed partial class Parser {
 		exp = null;
 		var ot = t; 
 		
-		if (StartOf(17)) {
+		if (StartOf(18)) {
 			ShiftExpr(out exp);
-			while (StartOf(18)) {
+			while (StartOf(19)) {
 				var cexp = default(ElaExpression); 
 				switch (la.kind) {
 				case 62: {
@@ -1524,7 +1524,7 @@ internal sealed partial class Parser {
 					break;
 				}
 				}
-				if (StartOf(17)) {
+				if (StartOf(18)) {
 					ShiftExpr(out cexp);
 				}
 				if (cexp == null)
@@ -1533,7 +1533,7 @@ internal sealed partial class Parser {
 					exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
 				
 			}
-		} else if (StartOf(18)) {
+		} else if (StartOf(19)) {
 			switch (la.kind) {
 			case 62: {
 				Get();
@@ -1566,7 +1566,7 @@ internal sealed partial class Parser {
 				break;
 			}
 			}
-			if (StartOf(17)) {
+			if (StartOf(18)) {
 				ShiftExpr(out exp);
 				exp = GetOperatorFun(exp, op, true); 
 			}
@@ -1584,7 +1584,7 @@ internal sealed partial class Parser {
 		exp = null;
 		var ot = t; 
 		
-		if (StartOf(19)) {
+		if (StartOf(20)) {
 			ConcatExpr(out exp);
 			while (la.kind == 68 || la.kind == 69) {
 				var cexp = default(ElaExpression); 
@@ -1595,7 +1595,7 @@ internal sealed partial class Parser {
 					Get();
 					op = ElaOperator.ShiftLeft; 
 				}
-				if (StartOf(19)) {
+				if (StartOf(20)) {
 					ConcatExpr(out cexp);
 				}
 				if (cexp == null)
@@ -1612,7 +1612,7 @@ internal sealed partial class Parser {
 				Get();
 				op = ElaOperator.ShiftLeft; 
 			}
-			if (StartOf(19)) {
+			if (StartOf(20)) {
 				ConcatExpr(out exp);
 				exp = GetOperatorFun(exp, op, true); 
 			}
@@ -1630,13 +1630,13 @@ internal sealed partial class Parser {
 		exp = null;
 		var ot = t; 
 		
-		if (StartOf(20)) {
+		if (StartOf(21)) {
 			ConsExpr(out exp);
 			while (la.kind == 70) {
 				var cexp = default(ElaExpression); 
 				Get();
 				op = ElaOperator.Concat; 
-				if (StartOf(20)) {
+				if (StartOf(21)) {
 					ConsExpr(out cexp);
 				}
 				if (cexp == null)
@@ -1648,7 +1648,7 @@ internal sealed partial class Parser {
 		} else if (la.kind == 70) {
 			Get();
 			op = ElaOperator.Concat; 
-			if (StartOf(20)) {
+			if (StartOf(21)) {
 				ConsExpr(out exp);
 				exp = GetOperatorFun(exp, op, true); 
 			}
@@ -1666,13 +1666,13 @@ internal sealed partial class Parser {
 		exp = null;
 		var ot = t; 
 		
-		if (StartOf(21)) {
+		if (StartOf(22)) {
 			AddExpr(out exp);
 			while (la.kind == 50) {
 				var cexp = default(ElaExpression); 
 				Get();
 				op = ElaOperator.ConsList; 
-				if (StartOf(20)) {
+				if (StartOf(21)) {
 					ConsExpr(out cexp);
 				}
 				if (cexp == null)
@@ -1684,7 +1684,7 @@ internal sealed partial class Parser {
 		} else if (la.kind == 50) {
 			Get();
 			op = ElaOperator.ConsList; 
-			if (StartOf(21)) {
+			if (StartOf(22)) {
 				AddExpr(out exp);
 				exp = GetOperatorFun(exp, op, true); 
 			}
@@ -1748,9 +1748,9 @@ internal sealed partial class Parser {
 		exp = null;
 		var ot = t; 
 		
-		if (StartOf(22)) {
+		if (StartOf(23)) {
 			CastExpr(out exp);
-			while (StartOf(23)) {
+			while (StartOf(24)) {
 				var cexp = default(ElaExpression); 
 				if (la.kind == 72) {
 					Get();
@@ -1765,7 +1765,7 @@ internal sealed partial class Parser {
 					Get();
 					op = ElaOperator.Power; 
 				}
-				if (StartOf(22)) {
+				if (StartOf(23)) {
 					CastExpr(out cexp);
 				}
 				if (cexp == null)
@@ -1774,7 +1774,7 @@ internal sealed partial class Parser {
 					exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
 				
 			}
-		} else if (StartOf(23)) {
+		} else if (StartOf(24)) {
 			if (la.kind == 72) {
 				Get();
 				op = ElaOperator.Multiply; 
@@ -1788,7 +1788,7 @@ internal sealed partial class Parser {
 				Get();
 				op = ElaOperator.Power; 
 			}
-			if (StartOf(22)) {
+			if (StartOf(23)) {
 				CastExpr(out exp);
 				exp = GetOperatorFun(exp, op, true); 
 			}
@@ -1826,7 +1826,7 @@ internal sealed partial class Parser {
 		var ot = t; 
 		var name = String.Empty;
 		
-		if (StartOf(24)) {
+		if (StartOf(25)) {
 			BitOrExpr(out exp);
 			while (la.kind == 4 || la.kind == 9) {
 				var cexp = default(ElaExpression); 
@@ -1839,7 +1839,7 @@ internal sealed partial class Parser {
 					Get();
 					name = t.val.Trim('`'); 
 				}
-				if (StartOf(24)) {
+				if (StartOf(25)) {
 					BitOrExpr(out cexp);
 				}
 				if (op == ElaOperator.None)
@@ -1866,7 +1866,7 @@ internal sealed partial class Parser {
 				Get();
 				name = t.val.Trim('`'); 
 			}
-			if (StartOf(24)) {
+			if (StartOf(25)) {
 				BitOrExpr(out exp);
 				exp =
 				op == ElaOperator.Custom ? GetCustomOperatorFun(name, exp) : 
@@ -1913,12 +1913,12 @@ internal sealed partial class Parser {
 		exp = null;
 		var ot = t; 
 		
-		if (StartOf(25)) {
+		if (StartOf(26)) {
 			BitXorExpr(out exp);
 			while (la.kind == 76) {
 				var cexp = default(ElaExpression); 
 				Get();
-				if (StartOf(25)) {
+				if (StartOf(26)) {
 					BitXorExpr(out cexp);
 				}
 				if (cexp == null)
@@ -1930,7 +1930,7 @@ internal sealed partial class Parser {
 			}
 		} else if (la.kind == 76) {
 			Get();
-			if (StartOf(25)) {
+			if (StartOf(26)) {
 				BitXorExpr(out exp);
 				exp = GetOperatorFun(exp, op, true); 
 			}
@@ -1948,12 +1948,12 @@ internal sealed partial class Parser {
 		exp = null;
 		var ot = t; 
 		
-		if (StartOf(26)) {
+		if (StartOf(27)) {
 			BitAndExpr(out exp);
 			while (la.kind == 77) {
 				var cexp = default(ElaExpression); 
 				Get();
-				if (StartOf(26)) {
+				if (StartOf(27)) {
 					BitAndExpr(out cexp);
 				}
 				if (cexp == null)
@@ -1965,7 +1965,7 @@ internal sealed partial class Parser {
 			}
 		} else if (la.kind == 77) {
 			Get();
-			if (StartOf(26)) {
+			if (StartOf(27)) {
 				BitAndExpr(out exp);
 				exp = GetOperatorFun(exp, op, true); 
 			}
@@ -1983,12 +1983,12 @@ internal sealed partial class Parser {
 		exp = null;
 		var ot = t; 
 		
-		if (StartOf(27)) {
+		if (StartOf(28)) {
 			BackwardCompExpr(out exp);
 			while (la.kind == 78) {
 				var cexp = default(ElaExpression); 
 				Get();
-				if (StartOf(27)) {
+				if (StartOf(28)) {
 					BackwardCompExpr(out cexp);
 				}
 				if (cexp == null)
@@ -2000,7 +2000,7 @@ internal sealed partial class Parser {
 			}
 		} else if (la.kind == 78) {
 			Get();
-			if (StartOf(27)) {
+			if (StartOf(28)) {
 				BackwardCompExpr(out exp);
 				exp = GetOperatorFun(exp, op, true); 
 			}
@@ -2018,13 +2018,13 @@ internal sealed partial class Parser {
 		exp = null;
 		var ot = t; 
 		
-		if (StartOf(28)) {
+		if (StartOf(29)) {
 			ForwardCompExpr(out exp);
 			while (la.kind == 79) {
 				var cexp = default(ElaExpression); 
 				Get();
 				op = ElaOperator.CompBackward; 
-				if (StartOf(28)) {
+				if (StartOf(29)) {
 					ForwardCompExpr(out cexp);
 				}
 				if (cexp == null)
@@ -2036,7 +2036,7 @@ internal sealed partial class Parser {
 		} else if (la.kind == 79) {
 			Get();
 			op = ElaOperator.CompBackward; 
-			if (StartOf(28)) {
+			if (StartOf(29)) {
 				ForwardCompExpr(out exp);
 				exp = GetOperatorFun(exp, op, true); 
 			}
@@ -2054,13 +2054,13 @@ internal sealed partial class Parser {
 		exp = null;
 		var ot = t; 
 		
-		if (StartOf(29)) {
+		if (StartOf(30)) {
 			UnaryExpr(out exp);
 			while (la.kind == 80) {
 				var cexp = default(ElaExpression); 
 				Get();
 				op = ElaOperator.CompForward; 
-				if (StartOf(28)) {
+				if (StartOf(29)) {
 					ForwardCompExpr(out cexp);
 				}
 				if (cexp == null)
@@ -2072,7 +2072,7 @@ internal sealed partial class Parser {
 		} else if (la.kind == 80) {
 			Get();
 			op = ElaOperator.CompForward; 
-			if (StartOf(29)) {
+			if (StartOf(30)) {
 				UnaryExpr(out exp);
 				exp = GetOperatorFun(exp, op, true); 
 			}
@@ -2090,7 +2090,7 @@ internal sealed partial class Parser {
 		exp = null;
 		var ot = t; 
 		
-		if (StartOf(30)) {
+		if (StartOf(31)) {
 			Application(out exp);
 			while (la.kind == 51 || la.kind == 81) {
 				if (la.kind == 51) {
@@ -2110,7 +2110,7 @@ internal sealed partial class Parser {
 				Get();
 				op = ElaOperator.BitwiseNot; 
 			}
-			if (StartOf(30)) {
+			if (StartOf(31)) {
 				Application(out exp);
 				exp = new ElaBinary(t) { Left = exp, Operator = op }; 
 			}
@@ -2231,7 +2231,7 @@ internal sealed partial class Parser {
 		Expression = b;
 		
 		DeclarationBlock(b);
-		while (StartOf(31)) {
+		while (StartOf(32)) {
 			DeclarationBlock(b);
 		}
 	}
@@ -2278,6 +2278,7 @@ internal sealed partial class Parser {
 		{x,x,x,x, x,T,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,T,x,x, x,T,T,T, T,x,T,x, T,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, T,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,x,x,x, x,T,T,T, T,x,T,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, T,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{T,T,x,x, x,T,T,T, T,T,T,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, T,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{T,T,T,T, T,T,T,T, T,T,T,x, T,x,x,x, T,x,T,T, x,x,x,x, T,T,x,x, T,x,x,x, T,x,x,T, T,T,T,T, x,x,x,T, T,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x, x},
 		{x,T,T,T, T,T,T,T, T,T,T,x, T,x,x,x, x,x,x,T, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x, x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},

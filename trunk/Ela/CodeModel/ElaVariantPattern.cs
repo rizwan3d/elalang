@@ -67,11 +67,6 @@ namespace Ela.CodeModel
 		public string Tag { get; set; }
 
 		public ElaPattern Pattern { get; set; }
-
-		internal override ElaPatternAffinity Affinity
-		{
-			get { return Pattern != null ? Pattern.Affinity : ElaPatternAffinity.Any; }
-		}
 		#endregion
 	}
 }

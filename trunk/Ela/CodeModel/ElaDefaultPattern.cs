@@ -35,7 +35,7 @@ namespace Ela.CodeModel
 
 		internal override bool CanFollow(ElaPattern pat)
 		{
-			return !IsIrrefutable();
+			return !pat.IsIrrefutable();
 		}
 		#endregion
 	}

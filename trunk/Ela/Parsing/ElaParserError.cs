@@ -30,6 +30,8 @@ namespace Ela.Parsing
 
 		InvalidSyntaxUnexpectedSymbol = 12,
 
+		InvalidIndentationUnexpectedSymbol = 13,
+
 
 
 		ExpectedToken = 100,
@@ -162,7 +164,7 @@ namespace Ela.Parsing
 
 		InvalidLiteralPattern = 205,
 
-		// = 206,
+		InvalidUnary = 206,
 
 		InvalidBindingPattern = 207,
 

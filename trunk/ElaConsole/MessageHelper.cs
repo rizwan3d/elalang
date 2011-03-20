@@ -123,6 +123,16 @@ namespace ElaConsole
 		}
 
 
+		internal void PrintSecondaryPrompt()
+		{
+			if (!opt.Silent)
+			{
+				var promptLength = String.IsNullOrEmpty(opt.Prompt) ? 3 : opt.Prompt.Length;
+				Console.Write(new String(' ', promptLength) + ">");
+			}
+		}
+
+
 		internal void PrintHelp()
 		{
 			using (var sr = new StreamReader(typeof(MessageHelper).Assembly.

@@ -45,24 +45,6 @@ namespace Ela.CodeModel
 
 		#region Properties
 		public ElaLiteralValue Value { get; set; }
-		
-		internal override ElaPatternAffinity Affinity
-		{
-			get 
-			{
-				switch (Value.LiteralType)
-				{
-					case ElaTypeCode.Integer: 
-					case ElaTypeCode.Long: return ElaPatternAffinity.Integer;
-					case ElaTypeCode.Single: 
-					case ElaTypeCode.Double: return ElaPatternAffinity.Real;
-					case ElaTypeCode.Char: return ElaPatternAffinity.Char;
-					case ElaTypeCode.String: return ElaPatternAffinity.String|ElaPatternAffinity.Sequence|ElaPatternAffinity.Fold;
-					case ElaTypeCode.Boolean: return ElaPatternAffinity.Boolean;
-					default: return ElaPatternAffinity.Any;
-				}
-			}
-		}
 		#endregion
 	}
 }

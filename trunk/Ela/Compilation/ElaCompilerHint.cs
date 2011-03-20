@@ -9,10 +9,8 @@ namespace Ela.Compilation
 		
 		UseReferenceCell = 500,
 
-		MatchEntryTypingFailed = 501,
+		UseIgnoreToPop = 501,
 
-		MatchNextEntryIgnored = 502,
-
-		UseIgnoreToPop = 503
+		MatchEntryNotReachable = 502,
 	}
 }

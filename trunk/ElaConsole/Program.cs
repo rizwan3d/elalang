@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Text;
 using Ela;
 using Ela.Compilation;
 using Ela.Debug;
@@ -8,7 +10,6 @@ using Ela.Parsing;
 using Ela.Runtime;
 using Ela.Runtime.ObjectModel;
 using ElaConsole.Options;
-using System.Diagnostics;
 
 namespace ElaConsole
 {
@@ -23,6 +24,7 @@ namespace ElaConsole
 		private static ElaMachine vm;
 		private static int lastOffset;
 		private static MessageHelper helper;
+		private static StringBuilder codeLines;
 		#endregion
 
 
@@ -217,9 +219,11 @@ namespace ElaConsole
 
 		private static void StartInteractiveMode()
 		{
+			codeLines = new StringBuilder();
+			helper.PrintPrompt();
+				
 			for (;;)
 			{
-				helper.PrintPrompt();
 				var source = Console.ReadLine();
 
 				if (!opt.Silent)
@@ -235,25 +239,42 @@ namespace ElaConsole
 						{
 							var cmd = new InteractiveCommands(vm, helper);
 							cmd.ProcessCommand(source);
+							helper.PrintPrompt();				
 						}
 						else
-							InterpretString(source);
+						{
+							if (!opt.Multiline)
+							{
+								InterpretString(source);
+								helper.PrintPrompt();
+							}
+							else
+							{
+								if (source.Length >= 2 &&
+									source[source.Length - 1] == ';' &&
+									source[source.Length - 2] == ';')
+								{
+									codeLines.AppendLine(source.TrimEnd(';'));
+									InterpretString(codeLines.ToString());
+									codeLines = new StringBuilder();
+									helper.PrintPrompt();
+								}
+								else
+								{
+									codeLines.AppendLine(source);
+									helper.PrintSecondaryPrompt();
+								}
+							}
+						}
 					}
 				}
-
-				if (opt.OneCommand)
-					return;
 			}
 		}
 
 
 		private static int InterpretFile()
 		{
-			var res = default(LinkerResult);
-			
-			if (opt.ShowBuildTime) //GIT
-				Warmup();
-			
+			var res = default(LinkerResult);			
 			var dt = DateTime.Now;
 			
 			try 
@@ -274,14 +295,6 @@ namespace ElaConsole
 				return R_ERR;
 			else
 			{
-				if (opt.ShowBuildTime)
-				{
-					var fin = DateTime.Now - dt;
-					Console.WriteLine("Modules in assembly: {0}", res.Assembly.ModuleCount);
-					Console.WriteLine("EIL instruction number in main module: {0}", res.Assembly.GetRootModule().Ops.Count);
-					Console.WriteLine("Build taken: {0}", fin);
-				}
-
 				var ret = Execute(res.Assembly, false);
 
 				if (ret == R_OK && opt.LunchInteractive)
@@ -314,13 +327,9 @@ namespace ElaConsole
 
 			if (opt.ShowEil)
 			{
-				if (!opt.ShowBuildTime)
-				{
-					var gen = new EilGenerator(mod);
-					Console.WriteLine("EIL ({0}-{1}):", lastOffset, mod.Ops.Count - 1);
-					Console.Write(gen.Generate(lastOffset));
-				}
-
+				var gen = new EilGenerator(mod);
+				Console.WriteLine("EIL ({0}-{1}):", lastOffset, mod.Ops.Count - 1);
+				Console.Write(gen.Generate(lastOffset));
 				lastOffset = mod.Ops.Count;
 			}
 			else if (opt.ShowSymbols != SymTables.None)
@@ -347,7 +356,7 @@ namespace ElaConsole
 						vm.RefreshState();
 
 					if (opt.ShowTime && !interactive)
-						Warmup(); //GIT
+						Warmup(asm); //GIT
 					
 					var os = lastOffset;
 					lastOffset = mod.Ops.Count;
@@ -415,12 +424,9 @@ namespace ElaConsole
 		}
 
 
-		private static void Warmup()//GIT
+		private static void Warmup(CodeAssembly asm)//GIT
 		{
-			var tlk = new ElaIncrementalLinker(new LinkerOptions(), CompilerOptions.Default);
-			tlk.SetSource("{x=[0]}");
-			var res = tlk.Build();
-			new ElaMachine(res.Assembly).Run(); 
+			new ElaMachine(asm).Run(); 
 		}
 		#endregion
 	}

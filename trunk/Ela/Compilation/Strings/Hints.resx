@@ -117,11 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="MatchEntryTypingFailed" xml:space="preserve">
-    <value>All entries in a match expression should use compatible type patterns, e.g. you can't use string pattern and integer pattern at the same position in different entries.</value>
-  </data>
-  <data name="MatchNextEntryIgnored" xml:space="preserve">
-    <value>Move a pattern that matches any value (such as '_' or a name binding) to the end of the match.</value>
+  <data name="MatchEntryNotReachable" xml:space="preserve">
+    <value>Consider reordering match entries. Less specific patterns should be moved after more specific patterns.</value>
   </data>
   <data name="UseIgnoreToPop" xml:space="preserve">
     <value>Use 'let _ = ...' expression to disable warning, e.g. 'let_ = x'.</value>

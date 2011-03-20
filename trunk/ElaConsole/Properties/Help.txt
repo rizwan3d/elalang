@@ -25,8 +25,7 @@ Syntax: elac [filename] [options]
 -inter			Execute input file and then stay in interactive
 			mode.
 			
--onecmd			Interpret only first command in interactive mode
-			and then terminate Ela Console.
+-ml				Enable multiline code entry in interactive mode.
 			
 -silent or -s		Do not print any messages including warnings and
 			errors.
@@ -34,8 +33,6 @@ Syntax: elac [filename] [options]
 -help or -h		Show information about Ela Console switches.
 
 -time or -t		Show execution time.
-
--buildTime or -bt	Show build time.
 
 -compile or -c		Do not execute code but compile it into Ela Object 
 			File (.elaobj).

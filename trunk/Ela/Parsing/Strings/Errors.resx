@@ -459,4 +459,10 @@
   <data name="InvalidSyntaxUnexpectedSymbol" xml:space="preserve">
     <value>Invalid syntax. Unexpected symbol '{0}'.</value>
   </data>
+  <data name="InvalidUnary" xml:space="preserve">
+    <value>Invalid unary expression.</value>
+  </data>
+  <data name="InvalidIndentationUnexpectedSymbol" xml:space="preserve">
+    <value>Unexpected symbol '{0}'. Probably indentation is incorrect.</value>
+  </data>
 </root>

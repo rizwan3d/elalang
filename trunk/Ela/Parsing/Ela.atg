@@ -791,7 +791,7 @@ PRODUCTIONS
 			BindingBody<flags, out exp>
 			(
 				(
-					IN Expr<out inExp> 
+					WEAK IN Expr<out inExp> 
 					(. ((ElaBinding)exp).In = inExp; .)	
 					EndBlock
 				)
@@ -870,7 +870,7 @@ PRODUCTIONS
 			| BindingBodyOperator<varExp>
 		)		
 		[
-			ET BindingBody<flags, out exp>
+			WEAK ET BindingBody<flags, out exp>
 			(.
 				((ElaBinding)varExp).And = (ElaBinding)exp;
 				exp = varExp;

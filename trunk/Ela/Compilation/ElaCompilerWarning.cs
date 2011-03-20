@@ -11,18 +11,14 @@ namespace Ela.Compilation
 
 		EmbeddedBinding = 401,
 
-		MatchNextEntryIgnored = 402,
+		MatchEntryAlwaysFail = 402,
 
-		MatchEntryAlwaysFail = 403,
-
-		MatchEntryTypingFailed = 404,
-
-		MatchLessSpecific = 405, 
+		MatchEntryNotReachable = 403, 
 		
-		ValueNotUsed = 406,
+		ValueNotUsed = 404,
 		
-		FunctionInvalidType = 407,
+		FunctionInvalidType = 405,
 
-		FunctionImplicitPartial = 408,
+		FunctionImplicitPartial = 406,
 	}
 }

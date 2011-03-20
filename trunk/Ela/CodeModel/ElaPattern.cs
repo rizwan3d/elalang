@@ -50,10 +50,5 @@ namespace Ela.CodeModel
 			return false;
 		}
 		#endregion
-
-
-		#region Properties
-		internal virtual ElaPatternAffinity Affinity { get { return ElaPatternAffinity.Any; } }
-		#endregion
 	}
 }

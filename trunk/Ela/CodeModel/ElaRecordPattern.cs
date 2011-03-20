@@ -65,11 +65,6 @@ namespace Ela.CodeModel
 
 		#region Properties
 		public List<ElaFieldPattern> Fields { get; private set; }
-		
-		internal override ElaPatternAffinity Affinity
-		{
-			get { return ElaPatternAffinity.Sequence|ElaPatternAffinity.Any; }
-		}
 		#endregion
 	}
 }

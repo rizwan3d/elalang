@@ -60,7 +60,7 @@ namespace Ela.CodeModel
 			if (pat.IsIrrefutable())
 				return false;
 
-			if (pat.Type == ElaNodeType.TuplePattern)
+			if (pat.Type == ElaNodeType.TuplePattern || pat.Type == ElaNodeType.PatternGroup)
 			{
 				var tuple = (ElaTuplePattern)pat;
 				return CanFollow(tuple.Patterns, Patterns, tuple.Patterns.Count, Patterns.Count, false);
@@ -99,12 +99,6 @@ namespace Ela.CodeModel
 		public bool HasChildren
 		{
 			get { return _patterns != null; }
-		}
-
-
-		internal override ElaPatternAffinity Affinity
-		{
-			get { return ElaPatternAffinity.Sequence|ElaPatternAffinity.Any; }
 		}
 		#endregion
 	}

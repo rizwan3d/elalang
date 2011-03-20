@@ -25,7 +25,6 @@ namespace Ela.Parsing
 					var head = arr[0].Trim('\"');
 					var tail = arr[1].Trim('\"');
 					var exp = tail == "expected";
-
 					var e = exp ? ExpectToken(error, head) : InvalidToken(error, tail);
 
 					if (e != ElaParserError.InvalidRoot || err != ElaParserError.InvalidSyntaxUnexpectedSymbol)
@@ -34,7 +33,13 @@ namespace Ela.Parsing
 						msg = exp ? head : tail;
 					}
 				}
-			}			
+			}
+
+			if (err == ElaParserError.ExpectedEof && !String.IsNullOrEmpty(tok.val))
+			{
+				err = ElaParserError.InvalidIndentationUnexpectedSymbol;
+				msg = tok.val;
+			}
 
 			return new ElaMessage(Strings.GetMessage(err, msg), MessageType.Error, (Int32)err, line, col);
 		}
@@ -89,7 +94,6 @@ namespace Ela.Parsing
                 case "BindingBodyOperator": return ElaParserError.InvalidBinding;
                 case "BindingBodyInit": return ElaParserError.InvalidBinding;
                 case "BindingBodyGuards": return ElaParserError.InvalidBinding;
-
 				case "FunExpr": return ElaParserError.InvalidFunction;
 				case "FunBodyExpr": return ElaParserError.InvalidFunction;
 				case "ChildFunBodyExpr": return ElaParserError.InvalidFunction;
@@ -119,6 +123,7 @@ namespace Ela.Parsing
 				case "BackwardCompExpr": return ElaParserError.InvalidComp;
 				case "ForwardCompExpr": return ElaParserError.InvalidComp;
 				case "Application": return ElaParserError.InvalidApplication;
+				case "UnaryExpr": return ElaParserError.InvalidUnary;
 				case "AccessExpr": return ElaParserError.InvalidMemberAccess;
 				case "FuncOperator": return ElaParserError.InvalidFuncOperator;
 				case "BinaryExpr": return ElaParserError.InvalidSequence;

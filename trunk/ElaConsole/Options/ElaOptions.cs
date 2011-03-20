@@ -34,9 +34,6 @@ namespace ElaConsole.Options
 		[CommandLineOption("sym")]
 		public SymTables ShowSymbols { get; set; }
 
-		[CommandLineOption("onecmd")]
-		public bool OneCommand { get; set; }
-
 		[CommandLineOption("inter")]
 		public bool LunchInteractive { get; set; }
 
@@ -46,14 +43,14 @@ namespace ElaConsole.Options
 		[CommandLineOption("time", "t")]
 		public bool ShowTime { get; set; }
 
-		[CommandLineOption("buildTime", "bt")]
-		public bool ShowBuildTime { get; set; }
-		
 		[CommandLineOption("help", "h")]
 		public bool ShowHelp { get; set; }
 
 		[CommandLineOption("compile", "c")]
 		public bool Compile { get; set; }
+
+		[CommandLineOption("ml")]
+		public bool Multiline { get; set; }
 
 		[CommandLineOption("out")]
 		public string OutputFile { get; set; }

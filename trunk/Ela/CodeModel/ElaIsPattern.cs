@@ -46,7 +46,7 @@ namespace Ela.CodeModel
 			if (pat.Type == ElaNodeType.IsPattern)
 			{
 				var @is = (ElaIsPattern)pat;
-				return @is.Affinity != Affinity && @is.Traits != Traits;
+				return @is.TypeAffinity != TypeAffinity && @is.Traits != Traits;
 			}
 
 			return false;
