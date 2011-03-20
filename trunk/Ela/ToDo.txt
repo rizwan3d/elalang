@@ -1,4 +1,4 @@
-﻿1. Possibly change syntax for partial application of operators, e.g. instead of (+2) use <+2>.
+﻿1. Possibly change syntax for partial application of operators, e.g. instead of (+2) use <+2>.==Reconsidered. Braces now are not needed at all.
 2. Make type conversion operator (:) extendable (probably through pervasives).==Probably remove this syntax at all.
 3. Move all reflection API to the standard library.==Reconsidered. API refactored but will remain the part of Ela core.
 4. Think about inability to convert to other than built-in types.

@@ -14,7 +14,7 @@ namespace Ela.Library.Collections
         private ElaList forward;
         private ElaList backward;
 
-        internal ElaQueue(ElaList forward, ElaList backward) : base(ElaTraits.Eq|ElaTraits.Show|ElaTraits.Len|ElaTraits.Convert|ElaTraits.Fold|ElaTraits.Cons)
+        internal ElaQueue(ElaList forward, ElaList backward) : base(ElaTraits.Eq|ElaTraits.Show|ElaTraits.Len|ElaTraits.Convert|ElaTraits.Seq|ElaTraits.Cons)
         {
             this.forward = forward;
             this.backward = backward;

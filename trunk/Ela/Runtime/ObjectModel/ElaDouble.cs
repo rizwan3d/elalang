@@ -6,14 +6,14 @@ namespace Ela.Runtime.ObjectModel
 	{
 		#region Construction
 		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Ord | ElaTraits.Bound | ElaTraits.Enum | ElaTraits.Show | 
-			ElaTraits.Convert | ElaTraits.Neg | ElaTraits.Num;
+			ElaTraits.Convert | ElaTraits.Neg | ElaTraits.Num | ElaTraits.Real;
 
 		public ElaDouble(double value) : base(ElaTypeCode.Double, TRAITS)
 		{
 			InternalValue = value;
 		}
 		#endregion
-
+		  
 
         #region Methods
         public override int GetHashCode()

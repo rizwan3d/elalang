@@ -39,7 +39,7 @@ namespace Ela
 
 		Ix = 0x10000,
 
-		Fold = 0x20000,
+		Seq = 0x20000,
 
 		Show = 0x40000,
 
@@ -51,6 +51,10 @@ namespace Ela
 
 		Cons = 0x400000,
 
-		Convert = 0x800000
+		Convert = 0x800000,
+
+		Int = 0x1000000,
+
+		Real = 0x2000000,
 	}
 }

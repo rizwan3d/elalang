@@ -9,7 +9,7 @@ namespace Ela.Runtime.ObjectModel
 	public class ElaList : ElaObject, IEnumerable<ElaValue>
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Len | ElaTraits.Gen | ElaTraits.Fold | ElaTraits.Cons | ElaTraits.Concat | ElaTraits.Convert | ElaTraits.Ix;
+		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Len | ElaTraits.Gen | ElaTraits.Seq | ElaTraits.Cons | ElaTraits.Concat | ElaTraits.Convert | ElaTraits.Ix;
 		internal static readonly ElaList Empty = new ElaList(null, new ElaValue(ElaUnit.Instance));
 
 		public ElaList(ElaObject next, object value) : this(next, ElaValue.FromObject(value))
@@ -228,7 +228,7 @@ namespace Ela.Runtime.ObjectModel
 							break;
 						}
 					}
-					else if ((xs.Traits & ElaTraits.Fold) != ElaTraits.Fold)
+					else if ((xs.Traits & ElaTraits.Seq) != ElaTraits.Seq)
 						break;
 				}
 				while (!xs.IsNil(ElaObject.DummyContext));
@@ -324,7 +324,7 @@ namespace Ela.Runtime.ObjectModel
                     yield return xs.Head(ElaObject.DummyContext).Id(DummyContext);
                     xs = xs.Tail(ElaObject.DummyContext).Ref;
 
-                    if ((xs.Traits & ElaTraits.Fold) != ElaTraits.Fold)
+                    if ((xs.Traits & ElaTraits.Seq) != ElaTraits.Seq)
                         yield break;
                 }
                 while (!xs.IsNil(ElaObject.DummyContext));
@@ -345,7 +345,7 @@ namespace Ela.Runtime.ObjectModel
 
 					if ((xs.Traits & ElaTraits.Thunk) == ElaTraits.Thunk)
 						xs.Force(ElaObject.DummyContext);
-					else if ((xs.Traits & ElaTraits.Fold) != ElaTraits.Fold)
+					else if ((xs.Traits & ElaTraits.Seq) != ElaTraits.Seq)
 						yield break;
 				}
 				while (!xs.IsNil(ElaObject.DummyContext));

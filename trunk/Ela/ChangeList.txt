@@ -1,3 +1,5 @@
+0.8.6.75:New:New traits (with no corresponding logic) 'Int' and 'Real' are added to denote integer and real numbers.
+0.8.6.74:Change:Ela 'Fold' trait renamed to 'Seq'.
 0.8.6.73:Change:Type verification of pattern match is decomissioned. According to the language sematics all possible combinations of patterns are correct.
 0.8.6.72:Change:All previous warnings and hints that were generates in a case when an irrefutable pattern was used before other patterns are decomissioned.
 0.8.6.71:Change:MatchEntryAlwaysFail warning message now displays the pattern that will never match.

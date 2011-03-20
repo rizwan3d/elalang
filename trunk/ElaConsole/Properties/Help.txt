@@ -25,7 +25,7 @@ Syntax: elac [filename] [options]
 -inter			Execute input file and then stay in interactive
 			mode.
 			
--ml				Enable multiline code entry in interactive mode.
+-ml			Enable multiline input in interactive mode.
 			
 -silent or -s		Do not print any messages including warnings and
 			errors.

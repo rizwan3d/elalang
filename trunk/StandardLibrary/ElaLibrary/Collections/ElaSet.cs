@@ -12,7 +12,7 @@ namespace Ela.Library.Collections
 		public static readonly ElaSet Empty = new ElaSet(AvlTree.Empty);
 		private const string TYPENAME = "set";
 		
-		internal ElaSet(AvlTree tree) : base(ElaTraits.Eq | ElaTraits.Show | ElaTraits.Len | ElaTraits.Fold | ElaTraits.Gen | ElaTraits.Cons)
+		internal ElaSet(AvlTree tree) : base(ElaTraits.Eq | ElaTraits.Show | ElaTraits.Len | ElaTraits.Seq | ElaTraits.Gen | ElaTraits.Cons)
 		{
 			Tree = tree;
 		}

@@ -547,15 +547,15 @@ namespace ElaConsole
 								p.Type == ElaNodeType.VariablePattern)
 							{
 								var v = (ElaVariablePattern)p;								
-								scope.LocalBindings.Add(v.Name, new Binding(v.Name, new TypeTag(ElaTraits.Fold, false)));
+								scope.LocalBindings.Add(v.Name, new Binding(v.Name, new TypeTag(ElaTraits.Seq, false)));
 							}
 							else
 								GetPatternType(p, scope);
 						}
 
-						return new TypeTag(ElaTraits.Fold, false);
+						return new TypeTag(ElaTraits.Seq, false);
 					}
-				case ElaNodeType.NilPattern: return new TypeTag(ElaTraits.Fold, false);
+				case ElaNodeType.NilPattern: return new TypeTag(ElaTraits.Seq, false);
 				case ElaNodeType.RecordPattern:
 					{
 						var rec = (ElaRecordPattern)pat;

@@ -154,7 +154,7 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Tail(ExecutionContext ctx)
 		{
-			return Value.Ref != null && (Value.Ref.Traits & ElaTraits.Fold) == ElaTraits.Fold ? Value.Ref.Tail(ctx) : 
+			return Value.Ref != null && (Value.Ref.Traits & ElaTraits.Seq) == ElaTraits.Seq ? Value.Ref.Tail(ctx) : 
 				new ElaValue(ElaList.Empty);
 		}
 
@@ -162,7 +162,7 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue Head(ExecutionContext ctx)
 		{
 			return Value.Ref != null ? 
-				((Value.Ref.Traits & ElaTraits.Fold) == ElaTraits.Fold ? Value.Ref.Head(ctx) : Value) : 
+				((Value.Ref.Traits & ElaTraits.Seq) == ElaTraits.Seq ? Value.Ref.Head(ctx) : Value) : 
 				Default();
 		}
 

@@ -45,7 +45,7 @@ namespace Ela
 				case "Eq": return ElaTraits.Eq;
 				case "FieldGet": return ElaTraits.FieldGet;
 				case "FieldSet": return ElaTraits.FieldSet;
-				case "Fold": return ElaTraits.Fold;
+				case "Seq": return ElaTraits.Seq;
 				case "Gen": return ElaTraits.Gen;
 				case "Get": return ElaTraits.Get;
 				case "Len": return ElaTraits.Len;

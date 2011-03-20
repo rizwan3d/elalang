@@ -105,7 +105,15 @@ namespace ElaConsole
 			if (!opt.NoLogo && !opt.Silent)
 			{
 				Console.WriteLine("Interactive mode");
-				Console.WriteLine("Enter expressions and press <Return> to execute.");
+
+				if (opt.Multiline)
+				{
+					Console.WriteLine("Enter expressions in several lines. Put a double semicolon ;; after");
+					Console.WriteLine("an expression to execute it.");
+				}
+				else
+					Console.WriteLine("Enter expressions and press <Return> to execute.");
+
 				Console.WriteLine();
 			}
 
@@ -128,7 +136,7 @@ namespace ElaConsole
 			if (!opt.Silent)
 			{
 				var promptLength = String.IsNullOrEmpty(opt.Prompt) ? 3 : opt.Prompt.Length;
-				Console.Write(new String(' ', promptLength) + ">");
+				Console.Write(new String('-', promptLength) + ">");
 			}
 		}
 

@@ -379,7 +379,7 @@ namespace Ela.Compilation
 						MatchEntryAlwaysFail(patExp, nextLab);
 					else
 					{
-						Silent(pushSys, nextLab, hints, ElaTraits.Fold);
+						Silent(pushSys, nextLab, hints, ElaTraits.Seq);
 
 						cw.Emit(Op.Pushvar, pushSys);
 						cw.Emit(Op.Isnil);
@@ -397,7 +397,7 @@ namespace Ela.Compilation
                 (pexp.Patterns[1].Type == ElaNodeType.VariablePattern || pexp.Patterns[1].Type == ElaNodeType.DefaultPattern ||
                 pexp.Patterns[1].Type == ElaNodeType.NilPattern))
 			{
-				Silent(pushSys, nextLab, hints, ElaTraits.Fold);
+				Silent(pushSys, nextLab, hints, ElaTraits.Seq);
 
 				cw.Emit(Op.Pushvar, pushSys);
 
@@ -427,7 +427,7 @@ namespace Ela.Compilation
 			}
 			else
 			{
-				Silent(pushSys, nextLab, hints, ElaTraits.Fold);
+				Silent(pushSys, nextLab, hints, ElaTraits.Seq);
 
 				cw.Emit(Op.Pushvar, pushSys);
 				cw.Emit(Op.Isnil);

@@ -6,7 +6,7 @@ namespace Ela.Runtime.ObjectModel
 	{
 		#region Construction
 		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Ord | ElaTraits.Bound | 
-			ElaTraits.Enum | ElaTraits.Show | ElaTraits.Convert | ElaTraits.Neg | ElaTraits.Num | ElaTraits.Bit;
+			ElaTraits.Enum | ElaTraits.Show | ElaTraits.Convert | ElaTraits.Neg | ElaTraits.Num | ElaTraits.Bit | ElaTraits.Int;
 
 		internal static readonly ElaInteger Instance = new ElaInteger();
 		

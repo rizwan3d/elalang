@@ -8,7 +8,7 @@ namespace Ela.Runtime.ObjectModel
 	public sealed class ElaString : ElaObject, IEnumerable<ElaValue>
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Ord | ElaTraits.Len | ElaTraits.Convert | ElaTraits.Concat | ElaTraits.Fold | ElaTraits.Cons | ElaTraits.Ix;
+		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Ord | ElaTraits.Len | ElaTraits.Convert | ElaTraits.Concat | ElaTraits.Seq | ElaTraits.Cons | ElaTraits.Ix;
 		private string buffer;
 		private int headIndex;
 		
