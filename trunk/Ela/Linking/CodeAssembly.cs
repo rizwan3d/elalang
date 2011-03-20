@@ -122,6 +122,12 @@ namespace Ela.Linking
 		}
 
 
+		public bool HasArgument(string name)
+		{
+			return arguments.ContainsKey(name);
+		}
+
+
 		public IEnumerable<ForeignModule> EnumerateForeignModules()
 		{
 			return foreignModules;

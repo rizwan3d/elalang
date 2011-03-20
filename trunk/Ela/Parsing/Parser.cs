@@ -1299,10 +1299,6 @@ internal sealed partial class Parser {
 			Expect(1);
 			inc.Alias = t.val; 
 		}
-		if (la.kind == 31) {
-			Get();
-			IncludeImports(inc);
-		}
 		Expect(42);
 	}
 
@@ -1319,22 +1315,6 @@ internal sealed partial class Parser {
 		if (la.kind == 22) {
 			Get();
 			Qualident(path);
-		}
-	}
-
-	void IncludeImports(ElaModuleInclude inc) {
-		Expect(1);
-		var imp = new ElaImportedName(t) { LocalName = t.val, ExternalName = t.val }; 
-		inc.Imports.Add(imp); 
-		
-		if (la.kind == 17) {
-			Get();
-			Expect(1);
-			imp.ExternalName = t.val; 
-		}
-		if (la.kind == 46) {
-			Get();
-			IncludeImports(inc);
 		}
 	}
 

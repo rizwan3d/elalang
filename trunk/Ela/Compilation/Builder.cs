@@ -20,6 +20,7 @@ namespace Ela.Compilation
 		private int currentCounter;
 		private Dictionary<String,Int32> stringLookup;
 		private Dictionary<ElaCompilerHint,ElaCompilerHint> shownHints;
+		private Scope globalScope;
 
 
 		internal Builder(CodeFrame frame, CompilerOptions options, Scope globalScope)
@@ -28,6 +29,7 @@ namespace Ela.Compilation
 			this.options = options;
 			this.cw = new CodeWriter(frame.Ops, frame.OpData);
 			this.currentCounter = frame.Layouts.Count > 0 ? frame.Layouts[0].Size : 0;
+			this.globalScope = globalScope;
 			CurrentScope = globalScope;
 			debug = options.GenerateDebugInfo;
 			opt = options.Optimize;
@@ -190,22 +192,7 @@ namespace Ela.Compilation
 						var addr = AddVariable(s.Alias, s, ElaVariableFlags.Module, modIndex);
 
 						if (addr != -1)
-						{
 							cw.Emit(Op.Popvar, addr);
-
-							if (s.HasImports)
-							{
-								for (var i = 0; i < s.Imports.Count; i++)
-								{
-									var im = s.Imports[i];
-									AddLinePragma(im);
-									cw.Emit(Op.Pushvar, addr);
-									cw.Emit(Op.Pushfld, AddString(im.ExternalName));
-									var varAddr = AddVariable(im.LocalName, im, ElaVariableFlags.None, -1);
-									cw.Emit(Op.Popvar, varAddr);
-								}
-							}
-						}
 					}
 					break;
 				case ElaNodeType.Match:
@@ -354,7 +341,7 @@ namespace Ela.Compilation
 						if (p.TargetObject.Type == ElaNodeType.BaseReference)
 						{
 							var error = false;
-							var var = GetParentVariable(p.FieldName, out error);
+							var var = GetParentVariable(p.FieldName, p.Line, p.Column, out error);
 
 							if (error)
 								AddError(ElaCompilerError.BaseNotAllowed, exp);
@@ -430,11 +417,7 @@ namespace Ela.Compilation
 							if (v.Index.Type == ElaNodeType.VariableReference)
 							{
 								var vr = (ElaVariableReference)v.Index;
-								var svar = GetVariable(vr.VariableName);
-
-								if (svar.IsEmpty())
-									AddError(ElaCompilerError.UndefinedVariable, vr, vr.VariableName);
-
+								var svar = GetVariable(vr.VariableName, vr.Line, vr.Column);
 								AddLinePragma(v);
 								cw.Emit(Op.Popelemi, svar.Address);
 							}
@@ -450,11 +433,7 @@ namespace Ela.Compilation
 							if (v.Index.Type == ElaNodeType.VariableReference)
 							{
 								var vr = (ElaVariableReference)v.Index;
-								var svar = GetVariable(vr.VariableName);
-
-								if (svar.IsEmpty())
-									AddError(ElaCompilerError.UndefinedVariable, vr, vr.VariableName);
-
+								var svar = GetVariable(vr.VariableName, vr.Line, vr.Column);
 								AddLinePragma(v);
 								cw.Emit(Op.Pushelemi, svar.Address);
 							}
@@ -476,6 +455,9 @@ namespace Ela.Compilation
 						AddLinePragma(v);
 						cw.Emit(Op.Pusharg, AddString(v.ArgumentName));
 
+						if (!frame.Arguments.ContainsKey(v.ArgumentName))
+							frame.Arguments.Add(v.ArgumentName, new Loc(v.Line, v.Column));
+
 						if ((hints & Hints.Left) == Hints.Left)
 							AddValueNotUsed(v);
 					}
@@ -484,26 +466,21 @@ namespace Ela.Compilation
 					{
 						var v = (ElaVariableReference)exp;
 						AddLinePragma(v);
-						var scopeVar = default(ScopeVar);
+						var scopeVar = GetVariable(v.VariableName, v.Line, v.Column);
 						
-						if ((scopeVar = GetVariable(v.VariableName)).IsEmpty())
-							AddError(ElaCompilerError.UndefinedVariable, v, v.VariableName);
+						if ((hints & Hints.Left) == Hints.Left && (hints & Hints.Assign) == Hints.Assign)
+						{
+							AddError(ElaCompilerError.AssignImmutableVariable, exp, v.VariableName);
+							AddHint(ElaCompilerHint.UseReferenceCell, exp);
+						}
 						else
 						{
-							if ((hints & Hints.Left) == Hints.Left && (hints & Hints.Assign) == Hints.Assign)
-							{
-								AddError(ElaCompilerError.AssignImmutableVariable, exp, v.VariableName);
-								AddHint(ElaCompilerHint.UseReferenceCell, exp);
-							}
-							else
-							{
-								cw.Emit(Op.Pushvar, scopeVar.Address);
+							cw.Emit(Op.Pushvar, scopeVar.Address);
 
-								if ((hints & Hints.Left) == Hints.Left)
-									AddValueNotUsed(v);
-							}
+							if ((hints & Hints.Left) == Hints.Left)
+								AddValueNotUsed(v);
 						}
-
+					
 						if ((scopeVar.VariableFlags & ElaVariableFlags.Function) == ElaVariableFlags.Function)
 							exprData = new ExprData(DataKind.FunParams, scopeVar.Data);
 						else if ((scopeVar.VariableFlags & ElaVariableFlags.ObjectLiteral) == ElaVariableFlags.ObjectLiteral)
@@ -966,7 +943,13 @@ namespace Ela.Compilation
 		{
 			if (exp != null && IsRegistered(name))
 			{
-				AddError(ElaCompilerError.VariableAlreadyDeclared, exp, name);
+				var sv = CurrentScope.Locals[name];
+
+				if ((sv.Flags & ElaVariableFlags.External) == ElaVariableFlags.External)
+					AddError(ElaCompilerError.VariableShadowsExternal, exp, name);
+				else
+					AddError(ElaCompilerError.VariableAlreadyDeclared, exp, name);
+
 				return -1;
 			}
 
@@ -1032,13 +1015,13 @@ namespace Ela.Compilation
 		}
 
 
-		private ScopeVar GetVariable(string name)
+		private ScopeVar GetVariable(string name, int line, int col)
 		{
-			return GetVariable(name, CurrentScope, 0);
+			return GetVariable(name, CurrentScope, 0, line, col);
 		}
 
 
-		private ScopeVar GetVariable(string name, Scope startScope, int startShift)
+		private ScopeVar GetVariable(string name, Scope startScope, int startShift, int line, int col)
 		{
 			var cur = startScope;
 			var shift = startShift;
@@ -1060,7 +1043,22 @@ namespace Ela.Compilation
 			}
 			while (cur != null);
 
-			return ScopeVar.Empty;
+			var addr = 0;
+
+			if (counters.Count == 0)
+			{
+				addr = currentCounter;
+				currentCounter++;
+			}
+			else
+			{
+				addr = counters[0];
+				counters[0] = counters[0] + 1;
+			}
+
+			frame.Unresolves.Add(new UnresolvedSymbol(name, addr, line, col));
+			globalScope.Locals.Add(name, new ScopeVar(ElaVariableFlags.External, addr, -1));
+			return new ScopeVar(counters.Count | addr << 8);
 		}
 
 
@@ -1081,7 +1079,7 @@ namespace Ela.Compilation
 		}
 
 
-		private ScopeVar GetParentVariable(string name, out bool error)
+		private ScopeVar GetParentVariable(string name, int line, int col, out bool error)
 		{
 			var cur = CurrentScope;
 			error = false;
@@ -1094,7 +1092,7 @@ namespace Ela.Compilation
 			else
 				error = true;
 
-			return cur == null ? ScopeVar.Empty : GetVariable(name, cur, 1);
+			return cur == null ? ScopeVar.Empty : GetVariable(name, cur, 1, line, col);
 		}
 		#endregion
 

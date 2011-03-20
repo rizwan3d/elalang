@@ -257,10 +257,10 @@ namespace Ela.Compilation
 				return false;
 
 			var varRef = (ElaVariableReference)funCall.Target;
-			var scopeVar = GetVariable(varRef.VariableName);
+			var scopeVar = GetVariable(varRef.VariableName, varRef.Line, varRef.Column);
 			var len = funCall.Parameters.Count;
 
-			if (scopeVar.IsEmpty() || (scopeVar.VariableFlags & ElaVariableFlags.Function) != ElaVariableFlags.Function ||
+			if ((scopeVar.VariableFlags & ElaVariableFlags.Function) != ElaVariableFlags.Function ||
 				(scopeVar.Data != funCall.Parameters.Count && map.FunctionName == null && map.FunctionName != funCall.GetName() &&
 				map.FunctionParameters != len && map.FunctionScope != GetScope(map.FunctionName)))
 				return false;

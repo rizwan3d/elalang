@@ -1079,7 +1079,6 @@ PRODUCTIONS
 				)
 			]		
 			[ "@" ident (. inc.Alias = t.val; .) ]
-			[ WITH IncludeImports<inc> ]
 			EBLOCK
 		).
 		
@@ -1091,17 +1090,6 @@ PRODUCTIONS
 		)
 		(. path.Add(val); .)
 		[ "." Qualident<path> ].
-		
-	IncludeImports<ElaModuleInclude inc> =
-		(
-			ident 
-			(. 
-				var imp = new ElaImportedName(t) { LocalName = t.val, ExternalName = t.val }; 
-				inc.Imports.Add(imp); 
-			.) 
-			[ "=" ident (. imp.ExternalName = t.val; .) ]
-		)
-		[ "," IncludeImports<inc> ].
 	
 	IfExpr<out ElaExpression exp> = 
 		IFS

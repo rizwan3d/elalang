@@ -146,6 +146,7 @@
     <Compile Include="Compilation\IElaCompiler.cs" />
     <Compile Include="Compilation\OpStackHelper.cs" />
     <Compile Include="Compilation\Strings.cs" />
+    <Compile Include="Compilation\UnresolvedSymbol.cs" />
     <Compile Include="Culture.cs" />
     <Compile Include="Debug\CallStack.cs" />
     <Compile Include="Debug\ElaDebugException.cs" />
@@ -153,6 +154,7 @@
     <Compile Include="IReadOnlyMap.cs" />
     <Compile Include="Compilation\OpSizeHelper.cs" />
     <Compile Include="ElaTranslationException.cs" />
+    <Compile Include="Location.cs" />
     <Compile Include="Runtime\ElaRuntimeException.cs" />
     <Compile Include="Runtime\EqHelper.cs" />
     <Compile Include="Runtime\ObjectModel\DelegateFunction.cs" />
@@ -172,7 +174,6 @@
     <Compile Include="CodeModel\ElaFieldPattern.cs" />
     <Compile Include="CodeModel\ElaFunctionType.cs" />
     <Compile Include="CodeModel\ElaHeadTailPattern.cs" />
-    <Compile Include="CodeModel\ElaImportedName.cs" />
     <Compile Include="CodeModel\ElaLiteralPattern.cs" />
     <Compile Include="CodeModel\ElaTuplePattern.cs" />
     <Compile Include="CodeModel\ElaTry.cs" />

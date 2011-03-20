@@ -34,3 +34,5 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion(Const.Version)]
 [assembly: AssemblyFileVersion(Const.Version)]
+
+[assembly:InternalsVisibleTo("ElaTest")]

@@ -39,8 +39,6 @@ namespace Ela.CodeModel
 
 		Argument,
 
-		ImportedName,
-
 		FieldReference,
 
 		Placeholder,

@@ -48,20 +48,6 @@ namespace Ela.CodeModel
 				sb.Append('#');
 				sb.Append(DllName);
 			}
-
-			if (HasImports)
-			{
-				sb.Append(" with ");
-				var c = 0;
-
-				foreach (var i in _imports)
-				{
-					if (c++ > 0)
-						sb.Append(',');
-
-					i.ToString(sb, fmt);
-				}
-			}
 		}
 		#endregion
 
@@ -73,21 +59,7 @@ namespace Ela.CodeModel
 
 		public string DllName { get; set; }
 
-		public List<String> Path { get; private set; }
-
-		private List<ElaImportedName> _imports;
-		public List<ElaImportedName> Imports
-		{
-			get
-			{
-				if (_imports == null)
-					_imports = new List<ElaImportedName>();
-
-				return _imports;
-			}
-		}
-
-		public bool HasImports { get { return _imports != null; } }
+		public List<String> Path { get; private set; }		
 		#endregion
 	}
 }

@@ -147,7 +147,13 @@
   <data name="ObjectFileReadFailed" xml:space="preserve">
     <value>Unable to read object file '{0}' because of an error: {1}.</value>
   </data>
+  <data name="UnresolvedArgument" xml:space="preserve">
+    <value>An argument '{0}' is unresolved. No argument with such name were provided.</value>
+  </data>
   <data name="UnresolvedModule" xml:space="preserve">
     <value>Unable to find referenced module '{0}'.</value>
+  </data>
+  <data name="UnresolvedVariable" xml:space="preserve">
+    <value>A name '{0}' is not declared.</value>
   </data>
 </root>

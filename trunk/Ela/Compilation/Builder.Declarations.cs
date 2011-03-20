@@ -39,11 +39,12 @@ namespace Ela.Compilation
 					}
 					else
 						addr = (hints & Hints.And) == Hints.And ?
-							GetVariable(s.VariableName).Address : AddVariable(s.VariableName, s, s.VariableFlags, -1);
+							GetVariable(s.VariableName, s.Line, s.Column).Address : 
+							AddVariable(s.VariableName, s, s.VariableFlags, -1);
 				}
 				else
 				{
-                    addr = -1;// AddVariable(s.VariableName, s, s.VariableFlags, -1);
+                    addr = -1;
 					addSym = true;
 				}
 

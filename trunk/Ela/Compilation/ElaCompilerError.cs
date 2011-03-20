@@ -17,7 +17,7 @@ namespace Ela.Compilation
 
 		AssignImmutableVariable = 304,
 
-		UndefinedVariable = 305,
+		VariableShadowsExternal = 305,
 
 		PlaceholderNotValid = 306,
 

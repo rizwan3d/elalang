@@ -7,7 +7,7 @@ namespace Ela.CodeModel
 	{
 		None = 0x00,
 
-		// = 0x01,
+		External = 0x01,
 
 		Private = 0x02,
 

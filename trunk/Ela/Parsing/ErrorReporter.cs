@@ -99,7 +99,7 @@ namespace Ela.Parsing
 				case "ChildFunBodyExpr": return ElaParserError.InvalidFunction;
 				case "LambdaExpr": return ElaParserError.InvalidLambda;
 				case "IncludeStat": return ElaParserError.InvalidInclude;
-				case "IncludeImports": return ElaParserError.InvalidInclude;
+				case "Qualident": return ElaParserError.InvalidInclude;
 				case "IfExpr": return ElaParserError.InvalidIf;
 				case "RaiseExpr": return ElaParserError.InvalidRaise;
 				case "FailExpr": return ElaParserError.InvalidFail;

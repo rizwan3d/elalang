@@ -26,7 +26,10 @@ namespace Ela.Runtime
 			var lays = frame.Layouts[0];
 			modules = new ElaValue[asm.ModuleCount][];
 			pervasives = new Pervasive[asm.ModuleCount][];
-			pervasives[0] = new Pervasive[frame.ReferencedPervasives.Count];
+			
+			if (frame.ReferencedPervasives.Count > 0)
+				pervasives[0] = new Pervasive[frame.ReferencedPervasives.Count];
+
 			var mem = new ElaValue[lays.Size];
 			modules[0] = mem;
 			MainThread.CallStack.Push(new CallPoint(0, new EvalStack(lays.StackSize), mem, FastList<ElaValue[]>.Empty));
@@ -1601,22 +1604,31 @@ namespace Ela.Runtime
 							{
 								var frm = asm.GetModule(hdl);
 
-                                if (frm is IntrinsicFrame)
-                                {
-                                    modules[hdl] = ((IntrinsicFrame)frm).Memory;
-                                    ReadPervasives(thread, frm, hdl);
-                                }
-                                else
-                                {
-                                    i4 = frm.Layouts[0].Size;
-                                    var loc = new ElaValue[i4];
-                                    modules[hdl] = loc;
-                                    callStack.Peek().BreakAddress = thread.Offset;
-                                    callStack.Push(new CallPoint(hdl, new EvalStack(frm.Layouts[0].StackSize), loc, FastList<ElaValue[]>.Empty));
-                                    thread.SwitchModule(hdl);
-                                    thread.Offset = 0;
-                                    goto SWITCH_MEM;
-                                }
+								if (frm is IntrinsicFrame)
+								{
+									modules[hdl] = ((IntrinsicFrame)frm).Memory;
+									ReadPervasives(thread, frm, hdl);
+								}
+								else
+								{
+									i4 = frm.Layouts[0].Size;
+									var loc = new ElaValue[i4];
+									modules[hdl] = loc;
+									callStack.Peek().BreakAddress = thread.Offset;
+									callStack.Push(new CallPoint(hdl, new EvalStack(frm.Layouts[0].StackSize), loc, FastList<ElaValue[]>.Empty));
+									thread.SwitchModule(hdl);
+									thread.Offset = 0;
+
+									if (pervasives[hdl] == null)
+										pervasives[hdl] = new Pervasive[frm.ReferencedPervasives.Count];
+
+									goto SWITCH_MEM;
+								}
+							}
+							else
+							{
+								var frm = asm.GetModule(hdl);
+								ReadPervasives(thread, frm, hdl);
 							}
 						}
 						break;
@@ -1684,6 +1696,18 @@ namespace Ela.Runtime
 			{
 				if (refs.TryGetValue(kv.Key, out hdl))
 					pervs[hdl] = new Pervasive(handle, kv.Value);
+			}
+
+			var mod = thread.Module;
+			var locals = modules[thread.ModuleHandle];
+			var externs = frame.GlobalScope.Locals;
+			var extMem = modules[handle];
+			ScopeVar sv;
+
+			foreach (var s in mod.Unresolves)
+			{
+				if (externs.TryGetValue(s.Name, out sv))
+					locals[s.Address] = extMem[sv.Address];
 			}
 		}
 

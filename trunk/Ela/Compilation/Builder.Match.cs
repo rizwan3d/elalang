@@ -25,11 +25,8 @@ namespace Ela.Compilation
 
 						if (matchExp.Type == ElaNodeType.VariableReference)
 						{
-							var sv = GetVariable(((ElaVariableReference)matchExp).VariableName);
-
-							if (sv.IsEmpty())
-								AddError(ElaCompilerError.UndefinedVariable, matchExp, ((ElaVariableReference)matchExp).VariableName);
-
+							var vr = (ElaVariableReference)matchExp;
+							var sv = GetVariable(vr.VariableName, vr.Line, vr.Column);
 							serv = sv.Address;
 						}
 						else
@@ -536,12 +533,8 @@ namespace Ela.Compilation
 						if (p.Type == ElaNodeType.VariableReference)
 						{
 							var v = (ElaVariableReference)p;
-							var sv = GetVariable(v.VariableName);
-
-							if (sv.IsEmpty())
-								AddError(ElaCompilerError.UndefinedVariable, p, v.VariableName);
-							else
-								newSys = sv.Address;
+							var sv = GetVariable(v.VariableName, v.Line, v.Column);
+							newSys = sv.Address;
 						}
 						else
 						{

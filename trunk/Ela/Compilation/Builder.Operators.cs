@@ -264,11 +264,7 @@ namespace Ela.Compilation
 				if (ind.Index.Type == ElaNodeType.VariableReference)
 				{
 					var vr = (ElaVariableReference)ind.Index;
-					var svar = GetVariable(vr.VariableName);
-
-					if (svar.IsEmpty())
-						AddError(ElaCompilerError.UndefinedVariable, vr, vr.VariableName);
-
+					var svar = GetVariable(vr.VariableName, vr.Line, vr.Column);
 					AddLinePragma(ind);
 					cw.Emit(Op.Pushelemi, svar.Address);
 				}
@@ -318,11 +314,7 @@ namespace Ela.Compilation
 					if (ind.Index.Type == ElaNodeType.VariableReference)
 					{
 						var vr = (ElaVariableReference)ind.Index;
-						var svar = GetVariable(vr.VariableName);
-
-						if (svar.IsEmpty())
-							AddError(ElaCompilerError.UndefinedVariable, vr, vr.VariableName);
-
+						var svar = GetVariable(vr.VariableName, vr.Line, vr.Column);
 						AddLinePragma(ind);
 						cw.Emit(Op.Popelemi, svar.Address);
 					}

@@ -1,3 +1,8 @@
+0.8.6.80:Change:Now compiler doesn't track undefined variables. Linker does.
+0.8.6.79:Change:Now all module variables are imported automatically. An explicit import list is decomissioned.
+0.8.6.78:Fix:A critical bug in VM fixed - pervasives (such as operators) were initialized only for the first module that referenced a module with pervasives.
+0.8.6.77:New:Now Ela linker generates a warning if there is an referenced argument that wasn't supplied.
+0.8.6.76:Fix:A critical bug with pervasives fixed - VM crushed in pervasives (such as operators) were used not in a main module.
 0.8.6.75:New:New traits (with no corresponding logic) 'Int' and 'Real' are added to denote integer and real numbers.
 0.8.6.74:Change:Ela 'Fold' trait renamed to 'Seq'.
 0.8.6.73:Change:Type verification of pattern match is decomissioned. According to the language sematics all possible combinations of patterns are correct.

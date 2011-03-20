@@ -65,23 +65,49 @@ namespace Ela.Linking
 		}
 
 
-		internal void ProcessIncludes(CodeFrame frame)
+		internal void ProcessIncludes(FileInfo fi, ModuleReference mod, CodeFrame frame)
 		{
+			var unres = frame.Unresolves.Clone();
+			var dels = new FastList<UnresolvedSymbol>();
+
 			foreach (var kv in frame.References)
-				ResolveModule(kv.Value);
+			{
+				var incFrame = ResolveModule(kv.Value);
+
+				if (incFrame != null)
+				{
+					foreach (var u in unres)
+					{
+						if (u.Line > mod.Line && incFrame.GlobalScope.Locals.ContainsKey(u.Name))
+							dels.Add(u);
+					}
+
+					foreach (var u in dels)
+						unres.Remove(u);
+
+					dels.Clear();
+				}
+			}
+
+			if (unres.Count > 0)
+			{
+				foreach (var u in unres)
+					AddError(ElaLinkerError.UnresolvedVariable, fi, u.Line, u.Column, u.Name);
+			}
 		}
 
 
-		internal void ResolveModule(ModuleReference mod)
+		internal CodeFrame ResolveModule(ModuleReference mod)
 		{
 			LoadStdLib();
+			var frame = default(CodeFrame);
 
-			if (!Assembly.IsModuleRegistered(mod.ToString()))
+			if ((frame = Assembly.GetModule(mod.ToString())) == null)
 			{
-				if (mod.DllName == null && stdLoaded && TryLoadStandardModule(mod))
-					return;
+				if (mod.DllName == null && stdLoaded && (frame = TryLoadStandardModule(mod)) != null)
+					return frame;
 				else if (mod.DllName != null)
-					ResolveDll(mod);
+					return ResolveDll(mod);
 				else
 				{
 					var ela = String.Concat(mod.ModuleName, EXT);
@@ -93,17 +119,23 @@ namespace Ela.Linking
 					{
 						if (!bin)
 						{
-							var frame = Build(mod, fi);
+							frame = Build(mod, fi);
 							RegisterFrame(mod, frame, fi);
+							return frame;
 						}
 						else
 						{
-							var frame = ReadObjectFile(mod, fi);
+							frame = ReadObjectFile(mod, fi);
 							RegisterFrame(mod, frame, fi);
+							return frame;
 						}
 					}
+
+					return null;
 				}
 			}
+			else
+				return frame;
 		}
 
 
@@ -138,18 +170,15 @@ namespace Ela.Linking
 		}
 
 
-		private bool TryLoadStandardModule(ModuleReference mod)
+		private CodeFrame TryLoadStandardModule(ModuleReference mod)
 		{
 			var dict = default(Dictionary<String,ElaModuleAttribute>);
 			var attr = default(ElaModuleAttribute);
 
 			if (foreignModules.TryGetValue("$", out dict) && dict.TryGetValue(mod.ModuleName, out attr))
-			{
-				LoadModule(mod, attr, new FileInfo(LinkerOptions.StandardLibrary));
-				return true;
-			}
+				return LoadModule(mod, attr, new FileInfo(LinkerOptions.StandardLibrary));
 			else
-				return false;
+				return null;
 		}
 
 
@@ -163,12 +192,16 @@ namespace Ela.Linking
 				if (frame.References.Count > 0 && LinkerOptions.Sandbox)
 					AddError(ElaLinkerError.IncludeInSandbox, fi, 0, 0);
 				else
-					ProcessIncludes(frame);
+					ProcessIncludes(fi, mod, frame);
+
+				foreach (var kv in frame.Arguments)
+					if (!Assembly.HasArgument(kv.Key))
+						AddError(ElaLinkerError.UnresolvedArgument, fi, kv.Value.Line, kv.Value.Column, kv.Key);
 			}
 		}
 
 
-		private void ResolveDll(ModuleReference mod)
+		private CodeFrame ResolveDll(ModuleReference mod)
 		{
 			var dict = default(Dictionary<String,ElaModuleAttribute>);
 			var fi = default(FileInfo);
@@ -184,8 +217,10 @@ namespace Ela.Linking
 					AddError(ElaLinkerError.ModuleNotFoundInAssembly, new FileInfo(mod.DllName), mod.Line, mod.Column,
 						mod.ModuleName, mod.DllName);
 				else
-					LoadModule(mod, attr, fi);
-			}				
+					return LoadModule(mod, attr, fi);
+			}
+
+			return null;
 		}
 
 
@@ -255,7 +290,7 @@ namespace Ela.Linking
 		}
 
 
-		private void LoadModule(ModuleReference mod, ElaModuleAttribute attr, FileInfo fi)
+		private CodeFrame LoadModule(ModuleReference mod, ElaModuleAttribute attr, FileInfo fi)
 		{
 			var obj = default(ForeignModule);
 
@@ -266,11 +301,14 @@ namespace Ela.Linking
 			catch (Exception ex)
 			{
 				AddError(ElaLinkerError.ForeignModuleInitFailed, fi, mod.Line, mod.Column, mod, ex.Message);
-				return;
+				return null;
 			}
 
 			if (obj == null)
+			{
 				AddError(ElaLinkerError.ForeignModuleInvalidType, fi, mod.Line, mod.Column, mod);
+				return null;
+			}
 			else
 			{
 				var frame = default(CodeFrame);
@@ -284,10 +322,11 @@ namespace Ela.Linking
 				catch (Exception ex)
 				{
 					AddError(ElaLinkerError.ForeignModuleInitFailed, fi, mod.Line, mod.Column, mod, ex.Message);
-					return;
+					return null;
 				}
 
 				RegisterFrame(mod, frame, fi);
+				return frame;
 			}
 		}
 

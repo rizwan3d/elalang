@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Ela.CodeModel;
 using Ela.Debug;
 
 namespace Ela.Compilation
@@ -26,14 +27,16 @@ namespace Ela.Compilation
 			OpData = new FastList<Int32>();
 			Strings = new FastList<String>();
 			_references = new ReferenceMap();
-			DeclaredPervasives = new Dictionary<String, Int32>();
-			ReferencedPervasives = new Dictionary<String, Int32>();
+			DeclaredPervasives = new Dictionary<String,Int32>();
+			ReferencedPervasives = new Dictionary<String,Int32>();
+			Arguments = new Dictionary<String,Loc>();
+			Unresolves = new FastList<UnresolvedSymbol>();
 		}
 		#endregion
 
 
 		#region Nested classes
-		private sealed class ReferenceMap : Dictionary<String, ModuleReference>, IReadOnlyMap<String, ModuleReference>
+		private sealed class ReferenceMap : Dictionary<String,ModuleReference>, IReadOnlyMap<String,ModuleReference>
 		{
 			internal ReferenceMap() { }
 			internal ReferenceMap(ReferenceMap copy) : base(copy) { }
@@ -54,6 +57,8 @@ namespace Ela.Compilation
 			copy.DeclaredPervasives = new Dictionary<String, Int32>(DeclaredPervasives);
 			copy.ReferencedPervasives = new Dictionary<String, Int32>(ReferencedPervasives);
 			copy.Symbols = Symbols != null ? Symbols.Clone() : null;
+			copy.Arguments = new Dictionary<String,Loc>(Arguments);
+			copy.Unresolves = Unresolves.Clone();
 			return copy;
 		}
 
@@ -70,7 +75,7 @@ namespace Ela.Compilation
 
 		#region Properties
 		private ReferenceMap _references;
-		public IReadOnlyMap<String, ModuleReference> References
+		public IReadOnlyMap<String,ModuleReference> References
 		{
 			get { return _references; }
 		}
@@ -92,6 +97,10 @@ namespace Ela.Compilation
 		internal Dictionary<String,Int32> DeclaredPervasives { get; private set; }
 
 		internal Dictionary<String,Int32> ReferencedPervasives { get; private set; }
+
+		internal Dictionary<String,Loc> Arguments { get; private set; }
+
+		internal FastList<UnresolvedSymbol> Unresolves { get; private set; }
 		#endregion
 	}
 }

@@ -162,13 +162,13 @@
   <data name="UnableAssignExpression" xml:space="preserve">
     <value>Unable to assign a value to the expression {0}.</value>
   </data>
-  <data name="UndefinedVariable" xml:space="preserve">
-    <value>Undefined name '{0}'.</value>
-  </data>
   <data name="VariableAlreadyDeclared" xml:space="preserve">
-    <value>Variable '{0}' is already declared.</value>
+    <value>Name '{0}' is already declared.</value>
   </data>
   <data name="VariableDeclarationInitMissing" xml:space="preserve">
     <value>Names cannot be declared without initialization.</value>
+  </data>
+  <data name="VariableShadowsExternal" xml:space="preserve">
+    <value>A name '{0}' is declared after its usage. Its previous occurence was treated as an external symbol. Did you mean to declare local name '{0}'?</value>
   </data>
 </root>
