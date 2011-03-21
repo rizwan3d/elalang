@@ -31,13 +31,13 @@ namespace Ela.CodeModel
 
 		internal override bool IsIrrefutable()
 		{
-			return Pattern.Type == ElaNodeType.VariablePattern || Pattern.Type == ElaNodeType.DefaultPattern;
+            return Pattern.IsIrrefutable();
 		}
 
 
 		internal override bool CanFollow(ElaPattern pat)
 		{
-			return Pattern.CanFollow(pat);
+            return Pattern.CanFollow(pat);
 		}
 		#endregion
 

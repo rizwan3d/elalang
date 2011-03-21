@@ -1,5 +1,5 @@
-﻿open Test with reg = regFuns, fmt, run
-open Con with writen
+﻿open Test
+open Con
 
 open BasicTests
 open FunTests
@@ -14,17 +14,17 @@ open ThunkTests
 open MatchTests
 
 let _ = [] 
-    |> reg BasicTests
-    |> reg FunTests
-    |> reg RangeTests
-    |> reg ListTests
-    |> reg TupleTests
-    |> reg RecordTests
-    |> reg VariantTests
-    |> reg ComplexTests
-    |> reg ComprehensionTests
-    |> reg ThunkTests
-    |> reg MatchTests
+    |> regFuns BasicTests
+    |> regFuns FunTests
+    |> regFuns RangeTests
+    |> regFuns ListTests
+    |> regFuns TupleTests
+    |> regFuns RecordTests
+    |> regFuns VariantTests
+    |> regFuns ComplexTests
+    |> regFuns ComprehensionTests
+    |> regFuns ThunkTests
+    |> regFuns MatchTests
 
     |> run
     |> fmt writen

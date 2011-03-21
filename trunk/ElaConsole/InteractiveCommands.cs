@@ -35,9 +35,6 @@ namespace ElaConsole
 
 			switch (cmd)
 			{
-				case "reload":
-					ReloadModule(arg);
-					break;
 				case "help":
 					PrintHelp();
 					break;
@@ -47,62 +44,6 @@ namespace ElaConsole
 				case "exit":
 					Environment.Exit(0);
 					break;
-			}
-		}
-
-
-		internal void ReloadModule(string arg)
-		{
-			if (machine == null || machine.Assembly == null)
-			{
-				helper.PrintErrorAlways("No modules are currenly loaded");
-				return;
-			}
-
-			var frame = machine.Assembly.GetRootModule();
-			
-			if (!frame.References.ContainsKey(arg))
-				helper.PrintErrorAlways("Undefined module alias '{0}'.", arg);
-			else
-			{
-				var modRef = frame.References[arg];
-
-				try
-				{
-					var oldFrame = machine.Assembly.GetModule(modRef.ToString());
-					var newFrame = default(CodeFrame);
-
-					if (oldFrame is IntrinsicFrame)
-						newFrame = oldFrame;
-					else
-					{
-						var ep = new ElaParser();
-						var res = ep.Parse(oldFrame.File);
-
-						if (!res.Success)
-						{
-							helper.PrintErrors(res.Messages);
-							return;
-						}
-
-						var ec = new ElaCompiler();
-						var cres = ec.Compile(res.Expression, CompilerOptions.Default);
-						helper.PrintErrors(cres.Messages);
-
-						if (!cres.Success)
-							return;
-
-						newFrame = cres.CodeFrame;
-						newFrame.File = oldFrame.File;
-
-						machine.ReloadModule(modRef, newFrame);
-						Console.WriteLine("Module '{0}' successfully reloaded.", arg);
-					}
-				}
-				catch (ElaException ex)
-				{
-					helper.PrintErrorAlways(ex.Message);
-				}
 			}
 		}
 

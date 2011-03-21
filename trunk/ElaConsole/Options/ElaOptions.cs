@@ -16,9 +16,6 @@ namespace ElaConsole.Options
 
 
 		#region Console Options
-		[CommandLineOption("tc")]
-		public bool TypeCheck { get; set; }
-
 		[CommandLineOption("prompt")]
 		public string Prompt { get; set; }
 		

@@ -21,11 +21,11 @@ let headTail {eq} =
         $ eq (tail list).[0] 1
         
 let headTail2 {eqt} = eqt res
-              where lst = [1,2,3]
-                 et res = match lst with
-                                [1]   = false
-                                [1,2] = false
-                                xs    = (xs is [1,2,3])
+        where lst = [1,2,3]
+           et res = match lst with
+                          [1]   = false
+                          [1,2] = false
+                          x::xs = (xs is [2,3])
 
 let changeItem {eqt=eqt} =
         try 

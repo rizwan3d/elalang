@@ -157,12 +157,6 @@ namespace Ela.Linking
 			if (frame != null)
 				modules[0] = frame;
 		}
-
-
-		internal void RefreshModule(int handle, CodeFrame frame)
-		{
-			modules[handle] = frame;
-		}
 		#endregion
 
 

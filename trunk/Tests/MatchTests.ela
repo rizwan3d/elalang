@@ -65,11 +65,11 @@ let typeCheckMatch {eqt} =
 let traitCheckMatch {eqt} =
           eqt (match 1 with ?(Num,Eq) = true; _ = false;;)
         $ eqt (match (1,2) with ?(Get,Len) = true; _ = false;;)
-        $ eqt (match [1,2] with ?(Fold,Cons) = true; _ = false;;)
+        $ eqt (match [1,2] with ?(Seq,Cons) = true; _ = false;;)
     
 let castMatch {eqt} =
-        eqt (match "1" with x:int = x == 1; _ = false;;)
-        $ eqt (match 1 with x:string = x == "1"; _ = false;;)
+        eqt (match "1" with x:int = x == 1;;)
+        $ eqt (match 1 with x:string = x == "1";;)
     
 let asMatch {eqt} =
         eqt (match 4 with 4@n = n == 4; _ = false;;)

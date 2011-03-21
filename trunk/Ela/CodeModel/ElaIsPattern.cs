@@ -43,13 +43,33 @@ namespace Ela.CodeModel
 			if (pat.IsIrrefutable())
 				return false;
 
-			if (pat.Type == ElaNodeType.IsPattern)
-			{
-				var @is = (ElaIsPattern)pat;
-				return @is.TypeAffinity != TypeAffinity && @is.Traits != Traits;
-			}
+            var @is = default(ElaIsPattern);
 
-			return false;
+            if (pat.Type == ElaNodeType.IsPattern)
+                @is = (ElaIsPattern)pat;
+            else if (pat.Type == ElaNodeType.AsPattern)
+            {
+                var @as = (ElaAsPattern)pat;
+
+                if (@as.Pattern.Type == ElaNodeType.IsPattern)
+                    @is = (ElaIsPattern)@as.Pattern;
+                else
+                    return true;
+            }
+            else if (pat.Type == ElaNodeType.VariantPattern)
+            {
+                var var = (ElaVariantPattern)pat;
+
+                if (var.Pattern != null && var.Pattern.Type == ElaNodeType.IsPattern)
+                    @is = (ElaIsPattern)var.Pattern;
+                else
+                    return true;
+            }
+            else
+                return true;
+
+			return (@is.TypeAffinity != TypeAffinity || @is.TypeAffinity == default(ElaTypeCode)) 
+                && (@is.Traits == default(ElaTraits) || @is.Traits != Traits);
 		}
 		#endregion
 

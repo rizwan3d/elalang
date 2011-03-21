@@ -7,7 +7,7 @@
     Functions in this module lower the requirement to just Seq but
     return list - not (Seq,Cons) as functions from Core.
 */
-open Core with elemBy, foldr, foldl, id
+open Core
 
 //Seq->list
 let init x::[]     = []

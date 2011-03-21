@@ -58,7 +58,7 @@ namespace Ela.Compilation
 			copy.ReferencedPervasives = new Dictionary<String, Int32>(ReferencedPervasives);
 			copy.Symbols = Symbols != null ? Symbols.Clone() : null;
 			copy.Arguments = new Dictionary<String,Loc>(Arguments);
-			copy.Unresolves = Unresolves.Clone();
+			copy.Unresolves = new FastList<UnresolvedSymbol>();
 			return copy;
 		}
 

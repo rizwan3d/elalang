@@ -114,14 +114,14 @@ namespace Ela.Runtime
 			{
 				throw;
 			}
-			//catch (Exception ex)
-			//{
-			//    var op = MainThread.Module != null && MainThread.Offset > 0 &&
-			//        MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
-			//        MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
+			catch (Exception ex)
+			{
+			    var op = MainThread.Module != null && MainThread.Offset > 0 &&
+			        MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
+			        MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
 
-			//    throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
-			//}
+			    throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
+			}
 
 			var evalStack = MainThread.CallStack[0].Stack;
 
@@ -195,21 +195,6 @@ namespace Ela.Runtime
 				for (var i = 0; i < asm.ModuleCount; i++)
 					ReadPervasives(MainThread, asm.GetModule(i), i);
 			}
-		}
-
-
-		public void ReloadModule(ModuleReference mod, CodeFrame frame)
-		{
-			var hdl = asm.GetModuleHandle(mod.ToString());
-			var size = frame.Layouts[0].Size;
-			var loc = new ElaValue[size];
-			modules[hdl] = loc;
-			asm.RefreshModule(hdl, frame);
-			MainThread.CallStack.Peek().BreakAddress = 0;
-			MainThread.CallStack.Push(new CallPoint(hdl, new EvalStack(frame.Layouts[0].StackSize), loc, FastList<ElaValue[]>.Empty));
-			MainThread.SwitchModule(hdl);
-			MainThread.Offset = 0;
-			Execute(MainThread);
 		}
 
 

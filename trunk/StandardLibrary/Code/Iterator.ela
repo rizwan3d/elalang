@@ -3,7 +3,7 @@ let iter ?(Get,Len,Ix)@arr = iter' {!ix=0} arr
                                                     | else    = `None
                                                     where n   = cell.ix
                                                        et len = length arr
-    iter ?(Fold)@xs        = iter' {!xs=xs}
+    iter ?(Seq)@xs        = iter' {!xs=xs}
                             where iter' cell () | l is (x::xs) = cell.xs <- xs $ `Some x
                                                 | else         = `None
                                                 where l = cell.xs

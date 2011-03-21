@@ -31,7 +31,7 @@ namespace ElaConsole
 		#region Methods
 		private static int Main(string[] args) 
 		{
-			if (!ReadOptions(args))
+            if (!ReadOptions(args))
 				return R_ERR;
 
 			helper = new MessageHelper(opt);
@@ -46,43 +46,33 @@ namespace ElaConsole
 				return R_OK;
 			}
 
-			if (opt.TypeCheck)
+			try
 			{
-				var tc = new TypeChecker();
-				tc.Run(opt.FileName);
-			}
-			else
-			{
-				try
+				if (String.IsNullOrEmpty(opt.FileName))
 				{
-					if (String.IsNullOrEmpty(opt.FileName))
+					helper.PrintInteractiveModeLogo();
+					StartInteractiveMode();
+					return R_OK;
+				}
+
+				if (opt.Compile)
+				{
+					if (!CheckExists(opt.FileName))
 					{
-						helper.PrintInteractiveModeLogo();
-						StartInteractiveMode();
-						return R_OK;
+						helper.PrintError("File '{0}' doesn't exist.", opt.FileName);
+						return R_ERR;
 					}
 
-					if (opt.Compile)
-					{
-						if (!CheckExists(opt.FileName))
-						{
-							helper.PrintError("File '{0}' doesn't exist.", opt.FileName);
-							return R_ERR;
-						}
-
-						return Compile();
-					}
-					else
-						return InterpretFile();
+					return Compile();
 				}
-				finally
-				{
-					if (vm != null)
-						vm.Dispose();
-				}
+				else
+					return InterpretFile();
 			}
-
-			return R_OK;
+			finally
+			{
+				if (vm != null)
+					vm.Dispose();
+			}
 		}
 
 

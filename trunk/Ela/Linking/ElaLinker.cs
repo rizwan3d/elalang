@@ -65,7 +65,7 @@ namespace Ela.Linking
 		}
 
 
-		internal void ProcessIncludes(FileInfo fi, ModuleReference mod, CodeFrame frame)
+		internal void ProcessIncludes(FileInfo fi, CodeFrame frame)
 		{
 			var unres = frame.Unresolves.Clone();
 			var dels = new FastList<UnresolvedSymbol>();
@@ -78,7 +78,7 @@ namespace Ela.Linking
 				{
 					foreach (var u in unres)
 					{
-						if (u.Line > mod.Line && incFrame.GlobalScope.Locals.ContainsKey(u.Name))
+						if (u.Line > kv.Value.Line && incFrame.GlobalScope.Locals.ContainsKey(u.Name))
 							dels.Add(u);
 					}
 
@@ -192,7 +192,7 @@ namespace Ela.Linking
 				if (frame.References.Count > 0 && LinkerOptions.Sandbox)
 					AddError(ElaLinkerError.IncludeInSandbox, fi, 0, 0);
 				else
-					ProcessIncludes(fi, mod, frame);
+					ProcessIncludes(fi, frame);
 
 				foreach (var kv in frame.Arguments)
 					if (!Assembly.HasArgument(kv.Key))

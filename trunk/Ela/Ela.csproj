@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7BDF4A1E-DFFF-4AE5-BD2D-1B1F4BE84B1D}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -151,10 +151,11 @@
     <Compile Include="Debug\CallStack.cs" />
     <Compile Include="Debug\ElaDebugException.cs" />
     <Compile Include="Debug\StackPoint.cs" />
+    <Compile Include="Inference\TypeChecker.cs" />
     <Compile Include="IReadOnlyMap.cs" />
     <Compile Include="Compilation\OpSizeHelper.cs" />
     <Compile Include="ElaTranslationException.cs" />
-    <Compile Include="Location.cs" />
+    <Compile Include="Loc.cs" />
     <Compile Include="Runtime\ElaRuntimeException.cs" />
     <Compile Include="Runtime\EqHelper.cs" />
     <Compile Include="Runtime\ObjectModel\DelegateFunction.cs" />

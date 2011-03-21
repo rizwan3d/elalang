@@ -95,9 +95,6 @@ the elac.config file.
 		INTERACTIVE MODE COMMANDS
 		
 									
-#reload <module>	Reload a module with the specified alias into 
-			interactive session.
-			
 #clear			Clears the console window.
 
 #exit			Exit Ela Console.

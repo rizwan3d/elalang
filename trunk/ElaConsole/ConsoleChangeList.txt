@@ -1,3 +1,4 @@
+0.8.0.9:Change: A 'reload' command is removed. Now one can't reload an already loaded module because of possible problems with automatically declared names.
 0.8.0.8:Change:Switch 'onecmd' is decomissioned.
 0.8.0.7:Change:Execution time calculation is changed. Now code is executed twice to fully account for GIT.
 0.8.0.6:Change:Switch 'buildtime' is decomissioned.

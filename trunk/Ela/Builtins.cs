@@ -57,6 +57,8 @@ namespace Ela
 				case "Show": return ElaTraits.Show;
 				case "Thunk": return ElaTraits.Thunk;
                 case "Tag": return ElaTraits.Tag;
+                case "Real": return ElaTraits.Real;
+                case "Int": return ElaTraits.Int;
 				default: return ElaTraits.None;
 			}
 		}

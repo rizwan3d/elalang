@@ -335,12 +335,12 @@ namespace Ela.Runtime
 
 		public bool AsBoolean()
 		{
-			if (TypeCode == ElaTypeCode.Boolean)
-				return I4 > 0;
-			else if (TypeCode == ElaTypeCode.Lazy)
-				return ((ElaLazy)Ref).AsBoolean();
-			else
-				throw InvalidCast(ElaTypeCode.Boolean, TypeCode);
+			if ((Traits & ElaTraits.Bool) == ElaTraits.Bool)
+                return Bool(ElaObject.DummyContext);
+            else if (TypeCode == ElaTypeCode.Lazy)
+                return ((ElaLazy)Ref).AsBoolean();
+            else
+                throw InvalidCast(ElaTypeCode.Boolean, TypeCode);
 		}
 
 
