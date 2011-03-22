@@ -25,6 +25,12 @@ namespace Ela
 				case "showf": return ElaBuiltinFunctionKind.Showf;
                 case "ref": return ElaBuiltinFunctionKind.Ref;
 				case "nil": return ElaBuiltinFunctionKind.Nil;
+
+                case "==": case "<>" : case  ">=" : case  "<=" : case  ">" : case  "<" :
+				case  "+" : case  "-" : case  "*" : case  "/" : case  "%" : case  "**" :
+				case  "--" : case  "&&&" : case  ": case : case : case " : case  "^^^" : case  ">>>" : case  "<<<" : case  "~~~":
+				case  "++" : case  "::": return ElaBuiltinFunctionKind.Operator;
+
 				default: return ElaBuiltinFunctionKind.None;
 			}
 		}

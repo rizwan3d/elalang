@@ -19,7 +19,6 @@ namespace Ela.Library.General
 		{
 			Add<Int64>("startClock", StartClock);
 			Add<Int64,String>("stopClock", StopClock);
-            AddPervasive("+.", ElaFunction.Create<String,String,String>((x, y) => x.ToString() + y.ToString()));
 		}
 
 

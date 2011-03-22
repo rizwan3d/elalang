@@ -41,22 +41,11 @@ namespace Ela.Compilation
 				CompileAssign(bin, bin.Left, bin.Right, hints, map);
 			else
 			{
-				if (bin.Operator != ElaOperator.Custom)
-				{
-					CompileExpression(bin.Left, map, newHints);
+				CompileExpression(bin.Left, map, newHints);
 
-					if (bin.Operator != ElaOperator.BooleanAnd && bin.Operator != ElaOperator.BooleanOr && bin.Right != null)
-						CompileExpression(bin.Right, map, newHints);
-				}
-				else
-				{
-					if (bin.Right != null)
-						CompileExpression(bin.Right, map, newHints );
-
-					if (bin.Left != null)
-						CompileExpression(bin.Left, map, newHints);
-				}
-
+				if (bin.Operator != ElaOperator.BooleanAnd && bin.Operator != ElaOperator.BooleanOr && bin.Right != null)
+					CompileExpression(bin.Right, map, newHints);
+				
 				CompileBinaryMain(bin.Operator, bin, map, newHints);
 
 				if ((hints & Hints.Left) == Hints.Left)
@@ -103,23 +92,6 @@ namespace Ela.Compilation
 					cw.Emit(Op.PushI1_1);
 					cw.MarkLabel(exitLab);
 					cw.Emit(Op.Nop);
-					break;
-				case ElaOperator.Custom:
-					ReferencePervasive(bin.CustomOperator);
-					var partial = bin.Right == null || bin.Left == null;
-
-					if (partial)
-					{
-						if (bin.Left == null)
-							cw.Emit(Op.Flip);
-
-						cw.Emit(Op.Call);
-					}
-					else
-					{
-						cw.Emit(Op.Call);
-						cw.Emit(Op.Call);
-					}
 					break;
 				default:
 					CompileSimpleBinary(bin.Operator);
@@ -347,29 +319,6 @@ namespace Ela.Compilation
 			if ((hints & Hints.Left) != Hints.Left)
 				cw.Emit(Op.Pushunit);
 		}		
-		#endregion
-
-
-		#region Service
-		private void ReferencePervasive(string name)
-		{
-			var addr = 0;
-
-			if (frame.DeclaredPervasives.TryGetValue(name, out addr))
-				cw.Emit(Op.Pushvar, ReferenceGlobal(addr));
-			else
-			{
-				var hdl = 0;
-
-				if (!frame.ReferencedPervasives.TryGetValue(name, out hdl))
-				{
-					hdl = frame.ReferencedPervasives.Count;
-					frame.ReferencedPervasives.Add(name, hdl);
-				}
-
-				cw.Emit(Op.Pushperv, hdl);
-			}
-		}
 		#endregion
 	}
 }

@@ -25,27 +25,14 @@ namespace Ela.Compilation
 				if (s.InitExpression != null && s.InitExpression.Type == ElaNodeType.FunctionLiteral)
 				{
 					var fun = (ElaFunctionLiteral)s.InitExpression;
-
-					if (fun.FunctionType != ElaFunctionType.Standard)
-					{
-						if (s.And != null || (hints & Hints.And) == Hints.And)
-							AddError(ElaCompilerError.OperatorInvalidDeclaration, s);
-
-						if (s.In != null)
-							AddError(ElaCompilerError.OperatorOnlyInGlobal, s);
-
-						AddOperator(s, map, hints);
-						return;
-					}
-					else
-						addr = (hints & Hints.And) == Hints.And ?
-							GetVariable(s.VariableName, s.Line, s.Column).Address : 
-							AddVariable(s.VariableName, s, s.VariableFlags, -1);
+					addr = (hints & Hints.And) == Hints.And ?
+						GetVariable(s.VariableName, s.Line, s.Column).Address : 
+						AddVariable(s.VariableName, s, s.VariableFlags, -1);
 				}
 				else
 				{
                     addr = -1;
-					addSym = true;
+                    addSym = true;
 				}
 
 				var po = cw.Offset;

@@ -110,12 +110,6 @@ namespace Ela.Compilation
 							AddValueNotUsed(v);
 					}
 					break;
-				case ElaNodeType.CustomOperator:
-					{
-						var s = (ElaCustomOperator)exp;
-						ReferencePervasive(s.Operator);
-					}
-					break;
 				case ElaNodeType.BuiltinFunction:
 					{
 						var s = (ElaBuiltinFunction)exp;
@@ -770,10 +764,16 @@ namespace Ela.Compilation
 		#region Messages
 		private void AddError(ElaCompilerError error, ElaExpression exp, params object[] args)
 		{
-			Errors.Add(new ElaMessage(Strings.GetError(error, args), MessageType.Error,
-				(Int32)error, exp.Line, exp.Column));
-			Success = false;
+			AddError(error, exp.Line, exp.Column, args);
 		}
+
+
+        private void AddError(ElaCompilerError error, int line, int col, params object[] args)
+        {
+            Errors.Add(new ElaMessage(Strings.GetError(error, args), MessageType.Error,
+                (Int32)error, line, col));
+            Success = false;
+        }
 
 
 		private void AddWarning(ElaCompilerWarning warning, ElaExpression exp, params object[] args)
@@ -888,25 +888,6 @@ namespace Ela.Compilation
 
 
 		#region Variables
-		private void AddOperator(ElaBinding s, LabelMap map, Hints hints)
-		{
-			var addr = 0;
-
-			if ((addr = AddPervasive(s.VariableName)) == -1)
-				AddError(ElaCompilerError.OperatorAlreadyDeclared, s, s.VariableName);
-
-			if (CurrentScope.Parent != null)
-				AddError(ElaCompilerError.OperatorOnlyInGlobal, s);
-
-			CompileExpression(s.InitExpression, map, Hints.None);
-			AddLinePragma(s);
-			cw.Emit(Op.Popvar, addr);
-
-			if ((hints & Hints.Left) != Hints.Left)
-				cw.Emit(Op.Pushunit);
-		}
-
-
 		private Scope FindGlobalScope()
 		{
 			var sc = CurrentScope;
@@ -926,37 +907,18 @@ namespace Ela.Compilation
 		}
 
 
-		private int AddPervasive(string name)
-		{
-			if (!frame.DeclaredPervasives.ContainsKey(name))
-			{
-				var addr = AddVariable();
-				frame.DeclaredPervasives.Add(name, addr);
-				return addr;
-			}
-			else
-				return -1;
-		}
-
-
 		private int AddVariable(string name, ElaExpression exp, ElaVariableFlags flags, int data)
 		{
 			if (exp != null && IsRegistered(name))
 			{
-				var sv = CurrentScope.Locals[name];
-
-				if ((sv.Flags & ElaVariableFlags.External) == ElaVariableFlags.External)
-					AddError(ElaCompilerError.VariableShadowsExternal, exp, name);
-				else
-					AddError(ElaCompilerError.VariableAlreadyDeclared, exp, name);
-
-				return -1;
+				AddError(ElaCompilerError.VariableAlreadyDeclared, exp, name);
+				return 0;
 			}
 
 			if (Builtins.Kind(name) != ElaBuiltinFunctionKind.None)
 			{
 				AddError(ElaCompilerError.NameReserved, exp, name);
-				return -1;
+				return 0;
 			}
 
 			CurrentScope.Locals.Add(name, new ScopeVar(flags, currentCounter, data));
@@ -976,7 +938,20 @@ namespace Ela.Compilation
 
 		private bool IsRegistered(string name)
 		{
-			return CurrentScope.Locals.ContainsKey(name);
+            ScopeVar sv;
+
+            if (CurrentScope.Locals.TryGetValue(name, out sv))
+            {
+                if ((sv.Flags & ElaVariableFlags.External) == ElaVariableFlags.External)
+                {
+                    CurrentScope.Locals.Remove(name);
+                    return false;
+                }
+                else
+                    return true;
+            }
+
+            return false;
 		}
 
 
@@ -1032,7 +1007,7 @@ namespace Ela.Compilation
 
 				if (cur.Locals.TryGetValue(name, out var))
 				{
-					var.Address = shift | var.Address << 8;
+                    var.Address = shift | var.Address << 8;
 					return var;
 				}
 
@@ -1043,23 +1018,29 @@ namespace Ela.Compilation
 			}
 			while (cur != null);
 
-			var addr = 0;
-
-			if (counters.Count == 0)
-			{
-				addr = currentCounter;
-				currentCounter++;
-			}
-			else
-			{
-				addr = counters[0];
-				counters[0] = counters[0] + 1;
-			}
-
-			frame.Unresolves.Add(new UnresolvedSymbol(name, addr, line, col));
-			globalScope.Locals.Add(name, new ScopeVar(ElaVariableFlags.External, addr, -1));
-			return new ScopeVar(counters.Count | addr << 8);
+            return GetExternal(name, line, col);
 		}
+
+
+        private ScopeVar GetExternal(string name, int line, int col)
+        {
+            var addr = 0;
+
+            if (counters.Count == 0)
+            {
+                addr = currentCounter;
+                currentCounter++;
+            }
+            else
+            {
+                addr = counters[0];
+                counters[0] = counters[0] + 1;
+            }
+
+            frame.Unresolves.Add(new UnresolvedSymbol(name, addr, line, col));
+            globalScope.Locals.Add(name, new ScopeVar(ElaVariableFlags.External, addr, -1));
+            return new ScopeVar(counters.Count | addr << 8);
+        }
 
 
 		private Scope GetScope(string name)

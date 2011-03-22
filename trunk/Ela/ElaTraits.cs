@@ -23,9 +23,9 @@ namespace Ela
 
 		Tag = 0x100,
 
-		Bound = 0x200,
+		Bound = 0x200,//?
 
-		Enum = 0x400,
+		Enum = 0x400,//?
 
 		Num = 0x800,
 
@@ -53,8 +53,8 @@ namespace Ela
 
 		Convert = 0x800000,
 
-		Int = 0x1000000,
+		Int = 0x1000000,//?
 
-		Real = 0x2000000,
+		Real = 0x2000000,//?
 	}
 }

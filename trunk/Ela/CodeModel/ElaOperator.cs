@@ -61,8 +61,6 @@ namespace Ela.CodeModel
 
         Negate,
 
-        BitwiseNot,
-
-		Custom
+        BitwiseNot
 	}
 }

@@ -144,15 +144,6 @@
   <data name="NameReserved" xml:space="preserve">
     <value>Name '{0}' is reserved and cannot be used for a variable.</value>
   </data>
-  <data name="OperatorAlreadyDeclared" xml:space="preserve">
-    <value>Operator '{0}' is already declared in this module.</value>
-  </data>
-  <data name="OperatorInvalidDeclaration" xml:space="preserve">
-    <value>Operator declarations cannot be paired with other declarations using 'and' keyword.</value>
-  </data>
-  <data name="OperatorOnlyInGlobal" xml:space="preserve">
-    <value>Operators can be declared only in the global scope.</value>
-  </data>
   <data name="PatternNotAllArgs" xml:space="preserve">
     <value>Not all of the function arguments are specified in the pattern {0}.</value>
   </data>
@@ -167,8 +158,5 @@
   </data>
   <data name="VariableDeclarationInitMissing" xml:space="preserve">
     <value>Names cannot be declared without initialization.</value>
-  </data>
-  <data name="VariableShadowsExternal" xml:space="preserve">
-    <value>A name '{0}' is declared after its usage. Its previous occurence was treated as an external symbol. Did you mean to declare local name '{0}'?</value>
   </data>
 </root>

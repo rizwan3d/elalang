@@ -228,7 +228,7 @@ namespace Ela.Runtime.ObjectModel
 							break;
 						}
 					}
-					else if ((xs.Traits & ElaTraits.Seq) != ElaTraits.Seq)
+					else if (xs.TypeId != ElaMachine.LST)
 						break;
 				}
 				while (!xs.IsNil(ElaObject.DummyContext));
@@ -324,7 +324,7 @@ namespace Ela.Runtime.ObjectModel
                     yield return xs.Head(ElaObject.DummyContext).Id(DummyContext);
                     xs = xs.Tail(ElaObject.DummyContext).Ref;
 
-                    if ((xs.Traits & ElaTraits.Seq) != ElaTraits.Seq)
+                    if (xs.TypeId != ElaMachine.LST)
                         yield break;
                 }
                 while (!xs.IsNil(ElaObject.DummyContext));
@@ -345,7 +345,7 @@ namespace Ela.Runtime.ObjectModel
 
 					if ((xs.Traits & ElaTraits.Thunk) == ElaTraits.Thunk)
 						xs.Force(ElaObject.DummyContext);
-					else if ((xs.Traits & ElaTraits.Seq) != ElaTraits.Seq)
+					else if (xs.TypeId != ElaMachine.LST)
 						yield break;
 				}
 				while (!xs.IsNil(ElaObject.DummyContext));

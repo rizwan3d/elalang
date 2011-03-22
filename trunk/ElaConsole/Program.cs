@@ -416,7 +416,9 @@ namespace ElaConsole
 
 		private static void Warmup(CodeAssembly asm)//GIT
 		{
-			new ElaMachine(asm).Run(); 
+            helper.PrintExecuteFirstTime();
+			new ElaMachine(asm).Run();
+            helper.PrintExecuteSecondTime();
 		}
 		#endregion
 	}

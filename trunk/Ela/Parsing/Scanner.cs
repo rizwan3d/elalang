@@ -403,32 +403,32 @@ internal sealed class Scanner {
 			case "!": t.kind = 52; break;
 			case "..": t.kind = 53; break;
 			case "&": t.kind = 54; break;
-			case "<-": t.kind = 56; break;
-			case "<->": t.kind = 57; break;
-			case "<|": t.kind = 58; break;
-			case "|>": t.kind = 59; break;
-			case "||": t.kind = 60; break;
-			case "&&": t.kind = 61; break;
-			case "==": t.kind = 62; break;
-			case "<>": t.kind = 63; break;
-			case ">": t.kind = 64; break;
-			case "<": t.kind = 65; break;
-			case ">=": t.kind = 66; break;
-			case "<=": t.kind = 67; break;
-			case ">>>": t.kind = 68; break;
-			case "<<<": t.kind = 69; break;
-			case "++": t.kind = 70; break;
-			case "+": t.kind = 71; break;
-			case "*": t.kind = 72; break;
-			case "/": t.kind = 73; break;
-			case "%": t.kind = 74; break;
-			case "**": t.kind = 75; break;
-			case "|||": t.kind = 76; break;
-			case "^^^": t.kind = 77; break;
-			case "&&&": t.kind = 78; break;
-			case "<<": t.kind = 79; break;
-			case ">>": t.kind = 80; break;
-			case "~~~": t.kind = 81; break;
+			case "==": t.kind = 55; break;
+			case "<>": t.kind = 56; break;
+			case ">=": t.kind = 57; break;
+			case "<=": t.kind = 58; break;
+			case ">": t.kind = 59; break;
+			case "<": t.kind = 60; break;
+			case "+": t.kind = 61; break;
+			case "*": t.kind = 62; break;
+			case "/": t.kind = 63; break;
+			case "%": t.kind = 64; break;
+			case "**": t.kind = 65; break;
+			case "&&&": t.kind = 66; break;
+			case "|||": t.kind = 67; break;
+			case "^^^": t.kind = 68; break;
+			case ">>>": t.kind = 69; break;
+			case "<<<": t.kind = 70; break;
+			case "~~~": t.kind = 71; break;
+			case "++": t.kind = 72; break;
+			case "<-": t.kind = 74; break;
+			case "<->": t.kind = 75; break;
+			case "<|": t.kind = 76; break;
+			case "|>": t.kind = 77; break;
+			case "||": t.kind = 78; break;
+			case "&&": t.kind = 79; break;
+			case "<<": t.kind = 80; break;
+			case ">>": t.kind = 81; break;
 			default: break;
 		}
 	}
@@ -771,7 +771,7 @@ internal sealed class Scanner {
 			case 64:
 				{t.kind = 46; break;}
 			case 65:
-				{t.kind = 55; break;}
+				{t.kind = 73; break;}
 			case 66:
 				{t.kind = 82; break;}
 			case 67:

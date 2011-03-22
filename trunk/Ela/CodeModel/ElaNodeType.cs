@@ -69,8 +69,6 @@ namespace Ela.CodeModel
 
 		BuiltinFunction,
 
-		CustomOperator,
-
 		Comprehension,
 
 		Generator,

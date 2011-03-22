@@ -183,8 +183,6 @@ namespace Ela.Compilation
 
 		Pusharg,
 
-		Pushperv,
-
 		Pushvar,
 
 		Pushfld,

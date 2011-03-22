@@ -96,7 +96,6 @@ namespace Ela.Compilation
 			5, //PushI4
 			5, //PushR4
 			5, //Pusharg
-			5, //Pushperv
 			5, //Pushvar
 			5, //Pushfld
 			5, //Popvar

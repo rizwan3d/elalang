@@ -119,7 +119,6 @@
     <Compile Include="CodeModel\ElaBuiltinFunction.cs" />
     <Compile Include="CodeModel\ElaBuiltinFunctionKind.cs" />
     <Compile Include="CodeModel\ElaComprehension.cs" />
-    <Compile Include="CodeModel\ElaCustomOperator.cs" />
     <Compile Include="CodeModel\ElaGenerator.cs" />
     <Compile Include="CodeModel\ElaLazyLiteral.cs" />
     <Compile Include="CodeModel\ElaNilPattern.cs" />
@@ -236,6 +235,7 @@
     <Compile Include="Debug\LineSym.cs" />
     <Compile Include="Debug\SymGenerator.cs" />
     <Compile Include="Debug\SymTables.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaBehaviorObject.cs" />
     <Compile Include="Runtime\ObjectModel\ElaBoolean.cs" />
     <Compile Include="Runtime\ObjectModel\ElaChar.cs" />
     <Compile Include="Runtime\ObjectModel\ElaUnit.cs" />
@@ -296,7 +296,6 @@
     <Compile Include="Runtime\ObjectModel\ElaTuple.cs" />
     <Compile Include="TypeCodeFormat.cs" />
     <Compile Include="Runtime\ObjectModel\ElaVariant.cs" />
-    <Compile Include="Runtime\Pervasive.cs" />
     <Compile Include="Runtime\ElaValue.cs" />
     <Compile Include="Runtime\ObjectModel\ElaTypeInfo.cs" />
     <Compile Include="Runtime\ShowInfo.cs" />

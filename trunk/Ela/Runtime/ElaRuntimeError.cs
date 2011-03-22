@@ -46,7 +46,7 @@ namespace Ela.Runtime
 
 		UnknownField = 819,
 
-		UnknownPervasive = 820,
+		// = 820,
 
 		InvalidParameterType = 821,
 

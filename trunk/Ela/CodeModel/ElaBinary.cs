@@ -40,7 +40,7 @@ namespace Ela.CodeModel
 			{
 				Left.ToString(sb, fmt);
 				sb.Append(' ');
-				sb.Append(Operator == ElaOperator.Custom ? CustomOperator : Format.OperatorAsString(Operator));
+				sb.Append(Format.OperatorAsString(Operator));
 				sb.Append(' ');
 				Right.ToString(sb, fmt);
 			}

@@ -9,36 +9,28 @@ namespace Ela.Compilation
 
 		VariableAlreadyDeclared = 300,
 
-		OperatorInvalidDeclaration = 301,
+		BaseNotAllowed = 301,
 
-		BaseNotAllowed = 302,
+		BaseVariableNotFound = 302,
 
-		BaseVariableNotFound = 303,
+		AssignImmutableVariable = 303,
 
-		AssignImmutableVariable = 304,
+		PlaceholderNotValid = 304,
 
-		VariableShadowsExternal = 305,
+		UnableAssignExpression = 305,
 
-		PlaceholderNotValid = 306,
+		PatternNotAllArgs = 306,
 
-		UnableAssignExpression = 307,
+		NameReserved = 307,
 
-		PatternNotAllArgs = 308,
+		CastNotSupported = 308,
 
-		NameReserved = 309,
+		InfiniteRangeOnlyList = 309,
 
-		CastNotSupported = 310,
+		VariableDeclarationInitMissing = 310,
 
-		InfiniteRangeOnlyList = 311,
+		ElseGuardNotValid = 311,
 
-		OperatorAlreadyDeclared = 312,
-
-		OperatorOnlyInGlobal = 313,
-
-		VariableDeclarationInitMissing = 314,
-
-		ElseGuardNotValid = 315,
-
-		MatchEntryEmptyNoGuard = 316,
+		MatchEntryEmptyNoGuard = 312
 	}
 }

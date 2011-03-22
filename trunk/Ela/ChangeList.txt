@@ -1,3 +1,5 @@
+0.8.6.82:Change:Now it is possible to declare non-global operators and to pair operators with other declarations using 'et' keyword.
+0.8.6.81:Change:Pervasives engine is decomissioned (it is no longer needed with the new automatic module open procedure) along with corresponding op code and data structures. Custom operators are not treated like regular functions.
 0.8.6.80:Change:Now compiler doesn't track undefined variables. Linker does.
 0.8.6.79:Change:Now all module variables are imported automatically. An explicit import list is decomissioned.
 0.8.6.78:Fix:A critical bug in VM fixed - pervasives (such as operators) were initialized only for the first module that referenced a module with pervasives.

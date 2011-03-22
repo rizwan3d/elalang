@@ -69,12 +69,6 @@ namespace Ela.Parsing
         }
 
 
-        private void RestoreLa()
-        {
-            la.kind = oldKind;
-        }
-
-
         private void ProcessFunctionParameters(ElaFunctionLiteral mi, Token ot)
         {
             if (mi.Body.Entries.Count > 1)
@@ -128,17 +122,6 @@ namespace Ela.Parsing
 			var ret = new ElaFunctionLiteral { Body = m };
 			ret.SetLinePragma(exp.Line, exp.Column);
 			return ret;
-		}
-
-
-		private ElaExpression GetCustomOperatorFun(string name, ElaExpression par)
-		{
-			return new ElaBinary(t)
-			{
-				Operator = ElaOperator.Custom,
-				CustomOperator = name,
-				Right = par
-			};
 		}
 
 

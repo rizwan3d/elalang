@@ -27,8 +27,6 @@ namespace Ela.Compilation
 			OpData = new FastList<Int32>();
 			Strings = new FastList<String>();
 			_references = new ReferenceMap();
-			DeclaredPervasives = new Dictionary<String,Int32>();
-			ReferencedPervasives = new Dictionary<String,Int32>();
 			Arguments = new Dictionary<String,Loc>();
 			Unresolves = new FastList<UnresolvedSymbol>();
 		}
@@ -54,8 +52,6 @@ namespace Ela.Compilation
 			copy.Ops = Ops.Clone();
 			copy.OpData = OpData.Clone();
 			copy._references = new ReferenceMap(_references);
-			copy.DeclaredPervasives = new Dictionary<String, Int32>(DeclaredPervasives);
-			copy.ReferencedPervasives = new Dictionary<String, Int32>(ReferencedPervasives);
 			copy.Symbols = Symbols != null ? Symbols.Clone() : null;
 			copy.Arguments = new Dictionary<String,Loc>(Arguments);
 			copy.Unresolves = new FastList<UnresolvedSymbol>();
@@ -93,10 +89,6 @@ namespace Ela.Compilation
 		internal FastList<MemoryLayout> Layouts { get; private set; }
 
 		internal FastList<String> Strings { get; private set; }
-
-		internal Dictionary<String,Int32> DeclaredPervasives { get; private set; }
-
-		internal Dictionary<String,Int32> ReferencedPervasives { get; private set; }
 
 		internal Dictionary<String,Loc> Arguments { get; private set; }
 

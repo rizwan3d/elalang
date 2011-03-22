@@ -15,7 +15,6 @@ namespace Ela.Runtime
 	{
 		#region Construction
 		internal ElaValue[][] modules;
-		private Pervasive[][] pervasives;
 		private CodeAssembly asm;
 		
 		public ElaMachine(CodeAssembly asm)
@@ -25,11 +24,6 @@ namespace Ela.Runtime
 			MainThread = new WorkerThread(asm);
 			var lays = frame.Layouts[0];
 			modules = new ElaValue[asm.ModuleCount][];
-			pervasives = new Pervasive[asm.ModuleCount][];
-			
-			if (frame.ReferencedPervasives.Count > 0)
-				pervasives[0] = new Pervasive[frame.ReferencedPervasives.Count];
-
 			var mem = new ElaValue[lays.Size];
 			modules[0] = mem;
 			MainThread.CallStack.Push(new CallPoint(0, new EvalStack(lays.StackSize), mem, FastList<ElaValue[]>.Empty));
@@ -170,16 +164,6 @@ namespace Ela.Runtime
 					modules = mods;
 				}
 
-				if (pervasives.Length != asm.ModuleCount)
-				{
-					var perv = new Pervasive[asm.ModuleCount][];
-
-					for (var i = 0; i < pervasives.Length; i++)
-						perv[i] = pervasives[i];
-
-					pervasives = perv;
-				}
-
 				var mem = modules[0];
 				var frame = asm.GetRootModule();
 				var arr = new ElaValue[frame.Layouts[0].Size];
@@ -189,8 +173,6 @@ namespace Ela.Runtime
 				MainThread.CallStack.Clear();
 				var cp = new CallPoint(0, new EvalStack(frame.Layouts[0].StackSize), arr, FastList<ElaValue[]>.Empty);
 				MainThread.CallStack.Push(cp);
-
-				pervasives[0] = new Pervasive[frame.ReferencedPervasives.Count];
 
 				for (var i = 0; i < asm.ModuleCount; i++)
 					ReadPervasives(MainThread, asm.GetModule(i), i);
@@ -233,8 +215,7 @@ namespace Ela.Runtime
 			var opData = thread.Module.OpData.GetRawArray();
 			var locals = callStack.Peek().Locals;
 			var captures = callStack.Peek().Captures;
-			var currentPervs = pervasives[thread.ModuleHandle];
-
+			
 			var ctx = thread.Context;
 			var left = default(ElaValue);
 			var right = default(ElaValue);
@@ -442,25 +423,6 @@ namespace Ela.Runtime
 								UndefinedArgument(name, thread, evalStack);
 								goto SWITCH_MEM;
 							}
-						}
-						break;
-					case Op.Pushperv:
-						{
-							if (currentPervs == null)
-							{
-								UnknownName(thread, evalStack);
-								goto SWITCH_MEM;
-							}
-
-							var perv = currentPervs[opd];
-
-							if (perv.Module == 0)
-							{
-								UnknownName(thread, evalStack);
-								goto SWITCH_MEM;
-							}
-							else
-								evalStack.Push(modules[perv.Module][perv.Address >> 8]);
 						}
 						break;
 					#endregion
@@ -1603,10 +1565,6 @@ namespace Ela.Runtime
 									callStack.Push(new CallPoint(hdl, new EvalStack(frm.Layouts[0].StackSize), loc, FastList<ElaValue[]>.Empty));
 									thread.SwitchModule(hdl);
 									thread.Offset = 0;
-
-									if (pervasives[hdl] == null)
-										pervasives[hdl] = new Pervasive[frm.ReferencedPervasives.Count];
-
 									goto SWITCH_MEM;
 								}
 							}
@@ -1639,7 +1597,6 @@ namespace Ela.Runtime
 				ops = thread.Module.Ops.GetRawArray();
 				opData = thread.Module.OpData.GetRawArray();
 				frame = thread.Module;
-				currentPervs = pervasives[thread.ModuleHandle];
 				evalStack = mem.Stack;
 			}
 			goto CYCLE;
@@ -1673,16 +1630,6 @@ namespace Ela.Runtime
 
 		private void ReadPervasives(WorkerThread thread, CodeFrame frame, int handle)
 		{
-			var refs = thread.Module.ReferencedPervasives;
-			var pervs = pervasives[thread.ModuleHandle];
-			var hdl = 0;
-
-			foreach (var kv in frame.DeclaredPervasives)
-			{
-				if (refs.TryGetValue(kv.Key, out hdl))
-					pervs[hdl] = new Pervasive(handle, kv.Value);
-			}
-
 			var mod = thread.Module;
 			var locals = modules[thread.ModuleHandle];
 			var externs = frame.GlobalScope.Locals;
@@ -2007,12 +1954,6 @@ namespace Ela.Runtime
 		{
 			ExecuteFail(new ElaError(ElaRuntimeError.ConversionFailed, val.GetTypeName(),
 				TypeCodeFormat.GetShortForm((ElaTypeCode)target), err), thread, evalStack);
-		}
-
-
-		private void UnknownName(WorkerThread thread, EvalStack evalStack)
-		{
-			ExecuteFail(new ElaError(ElaRuntimeError.UnknownPervasive), thread, evalStack);
 		}
 
 

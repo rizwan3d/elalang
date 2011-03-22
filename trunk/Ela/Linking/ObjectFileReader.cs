@@ -54,11 +54,6 @@ namespace Ela.Linking
 			c = bw.ReadInt32();
 
 			for (var i = 0; i < c; i++)
-				frame.DeclaredPervasives.Add(bw.ReadString(), bw.ReadInt32());
-
-			c = bw.ReadInt32();
-
-			for (var i = 0; i < c; i++)
 				frame.GlobalScope.Locals.Add(bw.ReadString(),
 					new ScopeVar((ElaVariableFlags)bw.ReadInt32(), bw.ReadInt32(), -1));
 

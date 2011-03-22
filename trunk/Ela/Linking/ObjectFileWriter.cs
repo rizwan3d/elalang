@@ -38,14 +38,6 @@ namespace Ela.Linking
 					bw.Write(p);
 			}
 
-			bw.Write(frame.DeclaredPervasives.Count);
-
-			foreach (var kv in frame.DeclaredPervasives)
-			{
-				bw.Write(kv.Key);
-				bw.Write(kv.Value);
-			}
-
 			bw.Write(frame.GlobalScope.Locals.Count);
 
 			foreach (var kv in frame.GlobalScope.Locals)

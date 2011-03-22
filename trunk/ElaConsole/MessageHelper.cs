@@ -149,6 +149,19 @@ namespace ElaConsole
 		}
 
 
+        internal void PrintExecuteFirstTime()
+        {
+            Console.WriteLine("Executing code first time...");
+        }
+
+
+        internal void PrintExecuteSecondTime()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Execution finished. Executing second time, measuring time...");
+        }
+
+
 		internal void PrintSymTables(DebugReader gen)
 		{
 			var prev = false;

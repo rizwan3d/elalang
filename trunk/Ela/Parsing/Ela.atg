@@ -879,7 +879,17 @@ PRODUCTIONS
 		
 	BindingBodyOperator<ElaBinding varExp> =
 		(
-			operatorTok (. varExp.VariableName = t.val; .)
+			(
+				operatorTok 
+				| "==" | "<>" 
+				| ">=" | "<=" | ">" | "<"
+				| "+" | "-" | "*" | "/" | "%" | "**"
+				| "--"
+				| "&&&" | "|||" | "^^^" | ">>>" | "<<<" | "~~~"
+				| "++"
+				| "::"				 
+			)
+			(. varExp.VariableName = t.val; .)
 			FunExpr<varExp>
 			(. 
 				var fun = (ElaFunctionLiteral)varExp.InitExpression;
@@ -1543,7 +1553,6 @@ PRODUCTIONS
 		
 	InfixExpr<out ElaExpression exp> = 
 		(. 
-			var op = default(ElaOperator); 
 			exp = null;
 			var ot = t; 
 			var name = String.Empty;
@@ -1557,50 +1566,36 @@ PRODUCTIONS
 						ot = t;
 					.)
 					(
-						operatorTok (. op = ElaOperator.Custom; name = t.val; .)
+						operatorTok (. name = t.val; .)
 						| funcTok (. name = t.val.Trim('`'); .)
 					)
 					[ BitOrExpr<out cexp> ]
 					(. 
-						if (op == ElaOperator.None)
-						{
-							var fc = new ElaFunctionCall(ot) { 
-									Target = GetBuiltin(ot, name)
-								};
-							fc.Parameters.Add(exp);			
-							
-							if (cexp != null)
-								fc.Parameters.Add(cexp);
-											
-							exp = fc;
-						}
-						else
-							exp = new ElaBinary(t) { CustomOperator = name, Left = exp, Operator = op, Right = cexp }; 
+						var fc = new ElaFunctionCall(ot) { 
+								Target = GetBuiltin(ot, name)
+							};
+						fc.Parameters.Add(exp);			
+						
+						if (cexp != null)
+							fc.Parameters.Add(cexp);
+										
+						exp = fc;
 					.)
 				}
 			)
 			|
 			(
 				(
-					operatorTok (. op = ElaOperator.Custom; name = t.val; .)
+					operatorTok (. name = t.val; .)
 					| funcTok (. name = t.val.Trim('`'); .)
 				)
 				[ 
 					BitOrExpr<out exp> 
-					(.
-						exp =
-							op == ElaOperator.Custom ? GetCustomOperatorFun(name, exp) : 
-							GetPrefixFun(name, exp, true);						
-					.)
+					(. exp = GetPrefixFun(name, exp, true);	.)
 				]
 				(.
 					if (exp == null)
-					{
-						if (op == ElaOperator.Custom)					
-							exp = new ElaCustomOperator(ot) { Operator = name };
-						else
-							exp = new ElaVariableReference(ot) { VariableName = name };
-					}
+						exp = new ElaVariableReference(ot) { VariableName = name };
 				.)				
 			)
 		).

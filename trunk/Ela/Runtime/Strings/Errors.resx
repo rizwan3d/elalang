@@ -267,9 +267,6 @@
   <data name="UnknownParameterType" xml:space="preserve">
     <value>Invalid type for the function parameter: '{0}'.</value>
   </data>
-  <data name="UnknownPervasive" xml:space="preserve">
-    <value>A reference to the unknown name or operator.</value>
-  </data>
   <data name="UserCode" xml:space="preserve">
     <value>An error in user code occured.</value>
   </data>
