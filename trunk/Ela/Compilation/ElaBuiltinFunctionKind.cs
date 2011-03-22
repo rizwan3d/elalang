@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Ela.CodeModel
+namespace Ela.Compilation
 {
 	public enum ElaBuiltinFunctionKind
 	{
