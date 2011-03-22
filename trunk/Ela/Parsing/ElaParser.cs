@@ -30,6 +30,12 @@ namespace Ela.Parsing
 		}
 
 
+		public ParserResult Parse(Stream stream)
+		{
+			return InternalParse(stream);
+		}
+
+
 		private ParserResult InternalParse(string source)
 		{
 			using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(source)))
