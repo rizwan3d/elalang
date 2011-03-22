@@ -52,14 +52,14 @@ namespace Ela.CodeModel
 				case ElaOperator.CompBackward: return "<<";
 				case ElaOperator.CompForward: return ">>";
 				case ElaOperator.Concat: return "++";
-				case ElaOperator.ConsList: return "::";
+				case ElaOperator.Cons: return "::";
 				case ElaOperator.Divide: return "/";
 				case ElaOperator.Equals: return "==";
 				case ElaOperator.Greater: return ">";
 				case ElaOperator.GreaterEqual: return ">=";
 				case ElaOperator.Lesser: return "<";
 				case ElaOperator.LesserEqual: return "<=";
-				case ElaOperator.Modulus: return "%";
+				case ElaOperator.Remainder: return "%";
 				case ElaOperator.Multiply: return "*";
 				case ElaOperator.NotEquals: return "<>";
 				case ElaOperator.Power: return "**";

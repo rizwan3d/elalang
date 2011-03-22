@@ -73,7 +73,7 @@
 //                case ElaOperator.Add: 
 //                case ElaOperator.Subtract:
 //                case ElaOperator.Multiply:
-//                case ElaOperator.Modulus:
+//                case ElaOperator.Remainder:
 //                case ElaOperator.Divide:
 //                case ElaOperator.Power:
 //                    return ElaTraits.Num;
@@ -91,7 +91,7 @@
 //                    return ElaTraits.Call;
 //                case ElaOperator.Concat:
 //                    return ElaTraits.Concat;
-//                case ElaOperator.ConsList:
+//                case ElaOperator.Cons:
 //                    return ElaTraits.Cons;
 //                case ElaOperator.Lesser:
 //                case ElaOperator.Greater:
@@ -122,7 +122,7 @@
 //                        var ret = type1.Traits == type2.Traits && (type1.Traits & binType) == binType ? type1 :
 //                            new TypeTag(type1.Traits | type2.Traits | binType, false);
 
-//                        if (!type1.Complete && bin.Operator != ElaOperator.ConsList)
+//                        if (!type1.Complete && bin.Operator != ElaOperator.Cons)
 //                            type1.Traits |= binType;
 
 //                        if (!type2.Complete)

@@ -153,7 +153,7 @@ PRODUCTIONS
 	VariableReference<out ElaExpression exp> =
 		(. exp = null; .)
 		(
-			ident (. exp = GetBuiltin(t, t.val); .)
+			ident (. exp = new ElaVariableReference(t) { VariableName = t.val }; .)
 			| "_" (. exp = new ElaPlaceholder(t); .)
 		).
 		
@@ -1285,9 +1285,8 @@ PRODUCTIONS
 				]
 				(.
 					if (exp == null)
-						exp = new ElaBuiltinFunction(ot) { 
-								Kind = ElaBuiltinFunctionKind.Operator,
-								Operator = op
+						exp = new ElaVariableReference(ot) { 
+								VariableName = t.val
 							};
 				.)
 			)
@@ -1329,9 +1328,8 @@ PRODUCTIONS
 				]
 				(.
 					if (exp == null)
-						exp = new ElaBuiltinFunction(ot) { 
-								Kind = ElaBuiltinFunctionKind.Operator,
-								Operator = op
+						exp = new ElaVariableReference(ot) { 
+								VariableName = t.val
 							};
 				.)
 			)
@@ -1367,10 +1365,7 @@ PRODUCTIONS
 				]
 				(.
 					if (exp == null)
-						exp = new ElaBuiltinFunction(ot) { 
-								Kind = ElaBuiltinFunctionKind.Operator,
-								Operator = op
-							};
+						exp = new ElaVariableReference(ot) { VariableName = t.val };
 				.)
 			)
 		).
@@ -1386,7 +1381,7 @@ PRODUCTIONS
 				AddExpr<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
-					"::" (. op = ElaOperator.ConsList; .)
+					"::" (. op = ElaOperator.Cons; .)
 					[ ConsExpr<out cexp> ]
 					(. 
 						if (cexp == null)
@@ -1398,17 +1393,14 @@ PRODUCTIONS
 			)
 			|
 			(
-				"::" (. op = ElaOperator.ConsList; .)
+				"::" (. op = ElaOperator.Cons; .)
 				[ 
 					AddExpr<out exp> 
 					(. exp = GetOperatorFun(exp, op, true); .)
 				]
 				(.
 					if (exp == null)
-						exp = new ElaBuiltinFunction(ot) { 
-								Kind = ElaBuiltinFunctionKind.Operator,
-								Operator = op
-							};
+						exp = new ElaVariableReference(ot) { VariableName = t.val };
 				.)
 			)
 		).
@@ -1449,10 +1441,7 @@ PRODUCTIONS
 				]
 				(.
 					if (exp == null)
-						exp = new ElaBuiltinFunction(ot) { 
-								Kind = ElaBuiltinFunctionKind.Operator,
-								Operator = op
-							};
+						exp = new ElaVariableReference(ot) { VariableName = t.val };
 				.)
 			)
 		).
@@ -1471,7 +1460,7 @@ PRODUCTIONS
 					(
 						"*" (. op = ElaOperator.Multiply; .)
 						| "/" (. op = ElaOperator.Divide; .)
-						| "%" (. op = ElaOperator.Modulus; .)
+						| "%" (. op = ElaOperator.Remainder; .)
 						| "**" (. op = ElaOperator.Power; .)
 					)
 					[ CastExpr<out cexp> ]
@@ -1488,7 +1477,7 @@ PRODUCTIONS
 				(
 					"*" (. op = ElaOperator.Multiply; .)
 					| "/" (. op = ElaOperator.Divide; .)
-					| "%" (. op = ElaOperator.Modulus; .)
+					| "%" (. op = ElaOperator.Remainder; .)
 					| "**" (. op = ElaOperator.Power; .)
 				)
 				[ 
@@ -1497,10 +1486,7 @@ PRODUCTIONS
 				]
 				(.
 					if (exp == null)
-						exp = new ElaBuiltinFunction(ot) { 
-								Kind = ElaBuiltinFunctionKind.Operator,
-								Operator = op
-							};
+						exp = new ElaVariableReference(ot) { VariableName = t.val };
 				.)
 			)
 		).
@@ -1572,7 +1558,7 @@ PRODUCTIONS
 					[ BitOrExpr<out cexp> ]
 					(. 
 						var fc = new ElaFunctionCall(ot) { 
-								Target = GetBuiltin(ot, name)
+								Target = new ElaVariableReference(t) { VariableName = t.val }
 							};
 						fc.Parameters.Add(exp);			
 						
@@ -1631,10 +1617,7 @@ PRODUCTIONS
 				]
 				(.
 					if (exp == null)
-						exp = new ElaBuiltinFunction(ot) { 
-								Kind = ElaBuiltinFunctionKind.Operator,
-								Operator = op
-							};
+						exp = new ElaVariableReference(ot) { VariableName = t.val };
 				.)
 			)
 		).
@@ -1670,10 +1653,7 @@ PRODUCTIONS
 				]
 				(.
 					if (exp == null)
-						exp = new ElaBuiltinFunction(ot) { 
-								Kind = ElaBuiltinFunctionKind.Operator,
-								Operator = op
-							};
+						exp = new ElaVariableReference(ot) { VariableName = t.val };
 				.)
 			)
 		).
@@ -1709,10 +1689,7 @@ PRODUCTIONS
 				]
 				(.
 					if (exp == null)
-						exp = new ElaBuiltinFunction(ot) { 
-								Kind = ElaBuiltinFunctionKind.Operator,
-								Operator = op
-							};
+						exp = new ElaVariableReference(ot) { VariableName = t.val };
 				.)
 			)
 		).
@@ -1749,10 +1726,7 @@ PRODUCTIONS
 				]
 				(.
 					if (exp == null)
-						exp = new ElaBuiltinFunction(ot) { 
-								Kind = ElaBuiltinFunctionKind.Operator,
-								Operator = op
-							};
+						exp = new ElaVariableReference(ot) { VariableName = t.val };
 				.)
 			)
 		).
@@ -1789,10 +1763,7 @@ PRODUCTIONS
 				]
 				(.
 					if (exp == null)
-						exp = new ElaBuiltinFunction(ot) { 
-								Kind = ElaBuiltinFunctionKind.Operator,
-								Operator = op
-							};
+						exp = new ElaVariableReference(ot) { VariableName = t.val };
 				.)
 			)
 		).
@@ -1826,10 +1797,7 @@ PRODUCTIONS
 				]
 				(.
 					if (exp == null)
-						exp = new ElaBuiltinFunction(ot) { 
-								Kind = ElaBuiltinFunctionKind.Operator,
-								Operator = op
-							};
+						exp = new ElaVariableReference(ot) { VariableName = t.val };
 				.)
 			)
 		).
@@ -1915,9 +1883,8 @@ PRODUCTIONS
 				]
 				(.
 					if (exp == null)
-						exp = new ElaBuiltinFunction(ot) { 
-								Kind = ElaBuiltinFunctionKind.Operator,
-								Operator = op
+						exp = new ElaVariableReference(ot) { 
+								VariableName = "$"
 							};
 				.)
 			)

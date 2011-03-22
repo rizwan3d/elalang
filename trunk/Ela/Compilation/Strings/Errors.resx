@@ -142,7 +142,7 @@
     <value>An expression: {0} is invalid. Pattern matching is not allowed in for/to and for/downto cycles.</value>
   </data>
   <data name="NameReserved" xml:space="preserve">
-    <value>Name '{0}' is reserved and cannot be used for a variable.</value>
+    <value>Name '{0}' is a special name and cannot be shadowed by a custom name in the global scope.</value>
   </data>
   <data name="PatternNotAllArgs" xml:space="preserve">
     <value>Not all of the function arguments are specified in the pattern {0}.</value>

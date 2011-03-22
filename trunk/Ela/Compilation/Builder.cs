@@ -110,16 +110,6 @@ namespace Ela.Compilation
 							AddValueNotUsed(v);
 					}
 					break;
-				case ElaNodeType.BuiltinFunction:
-					{
-						var s = (ElaBuiltinFunction)exp;
-						AddLinePragma(s);
-						CompileBuiltin(s, map);
-
-						if ((hints & Hints.Left) == Hints.Left)
-							AddValueNotUsed(s);
-					}
-					break;
 				case ElaNodeType.BaseReference:
 					AddError(ElaCompilerError.BaseNotAllowed, exp);
 					break;
@@ -460,7 +450,22 @@ namespace Ela.Compilation
 					{
 						var v = (ElaVariableReference)exp;
 						AddLinePragma(v);
-						var scopeVar = GetVariable(v.VariableName, v.Line, v.Column);
+						var scopeVar = GetVariable(v.VariableName);
+
+						if (scopeVar.IsEmpty())
+						{
+							var kind = default(ElaBuiltinFunctionKind);
+							var op = default(ElaOperator);
+							Builtins.Kind(v.VariableName, out kind, out op);
+
+							if (kind != ElaBuiltinFunctionKind.None)
+							{
+								CompileBuiltin(kind, op, v, map);
+								break;
+							}
+							else
+								scopeVar = GetExternal(v.VariableName, v.Line, v.Column);
+						}
 						
 						if ((hints & Hints.Left) == Hints.Left && (hints & Hints.Assign) == Hints.Assign)
 						{
@@ -710,33 +715,68 @@ namespace Ela.Compilation
 				return;
 			}
 
-			if (v.Target.Type == ElaNodeType.BuiltinFunction)
+			var ed = ExprData.Empty;
+
+			if (v.Target.Type == ElaNodeType.VariableReference)
 			{
-				var bf = (ElaBuiltinFunction)v.Target;
+				var bf = (ElaVariableReference)v.Target;
+				var sv = GetVariable(bf.VariableName);
 
-				if (len != bf.ParameterCount)
+				if (sv.IsEmpty())
 				{
-					AddLinePragma(bf);
-					CompileBuiltin(bf, map);
+					var kind = default(ElaBuiltinFunctionKind);
+					var op = default(ElaOperator);
 
-					for (var i = 0; i < len; i++)
-						cw.Emit(Op.Call);
+					Builtins.Kind(bf.VariableName, out kind, out op);
+
+					if (kind == ElaBuiltinFunctionKind.None)
+					{
+						sv = GetExternal(bf.VariableName, bf.Line, bf.Column);
+						AddLinePragma(v.Target);
+						cw.Emit(Op.Pushvar, sv.Address);
+					}
+					else
+					{
+
+						var pars = kind == ElaBuiltinFunctionKind.Operator && op != ElaOperator.BitwiseNot && op != ElaOperator.Negate ||
+							kind == ElaBuiltinFunctionKind.Showf ||
+							kind == ElaBuiltinFunctionKind.Ref ? 2 : 1;
+
+						if (len != pars)
+						{
+							AddLinePragma(bf);
+							CompileBuiltin(kind, op, v.Target, map);
+
+							for (var i = 0; i < len; i++)
+								cw.Emit(Op.Call);
+						}
+						else
+							CompileBuiltinInline(kind, op, v.Target, map, hints);
+
+						if ((hints & Hints.Left) == Hints.Left)
+						{
+							if ((bf.Flags & ElaExpressionFlags.ReturnsUnit) != ElaExpressionFlags.ReturnsUnit)
+								AddValueNotUsed(v.Target);
+							else
+								cw.Emit(Op.Pop);
+						}
+
+						return;
+					}
 				}
 				else
-					CompileBuiltinInline(bf, map, hints);
-
-				if ((hints & Hints.Left) == Hints.Left)
 				{
-					if ((bf.Flags & ElaExpressionFlags.ReturnsUnit) != ElaExpressionFlags.ReturnsUnit)
-						AddValueNotUsed(v.Target);
-					else
-						cw.Emit(Op.Pop);
+					AddLinePragma(v.Target);
+					cw.Emit(Op.Pushvar, sv.Address);
+
+					if ((sv.VariableFlags & ElaVariableFlags.Function) == ElaVariableFlags.Function)
+						ed = new ExprData(DataKind.FunParams, sv.Data);
+					else if ((sv.VariableFlags & ElaVariableFlags.ObjectLiteral) == ElaVariableFlags.ObjectLiteral)
+						ed = new ExprData(DataKind.VarType, (Int32)ElaVariableFlags.ObjectLiteral);
 				}
-
-				return;
 			}
-
-			var ed = CompileExpression(v.Target, map, Hints.None);
+			else
+				ed = CompileExpression(v.Target, map, Hints.None);
 
 			if (v.FlipParameters)
 				cw.Emit(Op.Flip);
@@ -915,10 +955,17 @@ namespace Ela.Compilation
 				return 0;
 			}
 
-			if (Builtins.Kind(name) != ElaBuiltinFunctionKind.None)
+			if (globalScope == CurrentScope)
 			{
-				AddError(ElaCompilerError.NameReserved, exp, name);
-				return 0;
+				var kind = default(ElaBuiltinFunctionKind);
+				var op = default(ElaOperator);
+				Builtins.Kind(name, out kind, out op);
+
+				if (kind != ElaBuiltinFunctionKind.None)
+				{
+					AddError(ElaCompilerError.NameReserved, exp, name);
+					return 0;
+				}
 			}
 
 			CurrentScope.Locals.Add(name, new ScopeVar(flags, currentCounter, data));
@@ -990,13 +1037,25 @@ namespace Ela.Compilation
 		}
 
 
+		private ScopeVar GetVariable(string name)
+		{
+			return GetVariable(name, CurrentScope, 0, 0, 0, true);
+		}
+
+
 		private ScopeVar GetVariable(string name, int line, int col)
 		{
-			return GetVariable(name, CurrentScope, 0, line, col);
+			return GetVariable(name, CurrentScope, 0, line, col, false);
 		}
 
 
 		private ScopeVar GetVariable(string name, Scope startScope, int startShift, int line, int col)
+		{
+			return GetVariable(name, startScope, startShift, line, col, false);
+		}
+
+
+		private ScopeVar GetVariable(string name, Scope startScope, int startShift, int line, int col, bool noExt)
 		{
 			var cur = startScope;
 			var shift = startShift;
@@ -1018,7 +1077,7 @@ namespace Ela.Compilation
 			}
 			while (cur != null);
 
-            return GetExternal(name, line, col);
+            return noExt ? ScopeVar.Empty : GetExternal(name, line, col);
 		}
 
 

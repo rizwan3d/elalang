@@ -295,7 +295,7 @@ internal sealed partial class Parser {
 		exp = null; 
 		if (la.kind == 1) {
 			Get();
-			exp = GetBuiltin(t, t.val); 
+			exp = new ElaVariableReference(t) { VariableName = t.val }; 
 		} else if (la.kind == 43) {
 			Get();
 			exp = new ElaPlaceholder(t); 
@@ -484,9 +484,8 @@ internal sealed partial class Parser {
 				exp = GetOperatorFun(exp, op, true); 
 			}
 			if (exp == null)
-			exp = new ElaBuiltinFunction(ot) { 
-					Kind = ElaBuiltinFunctionKind.Operator,
-					Operator = op
+			exp = new ElaVariableReference(ot) { 
+					VariableName = "$"
 				};
 			
 		} else SynErr(90);
@@ -1641,9 +1640,8 @@ internal sealed partial class Parser {
 				exp = GetOperatorFun(exp, op, true); 
 			}
 			if (exp == null)
-			exp = new ElaBuiltinFunction(ot) { 
-					Kind = ElaBuiltinFunctionKind.Operator,
-					Operator = op
+			exp = new ElaVariableReference(ot) { 
+					VariableName = t.val
 				};
 			
 		} else SynErr(110);
@@ -1687,9 +1685,8 @@ internal sealed partial class Parser {
 				exp = GetOperatorFun(exp, op, true); 
 			}
 			if (exp == null)
-			exp = new ElaBuiltinFunction(ot) { 
-					Kind = ElaBuiltinFunctionKind.Operator,
-					Operator = op
+			exp = new ElaVariableReference(ot) { 
+					VariableName = t.val
 				};
 			
 		} else SynErr(111);
@@ -1723,10 +1720,7 @@ internal sealed partial class Parser {
 				exp = GetOperatorFun(exp, op, true); 
 			}
 			if (exp == null)
-			exp = new ElaBuiltinFunction(ot) { 
-					Kind = ElaBuiltinFunctionKind.Operator,
-					Operator = op
-				};
+			exp = new ElaVariableReference(ot) { VariableName = t.val };
 			
 		} else SynErr(112);
 	}
@@ -1741,7 +1735,7 @@ internal sealed partial class Parser {
 			while (la.kind == 50) {
 				var cexp = default(ElaExpression); 
 				Get();
-				op = ElaOperator.ConsList; 
+				op = ElaOperator.Cons; 
 				if (StartOf(22)) {
 					ConsExpr(out cexp);
 				}
@@ -1753,16 +1747,13 @@ internal sealed partial class Parser {
 			}
 		} else if (la.kind == 50) {
 			Get();
-			op = ElaOperator.ConsList; 
+			op = ElaOperator.Cons; 
 			if (StartOf(23)) {
 				AddExpr(out exp);
 				exp = GetOperatorFun(exp, op, true); 
 			}
 			if (exp == null)
-			exp = new ElaBuiltinFunction(ot) { 
-					Kind = ElaBuiltinFunctionKind.Operator,
-					Operator = op
-				};
+			exp = new ElaVariableReference(ot) { VariableName = t.val };
 			
 		} else SynErr(113);
 	}
@@ -1805,10 +1796,7 @@ internal sealed partial class Parser {
 				exp = GetOperatorFun(exp, op, true); 
 			}
 			if (exp == null)
-			exp = new ElaBuiltinFunction(ot) { 
-					Kind = ElaBuiltinFunctionKind.Operator,
-					Operator = op
-				};
+			exp = new ElaVariableReference(ot) { VariableName = t.val };
 			
 		} else SynErr(114);
 	}
@@ -1830,7 +1818,7 @@ internal sealed partial class Parser {
 					op = ElaOperator.Divide; 
 				} else if (la.kind == 64) {
 					Get();
-					op = ElaOperator.Modulus; 
+					op = ElaOperator.Remainder; 
 				} else {
 					Get();
 					op = ElaOperator.Power; 
@@ -1853,7 +1841,7 @@ internal sealed partial class Parser {
 				op = ElaOperator.Divide; 
 			} else if (la.kind == 64) {
 				Get();
-				op = ElaOperator.Modulus; 
+				op = ElaOperator.Remainder; 
 			} else {
 				Get();
 				op = ElaOperator.Power; 
@@ -1863,10 +1851,7 @@ internal sealed partial class Parser {
 				exp = GetOperatorFun(exp, op, true); 
 			}
 			if (exp == null)
-			exp = new ElaBuiltinFunction(ot) { 
-					Kind = ElaBuiltinFunctionKind.Operator,
-					Operator = op
-				};
+			exp = new ElaVariableReference(ot) { VariableName = t.val };
 			
 		} else SynErr(115);
 	}
@@ -1912,7 +1897,7 @@ internal sealed partial class Parser {
 					BitOrExpr(out cexp);
 				}
 				var fc = new ElaFunctionCall(ot) { 
-					Target = GetBuiltin(ot, name)
+					Target = new ElaVariableReference(t) { VariableName = t.val }
 				};
 				fc.Parameters.Add(exp);			
 				
@@ -1991,10 +1976,7 @@ internal sealed partial class Parser {
 				exp = GetOperatorFun(exp, op, true); 
 			}
 			if (exp == null)
-			exp = new ElaBuiltinFunction(ot) { 
-					Kind = ElaBuiltinFunctionKind.Operator,
-					Operator = op
-				};
+			exp = new ElaVariableReference(ot) { VariableName = t.val };
 			
 		} else SynErr(117);
 	}
@@ -2026,10 +2008,7 @@ internal sealed partial class Parser {
 				exp = GetOperatorFun(exp, op, true); 
 			}
 			if (exp == null)
-			exp = new ElaBuiltinFunction(ot) { 
-					Kind = ElaBuiltinFunctionKind.Operator,
-					Operator = op
-				};
+			exp = new ElaVariableReference(ot) { VariableName = t.val };
 			
 		} else SynErr(118);
 	}
@@ -2061,10 +2040,7 @@ internal sealed partial class Parser {
 				exp = GetOperatorFun(exp, op, true); 
 			}
 			if (exp == null)
-			exp = new ElaBuiltinFunction(ot) { 
-					Kind = ElaBuiltinFunctionKind.Operator,
-					Operator = op
-				};
+			exp = new ElaVariableReference(ot) { VariableName = t.val };
 			
 		} else SynErr(119);
 	}
@@ -2097,10 +2073,7 @@ internal sealed partial class Parser {
 				exp = GetOperatorFun(exp, op, true); 
 			}
 			if (exp == null)
-			exp = new ElaBuiltinFunction(ot) { 
-					Kind = ElaBuiltinFunctionKind.Operator,
-					Operator = op
-				};
+			exp = new ElaVariableReference(ot) { VariableName = t.val };
 			
 		} else SynErr(120);
 	}
@@ -2133,10 +2106,7 @@ internal sealed partial class Parser {
 				exp = GetOperatorFun(exp, op, true); 
 			}
 			if (exp == null)
-			exp = new ElaBuiltinFunction(ot) { 
-					Kind = ElaBuiltinFunctionKind.Operator,
-					Operator = op
-				};
+			exp = new ElaVariableReference(ot) { VariableName = t.val };
 			
 		} else SynErr(121);
 	}
@@ -2171,10 +2141,7 @@ internal sealed partial class Parser {
 				exp = new ElaBinary(t) { Left = exp, Operator = op }; 
 			}
 			if (exp == null)
-			exp = new ElaBuiltinFunction(ot) { 
-					Kind = ElaBuiltinFunctionKind.Operator,
-					Operator = op
-				};
+			exp = new ElaVariableReference(ot) { VariableName = t.val };
 			
 		} else SynErr(122);
 	}

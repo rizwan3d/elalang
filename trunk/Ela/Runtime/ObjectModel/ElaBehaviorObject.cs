@@ -184,7 +184,7 @@ namespace Ela.Runtime.ObjectModel
         //}
 
 
-        //protected internal virtual ElaValue Modulus(ElaValue left, ElaValue right, ExecutionContext ctx)
+        //protected internal virtual ElaValue Remainder(ElaValue left, ElaValue right, ExecutionContext ctx)
         //{
         //    ctx.Fail(ElaRuntimeError.TraitNum, ThisToString(left, right, ctx), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
         //    return Default();

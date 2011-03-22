@@ -1,38 +1,60 @@
 ﻿using System;
 using Ela.CodeModel;
+using Ela.Compilation;
 
 namespace Ela
 {
 	internal static class Builtins
 	{
-		internal static ElaBuiltinFunctionKind Kind(string func)
+		internal static void Kind(string func, out ElaBuiltinFunctionKind kind, out ElaOperator op)
 		{
+			op = ElaOperator.None;
+			kind = ElaBuiltinFunctionKind.None;
+
 			switch (func)
 			{
-				case "typeid": return ElaBuiltinFunctionKind.Typeid;
-				case "not": return ElaBuiltinFunctionKind.Not;
-				case "flip": return ElaBuiltinFunctionKind.Flip;
-				case "force": return ElaBuiltinFunctionKind.Force;
-				case "length": return ElaBuiltinFunctionKind.Length;
-				
-				case "type": return ElaBuiltinFunctionKind.Type;
-				case "succ": return ElaBuiltinFunctionKind.Succ;
-				case "pred": return ElaBuiltinFunctionKind.Pred;
-				case "max": return ElaBuiltinFunctionKind.Max;
-				case "min": return ElaBuiltinFunctionKind.Min;
-				
-				case "show": return ElaBuiltinFunctionKind.Show;
-				case "showf": return ElaBuiltinFunctionKind.Showf;
-                case "ref": return ElaBuiltinFunctionKind.Ref;
-				case "nil": return ElaBuiltinFunctionKind.Nil;
+				case "typeid": kind = ElaBuiltinFunctionKind.Typeid; break;
+				case "not": kind = ElaBuiltinFunctionKind.Not; break;
+				case "flip": kind = ElaBuiltinFunctionKind.Flip; break;
+				case "force": kind = ElaBuiltinFunctionKind.Force; break;
+				case "length": kind = ElaBuiltinFunctionKind.Length; break;
+				case "type": kind = ElaBuiltinFunctionKind.Type; break;
+				case "succ": kind = ElaBuiltinFunctionKind.Succ; break;
+				case "pred": kind = ElaBuiltinFunctionKind.Pred; break;
+				case "max": kind = ElaBuiltinFunctionKind.Max; break;
+				case "min": kind = ElaBuiltinFunctionKind.Min; break;
+				case "show": kind = ElaBuiltinFunctionKind.Show; break;
+				case "showf": kind = ElaBuiltinFunctionKind.Showf; break;
+				case "ref": kind = ElaBuiltinFunctionKind.Ref; break;
+				case "nil": kind = ElaBuiltinFunctionKind.Nil; break;
 
-                case "==": case "<>" : case  ">=" : case  "<=" : case  ">" : case  "<" :
-				case  "+" : case  "-" : case  "*" : case  "/" : case  "%" : case  "**" :
-				case  "--" : case  "&&&" : case  ": case : case : case " : case  "^^^" : case  ">>>" : case  "<<<" : case  "~~~":
-				case  "++" : case  "::": return ElaBuiltinFunctionKind.Operator;
-
-				default: return ElaBuiltinFunctionKind.None;
+				case "==": op = ElaOperator.Equals; break;
+				case "<>": op = ElaOperator.NotEquals; break; 
+				case ">=": op = ElaOperator.GreaterEqual; break; 
+				case "<=": op = ElaOperator.LesserEqual; break; 
+				case ">": op = ElaOperator.Greater; break; 
+				case "<": op = ElaOperator.Lesser; break;
+				case "+": op = ElaOperator.Add; break; 
+				case "-": op = ElaOperator.Subtract; break; 
+				case "*": op = ElaOperator.Multiply; break; 
+				case "/": op = ElaOperator.Divide; break; 
+				case "%": op = ElaOperator.Remainder; break; 
+				case "**": op = ElaOperator.Power; break;
+				case "--": op = ElaOperator.Negate; break; 
+				case "&&&": op = ElaOperator.BitwiseAnd; break; 
+				case "|||": op = ElaOperator.BitwiseOr; break; 
+				case "^^^": op = ElaOperator.BitwiseOr; break; 
+				case ">>>": op = ElaOperator.ShiftRight; break; 
+				case "<<<": op = ElaOperator.ShiftLeft; break; 
+				case "~~~": op = ElaOperator.BitwiseNot; break;
+				case "++": op = ElaOperator.Concat; break; 
+				case "::": op = ElaOperator.Cons; break;
+				case ">>": op = ElaOperator.CompForward; break;
+				case "<<": op = ElaOperator.CompBackward; break;
 			}
+
+			if (op != ElaOperator.None)
+				kind = ElaBuiltinFunctionKind.Operator;
 		}
 
 

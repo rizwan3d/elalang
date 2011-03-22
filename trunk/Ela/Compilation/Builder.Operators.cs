@@ -8,14 +8,22 @@ namespace Ela.Compilation
 		#region Main
 		private ExprData CompileBinary(ElaBinary bin, LabelMap map, Hints hints)
 		{
-			if (bin.Operator == ElaOperator.Sequence)
-				return CompileSequence(bin, map, hints);
-
-			var exprData = ExprData.Empty;
+			var sv = GetVariable(Format.OperatorAsString(bin.Operator));
 			var newHints =
 				((hints & Hints.Scope) == Hints.Scope ? Hints.Scope : Hints.None) |
 				((hints & Hints.Nested) == Hints.Nested ? Hints.Nested : Hints.None);
 
+			if (!sv.IsEmpty())
+			{
+				CompileOverloaded(bin, map, newHints, sv);
+				return ExprData.Empty;
+			}
+
+			if (bin.Operator == ElaOperator.Sequence)
+				return CompileSequence(bin, map, hints);
+
+			var exprData = ExprData.Empty;
+			
 			if (bin.Operator != ElaOperator.CompBackward && bin.Operator != ElaOperator.CompForward && bin.Operator != ElaOperator.Assign &&
 				bin.Operator != ElaOperator.Equals && bin.Operator != ElaOperator.NotEquals)
 			{
@@ -53,6 +61,32 @@ namespace Ela.Compilation
 			}
 
 			return exprData;
+		}
+
+
+		private void CompileOverloaded(ElaBinary bin, LabelMap map, Hints hints, ScopeVar sv)
+		{
+			CompileExpression(bin.Left, map, hints);
+
+			if (bin.Right != null)
+				CompileExpression(bin.Right, map, hints);
+
+			AddLinePragma(bin);
+			cw.Emit(Op.Pushvar, sv.Address);
+			var partial = bin.Right == null || bin.Left == null;
+
+			if (partial)
+			{
+				if (bin.Left == null)
+					cw.Emit(Op.Flip);
+
+				cw.Emit(Op.Call);
+			}
+			else
+			{
+				cw.Emit(Op.Call);
+				cw.Emit(Op.Call);
+			}
 		}
 
 
@@ -119,7 +153,7 @@ namespace Ela.Compilation
 				case ElaOperator.Power:
 					cw.Emit(Op.Pow);
 					break;
-				case ElaOperator.Modulus:
+				case ElaOperator.Remainder:
 					cw.Emit(Op.Rem);
 					break;
 				case ElaOperator.Subtract:
@@ -158,7 +192,7 @@ namespace Ela.Compilation
 				case ElaOperator.BitwiseXor:
 					cw.Emit(Op.Xor);
 					break;
-				case ElaOperator.ConsList:
+				case ElaOperator.Cons:
 					cw.Emit(Op.Cons);
 					break;
                 case ElaOperator.Negate:

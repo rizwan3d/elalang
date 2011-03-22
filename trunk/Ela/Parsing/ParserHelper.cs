@@ -14,14 +14,6 @@ namespace Ela.Parsing
         private int oldKind = 0;
 
 		#region Methods
-		private ElaExpression GetBuiltin(Token t, string value)
-		{
-			var kind = Builtins.Kind(value);
-			return kind != ElaBuiltinFunctionKind.None ? (ElaExpression)new ElaBuiltinFunction(t) { Kind = kind } :
-				(ElaExpression)new ElaVariableReference(t) { VariableName = value };
-		}
-
-
 		private bool RequireEndBlock()
 		{
 			if (la.kind == _EBLOCK)

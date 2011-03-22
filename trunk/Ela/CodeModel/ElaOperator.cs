@@ -16,11 +16,11 @@ namespace Ela.CodeModel
 
 		Divide,
 
-		Modulus,
+		Remainder,
 
 		Power,
 
-		ConsList,
+		Cons,
 
 		Equals,
 

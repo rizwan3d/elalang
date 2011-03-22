@@ -138,14 +138,17 @@ namespace Ela.Compilation
 
 
 		#region Builtins
-		private void CompileBuiltin(ElaBuiltinFunction fun, LabelMap map)
+		private void CompileBuiltin(ElaBuiltinFunctionKind kind, ElaOperator op, ElaExpression exp, LabelMap map)
 		{
 			StartSection();
-			cw.StartFrame(fun.ParameterCount);
+			var pars = kind == ElaBuiltinFunctionKind.Operator && op != ElaOperator.BitwiseNot && op != ElaOperator.Negate ||
+				kind == ElaBuiltinFunctionKind.Showf ||
+				kind == ElaBuiltinFunctionKind.Ref ? 2 : 1;
+			cw.StartFrame(pars);
 			var funSkipLabel = cw.DefineLabel();
 			cw.Emit(Op.Br, funSkipLabel);
 			var address = cw.Offset;
-			var pars = CompileBuiltinInline(fun, map, Hints.None);
+			pars = CompileBuiltinInline(kind, op, exp, map, Hints.None);
 
 			cw.Emit(Op.Ret);
 			frame.Layouts.Add(new MemoryLayout(currentCounter, cw.FinishFrame(), address));
@@ -157,11 +160,11 @@ namespace Ela.Compilation
 		}
 
 
-		private int CompileBuiltinInline(ElaBuiltinFunction fun, LabelMap map, Hints hints)
+		private int CompileBuiltinInline(ElaBuiltinFunctionKind kind, ElaOperator op, ElaExpression exp, LabelMap map, Hints hints)
 		{
 			var pars = 1;
 
-			switch (fun.Kind)
+			switch (kind)
 			{
 				case ElaBuiltinFunctionKind.Negate:
 					cw.Emit(Op.Neg);
@@ -212,24 +215,23 @@ namespace Ela.Compilation
                     cw.Emit(Op.Ceqref);
                     break;
 				case ElaBuiltinFunctionKind.Operator:
-					pars = fun.Operator == ElaOperator.BitwiseNot || fun.Operator == ElaOperator.Negate ? 1 : 2;
+					pars = op == ElaOperator.BitwiseNot || op == ElaOperator.Negate ? 1 : 2;
 
-					if (fun.Operator == ElaOperator.CompBackward)
+					if (op == ElaOperator.CompBackward)
 					{
 						cw.Emit(Op.Swap);
 						CompileComposition(null, map, hints);
 					}
-					else if (fun.Operator == ElaOperator.CompForward)
+					else if (op == ElaOperator.CompForward)
 						CompileComposition(null, map, hints);
-					else if (fun.Operator == ElaOperator.Sequence)
+					else if (op == ElaOperator.Sequence)
 						cw.Emit(Op.Pop);
 					else
 					{
-                        if (fun.Operator != ElaOperator.Negate &&
-                            fun.Operator != ElaOperator.BitwiseNot)
+						if (op != ElaOperator.Negate && op != ElaOperator.BitwiseNot)
 						    cw.Emit(Op.Swap);
 
-						CompileSimpleBinary(fun.Operator);
+						CompileSimpleBinary(op);
 					}
 					break;
 				case ElaBuiltinFunctionKind.Bitnot:
