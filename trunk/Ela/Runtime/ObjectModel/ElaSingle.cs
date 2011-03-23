@@ -205,11 +205,11 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Modulus(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue Remainder(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId <= ElaMachine.REA)
 				return right.TypeId <= ElaMachine.REA ? new ElaValue(left.GetReal() % right.GetReal()) :	
-					right.Ref.Modulus(left, right, ctx);
+					right.Ref.Remainder(left, right, ctx);
 			
 			ctx.InvalidLeftOperand(left, right, ElaTraits.Num);
 			return Default();

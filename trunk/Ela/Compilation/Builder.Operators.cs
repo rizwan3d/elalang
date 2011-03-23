@@ -8,7 +8,7 @@ namespace Ela.Compilation
 		#region Main
 		private ExprData CompileBinary(ElaBinary bin, LabelMap map, Hints hints)
 		{
-			var sv = GetVariable(Format.OperatorAsString(bin.Operator));
+			var sv = GetNonGlobalVariable(Format.OperatorAsString(bin.Operator));
 			var newHints =
 				((hints & Hints.Scope) == Hints.Scope ? Hints.Scope : Hints.None) |
 				((hints & Hints.Nested) == Hints.Nested ? Hints.Nested : Hints.None);
@@ -66,12 +66,13 @@ namespace Ela.Compilation
 
 		private void CompileOverloaded(ElaBinary bin, LabelMap map, Hints hints, ScopeVar sv)
 		{
-			CompileExpression(bin.Left, map, hints);
-
-			if (bin.Right != null)
+            if (bin.Right != null)
 				CompileExpression(bin.Right, map, hints);
 
-			AddLinePragma(bin);
+            if (bin.Left != null)
+                CompileExpression(bin.Left, map, hints);
+                        
+            AddLinePragma(bin);
 			cw.Emit(Op.Pushvar, sv.Address);
 			var partial = bin.Right == null || bin.Left == null;
 

@@ -7,15 +7,13 @@ namespace Ela.CodeModel
 	public sealed class ElaBinary : ElaExpression
 	{
 		#region Construction
-		internal ElaBinary(Token tok)
-			: base(tok, ElaNodeType.Binary)
+		internal ElaBinary(Token tok) : base(tok, ElaNodeType.Binary)
 		{
 
 		}
 
 
-		public ElaBinary()
-			: base(ElaNodeType.Binary)
+		public ElaBinary() : base(ElaNodeType.Binary)
 		{
 
 		}

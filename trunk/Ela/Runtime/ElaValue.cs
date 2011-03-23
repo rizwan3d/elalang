@@ -569,9 +569,9 @@ namespace Ela.Runtime
         }
 
 
-        public ElaValue Modulus(ElaValue left, ElaValue right, ExecutionContext ctx)
+        public ElaValue Remainder(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            return Ref.Modulus(left, right, ctx);
+            return Ref.Remainder(left, right, ctx);
         }
 
 

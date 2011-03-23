@@ -397,7 +397,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Modulus(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue Remainder(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			var lt = GetOther(null, left, ctx);
 
@@ -412,7 +412,7 @@ namespace Ela.Runtime.ObjectModel
 				for (var i = 0; i < Length; i++)
 				{
 					var val = lt.Values[i].Id(ctx);
-					ret.Values[i] = val.Ref.Modulus(val, right, ctx);
+					ret.Values[i] = val.Ref.Remainder(val, right, ctx);
 				}
 
 				return new ElaValue(ret);
@@ -433,7 +433,7 @@ namespace Ela.Runtime.ObjectModel
 				{
 					var fst = lt.Values[i].Id(ctx);
 					var snd = t.Values[i].Id(ctx);
-					ret.Values[i] = fst.Ref.Modulus(fst, snd, ctx);
+					ret.Values[i] = fst.Ref.Remainder(fst, snd, ctx);
 				}
 
 				return new ElaValue(ret);

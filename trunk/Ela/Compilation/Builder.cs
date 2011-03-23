@@ -1002,6 +1002,32 @@ namespace Ela.Compilation
 		}
 
 
+        private ScopeVar GetNonGlobalVariable(string name)
+        {
+            var cur = CurrentScope;
+            var shift = 0;
+
+            while (cur != globalScope && cur != null)
+            {
+                var var = default(ScopeVar);
+
+                if (cur.Locals.TryGetValue(name, out var))
+                {
+                    var.Address = shift | var.Address << 8;
+                    return var;
+                }
+
+                if (cur.Function)
+                    shift++;
+
+                cur = cur.Parent;
+            }
+
+            return ScopeVar.Empty;
+        }
+
+
+
 		private ScopeVar GetLocalVariable(string name)
 		{
 			var var = default(ScopeVar);

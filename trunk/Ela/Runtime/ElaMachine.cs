@@ -616,7 +616,7 @@ namespace Ela.Runtime
 					case Op.Rem:
 						right = evalStack.Pop();
 						left = evalStack.Peek().Id(ctx);
-						evalStack.Replace(left.Ref.Modulus(left, right.Id(ctx), ctx));
+						evalStack.Replace(left.Ref.Remainder(left, right.Id(ctx), ctx));
 
 						if (ctx.Failed)
 						{

@@ -158,9 +158,9 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Modulus(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue Remainder(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return Value.Ref.Modulus(Self(left), Self(right), ctx);
+			return Value.Ref.Remainder(Self(left), Self(right), ctx);
 		}
 
 

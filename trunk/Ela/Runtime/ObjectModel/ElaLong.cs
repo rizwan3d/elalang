@@ -259,7 +259,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Modulus(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue Remainder(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId <= ElaMachine.LNG)
 			{
@@ -276,7 +276,7 @@ namespace Ela.Runtime.ObjectModel
 					return new ElaValue(left.GetLong() % lng);
 				}
 				else
-					return right.Ref.Modulus(left, right, ctx);
+					return right.Ref.Remainder(left, right, ctx);
 			}
 			
 			ctx.InvalidLeftOperand(left, right, ElaTraits.Num);
