@@ -4,14 +4,14 @@ using System.Text;
 
 namespace Ela.Runtime.ObjectModel
 {
-    public sealed class ElaBehaviorObject : ElaObject
+    public sealed class ElaTraitObject : ElaObject
     {
         #region Construction
         private Dictionary<String,ElaFunction> funs;
         private ElaTraits overridenTraits;
         private ElaValue wrappedObject;
 
-        public ElaBehaviorObject(ElaValue value) : base(value.Traits)
+        public ElaTraitObject(ElaValue value) : base(value.Traits)
         {
             funs = new Dictionary<String,ElaFunction>();
             this.wrappedObject = value;
@@ -20,18 +20,18 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Methods
-        internal void AddFunction(string behavior, string funName, ElaFunction fun, ExecutionContext ctx)
+        internal void AddFunction(string trait, string funName, ElaFunction fun, ExecutionContext ctx)
         {
-            var trait = Builtins.Trait(behavior);
+            var t = Builtins.Trait(trait);
 
-            if (trait != ElaTraits.None)
-                overridenTraits |= trait;
+            if (t != ElaTraits.None)
+                overridenTraits |= t;
 
-            funs.Add(behavior + " " + funName, fun);
+            funs.Add(trait + " " + funName, fun);
         }
 
 
-        internal ElaFunction GetBehaviorFunction(string funName, ExecutionContext ctx)
+        internal ElaFunction GetTraitFunction(string funName, ExecutionContext ctx)
         {
             var fun = default(ElaFunction);
 
@@ -43,15 +43,15 @@ namespace Ela.Runtime.ObjectModel
                 {
                     var b = funName.Substring(0, idx - 1);
 
-                    if (!HasBehavior(b))
+                    if (!HasTrait(b))
                     {
-                        ctx.Fail(String.Format("Behavior '{0}' is not supported.", b));
+                        ctx.Fail(String.Format("Trait '{0}' is not supported.", b));
                         return null;
                     }
                 }
                 else
                 {
-                    ctx.Fail(String.Format("Unknown behavior or function '{0}'.", funName));
+                    ctx.Fail(String.Format("Unknown trait or function '{0}'.", funName));
                     return null;
                 }
 
@@ -63,9 +63,9 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        internal bool HasBehavior(string behavior)
+        internal bool HasTrait(string trait)
         {
-            var b = behavior + " ";
+            var b = trait + " ";
 
             foreach (var s in funs.Keys)
                 if (s.StartsWith(b))
