@@ -955,17 +955,14 @@ namespace Ela.Compilation
 				return 0;
 			}
 
-			if (globalScope == CurrentScope)
-			{
-				var kind = default(ElaBuiltinFunctionKind);
-				var op = default(ElaOperator);
-				Builtins.Kind(name, out kind, out op);
+			var kind = default(ElaBuiltinFunctionKind);
+			var op = default(ElaOperator);
+			Builtins.Kind(name, out kind, out op);
 
-				if (kind != ElaBuiltinFunctionKind.None)
-				{
-					AddError(ElaCompilerError.NameReserved, exp, name);
-					return 0;
-				}
+			if (kind != ElaBuiltinFunctionKind.None)
+			{
+				AddError(ElaCompilerError.NameReserved, exp, name);
+				return 0;
 			}
 
 			CurrentScope.Locals.Add(name, new ScopeVar(flags, currentCounter, data));
@@ -1000,32 +997,6 @@ namespace Ela.Compilation
 
             return false;
 		}
-
-
-        private ScopeVar GetNonGlobalVariable(string name)
-        {
-            var cur = CurrentScope;
-            var shift = 0;
-
-            while (cur != globalScope && cur != null)
-            {
-                var var = default(ScopeVar);
-
-                if (cur.Locals.TryGetValue(name, out var))
-                {
-                    var.Address = shift | var.Address << 8;
-                    return var;
-                }
-
-                if (cur.Function)
-                    shift++;
-
-                cur = cur.Parent;
-            }
-
-            return ScopeVar.Empty;
-        }
-
 
 
 		private ScopeVar GetLocalVariable(string name)

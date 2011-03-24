@@ -390,8 +390,7 @@ let swap (x, y) = (y, x)
 
 let swap3 (x, y, z) = (y, x, z)
 
-/* currying and uncurrying for functions with pairs and
-    with triples. */
+/* currying and uncurrying for functions with pairs and with triples. */
 let curry f x y = f (x, y)
 
 let uncurry f (x, y) = f x y

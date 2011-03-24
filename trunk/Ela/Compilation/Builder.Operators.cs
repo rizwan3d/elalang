@@ -8,16 +8,9 @@ namespace Ela.Compilation
 		#region Main
 		private ExprData CompileBinary(ElaBinary bin, LabelMap map, Hints hints)
 		{
-			var sv = GetNonGlobalVariable(Format.OperatorAsString(bin.Operator));
 			var newHints =
 				((hints & Hints.Scope) == Hints.Scope ? Hints.Scope : Hints.None) |
 				((hints & Hints.Nested) == Hints.Nested ? Hints.Nested : Hints.None);
-
-			if (!sv.IsEmpty())
-			{
-				CompileOverloaded(bin, map, newHints, sv);
-				return ExprData.Empty;
-			}
 
 			if (bin.Operator == ElaOperator.Sequence)
 				return CompileSequence(bin, map, hints);
@@ -61,33 +54,6 @@ namespace Ela.Compilation
 			}
 
 			return exprData;
-		}
-
-
-		private void CompileOverloaded(ElaBinary bin, LabelMap map, Hints hints, ScopeVar sv)
-		{
-            if (bin.Right != null)
-				CompileExpression(bin.Right, map, hints);
-
-            if (bin.Left != null)
-                CompileExpression(bin.Left, map, hints);
-                        
-            AddLinePragma(bin);
-			cw.Emit(Op.Pushvar, sv.Address);
-			var partial = bin.Right == null || bin.Left == null;
-
-			if (partial)
-			{
-				if (bin.Left == null)
-					cw.Emit(Op.Flip);
-
-				cw.Emit(Op.Call);
-			}
-			else
-			{
-				cw.Emit(Op.Call);
-				cw.Emit(Op.Call);
-			}
 		}
 
 

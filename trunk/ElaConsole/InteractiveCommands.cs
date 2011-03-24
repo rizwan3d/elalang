@@ -4,6 +4,7 @@ using Ela.Runtime;
 using Ela.Parsing;
 using Ela.Compilation;
 using Ela.Linking;
+using ElaConsole.Options;
 
 namespace ElaConsole
 {
@@ -11,11 +12,13 @@ namespace ElaConsole
 	{
 		private ElaMachine machine;
 		private MessageHelper helper;
+        private ElaOptions opts;
 
-		internal InteractiveCommands(ElaMachine machine, MessageHelper helper)
+		internal InteractiveCommands(ElaMachine machine, MessageHelper helper, ElaOptions opts)
 		{
 			this.machine = machine;
 			this.helper = helper;
+            this.opts = opts;
 		}
 
 
@@ -44,6 +47,10 @@ namespace ElaConsole
 				case "exit":
 					Environment.Exit(0);
 					break;
+                case "ml":
+                    opts.Multiline = !opts.Multiline;
+                    Console.WriteLine("Multiline mode is {0}", opts.Multiline ? "on" : "off");
+                    break;
 			}
 		}
 

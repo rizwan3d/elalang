@@ -101,4 +101,7 @@ the elac.config file.
 			
 #help			Print this help from interactive mode.
 
+#ml			Toggle multiline mode on/off.
+
+
 

@@ -227,7 +227,7 @@ namespace ElaConsole
 					{
 						if (source[0] == '#')
 						{
-							var cmd = new InteractiveCommands(vm, helper);
+							var cmd = new InteractiveCommands(vm, helper, opt);
 							cmd.ProcessCommand(source);
 							helper.PrintPrompt();				
 						}

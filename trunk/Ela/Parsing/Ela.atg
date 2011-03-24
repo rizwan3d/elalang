@@ -19,21 +19,23 @@ TOKENS
 		| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ].	
 	
 	variantTok = "`"(
-				letter { letter | digit }
-				| "'" letter { letter | digit }
-				| letter { letter | digit } "'"
+				letter { letter | digit | "'" }
+				| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ]
+			).
+			
+	traitTok =  "^"(
+				letter { letter | digit | "'" }
+				| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ]
 			).
 			
 	argIdent = "$"(
-					letter { letter | digit }
-					| "'" letter { letter | digit }
-					| letter { letter | digit } "'"
+				letter { letter | digit | "'" }
+				| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ]
 				).
 	
 	funcTok = "`"(
-					letter { letter | digit }
-					| "'" letter { letter | digit }
-					| letter { letter | digit } "'"
+					letter { letter | digit | "'" }
+					| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ]
 				)
 			"`".
 
@@ -1194,7 +1196,7 @@ PRODUCTIONS
 				var mi = default(ElaFunctionCall);  
 			.)
 			(
-				"<|" ForwardPipeExpr<out cexp>
+				"<|" BackwardPipeExpr<out cexp>
 				(. 
 					if (mi == null)
 					{
@@ -1712,7 +1714,7 @@ PRODUCTIONS
 					(. var cexp = default(ElaExpression); .)
 					(
 						"<<" (. op = ElaOperator.CompBackward; .)		
-						[ ForwardCompExpr<out cexp> ]
+						[ BackwardCompExpr<out cexp> ]
 						(. 
 							if (cexp == null)
 								exp = GetOperatorFun(exp, op, true);
@@ -1749,7 +1751,7 @@ PRODUCTIONS
 					(. var cexp = default(ElaExpression); .)
 					(
 						">>" (. op = ElaOperator.CompForward; .)
-						[ ForwardCompExpr<out cexp> ]
+						[ UnaryExpr<out cexp> ]
 						(. 
 							if (cexp == null)
 								exp = GetOperatorFun(exp, op, false);
@@ -1939,6 +1941,7 @@ PRODUCTIONS
 	ComprehensionEntry<ElaExpression body, out ElaGenerator it> =
 		(.
 			it = new ElaGenerator(t);
+			it.Body = body;
 			var cexp = default(ElaExpression);
 			var pat = default(ElaPattern);
 		.)
@@ -1948,16 +1951,18 @@ PRODUCTIONS
 				it.Pattern = pat;
 				it.Target = cexp;
 			.)
-			[
+		)
+		[ 
+			(
+				(. var cit = default(ElaGenerator); .)
+				"," ComprehensionEntry<body, out cit>
+				(. it.Body = cit; .)
+			)
+			|
+			(
 				Guard<out cexp>
 				(. it.Guard = cexp; .)
-			]
-		)
-		(. it.Body = body; .)
-		[ 
-			(. var cit = default(ElaGenerator); .)
-			"," ComprehensionEntry<body, out cit>
-			(. it.Body = cit; .)
+			)
 		].
 		
 	Ela = 
