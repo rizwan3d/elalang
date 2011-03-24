@@ -1,3 +1,4 @@
+0.8.6.87:Change:Ela multiline strings now have '<[ ... ]>' syntax.
 0.8.6.86:Change:Operators '<|' and '<<' are not right associative, but '>>' is not.
 0.8.6.85:Change:Minor refactoring in parsing of comprehensions (potential LL conflict in grammar is removed, no syntax changes).
 0.8.6.84:New:Now implicit naming of record fields is supported when records elements are variable references, e.g. '{x,y}'.

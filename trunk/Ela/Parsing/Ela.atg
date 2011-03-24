@@ -9,14 +9,14 @@ CHARACTERS
 	digit = "0123456789".
 	notDigit = ANY - digit.
 	hexDigit = digit + "ABCDEFabcdef".
-	verbatimChar = ANY - '"'.
+	verbatimChar = ANY.
 	stringChar = ANY - '"' - '\\' - newLine.
 	char = ANY - "'" - '\\' - newLine.
 	op = "!%&*+-.:/<=>?@^|~".
 
 TOKENS
 	ident = letter { letter | digit | "'" }
-		| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ].	
+			| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ].	
 	
 	variantTok = "`"(
 				letter { letter | digit | "'" }
@@ -55,7 +55,7 @@ TOKENS
 					| "\\u" hexDigit hexDigit hexDigit hexDigit
 					}  
 				"\""
-				| "@\"" {verbatimChar | "\"\""} "\"".
+				| "<[" {verbatimChar} "]>".
 				
 	charTok = 	"'" ( char
 					| "\\\"" | "\\\\" | "\\0" | "\\b" | "\\n" | "\\r" | "\\t" | "\\'"
@@ -224,7 +224,7 @@ PRODUCTIONS
 	
 	MatchExpr<out ElaExpression exp> = 
 		(. scanner.InjectBlock(); .)
-		MATCH
+		SYNC MATCH
 		(. 
 			var match = new ElaMatch(t);
 			exp = match; 
@@ -780,9 +780,9 @@ PRODUCTIONS
 			var inExp = default(ElaExpression);
 			var flags = default(ElaVariableFlags);
 		.)
-		LET [VariableAttributes<out flags>] 
+		SYNC LET [VariableAttributes<out flags>] 
 		BindingBody<flags, out exp>
-		IN Expr<out inExp>
+		WEAK IN Expr<out inExp>
 		(. ((ElaBinding)exp).In = inExp; .).
 		
 	RootLetBinding<out ElaExpression exp> = 
@@ -793,7 +793,7 @@ PRODUCTIONS
 		.)
 		(
 			(. scanner.InjectBlock(); .) 
-			LET 
+			SYNC LET 
 			[VariableAttributes<out flags>] 
 			BindingBody<flags, out exp>
 			(
@@ -812,7 +812,7 @@ PRODUCTIONS
 		
 	WhereBinding<out ElaExpression exp> = 
 		(. scanner.InjectBlock(); .) 
-		WHERE 
+		SYNC WHERE 
 		BindingBody<ElaVariableFlags.None, out exp> 
 		EndBlock.
 		
@@ -1031,7 +1031,7 @@ PRODUCTIONS
 		).
 		
 	LambdaExpr<out ElaExpression exp> =
-		LAMBDA
+		SYNC LAMBDA
 		(.
 			var ot = t;
 			var pat = default(ElaPattern);
@@ -1079,7 +1079,7 @@ PRODUCTIONS
 		(. exp = null; .)
 		(
 			(. scanner.InjectBlock(); .)
-			OPEN (. var inc = new ElaModuleInclude(t); .)
+			SYNC OPEN (. var inc = new ElaModuleInclude(t); .)
 			Qualident<inc.Path>
 			(.
 				var name = inc.Path[inc.Path.Count - 1];				

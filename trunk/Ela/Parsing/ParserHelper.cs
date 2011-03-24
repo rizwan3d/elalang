@@ -268,15 +268,18 @@ namespace Ela.Parsing
 
 		private string ReadString(string val)
 		{
-			if (val.Length > 0 && val[0] != '@')
+			if (val.Length > 0) 
 			{
-				var res = EscapeCodeParser.Parse(ref val);
+				if (val[0] != '<')
+				{
+					var res = EscapeCodeParser.Parse(ref val);
 
-				if (res > 0)
-					AddError(ElaParserError.InvalidEscapeCode, res);
+					if (res > 0)
+						AddError(ElaParserError.InvalidEscapeCode, res);
+				}
+				else
+					val = val.Substring(2, val.Length - 4);
 			}
-			else
-				val = val.Substring(2, val.Length - 3);
 			
 			return val;
 		}
