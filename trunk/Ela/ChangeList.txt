@@ -1,3 +1,5 @@
+0.8.6.84:New:Now implicit naming of record fields is supported when records elements are variable references, e.g. '{x,y}'.
+0.8.6.83:Change:An ability to use negative numerics in pattern matching is (probably temporary) disabled.
 0.8.6.82:Change:Now it is possible to declare non-global operators and to pair operators with other declarations using 'et' keyword.
 0.8.6.81:Change:Pervasives engine is decomissioned (it is no longer needed with the new automatic module open procedure) along with corresponding op code and data structures. Custom operators are not treated like regular functions.
 0.8.6.80:Change:Now compiler doesn't track undefined variables. Linker does.

@@ -9,19 +9,17 @@ namespace Ela.CodeModel
 
 		ListLiteral = 1,
 
-		// = 2,
+		RecordLiteral = 2,
 
-		RecordLiteral = 3,
-
-		TupleLiteral = 4,
+		TupleLiteral = 3,
 		
-		UnitLiteral = 5,
+		UnitLiteral = 4,
 
-		FunctionLiteral = 6,
+		FunctionLiteral = 5,
 
-		LazyLiteral = 7,
+		LazyLiteral = 6,
 
-		VariantLiteral = 8,
+		VariantLiteral = 7,
 		
 		
 
