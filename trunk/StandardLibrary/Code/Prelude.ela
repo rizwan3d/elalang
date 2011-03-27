@@ -1,0 +1,39 @@
+let +  = __internal add
+let -  = __internal subtract
+let *  = __internal multiply
+let /  = __internal divide
+let %  = __internal remainder
+let ** = __internal power
+let -- = __internal negate
+
+let &&& = __internal bitwiseand
+let ||| = __internal bitwiseor
+let ^^^ = __internal bitwisexor
+let ~~~ = __internal bitwisenot
+let >>> = __internal shiftright
+let <<< = __internal shiftleft
+
+let == = __internal equals
+let <> = __internal notequals
+
+let <  = __internal lesser
+let >  = __internal greater
+let >= = __internal greaterequal
+let <= = __internal lesserequal
+
+let === = __internal isref
+
+let :: = __internal cons
+let ++ = __internal concat
+let >> = __internal compforward
+let << = __internal compbackward
+
+let not = __internal not
+
+let succ = __internal succ
+let pred = __internal pred
+
+let length = __internal length
+let nil = __internal nil
+
+let flip = __internal flip
