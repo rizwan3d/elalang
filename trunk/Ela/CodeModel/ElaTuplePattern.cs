@@ -60,21 +60,26 @@ namespace Ela.CodeModel
 			if (pat.IsIrrefutable())
 				return false;
 
-			if (pat.Type == ElaNodeType.TuplePattern || pat.Type == ElaNodeType.PatternGroup)
+			if (pat.Type == ElaNodeType.TuplePattern || pat.Type == ElaNodeType.PatternGroup) //validated
 			{
 				var tuple = (ElaTuplePattern)pat;
-				return CanFollow(tuple.Patterns, Patterns, tuple.Patterns.Count, Patterns.Count, false);
+				return CanFollow(tuple.Patterns, Patterns);
 			}
 
-			if (pat.Type == ElaNodeType.HeadTailPattern)
+			if (pat.Type == ElaNodeType.HeadTailPattern) //?
 			{
 				var ht = (ElaHeadTailPattern)pat;
-				var last = ht.Patterns[ht.Patterns.Count - 1];
+				var fixedLen = ht.Patterns[ht.Patterns.Count - 1].Type == ElaNodeType.NilPattern;
 
-				if (!last.IsIrrefutable())
-					return CanFollow(ht.Patterns, Patterns, ht.Patterns.Count - 1, Patterns.Count, false);
+				if (fixedLen)
+				{
+					if (Patterns.Count != ht.Patterns.Count)
+						return true;
+					else
+						return CanFollow(ht.Patterns, Patterns, ht.Patterns.Count - 1, Patterns.Count);
+				}
 
-				return CanFollow(ht.Patterns, Patterns, ht.Patterns.Count, Patterns.Count, true);
+				return CanFollow(ht.Patterns, Patterns);
 			}
 
 			return true;

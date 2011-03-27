@@ -109,6 +109,7 @@ namespace Ela.Compilation
 			5, //Br_gt
 			5, //Br_eq
 			5, //Br_neq
+			5, //Brnil
 			5, //Newfun
 		};
 	}

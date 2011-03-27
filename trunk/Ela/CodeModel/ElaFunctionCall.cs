@@ -69,6 +69,8 @@ namespace Ela.CodeModel
 		public List<ElaExpression> Parameters { get; set; }
 
 		public bool FlipParameters { get; set; }
+
+		public bool ReverseOrder { get; set; }
 		#endregion
 	}
 

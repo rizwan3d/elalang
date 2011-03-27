@@ -36,11 +36,11 @@ namespace Ela.Linking
 
 
 		#region Methods
-		public bool AddModule(string name, ForeignModule module)
+		public void AddModule(string name, ForeignModule module)
 		{
 			var frame = module.Compile();
 			foreignModules.Add(module);
-			return AddModule(name, frame);
+			AddModule(name, frame);
 		}
 
 
@@ -51,16 +51,17 @@ namespace Ela.Linking
 		}
 
 
-		public bool AddModule(string name, CodeFrame module)
+		public void AddModule(string name, CodeFrame module)
 		{
-			if (!moduleMap.ContainsKey(name))
+			var hdl = 0;
+
+			if (!moduleMap.TryGetValue(name, out hdl))
 			{
 				moduleMap.Add(name, modules.Count);
 				modules.Add(module);
-				return true;
 			}
 			else
-				return false;
+				modules[hdl] = module;
 		}
 
 

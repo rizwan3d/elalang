@@ -385,7 +385,7 @@
 //                    funType.FunctionType.Add(TypeTag.Any());
 //                    funType.FunctionType.Add(TypeTag.Any());
 //                    break;
-//                case ElaBuiltinFunctionKind.Ref:
+//                case ElaBuiltinFunctionKind.IsRef:
 //                    funType.FunctionType.Add(TypeTag.Any());
 //                    funType.FunctionType.Add(TypeTag.Any());
 //                    funType.FunctionType.Add(TypeTag.Any());

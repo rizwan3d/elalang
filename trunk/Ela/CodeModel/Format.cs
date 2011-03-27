@@ -42,38 +42,52 @@ namespace Ela.CodeModel
 		{
 			switch (op)
 			{
-				case ElaOperator.Add: return "+";
 				case ElaOperator.Assign: return "<-";
-				case ElaOperator.BitwiseAnd: return "&&&";
-				case ElaOperator.BitwiseOr: return "|||";
-				case ElaOperator.BitwiseXor: return "^^^";
 				case ElaOperator.BooleanAnd: return "&&";
 				case ElaOperator.BooleanOr: return "||";
-				case ElaOperator.CompBackward: return "<<";
-				case ElaOperator.CompForward: return ">>";
-				case ElaOperator.Concat: return "++";
-				case ElaOperator.Cons: return "::";
-				case ElaOperator.Divide: return "/";
-				case ElaOperator.Equals: return "==";
-				case ElaOperator.Greater: return ">";
-				case ElaOperator.GreaterEqual: return ">=";
-				case ElaOperator.Lesser: return "<";
-				case ElaOperator.LesserEqual: return "<=";
-				case ElaOperator.Remainder: return "%";
-				case ElaOperator.Multiply: return "*";
-				case ElaOperator.NotEquals: return "<>";
-				case ElaOperator.Power: return "**";
-				case ElaOperator.ShiftLeft: return "<<<";
-				case ElaOperator.ShiftRight: return ">>>";
-				case ElaOperator.Subtract: return "-";
 				case ElaOperator.Swap: return "<->";
-				case ElaOperator.Sequence: return "$";
-                case ElaOperator.Negate: return "--";
-                case ElaOperator.BitwiseNot: return "~~~";
 				default:
 					return String.Empty;
 			}
 		}
+
+
+		//public static string BuiltinAsString(ElaOperator op)
+		//{
+		//    switch (op)
+		//    {
+		//        case ElaOperator.Add: return "+";
+		//        case ElaOperator.Assign: return "<-";
+		//        case ElaOperator.BitwiseAnd: return "&&&";
+		//        case ElaOperator.BitwiseOr: return "|||";
+		//        case ElaOperator.BitwiseXor: return "^^^";
+		//        case ElaOperator.BooleanAnd: return "&&";
+		//        case ElaOperator.BooleanOr: return "||";
+		//        case ElaOperator.CompBackward: return "<<";
+		//        case ElaOperator.CompForward: return ">>";
+		//        case ElaOperator.Concat: return "++";
+		//        case ElaOperator.Cons: return "::";
+		//        case ElaOperator.Divide: return "/";
+		//        case ElaOperator.Equals: return "==";
+		//        case ElaOperator.Greater: return ">";
+		//        case ElaOperator.GreaterEqual: return ">=";
+		//        case ElaOperator.Lesser: return "<";
+		//        case ElaOperator.LesserEqual: return "<=";
+		//        case ElaOperator.Remainder: return "%";
+		//        case ElaOperator.Multiply: return "*";
+		//        case ElaOperator.NotEquals: return "<>";
+		//        case ElaOperator.Power: return "**";
+		//        case ElaOperator.ShiftLeft: return "<<<";
+		//        case ElaOperator.ShiftRight: return ">>>";
+		//        case ElaOperator.Subtract: return "-";
+		//        case ElaOperator.Swap: return "<->";
+		//        case ElaOperator.Sequence: return "$";
+		//        case ElaOperator.Negate: return "--";
+		//        case ElaOperator.BitwiseNot: return "~~~";
+		//        default:
+		//            return String.Empty;
+		//    }
+		//}
 
 
 		public static bool IsSimpleExpression(ElaExpression p)
@@ -88,7 +102,6 @@ namespace Ela.CodeModel
 				p.Type == ElaNodeType.Argument ||
 				p.Type == ElaNodeType.BaseReference ||
 				p.Type == ElaNodeType.LazyLiteral ||
-				p.Type == ElaNodeType.BuiltinFunction ||
 				p.Type == ElaNodeType.UnitLiteral;
 		}
 

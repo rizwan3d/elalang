@@ -19,6 +19,8 @@ namespace Ela.CodeModel
 
 		SpecialName = 0x20,
 
-		Parameter = 0x40
+		Parameter = 0x40,
+
+		Builtin = 0x80
 	}
 }

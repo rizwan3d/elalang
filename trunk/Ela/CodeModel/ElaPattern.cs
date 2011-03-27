@@ -29,19 +29,15 @@ namespace Ela.CodeModel
 		}
 
 
-		protected bool CanFollow(List<ElaPattern> prev, List<ElaPattern> next, int prevCount, int nextCount, bool ignoreLength)
+		protected bool CanFollow(List<ElaPattern> prev, List<ElaPattern> next)
 		{
-			var len = 0;
+			return CanFollow(prev, next, prev.Count, next.Count);
+		}
 
-			if (!ignoreLength)
-			{
-				if (nextCount != prevCount)
-					return true;
 
-				len = nextCount;
-			}
-			else
-				len = nextCount > prevCount ? prevCount : nextCount;
+		protected bool CanFollow(List<ElaPattern> prev, List<ElaPattern> next, int prevCount, int nextCount)
+		{
+			var len = nextCount > prevCount ? prevCount : nextCount;
 			
 			for (var i = 0; i < len; i++)
 				if (next[i].CanFollow(prev[i]))

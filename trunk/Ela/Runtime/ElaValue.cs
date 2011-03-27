@@ -6,6 +6,49 @@ using System.Collections;
 
 namespace Ela.Runtime
 {
+	public class FunClt : ElaObject
+	{
+		public  FunClt()
+			: base((ElaTypeCode)1001, ElaTraits.Call)
+		{
+
+		}
+
+		protected internal override Ela.Runtime.ElaValue Call(Ela.Runtime.ElaValue left, ElaValue right, Ela.Runtime.ExecutionContext ctx)
+		{
+			if (left.TypeId == 1 && right.TypeId == 1)
+			{
+				return new ElaValue(left.I4 < right.I4);
+			}
+
+			var res = left.Id(ctx);
+			return (res.Ref.Lesser(res, right.Id(ctx), ctx));
+		}
+	}
+
+
+	public class FunAdd : ElaObject
+	{
+
+
+		public FunAdd()
+			: base((ElaTypeCode)1000, ElaTraits.Call)
+		{
+			
+		}
+
+		protected internal override Ela.Runtime.ElaValue Call(Ela.Runtime.ElaValue left, ElaValue right, Ela.Runtime.ExecutionContext ctx)
+		{
+			if (left.TypeId == 1 && right.TypeId == 1)
+			{
+				return new ElaValue(left.I4 + right.I4);
+			}
+
+			var res = left.Id(ctx);
+			return (res.Ref.Add(res, right.Id(ctx), ctx));
+		}
+	}
+
 	public struct ElaValue : IComparable<ElaValue>, IEquatable<ElaValue>
 	{
 		#region Construction

@@ -45,6 +45,18 @@ namespace Ela.Linking
 				bw.Write(kv.Key);
 				bw.Write((Int32)kv.Value.Flags);
 				bw.Write(kv.Value.Address);
+				bw.Write(kv.Value.Data);
+			}
+
+			bw.Write(frame.Unresolves.Count);
+
+			foreach (var u in frame.Unresolves)
+			{
+				bw.Write(u.Name);
+				bw.Write(u.Address);
+				bw.Write(u.Data);
+				bw.Write(u.Line);
+				bw.Write(u.Column);
 			}
 
 			bw.Write(frame.Layouts.Count);

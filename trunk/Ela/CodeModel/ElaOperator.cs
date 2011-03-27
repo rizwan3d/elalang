@@ -8,59 +8,12 @@ namespace Ela.CodeModel
 
 		Assign,
 
-		Add,
-
-		Subtract,
-
-		Multiply,
-
-		Divide,
-
-		Remainder,
-
-		Power,
-
-		Cons,
-
-		Equals,
-
-		NotEquals,
-
-		Concat,
-
-		Greater,
-
-		Lesser,
-
-		GreaterEqual,
-
-		LesserEqual,
-
+		Swap,
+		
 		BooleanAnd,
 
 		BooleanOr,
 
-		BitwiseAnd,
-
-		BitwiseOr,
-
-		BitwiseXor,
-				
-
-		ShiftRight,
-
-		ShiftLeft,
-
-		CompForward,
-
-		CompBackward,
-
-		Swap,
-
-		Sequence,
-
-        Negate,
-
-        BitwiseNot
+		Sequence
 	}
 }

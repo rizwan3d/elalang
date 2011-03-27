@@ -132,9 +132,6 @@
   <data name="MatchEntryNotReachable" xml:space="preserve">
     <value>Match entry '{0}' is not reachable because it is overlapped by a preceding entry '{1}'.</value>
   </data>
-  <data name="UnitAlwaysFail" xml:space="preserve">
-    <value>An expression is of type 'unit' and will always cause code to fail with an error.</value>
-  </data>
   <data name="ValueNotUsed" xml:space="preserve">
     <value>Value returned by this expression is not used.</value>
   </data>

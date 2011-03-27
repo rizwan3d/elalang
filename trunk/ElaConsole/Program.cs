@@ -104,21 +104,14 @@ namespace ElaConsole
 
 			try
 			{
-				var ep = new ElaParser();
-				var res = ep.Parse(new FileInfo(opt.FileName));
+				var el = new ElaLinker(CreateLinkerOptions(), CreateCompilerOptions(), new FileInfo(opt.FileName));
+				var res = el.Build();
 				helper.PrintErrors(res.Messages);
 
 				if (!res.Success)
 					return R_ERR;
 
-				var ec = new ElaCompiler();
-				var cres = ec.Compile(res.Expression, CreateCompilerOptions());
-				helper.PrintErrors(cres.Messages);
-
-				if (!cres.Success)
-					return R_ERR;
-
-				frame = cres.CodeFrame;
+				frame = res.Assembly.GetRootModule();
 			}
 			catch (ElaException ex)
 			{
@@ -136,7 +129,7 @@ namespace ElaConsole
 				}
 				catch (Exception ex)
 				{
-					helper.PrintError("Unable to write to the file {0}. Error: {1}", 
+					helper.PrintError("Unable to write to the file {0}. Error: {1}",
 						opt.OutputFile, ex.Message);
 					return R_ERR;
 				}
@@ -390,7 +383,8 @@ namespace ElaConsole
 					NoWarnings = opt.NoWarnings,
 					ShowHints = !opt.SupressHints,
 					GenerateDebugInfo = opt.Debug,
-					Optimize = !opt.DisableOptimization
+					Optimize = !opt.DisableOptimization,
+					Prelude = opt.Prelude
 				};
 		}
 

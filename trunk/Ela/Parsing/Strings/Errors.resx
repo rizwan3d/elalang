@@ -255,9 +255,6 @@
   <data name="ExpectedDot" xml:space="preserve">
     <value>A member access operator '.' is expected.</value>
   </data>
-  <data name="ExpectedEq" xml:space="preserve">
-    <value>Invalid declaration, a '=' is expected.</value>
-  </data>
   <data name="ExpectedFunctionToken" xml:space="preserve">
     <value>Invalid infix function syntax. A infix function reference should be a valid identifier enclosed in apostrophes, e.g. `func`.</value>
   </data>
@@ -272,9 +269,6 @@
   </data>
   <data name="ExpectedKeywordWhere" xml:space="preserve">
     <value>Expected keyword 'where'.</value>
-  </data>
-  <data name="ExpectedSeq" xml:space="preserve">
-    <value>A sequencing operator '$' is expected.</value>
   </data>
   <data name="ExpectedSquareBrace" xml:space="preserve">
     <value>Invalid list literal, a brace '[' or ']' is missing.</value>
@@ -437,9 +431,6 @@
   </data>
   <data name="UnknownTrait" xml:space="preserve">
     <value>There is no such trait as '{0}'.</value>
-  </data>
-  <data name="UnexpectedMinus" xml:space="preserve">
-    <value>Invalid syntax. Did you mean unary negation, e.g. '--x'?</value>
   </data>
   <data name="ComprehensionOpInvalidOperand" xml:space="preserve">
     <value>Invalid right operand for the comprehension '@@' operator.</value>

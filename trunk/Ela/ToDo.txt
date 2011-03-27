@@ -3,3 +3,12 @@
 3. Move all reflection API to the standard library.==Reconsidered. API refactored but will remain the part of Ela core.
 4. Think about inability to convert to other than built-in types.
 5. Make sequencing operator a function. (Important)==Done
+6. Traits
+Add:
++ ^Clone
+Change:
++ Merge ^Neg into ^Num
+
+Problems:
++ Inability to override standard operators
++ Inability to customize operator priority and associativity

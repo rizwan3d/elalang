@@ -96,31 +96,39 @@ namespace Ela.Parsing
         }
 
 
-		private ElaExpression GetOperatorFun(ElaExpression exp, ElaOperator op, bool right)
+		private ElaExpression GetOperatorFun(string op, ElaExpression left, ElaExpression right)
 		{
-            if (la.kind == _MINUS)
-                AddError(ElaParserError.UnexpectedMinus);
-
-			var bin = new ElaBinary(t) 
-			{ 
-				Operator = op,
-				Left = !right ? exp : hiddenVar,
-				Right = right ? exp : hiddenVar
+            var fc = new ElaFunctionCall(t) {
+				Target = new ElaVariableReference(t) { VariableName = op }
 			};
-			var m = new ElaMatch();
-			m.SetLinePragma(exp.Line, exp.Column);
-			m.Entries.Add(new ElaMatchEntry { Expression = bin, Pattern = hiddenPattern });
 
-			var ret = new ElaFunctionLiteral { Body = m };
-			ret.SetLinePragma(exp.Line, exp.Column);
-			return ret;
+			fc.Parameters.Add(left ?? hiddenVar);
+			fc.Parameters.Add(right ?? hiddenVar);
+			
+			var m = new ElaMatch(t);
+			m.Entries.Add(new ElaMatchEntry { Expression = fc, Pattern = hiddenPattern });
+			return new ElaFunctionLiteral(t) { Body = m };
+		}
+
+
+		private ElaExpression GetBinaryFunction(string name, ElaExpression left, ElaExpression right)
+		{
+			var fc = new ElaFunctionCall(t) {
+				Target = new ElaVariableReference(t) { VariableName = name }
+			};
+
+			fc.Parameters.Add(left);
+			
+			if (right != null)
+				fc.Parameters.Add(right);
+
+			return fc;
 		}
 
 
 		private ElaExpression GetPrefixFun(string name, ElaExpression par, bool flip)
 		{
-			var fc = new ElaFunctionCall(t)
-			{
+			var fc = new ElaFunctionCall(t) {
 				Target = new ElaVariableReference(t) { VariableName = name }
 			};
 

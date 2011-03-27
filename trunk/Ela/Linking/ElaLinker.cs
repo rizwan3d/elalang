@@ -29,19 +29,16 @@ namespace Ela.Linking
 		internal static readonly string MemoryFile = "memory";
 		private Dictionary<String,Dictionary<String,ElaModuleAttribute>> foreignModules;
 		private FastList<DirectoryInfo> dirs;
+		private BuiltinVars builtins;
 		private bool stdLoaded;
 		
 		public ElaLinker(LinkerOptions linkerOptions, CompilerOptions compOptions, FileInfo rootFile)
 		{
 			dirs = new FastList<DirectoryInfo>();
+			builtins = new BuiltinVars();
 
-			if (!linkerOptions.Sandbox && linkerOptions.CodeBase.LookupStartupDirectory)
-			{
-				if (rootFile != null)
-					dirs.Add(rootFile.Directory);
-
-				dirs.Add(new DirectoryInfo(Environment.CurrentDirectory));
-			}
+			if (linkerOptions.CodeBase.LookupStartupDirectory && rootFile != null)
+				dirs.Add(rootFile.Directory);
 
 			dirs.AddRange(linkerOptions.CodeBase.Directories);
 			LinkerOptions = linkerOptions;
@@ -71,28 +68,37 @@ namespace Ela.Linking
 			var dels = new FastList<UnresolvedSymbol>();
 
 			foreach (var kv in frame.References)
-			{
-				var incFrame = ResolveModule(kv.Value);
-
-				if (incFrame != null)
-				{
-					foreach (var u in unres)
-					{
-						if (u.Line > kv.Value.Line && incFrame.GlobalScope.Locals.ContainsKey(u.Name))
-							dels.Add(u);
-					}
-
-					foreach (var u in dels)
-						unres.Remove(u);
-
-					dels.Clear();
-				}
-			}
+				CheckReference(kv.Value, unres, dels);
 
 			if (unres.Count > 0)
 			{
 				foreach (var u in unres)
 					AddError(ElaLinkerError.UnresolvedVariable, fi, u.Line, u.Column, u.Name);
+			}
+		}
+
+
+		private void CheckReference(ModuleReference mod, FastList<UnresolvedSymbol> unres, FastList<UnresolvedSymbol> dels)
+		{
+			var incFrame = Assembly.GetModule(mod.ToString());
+
+			if (incFrame != null)
+			{
+				foreach (var u in unres)
+				{
+					if (u.Line > mod.Line)
+					{
+						ScopeVar sv;
+
+						if (incFrame.GlobalScope.Locals.TryGetValue(u.Name, out sv) && (u.Data == -1 || sv.Data == u.Data))
+							dels.Add(u);
+					}
+				}
+
+				foreach (var u in dels)
+					unres.Remove(u);
+
+				dels.Clear();
 			}
 		}
 
@@ -160,7 +166,7 @@ namespace Ela.Linking
 
 		private void LoadStdLib()
 		{
-			if (!LinkerOptions.Sandbox && !stdLoaded && !String.IsNullOrEmpty(LinkerOptions.StandardLibrary))
+			if (!stdLoaded && !String.IsNullOrEmpty(LinkerOptions.StandardLibrary))
 			{
 				var mod = new ModuleReference(null, LinkerOptions.StandardLibrary, null, 0, 0) { IsStandardLibrary = true };
 				var fi = default(FileInfo);
@@ -188,11 +194,7 @@ namespace Ela.Linking
 			{
 				frame.File = fi;
 				Assembly.AddModule(mod.ToString(), frame);
-
-				if (frame.References.Count > 0 && LinkerOptions.Sandbox)
-					AddError(ElaLinkerError.IncludeInSandbox, fi, 0, 0);
-				else
-					ProcessIncludes(fi, frame);
+				ProcessIncludes(fi, frame);
 
 				foreach (var kv in frame.Arguments)
 					if (!Assembly.HasArgument(kv.Key))
@@ -340,6 +342,10 @@ namespace Ela.Linking
 		internal CodeFrame Build(ModuleReference mod, FileInfo file, string source, 
 			CodeFrame frame, Scope scope)
 		{
+
+			if (Assembly.ModuleCount == 0)
+				Assembly.AddModule(mod.ToString(), frame);
+			
             var ret = default(CodeFrame);
            
             if (file != null && file == RootFile)
@@ -356,7 +362,7 @@ namespace Ela.Linking
 			
 			if (pRes.Success)
 			{
-				var cRes = Compile(file, pRes.Expression, frame, scope);
+				var cRes = Compile(file, pRes.Expression, frame, scope, mod.NoPrelude);
 				ret = cRes.CodeFrame;
 
 				if (cRes.Success)
@@ -407,11 +413,20 @@ namespace Ela.Linking
         }
 
 
-		internal CompilerResult Compile(FileInfo file, ElaExpression expr, CodeFrame frame, Scope scope)
+		internal CompilerResult Compile(FileInfo file, ElaExpression expr, CodeFrame frame, Scope scope, bool noPrelude)
 		{
 			var elac = new C();
-			var res = frame != null ? elac.Compile(expr, CompilerOptions, frame, scope) :
-				elac.Compile(expr, CompilerOptions);
+			var opts = CompilerOptions;
+
+			if (noPrelude)
+			{
+				opts = opts.Clone();
+				opts.Prelude = null;
+			}
+
+			elac.ModuleInclude += (o, e) => ResolveModule(e.Module);
+			var res = frame != null ? elac.Compile(expr, CompilerOptions, builtins, frame, scope) :
+				elac.Compile(expr, opts, builtins);
 			AddMessages(res.Messages, file);
 			return res;
 		}

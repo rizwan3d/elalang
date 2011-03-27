@@ -10,6 +10,8 @@ namespace Ela.Compilation
 
 		FunCurry = 2,
 
-		VarType = 3
+		VarType = 3,
+
+		Builtin = 4,
 	}
 }

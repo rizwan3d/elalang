@@ -19,6 +19,22 @@ namespace Ela.Compilation
 		#endregion
 
 
+		#region Methods
+		internal CompilerOptions Clone()
+		{
+			return new CompilerOptions
+			{
+				WarningsAsErrors = this.WarningsAsErrors,
+				NoWarnings = this.NoWarnings,
+				ShowHints = this.ShowHints,
+				GenerateDebugInfo = this.GenerateDebugInfo,
+				Optimize = this.Optimize,
+				Prelude = this.Prelude
+			};
+		}
+		#endregion
+
+
 		#region Properties
 		public bool WarningsAsErrors { get; set; }
 
@@ -29,6 +45,8 @@ namespace Ela.Compilation
 		public bool GenerateDebugInfo { get; set; }
 
 		public bool Optimize { get; set; }
+
+		public string Prelude { get; set; }
 		#endregion
 	}
 }

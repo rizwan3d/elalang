@@ -41,24 +41,37 @@ namespace Ela.CodeModel
 			if (pat.IsIrrefutable())
 				return false;
 
-			var fixedLen = Patterns[Patterns.Count - 1].IsIrrefutable();
+			var fixedLen = Patterns[Patterns.Count - 1].Type == ElaNodeType.NilPattern;
 
-			if (pat.Type == ElaNodeType.TuplePattern)
+			if (pat.Type == ElaNodeType.TuplePattern) //validated
 			{
 				var tuple = (ElaTuplePattern)pat;
 
-				return CanFollow(tuple.Patterns, Patterns, tuple.Patterns.Count, 
-					fixedLen ? Patterns.Count - 1 : Patterns.Count, !fixedLen);
+				if (!fixedLen || fixedLen && tuple.Patterns.Count != Patterns.Count)
+					return true;
+
+				return CanFollow(tuple.Patterns, Patterns, tuple.Patterns.Count, Patterns.Count - 1);
 			}
 
-			if (pat.Type == ElaNodeType.HeadTailPattern)
+			if (pat.Type == ElaNodeType.HeadTailPattern) //?
 			{
 				var ht = (ElaHeadTailPattern)pat;
-				var htFixedLen = ht.Patterns[ht.Patterns.Count - 1].IsIrrefutable();
+				var prevFixedLen = ht.Patterns[ht.Patterns.Count - 1].Type == ElaNodeType.NilPattern;
 
-				return CanFollow(ht.Patterns, Patterns, 
-					htFixedLen ? ht.Patterns.Count - 1 : ht.Patterns.Count, 
-					fixedLen ? Patterns.Count - 1 : Patterns.Count, htFixedLen && fixedLen);
+				if (!fixedLen && prevFixedLen ||
+					fixedLen && prevFixedLen && Patterns.Count != ht.Patterns.Count)
+					return true;
+
+				if (!fixedLen && !prevFixedLen)
+				{
+					if (ht.Patterns.Count > Patterns.Count)
+						return true;
+					else
+						return CanFollow(ht.Patterns, Patterns);
+				}
+
+				if (fixedLen && !prevFixedLen)
+					return CanFollow(ht.Patterns, Patterns, ht.Patterns.Count, Patterns.Count - 1);
 			}
 
 			return true;

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7BDF4A1E-DFFF-4AE5-BD2D-1B1F4BE84B1D}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -49,7 +49,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\Binaries\Debug\</OutputPath>
+    <OutputPath>..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>Full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -58,7 +58,7 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>..\Binaries\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <Optimize>true</Optimize>
     <PlatformTarget>x86</PlatformTarget>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
@@ -115,8 +115,9 @@
   <ItemGroup>
     <Compile Include="Builtins.cs" />
     <Compile Include="CodeModel\ElaBlock.cs" />
+    <Compile Include="CodeModel\ElaBuiltin.cs" />
     <Compile Include="CodeModel\ElaCastPattern.cs" />
-    <Compile Include="Compilation\ElaBuiltinFunctionKind.cs" />
+    <Compile Include="CodeModel\ElaBuiltinKind.cs" />
     <Compile Include="CodeModel\ElaComprehension.cs" />
     <Compile Include="CodeModel\ElaGenerator.cs" />
     <Compile Include="CodeModel\ElaLazyLiteral.cs" />
@@ -142,6 +143,8 @@
     <Compile Include="Compilation\ExprData.cs" />
     <Compile Include="Compilation\FunFlag.cs" />
     <Compile Include="Compilation\IElaCompiler.cs" />
+    <Compile Include="Compilation\BuiltinVars.cs" />
+    <Compile Include="Compilation\ModuleEventArgs.cs" />
     <Compile Include="Compilation\OpStackHelper.cs" />
     <Compile Include="Compilation\Strings.cs" />
     <Compile Include="Compilation\UnresolvedSymbol.cs" />

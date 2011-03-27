@@ -132,9 +132,6 @@
   <data name="ForeignModuleInvalidType" xml:space="preserve">
     <value>Foreign module '{0}' doesn't implement the required 'ElaForeignModule' type.</value>
   </data>
-  <data name="IncludeInSandbox" xml:space="preserve">
-    <value>Opening modules in sandbox mode is prohibited.</value>
-  </data>
   <data name="ModuleLinkFailed" xml:space="preserve">
     <value>Unable to link module '{0}'. Module is invalid.</value>
   </data>
@@ -154,6 +151,6 @@
     <value>Unable to find referenced module '{0}'.</value>
   </data>
   <data name="UnresolvedVariable" xml:space="preserve">
-    <value>A name '{0}' is not declared.</value>
+    <value>A name '{0}' is unresolved. It is not declared externally or its type has changed.</value>
   </data>
 </root>

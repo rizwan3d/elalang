@@ -13,6 +13,15 @@ namespace Ela.Compilation
 				AddError(ElaCompilerError.VariableDeclarationInitMissing, s);
 
 			var rec = IsMutualRecursive(s);
+			var data = -1;
+			var flags = s.VariableFlags;
+
+			if (s.InitExpression != null && s.InitExpression.Type == ElaNodeType.Builtin)
+			{
+				data = (Int32)((ElaBuiltin)s.InitExpression).Kind;
+				flags |= ElaVariableFlags.Builtin;
+				builtins.AddVar(s.VariableName, (ElaBuiltinKind)data);
+			}
 			
 			if (s.In != null)
 				StartScope(false);
@@ -26,8 +35,8 @@ namespace Ela.Compilation
 				{
 					var fun = (ElaFunctionLiteral)s.InitExpression;
 					addr = (hints & Hints.And) == Hints.And ?
-						GetVariable(s.VariableName, s.Line, s.Column).Address : 
-						AddVariable(s.VariableName, s, s.VariableFlags, -1);
+						GetVariable(s.VariableName, s.Line, s.Column).Address :
+						AddVariable(s.VariableName, s, flags, data);
 				}
 				else
 				{
@@ -62,7 +71,15 @@ namespace Ela.Compilation
 				if (addr != -1 && fc)
 					CurrentScope.ChangeVariable(s.VariableName, new ScopeVar(s.VariableFlags | ElaVariableFlags.Function, addr >> 8, ed.Data));
 				else if (addr == -1)
-					addr = AddVariable(s.VariableName, s, fc ? s.VariableFlags | ElaVariableFlags.Function : s.VariableFlags, ed.Data);
+				{
+					if (fc)
+						flags |= ElaVariableFlags.Function;
+
+					if (ed.Type == DataKind.Builtin)
+						flags |= ElaVariableFlags.Builtin;
+
+					addr = AddVariable(s.VariableName, s, flags, data != -1 ? data : ed.Data);
+				}
 
 				AddLinePragma(s);
 				cw.Emit(Op.Popvar, addr);

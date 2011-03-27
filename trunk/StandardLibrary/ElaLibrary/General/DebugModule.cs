@@ -1,6 +1,7 @@
 ﻿using System;
 using Ela.Linking;
 using Ela.Runtime.ObjectModel;
+using Ela.Runtime;
 
 namespace Ela.Library.General
 {
@@ -14,11 +15,14 @@ namespace Ela.Library.General
 		#endregion
 
 
+		
 		#region Methods
 		public override void Initialize()
 		{
 			Add<Int64>("startClock", StartClock);
 			Add<Int64,String>("stopClock", StopClock);
+			Add("add2", new FunAdd());
+			Add("clt", new FunClt());
 		}
 
 

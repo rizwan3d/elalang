@@ -7,7 +7,7 @@ namespace Ela.Compilation
 		None = 0,
 
 		
-		UnitAlwaysFail = 400,
+		// = 400,
 
 		EmbeddedBinding = 401,
 

@@ -365,6 +365,13 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
+		protected internal virtual ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			ctx.Fail(ElaRuntimeError.TraitCall, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			return Default();
+		}
+
+
 		protected internal virtual ElaValue Force(ExecutionContext ctx)
 		{
 			ctx.Fail(ElaRuntimeError.TraitThunk, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));

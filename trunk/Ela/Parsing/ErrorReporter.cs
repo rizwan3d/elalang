@@ -152,15 +152,18 @@ namespace Ela.Parsing
 				case Parser._realTok: return ElaParserError.ExpectedRealToken;
 				case Parser._stringTok: return ElaParserError.ExpectedStringToken;
 				case Parser._charTok: return ElaParserError.ExpectedCharToken;
-				case Parser._operatorTok: return ElaParserError.ExpectedOperatorToken;
+				case Parser._operatorTok1:
+				case Parser._operatorTok2:
+				case Parser._operatorTok3:
+				case Parser._operatorTok4:
+				case Parser._operatorTok5: 
+				case Parser._operatorTok6: return ElaParserError.ExpectedOperatorToken;
 				case Parser._LBRA: return ElaParserError.ExpectedCurlyBrace;
 				case Parser._RBRA: return ElaParserError.ExpectedCurlyBrace;
 				case Parser._LILB: return ElaParserError.ExpectedSquareBrace;
 				case Parser._LIRB: return ElaParserError.ExpectedSquareBrace;
 				case Parser._ARROW: return ElaParserError.ExpectedArrow;
 				case Parser._LAMBDA: return ElaParserError.ExpectedLambda;
-				case Parser._EQ: return ElaParserError.ExpectedEq;
-				case Parser._SEQ: return ElaParserError.ExpectedSeq;
 				case Parser._DOT: return ElaParserError.ExpectedDot;
 				case Parser._IN: return ElaParserError.ExpectedKeywordIn;
 				case Parser._BASE: return ElaParserError.ExpectedKeywordBase;

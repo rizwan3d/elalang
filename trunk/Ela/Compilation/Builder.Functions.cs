@@ -138,17 +138,15 @@ namespace Ela.Compilation
 
 
 		#region Builtins
-		private void CompileBuiltin(ElaBuiltinFunctionKind kind, ElaOperator op, ElaExpression exp, LabelMap map)
+		private void CompileBuiltin(ElaBuiltinKind kind, ElaExpression exp, LabelMap map)
 		{
 			StartSection();
-			var pars = kind == ElaBuiltinFunctionKind.Operator && op != ElaOperator.BitwiseNot && op != ElaOperator.Negate ||
-				kind == ElaBuiltinFunctionKind.Showf ||
-				kind == ElaBuiltinFunctionKind.Ref ? 2 : 1;
+			var pars = Builtins.Params(kind);
 			cw.StartFrame(pars);
 			var funSkipLabel = cw.DefineLabel();
 			cw.Emit(Op.Br, funSkipLabel);
 			var address = cw.Offset;
-			pars = CompileBuiltinInline(kind, op, exp, map, Hints.None);
+			CompileBuiltinInline(kind, exp, map, Hints.None);
 
 			cw.Emit(Op.Ret);
 			frame.Layouts.Add(new MemoryLayout(currentCounter, cw.FinishFrame(), address));
@@ -160,87 +158,125 @@ namespace Ela.Compilation
 		}
 
 
-		private int CompileBuiltinInline(ElaBuiltinFunctionKind kind, ElaOperator op, ElaExpression exp, LabelMap map, Hints hints)
+		private void CompileBuiltinInline(ElaBuiltinKind kind, ElaExpression exp, LabelMap map, Hints hints)
 		{
-			var pars = 1;
-
 			switch (kind)
 			{
-				case ElaBuiltinFunctionKind.Negate:
+				case ElaBuiltinKind.Negate:
 					cw.Emit(Op.Neg);
 					break;
-				case ElaBuiltinFunctionKind.Succ:
+				case ElaBuiltinKind.Succ:
 					cw.Emit(Op.Succ);
 					break;
-				case ElaBuiltinFunctionKind.Pred:
+				case ElaBuiltinKind.Pred:
 					cw.Emit(Op.Pred);
 					break;
-				case ElaBuiltinFunctionKind.Max:
+				case ElaBuiltinKind.Max:
 					cw.Emit(Op.Max);
 					break;
-				case ElaBuiltinFunctionKind.Min:
+				case ElaBuiltinKind.Min:
 					cw.Emit(Op.Min);
 					break;
-				case ElaBuiltinFunctionKind.Type:
+				case ElaBuiltinKind.Type:
 					cw.Emit(Op.Type);
 					break;
-				case ElaBuiltinFunctionKind.Length:
+				case ElaBuiltinKind.Length:
 					cw.Emit(Op.Len);
 					break;
-				case ElaBuiltinFunctionKind.Force:
+				case ElaBuiltinKind.Force:
 					cw.Emit(Op.Force);
 					break;
-				case ElaBuiltinFunctionKind.Typeid:
+				case ElaBuiltinKind.Typeid:
 					cw.Emit(Op.Typeid);
 					break;
-				case ElaBuiltinFunctionKind.Not:
+				case ElaBuiltinKind.Not:
 					cw.Emit(Op.Not);
 					break;
-				case ElaBuiltinFunctionKind.Flip:
+				case ElaBuiltinKind.Flip:
 					cw.Emit(Op.Flip);
 					break;
-				case ElaBuiltinFunctionKind.Nil:
+				case ElaBuiltinKind.Nil:
 					cw.Emit(Op.Nil);
 					break;
-				case ElaBuiltinFunctionKind.Show:
+				case ElaBuiltinKind.Show:
 					cw.Emit(Op.Pushstr_0);
 					cw.Emit(Op.Show);
 					break;
-				case ElaBuiltinFunctionKind.Showf:
-					pars = 2;
+				case ElaBuiltinKind.Showf:
 					cw.Emit(Op.Show);
 					break;
-                case ElaBuiltinFunctionKind.Ref:
-                    pars = 2;
+                case ElaBuiltinKind.IsRef:
                     cw.Emit(Op.Ceqref);
                     break;
-				case ElaBuiltinFunctionKind.Operator:
-					pars = op == ElaOperator.BitwiseNot || op == ElaOperator.Negate ? 1 : 2;
-
-					if (op == ElaOperator.CompBackward)
-					{
-						cw.Emit(Op.Swap);
-						CompileComposition(null, map, hints);
-					}
-					else if (op == ElaOperator.CompForward)
-						CompileComposition(null, map, hints);
-					else if (op == ElaOperator.Sequence)
-						cw.Emit(Op.Pop);
-					else
-					{
-						if (op != ElaOperator.Negate && op != ElaOperator.BitwiseNot)
-						    cw.Emit(Op.Swap);
-
-						CompileSimpleBinary(op);
-					}
+				case ElaBuiltinKind.CompBackward:
+					cw.Emit(Op.Swap);
+					CompileComposition(null, map, hints);
 					break;
-				case ElaBuiltinFunctionKind.Bitnot:
+				case ElaBuiltinKind.CompForward:
+					CompileComposition(null, map, hints);
+					break;
+				case ElaBuiltinKind.Concat:					
+					cw.Emit(Op.Concat);
+					break;
+				case ElaBuiltinKind.Add:
+					cw.Emit(Op.Add);
+					break;
+				case ElaBuiltinKind.Divide:
+					cw.Emit(Op.Div);
+					break;
+				case ElaBuiltinKind.Multiply:
+					cw.Emit(Op.Mul);
+					break;
+				case ElaBuiltinKind.Power:
+					cw.Emit(Op.Pow);
+					break;
+				case ElaBuiltinKind.Remainder:
+					cw.Emit(Op.Rem);
+					break;
+				case ElaBuiltinKind.Subtract:
+					cw.Emit(Op.Sub);
+					break;
+				case ElaBuiltinKind.ShiftRight:
+					cw.Emit(Op.Shr);
+					break;
+				case ElaBuiltinKind.ShiftLeft:
+					cw.Emit(Op.Shl);
+					break;
+				case ElaBuiltinKind.Greater:
+					cw.Emit(Op.Cgt);
+					break;
+				case ElaBuiltinKind.Lesser:
+					cw.Emit(Op.Clt);
+					break;
+				case ElaBuiltinKind.Equals:
+					cw.Emit(Op.Ceq);
+					break;
+				case ElaBuiltinKind.NotEquals:
+					cw.Emit(Op.Cneq);
+					break;
+				case ElaBuiltinKind.GreaterEqual:
+					cw.Emit(Op.Cgteq);
+					break;
+				case ElaBuiltinKind.LesserEqual:
+					cw.Emit(Op.Clteq);
+					break;
+				case ElaBuiltinKind.BitwiseAnd:
+					cw.Emit(Op.AndBw);
+					break;
+				case ElaBuiltinKind.BitwiseOr:
+					cw.Emit(Op.OrBw);
+					break;
+				case ElaBuiltinKind.BitwiseXor:
+					cw.Emit(Op.Xor);
+					break;
+				case ElaBuiltinKind.Cons:
+					cw.Emit(Op.Cons);
+					break;
+				case ElaBuiltinKind.BitwiseNot:
 					cw.Emit(Op.NotBw);
 					break;
 
 			}
-
-			return pars;
 		}
 		#endregion
 

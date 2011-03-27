@@ -20,7 +20,7 @@ namespace Ela.Parsing
 
 		InvalidFunctionDeclaration = 7,
 
-		UnexpectedMinus = 8,
+		// = 8,
 
 		ComprehensionOpInvalidOperand = 9,
 
@@ -90,7 +90,7 @@ namespace Ela.Parsing
 
 		ExpectedKeywordTypeof = 127,
 
-		ExpectedEq = 128,
+		// = 128,
 
 		// = 129,
 
@@ -124,7 +124,7 @@ namespace Ela.Parsing
 
 		ExpectedArgumentIdentToken = 144,
 
-		ExpectedSeq = 145,
+		// = 145,
 
 		ExpectedKeywordIgnore = 146,
 

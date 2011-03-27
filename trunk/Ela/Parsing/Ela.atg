@@ -13,6 +13,9 @@ CHARACTERS
 	stringChar = ANY - '"' - '\\' - newLine.
 	char = ANY - "'" - '\\' - newLine.
 	op = "!%&*+-.:/<=>?@^|~".
+	op2 = "!%&*+-.:/<=?@^|~".
+	op3 = "!%&*+-.:/=>?@^|~".
+	op4 = "!%&*+.:/<=>?@^|~".
 
 TOKENS
 	ident = letter { letter | digit | "'" }
@@ -62,7 +65,21 @@ TOKENS
 					| "\\u" hexDigit hexDigit hexDigit hexDigit
 					)  
 				"'".
-	operatorTok = op { op }.
+	operatorTok1 = (
+		("="|"|"|"&") { op }
+		| ">" [ op2 { op } ]
+		| "<" [ op3 { op } ]
+		).
+	operatorTok2 = "^" { op }.
+	operatorTok3 = ":" { op }.
+	operatorTok4 = (
+		"+" { op }
+		| "-" [ op4 { op } ]
+		).
+	operatorTok5 = ("*"|"/"|"%") { op }.		
+	operatorTok6 = "<<" { op }.
+	operatorTok7 = ">>" { op }.
+	operatorTok8 = ("~"|"--"|"!") { op }.
 	
 	LBRA = "{".
 	RBRA = "}".
@@ -72,9 +89,6 @@ TOKENS
 	PIPE = "|".
 	ARROW = "->".
 	LAMBDA = "\\".
-	EQ = "=".
-	SEQ = "$".
-	MINUS = "-".
 	COMPH = "@@".
 	COMPO = "\\\\".
 	
@@ -883,25 +897,29 @@ PRODUCTIONS
 				exp = varExp;
 			.)
 		].
-		
+			
 	BindingBodyOperator<ElaBinding varExp> =
 		(
-			(
-				operatorTok 
-				| "==" | "<>" 
-				| ">=" | "<=" | ">" | "<"
-				| "+" | "-" | "*" | "/" | "%" | "**"
-				| "--"
-				| "&&&" | "|||" | "^^^" | ">>>" | "<<<" | "~~~"
-				| "++"
-				| "::"				 
-			)
+			Operators
 			(. varExp.VariableName = t.val; .)
-			FunExpr<varExp>
-			(. 
-				var fun = (ElaFunctionLiteral)varExp.InitExpression;
-				fun.FunctionType = ElaFunctionType.Operator;
-			.)
+			(
+			
+				(
+					FunExpr<varExp>
+					(. 
+						var fun = (ElaFunctionLiteral)varExp.InitExpression;
+						fun.FunctionType = ElaFunctionType.Operator;
+					.)
+				)
+				|
+				(
+					BindingBodyInit<varExp>
+					(. 
+						if (varExp.InitExpression.Type == ElaNodeType.FunctionLiteral)
+							((ElaFunctionLiteral)varExp.InitExpression).FunctionType = ElaFunctionType.Operator;
+					.)
+				)
+			)
 		).
 		
 	BindingBodyInit<ElaBinding varExp> =
@@ -910,7 +928,15 @@ PRODUCTIONS
 			var cexp2 = default(ElaExpression);
 		.)
 		(
-			"=" Expr<out cexp>
+			"=" 
+			(
+				Expr<out cexp>
+				|
+				(
+					"__internal" ident
+					(. cexp = new ElaBuiltin(t) { Kind = Builtins.Kind(t.val) }; .)
+				)
+			)
 			(. varExp.InitExpression = cexp; .)
 			[
 				WhereBinding<out cexp2> 
@@ -931,9 +957,11 @@ PRODUCTIONS
 			BindingGuardList<ref cond>
 		).
 		
+	Operators = operatorTok1|operatorTok2|operatorTok3|operatorTok4|operatorTok5|operatorTok6|operatorTok7|operatorTok8|"::".
+		
 	FunName<ElaFunctionLiteral fun> = 
 		(
-			(ident|operatorTok)
+			(ident|Operators)
 			(.
 				if (t.val != fun.Name)
 					AddError(ElaParserError.InvalidFunctionDeclaration, t.val);
@@ -1238,137 +1266,78 @@ PRODUCTIONS
 		}.
 		
 	AndExpr<out ElaExpression exp> =
-		EqExpr<out exp>
+		OpExpr1<out exp>
 		{
 			(. var cexp = default(ElaExpression); .)
-			"&&" EqExpr<out cexp>
+			"&&" OpExpr1<out cexp>
 			(. 
 				exp = new ElaBinary(t) { 
 					Left = exp, Operator = ElaOperator.BooleanAnd, Right = cexp }; 
 			.)
 		}.	
 			
-	EqExpr<out ElaExpression exp> =
+	OpExpr1<out ElaExpression exp> =
 		(. 
-			var op = default(ElaOperator); 
+			var op = String.Empty; 
 			exp = null;
 			var ot = t; 
 		.)				
 		(
 			(
-				ShiftExpr<out exp>
+				OpExpr2<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
-					(
-						"==" (. op = ElaOperator.Equals; .)
-						| "<>" (. op = ElaOperator.NotEquals; .)
-						| ">" (. op = ElaOperator.Greater; .)
-						| "<" (. op = ElaOperator.Lesser; .)
-						| ">=" (. op = ElaOperator.GreaterEqual; .)
-						| "<=" (. op = ElaOperator.LesserEqual; .)
-					)
-					[ ShiftExpr<out cexp> ]
+					operatorTok1 (. op = t.val; .)
+					[ OpExpr2<out cexp> ]
 					(. 
 						if (cexp == null)
-							exp = GetOperatorFun(exp, op, false);
+							exp = GetOperatorFun(op, exp, null);
 						else
-							exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
+							exp = GetBinaryFunction(op, exp, cexp);
 					.)
 				}
 			)
 			|
 			(
-				(
-					"==" (. op = ElaOperator.Equals; .)
-					| "<>" (. op = ElaOperator.NotEquals; .)
-					| ">" (. op = ElaOperator.Greater; .)
-					| "<" (. op = ElaOperator.Lesser; .)
-					| ">=" (. op = ElaOperator.GreaterEqual; .)
-					| "<=" (. op = ElaOperator.LesserEqual; .)
-				)
+				operatorTok1 (. op = t.val; .)
 				[ 
-					ShiftExpr<out exp> 
-					(. exp = GetOperatorFun(exp, op, true); .)
+					OpExpr2<out exp> 
+					(. exp = GetOperatorFun(op, null, exp); .)
 				]
 				(.
 					if (exp == null)
-						exp = new ElaVariableReference(ot) { 
-								VariableName = t.val
-							};
+						exp = new ElaVariableReference(ot) { VariableName = op };
 				.)
 			)
 		).
 			
-	ShiftExpr<out ElaExpression exp> =
+	OpExpr2<out ElaExpression exp> =
 		(. 
-			var op = default(ElaOperator); 
+			var op = String.Empty; 
 			exp = null;
 			var ot = t; 
 		.)				
 		(
 			(
-				ConcatExpr<out exp>
+				OpExpr3<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
-					(
-						">>>" (. op = ElaOperator.ShiftRight; .)
-						| "<<<" (. op = ElaOperator.ShiftLeft; .)
-					)
-					[ ConcatExpr<out cexp> ]
+					operatorTok2 (. op = t.val; .)
+					[ OpExpr3<out cexp> ]
 					(. 
 						if (cexp == null)
-							exp = GetOperatorFun(exp, op, false);
+							exp = GetOperatorFun(op, exp, null);
 						else
-							exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
+							exp = GetBinaryFunction(op, exp, cexp);
 					.)
 				}
 			)
 			|
 			(
-				(
-					">>>" (. op = ElaOperator.ShiftRight; .)
-					| "<<<" (. op = ElaOperator.ShiftLeft; .)
-				)
+				operatorTok2 (. op = t.val; .)
 				[ 
-					ConcatExpr<out exp> 
-					(. exp = GetOperatorFun(exp, op, true); .)
-				]
-				(.
-					if (exp == null)
-						exp = new ElaVariableReference(ot) { 
-								VariableName = t.val
-							};
-				.)
-			)
-		).
-				
-	ConcatExpr<out ElaExpression exp> =
-		(. 
-			var op = default(ElaOperator); 
-			exp = null;
-			var ot = t; 
-		.)				
-		(
-			(
-				ConsExpr<out exp>
-				{
-					(. var cexp = default(ElaExpression); .)
-					"++" (. op = ElaOperator.Concat; .)
-					[ ConsExpr<out cexp> ]
-					(. 
-						if (cexp == null)
-							exp = GetOperatorFun(exp, op, false);
-						else
-							exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
-					.)
-				}
-			)
-			|
-			(
-				"++" (. op = ElaOperator.Concat; .)
-				[ 
-					ConsExpr<out exp> 
-					(. exp = GetOperatorFun(exp, op, true); .)
+					OpExpr3<out exp> 
+					(. exp = GetOperatorFun(op, null, exp); .)
 				]
 				(.
 					if (exp == null)
@@ -1376,34 +1345,35 @@ PRODUCTIONS
 				.)
 			)
 		).
-		
-	ConsExpr<out ElaExpression exp> =
+			
+			
+	OpExpr3<out ElaExpression exp> =
 		(. 
-			var op = default(ElaOperator); 
+			var op = String.Empty; 
 			exp = null;
 			var ot = t; 
 		.)				
 		(
 			(
-				AddExpr<out exp>
+				OpExpr4<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
-					"::" (. op = ElaOperator.Cons; .)
-					[ ConsExpr<out cexp> ]
+					(operatorTok3|"::") (. op = t.val; .)
+					[ OpExpr3<out cexp> ]
 					(. 
 						if (cexp == null)
-							exp = GetOperatorFun(exp, op, false);
+							exp = GetOperatorFun(op, exp, null);
 						else
-							exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp };
+							exp = GetBinaryFunction(op, exp, cexp);
 					.)
 				}			
 			)
 			|
 			(
-				"::" (. op = ElaOperator.Cons; .)
+				(operatorTok3|"::") (. op = t.val; .)
 				[ 
-					AddExpr<out exp> 
-					(. exp = GetOperatorFun(exp, op, true); .)
+					OpExpr4<out exp> 
+					(. exp = GetOperatorFun(op, null, exp); .)
 				]
 				(.
 					if (exp == null)
@@ -1412,39 +1382,33 @@ PRODUCTIONS
 			)
 		).
 		
-	AddExpr<out ElaExpression exp> =
+	OpExpr4<out ElaExpression exp> =
 		(. 
-			var op = default(ElaOperator); 
+			var op = String.Empty; 
 			exp = null;
 			var ot = t; 
 		.)				
 		(
 			(
-				MulExpr<out exp>
+				OpExpr5<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
-					(
-						"+" (. op = ElaOperator.Add; .)
-						| "-" (. op = ElaOperator.Subtract; .)
-					)
-					[ MulExpr<out cexp> ]
+					operatorTok4 (. op = t.val; .)
+					[ OpExpr5<out cexp> ]
 					(. 
 						if (cexp == null)
-							exp = GetOperatorFun(exp, op, false);
+							exp = GetOperatorFun(op, exp, null);
 						else
-							exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
+							exp = GetBinaryFunction(op, exp, cexp);
 					.)
 				}
 			)
 			|
 			(
-				(
-					"+" (. op = ElaOperator.Add; .)
-					| "-" (. op = ElaOperator.Subtract; .)
-				)
+				operatorTok4 (. op = t.val; .)
 				[ 
-					MulExpr<out exp> 
-					(. exp = GetOperatorFun(exp, op, true); .)
+					OpExpr5<out exp> 
+					(. exp = GetOperatorFun(op, null, exp); .)
 				]
 				(.
 					if (exp == null)
@@ -1453,9 +1417,9 @@ PRODUCTIONS
 			)
 		).
 		
-	MulExpr<out ElaExpression exp> =
+	OpExpr5<out ElaExpression exp> =
 		(. 
-			var op = default(ElaOperator); 
+			var op = String.Empty; 
 			exp = null;
 			var ot = t; 
 		.)				
@@ -1464,32 +1428,22 @@ PRODUCTIONS
 				CastExpr<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
-					(
-						"*" (. op = ElaOperator.Multiply; .)
-						| "/" (. op = ElaOperator.Divide; .)
-						| "%" (. op = ElaOperator.Remainder; .)
-						| "**" (. op = ElaOperator.Power; .)
-					)
+					operatorTok5 (. op = t.val; .)
 					[ CastExpr<out cexp> ]
 					(. 
 						if (cexp == null)
-							exp = GetOperatorFun(exp, op, false);
+							exp = GetOperatorFun(op, exp, null);
 						else
-							exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
+							exp = GetBinaryFunction(op, exp, cexp);
 					.)
 				}
 			)
 			|
 			(
-				(
-					"*" (. op = ElaOperator.Multiply; .)
-					| "/" (. op = ElaOperator.Divide; .)
-					| "%" (. op = ElaOperator.Remainder; .)
-					| "**" (. op = ElaOperator.Power; .)
-				)
+				operatorTok5 (. op = t.val; .)
 				[ 
 					CastExpr<out exp> 
-					(. exp = GetOperatorFun(exp, op, true); .)
+					(. exp = GetOperatorFun(op, null, exp); .)
 				]
 				(.
 					if (exp == null)
@@ -1552,17 +1506,16 @@ PRODUCTIONS
 		.)				
 		(
 			(
-				BitOrExpr<out exp>
+				OpExpr6<out exp>
 				{
 					(. 
 						var cexp = default(ElaExpression); 
 						ot = t;
 					.)
 					(
-						operatorTok (. name = t.val; .)
-						| funcTok (. name = t.val.Trim('`'); .)
+						funcTok (. name = t.val.Trim('`'); .)
 					)
-					[ BitOrExpr<out cexp> ]
+					[ OpExpr6<out cexp> ]
 					(. 
 						var fc = new ElaFunctionCall(ot) { 
 								Target = new ElaVariableReference(t) { VariableName = name }
@@ -1579,11 +1532,10 @@ PRODUCTIONS
 			|
 			(
 				(
-					operatorTok (. name = t.val; .)
-					| funcTok (. name = t.val.Trim('`'); .)
+					funcTok (. name = t.val.Trim('`'); .)
 				)
 				[ 
-					BitOrExpr<out exp> 
+					OpExpr6<out exp> 
 					(. exp = GetPrefixFun(name, exp, true);	.)
 				]
 				(.
@@ -1593,34 +1545,33 @@ PRODUCTIONS
 			)
 		).
 		
-	BitOrExpr<out ElaExpression exp> =
+	OpExpr6<out ElaExpression exp> =
 		(. 
-			var op = ElaOperator.BitwiseOr; 
+			var op = String.Empty; 
 			exp = null;
 			var ot = t; 
 		.)				
 		(
 			(
-				BitXorExpr<out exp>
+				OpExpr7<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
-					"|||" 
-					[ BitXorExpr<out cexp> ]
+					operatorTok6 (. op = t.val; .)
+					[ OpExpr6<out cexp> ]
 					(. 
 						if (cexp == null)
-							exp = GetOperatorFun(exp, op, false);
+							exp = GetOperatorFun(op, exp, null);
 						else
-							exp = new ElaBinary(t) { 
-								Left = exp, Operator = op, Right = cexp }; 
+							exp = GetBinaryFunction(op, exp, cexp);
 					.)
-				}
+				}			
 			)
 			|
 			(
-				"|||"
+				operatorTok6 (. op = t.val; .)
 				[ 
-					BitXorExpr<out exp> 
-					(. exp = GetOperatorFun(exp, op, true); .)
+					OpExpr7<out exp> 
+					(. exp = GetOperatorFun(op, null, exp); .)
 				]
 				(.
 					if (exp == null)
@@ -1629,34 +1580,33 @@ PRODUCTIONS
 			)
 		).
 		
-	BitXorExpr<out ElaExpression exp> =
+	OpExpr7<out ElaExpression exp> =
 		(. 
-			var op = ElaOperator.BitwiseXor; 
+			var op = String.Empty; 
 			exp = null;
 			var ot = t; 
 		.)				
 		(
 			(
-				BitAndExpr<out exp>
+				OpExpr8<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
-					"^^^" 
-					[ BitAndExpr<out cexp> ]
+					operatorTok7 (. op = t.val; .)
+					[ OpExpr8<out cexp> ]
 					(. 
 						if (cexp == null)
-							exp = GetOperatorFun(exp, op, false);
+							exp = GetOperatorFun(op, exp, null);
 						else
-							exp = new ElaBinary(t) { 
-								Left = exp, Operator = op, Right = cexp }; 
+							exp = GetBinaryFunction(op, exp, cexp);
 					.)
-				}
+				}			
 			)
 			|
 			(
-				"^^^" 
+				operatorTok7 (. op = t.val; .)
 				[ 
-					BitAndExpr<out exp> 
-					(. exp = GetOperatorFun(exp, op, true); .)
+					OpExpr8<out exp> 
+					(. exp = GetOperatorFun(op, null, exp); .)
 				]
 				(.
 					if (exp == null)
@@ -1665,119 +1615,9 @@ PRODUCTIONS
 			)
 		).
 		
-	BitAndExpr<out ElaExpression exp> =
+	OpExpr8<out ElaExpression exp> = 
 		(. 
-			var op = ElaOperator.BitwiseAnd; 
-			exp = null;
-			var ot = t; 
-		.)				
-		(
-			(
-				BackwardCompExpr<out exp>
-				{
-					(. var cexp = default(ElaExpression); .)
-					"&&&" 
-					[ BackwardCompExpr<out cexp> ]
-					(. 
-						if (cexp == null)
-							exp = GetOperatorFun(exp, op, false);
-						else
-							exp = new ElaBinary(t) { 
-								Left = exp, Operator = op, Right = cexp }; 
-					.)
-				}
-			)
-			|
-			(
-				"&&&" 
-				[ 
-					BackwardCompExpr<out exp> 
-					(. exp = GetOperatorFun(exp, op, true); .)
-				]
-				(.
-					if (exp == null)
-						exp = new ElaVariableReference(ot) { VariableName = t.val };
-				.)
-			)
-		).
-		
-	BackwardCompExpr<out ElaExpression exp> = 
-		(. 
-			var op = default(ElaOperator); 
-			exp = null;
-			var ot = t; 
-		.)
-		(
-			(
-				ForwardCompExpr<out exp>
-				{
-					(. var cexp = default(ElaExpression); .)
-					(
-						"<<" (. op = ElaOperator.CompBackward; .)		
-						[ BackwardCompExpr<out cexp> ]
-						(. 
-							if (cexp == null)
-								exp = GetOperatorFun(exp, op, true);
-							else
-								exp = new ElaBinary(t) { Right = exp, Operator = op, Left = cexp }; 
-						.)
-					)
-				}
-			)
-			|
-			(
-				"<<" (. op = ElaOperator.CompBackward; .)	
-				[ 
-					ForwardCompExpr<out exp> 
-					(. exp = GetOperatorFun(exp, op, true); .)
-				]
-				(.
-					if (exp == null)
-						exp = new ElaVariableReference(ot) { VariableName = t.val };
-				.)
-			)
-		).
-		
-	ForwardCompExpr<out ElaExpression exp> = 
-		(. 
-			var op = default(ElaOperator); 
-			exp = null;
-			var ot = t; 
-		.)
-		(
-			(
-				UnaryExpr<out exp>
-				{
-					(. var cexp = default(ElaExpression); .)
-					(
-						">>" (. op = ElaOperator.CompForward; .)
-						[ UnaryExpr<out cexp> ]
-						(. 
-							if (cexp == null)
-								exp = GetOperatorFun(exp, op, false);
-							else
-								exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
-						.)
-					)
-				}
-			)
-			|
-			(
-				">>" (. op = ElaOperator.CompForward; .)
-				[ 
-					UnaryExpr<out exp> 
-					(. exp = GetOperatorFun(exp, op, true); .)
-				]
-				(.
-					if (exp == null)
-						exp = new ElaVariableReference(ot) { VariableName = t.val };
-				.)
-			)
-		).
-		
-	UnaryExpr<out ElaExpression exp> = 
-		(. 
-			var op = default(ElaOperator); 
+			var op = String.Empty; 
 			exp = null;
 			var ot = t; 
 		.)
@@ -1785,22 +1625,16 @@ PRODUCTIONS
 			(
 				Application<out exp>
 				{
-					(
-						"--" (. op = ElaOperator.Negate; .)
-						| "~~~" (. op = ElaOperator.BitwiseNot; .)
-					)
-					(. exp = new ElaBinary(t) { Left = exp, Operator = op }; .)
+					operatorTok8 (. op = t.val; .)
+					(. exp = GetBinaryFunction(op, exp, null); .)
 				}
 			)
 			|
 			(
-				(
-					"--" (. op = ElaOperator.Negate; .)
-					| "~~~" (. op = ElaOperator.BitwiseNot; .)
-				)
+				operatorTok8 (. op = t.val; .)
 				[ 
 					Application<out exp> 
-					(. exp = new ElaBinary(t) { Left = exp, Operator = op }; .)
+					(. exp = GetBinaryFunction(op, exp, null); .)
 				]
 				(.
 					if (exp == null)
@@ -1862,7 +1696,6 @@ PRODUCTIONS
 					
 	BinaryExpr<out ElaExpression exp> = 
 		(. 
-			var op = ElaOperator.Sequence; 
 			exp = null;
 			var ot = t; 
 		.)				
@@ -1871,29 +1704,12 @@ PRODUCTIONS
 				AssignExpr<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
-					"$" 
-					[ AssignExpr<out cexp> ]
+					"$"
+					AssignExpr<out cexp>
 					(. 
-						if (cexp == null)
-							exp = GetOperatorFun(exp, op, false);
-						else
-							exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
+						exp = new ElaBinary(t) { Operator = ElaOperator.Sequence, Left = exp, Right = cexp };
 					.)
 				}
-			)
-			|
-			(
-				"$"
-				[ 
-					MulExpr<out exp> 
-					(. exp = GetOperatorFun(exp, op, true); .)
-				]
-				(.
-					if (exp == null)
-						exp = new ElaVariableReference(ot) { 
-								VariableName = "$"
-							};
-				.)
 			)
 		).	
 		

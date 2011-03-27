@@ -58,6 +58,8 @@ namespace Ela.Compilation
 
 		#region Properties
 		internal bool IsStandardLibrary { get; set; }
+
+		internal bool NoPrelude { get; set; }
 		#endregion
 	}
 }

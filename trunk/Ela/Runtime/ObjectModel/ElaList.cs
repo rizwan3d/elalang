@@ -10,7 +10,7 @@ namespace Ela.Runtime.ObjectModel
 	{
 		#region Construction
 		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Len | ElaTraits.Gen | ElaTraits.Seq | ElaTraits.Cons | ElaTraits.Concat | ElaTraits.Convert | ElaTraits.Ix;
-		internal static readonly ElaList Empty = new ElaList(null, new ElaValue(ElaUnit.Instance));
+		internal static readonly ElaList Empty = ElaNilList.Instance;
 
 		public ElaList(ElaObject next, object value) : this(next, ElaValue.FromObject(value))
 		{
@@ -22,6 +22,33 @@ namespace Ela.Runtime.ObjectModel
 		{
 			InternalNext = next;
 			InternalValue = value;
+		}
+		#endregion
+
+
+		#region Nested Classes
+		private sealed class ElaNilList : ElaList
+		{
+			internal static readonly ElaNilList Instance = new ElaNilList();
+
+			internal ElaNilList() : base(null, new ElaValue(ElaUnit.Instance)) { }
+
+			protected internal override ElaValue Tail(ExecutionContext ctx)
+			{
+				ctx.Fail("NilList", "List is nil.");
+				return Default();
+			}
+
+			protected internal override ElaValue Head(ExecutionContext ctx)
+			{
+				ctx.Fail("NilList", "List is nil.");
+				return Default();
+			}
+
+			protected internal override bool IsNil(ExecutionContext ctx)
+			{
+				return true;
+			}
 		}
 		#endregion
 

@@ -108,14 +108,14 @@ namespace Ela.Runtime
 			{
 				throw;
 			}
-			catch (Exception ex)
-			{
-			    var op = MainThread.Module != null && MainThread.Offset > 0 &&
-			        MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
-			        MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
+			//catch (Exception ex)
+			//{
+			//    var op = MainThread.Module != null && MainThread.Offset > 0 &&
+			//        MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
+			//        MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
 
-			    throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
-			}
+			//    throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
+			//}
 
 			var evalStack = MainThread.CallStack[0].Stack;
 
@@ -429,8 +429,8 @@ namespace Ela.Runtime
 
 					#region Binary Operations
 					case Op.AndBw:
-						right = evalStack.Pop();
-						left = evalStack.Peek();
+						left = evalStack.Pop();
+						right = evalStack.Peek();
 
 						if (left.TypeId == INT && right.TypeId == INT)
 						{
@@ -448,8 +448,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.OrBw:
-						right = evalStack.Pop();
-						left = evalStack.Peek();
+						left = evalStack.Pop();
+						right = evalStack.Peek();
 
 						if (left.TypeId == INT && right.TypeId == INT)
 						{
@@ -467,8 +467,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Xor:
-						right = evalStack.Pop();
-						left = evalStack.Peek();
+						left = evalStack.Pop();
+						right = evalStack.Peek();
 
 						if (left.TypeId == INT && right.TypeId == INT)
 						{
@@ -486,8 +486,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Shl:
-						right = evalStack.Pop();
-						left = evalStack.Peek();
+						left = evalStack.Pop();
+						right = evalStack.Peek();
 
 						if (left.TypeId == INT && right.TypeId == INT)
 						{
@@ -505,8 +505,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Shr:
-						right = evalStack.Pop();
-						left = evalStack.Peek();
+						left = evalStack.Pop();
+						right = evalStack.Peek();
 
 						if (left.TypeId == INT && right.TypeId == INT)
 						{
@@ -524,8 +524,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Concat:
-						right = evalStack.Pop();
-						left = evalStack.Peek().Id(ctx);
+						left = evalStack.Pop();
+						right = evalStack.Peek().Id(ctx);
 						evalStack.Replace(left.Ref.Concatenate(left, right.Id(ctx), ctx));
 
 						if (ctx.Failed)
@@ -535,8 +535,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Add:
-						right = evalStack.Pop();
-						left = evalStack.Peek();
+						left = evalStack.Pop();
+						right = evalStack.Peek();
 
 						if (left.TypeId == INT && right.TypeId == INT)
 						{
@@ -546,7 +546,7 @@ namespace Ela.Runtime
 
 						res = left.Id(ctx);
 						evalStack.Replace(res.Ref.Add(res, right.Id(ctx), ctx));
-
+						
 						if (ctx.Failed)
 						{
 							ExecuteThrow(thread, evalStack);
@@ -554,8 +554,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Sub:
-						right = evalStack.Pop();
-						left = evalStack.Peek();
+						left = evalStack.Pop();
+						right = evalStack.Peek();
 
 						if (left.TypeId == INT && right.TypeId == INT)
 						{
@@ -573,8 +573,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Div:
-						right = evalStack.Pop();
-						left = evalStack.Peek().Id(ctx);
+						left = evalStack.Pop();
+						right = evalStack.Peek().Id(ctx);
 						evalStack.Replace(left.Ref.Divide(left, right.Id(ctx), ctx));
 
 						if (ctx.Failed)
@@ -584,8 +584,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Mul:
-						right = evalStack.Pop();
-						left = evalStack.Peek();
+						left = evalStack.Pop();
+						right = evalStack.Peek();
 
 						if (left.TypeId == INT && right.TypeId == INT)
 						{
@@ -603,8 +603,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Pow:
-						right = evalStack.Pop();
-						left = evalStack.Peek().Id(ctx);
+						left = evalStack.Pop();
+						right = evalStack.Peek().Id(ctx);
 						evalStack.Replace(left.Ref.Power(left, right.Id(ctx), ctx));
 
 						if (ctx.Failed)
@@ -614,8 +614,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Rem:
-						right = evalStack.Pop();
-						left = evalStack.Peek().Id(ctx);
+						left = evalStack.Pop();
+						right = evalStack.Peek().Id(ctx);
 						evalStack.Replace(left.Ref.Remainder(left, right.Id(ctx), ctx));
 
 						if (ctx.Failed)
@@ -628,8 +628,8 @@ namespace Ela.Runtime
 
 					#region Comparison Operations
                     case Op.Ceqref:
-                        right = evalStack.Pop();
-                        left = evalStack.Peek();
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
 
                         if (structs[right.TypeId] || structs[left.TypeId])
                         {
@@ -655,8 +655,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Cgt:
-						right = evalStack.Pop();
-						left = evalStack.Peek();
+						left = evalStack.Pop();
+						right = evalStack.Peek();
 
 						if (left.TypeId == INT && right.TypeId == INT)
 						{
@@ -674,8 +674,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Clt:
-						right = evalStack.Pop();
-						left = evalStack.Peek();
+						left = evalStack.Pop();
+						right = evalStack.Peek();
 
 						if (left.TypeId == INT && right.TypeId == INT)
 						{
@@ -693,8 +693,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Ceq:
-						right = evalStack.Pop();
-						left = evalStack.Peek();
+						left = evalStack.Pop();
+						right = evalStack.Peek();
 
 						if (left.TypeId == INT && right.TypeId == INT)
 						{
@@ -712,8 +712,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Cneq:
-						right = evalStack.Pop();
-						left = evalStack.Peek();
+						left = evalStack.Pop();
+						right = evalStack.Peek();
 
 						if (left.TypeId == INT && right.TypeId == INT)
 						{
@@ -731,8 +731,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Cgteq:
-						right = evalStack.Pop();
-						left = evalStack.Peek();
+						left = evalStack.Pop();
+						right = evalStack.Peek();
 
 						if (left.TypeId == INT && right.TypeId == INT)
 						{
@@ -750,8 +750,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Clteq:
-						right = evalStack.Pop();
-						left = evalStack.Peek();
+						left = evalStack.Pop();
+						right = evalStack.Peek();
 
 						if (left.TypeId == INT && right.TypeId == INT)
 						{
@@ -788,8 +788,9 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Cons:
-						right = evalStack.Pop();
-						evalStack.Replace(right.Ref.Cons(right.Ref, evalStack.Peek(), ctx));
+						left = evalStack.Pop();
+						right = evalStack.Peek();
+						evalStack.Replace(right.Ref.Cons(right.Ref, left, ctx));
 
 						if (ctx.Failed)
 						{
@@ -820,13 +821,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Tail:
-						right = evalStack.Pop().Id(ctx);
-
-						if (!right.Ref.IsNil(ctx))
-							evalStack.Push(right.Ref.Tail(ctx));
-						else
-							evalStack.Push(right);
-
+						evalStack.Replace(evalStack.Peek().Id(ctx).Ref.Tail(ctx));
+						
 						if (ctx.Failed)
 						{
 							ExecuteThrow(thread, evalStack);
@@ -1254,6 +1250,18 @@ namespace Ela.Runtime
 							goto SWITCH_MEM;
 						}
 						break;
+					case Op.Brnil:
+						right = evalStack.PopFast().Id(ctx);
+
+						if (right.IsNil(ctx))
+							thread.Offset = opd;
+						
+						if (ctx.Failed)
+						{
+							ExecuteThrow(thread, evalStack);
+							goto SWITCH_MEM;
+						}
+						break;
 					#endregion
 
 					#region CreateNew Operations
@@ -1358,7 +1366,7 @@ namespace Ela.Runtime
 						{
 							var fun = ((ElaFunction)evalStack.Pop().Ref).CloneFast();
 							fun.LastParameter = evalStack.Pop();
-							evalStack.Push(new ElaValue(new ElaLazy(fun)));
+							evalStack.Push(new  ElaValue(new ElaLazy(fun)));
 						}
 						break;
 					case Op.Callt:
@@ -1606,6 +1614,70 @@ namespace Ela.Runtime
 
 
 		#region Operations
+		private bool CallBuiltin(int id, EvalStack evalStack, ExecutionContext ctx)
+		{
+			switch (id)
+			{
+				case 1000:
+					{
+						var left = evalStack.Pop();
+						var right = evalStack.Peek();
+
+						if (left.TypeId == INT && right.TypeId == INT)
+						{
+							evalStack.Replace(left.I4 + right.I4);
+							return true;
+						}
+
+						evalStack.Replace(left.Ref.Add(left, right, ctx));
+						return true;
+					}
+				case 1001:
+					{
+						var left = evalStack.Pop();
+						var right = evalStack.Peek();
+
+						if (left.TypeId == INT && right.TypeId == INT)
+						{
+							evalStack.Replace(left.I4 < right.I4);
+							return true;
+						}
+
+						evalStack.Replace(left.Ref.Lesser(left, right, ctx));
+						return true;
+					}
+				case 1002:
+					return true;
+				case 1003:
+					return true;
+				case 1004:
+					return true;
+				case 1005:
+					return true;
+				case 1006:
+					return true;
+				case 1007:
+					return true;
+				case 1008:
+					return true;
+				case 1009:
+					return true;
+				case 1010:
+					return true;
+				case 1011:
+					return true;
+				case 1012:
+					return true;
+				case 1013:
+					return true;
+			}
+
+
+			return false;
+		}
+
+
+
 		private void Increment(int addr, ElaValue val, WorkerThread thread, EvalStack stack)
 		{
 			var nval = val.Ref.Successor(val, thread.Context);
@@ -1712,12 +1784,15 @@ namespace Ela.Runtime
 
 		private bool Call(ElaObject fun, WorkerThread thread, EvalStack stack, CallPoint cp)
 		{
+			if (fun == null)
+				ExecuteThrow(thread, stack);
+
 			if (fun.TypeId != FUN)
 			{
 				if ((fun.Traits & ElaTraits.Call) == ElaTraits.Call)
 				{
-					var res = fun.Call(stack.Pop(), thread.Context);
-					stack.Push(res);
+					var res = fun.Call(stack.Peek(), thread.Context);
+					stack.Replace(res);
 
 					if (thread.Context.Failed)
 					{
@@ -1728,8 +1803,10 @@ namespace Ela.Runtime
 					return false;
 				}
 				else
-					ExecuteFail(new ElaError(ElaRuntimeError.ExpectedFunction, TypeCodeFormat.GetShortForm((ElaTypeCode)fun.TypeId)), 
-                        thread, stack);
+				{
+					thread.Context.Fail(new ElaError(ElaRuntimeError.ExpectedFunction, TypeCodeFormat.GetShortForm((ElaTypeCode)fun.TypeId)));
+					ExecuteThrow(thread, stack);
+				}
 
 				return true;
 			}
@@ -1755,10 +1832,10 @@ namespace Ela.Runtime
 						thread.CallStack.Peek().BreakAddress = thread.Offset;
 
 					newStack.Push(stack.Pop());
-
+					
 					for (var i = 0; i < natFun.Parameters.Length; i++)
 						newStack.Push(natFun.Parameters[natFun.Parameters.Length - i - 1]);
-
+					
 					if (natFun.Flip)
 					{
 						var right = newStack.Pop();

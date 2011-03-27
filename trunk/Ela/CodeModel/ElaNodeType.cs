@@ -23,6 +23,8 @@ namespace Ela.CodeModel
 		
 		
 
+		Builtin,
+
 		Binary,
 
 		FunctionCall,
@@ -64,8 +66,6 @@ namespace Ela.CodeModel
 		Range,
 
 		ModuleInclude,
-
-		BuiltinFunction,
 
 		Comprehension,
 

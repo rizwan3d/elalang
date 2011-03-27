@@ -72,6 +72,9 @@ namespace ElaConsole.Options
 
 		[CommandLineOption("noOpt")]
 		public bool DisableOptimization { get; set; }
+
+		[CommandLineOption("prelude")]
+		public string Prelude { get; set; }
 		#endregion
 
 
@@ -87,7 +90,7 @@ namespace ElaConsole.Options
 
 		[CommandLineOption("stdLib")]
 		public string StandardLibrary { get; set; }
-				
+	
 		[CommandLineOption("skipCheck")]
 		public bool SkipTimeStampCheck { get; set; }
 

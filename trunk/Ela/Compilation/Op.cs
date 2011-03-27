@@ -209,6 +209,8 @@ namespace Ela.Compilation
 
 		Br_neq,
 
+		Brnil,
+
 		Newfun
 	}
 }

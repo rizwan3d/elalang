@@ -20,41 +20,45 @@ internal sealed partial class Parser {
 	public const int _realTok = 7;
 	public const int _stringTok = 8;
 	public const int _charTok = 9;
-	public const int _operatorTok = 10;
-	public const int _LBRA = 11;
-	public const int _RBRA = 12;
-	public const int _LILB = 13;
-	public const int _LIRB = 14;
-	public const int _PIPE = 15;
-	public const int _ARROW = 16;
-	public const int _LAMBDA = 17;
-	public const int _EQ = 18;
-	public const int _SEQ = 19;
-	public const int _MINUS = 20;
-	public const int _COMPH = 21;
-	public const int _COMPO = 22;
-	public const int _DOT = 23;
-	public const int _IN = 24;
-	public const int _BASE = 25;
-	public const int _MATCH = 26;
-	public const int _ASAMP = 27;
-	public const int _IS = 28;
-	public const int _LET = 29;
-	public const int _PRIVATE = 30;
-	public const int _OPEN = 31;
-	public const int _WITH = 32;
-	public const int _IFS = 33;
-	public const int _ELSE = 34;
-	public const int _THEN = 35;
-	public const int _RAISE = 36;
-	public const int _TRY = 37;
-	public const int _TRUE = 38;
-	public const int _FALSE = 39;
-	public const int _FAIL = 40;
-	public const int _WHERE = 41;
-	public const int _ET = 42;
-	public const int _EBLOCK = 43;
-	public const int maxT = 84;
+	public const int _operatorTok1 = 10;
+	public const int _operatorTok2 = 11;
+	public const int _operatorTok3 = 12;
+	public const int _operatorTok4 = 13;
+	public const int _operatorTok5 = 14;
+	public const int _operatorTok6 = 15;
+	public const int _operatorTok7 = 16;
+	public const int _operatorTok8 = 17;
+	public const int _LBRA = 18;
+	public const int _RBRA = 19;
+	public const int _LILB = 20;
+	public const int _LIRB = 21;
+	public const int _PIPE = 22;
+	public const int _ARROW = 23;
+	public const int _LAMBDA = 24;
+	public const int _COMPH = 25;
+	public const int _COMPO = 26;
+	public const int _DOT = 27;
+	public const int _IN = 28;
+	public const int _BASE = 29;
+	public const int _MATCH = 30;
+	public const int _ASAMP = 31;
+	public const int _IS = 32;
+	public const int _LET = 33;
+	public const int _PRIVATE = 34;
+	public const int _OPEN = 35;
+	public const int _WITH = 36;
+	public const int _IFS = 37;
+	public const int _ELSE = 38;
+	public const int _THEN = 39;
+	public const int _RAISE = 40;
+	public const int _TRY = 41;
+	public const int _TRUE = 42;
+	public const int _FALSE = 43;
+	public const int _FAIL = 44;
+	public const int _WHERE = 45;
+	public const int _ET = 46;
+	public const int _EBLOCK = 47;
+	public const int maxT = 70;
 
 	const bool T = true;
 	const bool x = false;
@@ -130,7 +134,7 @@ internal sealed partial class Parser {
 
 	
 	void EndBlock() {
-		Expect(43);
+		Expect(47);
 		if (!t.virt) scanner.PopIndent(); 
 	}
 
@@ -138,15 +142,15 @@ internal sealed partial class Parser {
 		exp = null; 
 		if (StartOf(1)) {
 			Primitive(out exp);
-		} else if (la.kind == 11) {
+		} else if (la.kind == 18) {
 			RecordLiteral(out exp);
-		} else if (la.kind == 13) {
+		} else if (la.kind == 20) {
 			ListLiteral(out exp);
-		} else if (la.kind == 45) {
+		} else if (la.kind == 49) {
 			TupleLiteral(out exp);
 		} else if (StartOf(2)) {
 			SimpleExpr(out exp);
-		} else SynErr(85);
+		} else SynErr(71);
 	}
 
 	void Primitive(out ElaExpression exp) {
@@ -172,17 +176,17 @@ internal sealed partial class Parser {
 			exp = new ElaPrimitive(t) { Value = ParseChar(t.val) }; 
 			break;
 		}
-		case 38: {
+		case 42: {
 			Get();
 			exp = new ElaPrimitive(t) { Value = new ElaLiteralValue(true) }; 
 			break;
 		}
-		case 39: {
+		case 43: {
 			Get();
 			exp = new ElaPrimitive(t) { Value = new ElaLiteralValue(false) }; 
 			break;
 		}
-		default: SynErr(86); break;
+		default: SynErr(72); break;
 		}
 	}
 
@@ -190,20 +194,20 @@ internal sealed partial class Parser {
 		exp = null; 
 		var fld = default(ElaFieldDeclaration);
 		
-		Expect(11);
+		Expect(18);
 		var rec = new ElaRecordLiteral(t); exp = rec; 
 		RecordField(out fld);
 		rec.Fields.Add(fld); 
-		while (la.kind == 47) {
+		while (la.kind == 51) {
 			Get();
 			RecordField(out fld);
 			rec.Fields.Add(fld); 
 		}
-		Expect(12);
+		Expect(19);
 	}
 
 	void ListLiteral(out ElaExpression exp) {
-		Expect(13);
+		Expect(20);
 		var list = default(List<ElaExpression>);
 		var comp = default(ElaComprehension);
 		var rng = default(ElaRange);
@@ -244,19 +248,19 @@ internal sealed partial class Parser {
 		if (exp == null)
 		exp = new ElaListLiteral(ot);
 		
-		Expect(14);
+		Expect(21);
 	}
 
 	void TupleLiteral(out ElaExpression exp) {
 		var ot = default(Token);
 		exp = null; 
 		
-		Expect(45);
+		Expect(49);
 		ot = t; 
 		if (StartOf(4)) {
 			GroupExpr(out exp);
 		}
-		Expect(46);
+		Expect(50);
 		if (exp == null)
 		exp = new ElaUnitLiteral(ot);
 		
@@ -266,13 +270,13 @@ internal sealed partial class Parser {
 		exp = null; 
 		if (la.kind == 4) {
 			ArgumentReference(out exp);
-		} else if (la.kind == 25) {
+		} else if (la.kind == 29) {
 			BaseReference(out exp);
-		} else if (la.kind == 1 || la.kind == 44) {
+		} else if (la.kind == 1 || la.kind == 48) {
 			VariableReference(out exp);
-		} else if (la.kind == 83) {
+		} else if (la.kind == 69) {
 			LazyExpr(out exp);
-		} else SynErr(87);
+		} else SynErr(73);
 	}
 
 	void ArgumentReference(out ElaExpression exp) {
@@ -284,9 +288,9 @@ internal sealed partial class Parser {
 		var baseRef = default(ElaBaseReference);
 		exp = null;
 		
-		Expect(25);
+		Expect(29);
 		baseRef = new ElaBaseReference(t); 
-		Expect(23);
+		Expect(27);
 		var ot = t; 
 		Expect(1);
 		exp = new ElaFieldReference(ot) { FieldName = t.val, TargetObject = baseRef }; 
@@ -297,14 +301,14 @@ internal sealed partial class Parser {
 		if (la.kind == 1) {
 			Get();
 			exp = new ElaVariableReference(t) { VariableName = t.val }; 
-		} else if (la.kind == 44) {
+		} else if (la.kind == 48) {
 			Get();
 			exp = new ElaPlaceholder(t); 
-		} else SynErr(88);
+		} else SynErr(74);
 	}
 
 	void LazyExpr(out ElaExpression exp) {
-		Expect(83);
+		Expect(69);
 		var lazy = new ElaLazyLiteral(t); 
 		Expr(out exp);
 		var m = new ElaMatch(t);
@@ -312,7 +316,7 @@ internal sealed partial class Parser {
 		lazy.Body = m;
 		exp = lazy;
 		
-		Expect(46);
+		Expect(50);
 	}
 
 	void VariantLiteral(out ElaExpression exp) {
@@ -334,7 +338,7 @@ internal sealed partial class Parser {
 		var ot = t;
 		
 		Expr(out exp);
-		if (la.kind == 47) {
+		if (la.kind == 51) {
 			var tuple = new ElaTupleLiteral(ot); 
 			tuple.Parameters.Add(exp);
 			exp = tuple; 
@@ -344,7 +348,7 @@ internal sealed partial class Parser {
 				Expr(out cexp);
 				tuple.Parameters.Add(cexp); 
 			}
-			while (la.kind == 47) {
+			while (la.kind == 51) {
 				Get();
 				Expr(out cexp);
 				tuple.Parameters.Add(cexp); 
@@ -356,22 +360,22 @@ internal sealed partial class Parser {
 		exp = null; 
 		if (StartOf(6)) {
 			EmbExpr(out exp);
-		} else if (la.kind == 29) {
+		} else if (la.kind == 33) {
 			LetBinding(out exp);
-		} else SynErr(89);
+		} else SynErr(75);
 	}
 
 	void MatchExpr(out ElaExpression exp) {
 		scanner.InjectBlock(); 
-		while (!(la.kind == 0 || la.kind == 26)) {SynErr(90); Get();}
-		Expect(26);
+		while (!(la.kind == 0 || la.kind == 30)) {SynErr(76); Get();}
+		Expect(30);
 		var match = new ElaMatch(t);
 		exp = match; 
 		var cexp = default(ElaExpression);
 		
 		Expr(out cexp);
 		match.Expression = cexp; 
-		Expect(32);
+		Expect(36);
 		MatchEntry(match);
 		while (StartOf(7)) {
 			if (StartOf(8)) {
@@ -394,14 +398,14 @@ internal sealed partial class Parser {
 		entry.Pattern = pat;				
 		match.Entries.Add(entry);
 		
-		if (la.kind == 15) {
+		if (la.kind == 22) {
 			Guard(out cexp);
 			entry.Guard = cexp; 
 		}
-		Expect(18);
+		Expect(52);
 		Expr(out cexp);
 		entry.Expression = cexp; 
-		if (la.kind == 41) {
+		if (la.kind == 45) {
 			WhereBinding(out cexp);
 			entry.Where = cexp; 
 		}
@@ -416,10 +420,10 @@ internal sealed partial class Parser {
 		
 		Guard(out cexp);
 		entry.Guard = cexp; 
-		Expect(18);
+		Expect(52);
 		Expr(out cexp);
 		entry.Expression = cexp; 
-		if (la.kind == 41) {
+		if (la.kind == 45) {
 			WhereBinding(out cexp);
 			entry.Where = cexp; 
 		}
@@ -429,17 +433,17 @@ internal sealed partial class Parser {
 
 	void RootPattern(out ElaPattern pat) {
 		OrPattern(out pat);
-		if (la.kind == 51) {
+		if (la.kind == 56) {
 			ConsPattern(pat, out pat);
 		}
 	}
 
 	void Guard(out ElaExpression exp) {
 		exp = null; 
-		Expect(15);
+		Expect(22);
 		if (StartOf(9)) {
 			BinaryExpr(out exp);
-			while (la.kind == 47) {
+			while (la.kind == 51) {
 				var old = exp; 
 				Get();
 				var ot = t; 
@@ -447,60 +451,41 @@ internal sealed partial class Parser {
 				exp = new ElaBinary(t) { Operator = ElaOperator.BooleanAnd, Left = old, Right = exp };
 				
 			}
-		} else if (la.kind == 34) {
+		} else if (la.kind == 38) {
 			Get();
 			exp = new ElaOtherwiseGuard(t); 
-		} else SynErr(91);
+		} else SynErr(77);
 	}
 
 	void WhereBinding(out ElaExpression exp) {
 		scanner.InjectBlock(); 
-		while (!(la.kind == 0 || la.kind == 41)) {SynErr(92); Get();}
-		Expect(41);
+		while (!(la.kind == 0 || la.kind == 45)) {SynErr(78); Get();}
+		Expect(45);
 		BindingBody(ElaVariableFlags.None, out exp);
 		EndBlock();
 	}
 
 	void BinaryExpr(out ElaExpression exp) {
-		var op = ElaOperator.Sequence; 
 		exp = null;
 		var ot = t; 
 		
-		if (StartOf(10)) {
-			AssignExpr(out exp);
-			while (la.kind == 19) {
-				var cexp = default(ElaExpression); 
-				Get();
-				if (StartOf(10)) {
-					AssignExpr(out cexp);
-				}
-				if (cexp == null)
-				exp = GetOperatorFun(exp, op, false);
-				else
-					exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
-				
-			}
-		} else if (la.kind == 19) {
+		AssignExpr(out exp);
+		while (la.kind == 68) {
+			var cexp = default(ElaExpression); 
 			Get();
-			if (StartOf(11)) {
-				MulExpr(out exp);
-				exp = GetOperatorFun(exp, op, true); 
-			}
-			if (exp == null)
-			exp = new ElaVariableReference(ot) { 
-					VariableName = "$"
-				};
+			AssignExpr(out cexp);
+			exp = new ElaBinary(t) { Operator = ElaOperator.Sequence, Left = exp, Right = cexp };
 			
-		} else SynErr(93);
+		}
 	}
 
 	void OrPattern(out ElaPattern pat) {
 		pat = null; 
-		if (la.kind == 2 || la.kind == 48) {
+		if (la.kind == 2 || la.kind == 53) {
 			VariantPattern(out pat);
-		} else if (StartOf(12)) {
+		} else if (StartOf(10)) {
 			AsPattern(out pat);
-		} else SynErr(94);
+		} else SynErr(79);
 	}
 
 	void ConsPattern(ElaPattern prev, out ElaPattern exp) {
@@ -509,10 +494,10 @@ internal sealed partial class Parser {
 		ht.Patterns.Add(prev);
 		exp = ht;				
 		
-		Expect(51);
+		Expect(56);
 		AsPattern(out cexp);
 		ht.Patterns.Add(cexp); 
-		while (la.kind == 51) {
+		while (la.kind == 56) {
 			Get();
 			AsPattern(out cexp);
 			ht.Patterns.Add(cexp); 
@@ -522,10 +507,10 @@ internal sealed partial class Parser {
 	void ParenPattern(out ElaPattern pat) {
 		pat = null; 
 		OrPattern(out pat);
-		if (la.kind == 51) {
+		if (la.kind == 56) {
 			ConsPattern(pat, out pat);
 		}
-		if (la.kind == 47) {
+		if (la.kind == 51) {
 			TuplePattern(pat, out pat);
 		}
 	}
@@ -536,17 +521,17 @@ internal sealed partial class Parser {
 		var cpat = default(ElaPattern);
 		pat = seq;
 		
-		Expect(47);
-		if (StartOf(12)) {
+		Expect(51);
+		if (StartOf(10)) {
 			AsPattern(out cpat);
-			if (la.kind == 51) {
+			if (la.kind == 56) {
 				ConsPattern(cpat, out cpat);
 			}
 			seq.Patterns.Add(cpat); 
-			while (la.kind == 47) {
+			while (la.kind == 51) {
 				Get();
 				AsPattern(out cpat);
-				if (la.kind == 51) {
+				if (la.kind == 56) {
 					ConsPattern(cpat, out cpat);
 				}
 				seq.Patterns.Add(cpat); 
@@ -562,26 +547,26 @@ internal sealed partial class Parser {
 		if (la.kind == 2) {
 			Get();
 			vp = new ElaVariantPattern(t) { Tag = t.val.Substring(1) }; 
-			if (StartOf(12)) {
+			if (StartOf(10)) {
 				AsPattern(out cpat);
 				vp.Pattern = cpat; 
 			}
 			pat = vp; 
-		} else if (la.kind == 48) {
+		} else if (la.kind == 53) {
 			Get();
 			vp = new ElaVariantPattern(t); 
-			if (StartOf(12)) {
+			if (StartOf(10)) {
 				AsPattern(out cpat);
 				vp.Pattern = cpat; 
 			}
 			pat = vp; 
-		} else SynErr(95);
+		} else SynErr(80);
 	}
 
 	void AsPattern(out ElaPattern pat) {
 		pat = null; 
 		SinglePattern(out pat);
-		if (la.kind == 27) {
+		if (la.kind == 31) {
 			Get();
 			var asPat = new ElaAsPattern(t) { Pattern = pat }; 
 			pat = asPat;				
@@ -593,7 +578,7 @@ internal sealed partial class Parser {
 
 	void FuncPattern(out ElaPattern pat) {
 		AsPattern(out pat);
-		if (la.kind == 51) {
+		if (la.kind == 56) {
 			ConsPattern(pat, out pat);
 		}
 	}
@@ -601,23 +586,23 @@ internal sealed partial class Parser {
 	void SinglePattern(out ElaPattern pat) {
 		pat = null; 
 		switch (la.kind) {
-		case 44: {
+		case 48: {
 			DefaultPattern(out pat);
 			break;
 		}
-		case 45: {
+		case 49: {
 			UnitPattern(out pat);
 			break;
 		}
-		case 6: case 7: case 8: case 9: case 38: case 39: {
+		case 6: case 7: case 8: case 9: case 42: case 43: {
 			LiteralPattern(out pat);
 			break;
 		}
-		case 13: {
+		case 20: {
 			ListPattern(out pat);
 			break;
 		}
-		case 11: {
+		case 18: {
 			RecordPattern(out pat);
 			break;
 		}
@@ -625,16 +610,16 @@ internal sealed partial class Parser {
 			IdentPattern(out pat);
 			break;
 		}
-		case 49: {
+		case 54: {
 			TypeCheckPattern(out pat);
 			break;
 		}
-		default: SynErr(96); break;
+		default: SynErr(81); break;
 		}
 	}
 
 	void DefaultPattern(out ElaPattern pat) {
-		Expect(44);
+		Expect(48);
 		pat = new ElaDefaultPattern(t); 
 	}
 
@@ -642,11 +627,11 @@ internal sealed partial class Parser {
 		var ot = t;
 		pat = null;
 		
-		Expect(45);
+		Expect(49);
 		if (StartOf(8)) {
 			ParenPattern(out pat);
 		}
-		Expect(46);
+		Expect(50);
 		if (pat == null)
 		pat = new ElaUnitPattern(ot); 
 		
@@ -677,17 +662,17 @@ internal sealed partial class Parser {
 			lit = ParseReal(t.val); 
 			break;
 		}
-		case 38: {
+		case 42: {
 			Get();
 			lit = new ElaLiteralValue(true); 
 			break;
 		}
-		case 39: {
+		case 43: {
 			Get();
 			lit = new ElaLiteralValue(false); 
 			break;
 		}
-		default: SynErr(97); break;
+		default: SynErr(82); break;
 		}
 		pat = new ElaLiteralPattern(t) { Value = lit };				
 		
@@ -698,13 +683,13 @@ internal sealed partial class Parser {
 		var ht = default(ElaHeadTailPattern); 
 		pat = null;
 		
-		Expect(13);
-		if (StartOf(12)) {
+		Expect(20);
+		if (StartOf(10)) {
 			ht = new ElaHeadTailPattern(t);			
 			
 			AsPattern(out cexp);
 			ht.Patterns.Add(cexp);  
-			while (la.kind == 47) {
+			while (la.kind == 51) {
 				Get();
 				AsPattern(out cexp);
 				ht.Patterns.Add(cexp); 
@@ -716,34 +701,34 @@ internal sealed partial class Parser {
 		if (pat == null)
 		pat = new ElaNilPattern(t);
 		
-		Expect(14);
+		Expect(21);
 	}
 
 	void RecordPattern(out ElaPattern pat) {
 		pat = null; 
 		var cpat = default(ElaFieldPattern);
 		
-		Expect(11);
+		Expect(18);
 		var rec = new ElaRecordPattern(t); 
 		pat = rec; 
 		
 		if (la.kind == 1 || la.kind == 8) {
 			FieldPattern(out cpat);
 			rec.Fields.Add(cpat); 
-			while (la.kind == 47) {
+			while (la.kind == 51) {
 				Get();
 				FieldPattern(out cpat);
 				rec.Fields.Add(cpat); 
 			}
 		}
-		Expect(12);
+		Expect(19);
 	}
 
 	void IdentPattern(out ElaPattern pat) {
 		pat = null; 
 		Expect(1);
 		var name = t.val; 
-		if (la.kind == 50) {
+		if (la.kind == 55) {
 			Get();
 			var cst = new ElaCastPattern(t) { VariableName = name }; pat = cst; 
 			Expect(1);
@@ -759,11 +744,11 @@ internal sealed partial class Parser {
 		var tmp = default(ElaTraits);
 		pat = eis; 			
 		
-		Expect(49);
+		Expect(54);
 		if (la.kind == 1) {
 			Get();
 			eis.TypeAffinity = GetType(t.val); 
-		} else if (la.kind == 45) {
+		} else if (la.kind == 49) {
 			
 			Get();
 			Expect(1);
@@ -775,7 +760,7 @@ internal sealed partial class Parser {
 			
 			eis.Traits |= tmp;
 			
-			while (la.kind == 47) {
+			while (la.kind == 51) {
 				Get();
 				Expect(1);
 				tmp = Builtins.Trait(t.val); 
@@ -787,40 +772,40 @@ internal sealed partial class Parser {
 				eis.Traits |= tmp;
 				
 			}
-			Expect(46);
-		} else SynErr(98);
+			Expect(50);
+		} else SynErr(83);
 	}
 
 	void BindingPattern(out ElaPattern pat) {
 		pat = null; 
 		switch (la.kind) {
-		case 44: {
+		case 48: {
 			DefaultPattern(out pat);
 			break;
 		}
-		case 45: {
+		case 49: {
 			UnitPattern(out pat);
 			break;
 		}
-		case 6: case 7: case 8: case 9: case 38: case 39: {
+		case 6: case 7: case 8: case 9: case 42: case 43: {
 			LiteralPattern(out pat);
 			break;
 		}
-		case 13: {
+		case 20: {
 			ListPattern(out pat);
 			break;
 		}
-		case 11: {
+		case 18: {
 			RecordPattern(out pat);
 			break;
 		}
-		case 49: {
+		case 54: {
 			TypeCheckPattern(out pat);
 			break;
 		}
-		default: SynErr(99); break;
+		default: SynErr(84); break;
 		}
-		if (la.kind == 27) {
+		if (la.kind == 31) {
 			Get();
 			var asPat = new ElaAsPattern(t) { Pattern = pat }; 
 			pat = asPat;				
@@ -838,28 +823,28 @@ internal sealed partial class Parser {
 			pat = new ElaVariablePattern(t) { Name = name }; 
 		} else if (StartOf(1)) {
 			LiteralPattern(out pat);
-		} else if (la.kind == 11) {
+		} else if (la.kind == 18) {
 			RecordPattern(out pat);
-		} else if (la.kind == 13) {
+		} else if (la.kind == 20) {
 			ListPattern(out pat);
-		} else if (la.kind == 45) {
+		} else if (la.kind == 49) {
 			UnitPattern(out pat);
-		} else SynErr(100);
+		} else SynErr(85);
 	}
 
 	void IsOperatorPattern(out ElaPattern pat) {
 		pat = null; 
-		if (la.kind == 49) {
+		if (la.kind == 54) {
 			TypeCheckPattern(out pat);
 		} else if (StartOf(1)) {
 			LiteralPattern(out pat);
-		} else if (la.kind == 11) {
+		} else if (la.kind == 18) {
 			RecordPattern(out pat);
-		} else if (la.kind == 13) {
+		} else if (la.kind == 20) {
 			ListPattern(out pat);
-		} else if (la.kind == 45) {
+		} else if (la.kind == 49) {
 			UnitPattern(out pat);
-		} else SynErr(101);
+		} else SynErr(86);
 	}
 
 	void FieldPattern(out ElaFieldPattern fld) {
@@ -869,13 +854,13 @@ internal sealed partial class Parser {
 		if (la.kind == 8) {
 			Get();
 			fld = new ElaFieldPattern(t) { Name = ReadString(t.val) }; 
-			Expect(18);
+			Expect(52);
 			AsPattern(out cpat);
 			fld.Value = cpat; 
 		} else if (la.kind == 1) {
 			Get();
 			fld = new ElaFieldPattern(t) { Name = t.val }; 
-			if (la.kind == 18) {
+			if (la.kind == 52) {
 				Get();
 				AsPattern(out cpat);
 			}
@@ -884,7 +869,7 @@ internal sealed partial class Parser {
 			
 			fld.Value = cpat; 
 			
-		} else SynErr(102);
+		} else SynErr(87);
 	}
 
 	void RecordField(out ElaFieldDeclaration fld) {
@@ -892,14 +877,14 @@ internal sealed partial class Parser {
 		var cexp = default(ElaExpression);
 		var mutable = false;
 		
-		if (la.kind == 52) {
+		if (la.kind == 57) {
 			Get();
 			mutable = true; 
 		}
 		if (la.kind == 1) {
 			Get();
 			fld = new ElaFieldDeclaration(t) { FieldName = t.val, Mutable = mutable }; 
-			if (la.kind == 18) {
+			if (la.kind == 52) {
 				Get();
 				Expr(out cexp);
 				fld.FieldValue = cexp; 
@@ -910,17 +895,17 @@ internal sealed partial class Parser {
 		} else if (la.kind == 8) {
 			Get();
 			fld = new ElaFieldDeclaration(t) { FieldName = ReadString(t.val), Mutable = mutable }; 
-			Expect(18);
+			Expect(52);
 			Expr(out cexp);
 			fld.FieldValue = cexp; 
-		} else SynErr(103);
+		} else SynErr(88);
 	}
 
 	void RangeExpr(ElaExpression first, ElaExpression sec, out ElaRange rng) {
 		rng = new ElaRange(t) { First = first, Second = sec };
 		var cexp = default(ElaExpression);
 		
-		Expect(53);
+		Expect(58);
 		if (StartOf(4)) {
 			Expr(out cexp);
 			rng.Last = cexp; 
@@ -934,28 +919,28 @@ internal sealed partial class Parser {
 		rng = null;
 		
 		Expr(out exp);
-		if (la.kind == 22 || la.kind == 47 || la.kind == 53) {
-			if (la.kind == 22) {
+		if (la.kind == 26 || la.kind == 51 || la.kind == 58) {
+			if (la.kind == 26) {
 				ComprehensionExpr(exp, out comp);
-			} else if (la.kind == 53) {
+			} else if (la.kind == 58) {
 				RangeExpr(exp, null, out rng);
 			} else {
 				var oexp = exp; 
 				Get();
 				Expr(out exp);
-				if (la.kind == 53) {
+				if (la.kind == 58) {
 					RangeExpr(oexp, exp, out rng);
-				} else if (la.kind == 14 || la.kind == 47) {
+				} else if (la.kind == 21 || la.kind == 51) {
 					list = new List<ElaExpression>();
 					list.Add(oexp);
 					list.Add(exp);
 					
-					while (la.kind == 47) {
+					while (la.kind == 51) {
 						Get();
 						Expr(out exp);
 						list.Add(exp); 
 					}
-				} else SynErr(104);
+				} else SynErr(89);
 			}
 		}
 		if (list == null && comp == null && rng == null && exp != null)
@@ -970,7 +955,7 @@ internal sealed partial class Parser {
 		var it = default(ElaGenerator); 
 		var ot = t;		
 		
-		Expect(22);
+		Expect(26);
 		ComprehensionEntry(sel, out it);
 		exp = new ElaComprehension(ot) { Generator = it }; 
 	}
@@ -980,19 +965,19 @@ internal sealed partial class Parser {
 		var inExp = default(ElaExpression);
 		var flags = default(ElaVariableFlags);
 		
-		while (!(la.kind == 0 || la.kind == 29)) {SynErr(105); Get();}
-		Expect(29);
-		if (la.kind == 30) {
+		while (!(la.kind == 0 || la.kind == 33)) {SynErr(90); Get();}
+		Expect(33);
+		if (la.kind == 34) {
 			VariableAttributes(out flags);
 		}
 		BindingBody(flags, out exp);
-		ExpectWeak(24, 13);
+		ExpectWeak(28, 11);
 		Expr(out inExp);
 		((ElaBinding)exp).In = inExp; 
 	}
 
 	void VariableAttributes(out ElaVariableFlags flags) {
-		Expect(30);
+		Expect(34);
 		flags = ElaVariableFlags.Private; 
 	}
 
@@ -1005,27 +990,27 @@ internal sealed partial class Parser {
 		if (la.kind == 1) {
 			Get();
 			varExp.VariableName = t.val; 
-			if (StartOf(14)) {
-				if (StartOf(12)) {
+			if (StartOf(12)) {
+				if (StartOf(10)) {
 					FunExpr(varExp);
-				} else if (la.kind == 15) {
+				} else if (la.kind == 22) {
 					BindingBodyGuards(varExp);
 				} else {
 					BindingBodyInit(varExp);
 				}
 			}
 			SetObjectMetadata(varExp, cexp); 
-		} else if (StartOf(15)) {
+		} else if (StartOf(13)) {
 			BindingPattern(out pat);
 			varExp.Pattern = pat; 
-			if (la.kind == 18) {
+			if (la.kind == 52) {
 				BindingBodyInit(varExp);
 			}
-		} else if (StartOf(16)) {
+		} else if (StartOf(14)) {
 			BindingBodyOperator(varExp);
-		} else SynErr(106);
-		if (la.kind == 42) {
-			ExpectWeak(42, 17);
+		} else SynErr(91);
+		if (la.kind == 46) {
+			ExpectWeak(46, 15);
 			BindingBody(flags, out exp);
 			((ElaBinding)varExp).And = (ElaBinding)exp;
 			exp = varExp;
@@ -1039,26 +1024,26 @@ internal sealed partial class Parser {
 		var flags = default(ElaVariableFlags);
 		
 		scanner.InjectBlock(); 
-		while (!(la.kind == 0 || la.kind == 29)) {SynErr(107); Get();}
-		Expect(29);
-		if (la.kind == 30) {
+		while (!(la.kind == 0 || la.kind == 33)) {SynErr(92); Get();}
+		Expect(33);
+		if (la.kind == 34) {
 			VariableAttributes(out flags);
 		}
 		BindingBody(flags, out exp);
-		if (la.kind == 24) {
-			ExpectWeak(24, 13);
+		if (la.kind == 28) {
+			ExpectWeak(28, 11);
 			Expr(out inExp);
 			((ElaBinding)exp).In = inExp; 
 			EndBlock();
-		} else if (la.kind == 43) {
+		} else if (la.kind == 47) {
 			EndBlock();
-		} else SynErr(108);
+		} else SynErr(93);
 	}
 
 	void BindingGuard(out ElaExpression exp) {
 		exp = null; 
 		BinaryExpr(out exp);
-		while (la.kind == 47) {
+		while (la.kind == 51) {
 			var old = exp; 
 			Get();
 			var ot = t; 
@@ -1072,7 +1057,7 @@ internal sealed partial class Parser {
 		var gexp = default(ElaExpression);
 		var cexp = default(ElaExpression);
 		
-		Expect(15);
+		Expect(22);
 		if (StartOf(9)) {
 			var newCond = new ElaCondition(t);
 			cond.False = newCond;
@@ -1080,18 +1065,18 @@ internal sealed partial class Parser {
 			
 			BindingGuard(out gexp);
 			cond.Condition = gexp; 
-			Expect(18);
+			Expect(52);
 			Expr(out cexp);
 			cond.True = cexp; 
-			if (la.kind == 15) {
+			if (la.kind == 22) {
 				BindingGuardList(ref cond);
 			}
-		} else if (la.kind == 34) {
+		} else if (la.kind == 38) {
 			Get();
-			Expect(18);
+			Expect(52);
 			Expr(out cexp);
 			cond.False = cexp; 
-		} else SynErr(109);
+		} else SynErr(94);
 	}
 
 	void FunExpr(ElaBinding varExp) {
@@ -1112,10 +1097,10 @@ internal sealed partial class Parser {
 		var cond = new ElaCondition(t);
 		varExp.InitExpression = cond;
 		
-		Expect(15);
+		Expect(22);
 		BindingGuard(out gexp);
 		cond.Condition = gexp; 
-		Expect(18);
+		Expect(52);
 		Expr(out cexp3);
 		cond.True = cexp3; 
 		BindingGuardList(ref cond);
@@ -1125,22 +1110,68 @@ internal sealed partial class Parser {
 		var cexp = default(ElaExpression); 
 		var cexp2 = default(ElaExpression);
 		
-		Expect(18);
-		Expr(out cexp);
+		Expect(52);
+		if (StartOf(4)) {
+			Expr(out cexp);
+		} else if (la.kind == 60) {
+			Get();
+			Expect(1);
+			cexp = new ElaBuiltin(t) { Kind = Builtins.Kind(t.val) }; 
+		} else SynErr(95);
 		varExp.InitExpression = cexp; 
-		if (la.kind == 41) {
+		if (la.kind == 45) {
 			WhereBinding(out cexp2);
 			varExp.Where = (ElaBinding)cexp2; 
 		}
 	}
 
 	void BindingBodyOperator(ElaBinding varExp) {
+		Operators();
+		varExp.VariableName = t.val; 
+		if (StartOf(10)) {
+			FunExpr(varExp);
+			var fun = (ElaFunctionLiteral)varExp.InitExpression;
+			fun.FunctionType = ElaFunctionType.Operator;
+			
+		} else if (la.kind == 52) {
+			BindingBodyInit(varExp);
+			if (varExp.InitExpression.Type == ElaNodeType.FunctionLiteral)
+			((ElaFunctionLiteral)varExp.InitExpression).FunctionType = ElaFunctionType.Operator;
+			
+		} else SynErr(96);
+	}
+
+	void Operators() {
 		switch (la.kind) {
 		case 10: {
 			Get();
 			break;
 		}
-		case 55: {
+		case 11: {
+			Get();
+			break;
+		}
+		case 12: {
+			Get();
+			break;
+		}
+		case 13: {
+			Get();
+			break;
+		}
+		case 14: {
+			Get();
+			break;
+		}
+		case 15: {
+			Get();
+			break;
+		}
+		case 16: {
+			Get();
+			break;
+		}
+		case 17: {
 			Get();
 			break;
 		}
@@ -1148,97 +1179,16 @@ internal sealed partial class Parser {
 			Get();
 			break;
 		}
-		case 57: {
-			Get();
-			break;
+		default: SynErr(97); break;
 		}
-		case 58: {
-			Get();
-			break;
-		}
-		case 59: {
-			Get();
-			break;
-		}
-		case 60: {
-			Get();
-			break;
-		}
-		case 61: {
-			Get();
-			break;
-		}
-		case 20: {
-			Get();
-			break;
-		}
-		case 62: {
-			Get();
-			break;
-		}
-		case 63: {
-			Get();
-			break;
-		}
-		case 64: {
-			Get();
-			break;
-		}
-		case 65: {
-			Get();
-			break;
-		}
-		case 66: {
-			Get();
-			break;
-		}
-		case 67: {
-			Get();
-			break;
-		}
-		case 68: {
-			Get();
-			break;
-		}
-		case 69: {
-			Get();
-			break;
-		}
-		case 70: {
-			Get();
-			break;
-		}
-		case 71: {
-			Get();
-			break;
-		}
-		case 72: {
-			Get();
-			break;
-		}
-		case 73: {
-			Get();
-			break;
-		}
-		case 51: {
-			Get();
-			break;
-		}
-		default: SynErr(110); break;
-		}
-		varExp.VariableName = t.val; 
-		FunExpr(varExp);
-		var fun = (ElaFunctionLiteral)varExp.InitExpression;
-		fun.FunctionType = ElaFunctionType.Operator;
-		
 	}
 
 	void FunName(ElaFunctionLiteral fun) {
 		if (la.kind == 1) {
 			Get();
-		} else if (la.kind == 10) {
-			Get();
-		} else SynErr(111);
+		} else if (StartOf(14)) {
+			Operators();
+		} else SynErr(98);
 		if (t.val != fun.Name)
 		AddError(ElaParserError.InvalidFunctionDeclaration, t.val);
 		
@@ -1255,7 +1205,7 @@ internal sealed partial class Parser {
 		
 		FuncPattern(out pat);
 		entry.Pattern = pat; 
-		while (StartOf(12)) {
+		while (StartOf(10)) {
 			FuncPattern(out pat);
 			if (seq == null)
 			{
@@ -1267,22 +1217,22 @@ internal sealed partial class Parser {
 				seq.Patterns.Add(pat); 
 			
 		}
-		if (la.kind == 15) {
+		if (la.kind == 22) {
 			Guard(out cexp);
 			entry.Guard = cexp; 
 		}
-		Expect(18);
+		Expect(52);
 		var fexp = default(ElaExpression); 
 		Expr(out fexp);
 		entry.Expression = fexp; 
-		if (la.kind == 41) {
+		if (la.kind == 45) {
 			WhereBinding(out cexp);
 			entry.Where = cexp; 
 		}
 		if (RequireEndBlock()) 
 		EndBlock();
-		if (la.kind == 1 || la.kind == 10 || la.kind == 15) {
-			if (la.kind == 1 || la.kind == 10) {
+		if (StartOf(16)) {
+			if (StartOf(17)) {
 				scanner.InjectBlock(); 
 				FunName(fun);
 				FunBodyExpr(fun);
@@ -1301,18 +1251,18 @@ internal sealed partial class Parser {
 		
 		Guard(out cexp);
 		entry.Guard = cexp; 
-		Expect(18);
+		Expect(52);
 		var fexp = default(ElaExpression); 
 		Expr(out fexp);
 		entry.Expression = fexp; 
-		if (la.kind == 41) {
+		if (la.kind == 45) {
 			WhereBinding(out cexp);
 			entry.Where = cexp; 
 		}
 		if (RequireEndBlock()) 
 		EndBlock();
-		if (la.kind == 1 || la.kind == 10 || la.kind == 15) {
-			if (la.kind == 1 || la.kind == 10) {
+		if (StartOf(16)) {
+			if (StartOf(17)) {
 				scanner.InjectBlock(); 
 				FunName(fun);
 				FunBodyExpr(fun);
@@ -1323,8 +1273,8 @@ internal sealed partial class Parser {
 	}
 
 	void LambdaExpr(out ElaExpression exp) {
-		while (!(la.kind == 0 || la.kind == 17)) {SynErr(112); Get();}
-		Expect(17);
+		while (!(la.kind == 0 || la.kind == 24)) {SynErr(99); Get();}
+		Expect(24);
 		var ot = t;
 		var pat = default(ElaPattern);
 		var seq = default(ElaPatternGroup);
@@ -1339,7 +1289,7 @@ internal sealed partial class Parser {
 		
 		FuncPattern(out pat);
 		entry.Pattern = pat; 
-		while (StartOf(12)) {
+		while (StartOf(10)) {
 			FuncPattern(out pat);
 			if (seq == null)
 			{
@@ -1351,12 +1301,12 @@ internal sealed partial class Parser {
 				seq.Patterns.Add(pat); 
 			
 		}
-		if (la.kind == 15) {
+		if (la.kind == 22) {
 			var cexp = default(ElaExpression); 
 			Guard(out cexp);
 			entry.Guard = cexp; 
 		}
-		Expect(16);
+		Expect(23);
 		var fexp = default(ElaExpression); 
 		Expr(out fexp);
 		entry.Expression = fexp; 
@@ -1365,8 +1315,8 @@ internal sealed partial class Parser {
 	void IncludeStat(out ElaExpression exp) {
 		exp = null; 
 		scanner.InjectBlock(); 
-		while (!(la.kind == 0 || la.kind == 31)) {SynErr(113); Get();}
-		Expect(31);
+		while (!(la.kind == 0 || la.kind == 35)) {SynErr(100); Get();}
+		Expect(35);
 		var inc = new ElaModuleInclude(t); 
 		Qualident(inc.Path);
 		var name = inc.Path[inc.Path.Count - 1];				
@@ -1374,7 +1324,7 @@ internal sealed partial class Parser {
 		inc.Alias = inc.Name = name;
 		exp = inc;
 		
-		if (la.kind == 74) {
+		if (la.kind == 61) {
 			Get();
 			if (la.kind == 1) {
 				Get();
@@ -1382,14 +1332,14 @@ internal sealed partial class Parser {
 			} else if (la.kind == 8) {
 				Get();
 				inc.DllName = ReadString(t.val); 
-			} else SynErr(114);
+			} else SynErr(101);
 		}
-		if (la.kind == 27) {
+		if (la.kind == 31) {
 			Get();
 			Expect(1);
 			inc.Alias = t.val; 
 		}
-		Expect(43);
+		Expect(47);
 	}
 
 	void Qualident(List<String> path ) {
@@ -1400,32 +1350,32 @@ internal sealed partial class Parser {
 		} else if (la.kind == 8) {
 			Get();
 			val = ReadString(t.val); 
-		} else SynErr(115);
+		} else SynErr(102);
 		path.Add(val); 
-		if (la.kind == 23) {
+		if (la.kind == 27) {
 			Get();
 			Qualident(path);
 		}
 	}
 
 	void IfExpr(out ElaExpression exp) {
-		Expect(33);
+		Expect(37);
 		var cond = new ElaCondition(t); 
 		var cexp = default(ElaExpression);	
 		exp = cond;
 		
 		Expr(out cexp);
 		cond.Condition = cexp; 
-		Expect(35);
+		Expect(39);
 		Expr(out cexp);
 		cond.True = cexp; 
-		ExpectWeak(34, 13);
+		ExpectWeak(38, 11);
 		Expr(out cexp);
 		cond.False = cexp; 
 	}
 
 	void RaiseExpr(out ElaExpression exp) {
-		Expect(36);
+		Expect(40);
 		var r = new ElaRaise(t);
 		exp = r;
 		var cexp = default(ElaExpression); 
@@ -1433,10 +1383,10 @@ internal sealed partial class Parser {
 		
 		Expect(1);
 		code = t.val; 
-		if (la.kind == 45) {
+		if (la.kind == 49) {
 			Get();
 			Expr(out cexp);
-			Expect(46);
+			Expect(50);
 		}
 		r.ErrorCode = code;
 		r.Expression = cexp; 
@@ -1444,7 +1394,7 @@ internal sealed partial class Parser {
 	}
 
 	void FailExpr(out ElaExpression exp) {
-		Expect(40);
+		Expect(44);
 		var r = new ElaRaise(t);
 		exp = r;
 		var cexp = default(ElaExpression); 
@@ -1457,7 +1407,7 @@ internal sealed partial class Parser {
 
 	void TryExpr(out ElaExpression exp) {
 		scanner.InjectBlock(); 
-		Expect(37);
+		Expect(41);
 		var ot = t;
 		var match = new ElaTry(t);
 		exp = match; 
@@ -1465,7 +1415,7 @@ internal sealed partial class Parser {
 		
 		Expr(out cexp);
 		match.Expression = cexp; 
-		Expect(32);
+		Expect(36);
 		scanner.InjectBlock(); 
 		MatchEntry(match);
 		EndBlock();
@@ -1479,11 +1429,11 @@ internal sealed partial class Parser {
 
 	void AssignExpr(out ElaExpression exp) {
 		BackwardPipeExpr(out exp);
-		while (la.kind == 75 || la.kind == 76) {
+		while (la.kind == 62 || la.kind == 63) {
 			var cexp = default(ElaExpression); 
 			var op = default(ElaOperator);
 			
-			if (la.kind == 75) {
+			if (la.kind == 62) {
 				Get();
 				op = ElaOperator.Assign; 
 			} else {
@@ -1497,7 +1447,7 @@ internal sealed partial class Parser {
 
 	void BackwardPipeExpr(out ElaExpression exp) {
 		ForwardPipeExpr(out exp);
-		while (la.kind == 77) {
+		while (la.kind == 64) {
 			var cexp = default(ElaExpression); 
 			var ot = t;
 			var mi = default(ElaFunctionCall);  
@@ -1517,7 +1467,7 @@ internal sealed partial class Parser {
 
 	void ForwardPipeExpr(out ElaExpression exp) {
 		OrExpr(out exp);
-		while (la.kind == 78) {
+		while (la.kind == 65) {
 			var cexp = default(ElaExpression); 
 			
 			Get();
@@ -1531,7 +1481,7 @@ internal sealed partial class Parser {
 
 	void OrExpr(out ElaExpression exp) {
 		AndExpr(out exp);
-		while (la.kind == 79) {
+		while (la.kind == 66) {
 			var cexp = default(ElaExpression); 
 			Get();
 			AndExpr(out cexp);
@@ -1542,329 +1492,198 @@ internal sealed partial class Parser {
 	}
 
 	void AndExpr(out ElaExpression exp) {
-		EqExpr(out exp);
-		while (la.kind == 80) {
+		OpExpr1(out exp);
+		while (la.kind == 67) {
 			var cexp = default(ElaExpression); 
 			Get();
-			EqExpr(out cexp);
+			OpExpr1(out cexp);
 			exp = new ElaBinary(t) { 
 			Left = exp, Operator = ElaOperator.BooleanAnd, Right = cexp }; 
 			
 		}
 	}
 
-	void EqExpr(out ElaExpression exp) {
-		var op = default(ElaOperator); 
+	void OpExpr1(out ElaExpression exp) {
+		var op = String.Empty; 
 		exp = null;
 		var ot = t; 
 		
 		if (StartOf(18)) {
-			ShiftExpr(out exp);
-			while (StartOf(19)) {
+			OpExpr2(out exp);
+			while (la.kind == 10) {
 				var cexp = default(ElaExpression); 
-				switch (la.kind) {
-				case 55: {
-					Get();
-					op = ElaOperator.Equals; 
-					break;
-				}
-				case 56: {
-					Get();
-					op = ElaOperator.NotEquals; 
-					break;
-				}
-				case 59: {
-					Get();
-					op = ElaOperator.Greater; 
-					break;
-				}
-				case 60: {
-					Get();
-					op = ElaOperator.Lesser; 
-					break;
-				}
-				case 57: {
-					Get();
-					op = ElaOperator.GreaterEqual; 
-					break;
-				}
-				case 58: {
-					Get();
-					op = ElaOperator.LesserEqual; 
-					break;
-				}
-				}
+				Get();
+				op = t.val; 
 				if (StartOf(18)) {
-					ShiftExpr(out cexp);
+					OpExpr2(out cexp);
 				}
 				if (cexp == null)
-				exp = GetOperatorFun(exp, op, false);
+				exp = GetOperatorFun(op, exp, null);
 				else
-					exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
+					exp = GetBinaryFunction(op, exp, cexp);
 				
 			}
-		} else if (StartOf(19)) {
-			switch (la.kind) {
-			case 55: {
-				Get();
-				op = ElaOperator.Equals; 
-				break;
-			}
-			case 56: {
-				Get();
-				op = ElaOperator.NotEquals; 
-				break;
-			}
-			case 59: {
-				Get();
-				op = ElaOperator.Greater; 
-				break;
-			}
-			case 60: {
-				Get();
-				op = ElaOperator.Lesser; 
-				break;
-			}
-			case 57: {
-				Get();
-				op = ElaOperator.GreaterEqual; 
-				break;
-			}
-			case 58: {
-				Get();
-				op = ElaOperator.LesserEqual; 
-				break;
-			}
-			}
+		} else if (la.kind == 10) {
+			Get();
+			op = t.val; 
 			if (StartOf(18)) {
-				ShiftExpr(out exp);
-				exp = GetOperatorFun(exp, op, true); 
+				OpExpr2(out exp);
+				exp = GetOperatorFun(op, null, exp); 
 			}
 			if (exp == null)
-			exp = new ElaVariableReference(ot) { 
-					VariableName = t.val
-				};
+			exp = new ElaVariableReference(ot) { VariableName = op };
 			
-		} else SynErr(116);
+		} else SynErr(103);
 	}
 
-	void ShiftExpr(out ElaExpression exp) {
-		var op = default(ElaOperator); 
+	void OpExpr2(out ElaExpression exp) {
+		var op = String.Empty; 
+		exp = null;
+		var ot = t; 
+		
+		if (StartOf(19)) {
+			OpExpr3(out exp);
+			while (la.kind == 11) {
+				var cexp = default(ElaExpression); 
+				Get();
+				op = t.val; 
+				if (StartOf(19)) {
+					OpExpr3(out cexp);
+				}
+				if (cexp == null)
+				exp = GetOperatorFun(op, exp, null);
+				else
+					exp = GetBinaryFunction(op, exp, cexp);
+				
+			}
+		} else if (la.kind == 11) {
+			Get();
+			op = t.val; 
+			if (StartOf(19)) {
+				OpExpr3(out exp);
+				exp = GetOperatorFun(op, null, exp); 
+			}
+			if (exp == null)
+			exp = new ElaVariableReference(ot) { VariableName = t.val };
+			
+		} else SynErr(104);
+	}
+
+	void OpExpr3(out ElaExpression exp) {
+		var op = String.Empty; 
 		exp = null;
 		var ot = t; 
 		
 		if (StartOf(20)) {
-			ConcatExpr(out exp);
-			while (la.kind == 70 || la.kind == 71) {
+			OpExpr4(out exp);
+			while (la.kind == 12 || la.kind == 56) {
 				var cexp = default(ElaExpression); 
-				if (la.kind == 70) {
+				if (la.kind == 12) {
 					Get();
-					op = ElaOperator.ShiftRight; 
 				} else {
 					Get();
-					op = ElaOperator.ShiftLeft; 
 				}
-				if (StartOf(20)) {
-					ConcatExpr(out cexp);
+				op = t.val; 
+				if (StartOf(19)) {
+					OpExpr3(out cexp);
 				}
 				if (cexp == null)
-				exp = GetOperatorFun(exp, op, false);
+				exp = GetOperatorFun(op, exp, null);
 				else
-					exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
+					exp = GetBinaryFunction(op, exp, cexp);
 				
 			}
-		} else if (la.kind == 70 || la.kind == 71) {
-			if (la.kind == 70) {
+		} else if (la.kind == 12 || la.kind == 56) {
+			if (la.kind == 12) {
 				Get();
-				op = ElaOperator.ShiftRight; 
 			} else {
 				Get();
-				op = ElaOperator.ShiftLeft; 
 			}
+			op = t.val; 
 			if (StartOf(20)) {
-				ConcatExpr(out exp);
-				exp = GetOperatorFun(exp, op, true); 
+				OpExpr4(out exp);
+				exp = GetOperatorFun(op, null, exp); 
 			}
 			if (exp == null)
-			exp = new ElaVariableReference(ot) { 
-					VariableName = t.val
-				};
+			exp = new ElaVariableReference(ot) { VariableName = t.val };
 			
-		} else SynErr(117);
+		} else SynErr(105);
 	}
 
-	void ConcatExpr(out ElaExpression exp) {
-		var op = default(ElaOperator); 
+	void OpExpr4(out ElaExpression exp) {
+		var op = String.Empty; 
 		exp = null;
 		var ot = t; 
 		
 		if (StartOf(21)) {
-			ConsExpr(out exp);
-			while (la.kind == 73) {
+			OpExpr5(out exp);
+			while (la.kind == 13) {
 				var cexp = default(ElaExpression); 
 				Get();
-				op = ElaOperator.Concat; 
+				op = t.val; 
 				if (StartOf(21)) {
-					ConsExpr(out cexp);
+					OpExpr5(out cexp);
 				}
 				if (cexp == null)
-				exp = GetOperatorFun(exp, op, false);
+				exp = GetOperatorFun(op, exp, null);
 				else
-					exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
+					exp = GetBinaryFunction(op, exp, cexp);
 				
 			}
-		} else if (la.kind == 73) {
+		} else if (la.kind == 13) {
 			Get();
-			op = ElaOperator.Concat; 
+			op = t.val; 
 			if (StartOf(21)) {
-				ConsExpr(out exp);
-				exp = GetOperatorFun(exp, op, true); 
+				OpExpr5(out exp);
+				exp = GetOperatorFun(op, null, exp); 
 			}
 			if (exp == null)
 			exp = new ElaVariableReference(ot) { VariableName = t.val };
 			
-		} else SynErr(118);
+		} else SynErr(106);
 	}
 
-	void ConsExpr(out ElaExpression exp) {
-		var op = default(ElaOperator); 
+	void OpExpr5(out ElaExpression exp) {
+		var op = String.Empty; 
 		exp = null;
 		var ot = t; 
 		
 		if (StartOf(22)) {
-			AddExpr(out exp);
-			while (la.kind == 51) {
-				var cexp = default(ElaExpression); 
-				Get();
-				op = ElaOperator.Cons; 
-				if (StartOf(21)) {
-					ConsExpr(out cexp);
-				}
-				if (cexp == null)
-				exp = GetOperatorFun(exp, op, false);
-				else
-					exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp };
-				
-			}
-		} else if (la.kind == 51) {
-			Get();
-			op = ElaOperator.Cons; 
-			if (StartOf(22)) {
-				AddExpr(out exp);
-				exp = GetOperatorFun(exp, op, true); 
-			}
-			if (exp == null)
-			exp = new ElaVariableReference(ot) { VariableName = t.val };
-			
-		} else SynErr(119);
-	}
-
-	void AddExpr(out ElaExpression exp) {
-		var op = default(ElaOperator); 
-		exp = null;
-		var ot = t; 
-		
-		if (StartOf(11)) {
-			MulExpr(out exp);
-			while (la.kind == 20 || la.kind == 61) {
-				var cexp = default(ElaExpression); 
-				if (la.kind == 61) {
-					Get();
-					op = ElaOperator.Add; 
-				} else {
-					Get();
-					op = ElaOperator.Subtract; 
-				}
-				if (StartOf(11)) {
-					MulExpr(out cexp);
-				}
-				if (cexp == null)
-				exp = GetOperatorFun(exp, op, false);
-				else
-					exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
-				
-			}
-		} else if (la.kind == 20 || la.kind == 61) {
-			if (la.kind == 61) {
-				Get();
-				op = ElaOperator.Add; 
-			} else {
-				Get();
-				op = ElaOperator.Subtract; 
-			}
-			if (StartOf(11)) {
-				MulExpr(out exp);
-				exp = GetOperatorFun(exp, op, true); 
-			}
-			if (exp == null)
-			exp = new ElaVariableReference(ot) { VariableName = t.val };
-			
-		} else SynErr(120);
-	}
-
-	void MulExpr(out ElaExpression exp) {
-		var op = default(ElaOperator); 
-		exp = null;
-		var ot = t; 
-		
-		if (StartOf(23)) {
 			CastExpr(out exp);
-			while (StartOf(24)) {
+			while (la.kind == 14) {
 				var cexp = default(ElaExpression); 
-				if (la.kind == 62) {
-					Get();
-					op = ElaOperator.Multiply; 
-				} else if (la.kind == 63) {
-					Get();
-					op = ElaOperator.Divide; 
-				} else if (la.kind == 64) {
-					Get();
-					op = ElaOperator.Remainder; 
-				} else {
-					Get();
-					op = ElaOperator.Power; 
-				}
-				if (StartOf(23)) {
+				Get();
+				op = t.val; 
+				if (StartOf(22)) {
 					CastExpr(out cexp);
 				}
 				if (cexp == null)
-				exp = GetOperatorFun(exp, op, false);
+				exp = GetOperatorFun(op, exp, null);
 				else
-					exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
+					exp = GetBinaryFunction(op, exp, cexp);
 				
 			}
-		} else if (StartOf(24)) {
-			if (la.kind == 62) {
-				Get();
-				op = ElaOperator.Multiply; 
-			} else if (la.kind == 63) {
-				Get();
-				op = ElaOperator.Divide; 
-			} else if (la.kind == 64) {
-				Get();
-				op = ElaOperator.Remainder; 
-			} else {
-				Get();
-				op = ElaOperator.Power; 
-			}
-			if (StartOf(23)) {
+		} else if (la.kind == 14) {
+			Get();
+			op = t.val; 
+			if (StartOf(22)) {
 				CastExpr(out exp);
-				exp = GetOperatorFun(exp, op, true); 
+				exp = GetOperatorFun(op, null, exp); 
 			}
 			if (exp == null)
 			exp = new ElaVariableReference(ot) { VariableName = t.val };
 			
-		} else SynErr(121);
+		} else SynErr(107);
 	}
 
 	void CastExpr(out ElaExpression exp) {
 		InfixExpr(out exp);
-		while (la.kind == 21 || la.kind == 28 || la.kind == 50) {
-			if (la.kind == 50) {
+		while (la.kind == 25 || la.kind == 32 || la.kind == 55) {
+			if (la.kind == 55) {
 				Get();
 				Expect(1);
 				exp = new ElaCast(t) { CastAffinity = GetType(t.val), Expression = exp };
-			} else if (la.kind == 28) {
+			} else if (la.kind == 32) {
 				var pat = default(ElaPattern); 
 				Get();
 				IsOperatorPattern(out pat);
@@ -1881,21 +1700,16 @@ internal sealed partial class Parser {
 		var ot = t; 
 		var name = String.Empty;
 		
-		if (StartOf(25)) {
-			BitOrExpr(out exp);
-			while (la.kind == 5 || la.kind == 10) {
+		if (StartOf(23)) {
+			OpExpr6(out exp);
+			while (la.kind == 5) {
 				var cexp = default(ElaExpression); 
 				ot = t;
 				
-				if (la.kind == 10) {
-					Get();
-					name = t.val; 
-				} else {
-					Get();
-					name = t.val.Trim('`'); 
-				}
-				if (StartOf(25)) {
-					BitOrExpr(out cexp);
+				Get();
+				name = t.val.Trim('`'); 
+				if (StartOf(23)) {
+					OpExpr6(out cexp);
 				}
 				var fc = new ElaFunctionCall(ot) { 
 					Target = new ElaVariableReference(t) { VariableName = name }
@@ -1908,22 +1722,17 @@ internal sealed partial class Parser {
 				exp = fc;
 				
 			}
-		} else if (la.kind == 5 || la.kind == 10) {
-			if (la.kind == 10) {
-				Get();
-				name = t.val; 
-			} else {
-				Get();
-				name = t.val.Trim('`'); 
-			}
-			if (StartOf(25)) {
-				BitOrExpr(out exp);
+		} else if (la.kind == 5) {
+			Get();
+			name = t.val.Trim('`'); 
+			if (StartOf(23)) {
+				OpExpr6(out exp);
 				exp = GetPrefixFun(name, exp, true);	
 			}
 			if (exp == null)
 			exp = new ElaVariableReference(ot) { VariableName = name };
 			
-		} else SynErr(122);
+		} else SynErr(108);
 	}
 
 	void ComprehensionOpExpr(ElaExpression init, out ElaExpression exp) {
@@ -1932,7 +1741,7 @@ internal sealed partial class Parser {
 		var rng = default(ElaRange);
 		exp = null;
 		
-		Expect(13);
+		Expect(20);
 		ParamList(out list, out comp, out rng);
 		if (rng != null) {
 		rng.Initial = init;
@@ -1947,204 +1756,98 @@ internal sealed partial class Parser {
 			exp = new ElaRange();
 		}
 		
-		Expect(14);
+		Expect(21);
 	}
 
-	void BitOrExpr(out ElaExpression exp) {
-		var op = ElaOperator.BitwiseOr; 
+	void OpExpr6(out ElaExpression exp) {
+		var op = String.Empty; 
+		exp = null;
+		var ot = t; 
+		
+		if (StartOf(24)) {
+			OpExpr7(out exp);
+			while (la.kind == 15) {
+				var cexp = default(ElaExpression); 
+				Get();
+				op = t.val; 
+				if (StartOf(23)) {
+					OpExpr6(out cexp);
+				}
+				if (cexp == null)
+				exp = GetOperatorFun(op, exp, null);
+				else
+					exp = GetBinaryFunction(op, exp, cexp);
+				
+			}
+		} else if (la.kind == 15) {
+			Get();
+			op = t.val; 
+			if (StartOf(24)) {
+				OpExpr7(out exp);
+				exp = GetOperatorFun(op, null, exp); 
+			}
+			if (exp == null)
+			exp = new ElaVariableReference(ot) { VariableName = t.val };
+			
+		} else SynErr(109);
+	}
+
+	void OpExpr7(out ElaExpression exp) {
+		var op = String.Empty; 
+		exp = null;
+		var ot = t; 
+		
+		if (StartOf(25)) {
+			OpExpr8(out exp);
+			while (la.kind == 16) {
+				var cexp = default(ElaExpression); 
+				Get();
+				op = t.val; 
+				if (StartOf(25)) {
+					OpExpr8(out cexp);
+				}
+				if (cexp == null)
+				exp = GetOperatorFun(op, exp, null);
+				else
+					exp = GetBinaryFunction(op, exp, cexp);
+				
+			}
+		} else if (la.kind == 16) {
+			Get();
+			op = t.val; 
+			if (StartOf(25)) {
+				OpExpr8(out exp);
+				exp = GetOperatorFun(op, null, exp); 
+			}
+			if (exp == null)
+			exp = new ElaVariableReference(ot) { VariableName = t.val };
+			
+		} else SynErr(110);
+	}
+
+	void OpExpr8(out ElaExpression exp) {
+		var op = String.Empty; 
 		exp = null;
 		var ot = t; 
 		
 		if (StartOf(26)) {
-			BitXorExpr(out exp);
-			while (la.kind == 68) {
-				var cexp = default(ElaExpression); 
-				Get();
-				if (StartOf(26)) {
-					BitXorExpr(out cexp);
-				}
-				if (cexp == null)
-				exp = GetOperatorFun(exp, op, false);
-				else
-					exp = new ElaBinary(t) { 
-						Left = exp, Operator = op, Right = cexp }; 
-				
-			}
-		} else if (la.kind == 68) {
-			Get();
-			if (StartOf(26)) {
-				BitXorExpr(out exp);
-				exp = GetOperatorFun(exp, op, true); 
-			}
-			if (exp == null)
-			exp = new ElaVariableReference(ot) { VariableName = t.val };
-			
-		} else SynErr(123);
-	}
-
-	void BitXorExpr(out ElaExpression exp) {
-		var op = ElaOperator.BitwiseXor; 
-		exp = null;
-		var ot = t; 
-		
-		if (StartOf(27)) {
-			BitAndExpr(out exp);
-			while (la.kind == 69) {
-				var cexp = default(ElaExpression); 
-				Get();
-				if (StartOf(27)) {
-					BitAndExpr(out cexp);
-				}
-				if (cexp == null)
-				exp = GetOperatorFun(exp, op, false);
-				else
-					exp = new ElaBinary(t) { 
-						Left = exp, Operator = op, Right = cexp }; 
-				
-			}
-		} else if (la.kind == 69) {
-			Get();
-			if (StartOf(27)) {
-				BitAndExpr(out exp);
-				exp = GetOperatorFun(exp, op, true); 
-			}
-			if (exp == null)
-			exp = new ElaVariableReference(ot) { VariableName = t.val };
-			
-		} else SynErr(124);
-	}
-
-	void BitAndExpr(out ElaExpression exp) {
-		var op = ElaOperator.BitwiseAnd; 
-		exp = null;
-		var ot = t; 
-		
-		if (StartOf(28)) {
-			BackwardCompExpr(out exp);
-			while (la.kind == 67) {
-				var cexp = default(ElaExpression); 
-				Get();
-				if (StartOf(28)) {
-					BackwardCompExpr(out cexp);
-				}
-				if (cexp == null)
-				exp = GetOperatorFun(exp, op, false);
-				else
-					exp = new ElaBinary(t) { 
-						Left = exp, Operator = op, Right = cexp }; 
-				
-			}
-		} else if (la.kind == 67) {
-			Get();
-			if (StartOf(28)) {
-				BackwardCompExpr(out exp);
-				exp = GetOperatorFun(exp, op, true); 
-			}
-			if (exp == null)
-			exp = new ElaVariableReference(ot) { VariableName = t.val };
-			
-		} else SynErr(125);
-	}
-
-	void BackwardCompExpr(out ElaExpression exp) {
-		var op = default(ElaOperator); 
-		exp = null;
-		var ot = t; 
-		
-		if (StartOf(29)) {
-			ForwardCompExpr(out exp);
-			while (la.kind == 81) {
-				var cexp = default(ElaExpression); 
-				Get();
-				op = ElaOperator.CompBackward; 
-				if (StartOf(28)) {
-					BackwardCompExpr(out cexp);
-				}
-				if (cexp == null)
-				exp = GetOperatorFun(exp, op, true);
-				else
-					exp = new ElaBinary(t) { Right = exp, Operator = op, Left = cexp }; 
-				
-			}
-		} else if (la.kind == 81) {
-			Get();
-			op = ElaOperator.CompBackward; 
-			if (StartOf(29)) {
-				ForwardCompExpr(out exp);
-				exp = GetOperatorFun(exp, op, true); 
-			}
-			if (exp == null)
-			exp = new ElaVariableReference(ot) { VariableName = t.val };
-			
-		} else SynErr(126);
-	}
-
-	void ForwardCompExpr(out ElaExpression exp) {
-		var op = default(ElaOperator); 
-		exp = null;
-		var ot = t; 
-		
-		if (StartOf(30)) {
-			UnaryExpr(out exp);
-			while (la.kind == 82) {
-				var cexp = default(ElaExpression); 
-				Get();
-				op = ElaOperator.CompForward; 
-				if (StartOf(30)) {
-					UnaryExpr(out cexp);
-				}
-				if (cexp == null)
-				exp = GetOperatorFun(exp, op, false);
-				else
-					exp = new ElaBinary(t) { Left = exp, Operator = op, Right = cexp }; 
-				
-			}
-		} else if (la.kind == 82) {
-			Get();
-			op = ElaOperator.CompForward; 
-			if (StartOf(30)) {
-				UnaryExpr(out exp);
-				exp = GetOperatorFun(exp, op, true); 
-			}
-			if (exp == null)
-			exp = new ElaVariableReference(ot) { VariableName = t.val };
-			
-		} else SynErr(127);
-	}
-
-	void UnaryExpr(out ElaExpression exp) {
-		var op = default(ElaOperator); 
-		exp = null;
-		var ot = t; 
-		
-		if (StartOf(31)) {
 			Application(out exp);
-			while (la.kind == 66 || la.kind == 72) {
-				if (la.kind == 66) {
-					Get();
-					op = ElaOperator.Negate; 
-				} else {
-					Get();
-					op = ElaOperator.BitwiseNot; 
-				}
-				exp = new ElaBinary(t) { Left = exp, Operator = op }; 
-			}
-		} else if (la.kind == 66 || la.kind == 72) {
-			if (la.kind == 66) {
+			while (la.kind == 17) {
 				Get();
-				op = ElaOperator.Negate; 
-			} else {
-				Get();
-				op = ElaOperator.BitwiseNot; 
+				op = t.val; 
+				exp = GetBinaryFunction(op, exp, null); 
 			}
-			if (StartOf(31)) {
+		} else if (la.kind == 17) {
+			Get();
+			op = t.val; 
+			if (StartOf(26)) {
 				Application(out exp);
-				exp = new ElaBinary(t) { Left = exp, Operator = op }; 
+				exp = GetBinaryFunction(op, exp, null); 
 			}
 			if (exp == null)
 			exp = new ElaVariableReference(ot) { VariableName = t.val };
 			
-		} else SynErr(128);
+		} else SynErr(111);
 	}
 
 	void Application(out ElaExpression exp) {
@@ -2168,14 +1871,14 @@ internal sealed partial class Parser {
 			}
 		} else if (la.kind == 2) {
 			VariantLiteral(out exp);
-		} else SynErr(129);
+		} else SynErr(112);
 	}
 
 	void AccessExpr(out ElaExpression exp) {
 		Literal(out exp);
-		while (la.kind == 23) {
+		while (la.kind == 27) {
 			Get();
-			if (la.kind == 13) {
+			if (la.kind == 20) {
 				Get();
 				var indExp = new ElaIndexer(t) { TargetObject = exp };
 				exp = indExp;
@@ -2183,46 +1886,46 @@ internal sealed partial class Parser {
 				var cexp = default(ElaExpression); 
 				Expr(out cexp);
 				indExp.Index = cexp;	
-				Expect(14);
+				Expect(21);
 			} else if (la.kind == 1) {
 				Get();
 				exp = new ElaFieldReference(t) { FieldName = t.val, TargetObject = exp }; 
-			} else SynErr(130);
+			} else SynErr(113);
 		}
 	}
 
 	void EmbExpr(out ElaExpression exp) {
 		exp = null; 
 		switch (la.kind) {
-		case 1: case 2: case 4: case 5: case 6: case 7: case 8: case 9: case 10: case 11: case 13: case 19: case 20: case 25: case 38: case 39: case 44: case 45: case 51: case 55: case 56: case 57: case 58: case 59: case 60: case 61: case 62: case 63: case 64: case 65: case 66: case 67: case 68: case 69: case 70: case 71: case 72: case 73: case 81: case 82: case 83: {
+		case 1: case 2: case 4: case 5: case 6: case 7: case 8: case 9: case 10: case 11: case 12: case 13: case 14: case 15: case 16: case 17: case 18: case 20: case 29: case 42: case 43: case 48: case 49: case 56: case 69: {
 			BinaryExpr(out exp);
 			break;
 		}
-		case 33: {
+		case 37: {
 			IfExpr(out exp);
 			break;
 		}
-		case 17: {
+		case 24: {
 			LambdaExpr(out exp);
 			break;
 		}
-		case 36: {
+		case 40: {
 			RaiseExpr(out exp);
 			break;
 		}
-		case 40: {
+		case 44: {
 			FailExpr(out exp);
 			break;
 		}
-		case 26: {
+		case 30: {
 			MatchExpr(out exp);
 			break;
 		}
-		case 37: {
+		case 41: {
 			TryExpr(out exp);
 			break;
 		}
-		default: SynErr(131); break;
+		default: SynErr(114); break;
 		}
 	}
 
@@ -2233,13 +1936,13 @@ internal sealed partial class Parser {
 		var pat = default(ElaPattern);
 		
 		GeneratorPattern(out pat);
-		Expect(75);
+		Expect(62);
 		Expr(out cexp);
 		it.Pattern = pat;
 		it.Target = cexp;
 		
-		if (la.kind == 15 || la.kind == 47) {
-			if (la.kind == 47) {
+		if (la.kind == 22 || la.kind == 51) {
+			if (la.kind == 51) {
 				var cit = default(ElaGenerator); 
 				Get();
 				ComprehensionEntry(body, out cit);
@@ -2256,22 +1959,22 @@ internal sealed partial class Parser {
 		Expression = b;
 		
 		DeclarationBlock(b);
-		while (StartOf(32)) {
+		while (StartOf(27)) {
 			DeclarationBlock(b);
 		}
 	}
 
 	void DeclarationBlock(ElaBlock b) {
 		var exp = default(ElaExpression); 
-		if (la.kind == 29) {
+		if (la.kind == 33) {
 			RootLetBinding(out exp);
-		} else if (la.kind == 31) {
+		} else if (la.kind == 35) {
 			IncludeStat(out exp);
 		} else if (StartOf(6)) {
 			EmbExpr(out exp);
 			if (FALSE) 
-			Expect(43);
-		} else SynErr(132);
+			Expect(47);
+		} else SynErr(115);
 		b.Expressions.Add(exp); 
 	}
 
@@ -2287,39 +1990,34 @@ internal sealed partial class Parser {
 	}
 	
 	static readonly bool[,] set = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,T,x, x,T,x,T, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
-		{x,x,x,x, x,x,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
-		{x,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x},
-		{x,T,T,x, T,T,T,T, T,T,T,T, x,T,x,x, x,T,x,T, T,x,x,x, x,T,T,x, x,T,x,x, x,T,x,x, T,T,T,T, T,x,x,x, T,T,x,x, x,x,x,T, x,x,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,x,x, x,x,x,x, x,T,T,T, x,x},
-		{x,T,T,x, T,T,T,T, T,T,T,T, x,T,x,x, x,T,x,T, T,x,x,x, x,T,T,x, x,T,x,x, x,T,x,x, T,T,T,T, T,x,x,x, T,T,x,x, x,x,x,T, x,x,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,x,x, x,x,x,x, x,T,T,T, x,x},
-		{x,T,x,x, T,x,T,T, T,T,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x},
-		{x,T,T,x, T,T,T,T, T,T,T,T, x,T,x,x, x,T,x,T, T,x,x,x, x,T,T,x, x,x,x,x, x,T,x,x, T,T,T,T, T,x,x,x, T,T,x,x, x,x,x,T, x,x,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,x,x, x,x,x,x, x,T,T,T, x,x},
-		{x,T,T,x, x,x,T,T, T,T,x,T, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
-		{x,T,T,x, x,x,T,T, T,T,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
-		{x,T,T,x, T,T,T,T, T,T,T,T, x,T,x,x, x,x,x,T, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,T, x,x,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,x,x, x,x,x,x, x,T,T,T, x,x},
-		{x,T,T,x, T,T,T,T, T,T,T,T, x,T,x,x, x,x,x,x, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,T, x,x,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,x,x, x,x,x,x, x,T,T,T, x,x},
-		{x,T,T,x, T,T,T,T, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, T,T,x,x, T,x,x,x, x,x,x,x, x,T,T,T, x,x},
-		{x,T,x,x, x,x,T,T, T,T,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
-		{T,T,T,x, T,T,T,T, T,T,T,T, x,T,x,x, x,T,x,T, T,x,x,x, x,T,T,x, x,T,x,T, x,T,x,x, T,T,T,T, T,T,x,x, T,T,x,x, x,x,x,T, x,x,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,x,x, x,x,x,x, x,T,T,T, x,x},
-		{x,T,x,x, x,x,T,T, T,T,x,T, x,T,x,T, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
-		{x,x,x,x, x,x,T,T, T,T,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
-		{x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x},
-		{T,T,x,x, x,x,T,T, T,T,T,T, x,T,x,x, x,T,x,x, T,x,x,x, x,x,T,x, x,T,x,T, x,x,x,x, x,x,T,T, x,T,x,x, T,T,x,x, x,T,x,T, x,x,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x},
-		{x,T,T,x, T,T,T,T, T,T,T,T, x,T,x,x, x,x,x,x, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,T,T,T, T,T,T,T, T,T,T,T, T,T,x,x, x,x,x,x, x,T,T,T, x,x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
-		{x,T,T,x, T,T,T,T, T,T,T,T, x,T,x,x, x,x,x,x, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,T,T,T, T,T,T,T, T,T,x,x, T,T,x,x, x,x,x,x, x,T,T,T, x,x},
-		{x,T,T,x, T,T,T,T, T,T,T,T, x,T,x,x, x,x,x,x, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,T,T,T, T,T,T,T, T,T,x,x, T,x,x,x, x,x,x,x, x,T,T,T, x,x},
-		{x,T,T,x, T,T,T,T, T,T,T,T, x,T,x,x, x,x,x,x, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,T,T, T,T,x,x, T,x,x,x, x,x,x,x, x,T,T,T, x,x},
-		{x,T,T,x, T,T,T,T, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,x,x, T,x,x,x, x,x,x,x, x,T,T,T, x,x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
-		{x,T,T,x, T,x,T,T, T,T,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,x,x, T,x,x,x, x,x,x,x, x,T,T,T, x,x},
-		{x,T,T,x, T,x,T,T, T,T,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,T,x,x, T,x,x,x, x,x,x,x, x,T,T,T, x,x},
-		{x,T,T,x, T,x,T,T, T,T,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,x,x,x, x,x,x,x, x,T,T,T, x,x},
-		{x,T,T,x, T,x,T,T, T,T,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, T,x,x,x, x,x,x,x, x,T,T,T, x,x},
-		{x,T,T,x, T,x,T,T, T,T,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,T,T, x,x},
-		{x,T,T,x, T,x,T,T, T,T,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,T, x,x},
-		{x,T,T,x, T,x,T,T, T,T,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x},
-		{x,T,T,x, T,T,T,T, T,T,T,T, x,T,x,x, x,T,x,T, T,x,x,x, x,T,T,x, x,T,x,T, x,T,x,x, T,T,T,T, T,x,x,x, T,T,x,x, x,x,x,T, x,x,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,x,x, x,x,x,x, x,T,T,T, x,x}
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,T,x, x,T,x,T, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{x,x,x,x, x,x,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{x,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x},
+		{x,T,T,x, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x, T,x,x,x, T,x,x,x, x,T,T,x, x,T,x,x, x,T,x,x, T,T,T,T, T,x,x,x, T,T,x,x, x,x,x,x, T,x,x,T, x,x,x,x, x,x,x,x, x,T,x,x},
+		{x,T,T,x, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x, T,x,x,x, T,x,x,x, x,T,T,x, x,T,x,x, x,T,x,x, T,T,T,T, T,x,x,x, T,T,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x},
+		{x,T,x,x, T,x,T,T, T,T,x,x, x,x,x,x, x,x,T,x, T,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x},
+		{x,T,T,x, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x, T,x,x,x, T,x,x,x, x,T,T,x, x,x,x,x, x,T,x,x, T,T,T,T, T,x,x,x, T,T,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x},
+		{x,T,T,x, x,x,T,T, T,T,x,x, x,x,x,x, x,x,T,x, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{x,T,T,x, x,x,T,T, T,T,x,x, x,x,x,x, x,x,T,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{x,T,T,x, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x, T,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x},
+		{x,T,x,x, x,x,T,T, T,T,x,x, x,x,x,x, x,x,T,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{T,T,T,x, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x, T,x,x,x, T,x,x,x, x,T,T,x, x,T,x,T, x,T,x,x, T,T,T,T, T,T,x,x, T,T,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x},
+		{x,T,x,x, x,x,T,T, T,T,x,x, x,x,x,x, x,x,T,x, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{x,x,x,x, x,x,T,T, T,T,x,x, x,x,x,x, x,x,T,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{T,T,x,x, x,x,T,T, T,T,T,T, T,T,T,T, T,T,T,x, T,x,x,x, T,x,x,x, x,x,T,x, x,T,x,T, x,x,x,x, x,x,T,T, x,T,x,x, T,T,x,x, x,x,T,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{x,T,x,x, x,x,x,x, x,x,T,T, T,T,T,T, T,T,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{x,T,x,x, x,x,x,x, x,x,T,T, T,T,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{x,T,T,x, T,T,T,T, T,T,x,T, T,T,T,T, T,T,T,x, T,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x},
+		{x,T,T,x, T,T,T,T, T,T,x,x, T,T,T,T, T,T,T,x, T,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x},
+		{x,T,T,x, T,T,T,T, T,T,x,x, x,T,T,T, T,T,T,x, T,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x},
+		{x,T,T,x, T,T,T,T, T,T,x,x, x,x,T,T, T,T,T,x, T,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x},
+		{x,T,T,x, T,T,T,T, T,T,x,x, x,x,x,T, T,T,T,x, T,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x},
+		{x,T,T,x, T,x,T,T, T,T,x,x, x,x,x,T, T,T,T,x, T,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x},
+		{x,T,T,x, T,x,T,T, T,T,x,x, x,x,x,x, T,T,T,x, T,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x},
+		{x,T,T,x, T,x,T,T, T,T,x,x, x,x,x,x, x,T,T,x, T,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x},
+		{x,T,T,x, T,x,T,T, T,T,x,x, x,x,x,x, x,x,T,x, T,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x},
+		{x,T,T,x, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x, T,x,x,x, T,x,x,x, x,T,T,x, x,T,x,T, x,T,x,x, T,T,T,T, T,x,x,x, T,T,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x}
 
 	};
 } // end Parser
@@ -2347,129 +2045,112 @@ internal sealed class Errors {
 			case 7: s = "realTok expected"; break;
 			case 8: s = "stringTok expected"; break;
 			case 9: s = "charTok expected"; break;
-			case 10: s = "operatorTok expected"; break;
-			case 11: s = "LBRA expected"; break;
-			case 12: s = "RBRA expected"; break;
-			case 13: s = "LILB expected"; break;
-			case 14: s = "LIRB expected"; break;
-			case 15: s = "PIPE expected"; break;
-			case 16: s = "ARROW expected"; break;
-			case 17: s = "LAMBDA expected"; break;
-			case 18: s = "EQ expected"; break;
-			case 19: s = "SEQ expected"; break;
-			case 20: s = "MINUS expected"; break;
-			case 21: s = "COMPH expected"; break;
-			case 22: s = "COMPO expected"; break;
-			case 23: s = "DOT expected"; break;
-			case 24: s = "IN expected"; break;
-			case 25: s = "BASE expected"; break;
-			case 26: s = "MATCH expected"; break;
-			case 27: s = "ASAMP expected"; break;
-			case 28: s = "IS expected"; break;
-			case 29: s = "LET expected"; break;
-			case 30: s = "PRIVATE expected"; break;
-			case 31: s = "OPEN expected"; break;
-			case 32: s = "WITH expected"; break;
-			case 33: s = "IFS expected"; break;
-			case 34: s = "ELSE expected"; break;
-			case 35: s = "THEN expected"; break;
-			case 36: s = "RAISE expected"; break;
-			case 37: s = "TRY expected"; break;
-			case 38: s = "TRUE expected"; break;
-			case 39: s = "FALSE expected"; break;
-			case 40: s = "FAIL expected"; break;
-			case 41: s = "WHERE expected"; break;
-			case 42: s = "ET expected"; break;
-			case 43: s = "EBLOCK expected"; break;
-			case 44: s = "\"_\" expected"; break;
-			case 45: s = "\"(\" expected"; break;
-			case 46: s = "\")\" expected"; break;
-			case 47: s = "\",\" expected"; break;
-			case 48: s = "\"`\" expected"; break;
-			case 49: s = "\"?\" expected"; break;
-			case 50: s = "\":\" expected"; break;
-			case 51: s = "\"::\" expected"; break;
-			case 52: s = "\"!\" expected"; break;
-			case 53: s = "\"..\" expected"; break;
-			case 54: s = "\"&\" expected"; break;
-			case 55: s = "\"==\" expected"; break;
-			case 56: s = "\"<>\" expected"; break;
-			case 57: s = "\">=\" expected"; break;
-			case 58: s = "\"<=\" expected"; break;
-			case 59: s = "\">\" expected"; break;
-			case 60: s = "\"<\" expected"; break;
-			case 61: s = "\"+\" expected"; break;
-			case 62: s = "\"*\" expected"; break;
-			case 63: s = "\"/\" expected"; break;
-			case 64: s = "\"%\" expected"; break;
-			case 65: s = "\"**\" expected"; break;
-			case 66: s = "\"--\" expected"; break;
-			case 67: s = "\"&&&\" expected"; break;
-			case 68: s = "\"|||\" expected"; break;
-			case 69: s = "\"^^^\" expected"; break;
-			case 70: s = "\">>>\" expected"; break;
-			case 71: s = "\"<<<\" expected"; break;
-			case 72: s = "\"~~~\" expected"; break;
-			case 73: s = "\"++\" expected"; break;
-			case 74: s = "\"#\" expected"; break;
-			case 75: s = "\"<-\" expected"; break;
-			case 76: s = "\"<->\" expected"; break;
-			case 77: s = "\"<|\" expected"; break;
-			case 78: s = "\"|>\" expected"; break;
-			case 79: s = "\"||\" expected"; break;
-			case 80: s = "\"&&\" expected"; break;
-			case 81: s = "\"<<\" expected"; break;
-			case 82: s = "\">>\" expected"; break;
-			case 83: s = "\"(&\" expected"; break;
-			case 84: s = "??? expected"; break;
-			case 85: s = "invalid Literal"; break;
-			case 86: s = "invalid Primitive"; break;
-			case 87: s = "invalid SimpleExpr"; break;
-			case 88: s = "invalid VariableReference"; break;
-			case 89: s = "invalid Expr"; break;
-			case 90: s = "this symbol not expected in MatchExpr"; break;
-			case 91: s = "invalid Guard"; break;
-			case 92: s = "this symbol not expected in WhereBinding"; break;
-			case 93: s = "invalid BinaryExpr"; break;
-			case 94: s = "invalid OrPattern"; break;
-			case 95: s = "invalid VariantPattern"; break;
-			case 96: s = "invalid SinglePattern"; break;
-			case 97: s = "invalid LiteralPattern"; break;
-			case 98: s = "invalid TypeCheckPattern"; break;
-			case 99: s = "invalid BindingPattern"; break;
-			case 100: s = "invalid GeneratorPattern"; break;
-			case 101: s = "invalid IsOperatorPattern"; break;
-			case 102: s = "invalid FieldPattern"; break;
-			case 103: s = "invalid RecordField"; break;
-			case 104: s = "invalid ParamList"; break;
-			case 105: s = "this symbol not expected in LetBinding"; break;
-			case 106: s = "invalid BindingBody"; break;
-			case 107: s = "this symbol not expected in RootLetBinding"; break;
-			case 108: s = "invalid RootLetBinding"; break;
-			case 109: s = "invalid BindingGuardList"; break;
-			case 110: s = "invalid BindingBodyOperator"; break;
-			case 111: s = "invalid FunName"; break;
-			case 112: s = "this symbol not expected in LambdaExpr"; break;
-			case 113: s = "this symbol not expected in IncludeStat"; break;
-			case 114: s = "invalid IncludeStat"; break;
-			case 115: s = "invalid Qualident"; break;
-			case 116: s = "invalid EqExpr"; break;
-			case 117: s = "invalid ShiftExpr"; break;
-			case 118: s = "invalid ConcatExpr"; break;
-			case 119: s = "invalid ConsExpr"; break;
-			case 120: s = "invalid AddExpr"; break;
-			case 121: s = "invalid MulExpr"; break;
-			case 122: s = "invalid InfixExpr"; break;
-			case 123: s = "invalid BitOrExpr"; break;
-			case 124: s = "invalid BitXorExpr"; break;
-			case 125: s = "invalid BitAndExpr"; break;
-			case 126: s = "invalid BackwardCompExpr"; break;
-			case 127: s = "invalid ForwardCompExpr"; break;
-			case 128: s = "invalid UnaryExpr"; break;
-			case 129: s = "invalid Application"; break;
-			case 130: s = "invalid AccessExpr"; break;
-			case 131: s = "invalid EmbExpr"; break;
-			case 132: s = "invalid DeclarationBlock"; break;
+			case 10: s = "operatorTok1 expected"; break;
+			case 11: s = "operatorTok2 expected"; break;
+			case 12: s = "operatorTok3 expected"; break;
+			case 13: s = "operatorTok4 expected"; break;
+			case 14: s = "operatorTok5 expected"; break;
+			case 15: s = "operatorTok6 expected"; break;
+			case 16: s = "operatorTok7 expected"; break;
+			case 17: s = "operatorTok8 expected"; break;
+			case 18: s = "LBRA expected"; break;
+			case 19: s = "RBRA expected"; break;
+			case 20: s = "LILB expected"; break;
+			case 21: s = "LIRB expected"; break;
+			case 22: s = "PIPE expected"; break;
+			case 23: s = "ARROW expected"; break;
+			case 24: s = "LAMBDA expected"; break;
+			case 25: s = "COMPH expected"; break;
+			case 26: s = "COMPO expected"; break;
+			case 27: s = "DOT expected"; break;
+			case 28: s = "IN expected"; break;
+			case 29: s = "BASE expected"; break;
+			case 30: s = "MATCH expected"; break;
+			case 31: s = "ASAMP expected"; break;
+			case 32: s = "IS expected"; break;
+			case 33: s = "LET expected"; break;
+			case 34: s = "PRIVATE expected"; break;
+			case 35: s = "OPEN expected"; break;
+			case 36: s = "WITH expected"; break;
+			case 37: s = "IFS expected"; break;
+			case 38: s = "ELSE expected"; break;
+			case 39: s = "THEN expected"; break;
+			case 40: s = "RAISE expected"; break;
+			case 41: s = "TRY expected"; break;
+			case 42: s = "TRUE expected"; break;
+			case 43: s = "FALSE expected"; break;
+			case 44: s = "FAIL expected"; break;
+			case 45: s = "WHERE expected"; break;
+			case 46: s = "ET expected"; break;
+			case 47: s = "EBLOCK expected"; break;
+			case 48: s = "\"_\" expected"; break;
+			case 49: s = "\"(\" expected"; break;
+			case 50: s = "\")\" expected"; break;
+			case 51: s = "\",\" expected"; break;
+			case 52: s = "\"=\" expected"; break;
+			case 53: s = "\"`\" expected"; break;
+			case 54: s = "\"?\" expected"; break;
+			case 55: s = "\":\" expected"; break;
+			case 56: s = "\"::\" expected"; break;
+			case 57: s = "\"!\" expected"; break;
+			case 58: s = "\"..\" expected"; break;
+			case 59: s = "\"&\" expected"; break;
+			case 60: s = "\"__internal\" expected"; break;
+			case 61: s = "\"#\" expected"; break;
+			case 62: s = "\"<-\" expected"; break;
+			case 63: s = "\"<->\" expected"; break;
+			case 64: s = "\"<|\" expected"; break;
+			case 65: s = "\"|>\" expected"; break;
+			case 66: s = "\"||\" expected"; break;
+			case 67: s = "\"&&\" expected"; break;
+			case 68: s = "\"$\" expected"; break;
+			case 69: s = "\"(&\" expected"; break;
+			case 70: s = "??? expected"; break;
+			case 71: s = "invalid Literal"; break;
+			case 72: s = "invalid Primitive"; break;
+			case 73: s = "invalid SimpleExpr"; break;
+			case 74: s = "invalid VariableReference"; break;
+			case 75: s = "invalid Expr"; break;
+			case 76: s = "this symbol not expected in MatchExpr"; break;
+			case 77: s = "invalid Guard"; break;
+			case 78: s = "this symbol not expected in WhereBinding"; break;
+			case 79: s = "invalid OrPattern"; break;
+			case 80: s = "invalid VariantPattern"; break;
+			case 81: s = "invalid SinglePattern"; break;
+			case 82: s = "invalid LiteralPattern"; break;
+			case 83: s = "invalid TypeCheckPattern"; break;
+			case 84: s = "invalid BindingPattern"; break;
+			case 85: s = "invalid GeneratorPattern"; break;
+			case 86: s = "invalid IsOperatorPattern"; break;
+			case 87: s = "invalid FieldPattern"; break;
+			case 88: s = "invalid RecordField"; break;
+			case 89: s = "invalid ParamList"; break;
+			case 90: s = "this symbol not expected in LetBinding"; break;
+			case 91: s = "invalid BindingBody"; break;
+			case 92: s = "this symbol not expected in RootLetBinding"; break;
+			case 93: s = "invalid RootLetBinding"; break;
+			case 94: s = "invalid BindingGuardList"; break;
+			case 95: s = "invalid BindingBodyInit"; break;
+			case 96: s = "invalid BindingBodyOperator"; break;
+			case 97: s = "invalid Operators"; break;
+			case 98: s = "invalid FunName"; break;
+			case 99: s = "this symbol not expected in LambdaExpr"; break;
+			case 100: s = "this symbol not expected in IncludeStat"; break;
+			case 101: s = "invalid IncludeStat"; break;
+			case 102: s = "invalid Qualident"; break;
+			case 103: s = "invalid OpExpr1"; break;
+			case 104: s = "invalid OpExpr2"; break;
+			case 105: s = "invalid OpExpr3"; break;
+			case 106: s = "invalid OpExpr4"; break;
+			case 107: s = "invalid OpExpr5"; break;
+			case 108: s = "invalid InfixExpr"; break;
+			case 109: s = "invalid OpExpr6"; break;
+			case 110: s = "invalid OpExpr7"; break;
+			case 111: s = "invalid OpExpr8"; break;
+			case 112: s = "invalid Application"; break;
+			case 113: s = "invalid AccessExpr"; break;
+			case 114: s = "invalid EmbExpr"; break;
+			case 115: s = "invalid DeclarationBlock"; break;
 
 			default: s = "error " + n; break;
 		}

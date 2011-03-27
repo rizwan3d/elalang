@@ -12,56 +12,12 @@ namespace Ela.Compilation
 				((hints & Hints.Scope) == Hints.Scope ? Hints.Scope : Hints.None) |
 				((hints & Hints.Nested) == Hints.Nested ? Hints.Nested : Hints.None);
 
-			if (bin.Operator == ElaOperator.Sequence)
-				return CompileSequence(bin, map, hints);
+			CompileBinaryMain(bin.Operator, bin, map, newHints);
 
-			var exprData = ExprData.Empty;
-			
-			if (bin.Operator != ElaOperator.CompBackward && bin.Operator != ElaOperator.CompForward && bin.Operator != ElaOperator.Assign &&
-				bin.Operator != ElaOperator.Equals && bin.Operator != ElaOperator.NotEquals)
-			{
-				if (bin.Left != null &&
-					(bin.Left.Flags & ElaExpressionFlags.ReturnsUnit) == ElaExpressionFlags.ReturnsUnit)
-					AddWarning(ElaCompilerWarning.UnitAlwaysFail, bin.Left);
+			if ((hints & Hints.Left) == Hints.Left)
+				AddValueNotUsed(bin);
 
-				if (bin.Right != null &&
-					(bin.Right.Flags & ElaExpressionFlags.ReturnsUnit) == ElaExpressionFlags.ReturnsUnit)
-					AddWarning(ElaCompilerWarning.UnitAlwaysFail, bin.Right);
-			}
-
-			if (bin.Operator == ElaOperator.CompBackward || bin.Operator == ElaOperator.CompForward)
-			{
-				exprData = CompileComposition(bin, map, newHints);
-
-				if ((hints & Hints.Left) == Hints.Left)
-					AddValueNotUsed(bin);
-			}
-			else if (bin.Operator == ElaOperator.Swap)
-				CompileSwap(bin, map, hints);
-			else if (bin.Operator == ElaOperator.Assign)
-				CompileAssign(bin, bin.Left, bin.Right, hints, map);
-			else
-			{
-				CompileExpression(bin.Left, map, newHints);
-
-				if (bin.Operator != ElaOperator.BooleanAnd && bin.Operator != ElaOperator.BooleanOr && bin.Right != null)
-					CompileExpression(bin.Right, map, newHints);
-				
-				CompileBinaryMain(bin.Operator, bin, map, newHints);
-
-				if ((hints & Hints.Left) == Hints.Left)
-					AddValueNotUsed(bin);
-			}
-
-			return exprData;
-		}
-
-
-		private ExprData CompileSequence(ElaBinary bin, LabelMap map, Hints hints)
-		{
-			CompileExpression(bin.Left, map, Hints.None);
-			cw.Emit(Op.Pop);
-			return CompileExpression(bin.Right, map, hints);
+			return ExprData.Empty;
 		}
 
 
@@ -73,6 +29,7 @@ namespace Ela.Compilation
 			switch (op)
 			{
 				case ElaOperator.BooleanAnd:
+					CompileExpression(bin.Left, map, hints);
 					termLab = cw.DefineLabel();
 					exitLab = cw.DefineLabel();
 					cw.Emit(Op.Brfalse, termLab);
@@ -84,6 +41,7 @@ namespace Ela.Compilation
 					cw.Emit(Op.Nop);
 					break;
 				case ElaOperator.BooleanOr:
+					CompileExpression(bin.Left, map, hints);
 					termLab = cw.DefineLabel();
 					exitLab = cw.DefineLabel();
 					cw.Emit(Op.Brtrue, termLab);
@@ -94,80 +52,17 @@ namespace Ela.Compilation
 					cw.MarkLabel(exitLab);
 					cw.Emit(Op.Nop);
 					break;
-				default:
-					CompileSimpleBinary(bin.Operator);
+				case ElaOperator.Assign:
+					CompileAssign(bin, bin.Left, bin.Right, hints, map);
 					break;
-			}
-		}
-
-
-		private void CompileSimpleBinary(ElaOperator op)
-		{
-			switch (op)
-			{
-				case ElaOperator.Concat:
-					cw.Emit(Op.Concat);
+				case ElaOperator.Swap:
+					CompileSwap(bin, map, hints);
 					break;
-				case ElaOperator.Add:
-					cw.Emit(Op.Add);
+				case ElaOperator.Sequence:
+					CompileExpression(bin.Left, map, Hints.None);
+					cw.Emit(Op.Pop);
+					CompileExpression(bin.Right, map, hints);
 					break;
-				case ElaOperator.Divide:
-					cw.Emit(Op.Div);
-					break;
-				case ElaOperator.Multiply:
-					cw.Emit(Op.Mul);
-					break;
-				case ElaOperator.Power:
-					cw.Emit(Op.Pow);
-					break;
-				case ElaOperator.Remainder:
-					cw.Emit(Op.Rem);
-					break;
-				case ElaOperator.Subtract:
-					cw.Emit(Op.Sub);
-					break;
-				case ElaOperator.ShiftRight:
-					cw.Emit(Op.Shr);
-					break;
-				case ElaOperator.ShiftLeft:
-					cw.Emit(Op.Shl);
-					break;
-				case ElaOperator.Greater:
-					cw.Emit(Op.Cgt);
-					break;
-				case ElaOperator.Lesser:
-					cw.Emit(Op.Clt);
-					break;
-				case ElaOperator.Equals:
-					cw.Emit(Op.Ceq);
-					break;
-				case ElaOperator.NotEquals:
-					cw.Emit(Op.Cneq);
-					break;
-				case ElaOperator.GreaterEqual:
-					cw.Emit(Op.Cgteq);
-					break;
-				case ElaOperator.LesserEqual:
-					cw.Emit(Op.Clteq);
-					break;
-				case ElaOperator.BitwiseAnd:
-					cw.Emit(Op.AndBw);
-					break;
-				case ElaOperator.BitwiseOr:
-					cw.Emit(Op.OrBw);
-					break;
-				case ElaOperator.BitwiseXor:
-					cw.Emit(Op.Xor);
-					break;
-				case ElaOperator.Cons:
-					cw.Emit(Op.Cons);
-					break;
-                case ElaOperator.Negate:
-                    cw.Emit(Op.Neg);
-                    break;
-                case ElaOperator.BitwiseNot:
-                    cw.Emit(Op.NotBw);
-                    break;
 			}
 		}
 

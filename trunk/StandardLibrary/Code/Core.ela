@@ -82,10 +82,6 @@ let chr (?int)@x = x:char
 
 let ord (?char)@x = x:int
 
-let ref x = {!val = x}
-
-let := x y = x.val <- y
-
 
 /* COMBINATORS */
 

@@ -27,10 +27,8 @@ namespace Ela.Linking
 
 		ModuleLinkFailed = 609,
 
-		IncludeInSandbox = 610,
+		UnresolvedArgument = 610,
 
-		UnresolvedArgument = 611,
-
-		UnresolvedVariable = 612,
+		UnresolvedVariable = 611,
 	}
 }

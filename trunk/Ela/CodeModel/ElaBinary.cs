@@ -29,20 +29,12 @@ namespace Ela.CodeModel
 			if (paren)
 				sb.Append('(');
 
-			if (Operator == ElaOperator.Negate || Operator == ElaOperator.BitwiseNot)
-			{
-				sb.Append(Format.OperatorAsString(Operator));
-				Left.ToString(sb, fmt);
-			}
-			else
-			{
-				Left.ToString(sb, fmt);
-				sb.Append(' ');
-				sb.Append(Format.OperatorAsString(Operator));
-				sb.Append(' ');
-				Right.ToString(sb, fmt);
-			}
-
+			Left.ToString(sb, fmt);
+			sb.Append(' ');
+			sb.Append(Format.OperatorAsString(Operator));
+			sb.Append(' ');
+			Right.ToString(sb, fmt);
+		
 			if (paren)
 				sb.Append(')');
 		}

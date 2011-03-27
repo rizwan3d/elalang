@@ -427,8 +427,7 @@ namespace Ela.Compilation
 				Silent(pushSys, nextLab, hints, ElaTraits.Seq);
 
 				cw.Emit(Op.Pushvar, pushSys);
-				cw.Emit(Op.Isnil);
-				cw.Emit(Op.Brtrue, nextLab);
+				cw.Emit(Op.Brnil, nextLab);
 
 				var els = pexp.Patterns;
 				var len = els.Count;
@@ -437,8 +436,8 @@ namespace Ela.Compilation
                 if (len > 2)
                 {
                     pushSys = AddVariable();
-                    cw.Emit(Op.Dup);
-                    cw.Emit(Op.Popvar, pushSys);
+					cw.Emit(Op.Dup);
+					cw.Emit(Op.Popvar, pushSys);
                 }
 
 				for (var i = 0; i < len; i++)
@@ -448,8 +447,14 @@ namespace Ela.Compilation
 
 					if (!isEnd)
 					{
-						cw.Emit(Op.Dup);
-						cw.Emit(Op.Popvar, pushSys);
+						if (i > 0)
+						{
+							cw.Emit(Op.Dup);
+							cw.Emit(Op.Popvar, pushSys);
+							cw.Emit(Op.Brnil, nextLab);
+							cw.Emit(Op.Pushvar, pushSys);
+						}
+
 						cw.Emit(Op.Head);
 					}
 
