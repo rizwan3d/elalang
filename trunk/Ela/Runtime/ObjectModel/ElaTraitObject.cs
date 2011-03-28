@@ -11,7 +11,7 @@ namespace Ela.Runtime.ObjectModel
         private ElaTraits overridenTraits;
         private ElaValue wrappedObject;
 
-        public ElaTraitObject(ElaValue value) : base(value.Traits)
+		public ElaTraitObject(ElaValue value) : base((ElaTypeCode)ElaMachine.PRX, value.Traits)
         {
             funs = new Dictionary<String,ElaFunction>();
             this.wrappedObject = value;
@@ -525,5 +525,13 @@ namespace Ela.Runtime.ObjectModel
             return val.Ref == this ? wrappedObject : val;
         }
         #endregion
-    }
+
+
+		#region Properties
+		public ElaValue Value
+		{
+			get { return wrappedObject; }
+		}
+		#endregion
+	}
 }

@@ -124,8 +124,8 @@ namespace Ela.Runtime.ObjectModel
 		{
 			try
 			{
-				return !String.IsNullOrEmpty(info.Format) ? @this.GetReal().ToString(info.Format, Culture.NumberFormat) :
-					@this.GetReal().ToString(Culture.NumberFormat);
+				return !String.IsNullOrEmpty(info.Format) ? @this.DirectGetReal().ToString(info.Format, Culture.NumberFormat) :
+					@this.DirectGetReal().ToString(Culture.NumberFormat);
 			}
 			catch (FormatException)
 			{
@@ -142,11 +142,11 @@ namespace Ela.Runtime.ObjectModel
 		{
 			switch (type)
 			{
-				case ElaTypeCode.Integer: return new ElaValue((Int32)@this.GetReal());
-				case ElaTypeCode.Single: return new ElaValue(@this.GetReal());
-				case ElaTypeCode.Double: return new ElaValue((Double)@this.GetReal());
-				case ElaTypeCode.Long: return new ElaValue((Int64)@this.GetReal());
-				case ElaTypeCode.Char: return new ElaValue((Char)@this.GetReal());
+				case ElaTypeCode.Integer: return new ElaValue((Int32)@this.DirectGetReal());
+				case ElaTypeCode.Single: return new ElaValue(@this.DirectGetReal());
+				case ElaTypeCode.Double: return new ElaValue((Double)@this.DirectGetReal());
+				case ElaTypeCode.Long: return new ElaValue((Int64)@this.DirectGetReal());
+				case ElaTypeCode.Char: return new ElaValue((Char)@this.DirectGetReal());
 				case ElaTypeCode.String: return new ElaValue(Show(@this, ShowInfo.Default, ctx));
 				default:
 					ctx.ConversionFailed(@this, type);

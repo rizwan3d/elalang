@@ -48,6 +48,7 @@ namespace Ela.Runtime
 		internal const int MOD = (Int32)ElaTypeCode.Module;
 		internal const int LAZ = (Int32)ElaTypeCode.Lazy;
 		internal const int VAR = (Int32)ElaTypeCode.Variant;
+		internal const int PRX = 1000;
 
         private static bool[] structs =
         {
@@ -61,7 +62,7 @@ namespace Ela.Runtime
             false,//String
             false,//Unit
             false,//List
-            false,//<Empty>
+            false,//<none>
             false,//Tuple
             false,//Record
             false,//Function
@@ -1293,7 +1294,10 @@ namespace Ela.Runtime
 
 					#region CreateNew Operations
                     case Op.Newbox:
-                        evalStack.Replace(new ElaValue(new ElaTraitObject(evalStack.Peek())));
+						right = evalStack.Peek();
+
+						if (right.TypeId != PRX)
+							evalStack.Replace(new ElaValue(new ElaTraitObject(right)));
                         break;
 					case Op.Newvar:
 						right = evalStack.Peek();

@@ -15,6 +15,7 @@ namespace Ela
 		private const string BOOL = "bool";
 		private const string RECORD = "record";
 		private const string TUPLE = "tuple";
+		private const string PRX = "proxy";
 		private const string LIST = "list";
 		private const string FUN = "fun";
 		private const string UNIT = "unit";

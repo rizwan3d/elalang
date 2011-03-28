@@ -161,19 +161,19 @@ namespace Ela.Runtime
 
         public bool Is<T>() where T : ElaObject
         {
-            return Ref is T;
+			return Ref is T || TypeId == ElaMachine.PRX && ((ElaTraitObject)Ref).Value.Ref is T;
         }
 
 
         public T As<T>() where T : ElaObject
         {
-            return Ref as T;
+			return TypeId == ElaMachine.PRX ? ((ElaTraitObject)Ref).Value.Ref as T : Ref as T;
         }
 
 
         public bool ReferenceEquals(ElaValue other)
         {
-            return Ref == other.Ref;
+			return TypeId == ElaMachine.PRX ? ((ElaTraitObject)Ref).Value.Ref == other.Ref : Ref == other.Ref;
         }
 
 
@@ -268,7 +268,8 @@ namespace Ela.Runtime
             if (type == TypeCode)
                 return AsObject();
 
-			var ret = Ref.Convert(this, type, ctx).AsObject();
+			var ret = TypeId == ElaMachine.PRX ? ((ElaTraitObject)Ref).Convert(((ElaTraitObject)Ref).Value, type, ctx) :
+				Ref.Convert(this, type, ctx).AsObject();
 
 			if (ctx.Failed)
 				throw InvalidCast(TypeCode, type);
@@ -314,8 +315,10 @@ namespace Ela.Runtime
 				case ElaTypeCode.Unit: return null;
 				case ElaTypeCode.Lazy: return ((ElaLazy)Ref).AsObject();
 				default:
-					if (Ref == null)
-						throw new NotSupportedException();
+					if (TypeId == ElaMachine.PRX)
+						return ((ElaTraitObject)Ref).Value.AsObject();
+					else if (Ref == null)
+						throw new InvalidOperationException();
 					else
 						return Ref;
 			}
@@ -328,6 +331,8 @@ namespace Ela.Runtime
 				return ((ElaString)Ref).GetValue();
 			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsString();
+			else if (TypeId == ElaMachine.PRX)
+				return ((ElaTraitObject)Ref).Value.AsString();
 			else
 				throw InvalidCast(ElaTypeCode.String, TypeCode);
 		}
@@ -339,7 +344,9 @@ namespace Ela.Runtime
                 return Bool(ElaObject.DummyContext);
             else if (TypeCode == ElaTypeCode.Lazy)
                 return ((ElaLazy)Ref).AsBoolean();
-            else
+			else if (TypeId == ElaMachine.PRX)
+				return ((ElaTraitObject)Ref).Value.AsBoolean();
+			else
                 throw InvalidCast(ElaTypeCode.Boolean, TypeCode);
 		}
 
@@ -350,6 +357,8 @@ namespace Ela.Runtime
 				return (Char)I4;
 			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsChar();
+			else if (TypeId == ElaMachine.PRX)
+				return ((ElaTraitObject)Ref).Value.AsChar();
 			else
 				throw InvalidCast(ElaTypeCode.Char, TypeCode);
 		}
@@ -361,6 +370,8 @@ namespace Ela.Runtime
 				return ((ElaDouble)Ref).InternalValue;
 			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsDouble();
+			else if (TypeId == ElaMachine.PRX)
+				return ((ElaTraitObject)Ref).Value.AsDouble();
 			else
 				throw InvalidCast(ElaTypeCode.Double, TypeCode);
 		}
@@ -372,6 +383,8 @@ namespace Ela.Runtime
 				return GetReal();
 			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsSingle();
+			else if (TypeId == ElaMachine.PRX)
+				return ((ElaTraitObject)Ref).Value.AsSingle();
 			else
 				throw InvalidCast(ElaTypeCode.Single, TypeCode);
 		}
@@ -383,6 +396,8 @@ namespace Ela.Runtime
 				return I4;
 			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsInteger();
+			else if (TypeId == ElaMachine.PRX)
+				return ((ElaTraitObject)Ref).Value.AsInteger();
 			else
 				throw InvalidCast(ElaTypeCode.Integer, TypeCode);
 		}
@@ -394,6 +409,8 @@ namespace Ela.Runtime
 				return ((ElaLong)Ref).InternalValue;
 			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsLong();
+			else if (TypeId == ElaMachine.PRX)
+				return ((ElaTraitObject)Ref).Value.AsLong();
 			else
 				throw InvalidCast(ElaTypeCode.Long, TypeCode);
 		}
@@ -405,6 +422,8 @@ namespace Ela.Runtime
 				return (ElaList)Ref;
 			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsList();
+			else if (TypeId == ElaMachine.PRX)
+				return ((ElaTraitObject)Ref).Value.AsList();
 			else
 				throw InvalidCast(ElaTypeCode.List, TypeCode);
 		}
@@ -416,6 +435,8 @@ namespace Ela.Runtime
 				return (ElaTuple)Ref;
 			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsTuple();
+			else if (TypeId == ElaMachine.PRX)
+				return ((ElaTraitObject)Ref).Value.AsTuple();
 			else
 				throw InvalidCast(ElaTypeCode.Tuple, TypeCode);
 		}
@@ -427,6 +448,8 @@ namespace Ela.Runtime
 				return (ElaRecord)Ref;
 			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsRecord();
+			else if (TypeId == ElaMachine.PRX)
+				return ((ElaTraitObject)Ref).Value.AsRecord();
 			else
 				throw InvalidCast(ElaTypeCode.Record, TypeCode);
 		}
@@ -438,6 +461,8 @@ namespace Ela.Runtime
 				return (ElaFunction)Ref;
 			else if (TypeCode == ElaTypeCode.Lazy)
 				return ((ElaLazy)Ref).AsFunction();
+			else if (TypeId == ElaMachine.PRX)
+				return ((ElaTraitObject)Ref).Value.AsFunction();
 			else
 				throw InvalidCast(ElaTypeCode.Function, TypeCode);
 		}
@@ -447,6 +472,8 @@ namespace Ela.Runtime
 		{
 			if (TypeCode == ElaTypeCode.Unit)
 				return (ElaUnit)Ref;
+			else if (TypeId == ElaMachine.PRX)
+				return ((ElaTraitObject)Ref).Value.AsUnit();
 			else
 				throw InvalidCast(ElaTypeCode.Unit, TypeCode);
 		}
