@@ -1,3 +1,6 @@
+let Num = trait add subtract multiply divide power
+let Neg = trait negate
+
 let +  = __internal add
 let -  = __internal subtract
 let *  = __internal multiply
@@ -5,6 +8,8 @@ let /  = __internal divide
 let %  = __internal remainder
 let ** = __internal power
 let -- = __internal negate
+
+let Bit = trait bitwiseand bitwiseor bitwisexor bitwisenot shiftright shiftleft
 
 let &&& = __internal bitwiseand
 let ||| = __internal bitwiseor
@@ -37,3 +42,8 @@ let length = __internal length
 let nil = __internal nil
 
 let flip = __internal flip
+
+let fst = __internal fst
+let snd = __internal snd
+let fst3 = __internal fst3
+let snd3 = __internal snd3

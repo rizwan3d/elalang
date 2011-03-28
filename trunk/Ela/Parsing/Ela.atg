@@ -787,7 +787,7 @@ PRODUCTIONS
 					exp = new ElaListLiteral(ot);
 			.)
 		"]".
-					
+		
 	LetBinding<out ElaExpression exp> = 
 		(. 
 			exp = null; 
@@ -820,6 +820,7 @@ PRODUCTIONS
 				EndBlock
 			)	
 		).
+		
 		
 	VariableAttributes<out ElaVariableFlags flags> =
 		"private" (. flags = ElaVariableFlags.Private; .).			
@@ -867,6 +868,19 @@ PRODUCTIONS
 					"else" "=" Expr<out cexp> (. cond.False = cexp; .)
 				)
 			)
+		).
+		
+	TraitBinding<string name, out ElaExpression exp> = 
+		(.
+			var tr = new ElaTrait(t) { Name = name };
+			exp = tr;
+		.)
+		(
+			"trait"
+			{ 
+				(ident|Operators)
+				(. tr.Functions.Add(t.val); .) 
+			}			
 		).
 		
 	BindingBody<ElaVariableFlags flags, out ElaExpression exp> =
@@ -936,6 +950,7 @@ PRODUCTIONS
 					"__internal" ident
 					(. cexp = new ElaBuiltin(t) { Kind = Builtins.Kind(t.val) }; .)
 				)
+				| TraitBinding<varExp.VariableName, out cexp>
 			)
 			(. varExp.InitExpression = cexp; .)
 			[

@@ -40,13 +40,13 @@ namespace Ela.Library.General
             }
 
 
-            protected override string Show(ExecutionContext ctx, ShowInfo info)
+            protected override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
             {
                 return Builder.ToString();
             }
 
 
-            protected override ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
+            protected override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
             {
                 if (type == ElaTypeCode.String)
                     return new ElaValue(Builder.ToString());

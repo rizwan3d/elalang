@@ -73,7 +73,11 @@ namespace Ela.Compilation
 			1, //Skiphtag
 			1, //Ceqref,
 			1, //Nil
-
+            1, //Traitadd
+            
+            5, //Traitget
+            5, //Newbox
+            5, //Elem
 			5, //Skiptag
 			5, //Isfun
 			5, //Conv
@@ -89,8 +93,6 @@ namespace Ela.Compilation
 			5, //Tupex
 			5, //Failwith
 			5, //Start
-			5, //Incr
-			5, //Decr
 			5, //Pushstr
 			5, //PushCh
 			5, //PushI4

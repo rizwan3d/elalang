@@ -207,17 +207,17 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
+		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
 		{
 			if (type == ElaTypeCode.List)
 				return new ElaValue(this);
 
 			ctx.ConversionFailed(new ElaValue(this), type);
-			return base.Convert(type, ctx);
+            return Default();
 		}
 
 
-		protected internal override string Show(ExecutionContext ctx, ShowInfo info)
+        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			var maxLen = info.SequenceLength;
 			var sb = new StringBuilder();
@@ -241,7 +241,7 @@ namespace Ela.Runtime.ObjectModel
 					if (count > 0)
 						sb.Append(',');
 
-					sb.Append(v.Show(ctx, info));
+					sb.Append(v.Show(info, ctx));
 					count++;
 					xs = xs.Tail(ElaObject.DummyContext).Ref;
 

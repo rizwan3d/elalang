@@ -120,20 +120,20 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
+		protected internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
 		{
 			return new ElaValue(@this.I4 + 1);
 		}
 
 
-		internal override ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
+		protected internal override ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
 		{
 			return new ElaValue(@this.I4 - 1);
 		}
 
 
-		internal override string Show(ElaValue @this, ExecutionContext ctx, ShowInfo info)
-		{
+        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
+        {
 			try
 			{
 				return !String.IsNullOrEmpty(info.Format) ? @this.I4.ToString(info.Format, Culture.NumberFormat) :
@@ -150,7 +150,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
 		{
 			switch (type)
 			{
@@ -159,7 +159,7 @@ namespace Ela.Runtime.ObjectModel
 				case ElaTypeCode.Double: return new ElaValue((Double)@this.I4);
 				case ElaTypeCode.Long: return new ElaValue((Int64)@this.I4);
 				case ElaTypeCode.Char: return new ElaValue((Char)@this.I4);
-				case ElaTypeCode.String: return new ElaValue(Show(@this, ctx, ShowInfo.Default));
+				case ElaTypeCode.String: return new ElaValue(Show(@this, ShowInfo.Default, ctx));
 				default:
 					ctx.ConversionFailed(@this, type);
 					return Default();
@@ -167,7 +167,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		internal override ElaValue Negate(ElaValue @this, ExecutionContext ctx)
+		protected internal override ElaValue Negate(ElaValue @this, ExecutionContext ctx)
 		{
 			return new ElaValue(-@this.I4);
 		}
@@ -314,7 +314,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		internal override ElaValue BitwiseNot(ElaValue @this, ExecutionContext ctx)
+		protected internal override ElaValue BitwiseNot(ElaValue @this, ExecutionContext ctx)
 		{
 			return new ElaValue(~@this.I4);
 		}

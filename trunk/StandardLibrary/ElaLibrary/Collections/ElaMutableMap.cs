@@ -61,13 +61,13 @@ namespace Ela.Library.Collections
         }
 
 
-        protected override string Show(ExecutionContext ctx, ShowInfo info)
+        protected override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
         {
-            return new ElaValue(ConvertToRecord()).Show(ctx, info);
+            return new ElaValue(ConvertToRecord()).Show(info, ctx);
         }
 
 
-        protected override ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
+        protected override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
         {
             if (type == ElaTypeCode.Record)
                 return new ElaValue(ConvertToRecord());

@@ -30,6 +30,20 @@ namespace Ela.CodeModel
 
 		Nil,
 
+        Head,
+
+        Tail,
+
+        IsNil,
+
+        Fst,
+
+        Snd,
+
+        Fst3,
+
+        Snd3,
+
 
 		Negate,
 

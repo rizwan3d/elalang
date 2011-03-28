@@ -8,6 +8,7 @@ namespace Ela.Runtime.ObjectModel
 		#region Construction
 		internal static readonly ExecutionContext DummyContext = new ExecutionContext();
 		internal const string UNDEF = "<unknown>";
+        internal const string INVALID = "<INVALID>";
         private const string TYPENAME = "typeName";
         private const string TYPECODE = "typeCode";
         private const string ISBYREF = "byRef";
@@ -26,8 +27,23 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Methods
-		public virtual ElaTypeInfo GetTypeInfo()
+        #region Nested Classes
+        private sealed class ElaInvalidObject : ElaObject
+        {
+            internal static readonly ElaInvalidObject Instance = new ElaInvalidObject();
+
+            internal ElaInvalidObject() : base(ElaTraits.None) { }
+
+            protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
+            {
+                return INVALID;
+            }
+        }
+        #endregion
+
+
+        #region Methods
+        public virtual ElaTypeInfo GetTypeInfo()
 		{
             var info = new ElaTypeInfo();
             info.AddField(TYPENAME, GetTypeName());
@@ -55,13 +71,13 @@ namespace Ela.Runtime.ObjectModel
 				TypeId == ElaMachine.BYT)
 				return UNDEF;
 			else
-				return Show(DummyContext, ShowInfo.Debug);
+                return Show(new ElaValue(this), ShowInfo.Debug, DummyContext);
 		}
 
 
 		protected ElaValue Default()
 		{
-			return new ElaValue(ElaUnit.Instance);
+			return new ElaValue(ElaInvalidObject.Instance);
 		}
 
 
@@ -73,8 +89,8 @@ namespace Ela.Runtime.ObjectModel
 
 		private string ThisToString(ElaValue first, ElaValue second, ExecutionContext ctx)
 		{
-			return first.Ref == this ? first.Ref.Show(first, ctx, ShowInfo.Default) :
-				second.Ref.Show(second, ctx, ShowInfo.Default);
+			return first.Ref == this ? first.Ref.Show(first, ShowInfo.Default, ctx) :
+				second.Ref.Show(second, ShowInfo.Default, ctx);
 		}
 		#endregion
 
@@ -129,16 +145,16 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal virtual ElaValue Successor(ExecutionContext ctx)
+		protected internal virtual ElaValue Successor(ElaValue @this, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitEnum, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+            ctx.Fail(ElaRuntimeError.TraitEnum, @this.ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
 			return Default();
 		}
 
 
-		protected internal virtual ElaValue Predecessor(ExecutionContext ctx)
+		protected internal virtual ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitEnum, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+            ctx.Fail(ElaRuntimeError.TraitEnum, @this.ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
 			return Default();
 		}
 
@@ -240,9 +256,9 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal virtual ElaValue BitwiseNot(ExecutionContext ctx)
+		protected internal virtual ElaValue BitwiseNot(ElaValue @this, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitBit, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.Fail(ElaRuntimeError.TraitBit, @this.ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
 			return Default();
 		}
 
@@ -261,16 +277,16 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal virtual ElaValue Negate(ExecutionContext ctx)
+		protected internal virtual ElaValue Negate(ElaValue @this, ExecutionContext ctx)
 		{
 			ctx.Fail(ElaRuntimeError.TraitNeg, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
 			return Default();
 		}
 
 
-		protected internal virtual bool Bool(ExecutionContext ctx)
+		protected internal virtual bool Bool(ElaValue @this, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitBool, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.Fail(ElaRuntimeError.TraitBool, @this.ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
 			return false;
 		}
 
@@ -344,28 +360,21 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal virtual string Show(ExecutionContext ctx, ShowInfo info)
+		protected internal virtual string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			ctx.Fail(ElaRuntimeError.TraitShow, String.Empty, TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
 			return String.Empty;
 		}
 
 
-		protected internal virtual ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
+		protected internal virtual ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitConvert, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.Fail(ElaRuntimeError.TraitConvert, @this.ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
 			return Default();
 		}
 
 
-		protected internal virtual ElaValue Call(ElaValue value, ExecutionContext ctx)
-		{
-			ctx.Fail(ElaRuntimeError.TraitCall, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal virtual ElaValue Call(ElaValue arg, ExecutionContext ctx)
 		{
 			ctx.Fail(ElaRuntimeError.TraitCall, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
 			return Default();
@@ -394,52 +403,8 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Singleton Traits
-		internal virtual ElaValue Successor(ElaValue @this, ExecutionContext ctx)
-		{
-			return Successor(ctx);
-		}
-
-
-		internal virtual ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
-		{
-			return Predecessor(ctx);
-		}
-
-
-		internal virtual ElaValue BitwiseNot(ElaValue @this, ExecutionContext ctx)
-		{
-			return BitwiseNot(ctx);
-		}
-
-
-		internal virtual ElaValue Negate(ElaValue @this, ExecutionContext ctx)
-		{
-			return Negate(ctx);
-		}
-
-
-		internal virtual bool Bool(ElaValue @this, ExecutionContext ctx)
-		{
-			return Bool(ctx);
-		}
-
-
-		internal virtual string Show(ElaValue @this, ExecutionContext ctx, ShowInfo info)
-		{
-			return Show(ctx, info);
-		}
-
-
-		internal virtual ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
-		{
-			return Convert(type, ctx);
-		}
-		#endregion
-
-
 		#region Properties
-		internal int TypeId { get; private set; }
+		internal int TypeId { get; set; }
 
 		internal protected ElaTraits Traits { get; protected set; }
 		#endregion

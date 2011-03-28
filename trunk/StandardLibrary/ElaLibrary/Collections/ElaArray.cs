@@ -185,7 +185,7 @@ namespace Ela.Library.Collections
 		}
 
 
-		protected override string Show(ExecutionContext ctx, ShowInfo info)
+        protected override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			return "array[" + FormatHelper.FormatEnumerable((IEnumerable<ElaValue>)this, ctx, info) + "]";
 		}

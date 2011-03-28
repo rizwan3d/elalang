@@ -66,8 +66,6 @@ namespace Ela.Debug
 						break;
 					case Op.Pushvar:
 					case Op.Popvar:
-					case Op.Incr:
-					case Op.Decr:
 						if (dr != null)
 						{
 							var scope = dr.FindScopeSym(i);

@@ -35,7 +35,7 @@ namespace Ela.Library
 		}
 
 
-		protected override string Show(ExecutionContext ctx, ShowInfo info)
+		protected override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			return "[" + typeName + "]";
 		}

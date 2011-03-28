@@ -771,6 +771,59 @@ namespace Ela.Runtime
 					#endregion
 
 					#region Object Operations
+                    case Op.Traitadd:
+                        {
+                            var obj = (ElaTraitObject)evalStack.Pop().Ref;
+                            var fun = (ElaFunction)evalStack.Pop().Ref;
+                            var funName = evalStack.Pop().AsString();
+                            var trait = evalStack.Pop().AsString();
+                            obj.AddFunction(trait, funName, fun, ctx);
+
+                            if (ctx.Failed)
+                            {
+                                ExecuteThrow(thread, evalStack);
+                                goto SWITCH_MEM;
+                            }
+                        }
+                        break;
+                    case Op.Traitget:
+                        {
+                            var str = frame.Strings[opd];
+                            var obj = evalStack.Peek().Ref as ElaTraitObject;
+
+                            if (obj == null)
+                            {
+                                ctx.Fail(String.Format("Function '{0}' is not supported.", str));
+                                goto SWITCH_MEM;
+                            }
+
+                            evalStack.Replace(new ElaValue(obj.GetTraitFunction(str, ctx)));
+
+                            if (ctx.Failed)
+                            {
+                                ExecuteThrow(thread, evalStack);
+                                goto SWITCH_MEM;
+                            }
+                        }
+                        break;
+                    case Op.Elem:
+                        right = evalStack.Peek().Id(ctx);
+                        res = right.Ref.GetLength(ctx);
+
+                        if (!res.Equals(res, new ElaValue(opd & Byte.MaxValue), ctx).Bool(ctx))
+                        {
+                            ExecuteFail(ElaRuntimeError.MatchFailed, thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+
+                        evalStack.Replace(right.Ref.GetValue(new ElaValue(opd >> 8), ctx));
+
+                        if (ctx.Failed)
+                        {
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
 					case Op.Reccons:
 						{
 							right = evalStack.Pop();
@@ -900,32 +953,6 @@ namespace Ela.Runtime
 					#endregion
 
 					#region Unary Operations
-					case Op.Incr:
-						right = locals[opd >> 8];
-
-						if (right.TypeId == INT)
-						{
-							right = new ElaValue(right.I4 + 1);
-							evalStack.Push(right);
-							locals[opd >> 8] = right;
-							break;
-						}
-
-						Increment(opd, right.Id(ctx), thread, evalStack);
-						goto SWITCH_MEM;
-					case Op.Decr:
-						right = locals[opd >> 8];
-
-						if (right.TypeId == INT)
-						{
-							right = new ElaValue(right.I4 - 1);
-							evalStack.Push(right);
-							locals[opd >> 8] = right;
-							break;
-						}
-
-						Decrement(opd, right.Id(ctx), thread, evalStack);
-						goto SWITCH_MEM;
 					case Op.Not:
 						right = evalStack.Peek();
 
@@ -1265,6 +1292,9 @@ namespace Ela.Runtime
 					#endregion
 
 					#region CreateNew Operations
+                    case Op.Newbox:
+                        evalStack.Replace(new ElaValue(new ElaTraitObject(evalStack.Peek())));
+                        break;
 					case Op.Newvar:
 						right = evalStack.Peek();
 						evalStack.Replace(new ElaValue(new ElaVariant(frame.Strings[opd], right)));
@@ -1280,7 +1310,7 @@ namespace Ela.Runtime
 							evalStack.Push(new ElaValue(fun));
 						}
 						break;
-					case Op.Newlist:
+                    case Op.Newlist:
 						evalStack.Push(new ElaValue(ElaList.Empty));
 						break;
 					case Op.Newrec:
@@ -1402,7 +1432,7 @@ namespace Ela.Runtime
 					#endregion
 
 					#region Builtins
-					case Op.Succ:
+                    case Op.Succ:
 						right = evalStack.Peek();
 
 						if (right.TypeId == INT)
@@ -1474,7 +1504,7 @@ namespace Ela.Runtime
 								goto SWITCH_MEM;
 							}
 
-							evalStack.Replace(new ElaValue(right.Ref.Show(right, ctx, new ShowInfo(0, 0, left.AsString()))));
+							evalStack.Replace(new ElaValue(right.Ref.Show(right, new ShowInfo(0, 0, left.AsString()), ctx)));
 
 							if (ctx.Failed)
 							{
@@ -1677,29 +1707,6 @@ namespace Ela.Runtime
 		}
 
 
-
-		private void Increment(int addr, ElaValue val, WorkerThread thread, EvalStack stack)
-		{
-			var nval = val.Ref.Successor(val, thread.Context);
-			stack.Push(nval);
-			thread.CallStack.Peek().Locals[addr >> 8] = nval;
-
-			if (thread.Context.Failed)
-				ExecuteThrow(thread, stack);
-		}
-
-
-		private void Decrement(int addr, ElaValue val, WorkerThread thread, EvalStack stack)
-		{
-			var nval = val.Ref.Predecessor(val, thread.Context);
-			stack.Push(nval);
-			thread.CallStack.Peek().Locals[addr >> 8] = nval;
-
-			if (thread.Context.Failed)
-				ExecuteThrow(thread, stack);
-		}
-
-
 		private void ReadPervasives(WorkerThread thread, CodeFrame frame, int handle)
 		{
 			var mod = thread.Module;
@@ -1766,7 +1773,7 @@ namespace Ela.Runtime
 			}
 
 			for (var i = 0; i < len; i++)
-				stack.Push(args[i]);
+				stack.Push(args[len - i - 1]);
 
 			if (len != fun.Parameters.Length + 1)
 			{
@@ -1784,9 +1791,6 @@ namespace Ela.Runtime
 
 		private bool Call(ElaObject fun, WorkerThread thread, EvalStack stack, CallPoint cp)
 		{
-			if (fun == null)
-				ExecuteThrow(thread, stack);
-
 			if (fun.TypeId != FUN)
 			{
 				if ((fun.Traits & ElaTraits.Call) == ElaTraits.Call)
@@ -2001,7 +2005,7 @@ namespace Ela.Runtime
 
 		private void NoTrait(ElaRuntimeError code, ElaValue value, WorkerThread thread, EvalStack evalStack)
 		{
-			var str = value.Ref.Show(value, thread.Context, new ShowInfo(10, 10));
+			var str = value.Ref.Show(value, new ShowInfo(10, 10), thread.Context);
 
 			if (str.Length > 40)
 				str = str.Substring(0, 40) + "...";

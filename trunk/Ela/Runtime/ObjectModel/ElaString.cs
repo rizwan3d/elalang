@@ -143,7 +143,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
+		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
 		{
 			if (type == ElaTypeCode.String)
 				return new ElaValue(this);
@@ -161,7 +161,7 @@ namespace Ela.Runtime.ObjectModel
 				catch (Exception ex)
 				{
 					ctx.ConversionFailed(new ElaValue(this), type, ex.Message);
-					return base.Convert(type, ctx);
+					return Default();
 				}
 			}
 			else if (type == ElaTypeCode.Long)
@@ -173,7 +173,7 @@ namespace Ela.Runtime.ObjectModel
 				catch (Exception ex)
 				{
 					ctx.ConversionFailed(new ElaValue(this), type, ex.Message);
-					return base.Convert(type, ctx);
+					return Default();
 				}
 			}
 			else if (type == ElaTypeCode.Single)
@@ -185,7 +185,7 @@ namespace Ela.Runtime.ObjectModel
 				catch (Exception ex)
 				{
 					ctx.ConversionFailed(new ElaValue(this), type, ex.Message);
-					return base.Convert(type, ctx);
+					return Default();
 				}
 			}
 			else if (type == ElaTypeCode.Double)
@@ -197,7 +197,7 @@ namespace Ela.Runtime.ObjectModel
 				catch (Exception ex)
 				{
 					ctx.ConversionFailed(new ElaValue(this), type, ex.Message);
-					return base.Convert(type, ctx);
+					return Default();
 				}
 			}
 			else if (type == ElaTypeCode.Boolean)
@@ -209,18 +209,18 @@ namespace Ela.Runtime.ObjectModel
 				catch (Exception ex)
 				{
 					ctx.ConversionFailed(new ElaValue(this), type, ex.Message);
-					return base.Convert(type, ctx);
+					return Default();
 				}
 			}
 			else
 			{
 				ctx.ConversionFailed(new ElaValue(this), type);
-				return base.Convert(type, ctx);
+				return Default();
 			}
 		}
 
 
-		protected internal override string Show(ExecutionContext ctx, ShowInfo info)
+        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			var val = GetValue();
 			val = info.StringLength > 0 && val.Length > info.StringLength ? 

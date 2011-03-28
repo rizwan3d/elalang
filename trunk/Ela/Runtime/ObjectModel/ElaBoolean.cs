@@ -25,7 +25,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Traits
-		internal override bool Bool(ElaValue @this, ExecutionContext ctx)
+		protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
 		{
 			return @this.I4 == 1;
 		}
@@ -57,13 +57,13 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		internal override string Show(ElaValue @this, ExecutionContext ctx, ShowInfo info)
+        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			return @this.I4 == 1 ? Boolean.TrueString : Boolean.FalseString;
 		}
 
 
-		internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
 		{
 			switch (type)
 			{
@@ -73,10 +73,10 @@ namespace Ela.Runtime.ObjectModel
 				case ElaTypeCode.Double: return new ElaValue((double)@this.I4);
 				case ElaTypeCode.Long: return new ElaValue((long)@this.I4);
 				case ElaTypeCode.Char: return new ElaValue((char)@this.I4);
-				case ElaTypeCode.String: return new ElaValue(Show(@this, ctx, ShowInfo.Default));
+				case ElaTypeCode.String: return new ElaValue(Show(@this, ShowInfo.Default, ctx));
 				default:
 					ctx.ConversionFailed(@this, type);
-					return base.Convert(type, ctx);
+					return base.Convert(@this, type, ctx);
 			}
 		}
 		#endregion

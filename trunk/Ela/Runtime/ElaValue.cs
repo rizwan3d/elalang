@@ -6,49 +6,6 @@ using System.Collections;
 
 namespace Ela.Runtime
 {
-	public class FunClt : ElaObject
-	{
-		public  FunClt()
-			: base((ElaTypeCode)1001, ElaTraits.Call)
-		{
-
-		}
-
-		protected internal override Ela.Runtime.ElaValue Call(Ela.Runtime.ElaValue left, ElaValue right, Ela.Runtime.ExecutionContext ctx)
-		{
-			if (left.TypeId == 1 && right.TypeId == 1)
-			{
-				return new ElaValue(left.I4 < right.I4);
-			}
-
-			var res = left.Id(ctx);
-			return (res.Ref.Lesser(res, right.Id(ctx), ctx));
-		}
-	}
-
-
-	public class FunAdd : ElaObject
-	{
-
-
-		public FunAdd()
-			: base((ElaTypeCode)1000, ElaTraits.Call)
-		{
-			
-		}
-
-		protected internal override Ela.Runtime.ElaValue Call(Ela.Runtime.ElaValue left, ElaValue right, Ela.Runtime.ExecutionContext ctx)
-		{
-			if (left.TypeId == 1 && right.TypeId == 1)
-			{
-				return new ElaValue(left.I4 + right.I4);
-			}
-
-			var res = left.Id(ctx);
-			return (res.Ref.Add(res, right.Id(ctx), ctx));
-		}
-	}
-
 	public struct ElaValue : IComparable<ElaValue>, IEquatable<ElaValue>
 	{
 		#region Construction
@@ -127,7 +84,7 @@ namespace Ela.Runtime
 
 		public override string ToString()
 		{
-			return Ref.Show(this, ElaObject.DummyContext, ShowInfo.Default);
+			return Ref.Show(this, ShowInfo.Default, ElaObject.DummyContext);
 		}
 
 
@@ -732,15 +689,15 @@ namespace Ela.Runtime
         }
 
 
-        public string Show(ExecutionContext ctx, ShowInfo info)
+        public string Show(ShowInfo info, ExecutionContext ctx)
         {
-            return Ref.Show(this, ctx, info);
+            return Ref.Show(this, info, ctx);
         }
 
 
         public ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
         {
-            return Ref.Convert(type, ctx);
+            return Ref.Convert(this, type, ctx);
         }
 
 

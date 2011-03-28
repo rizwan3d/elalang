@@ -41,7 +41,7 @@ namespace Ela.Runtime.ObjectModel
 
                 if (idx != -1)
                 {
-                    var b = funName.Substring(0, idx - 1);
+                    var b = funName.Substring(0, idx);
 
                     if (!HasTrait(b))
                     {
@@ -112,54 +112,54 @@ namespace Ela.Runtime.ObjectModel
         protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Eq) == ElaTraits.Eq)
-                return Run("Eq ==", ctx, left, right);
+                return Run("Eq equals", ctx, Self(left), Self(right));
 
-            return wrappedObject.Equals(left, right, ctx);
+            return wrappedObject.Ref.Equals(Self(left), Self(right), ctx);
         }
 
 
         protected internal override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Eq) == ElaTraits.Eq)
-                return Run("Eq <>", ctx, left, right);
+                return Run("Eq notequals", ctx, Self(left), Self(right));
 
-            return wrappedObject.NotEquals(left, right, ctx);
+            return wrappedObject.Ref.NotEquals(Self(left), Self(right), ctx);
         }
 
 
         protected internal override ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Ord) == ElaTraits.Ord)
-                return Run("Ord >", ctx, left, right);
+                return Run("Ord greater", ctx, Self(left), Self(right));
 
-            return wrappedObject.Greater(left, right, ctx);
+            return wrappedObject.Ref.Greater(Self(left), Self(right), ctx);
         }
 
 
         protected internal override ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Ord) == ElaTraits.Ord)
-                return Run("Ord <", ctx, left, right);
+                return Run("Ord lesser", ctx, Self(left), Self(right));
 
-            return wrappedObject.Lesser(left, right, ctx);
+            return wrappedObject.Ref.Lesser(Self(left), Self(right), ctx);
         }
 
 
         protected internal override ElaValue GreaterEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Ord) == ElaTraits.Ord)
-                return Run("Ord >=", ctx, left, right);
+                return Run("Ord greaterequal", ctx, Self(left), Self(right));
 
-            return wrappedObject.GreaterEquals(left, right, ctx);
+            return wrappedObject.Ref.GreaterEquals(Self(left), Self(right), ctx);
         }
 
 
         protected internal override ElaValue LesserEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Ord) == ElaTraits.Ord)
-                return Run("Ord <=", ctx, left, right);
+                return Run("Ord lesserequal", ctx, Self(left), Self(right));
 
-            return wrappedObject.LesserEquals(left, right, ctx);
+            return wrappedObject.Ref.LesserEquals(Self(left), Self(right), ctx);
         }
 
 
@@ -168,25 +168,25 @@ namespace Ela.Runtime.ObjectModel
             if ((overridenTraits & ElaTraits.Len) == ElaTraits.Len)
                 return Run("Len length", ctx, wrappedObject);
 
-            return wrappedObject.GetLength(ctx);
+            return wrappedObject.Ref.GetLength(ctx);
         }
 
 
-        protected internal override ElaValue Successor(ExecutionContext ctx)
+        protected internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Enum) == ElaTraits.Enum)
                 return Run("Enum succ", ctx, wrappedObject);
 
-            return wrappedObject.Successor(ctx);
+            return wrappedObject.Ref.Successor(wrappedObject, ctx);
         }
 
 
-        protected internal override ElaValue Predecessor(ExecutionContext ctx)
+        protected internal override ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Enum) == ElaTraits.Enum)
                 return Run("Enum pred", ctx, wrappedObject);
 
-            return wrappedObject.Predecessor(ctx);
+            return wrappedObject.Ref.Predecessor(wrappedObject, ctx);
         }
 
 
@@ -195,7 +195,7 @@ namespace Ela.Runtime.ObjectModel
             if ((overridenTraits & ElaTraits.Get) == ElaTraits.Get)
                 return Run("Get get", ctx, index, wrappedObject);
 
-            return wrappedObject.GetValue(index, ctx);
+            return wrappedObject.Ref.GetValue(index, ctx);
         }
 
 
@@ -204,7 +204,7 @@ namespace Ela.Runtime.ObjectModel
             if ((overridenTraits & ElaTraits.Set) == ElaTraits.Set)
                 Run("Set set", ctx, index, value, wrappedObject);
 
-            value.SetValue(index, value, ctx);
+            wrappedObject.Ref.SetValue(index, value, ctx);
         }
 
 
@@ -213,7 +213,7 @@ namespace Ela.Runtime.ObjectModel
             if ((overridenTraits & ElaTraits.Bound) == ElaTraits.Bound)
                 return Run("Bound max", ctx, wrappedObject);
 
-            return wrappedObject.GetMax(ctx);
+            return wrappedObject.Ref.GetMax(ctx);
         }
 
 
@@ -222,137 +222,137 @@ namespace Ela.Runtime.ObjectModel
             if ((overridenTraits & ElaTraits.Bound) == ElaTraits.Bound)
                 return Run("Bound min", ctx, wrappedObject);
 
-            return wrappedObject.GetMin(ctx);
+            return wrappedObject.Ref.GetMin(ctx);
         }
 
 
         protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Concat) == ElaTraits.Concat)
-                return Run("Concat ++", ctx, left, right);
+                return Run("Concat concat", ctx, Self(left), Self(right));
 
-            return wrappedObject.Concatenate(left, right, ctx);
+            return wrappedObject.Ref.Concatenate(Self(left), Self(right), ctx);
         }
 
 
         protected internal override ElaValue Add(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Num) == ElaTraits.Num)
-                return Run("Num +", ctx, left, right);
+                return Run("Num add", ctx, Self(left), Self(right));
 
-            return wrappedObject.Add(left, right, ctx);
+            return wrappedObject.Ref.Add(Self(left), Self(right), ctx);
         }
 
 
         protected internal override ElaValue Subtract(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Num) == ElaTraits.Num)
-                return Run("Num -", ctx, left, right);
+                return Run("Num subtract", ctx, Self(left), Self(right));
 
-            return wrappedObject.Subtract(left, right, ctx);
+            return wrappedObject.Ref.Subtract(Self(left), Self(right), ctx);
         }
 
 
         protected internal override ElaValue Multiply(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Num) == ElaTraits.Num)
-                return Run("Num *", ctx, left, right);
+                return Run("Num multiply", ctx, Self(left), Self(right));
 
-            return wrappedObject.Multiply(left, right, ctx);
+            return wrappedObject.Ref.Multiply(Self(left), Self(right), ctx);
         }
 
 
         protected internal override ElaValue Divide(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Num) == ElaTraits.Num)
-                return Run("Num /", ctx, left, right);
+                return Run("Num divide", ctx, Self(left), Self(right));
 
-            return wrappedObject.Divide(left, right, ctx);
+            return wrappedObject.Ref.Divide(Self(left), Self(right), ctx);
         }
 
 
         protected internal override ElaValue Remainder(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Num) == ElaTraits.Num)
-                return Run("Num %", ctx, left, right);
+                return Run("Num remainder", ctx, Self(left), Self(right));
 
-            return wrappedObject.Remainder(left, right, ctx);
+            return wrappedObject.Ref.Remainder(Self(left), Self(right), ctx);
         }
 
 
         protected internal override ElaValue Power(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Num) == ElaTraits.Num)
-                return Run("Num **", ctx, left, right);
+                return Run("Num power", ctx, Self(left), Self(right));
 
-            return wrappedObject.Power(left, right, ctx);
+            return wrappedObject.Ref.Power(Self(left), Self(right), ctx);
         }
 
 
         protected internal override ElaValue BitwiseOr(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Bit) == ElaTraits.Bit)
-                return Run("Bit |||", ctx, left, right);
+                return Run("Bit bitwiseor", ctx, Self(left), Self(right));
 
-            return wrappedObject.BitwiseOr(left, right, ctx);
+            return wrappedObject.Ref.BitwiseOr(Self(left), Self(right), ctx);
         }
 
 
         protected internal override ElaValue BitwiseAnd(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Bit) == ElaTraits.Bit)
-                return Run("Bit &&&", ctx, left, right);
+                return Run("Bit bitwiseand", ctx, Self(left), Self(right));
 
-            return wrappedObject.BitwiseAnd(left, right, ctx);
+            return wrappedObject.Ref.BitwiseAnd(Self(left), Self(right), ctx);
         }
 
 
         protected internal override ElaValue BitwiseXor(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Bit) == ElaTraits.Bit)
-                return Run("Bit ^^^", ctx, left, right);
+                return Run("Bit bitwisexor", ctx, Self(left), Self(right));
 
-            return wrappedObject.BitwiseXor(left, right, ctx);
+            return wrappedObject.Ref.BitwiseXor(Self(left), Self(right), ctx);
         }
 
 
-        protected internal override ElaValue BitwiseNot(ExecutionContext ctx)
+        protected internal override ElaValue BitwiseNot(ElaValue @this, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Bit) == ElaTraits.Bit)
-                return Run("Bit ^^^", ctx, wrappedObject);
+                return Run("Bit bitwisenot", ctx, wrappedObject);
 
-            return wrappedObject.BitwiseNot(ctx);
+            return wrappedObject.Ref.BitwiseNot(wrappedObject, ctx);
         }
 
 
         protected internal override ElaValue ShiftRight(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Bit) == ElaTraits.Bit)
-                return Run("Bit >>>", ctx, left, right);
+                return Run("Bit shiftright", ctx, Self(left), Self(right));
 
-            return wrappedObject.ShiftRight(left, right, ctx);
+            return wrappedObject.Ref.ShiftRight(Self(left), Self(right), ctx);
         }
 
 
         protected internal override ElaValue ShiftLeft(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Bit) == ElaTraits.Bit)
-                return Run("Bit <<<", ctx, left, right);
+                return Run("Bit shiftleft", ctx, Self(left), Self(right));
 
-            return wrappedObject.ShiftLeft(left, right, ctx);
+            return wrappedObject.Ref.ShiftLeft(Self(left), Self(right), ctx);
         }
 
 
-        protected internal override ElaValue Negate(ExecutionContext ctx)
+        protected internal override ElaValue Negate(ElaValue @this, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Neg) == ElaTraits.Neg)
-                return Run("Neg --", ctx, wrappedObject);
+                return Run("Neg negate", ctx, wrappedObject);
 
-            return wrappedObject.Negate(ctx);
+            return wrappedObject.Ref.Negate(wrappedObject, ctx);
         }
 
 
-        protected internal override bool Bool(ExecutionContext ctx)
+        protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Bool) == ElaTraits.Bool)
             {
@@ -360,7 +360,7 @@ namespace Ela.Runtime.ObjectModel
                 return ret.AsBoolean();
             }
 
-            return wrappedObject.Bool(ctx);
+            return wrappedObject.Ref.Bool(wrappedObject, ctx);
         }
 
 
@@ -378,7 +378,7 @@ namespace Ela.Runtime.ObjectModel
             if ((overridenTraits & ElaTraits.Seq) == ElaTraits.Seq)
                 return Run("Seq tail", ctx, wrappedObject);
 
-            return wrappedObject.Tail(ctx);
+            return wrappedObject.Ref.Tail(ctx);
         }
 
 
@@ -390,16 +390,16 @@ namespace Ela.Runtime.ObjectModel
                 return ret.AsBoolean();
             }
 
-            return wrappedObject.IsNil(ctx);
+            return wrappedObject.Ref.IsNil(ctx);
         }
 
 
         protected internal override ElaValue Cons(ElaObject instance, ElaValue value, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Cons) == ElaTraits.Cons)
-                return Run("Cons ::", ctx, new ElaValue(instance), value, wrappedObject);
+                return Run("Cons cons", ctx, new ElaValue(instance), value, wrappedObject);
 
-            return value.Cons(instance, value, ctx);
+            return wrappedObject.Ref.Cons(instance, value, ctx);
         }
 
 
@@ -408,7 +408,7 @@ namespace Ela.Runtime.ObjectModel
             if ((overridenTraits & ElaTraits.Cons) == ElaTraits.Cons)
                 return Run("Cons nil", ctx, wrappedObject);
 
-            return wrappedObject.Nil(ctx);
+            return wrappedObject.Ref.Nil(ctx);
         }
 
 
@@ -417,7 +417,7 @@ namespace Ela.Runtime.ObjectModel
             if ((overridenTraits & ElaTraits.Gen) == ElaTraits.Gen)
                 return Run("Gen gen", ctx, value, wrappedObject);
 
-            return value.Generate(value, ctx);
+            return wrappedObject.Ref.Generate(value, ctx);
         }
 
 
@@ -426,7 +426,7 @@ namespace Ela.Runtime.ObjectModel
             if ((overridenTraits & ElaTraits.Gen) == ElaTraits.Gen)
                 return Run("Gen genFin", ctx, wrappedObject);
 
-            return wrappedObject.GenerateFinalize(ctx);
+            return wrappedObject.Ref.GenerateFinalize(ctx);
         }
 
 
@@ -435,7 +435,7 @@ namespace Ela.Runtime.ObjectModel
             if ((overridenTraits & ElaTraits.FieldGet) == ElaTraits.FieldGet)
                 return Run("FieldGet getField", ctx, new ElaValue(field), wrappedObject);
 
-            return wrappedObject.GetField(field, ctx);
+            return wrappedObject.Ref.GetField(field, ctx);
         }
 
 
@@ -447,7 +447,7 @@ namespace Ela.Runtime.ObjectModel
                 return ret.AsBoolean();
             }
 
-            return wrappedObject.HasField(field, ctx);
+            return wrappedObject.Ref.HasField(field, ctx);
         }
 
 
@@ -456,11 +456,11 @@ namespace Ela.Runtime.ObjectModel
             if ((overridenTraits & ElaTraits.FieldSet) == ElaTraits.FieldSet)
                 Run("FieldGet setField", ctx, new ElaValue(field), value, wrappedObject);
 
-            value.SetField(field, value, ctx);
+            wrappedObject.Ref.SetField(field, value, ctx);
         }
 
 
-        protected internal override string Show(ExecutionContext ctx, ShowInfo info)
+        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Show) == ElaTraits.Show)
             {
@@ -468,25 +468,25 @@ namespace Ela.Runtime.ObjectModel
                 return ret.AsString();
             }
 
-            return wrappedObject.Show(ctx, info);
+            return wrappedObject.Ref.Show(wrappedObject, info, ctx);
         }
 
 
-        protected internal override ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
+        protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Convert) == ElaTraits.Convert)
                 return Run("Convert convert", ctx, new ElaValue((Int32)type), wrappedObject);
 
-            return wrappedObject.Convert(type, ctx);
+            return wrappedObject.Ref.Convert(wrappedObject, type, ctx);
         }
 
 
         protected internal override ElaValue Call(ElaValue value, ExecutionContext ctx)
         {
             if ((overridenTraits & ElaTraits.Call) == ElaTraits.Call)
-                return Run("Call call", ctx, value);
+                return Run("Call call", ctx, value, wrappedObject);
 
-            return value.Call(value, ctx);
+            return wrappedObject.Ref.Call(value, ctx);
         }
 
 
@@ -495,7 +495,7 @@ namespace Ela.Runtime.ObjectModel
             if ((overridenTraits & ElaTraits.Thunk) == ElaTraits.Thunk)
                 return Run("Thunk force", ctx, wrappedObject);
 
-            return wrappedObject.Force(ctx);
+            return wrappedObject.Ref.Force(ctx);
         }
 
 
@@ -507,7 +507,7 @@ namespace Ela.Runtime.ObjectModel
                 return ret.AsString();
             }
 
-            return wrappedObject.GetTag(ctx);
+            return wrappedObject.Ref.GetTag(ctx);
         }
 
 
@@ -516,7 +516,13 @@ namespace Ela.Runtime.ObjectModel
             if ((overridenTraits & ElaTraits.Tag) == ElaTraits.Tag)
                 return Run("Tag untag", ctx, wrappedObject);
 
-            return wrappedObject.Untag(ctx);
+            return wrappedObject.Ref.Untag(ctx);
+        }
+
+
+        private ElaValue Self(ElaValue val)
+        {
+            return val.Ref == this ? wrappedObject : val;
         }
         #endregion
     }

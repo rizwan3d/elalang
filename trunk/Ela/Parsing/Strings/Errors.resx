@@ -291,15 +291,6 @@
   <data name="InvalidBindingPattern" xml:space="preserve">
     <value>Invalid syntax for a pattern matching inside variable binding.</value>
   </data>
-  <data name="InvalidBitAnd" xml:space="preserve">
-    <value>Invalid bitwise 'and' expression.</value>
-  </data>
-  <data name="InvalidBitOr" xml:space="preserve">
-    <value>Invalid bitwise 'or' expression.</value>
-  </data>
-  <data name="InvalidBitXor" xml:space="preserve">
-    <value>Invalid bitwise 'xor' expression.</value>
-  </data>
   <data name="InvalidCast" xml:space="preserve">
     <value>Invalid cast operation syntax.</value>
   </data>
@@ -309,26 +300,14 @@
   <data name="InvalidComprehension" xml:space="preserve">
     <value>Invalid comprehension syntax.</value>
   </data>
-  <data name="InvalidConcat" xml:space="preserve">
-    <value>Invalid concatenation operation syntax.</value>
-  </data>
-  <data name="InvalidCons" xml:space="preserve">
-    <value>Invalid list construction operation syntax.</value>
-  </data>
   <data name="InvalidConsPattern" xml:space="preserve">
     <value>Invalid head/tail (e.g. 'x::xs') pattern syntax.</value>
   </data>
   <data name="InvalidDefaultPattern" xml:space="preserve">
     <value>Invalid default pattern syntax.</value>
   </data>
-  <data name="InvalidEq" xml:space="preserve">
-    <value>Invalid comparison expression syntax.</value>
-  </data>
   <data name="InvalidFail" xml:space="preserve">
     <value>Invalid syntax for a 'fail' expression.</value>
-  </data>
-  <data name="InvalidFuncOperator" xml:space="preserve">
-    <value>Invalid operator reference syntax.</value>
   </data>
   <data name="InvalidFuncPattern" xml:space="preserve">
     <value>Invalid syntax for a pattern matching in a function definition.</value>
@@ -365,9 +344,6 @@
   </data>
   <data name="InvalidMatchEntry" xml:space="preserve">
     <value>Invalid syntax for a match entry.</value>
-  </data>
-  <data name="InvalidMath" xml:space="preserve">
-    <value>Invalid arithmetical operation syntax.</value>
   </data>
   <data name="InvalidMemberAccess" xml:space="preserve">
     <value>Invalid member access syntax.</value>
@@ -450,10 +426,10 @@
   <data name="InvalidSyntaxUnexpectedSymbol" xml:space="preserve">
     <value>Invalid syntax. Unexpected symbol '{0}'.</value>
   </data>
-  <data name="InvalidUnary" xml:space="preserve">
-    <value>Invalid unary expression.</value>
-  </data>
   <data name="InvalidIndentationUnexpectedSymbol" xml:space="preserve">
     <value>Unexpected symbol '{0}'. Probably indentation is incorrect.</value>
+  </data>
+  <data name="InvalidOperation" xml:space="preserve">
+    <value>Invalid syntax for an operation.</value>
   </data>
 </root>

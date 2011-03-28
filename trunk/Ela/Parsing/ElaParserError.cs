@@ -164,7 +164,7 @@ namespace Ela.Parsing
 
 		InvalidLiteralPattern = 205,
 
-		InvalidUnary = 206,
+		// = 206,
 
 		InvalidBindingPattern = 207,
 
@@ -246,7 +246,7 @@ namespace Ela.Parsing
 
 		InvalidParamList = 246,
 
-		// = 247,
+		InvalidOperation = 247,
 
 		InvalidBinding = 248,
 
@@ -262,27 +262,27 @@ namespace Ela.Parsing
 
 		InvalidAnd = 254,
 
-		InvalidEq = 255,
+		// = 255,
 
 		InvalidShift = 256,
 
-		InvalidConcat = 257,
+		// = 257,
 
-		InvalidCons = 258,
+		// = 258,
 
-		InvalidMath = 259,
+		// = 259,
 
 		InvalidCast = 260,
 
 		InvalidInfix = 261,
 
-		InvalidBitOr = 262,
+		// = 262,
 
-		InvalidBitXor = 263,
+		// = 263,
 
-		InvalidBitAnd = 264,
+		// = 264,
 
-		InvalidComp = 265,
+		// = 265,
 
 		InvalidApplication = 266,
 
@@ -290,8 +290,6 @@ namespace Ela.Parsing
 
 		InvalidComprehension = 268,
 
-		InvalidGuard = 269,
-
-		InvalidFuncOperator = 270
+		InvalidGuard = 269
 	}
 }

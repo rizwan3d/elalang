@@ -187,7 +187,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Successor(ExecutionContext ctx)
+		protected internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
 		{
 			var tuple = new ElaTuple(Length);
 			tuple.cons = Length;
@@ -204,7 +204,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Predecessor(ExecutionContext ctx)
+		protected internal override ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
 		{
 			var tuple = new ElaTuple(Length);
 			tuple.cons = Length;
@@ -617,7 +617,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue BitwiseNot(ExecutionContext ctx)
+		protected internal override ElaValue BitwiseNot(ElaValue @this, ExecutionContext ctx)
 		{
 			var ret = new ElaTuple(Length);
 			ret.cons = Length;
@@ -674,7 +674,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override bool Bool(ExecutionContext ctx)
+		protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
 		{
 			var ret = new ElaTuple(Length);
 			ret.cons = Length;
@@ -692,7 +692,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Negate(ExecutionContext ctx)
+		protected internal override ElaValue Negate(ElaValue @this, ExecutionContext ctx)
 		{
 			var ret = new ElaTuple(Length);
 			ret.cons = Length;
@@ -775,7 +775,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
+		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
 		{
 			if (type == ElaTypeCode.Tuple)
 				return new ElaValue(this);
@@ -785,7 +785,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override string Show(ExecutionContext ctx, ShowInfo info)
+        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			return "(" + FormatHelper.FormatEnumerable((IEnumerable<ElaValue>)this, ctx, info) + 
 				(Length < 2 ? ",)" : ")");

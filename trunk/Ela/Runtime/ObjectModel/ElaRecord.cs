@@ -110,7 +110,7 @@ namespace Ela.Runtime.ObjectModel
 			if (res == SetResult.OutOfRange)
 				ctx.IndexOutOfRange(index, new ElaValue(this));
 			else if (res == SetResult.Immutable)
-				ctx.Fail(ElaRuntimeError.FieldImmutable, index.Ref.ToString(), Show(ctx, ShowInfo.Default));
+				ctx.Fail(ElaRuntimeError.FieldImmutable, index.Ref.ToString(), Show(new ElaValue(this), ShowInfo.Default, ctx));
 		}
 
 
@@ -131,7 +131,7 @@ namespace Ela.Runtime.ObjectModel
 			var res = SetValue(field, value);
 
 			if (res == SetResult.Immutable)
-				ctx.Fail(ElaRuntimeError.FieldImmutable, field, Show(ctx, ShowInfo.Default));
+				ctx.Fail(ElaRuntimeError.FieldImmutable, field, Show(new ElaValue(this), ShowInfo.Default, ctx));
 			else if (res == SetResult.OutOfRange)
 				ctx.UnknownField(field, new ElaValue(this));
 		}
@@ -143,7 +143,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
+		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
 		{
 			if (type == ElaTypeCode.Record)
 				return new ElaValue(this);
@@ -152,12 +152,12 @@ namespace Ela.Runtime.ObjectModel
 			else
 			{
 				ctx.ConversionFailed(new ElaValue(this), type);
-				return base.Convert(type, ctx);
+                return Default();
 			}
 		}
 
 
-		protected internal override string Show(ExecutionContext ctx, ShowInfo info)
+        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			var sb = new StringBuilder();
 			sb.Append('{');
@@ -178,7 +178,7 @@ namespace Ela.Runtime.ObjectModel
 				if (flags[c - 1])
 					sb.Append("!");
 
-				sb.AppendFormat("{0}={1}", k, this[k].Ref.Show(this[k], ctx, info));
+				sb.AppendFormat("{0}={1}", k, this[k].Ref.Show(this[k], info, ctx));
 			}
 
 			sb.Append('}');

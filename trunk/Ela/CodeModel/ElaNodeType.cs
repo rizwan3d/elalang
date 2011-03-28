@@ -23,6 +23,8 @@ namespace Ela.CodeModel
 		
 		
 
+        Trait,
+
 		Builtin,
 
 		Binary,

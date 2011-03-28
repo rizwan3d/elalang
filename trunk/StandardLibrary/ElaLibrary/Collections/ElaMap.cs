@@ -70,7 +70,7 @@ namespace Ela.Library.Collections
         }
 
 
-        protected override string Show(ExecutionContext ctx, ShowInfo info)
+        protected override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
         {
             var sb = new StringBuilder();
             sb.Append("map");
@@ -82,9 +82,9 @@ namespace Ela.Library.Collections
                 if (c++ > 0)
                     sb.Append(',');
 
-                sb.Append(e.Key.Show(ctx, info));
+                sb.Append(e.Key.Show(info, ctx));
                 sb.Append('=');
-                sb.Append(e.Value.Show(ctx, info));
+                sb.Append(e.Value.Show(info, ctx));
             }
 
             sb.Append('}');
@@ -112,7 +112,7 @@ namespace Ela.Library.Collections
         }
 
 
-        protected override ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
+        protected override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
         {
             if (type == ElaTypeCode.Record)
                 return new ElaValue(ConvertToRecord());

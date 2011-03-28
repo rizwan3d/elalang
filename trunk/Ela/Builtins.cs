@@ -30,6 +30,13 @@ namespace Ela
 				case "showf": return ElaBuiltinKind.Showf;
 				case "isref": return ElaBuiltinKind.IsRef;
 				case "nil": return ElaBuiltinKind.Nil;
+                case "head": return ElaBuiltinKind.Head;
+                case "tail": return ElaBuiltinKind.Tail;
+                case "isnil": return ElaBuiltinKind.IsNil;
+                case "fst": return ElaBuiltinKind.Fst;
+                case "fst3": return ElaBuiltinKind.Fst3;
+                case "snd": return ElaBuiltinKind.Snd;
+                case "snd3": return ElaBuiltinKind.Snd3;
 
 				case "equals": return ElaBuiltinKind.Equals;
 				case "notequals": return ElaBuiltinKind.NotEquals;

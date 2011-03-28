@@ -138,6 +138,79 @@ namespace Ela.Compilation
 
 
 		#region Builtins
+        private void CompileTraitFunction(string fun, string trait)
+        {
+            StartSection();
+            cw.StartFrame(1);
+            var funSkipLabel = cw.DefineLabel();
+            cw.Emit(Op.Br, funSkipLabel);
+            var address = cw.Offset;
+
+            cw.Emit(Op.Dup);
+            cw.Emit(Op.Traitget, AddString(trait + " " + fun));
+            cw.Emit(Op.Call);
+
+            cw.Emit(Op.Ret);
+            frame.Layouts.Add(new MemoryLayout(currentCounter, cw.FinishFrame(), address));
+            EndSection();
+            cw.MarkLabel(funSkipLabel);
+            cw.Emit(Op.PushI4, 1);
+            cw.Emit(Op.Newfun, frame.Layouts.Count - 1);
+        }
+
+
+        private void CompileTraitConstructor(ElaTrait trait, LabelMap map)
+        {
+            var kind = Builtins.Trait(trait.Name);
+
+            if (kind == ElaTraits.None)
+            {
+                foreach (var t in trait.Functions)
+                {
+                    var sv = AddGlobal(t, trait, ElaVariableFlags.Function, 1);
+                    CompileTraitFunction(t, trait.Name);
+                    cw.Emit(Op.Popvar, sv.Address);
+                }
+            }
+
+            StartSection();
+            var pars = trait.Functions.Count + 1;
+            cw.StartFrame(pars);
+            var funSkipLabel = cw.DefineLabel();
+            cw.Emit(Op.Br, funSkipLabel);
+            var address = cw.Offset;
+            var vars = new int[trait.Functions.Count];
+            
+            for (var i = 0; i < trait.Functions.Count; i++)
+            {
+                vars[i] = AddVariable();
+                cw.Emit(Op.Popvar, vars[i]);
+            }
+
+            cw.Emit(Op.Newbox);
+            var sys = AddVariable();
+            cw.Emit(Op.Popvar, sys);
+
+            for (var i = 0; i < trait.Functions.Count; i++)
+            {
+                cw.Emit(Op.Pushstr, AddString(trait.Name));
+                cw.Emit(Op.Pushstr, AddString(trait.Functions[i]));
+                cw.Emit(Op.Pushvar, vars[i]);
+                cw.Emit(Op.Pushvar, sys);
+                cw.Emit(Op.Traitadd);
+            }
+
+            cw.Emit(Op.Pushvar, sys);
+
+            cw.Emit(Op.Ret);
+            frame.Layouts.Add(new MemoryLayout(currentCounter, cw.FinishFrame(), address));
+            EndSection();
+            cw.MarkLabel(funSkipLabel);
+            cw.Emit(Op.PushI4, pars);
+            cw.Emit(Op.Newfun, frame.Layouts.Count - 1);
+        }
+
+
 		private void CompileBuiltin(ElaBuiltinKind kind, ElaExpression exp, LabelMap map)
 		{
 			StartSection();
@@ -162,6 +235,27 @@ namespace Ela.Compilation
 		{
 			switch (kind)
 			{
+                case ElaBuiltinKind.Fst:
+                    cw.Emit(Op.Elem, 2 | 0 << 8);
+                    break;
+                case ElaBuiltinKind.Snd:
+                    cw.Emit(Op.Elem, 2 | 1 << 8);
+                    break;
+                case ElaBuiltinKind.Fst3:
+                    cw.Emit(Op.Elem, 3 | 0 << 8);
+                    break;
+                case ElaBuiltinKind.Snd3:
+                    cw.Emit(Op.Elem, 3 | 1 << 8);
+                    break;
+                case ElaBuiltinKind.Head:
+                    cw.Emit(Op.Head);
+                    break;
+                case ElaBuiltinKind.Tail:
+                    cw.Emit(Op.Tail);
+                    break;
+                case ElaBuiltinKind.IsNil:
+                    cw.Emit(Op.Isnil);
+                    break;
 				case ElaBuiltinKind.Negate:
 					cw.Emit(Op.Neg);
 					break;

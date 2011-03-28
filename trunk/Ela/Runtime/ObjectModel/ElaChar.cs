@@ -103,13 +103,13 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		internal override string Show(ElaValue @this, ExecutionContext ctx, ShowInfo info)
+        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			return ((Char)@this.I4).ToString();
 		}
 
 
-		internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
 		{
 			switch (type)
 			{
@@ -118,7 +118,7 @@ namespace Ela.Runtime.ObjectModel
 				case ElaTypeCode.Double: return new ElaValue((double)@this.I4);
 				case ElaTypeCode.Long: return new ElaValue((long)@this.I4);
 				case ElaTypeCode.Char: return new ElaValue(@this.I4, this);
-				case ElaTypeCode.String: return new ElaValue(Show(@this, ctx, ShowInfo.Default));
+				case ElaTypeCode.String: return new ElaValue(Show(@this, ShowInfo.Default, ctx));
 				default:
 					ctx.ConversionFailed(@this, type);
 					return Default();
@@ -126,13 +126,13 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
+		protected internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
 		{
 			return new ElaValue(@this.I4 + 1, this);
 		}
 
 
-		internal override ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
+		protected internal override ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
 		{
 			return new ElaValue(@this.I4 - 1, this);
 		}

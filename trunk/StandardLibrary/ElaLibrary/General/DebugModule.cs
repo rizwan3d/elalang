@@ -21,8 +21,6 @@ namespace Ela.Library.General
 		{
 			Add<Int64>("startClock", StartClock);
 			Add<Int64,String>("stopClock", StopClock);
-			Add("add2", new FunAdd());
-			Add("clt", new FunClt());
 		}
 
 

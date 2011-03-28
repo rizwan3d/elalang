@@ -47,9 +47,9 @@ namespace Ela.Library.Collections
         }
 
 
-        protected override string Show(ExecutionContext ctx, ShowInfo info)
+        protected override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
         {
-            return "queue" + new ElaValue(ToList()).Show(ctx, info);
+            return "queue" + new ElaValue(ToList()).Show(info, ctx);
         }
 
 
@@ -77,7 +77,7 @@ namespace Ela.Library.Collections
         }
 
 
-        protected override ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
+        protected override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
         {
             if (type == ElaTypeCode.List)
                 return new ElaValue(ToList());

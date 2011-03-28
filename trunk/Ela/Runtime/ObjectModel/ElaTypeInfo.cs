@@ -45,7 +45,7 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        protected internal override string Show(ExecutionContext ctx, ShowInfo info)
+        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
         {
             var sb = new StringBuilder();
             sb.Append(GetTypeName());
@@ -59,7 +59,7 @@ namespace Ela.Runtime.ObjectModel
             for (var i = 0; i < keys.Count; i++)
             {
                 var f = values[i].Is<ElaTypeInfo>() ? typeFormat : ShowInfo.Default;
-                sb.AppendFormat("{0}{1}={2}\r\n", pad, keys[i], values[i].Show(ctx, f));
+                sb.AppendFormat("{0}{1}={2}\r\n", pad, keys[i], values[i].Show(f, ctx));
             }
 
             sb.Append(finPad + "}");

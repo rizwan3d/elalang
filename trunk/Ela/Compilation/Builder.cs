@@ -89,6 +89,9 @@ namespace Ela.Compilation
 
 			switch (exp.Type)
 			{
+                case ElaNodeType.Trait:
+                    CompileTraitConstructor((ElaTrait)exp, map);
+                    break;
 				case ElaNodeType.Builtin:
 					{
 						var v = (ElaBuiltin)exp;
@@ -1094,6 +1097,32 @@ namespace Ela.Compilation
 
             frame.Unresolves.Add(new UnresolvedSymbol(name, addr, data, line, col));
             globalScope.Locals.Add(name, new ScopeVar(ElaVariableFlags.External | flags, addr, data));
+            return new ScopeVar(flags, counters.Count | addr << 8, data);
+        }
+
+
+        private ScopeVar AddGlobal(string name, ElaExpression exp, ElaVariableFlags flags, int data)
+        {
+            var addr = 0;
+
+            if (counters.Count == 0)
+            {
+                addr = currentCounter;
+                currentCounter++;
+            }
+            else
+            {
+                addr = counters[0];
+                counters[0] = counters[0] + 1;
+            }
+
+            if (globalScope.Locals.ContainsKey(name))
+            {
+                AddError(ElaCompilerError.VariableAlreadyDeclared, exp, name);
+                return ScopeVar.Empty;
+            }
+
+            globalScope.Locals.Add(name, new ScopeVar(flags, addr, data));
             return new ScopeVar(flags, counters.Count | addr << 8, data);
         }
 

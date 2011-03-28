@@ -67,9 +67,9 @@ let e = CoreInternal.e
     evaluated solely for the side effects of it first argument.
     rec can be used for the function 'f' of one argument, rec2 - 
     for the function 'f' of two arguments. */
-let rec f x = f x $ rec
+let rec f x = f x $ rec f
 
-let rec2 f x y = f x y $ rec2
+let rec2 f x y = f x y $ rec2 f
 
 let until p f x | p x  = x
                 | else = until p f (f x)

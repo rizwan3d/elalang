@@ -138,6 +138,15 @@ namespace Ela.Compilation
 
 		Nil,
 
+        Traitadd,
+
+        
+        
+        Traitget,
+
+        Newbox,
+
+        Elem,
 
 		Skiptag,
 
@@ -168,10 +177,6 @@ namespace Ela.Compilation
 		Failwith,
 
 		Start,
-
-		Incr,
-
-		Decr,
 
 		Pushstr,
 
