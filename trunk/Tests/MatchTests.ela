@@ -102,6 +102,16 @@ let guards4 {eqt} = eqt v
                               | x == 'L' = false
                         "ELA"            = false
                         str              = str == "ela"
+                        
+let parallel {eqt} = eqt v
+        where v = match (1,2,3) with
+                        (x,y,z) = x + y + z == 6
+                        _       = false
+
+let parallel2 {eqt} = eqt v
+        where v = match (1,) with
+                        (x,) = x == 1
+                        _    = false
 
 let shortMatch {eq,eqt} =
         if v is (x,2,3) then

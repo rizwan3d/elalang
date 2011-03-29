@@ -25,6 +25,14 @@ namespace Ela.Compilation
 			
 			if (s.In != null)
 				StartScope(false);
+
+			var inline = (s.VariableFlags & ElaVariableFlags.Inline) == ElaVariableFlags.Inline;
+
+			if (inline && s.InitExpression.Type != ElaNodeType.FunctionLiteral)
+				AddError(ElaCompilerError.InlineOnlyFunctions, s, s);
+
+			if (inline && CurrentScope != globalScope)
+				AddError(ElaCompilerError.InlineOnlyGlobal, s);
 			
 			if (s.Pattern == null)
 			{
@@ -37,6 +45,12 @@ namespace Ela.Compilation
 					addr = (hints & Hints.And) == Hints.And ?
 						GetVariable(s.VariableName, s.Line, s.Column).Address :
 						AddVariable(s.VariableName, s, flags, data);
+
+					if (CurrentScope == globalScope && inline)
+					{
+						inlineFuns.Remove(fun.Name);
+						inlineFuns.Add(fun.Name, fun);
+					}
 				}
 				else
 				{

@@ -42,3 +42,5 @@ let fst = __internal fst
 let snd = __internal snd
 let fst3 = __internal fst3
 let snd3 = __internal snd3
+
+let type = __internal type

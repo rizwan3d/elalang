@@ -95,8 +95,8 @@ namespace Ela.Compilation
 
 			if (rng.Second != null)
 			{
-				CompileExpression(rng.Second, map, Hints.None);
 				cw.Emit(Op.Pushvar, start);
+				CompileExpression(rng.Second, map, Hints.None);
 				cw.Emit(Op.Sub);
 				cw.Emit(Op.Popvar, step);
 			}
@@ -109,8 +109,8 @@ namespace Ela.Compilation
 			var second = AddVariable();
 			var trueLab = cw.DefineLabel();
 			var endLab = cw.DefineLabel();
-			cw.Emit(Op.Pushvar, start);
 			cw.Emit(Op.Pushvar, step);
+			cw.Emit(Op.Pushvar, start);
 			cw.Emit(Op.Add);
 			cw.Emit(Op.Dup);
 			cw.Emit(Op.Popvar, second);
@@ -146,8 +146,8 @@ namespace Ela.Compilation
 			var exitLab = cw.DefineLabel();
 			cw.MarkLabel(iterLab);
 
-			cw.Emit(Op.Pushvar, start);
 			cw.Emit(Op.Pushvar, step);
+			cw.Emit(Op.Pushvar, start);
 			cw.Emit(Op.Add);
 			cw.Emit(Op.Dup);
 			cw.Emit(Op.Popvar, start);
@@ -177,8 +177,8 @@ namespace Ela.Compilation
 
 			if (sec != null)
 			{
-				CompileExpression(sec, map, Hints.None);
 				cw.Emit(Op.Pushvar, start);
+				CompileExpression(sec, map, Hints.None);
 				cw.Emit(Op.Sub);
 				cw.Emit(Op.Popvar, step);
 			}
@@ -197,8 +197,8 @@ namespace Ela.Compilation
 			cw.Emit(Op.Pushvar, 1 | (fun >> 8) << 8);
 			cw.Emit(Op.Newlazy);
 
-			cw.Emit(Op.Pushvar, 1 | (start >> 8) << 8);
 			cw.Emit(Op.Pushvar, 1 | (step >> 8) << 8);
+			cw.Emit(Op.Pushvar, 1 | (start >> 8) << 8);
 			cw.Emit(Op.Add);
 			cw.Emit(Op.Dup);			
 			cw.Emit(Op.Popvar, 1 | (start >> 8) << 8);

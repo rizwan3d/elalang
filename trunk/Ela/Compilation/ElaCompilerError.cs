@@ -33,6 +33,8 @@ namespace Ela.Compilation
 
 		MatchEntryEmptyNoGuard = 312,
 
-		WrongTemplate = 313
+		InlineOnlyFunctions = 313,
+
+		InlineOnlyGlobal = 314,
 	}
 }

@@ -24,5 +24,7 @@ namespace Ela.CodeModel
 		Builtin = 0x80,
 
 		Template = 0x100,
+
+		Inline = 0x200
 	}
 }

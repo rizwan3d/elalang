@@ -135,6 +135,12 @@
   <data name="InfiniteRangeOnlyList" xml:space="preserve">
     <value>Range: {0} is invalid. Only lists can be generated using infinite ranges.</value>
   </data>
+  <data name="InlineOnlyFunctions" xml:space="preserve">
+    <value>Modifier 'inline' is not valid on declaration '{0}'. Only functions can be declared inline.</value>
+  </data>
+  <data name="InlineOnlyGlobal" xml:space="preserve">
+    <value>Only global functions can be declared inline.</value>
+  </data>
   <data name="MatchEntryEmptyNoGuard" xml:space="preserve">
     <value>An empty match entry should have a mandatory guard clause.</value>
   </data>
@@ -158,8 +164,5 @@
   </data>
   <data name="VariableDeclarationInitMissing" xml:space="preserve">
     <value>Names cannot be declared without initialization.</value>
-  </data>
-  <data name="WrongTemplate" xml:space="preserve">
-    <value>Unable to create a new function from '{0}'. Only global functions with available source code can be used as templates.</value>
   </data>
 </root>

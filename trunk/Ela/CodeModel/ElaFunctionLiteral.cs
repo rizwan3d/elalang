@@ -11,7 +11,7 @@ namespace Ela.CodeModel
 		internal ElaFunctionLiteral(Token tok, ElaNodeType type)
 			: base(tok, type)
 		{
-			_templateParameters = new FastList<String>();
+			
 		}
 
 

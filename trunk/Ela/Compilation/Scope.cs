@@ -39,7 +39,8 @@ namespace Ela.Compilation
 		public IEnumerable<String> EnumerateNames()
 		{
 			foreach (var kv in Locals)
-				if ((kv.Value.Flags & ElaVariableFlags.SpecialName) != ElaVariableFlags.SpecialName)
+				if ((kv.Value.Flags & ElaVariableFlags.SpecialName) != ElaVariableFlags.SpecialName &&
+					((kv.Value.Flags & ElaVariableFlags.External) != ElaVariableFlags.External))
 					yield return kv.Key;
 		}
 

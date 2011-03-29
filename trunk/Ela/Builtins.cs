@@ -27,7 +27,6 @@ namespace Ela
 				case "max": return ElaBuiltinKind.Max;
 				case "min": return ElaBuiltinKind.Min;
 				case "show": return ElaBuiltinKind.Show;
-				case "showf": return ElaBuiltinKind.Showf;
 				case "isref": return ElaBuiltinKind.IsRef;
 				case "nil": return ElaBuiltinKind.Nil;
                 case "head": return ElaBuiltinKind.Head;
@@ -37,7 +36,8 @@ namespace Ela
                 case "fst3": return ElaBuiltinKind.Fst3;
                 case "snd": return ElaBuiltinKind.Snd;
                 case "snd3": return ElaBuiltinKind.Snd3;
-
+				case "showf": return ElaBuiltinKind.Showf;
+				
 				case "equals": return ElaBuiltinKind.Equals;
 				case "notequals": return ElaBuiltinKind.NotEquals;
 				case "greaterequal": return ElaBuiltinKind.GreaterEqual;
@@ -52,7 +52,7 @@ namespace Ela
 				case "power": return ElaBuiltinKind.Power;
 				case "negate": return ElaBuiltinKind.Negate;
 				case "bitwiseand": return ElaBuiltinKind.BitwiseAnd;
-				case "birwiseor": return ElaBuiltinKind.BitwiseOr;
+				case "bitwiseor": return ElaBuiltinKind.BitwiseOr;
 				case "bitwisexor": return ElaBuiltinKind.BitwiseXor;
 				case "shiftright": return ElaBuiltinKind.ShiftRight;
 				case "shiftleft": return ElaBuiltinKind.ShiftLeft;

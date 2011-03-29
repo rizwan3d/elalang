@@ -23,7 +23,7 @@ namespace Ela.Compilation
 		private Scope globalScope;
 		private ExportVars exports;
 		private ElaCompiler comp;
-		private Dictionary<String,ElaFunctionLiteral> shadowFuns;
+		private Dictionary<String,ElaFunctionLiteral> inlineFuns;
 
 		internal Builder(CodeFrame frame, ElaCompiler comp, ExportVars builtins, Scope globalScope)
 		{
@@ -43,7 +43,7 @@ namespace Ela.Compilation
 			stringLookup = new Dictionary<String, Int32>();
 			Success = true;
 			shownHints = new Dictionary<ElaCompilerHint,ElaCompilerHint>();
-			shadowFuns = new Dictionary<String,ElaFunctionLiteral>();
+			inlineFuns = new Dictionary<String,ElaFunctionLiteral>();
 		}
 		#endregion
 
@@ -760,32 +760,31 @@ namespace Ela.Compilation
 		}
 
 
-		private void CompileInlineCall(ElaFunctionCall v, LabelMap map, Hints hints)
+		private bool CompileInlineCall(ElaFunctionCall v, LabelMap map, Hints hints)
 		{
-			//CurrentScope = new Scope(false, CurrentScope);
-			////CompileDeclaration(v.With, map, Hints.Left);
+			if (v.Target.Type != ElaNodeType.VariableReference)
+				return false;
+
+			var name = v.Target.GetName();
+			var fun = default(ElaFunctionLiteral);
+
+			if (!inlineFuns.TryGetValue(name, out fun))
+				return false;
+
+			var len = v.Parameters.Count;
 			
-			//var fd = default(FunData);
-			//var name = v.Target.GetName();
-			//var len = v.Parameters.Count;
+			if (len != fun.ParameterCount)
+				return false;
 
-			//for (var i = 0; i < len; i++)
-			//    CompileExpression(v.Parameters[len - i - 1], map, Hints.None);
+			CurrentScope = new Scope(false, CurrentScope);
+			var par = CurrentScope.Parent;
+			CurrentScope.Parent = globalScope;
 
-			//var par = CurrentScope.Parent;
-			//CurrentScope.Parent = globalScope;
+			CompileFunction(fun, FunFlag.Inline);
 			
-			//if (shadowFuns.TryGetValue(name, out fd))
-			//{
-			//    //cw.Duplicate(fd.Start, fd.Finish);
-			//    CompileFunction(fd.Literal, FunFlag.Inline);
-			//}
-
-			//for (var i = 0; i < len - fd.Pars; i++)
-			//    cw.Emit(Op.Call);
-
-			//EndScope();
-			//CurrentScope = par;
+			EndScope();
+			CurrentScope = par;
+			return true;
 		}
 
 
@@ -804,6 +803,9 @@ namespace Ela.Compilation
 				cw.Emit(Op.Br, map.FunStart);
 				return;
 			}
+			
+			if (CompileInlineCall(v, map, hints))
+				return;			
 
 			var ed = ExprData.Empty;
 			

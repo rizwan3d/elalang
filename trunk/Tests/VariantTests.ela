@@ -14,24 +14,8 @@ let simple2 {eqt} =
     
 let matchTest {eq} =
         match v with
-                `Some m = eq v "message"
+                `Some m = eq m "message"
         where v = `Some "message"
-    
-let transparency {eq} = 
-        eq (v + 14) 26
-        $ eq (14 - v) 2
-        $ eq (v * 2) 24
-        $ eq (24 / v) 2
-        $ eq (v / 2) 6    
-        where v = `Some 12
-    
-let transparency2 {eq} = 
-        eq v 100
-        $ eq v1 "message"
-        $ eq v2 (1,2)
-        where v = `Some 100
-           et v1 = `Some "message"
-           et v2 = `Some (1,2)
     
 let typeCheck {eqt} =
         let vr  = `None in

@@ -843,7 +843,18 @@ PRODUCTIONS
 		
 		
 	VariableAttributes<out ElaVariableFlags flags> =
-		"private" (. flags = ElaVariableFlags.Private; .).			
+		(. flags = ElaVariableFlags.None; .)
+		(
+			(
+				"private" (. flags = ElaVariableFlags.Private; .)
+				[ "inline" (. flags = ElaVariableFlags.Inline; .) ]
+			)
+			|
+			(
+				"inline" (. flags = ElaVariableFlags.Inline; .)					
+				[ "private" (. flags = ElaVariableFlags.Private; .) ]
+			)
+		).			
 		
 	WhereBinding<out ElaExpression exp> = 
 		(. scanner.InjectBlock(); .) 
@@ -1054,7 +1065,7 @@ PRODUCTIONS
 			(. if (RequireEndBlock()) .) EndBlock
 			[ 
 				(. 
-					if (fun.TemplateParameters != null)
+					if (fun.IsTemplate)
 						AddError(ElaParserError.InvalidFunctionWith);
 				.)
 				(
@@ -1089,7 +1100,7 @@ PRODUCTIONS
 			(. if (RequireEndBlock()) .) EndBlock
 			[ 
 				(. 
-					if (fun.TemplateParameters != null)
+					if (fun.IsTemplate)
 						AddError(ElaParserError.InvalidFunctionWith);
 				.)
 				(

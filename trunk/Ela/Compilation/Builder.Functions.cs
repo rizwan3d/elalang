@@ -7,44 +7,12 @@ namespace Ela.Compilation
 	internal sealed partial class Builder
 	{
 		#region Main
-		//private ExprData CompileTemplate(ElaTemplate tpl, LabelMap map, Hints hints)
-		//{
-		//    CurrentScope = new Scope(false, CurrentScope);
-		//    CompileDeclaration(tpl.Where, map, Hints.Left);
-
-		//    var fd = default(ElaFunctionLiteral);
-		//    var name = tpl.SourceFunctionName;
-			
-		//    var par = CurrentScope.Parent;
-		//    CurrentScope.Parent = globalScope;
-
-		//    if (shadowFuns.TryGetValue(name, out fd))
-		//        CompileFunction(fd, FunFlag.None);
-		//    else
-		//    {
-		//        fd = exports.FindLiteral(name);
-
-		//        if (fd == null)
-		//            AddError(ElaCompilerError.WrongTemplate, tpl, tpl.SourceFunctionName);
-		//        else
-		//            CompileFunction(fd, FunFlag.None);
-		//    }
-			
-		//    EndScope();
-		//    CurrentScope = par;
-		//    return new ExprData(DataKind.FunParams, fd.ParameterCount);
-		//}
-
-
 		private void CompileFunction(ElaFunctionLiteral dec, FunFlag flag)
 		{
-			var funData = new FunData();
 			var pars = dec.ParameterCount;
 
 			if (flag != FunFlag.Inline)
 				StartFun(dec.Name, pars);
-
-			funData.Pars = pars;
 
 			var funSkipLabel = Label.Empty;
 
@@ -74,8 +42,7 @@ namespace Ela.Compilation
 			AddLinePragma(dec);
 
 			var address = cw.Offset;
-			funData.Start = address;
-
+			
 			if (dec.IsTemplate)
 			{
 				for (var i = 0; i < dec.TemplateParameters.Count; i++)
@@ -98,8 +65,6 @@ namespace Ela.Compilation
 
 				CompileExpression(dec.Body.Entries[0].Expression, map, Hints.Tail | Hints.Scope);
 			}
-
-			funData.Finish = cw.Offset;
 
 			if (flag != FunFlag.Inline)
 			{
@@ -125,12 +90,6 @@ namespace Ela.Compilation
 					cw.Emit(Op.PushI4, pars);
 					cw.Emit(Op.Newfun, funHandle);
 				}
-			}
-			
-			if (CurrentScope == globalScope && !String.IsNullOrEmpty(dec.Name) && flag != FunFlag.Inline)
-			{
-				shadowFuns.Remove(dec.Name);
-				shadowFuns.Add(dec.Name, dec);
 			}
 		}
 
