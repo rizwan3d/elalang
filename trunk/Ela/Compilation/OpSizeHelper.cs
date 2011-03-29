@@ -73,9 +73,9 @@ namespace Ela.Compilation
 			1, //Skiphtag
 			1, //Ceqref,
 			1, //Nil
-        	1, //Clone
-			
+        	1, //Clone			
 			5, //Settab        
+
 			5, //Pushtab        
             5, //Elem
 			5, //Skiptag

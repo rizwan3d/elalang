@@ -138,11 +138,11 @@ namespace Ela.Compilation
 
 		Nil,
 
-        Clone,
-
-		
+        Clone,		
 		
 		Settab,        
+
+
 		
 		Pushtab,
         

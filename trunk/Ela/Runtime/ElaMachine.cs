@@ -784,20 +784,21 @@ namespace Ela.Runtime
 						{
 							var fun = evalStack.Pop().Ref as ElaFunction;
 
-							if (fun == null)
-							{
-								InvalidType(new ElaValue(fun), thread, evalStack, TypeCodeFormat.GetShortForm(ElaTypeCode.Function));
-								goto SWITCH_MEM;
-							}
-
-							if (fun.Table == null)
+							if (fun == null || fun.Table == null)
 							{
 								ExecuteFail(new ElaError(ElaRuntimeError.NotGenericFun, fun.ToString()), thread, evalStack);
 								goto SWITCH_MEM;
 							}
 
+							if (fun.Specialized >= fun.Table.Length)
+							{
+								ExecuteFail(ElaRuntimeError.TableTooMany, thread, evalStack);
+								goto SWITCH_MEM;
+							}
+
 							var val = evalStack.Pop();
-							fun.Table[opd] = val;
+							fun.Table[fun.Specialized] = val;
+							fun.Specialized++;							
 						}
 						break;
 					case Op.Pushtab:
@@ -805,9 +806,20 @@ namespace Ela.Runtime
 							var cp = callStack.Peek();
 
 							if (cp.Table.Length <= opd)
+							{
 								ExecuteFail(ElaRuntimeError.TableNoInit, thread, evalStack);
+								goto SWITCH_MEM;
+							}
 
-							evalStack.Push(cp.Table[opd]);
+							right = cp.Table[opd];
+
+							if (right.Ref == null)
+							{
+								ExecuteFail(ElaRuntimeError.TableNoInit, thread, evalStack);
+								goto SWITCH_MEM;
+							}
+
+							evalStack.Push(right);
 						}
 						break;
                     case Op.Elem:

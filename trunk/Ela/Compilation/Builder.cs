@@ -104,7 +104,7 @@ namespace Ela.Compilation
 						{
 							CompileExpression(t.Parameters[i], map, Hints.None);
 							cw.Emit(Op.Pushvar, sys);
-							cw.Emit(Op.Settab, i);
+							cw.Emit(Op.Settab);
 						}
 
 						cw.Emit(Op.Pushvar, sys);

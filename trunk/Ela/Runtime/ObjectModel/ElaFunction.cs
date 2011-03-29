@@ -188,6 +188,7 @@ namespace Ela.Runtime.ObjectModel
 			ret.vm = vm;
 			ret.Captures = Captures;
 			ret.Flip = Flip;
+			ret.Specialized = Specialized;
 
 			if (Table != null)
 			{
@@ -216,6 +217,7 @@ namespace Ela.Runtime.ObjectModel
 			newInstance.vm = vm;
 			newInstance.Captures = Captures;
 			newInstance.Flip = Flip;
+			newInstance.Specialized = Specialized;
 
 			if (Table != null)
 			{
@@ -301,6 +303,8 @@ namespace Ela.Runtime.ObjectModel
 		internal ElaValue LastParameter { get; set; }
 
 		internal ElaValue[] Table { get; set; }
+
+		internal int Specialized { get; set; }
 
 		private bool _flip;
 		internal bool Flip 

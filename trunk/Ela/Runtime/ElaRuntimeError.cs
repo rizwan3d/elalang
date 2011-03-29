@@ -113,6 +113,8 @@ namespace Ela.Runtime
 
 		NotGenericFun = 857,
 
+		TableTooMany = 858,
+
 
 		UserCode = 999
 	}
