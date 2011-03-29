@@ -1,3 +1,4 @@
+0.8.6.99:Change:Variants are now not transparent.
 0.8.6.98:Fix:Stack behavior for Newfun op code was calculated incorrectly.
 0.8.6.97:Fix:Match was incorrectly compiled when a single tuple element was used as a match expression.
 0.8.6.96:Fix:Ela linker didn't correctly process situations when an object file wasn't coupled with a source code file.
