@@ -109,6 +109,11 @@ namespace Ela.Runtime
 		TraitGen = 850,
 
 
+		TableNoInit = 856,
+
+		NotGenericFun = 857,
+
+
 		UserCode = 999
 	}
 }

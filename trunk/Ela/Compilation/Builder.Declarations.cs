@@ -20,7 +20,7 @@ namespace Ela.Compilation
 			{
 				data = (Int32)((ElaBuiltin)s.InitExpression).Kind;
 				flags |= ElaVariableFlags.Builtin;
-				builtins.AddVar(s.VariableName, (ElaBuiltinKind)data);
+				exports.AddBuiltin(s.VariableName, (ElaBuiltinKind)data);
 			}
 			
 			if (s.In != null)

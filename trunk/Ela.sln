@@ -10,7 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Code", "Code", "{AB91D945-B
 		StandardLibrary\Code\Core.ela = StandardLibrary\Code\Core.ela
 		StandardLibrary\Code\Iterator.ela = StandardLibrary\Code\Iterator.ela
 		StandardLibrary\Code\List.ela = StandardLibrary\Code\List.ela
-		StandardLibrary\Code\Prelude.ela = StandardLibrary\Code\Prelude.ela
 		StandardLibrary\Code\Test.ela = StandardLibrary\Code\Test.ela
 	EndProjectSection
 EndProject

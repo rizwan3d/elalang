@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7BDF4A1E-DFFF-4AE5-BD2D-1B1F4BE84B1D}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -126,7 +126,7 @@
     <Compile Include="CodeModel\ElaPatternGroup.cs" />
     <Compile Include="CodeModel\ElaRange.cs" />
     <Compile Include="CodeModel\ElaRecordPattern.cs" />
-    <Compile Include="CodeModel\ElaTrait.cs" />
+    <Compile Include="CodeModel\ElaTemplateReference.cs" />
     <Compile Include="CodeModel\ElaUnitLiteral.cs" />
     <Compile Include="CodeModel\ElaVariantLiteral.cs" />
     <Compile Include="CodeModel\ElaVariantPattern.cs" />
@@ -142,9 +142,10 @@
     <Compile Include="Compilation\ElaCompilerHint.cs" />
     <Compile Include="Compilation\ElaCompilerWarning.cs" />
     <Compile Include="Compilation\ExprData.cs" />
+    <Compile Include="Compilation\FunData.cs" />
     <Compile Include="Compilation\FunFlag.cs" />
     <Compile Include="Compilation\IElaCompiler.cs" />
-    <Compile Include="Compilation\BuiltinVars.cs" />
+    <Compile Include="Compilation\ExportVars.cs" />
     <Compile Include="Compilation\ModuleEventArgs.cs" />
     <Compile Include="Compilation\OpStackHelper.cs" />
     <Compile Include="Compilation\Strings.cs" />
@@ -238,7 +239,6 @@
     <Compile Include="Debug\LineSym.cs" />
     <Compile Include="Debug\SymGenerator.cs" />
     <Compile Include="Debug\SymTables.cs" />
-    <Compile Include="Runtime\ObjectModel\ElaTraitObject.cs" />
     <Compile Include="Runtime\ObjectModel\ElaBoolean.cs" />
     <Compile Include="Runtime\ObjectModel\ElaChar.cs" />
     <Compile Include="Runtime\ObjectModel\ElaUnit.cs" />
@@ -297,7 +297,6 @@
     <Compile Include="Runtime\ObjectModel\ElaRecord.cs" />
     <Compile Include="ElaTraits.cs" />
     <Compile Include="Runtime\ObjectModel\ElaTuple.cs" />
-    <Compile Include="Runtime\ObjectModel\ElaProxy.cs" />
     <Compile Include="TypeCodeFormat.cs" />
     <Compile Include="Runtime\ObjectModel\ElaVariant.cs" />
     <Compile Include="Runtime\ElaValue.cs" />

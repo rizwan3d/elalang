@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Ela.Runtime.ObjectModel
 {
-	public class ElaVariant : ElaProxy
+	public class ElaVariant : ElaObject
 	{
 		#region Construction
         private const string SOME = "Some";
@@ -19,14 +19,27 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-		public ElaVariant(string tag, ElaValue value) : base(ElaTypeCode.Variant, ElaTraits.Tag, value)
+		public ElaVariant(string tag, ElaValue value) : base(ElaTypeCode.Variant, ElaTraits.Tag)
 		{
 			Tag = tag;
+			Value = value;
 		}
 		#endregion
 
 
 		#region Traits
+		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.Ref == right.Ref);
+		}
+
+
+		protected internal override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.Ref != right.Ref);
+		}
+
+
 		protected internal override string GetTag(ExecutionContext ctx)
 		{
 			return Tag;
@@ -49,8 +62,9 @@ namespace Ela.Runtime.ObjectModel
 		{
 			if (type == ElaTypeCode.Variant)
 				return new ElaValue(this);
-			else
-				return Value.Ref.Convert(Value, type, ctx);
+
+			ctx.ConversionFailed(new ElaValue(this), type);
+			return Default();
 		}
 		#endregion
 
@@ -109,6 +123,8 @@ namespace Ela.Runtime.ObjectModel
 
         #region Properties
         public string Tag { get; protected set; }
+
+		public ElaValue Value { get; protected set; }
 		#endregion
 	}
 }

@@ -87,6 +87,13 @@ namespace Ela
 		}
 
 
+		internal void AddRange(FastList<T> arr, int start, int end)
+		{
+			for (var i = start; i < end; i++)
+				Add(arr[i]);
+		}
+
+
 		internal void Add(T val)
 		{
 			if (size == array.Length)

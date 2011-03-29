@@ -11,7 +11,7 @@ namespace Ela.CodeModel
 		internal ElaFunctionLiteral(Token tok, ElaNodeType type)
 			: base(tok, type)
 		{
-
+			_templateParameters = new FastList<String>();
 		}
 
 
@@ -68,7 +68,7 @@ namespace Ela.CodeModel
 					if (c++ > 0)
 					{
 						sb.AppendLine();
-						sb.Append(new String(' ', indent));
+						sb.Append(' ', indent);
 
 						if (p.Pattern != null)
 						{
@@ -86,6 +86,19 @@ namespace Ela.CodeModel
 					
 					if (p.Pattern != null)
 						op = p.Pattern;
+				}
+			}
+
+			if (_templateParameters != null)
+			{
+				sb.AppendLine();
+				sb.Append(' ', fmt.Indent);
+				sb.Append("with ");
+
+				foreach (var t in _templateParameters)
+				{
+					sb.Append(t);
+					sb.Append(' ');
 				}
 			}
 		}
@@ -107,6 +120,20 @@ namespace Ela.CodeModel
 		public string Name { get; set; }
 
 		public ElaMatch Body { get; set; }
+
+		public bool IsTemplate { get { return _templateParameters != null; } }
+
+		private FastList<String> _templateParameters;
+		public FastList<String> TemplateParameters
+		{
+			get
+			{
+				if (_templateParameters == null)
+					_templateParameters = new FastList<String>();
+
+				return _templateParameters;
+			}
+		}
 		#endregion
 	}
 }

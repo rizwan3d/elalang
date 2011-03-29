@@ -138,14 +138,14 @@ namespace Ela.Compilation
 
 		Nil,
 
-        Traitadd,
+        Clone,
 
+		
+		
+		Settab,        
+		
+		Pushtab,
         
-        
-        Traitget,
-
-        Newbox,
-
         Elem,
 
 		Skiptag,
@@ -216,6 +216,8 @@ namespace Ela.Compilation
 
 		Brnil,
 
-		Newfun
+		Newfun,
+
+		Newfunt,
 	}
 }

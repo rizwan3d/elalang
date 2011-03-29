@@ -7,33 +7,90 @@ namespace Ela.Compilation
 	internal sealed partial class Builder
 	{
 		#region Main
+		//private ExprData CompileTemplate(ElaTemplate tpl, LabelMap map, Hints hints)
+		//{
+		//    CurrentScope = new Scope(false, CurrentScope);
+		//    CompileDeclaration(tpl.Where, map, Hints.Left);
+
+		//    var fd = default(ElaFunctionLiteral);
+		//    var name = tpl.SourceFunctionName;
+			
+		//    var par = CurrentScope.Parent;
+		//    CurrentScope.Parent = globalScope;
+
+		//    if (shadowFuns.TryGetValue(name, out fd))
+		//        CompileFunction(fd, FunFlag.None);
+		//    else
+		//    {
+		//        fd = exports.FindLiteral(name);
+
+		//        if (fd == null)
+		//            AddError(ElaCompilerError.WrongTemplate, tpl, tpl.SourceFunctionName);
+		//        else
+		//            CompileFunction(fd, FunFlag.None);
+		//    }
+			
+		//    EndScope();
+		//    CurrentScope = par;
+		//    return new ExprData(DataKind.FunParams, fd.ParameterCount);
+		//}
+
+
 		private void CompileFunction(ElaFunctionLiteral dec, FunFlag flag)
 		{
+			var funData = new FunData();
 			var pars = dec.ParameterCount;
-			StartFun(dec.Name, pars);
+
+			if (flag != FunFlag.Inline)
+				StartFun(dec.Name, pars);
+
+			funData.Pars = pars;
+
+			var funSkipLabel = Label.Empty;
 
 			var map = new LabelMap();
-			var funSkipLabel = cw.DefineLabel();
 			var startLabel = cw.DefineLabel();
-			cw.Emit(Op.Br, funSkipLabel);
+
+			if (flag != FunFlag.Inline)
+			{
+				funSkipLabel = cw.DefineLabel();
+				cw.Emit(Op.Br, funSkipLabel);
+			}
 
 			map.FunStart = startLabel;
 			map.FunctionName = dec.Name;
 			map.FunctionParameters = pars;
 			map.FunctionScope = CurrentScope;
-			cw.MarkLabel(startLabel);
+			map.InlineFunction = flag == FunFlag.Inline;
 
-			StartScope(true);
-			StartSection();
+			if (flag != FunFlag.Inline)
+				cw.MarkLabel(startLabel);
+
+			StartScope(flag != FunFlag.Inline);
+
+			if (flag != FunFlag.Inline)
+				StartSection();
+			
 			AddLinePragma(dec);
 
 			var address = cw.Offset;
+			funData.Start = address;
 
+			if (dec.IsTemplate)
+			{
+				for (var i = 0; i < dec.TemplateParameters.Count; i++)
+					AddVariable(dec.TemplateParameters[i], dec, ElaVariableFlags.Template, i);
+			}
+			
 			if (flag != FunFlag.Lazy)
 				CompileParameters(dec, map);
 
 			if (dec.Body.Entries.Count > 1)
-				CompileMatch(dec.Body, dec.Body.Expression, map, Hints.Tail | Hints.Scope | Hints.FunBody);
+			{
+				var t = (ElaTupleLiteral)dec.Body.Expression;
+				var ex = t.Parameters.Count == 1 ? t.Parameters[0] : t;
+				CompileMatch(dec.Body, ex, map, Hints.Tail | Hints.Scope | Hints.FunBody);
+			}
 			else
 			{
 				if (dec.Body.Entries[0].Where != null)
@@ -42,19 +99,39 @@ namespace Ela.Compilation
 				CompileExpression(dec.Body.Entries[0].Expression, map, Hints.Tail | Hints.Scope);
 			}
 
-			var funHandle = frame.Layouts.Count;
-			var ss = EndFun(funHandle);
-			frame.Layouts.Add(new MemoryLayout(currentCounter, ss, address));
-			EndScope();
-			EndSection();
+			funData.Finish = cw.Offset;
 
-			cw.Emit(Op.Ret);
-			cw.MarkLabel(funSkipLabel);
+			if (flag != FunFlag.Inline)
+			{
+				var funHandle = frame.Layouts.Count;
+				var ss = EndFun(funHandle);
+				frame.Layouts.Add(new MemoryLayout(currentCounter, ss, address));
+				EndScope();
+				EndSection();
 
-			AddLinePragma(dec);
+				cw.Emit(Op.Ret);
+				cw.MarkLabel(funSkipLabel);
 
-			cw.Emit(Op.PushI4, pars);
-			cw.Emit(Op.Newfun, funHandle);
+				AddLinePragma(dec);
+
+				if (dec.IsTemplate)
+				{
+					cw.Emit(Op.PushI4, dec.TemplateParameters.Count);
+					cw.Emit(Op.PushI4, pars);
+					cw.Emit(Op.Newfunt, funHandle);
+				}
+				else
+				{
+					cw.Emit(Op.PushI4, pars);
+					cw.Emit(Op.Newfun, funHandle);
+				}
+			}
+			
+			if (CurrentScope == globalScope && !String.IsNullOrEmpty(dec.Name) && flag != FunFlag.Inline)
+			{
+				shadowFuns.Remove(dec.Name);
+				shadowFuns.Add(dec.Name, dec);
+			}
 		}
 
 
@@ -138,80 +215,7 @@ namespace Ela.Compilation
 
 
 		#region Builtins
-        private void CompileTraitFunction(string fun, string trait)
-        {
-            StartSection();
-            cw.StartFrame(1);
-            var funSkipLabel = cw.DefineLabel();
-            cw.Emit(Op.Br, funSkipLabel);
-            var address = cw.Offset;
-
-            cw.Emit(Op.Dup);
-            cw.Emit(Op.Traitget, AddString(trait + " " + fun));
-            cw.Emit(Op.Call);
-
-            cw.Emit(Op.Ret);
-            frame.Layouts.Add(new MemoryLayout(currentCounter, cw.FinishFrame(), address));
-            EndSection();
-            cw.MarkLabel(funSkipLabel);
-            cw.Emit(Op.PushI4, 1);
-            cw.Emit(Op.Newfun, frame.Layouts.Count - 1);
-        }
-
-
-        private void CompileTraitConstructor(ElaTrait trait, LabelMap map)
-        {
-            var kind = Builtins.Trait(trait.Name);
-
-            if (kind == ElaTraits.None)
-            {
-                foreach (var t in trait.Functions)
-                {
-                    var sv = AddGlobal(t, trait, ElaVariableFlags.Function, 1);
-                    CompileTraitFunction(t, trait.Name);
-                    cw.Emit(Op.Popvar, sv.Address);
-                }
-            }
-
-            StartSection();
-            var pars = trait.Functions.Count + 1;
-            cw.StartFrame(pars);
-            var funSkipLabel = cw.DefineLabel();
-            cw.Emit(Op.Br, funSkipLabel);
-            var address = cw.Offset;
-            var vars = new int[trait.Functions.Count];
-            
-            for (var i = 0; i < trait.Functions.Count; i++)
-            {
-                vars[i] = AddVariable();
-                cw.Emit(Op.Popvar, vars[i]);
-            }
-
-            cw.Emit(Op.Newbox);
-            var sys = AddVariable();
-            cw.Emit(Op.Popvar, sys);
-
-            for (var i = 0; i < trait.Functions.Count; i++)
-            {
-                cw.Emit(Op.Pushstr, AddString(trait.Name));
-                cw.Emit(Op.Pushstr, AddString(trait.Functions[i]));
-                cw.Emit(Op.Pushvar, vars[i]);
-                cw.Emit(Op.Pushvar, sys);
-                cw.Emit(Op.Traitadd);
-            }
-
-            cw.Emit(Op.Pushvar, sys);
-
-            cw.Emit(Op.Ret);
-            frame.Layouts.Add(new MemoryLayout(currentCounter, cw.FinishFrame(), address));
-            EndSection();
-            cw.MarkLabel(funSkipLabel);
-            cw.Emit(Op.PushI4, pars);
-            cw.Emit(Op.Newfun, frame.Layouts.Count - 1);
-        }
-
-
-		private void CompileBuiltin(ElaBuiltinKind kind, ElaExpression exp, LabelMap map)
+        private void CompileBuiltin(ElaBuiltinKind kind, ElaExpression exp, LabelMap map)
 		{
 			StartSection();
 			var pars = Builtins.Params(kind);

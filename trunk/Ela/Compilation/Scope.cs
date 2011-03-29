@@ -52,7 +52,7 @@ namespace Ela.Compilation
 
 
 		#region Properties
-		internal Scope Parent { get; private set; }
+		internal Scope Parent { get; set; }
 
 		internal Dictionary<String,ScopeVar> Locals { get; private set; }
 

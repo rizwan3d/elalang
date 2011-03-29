@@ -29,13 +29,13 @@ namespace Ela.Linking
 		internal static readonly string MemoryFile = "memory";
 		private Dictionary<String,Dictionary<String,ElaModuleAttribute>> foreignModules;
 		private FastList<DirectoryInfo> dirs;
-		private BuiltinVars builtins;
+		private ExportVars builtins;
 		private bool stdLoaded;
 		
 		public ElaLinker(LinkerOptions linkerOptions, CompilerOptions compOptions, FileInfo rootFile)
 		{
 			dirs = new FastList<DirectoryInfo>();
-			builtins = new BuiltinVars();
+			builtins = new ExportVars();
 
 			if (linkerOptions.CodeBase.LookupStartupDirectory && rootFile != null)
 				dirs.Add(rootFile.Directory);
@@ -55,7 +55,8 @@ namespace Ela.Linking
 		#region Methods
 		public virtual LinkerResult Build()
 		{
-			var frame = Build(null, RootFile);
+			var mod = new ModuleReference(Path.GetFileNameWithoutExtension(RootFile != null ? RootFile.Name : MemoryFile));
+			var frame = Build(mod, RootFile);
 			RegisterFrame(new ModuleReference(
 				Path.GetFileNameWithoutExtension(RootFile.Name)), frame, RootFile);
 			return new LinkerResult(Assembly, Success, Messages);
@@ -151,7 +152,15 @@ namespace Ela.Linking
 			
 			try
 			{
-				return obj.Read();
+				var frame =  obj.Read();
+
+				foreach (var kv in frame.GlobalScope.Locals)
+				{
+					if ((kv.Value.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin)
+						builtins.AddBuiltin(kv.Key, (ElaBuiltinKind)kv.Value.Data);
+				}
+
+				return frame;
 			}
 			catch (ElaException ex)
 			{
@@ -469,6 +478,11 @@ namespace Ela.Linking
 				}
 				else if (ret1 != null)
 					return ret1;
+				else if (ret2 != null)
+				{
+					sec = true;
+					return ret2;
+				}
 			}
 
 			AddError(ElaLinkerError.UnresolvedModule, new FileInfo(firstName), mod.Line, mod.Column, 

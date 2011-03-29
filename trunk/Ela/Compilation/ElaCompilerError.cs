@@ -31,6 +31,8 @@ namespace Ela.Compilation
 
 		ElseGuardNotValid = 311,
 
-		MatchEntryEmptyNoGuard = 312
+		MatchEntryEmptyNoGuard = 312,
+
+		WrongTemplate = 313
 	}
 }

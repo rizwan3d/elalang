@@ -48,8 +48,7 @@ namespace Ela.Runtime
 		internal const int MOD = (Int32)ElaTypeCode.Module;
 		internal const int LAZ = (Int32)ElaTypeCode.Lazy;
 		internal const int VAR = (Int32)ElaTypeCode.Variant;
-		internal const int PRX = 1000;
-
+		
         private static bool[] structs =
         {
             false,//None
@@ -772,41 +771,45 @@ namespace Ela.Runtime
 					#endregion
 
 					#region Object Operations
-                    case Op.Traitadd:
-                        {
-                            var obj = (ElaTraitObject)evalStack.Pop().Ref;
-                            var fun = (ElaFunction)evalStack.Pop().Ref;
-                            var funName = evalStack.Pop().AsString();
-                            var trait = evalStack.Pop().AsString();
-                            obj.AddFunction(trait, funName, fun, ctx);
+					case Op.Clone:
+						evalStack.Replace(evalStack.Peek().Ref.Clone(ctx));
 
-                            if (ctx.Failed)
-                            {
-                                ExecuteThrow(thread, evalStack);
-                                goto SWITCH_MEM;
-                            }
-                        }
-                        break;
-                    case Op.Traitget:
-                        {
-                            var str = frame.Strings[opd];
-                            var obj = evalStack.Peek().Ref as ElaTraitObject;
+						if (ctx.Failed)
+						{
+							ExecuteThrow(thread, evalStack);
+							goto SWITCH_MEM;
+						}
+						break;
+					case Op.Settab:
+						{
+							var fun = evalStack.Pop().Ref as ElaFunction;
 
-                            if (obj == null)
-                            {
-                                ctx.Fail(String.Format("Function '{0}' is not supported.", str));
-                                goto SWITCH_MEM;
-                            }
+							if (fun == null)
+							{
+								InvalidType(new ElaValue(fun), thread, evalStack, TypeCodeFormat.GetShortForm(ElaTypeCode.Function));
+								goto SWITCH_MEM;
+							}
 
-                            evalStack.Replace(new ElaValue(obj.GetTraitFunction(str, ctx)));
+							if (fun.Table == null)
+							{
+								ExecuteFail(new ElaError(ElaRuntimeError.NotGenericFun, fun.ToString()), thread, evalStack);
+								goto SWITCH_MEM;
+							}
 
-                            if (ctx.Failed)
-                            {
-                                ExecuteThrow(thread, evalStack);
-                                goto SWITCH_MEM;
-                            }
-                        }
-                        break;
+							var val = evalStack.Pop();
+							fun.Table[opd] = val;
+						}
+						break;
+					case Op.Pushtab:
+						{
+							var cp = callStack.Peek();
+
+							if (cp.Table.Length <= opd)
+								ExecuteFail(ElaRuntimeError.TableNoInit, thread, evalStack);
+
+							evalStack.Push(cp.Table[opd]);
+						}
+						break;
                     case Op.Elem:
                         right = evalStack.Peek().Id(ctx);
                         res = right.Ref.GetLength(ctx);
@@ -1293,18 +1296,21 @@ namespace Ela.Runtime
 					#endregion
 
 					#region CreateNew Operations
-                    case Op.Newbox:
-						right = evalStack.Peek();
-
-						if (right.TypeId != PRX)
-							evalStack.Replace(new ElaValue(new ElaTraitObject(right)));
-                        break;
-					case Op.Newvar:
+                    case Op.Newvar:
 						right = evalStack.Peek();
 						evalStack.Replace(new ElaValue(new ElaVariant(frame.Strings[opd], right)));
 						break;
 					case Op.Newlazy:
 						evalStack.Push(new ElaValue(new ElaLazy((ElaFunction)evalStack.Pop().Ref)));
+						break;
+					case Op.Newfunt:
+						{
+							var lst = new FastList<ElaValue[]>(captures);
+							lst.Add(locals);
+							var fun = new ElaFunction(opd, thread.ModuleHandle, evalStack.Pop().I4, lst, this);
+							fun.Table = new ElaValue[evalStack.Pop().I4];
+							evalStack.Push(new ElaValue(fun));						
+						}
 						break;
 					case Op.Newfun:
 						{
@@ -1648,69 +1654,6 @@ namespace Ela.Runtime
 
 
 		#region Operations
-		private bool CallBuiltin(int id, EvalStack evalStack, ExecutionContext ctx)
-		{
-			switch (id)
-			{
-				case 1000:
-					{
-						var left = evalStack.Pop();
-						var right = evalStack.Peek();
-
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 + right.I4);
-							return true;
-						}
-
-						evalStack.Replace(left.Ref.Add(left, right, ctx));
-						return true;
-					}
-				case 1001:
-					{
-						var left = evalStack.Pop();
-						var right = evalStack.Peek();
-
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 < right.I4);
-							return true;
-						}
-
-						evalStack.Replace(left.Ref.Lesser(left, right, ctx));
-						return true;
-					}
-				case 1002:
-					return true;
-				case 1003:
-					return true;
-				case 1004:
-					return true;
-				case 1005:
-					return true;
-				case 1006:
-					return true;
-				case 1007:
-					return true;
-				case 1008:
-					return true;
-				case 1009:
-					return true;
-				case 1010:
-					return true;
-				case 1011:
-					return true;
-				case 1012:
-					return true;
-				case 1013:
-					return true;
-			}
-
-
-			return false;
-		}
-
-
 		private void ReadPervasives(WorkerThread thread, CodeFrame frame, int handle)
 		{
 			var mod = thread.Module;
@@ -1851,6 +1794,9 @@ namespace Ela.Runtime
 						newStack.Replace(right);
 						newStack.Push(left);
 					}
+
+					if (natFun.Table != null)
+						newMem.Table = natFun.Table;
 
 					thread.CallStack.Push(newMem);
 					thread.Offset = layout.Address;

@@ -209,9 +209,6 @@ namespace ElaConsole
 			{
 				var source = Console.ReadLine();
 
-				if (!opt.Silent)
-					Console.WriteLine();
-
 				if (!String.IsNullOrEmpty(source))
 				{
 					source = source.Trim('\0');
@@ -238,6 +235,7 @@ namespace ElaConsole
 									source[source.Length - 2] == ';')
 								{
 									codeLines.AppendLine(source.TrimEnd(';'));
+									Console.WriteLine();
 									InterpretString(codeLines.ToString());
 									codeLines = new StringBuilder();
 									helper.PrintPrompt();

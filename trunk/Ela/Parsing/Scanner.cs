@@ -209,8 +209,8 @@ internal sealed class Scanner {
 	const char EOL = '\n';
 	const int eofSym = 0; /* pdt */
 	
-	const int maxT = 71;
-	const int noSym = 71;
+	const int maxT = 70;
+	const int noSym = 70;
 
 
 	public Buffer buffer; // scanner buffer
@@ -395,20 +395,19 @@ internal sealed class Scanner {
 			case "fail": t.kind = 44; break;
 			case "where": t.kind = 45; break;
 			case "et": t.kind = 46; break;
-			case "_": t.kind = 48; break;
-			case "=": t.kind = 52; break;
-			case ":": t.kind = 55; break;
-			case "::": t.kind = 56; break;
-			case "!": t.kind = 57; break;
+			case "!": t.kind = 48; break;
+			case "_": t.kind = 49; break;
+			case "=": t.kind = 53; break;
+			case ":": t.kind = 56; break;
+			case "::": t.kind = 57; break;
 			case "&": t.kind = 59; break;
-			case "trait": t.kind = 60; break;
-			case "__internal": t.kind = 61; break;
-			case "<-": t.kind = 63; break;
-			case "<->": t.kind = 64; break;
-			case "<|": t.kind = 65; break;
-			case "|>": t.kind = 66; break;
-			case "||": t.kind = 67; break;
-			case "&&": t.kind = 68; break;
+			case "__internal": t.kind = 60; break;
+			case "<-": t.kind = 62; break;
+			case "<->": t.kind = 63; break;
+			case "<|": t.kind = 64; break;
+			case "|>": t.kind = 65; break;
+			case "||": t.kind = 66; break;
+			case "&&": t.kind = 67; break;
 			default: break;
 		}
 	}
@@ -862,36 +861,36 @@ internal sealed class Scanner {
 				else if (ch == 39) {AddCh(); goto case 84;}
 				else {t.kind = 2; break;}
 			case 87:
-				{t.kind = 50; break;}
-			case 88:
 				{t.kind = 51; break;}
+			case 88:
+				{t.kind = 52; break;}
 			case 89:
-				{t.kind = 54; break;}
+				{t.kind = 55; break;}
 			case 90:
 				{t.kind = 58; break;}
 			case 91:
-				{t.kind = 62; break;}
+				{t.kind = 61; break;}
 			case 92:
-				{t.kind = 70; break;}
+				{t.kind = 69; break;}
 			case 93:
-				recEnd = pos; recKind = 53;
+				recEnd = pos; recKind = 54;
 				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 79;}
 				else if (ch == 39) {AddCh(); goto case 80;}
-				else {t.kind = 53; break;}
+				else {t.kind = 54; break;}
 			case 94:
-				recEnd = pos; recKind = 69;
+				recEnd = pos; recKind = 68;
 				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 7;}
 				else if (ch == 39) {AddCh(); goto case 8;}
-				else {t.kind = 69; break;}
+				else {t.kind = 68; break;}
 			case 95:
 				recEnd = pos; recKind = 27;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 16;}
 				else if (ch == '.') {AddCh(); goto case 90;}
 				else {t.kind = 27; break;}
 			case 96:
-				recEnd = pos; recKind = 49;
+				recEnd = pos; recKind = 50;
 				if (ch == '&') {AddCh(); goto case 92;}
-				else {t.kind = 49; break;}
+				else {t.kind = 50; break;}
 
 		}
 		t.val = new String(tval, 0, tlen);			

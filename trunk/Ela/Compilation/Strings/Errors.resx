@@ -159,4 +159,7 @@
   <data name="VariableDeclarationInitMissing" xml:space="preserve">
     <value>Names cannot be declared without initialization.</value>
   </data>
+  <data name="WrongTemplate" xml:space="preserve">
+    <value>Unable to create a new function from '{0}'. Only global functions with available source code can be used as templates.</value>
+  </data>
 </root>

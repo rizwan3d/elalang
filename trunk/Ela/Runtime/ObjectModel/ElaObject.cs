@@ -400,6 +400,13 @@ namespace Ela.Runtime.ObjectModel
             ctx.Fail(ElaRuntimeError.TraitTag, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
             return Default();
         }
+
+
+		protected internal virtual ElaValue Clone(ExecutionContext ctx)
+		{
+			ctx.Fail("Cloning not supported.");
+			return Default();
+		}
 		#endregion
 
 

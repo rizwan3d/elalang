@@ -21,6 +21,8 @@ namespace Ela.CodeModel
 
 		Parameter = 0x40,
 
-		Builtin = 0x80
+		Builtin = 0x80,
+
+		Template = 0x100,
 	}
 }

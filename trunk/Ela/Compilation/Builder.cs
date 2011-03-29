@@ -21,15 +21,15 @@ namespace Ela.Compilation
 		private Dictionary<String,Int32> stringLookup;
 		private Dictionary<ElaCompilerHint,ElaCompilerHint> shownHints;
 		private Scope globalScope;
-		private BuiltinVars builtins;
+		private ExportVars exports;
 		private ElaCompiler comp;
+		private Dictionary<String,ElaFunctionLiteral> shadowFuns;
 
-
-		internal Builder(CodeFrame frame, ElaCompiler comp, BuiltinVars builtins, Scope globalScope)
+		internal Builder(CodeFrame frame, ElaCompiler comp, ExportVars builtins, Scope globalScope)
 		{
 			this.frame = frame;
 			this.options = comp.Options;
-			this.builtins = builtins;
+			this.exports = builtins;
 			this.comp = comp;
 			this.cw = new CodeWriter(frame.Ops, frame.OpData);
 			this.currentCounter = frame.Layouts.Count > 0 ? frame.Layouts[0].Size : 0;
@@ -43,6 +43,7 @@ namespace Ela.Compilation
 			stringLookup = new Dictionary<String, Int32>();
 			Success = true;
 			shownHints = new Dictionary<ElaCompilerHint,ElaCompilerHint>();
+			shadowFuns = new Dictionary<String,ElaFunctionLiteral>();
 		}
 		#endregion
 
@@ -54,7 +55,7 @@ namespace Ela.Compilation
 			cw.StartFrame(0);
 			var map = new LabelMap();
 
-			if (!String.IsNullOrEmpty(options.Prelude))
+			if (!String.IsNullOrEmpty(options.Prelude) && cw.Offset == 0)
 				IncludePrelude();
 
 			CompileExpression(expr, map, Hints.Scope);
@@ -89,9 +90,29 @@ namespace Ela.Compilation
 
 			switch (exp.Type)
 			{
-                case ElaNodeType.Trait:
-                    CompileTraitConstructor((ElaTrait)exp, map);
-                    break;
+				case ElaNodeType.TemplateReference:
+					{
+						var t = (ElaTemplateReference)exp;
+						var sv = GetVariable(t.FunctionName, t.Line, t.Column);
+						var len = t.Parameters.Count;
+						var sys = AddVariable();
+						cw.Emit(Op.Pushvar, sv.Address);
+						cw.Emit(Op.Clone);
+						cw.Emit(Op.Popvar, sys);
+
+						for (var i = 0; i < len; i++)
+						{
+							CompileExpression(t.Parameters[i], map, Hints.None);
+							cw.Emit(Op.Pushvar, sys);
+							cw.Emit(Op.Settab, i);
+						}
+
+						cw.Emit(Op.Pushvar, sys);
+
+						if ((hints & Hints.Left) == Hints.Left)
+							AddValueNotUsed(exp);
+					}
+					break;
 				case ElaNodeType.Builtin:
 					{
 						var v = (ElaBuiltin)exp;
@@ -439,15 +460,18 @@ namespace Ela.Compilation
 							{
 								var vr = (ElaVariableReference)v.Index;
 								var svar = GetVariable(vr.VariableName, vr.Line, vr.Column);
-								AddLinePragma(v);
-								cw.Emit(Op.Popelemi, svar.Address);
+								
+								if ((svar.Flags & ElaVariableFlags.Template) != ElaVariableFlags.Template)
+								{
+									AddLinePragma(v);
+									cw.Emit(Op.Popelemi, svar.Address);
+									break;
+								}
 							}
-							else
-							{
-								CompileExpression(v.Index, map, Hints.None);
-								AddLinePragma(v);
-								cw.Emit(Op.Popelem);
-							}
+							
+							CompileExpression(v.Index, map, Hints.None);
+							AddLinePragma(v);
+							cw.Emit(Op.Popelem);
 						}
 						else
 						{
@@ -455,8 +479,18 @@ namespace Ela.Compilation
 							{
 								var vr = (ElaVariableReference)v.Index;
 								var svar = GetVariable(vr.VariableName, vr.Line, vr.Column);
-								AddLinePragma(v);
-								cw.Emit(Op.Pushelemi, svar.Address);
+
+								if ((svar.Flags & ElaVariableFlags.Template) != ElaVariableFlags.Template)
+								{
+									AddLinePragma(v);
+									cw.Emit(Op.Pushelemi, svar.Address);
+								}
+								else
+								{
+									CompileExpression(v.Index, map, Hints.None);
+									AddLinePragma(v);
+									cw.Emit(Op.Pushelem);
+								}
 							}
 							else
 							{
@@ -489,19 +523,6 @@ namespace Ela.Compilation
 						AddLinePragma(v);
 						var scopeVar = GetVariable(v.VariableName, v.Line, v.Column);
 
-						//if (scopeVar.IsEmpty())
-						//{
-						//    var kind = Builtins.Kind(v.VariableName);
-
-						//    if (kind != ElaBuiltinFunctionKind.None)
-						//    {
-						//        CompileBuiltin(kind, op, v, map);
-						//        break;
-						//    }
-						//    else
-						//        scopeVar = GetExternal(v.VariableName, v.Line, v.Column);
-						//}
-						
 						if ((hints & Hints.Left) == Hints.Left && (hints & Hints.Assign) == Hints.Assign)
 						{
 							AddError(ElaCompilerError.AssignImmutableVariable, exp, v.VariableName);
@@ -509,7 +530,10 @@ namespace Ela.Compilation
 						}
 						else
 						{
-							cw.Emit(Op.Pushvar, scopeVar.Address);
+							if ((scopeVar.VariableFlags & ElaVariableFlags.Template) == ElaVariableFlags.Template)
+								cw.Emit(Op.Pushtab, scopeVar.Data);
+							else
+								cw.Emit(Op.Pushvar, scopeVar.Address);
 
 							if ((hints & Hints.Left) == Hints.Left)
 								AddValueNotUsed(v);
@@ -734,7 +758,36 @@ namespace Ela.Compilation
 				cw.Emit(Op.Reccons);
 			}
 		}
-		
+
+
+		private void CompileInlineCall(ElaFunctionCall v, LabelMap map, Hints hints)
+		{
+			//CurrentScope = new Scope(false, CurrentScope);
+			////CompileDeclaration(v.With, map, Hints.Left);
+			
+			//var fd = default(FunData);
+			//var name = v.Target.GetName();
+			//var len = v.Parameters.Count;
+
+			//for (var i = 0; i < len; i++)
+			//    CompileExpression(v.Parameters[len - i - 1], map, Hints.None);
+
+			//var par = CurrentScope.Parent;
+			//CurrentScope.Parent = globalScope;
+			
+			//if (shadowFuns.TryGetValue(name, out fd))
+			//{
+			//    //cw.Duplicate(fd.Start, fd.Finish);
+			//    CompileFunction(fd.Literal, FunFlag.Inline);
+			//}
+
+			//for (var i = 0; i < len - fd.Pars; i++)
+			//    cw.Emit(Op.Call);
+
+			//EndScope();
+			//CurrentScope = par;
+		}
+
 
 		private void CompileFunctionCall(ElaFunctionCall v, LabelMap map, Hints hints)
 		{
@@ -787,13 +840,18 @@ namespace Ela.Compilation
 				}
 				else
 				{
-					AddLinePragma(v.Target);
-					cw.Emit(Op.Pushvar, sv.Address);
+					if ((sv.Flags & ElaVariableFlags.Template) != ElaVariableFlags.Template)
+					{
+						AddLinePragma(v.Target);
+						cw.Emit(Op.Pushvar, sv.Address);
 
-					if ((sv.VariableFlags & ElaVariableFlags.Function) == ElaVariableFlags.Function)
-						ed = new ExprData(DataKind.FunParams, sv.Data);
-					else if ((sv.VariableFlags & ElaVariableFlags.ObjectLiteral) == ElaVariableFlags.ObjectLiteral)
-						ed = new ExprData(DataKind.VarType, (Int32)ElaVariableFlags.ObjectLiteral);
+						if ((sv.VariableFlags & ElaVariableFlags.Function) == ElaVariableFlags.Function)
+							ed = new ExprData(DataKind.FunParams, sv.Data);
+						else if ((sv.VariableFlags & ElaVariableFlags.ObjectLiteral) == ElaVariableFlags.ObjectLiteral)
+							ed = new ExprData(DataKind.VarType, (Int32)ElaVariableFlags.ObjectLiteral);
+					}
+					else
+						ed = CompileExpression(v.Target, map, Hints.None);
 				}
 			}
 			else
@@ -809,7 +867,7 @@ namespace Ela.Compilation
 
 			for (var i = 0; i < len; i++)
 			{
-				if (i == v.Parameters.Count - 1 && tail && opt)
+				if (i == v.Parameters.Count - 1 && tail && opt && !map.InlineFunction)
 					cw.Emit(Op.Callt);
 				else
 					cw.Emit(Op.Call);
@@ -880,7 +938,7 @@ namespace Ela.Compilation
 
 			if (str.IndexOf('\n') != -1 || str.Length > 40)
 				str = "\r\n    " + str + "\r\n";
-			else if (str.Length > 0 && str[0] != '\'')
+			else if (str.Length > 0 && str[0] != '\'' && str[0] != '"')
 				str = "'" + str + "'";
 
 			return str.Length > 150 ? str.Substring(0, 150) : str;
@@ -970,9 +1028,9 @@ namespace Ela.Compilation
 
 		private int AddVariable(string name, ElaExpression exp, ElaVariableFlags flags, int data)
 		{
-			if (exp != null && IsRegistered(name))
+			if (IsRegistered(name))
 			{
-				AddError(ElaCompilerError.VariableAlreadyDeclared, exp, name);
+				AddError(ElaCompilerError.VariableAlreadyDeclared, exp != null ? exp.Line : 0, exp != null ? exp.Column : 0, name);
 				return 0;
 			}
 
@@ -1073,7 +1131,7 @@ namespace Ela.Compilation
 			}
 			while (cur != null);
 
-			var vk = builtins.FindVar(name);
+			var vk = exports.FindBuiltin(name);
 			var flags = vk != ElaBuiltinKind.None ? ElaVariableFlags.Builtin : ElaVariableFlags.None;
 			var data = vk != ElaBuiltinKind.None ? (Int32)vk : -1;
 			return GetExternal(name, flags, data, line, col);

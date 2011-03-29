@@ -1,4 +1,6 @@
-0.8.6.96:New:Now a public abstract class ElaProxy is available for those who want to implement custom transparent proxies.
+0.8.6.98:Fix:Stack behavior for Newfun op code was calculated incorrectly.
+0.8.6.97:Fix:Match was incorrectly compiled when a single tuple element was used as a match expression.
+0.8.6.96:Fix:Ela linker didn't correctly process situations when an object file wasn't coupled with a source code file.
 0.8.6.95:Fix:Arguments for Ela functions passed from external context (such as .NET code) were passed in a wrong order.
 0.8.6.94:Change:Trait implementation logic is refactored.
 0.8.6.93:Fix:A bug fixed in head/tail pattern compilation logic.

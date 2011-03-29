@@ -73,10 +73,10 @@ namespace Ela.Compilation
 			0, //Skiphtag
 			-1, //Ceqref
 			0, //Nil
-            -4, //Traitadd
-
-            0, //Traitget
-            0, //Newbox
+            0, //Clone
+			
+			-2, //Settab        
+			1, //Pushtab        
             0, //Elem
 			0, //Skiptag
 			0, //Isfun
@@ -112,7 +112,8 @@ namespace Ela.Compilation
 			-2, //Br_eq
 			-2, //Br_neq
 			-1, //Brnil
-			1, //Newfun
+			0, //Newfun
+			-1, //Newfunt			
 		};
 	}
 }

@@ -167,9 +167,26 @@ PRODUCTIONS
 		).
 		
 	VariableReference<out ElaExpression exp> =
-		(. exp = null; .)
+		(. exp = null; var name = String.Empty; .)
 		(
-			ident (. exp = new ElaVariableReference(t) { VariableName = t.val }; .)
+			(
+				ident (. name = t.val; .)
+				[ 
+					"!" "["					
+					(. 
+						var tr = new ElaTemplateReference(t) { FunctionName = name };
+						var cexp = default(ElaExpression);
+						exp = tr;
+					.)
+					Literal<out cexp> (. tr.Parameters.Add(cexp); .)
+					{ Literal<out cexp> (. tr.Parameters.Add(cexp); .) }
+					"]"
+				]				
+				(. 
+					if (exp == null)
+						exp = new ElaVariableReference(t) { VariableName = name }; 
+				.)
+			)
 			| "_" (. exp = new ElaPlaceholder(t); .)
 		).
 		
@@ -870,19 +887,6 @@ PRODUCTIONS
 			)
 		).
 		
-	TraitBinding<string name, out ElaExpression exp> = 
-		(.
-			var tr = new ElaTrait(t) { Name = name };
-			exp = tr;
-		.)
-		(
-			"trait"
-			{ 
-				(ident|Operators)
-				(. tr.Functions.Add(t.val); .) 
-			}			
-		).
-		
 	BindingBody<ElaVariableFlags flags, out ElaExpression exp> =
 		(. 
 			var varExp = new ElaBinding(t) { VariableFlags = flags }; 
@@ -895,7 +899,7 @@ PRODUCTIONS
 				ident
 				(. varExp.VariableName = t.val; .)
 				[
-					FunExpr<varExp>
+					  FunExpr<varExp>
 					| BindingBodyGuards<varExp>
 					| BindingBodyInit<varExp>
 				]
@@ -950,7 +954,6 @@ PRODUCTIONS
 					"__internal" ident
 					(. cexp = new ElaBuiltin(t) { Kind = Builtins.Kind(t.val) }; .)
 				)
-				| TraitBinding<varExp.VariableName, out cexp>
 			)
 			(. varExp.InitExpression = cexp; .)
 			[
@@ -997,6 +1000,15 @@ PRODUCTIONS
 			(. ProcessFunctionParameters(mi, ot); .)			
 		).
 		
+	WithExpr<ElaFunctionLiteral fun> = 
+		(
+			(. scanner.InjectBlock(); .)
+			SYNC WITH
+			(ident|Operators) (. fun.TemplateParameters.Add(t.val); .)							
+			{ (ident|Operators) (. fun.TemplateParameters.Add(t.val); .) }						
+			EndBlock
+		).
+		
 	FunBodyExpr<ElaFunctionLiteral fun> =
 		(.
 			var ot = t;
@@ -1035,13 +1047,20 @@ PRODUCTIONS
 				(. entry.Expression = fexp; .)
 			)
 			[ WhereBinding<out cexp> (. entry.Where = cexp; .) ]
+			[ WithExpr<fun> ]
 			(. if (RequireEndBlock()) .) EndBlock
 			[ 
+				(. 
+					if (fun.TemplateParameters != null)
+						AddError(ElaParserError.InvalidFunctionWith);
+				.)
 				(
-					(. scanner.InjectBlock(); .)
-					FunName<fun> FunBodyExpr<fun>
+					(
+						(. scanner.InjectBlock(); .)
+						FunName<fun> FunBodyExpr<fun>
+					)
+					| ChildFunBodyExpr<fun>
 				)
-				| ChildFunBodyExpr<fun>
 			]
 		).
 		
@@ -1063,13 +1082,20 @@ PRODUCTIONS
 				(. entry.Expression = fexp; .)
 			)
 			[ WhereBinding<out cexp> (. entry.Where = cexp; .) ]
+			[ WithExpr<fun> ]
 			(. if (RequireEndBlock()) .) EndBlock
 			[ 
+				(. 
+					if (fun.TemplateParameters != null)
+						AddError(ElaParserError.InvalidFunctionWith);
+				.)
 				(
-					(. scanner.InjectBlock(); .)
-					FunName<fun> FunBodyExpr<fun>
+					(
+						(. scanner.InjectBlock(); .)
+						FunName<fun> FunBodyExpr<fun>
+					)
+					| ChildFunBodyExpr<fun>
 				)
-				| ChildFunBodyExpr<fun>
 			]
 		).
 		
@@ -1678,8 +1704,8 @@ PRODUCTIONS
 						}
 					
 						mi.Parameters.Add(cexp); 
-					.)
-				}
+					.)					
+				}								
 			)
 			|
 			VariantLiteral<out exp>				

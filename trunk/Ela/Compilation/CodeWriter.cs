@@ -31,6 +31,32 @@ namespace Ela.Compilation
 
 
 		#region Methods
+		internal void Duplicate(int start, int finish)
+		{
+			var sh = Offset - start;
+			ops.AddRange(ops, start, finish);
+			opData.AddRange(opData, start, finish);
+
+			var nf = new FastList<Int32>();
+
+			foreach (var i in fixups)
+			{
+				if (i >= start && i <= finish)
+				{
+					var l = labels[opData[i]];
+					var nl = DefineLabel();
+
+					opData[sh + i] = nl.GetIndex();
+					labels[nl.GetIndex()] = l + sh;
+
+					nf.Add(sh + i);
+				}
+			}
+
+			fixups.AddRange(nf);
+		}
+
+
 		internal void CompileOpList()
 		{
 			foreach (var i in fixups)

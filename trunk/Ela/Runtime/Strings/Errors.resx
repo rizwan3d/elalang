@@ -156,6 +156,9 @@
   <data name="MatchFailed" xml:space="preserve">
     <value>Match failed. None of the patterns were successful.</value>
   </data>
+  <data name="NotGenericFun" xml:space="preserve">
+    <value>A function '{0}' is not a generic function and cannot be specialized.</value>
+  </data>
   <data name="OperationNotSupported" xml:space="preserve">
     <value>This operation is not supported by the object of type '{0}'.</value>
   </data>
@@ -167,6 +170,9 @@
   </data>
   <data name="RightOperand" xml:space="preserve">
     <value>The value '{0}' of type '{1}' is not a valid right operand for the value '{2}' of type '{3}' in an operation defined in trait '{4}'.</value>
+  </data>
+  <data name="TableNoInit" xml:space="preserve">
+    <value>Template parameter not initialized.</value>
   </data>
   <data name="TooFewParams" xml:space="preserve">
     <value>Partial application of a function is not supported. Function is called from external context (e.g. Ela function from .NET code).</value>

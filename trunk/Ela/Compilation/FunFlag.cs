@@ -6,6 +6,8 @@ namespace Ela.Compilation
 	{
 		None,
 
-		Lazy
+		Lazy,
+
+		Inline
 	}
 }

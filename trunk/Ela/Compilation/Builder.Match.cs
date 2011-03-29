@@ -16,26 +16,8 @@ namespace Ela.Compilation
 			if (matchExp != null)
 			{
 				if (matchExp.Type == ElaNodeType.TupleLiteral)
-				{
 					tuple = (ElaTupleLiteral)matchExp;
-
-					if (tuple.Parameters.Count == 1)
-					{
-						matchExp = tuple.Parameters[0];
-
-						if (matchExp.Type == ElaNodeType.VariableReference)
-						{
-							var vr = (ElaVariableReference)matchExp;
-							var sv = GetVariable(vr.VariableName, vr.Line, vr.Column);
-							serv = sv.Address;
-						}
-						else
-							serv = AddVariable();
-
-						tuple = null;
-					}
-				}
-
+				
 				if (tuple == null && serv == -1)
 				{
 					CompileExpression(matchExp, map, Hints.None);

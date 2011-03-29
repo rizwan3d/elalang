@@ -23,8 +23,6 @@ namespace Ela.CodeModel
 		
 		
 
-        Trait,
-
 		Builtin,
 
 		Binary,
@@ -38,6 +36,8 @@ namespace Ela.CodeModel
 		Primitive,
 
 		VariableReference,
+
+		TemplateReference,
 
 		Argument,
 

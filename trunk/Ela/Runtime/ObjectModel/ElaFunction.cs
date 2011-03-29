@@ -101,6 +101,12 @@ namespace Ela.Runtime.ObjectModel
 
 			return GetFunctionName() + ":" + sb.ToString();
 		}
+
+
+		protected internal override ElaValue Clone(ExecutionContext ctx)
+		{
+			return new ElaValue(Clone());
+		}
 		#endregion
 
 
@@ -182,6 +188,15 @@ namespace Ela.Runtime.ObjectModel
 			ret.vm = vm;
 			ret.Captures = Captures;
 			ret.Flip = Flip;
+
+			if (Table != null)
+			{
+				ret.Table = new ElaValue[Table.Length];
+
+				for (var i = 0; i < Table.Length; i++)
+					ret.Table[i] = Table[i];
+			}
+
 			return ret;
 		}
 
@@ -201,6 +216,15 @@ namespace Ela.Runtime.ObjectModel
 			newInstance.vm = vm;
 			newInstance.Captures = Captures;
 			newInstance.Flip = Flip;
+
+			if (Table != null)
+			{
+				newInstance.Table = new ElaValue[Table.Length];
+
+				for (var i = 0; i < Table.Length; i++)
+					newInstance.Table[i] = Table[i];
+			}
+
 			return newInstance;
 		}
 
@@ -275,6 +299,8 @@ namespace Ela.Runtime.ObjectModel
 		internal ElaValue[] Parameters { get; set; }
 
 		internal ElaValue LastParameter { get; set; }
+
+		internal ElaValue[] Table { get; set; }
 
 		private bool _flip;
 		internal bool Flip 

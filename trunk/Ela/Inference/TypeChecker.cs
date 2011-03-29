@@ -518,8 +518,8 @@
 //            {
 //                case ElaNodeType.LiteralPattern:
 //                    {
-//                        var lit = ((ElaLiteralPattern)pat).Value;
-//                        return new TypeTag(GetTraits(lit.LiteralType), true);
+//                        var Literal = ((ElaLiteralPattern)pat).Value;
+//                        return new TypeTag(GetTraits(Literal.LiteralType), true);
 //                    }
 //                case ElaNodeType.AsPattern:
 //                    {
