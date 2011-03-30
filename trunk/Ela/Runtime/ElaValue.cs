@@ -529,13 +529,13 @@ namespace Ela.Runtime
 
         public ElaValue GetMax(ExecutionContext ctx)
         {
-            return Ref.GetMax(ctx);
+			return Ref.GetMax(this, ctx);
         }
 
 
         public ElaValue GetMin(ExecutionContext ctx)
         {
-            return Ref.GetMin(ctx);
+			return Ref.GetMin(this, ctx);
         }
 
 
@@ -631,25 +631,25 @@ namespace Ela.Runtime
 
         public ElaValue Head(ExecutionContext ctx)
         {
-            return Ref.Head(ctx);
+			return Ref.Head(ctx);
         }
 
 
         public ElaValue Tail(ExecutionContext ctx)
         {
-            return Ref.Tail(ctx);
+			return Ref.Tail(ctx);
         }
 
 
         public bool IsNil(ExecutionContext ctx)
         {
-            return Ref.IsNil(ctx);
+			return Ref.IsNil(ctx);
         }
 
 
         public ElaValue Cons(ElaObject instance, ElaValue value, ExecutionContext ctx)
         {
-            return Ref.Cons(instance, value, ctx);
+			return Ref.Cons(instance, value, ctx);
         }
 
 
@@ -661,31 +661,31 @@ namespace Ela.Runtime
 
         public ElaValue Generate(ElaValue value, ExecutionContext ctx)
         {
-            return Ref.Generate(value, ctx);
+			return Ref.Generate(value, ctx);
         }
 
 
         public ElaValue GenerateFinalize(ExecutionContext ctx)
         {
-            return Ref.GenerateFinalize(ctx);
+			return Ref.GenerateFinalize(ctx);
         }
 
 
         public ElaValue GetField(string field, ExecutionContext ctx)
         {
-            return Ref.GetField(field, ctx);
+			return Ref.GetField(field, ctx);
         }
 
 
         public void SetField(string field, ElaValue value, ExecutionContext ctx)
         {
-            Ref.SetField(field, value, ctx);
+			Ref.SetField(field, value, ctx);
         }
 
 
         public bool HasField(string field, ExecutionContext ctx)
         {
-            return Ref.HasField(field, ctx);
+			return Ref.HasField(field, ctx);
         }
 
 
@@ -715,13 +715,13 @@ namespace Ela.Runtime
 
         public string GetTag(ExecutionContext ctx)
         {
-            return Ref.GetTag(ctx);
+			return Ref.GetTag(ctx);
         }
 
 
         public ElaValue Untag(ExecutionContext ctx)
         {
-            return Ref.Untag(ctx);
+			return Ref.Untag(ctx);
         }
         #endregion
         

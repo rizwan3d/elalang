@@ -80,6 +80,12 @@ namespace Ela.Runtime
 		}
 
 
+		public void NoOperator(ElaValue value, string op)
+		{
+			Fail(ElaRuntimeError.InvalidOp, value, value.GetTypeName(), op);
+		}
+
+
 		public void Fail(ElaRuntimeError error, params object[] args)
 		{
 			Fail(new ElaError(error, args));

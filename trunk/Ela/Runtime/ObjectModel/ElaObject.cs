@@ -92,319 +92,325 @@ namespace Ela.Runtime.ObjectModel
 			return first.Ref == this ? first.Ref.Show(first, ShowInfo.Default, ctx) :
 				second.Ref.Show(second, ShowInfo.Default, ctx);
 		}
+
+
+		private ElaValue This(ElaValue first, ElaValue second)
+		{
+			return first.Ref == this ? first : second;
+		}
 		#endregion
 
 
 		#region Traits
 		protected internal virtual ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitEq, ThisToString(left, right, ctx), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(This(left, right), "equals");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitEq, ThisToString(left, right, ctx), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(This(left, right), "notequals");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitOrd, ThisToString(left, right, ctx), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(This(left, right), "greater");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitOrd, ThisToString(left, right, ctx), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(This(left, right), "lesser");			
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue GreaterEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitOrd, ThisToString(left, right, ctx), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(This(left, right), "greaterequal");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue LesserEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitOrd, ThisToString(left, right, ctx), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(This(left, right), "lesserequal");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue GetLength(ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitLen, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(new ElaValue(this), "length");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Successor(ElaValue @this, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitEnum, @this.ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(@this, "succ");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitEnum, @this.ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(@this, "pred");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue GetValue(ElaValue index, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitGet, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(new ElaValue(this), "get");
 			return Default();
 		}
 
 
 		protected internal virtual void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitSet, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));			
+			ctx.NoOperator(new ElaValue(this), "set");						
 		}
 
 
-		protected internal virtual ElaValue GetMax(ExecutionContext ctx)
+		protected internal virtual ElaValue GetMax(ElaValue @this, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitBound, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(@this, "max");
 			return Default();
 		}
 
 
-		protected internal virtual ElaValue GetMin(ExecutionContext ctx)
+		protected internal virtual ElaValue GetMin(ElaValue @this, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitBound, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));			
+			ctx.NoOperator(@this, "min");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitConcat, ThisToString(left, right, ctx), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(This(left, right), "concat");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Add(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitNum, ThisToString(left, right, ctx), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(This(left, right), "add");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Subtract(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitNum, ThisToString(left, right, ctx), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(This(left, right), "subtract");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Multiply(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitNum, ThisToString(left, right, ctx), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(This(left, right), "multiply");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Divide(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitNum, ThisToString(left, right, ctx), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(This(left, right), "divide");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Remainder(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitNum, ThisToString(left, right, ctx), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(This(left, right), "remainder");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Power(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitNum, ThisToString(left, right, ctx), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(This(left, right), "power");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue BitwiseOr(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitBit, ThisToString(left, right, ctx), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(This(left, right), "bitwiseor");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue BitwiseAnd(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            ctx.Fail(ElaRuntimeError.TraitBit, ThisToString(left, right, ctx), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(This(left, right), "bitwiseand");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue BitwiseXor(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitBit, ThisToString(left, right, ctx), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(This(left, right), "bitwisexor");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue BitwiseNot(ElaValue @this, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitBit, @this.ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(@this, "bitwisenot");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue ShiftRight(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitBit, ThisToString(left, right, ctx), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(This(left, right), "shiftright");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue ShiftLeft(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitBit, ThisToString(left, right, ctx), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(This(left, right), "shiftleft");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Negate(ElaValue @this, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitNeg, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(@this, "negate");
 			return Default();
 		}
 
 
 		protected internal virtual bool Bool(ElaValue @this, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitBool, @this.ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(@this, "bool");
 			return false;
 		}
 
 
 		protected internal virtual ElaValue Head(ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitFold, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId)); 
+			ctx.NoOperator(new ElaValue(this), "head");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Tail(ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitFold, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(new ElaValue(this), "tail");
 			return Default();
 		}
 
 
 		protected internal virtual bool IsNil(ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitFold, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(new ElaValue(this), "isnil");
 			return false;
 		}
 
 
 		protected internal virtual ElaValue Cons(ElaObject instance, ElaValue value, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitCons, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(new ElaValue(instance), "cons");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Nil(ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitCons, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(new ElaValue(this), "nil");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Generate(ElaValue value, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitGen, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(new ElaValue(this), "gen");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue GenerateFinalize(ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitGen, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(new ElaValue(this), "genfin");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue GetField(string field, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitFieldGet, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(new ElaValue(this), "fieldget");
 			return Default();
 		}
 
 
 		protected internal virtual void SetField(string field, ElaValue value, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitFieldSet, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));			
+			ctx.NoOperator(new ElaValue(this), "fieldset");						
 		}
 
 
 		protected internal virtual bool HasField(string field, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitFieldGet, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(new ElaValue(this), "fieldhas");
 			return false;
 		}
 
 
 		protected internal virtual string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitShow, String.Empty, TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(@this, "show");
 			return String.Empty;
 		}
 
 
 		protected internal virtual ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitConvert, @this.ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(@this, "convert");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Call(ElaValue arg, ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitCall, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(new ElaValue(this), "call");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue Force(ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitThunk, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(new ElaValue(this), "force");
 			return Default();
 		}
 
 
 		protected internal virtual string GetTag(ExecutionContext ctx)
 		{
-			ctx.Fail(ElaRuntimeError.TraitTag, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
+			ctx.NoOperator(new ElaValue(this), "gettag");
 			return String.Empty;
 		}
 
 
-        protected internal virtual ElaValue Untag(ExecutionContext ctx)
+		protected internal virtual ElaValue Untag(ExecutionContext ctx)
         {
-            ctx.Fail(ElaRuntimeError.TraitTag, ToString(), TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId));
-            return Default();
+			ctx.NoOperator(new ElaValue(this), "untag");
+			return Default();
         }
 
 
 		protected internal virtual ElaValue Clone(ExecutionContext ctx)
 		{
-			ctx.Fail("Cloning not supported.");
+			ctx.NoOperator(new ElaValue(this), "clone");
 			return Default();
 		}
 		#endregion

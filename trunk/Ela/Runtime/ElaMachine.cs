@@ -946,16 +946,7 @@ namespace Ela.Runtime
 
 						break;
 					case Op.Force:
-						right = evalStack.Peek();
-
-						if ((right.Ref.Traits & ElaTraits.Thunk) != ElaTraits.Thunk)
-						{
-							evalStack.PopVoid();
-							NoTrait(ElaRuntimeError.TraitThunk, right, thread, evalStack);
-							goto SWITCH_MEM;
-						}
-
-						evalStack.Replace(right.Id(ctx));
+						evalStack.Replace(evalStack.Peek().Id(ctx));
 
 						if (ctx.Failed)
 						{
@@ -1491,7 +1482,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Max:
-						evalStack.Replace(evalStack.Peek().Id(ctx).Ref.GetMax(ctx));
+						right = evalStack.Peek().Id(ctx);
+						evalStack.Replace(right.Ref.GetMax(right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -1501,7 +1493,8 @@ namespace Ela.Runtime
 
 						break;
 					case Op.Min:
-						evalStack.Replace(evalStack.Peek().Id(ctx).Ref.GetMin(ctx));
+						right = evalStack.Peek().Id(ctx);
+						evalStack.Replace(right.Ref.GetMin(right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -1965,14 +1958,14 @@ namespace Ela.Runtime
 		}
 
 
-		private void NoTrait(ElaRuntimeError code, ElaValue value, WorkerThread thread, EvalStack evalStack)
+		private void NoOperation(string op, ElaValue value, WorkerThread thread, EvalStack evalStack)
 		{
 			var str = value.Ref.Show(value, new ShowInfo(10, 10), thread.Context);
 
 			if (str.Length > 40)
 				str = str.Substring(0, 40) + "...";
 
-			ExecuteFail(new ElaError(code, str, value.GetTypeName()), thread, evalStack);
+			ExecuteFail(new ElaError(ElaRuntimeError.InvalidOp, str, value.GetTypeName(), op), thread, evalStack);
 		}
 
 

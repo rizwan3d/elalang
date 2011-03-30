@@ -122,15 +122,15 @@ namespace Ela.Runtime.ObjectModel
 			ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
 			return Default();
 		}
-		
 
-		protected internal override ElaValue GetMax(ExecutionContext ctx)
+
+		protected internal override ElaValue GetMax(ElaValue @this, ExecutionContext ctx)
 		{
 			return new ElaValue(Double.MaxValue);
 		}
 
 
-		protected internal override ElaValue GetMin(ExecutionContext ctx)
+		protected internal override ElaValue GetMin(ElaValue @this, ExecutionContext ctx)
 		{
 			return new ElaValue(Double.MinValue);
 		}

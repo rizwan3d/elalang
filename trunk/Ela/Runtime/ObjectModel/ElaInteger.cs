@@ -108,13 +108,13 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue GetMax(ExecutionContext ctx)
+		protected internal override ElaValue GetMax(ElaValue @this, ExecutionContext ctx)
 		{
 			return new ElaValue(Int32.MaxValue);
 		}
 
 
-		protected internal override ElaValue GetMin(ExecutionContext ctx)
+		protected internal override ElaValue GetMin(ElaValue @this, ExecutionContext ctx)
 		{
 			return new ElaValue(Int32.MinValue);
 		}

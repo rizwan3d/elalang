@@ -144,6 +144,9 @@
   <data name="InvalidIndexType" xml:space="preserve">
     <value>Indices of type '{0}' are not supported.</value>
   </data>
+  <data name="InvalidOp" xml:space="preserve">
+    <value>A value '{0}' of type '{1}' doesn't support operation '{2}'.</value>
+  </data>
   <data name="InvalidParameterType" xml:space="preserve">
     <value>Invalid type for the function parameter. Expected '{0}', got '{1}'.</value>
   </data>
@@ -182,81 +185,6 @@
   </data>
   <data name="TooManyParams" xml:space="preserve">
     <value>Too many parameters specified in a function call.</value>
-  </data>
-  <data name="TraitBit" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Bit' (bitwise operations).</value>
-  </data>
-  <data name="TraitBool" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Bool' (boolean operations).</value>
-  </data>
-  <data name="TraitBound" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Bound' (doesn't have a maximum or minimum value notion).</value>
-  </data>
-  <data name="TraitCall" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Call' (function call operation).</value>
-  </data>
-  <data name="TraitConcat" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Concat' (concatenation operation).</value>
-  </data>
-  <data name="TraitCons" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Cons' (construction operation).</value>
-  </data>
-  <data name="TraitCont" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Cont' (operations on mutable container).</value>
-  </data>
-  <data name="TraitConvert" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Convert' (it cannot be converted to other types).</value>
-  </data>
-  <data name="TraitEnum" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Enum' (definition of successor and predecessor).</value>
-  </data>
-  <data name="TraitEq" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Eq' (equality comparison).</value>
-  </data>
-  <data name="TraitFieldGet" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'FieldGet' (read field operation).</value>
-  </data>
-  <data name="TraitFieldSet" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'FieldSet' (write field operation).</value>
-  </data>
-  <data name="TraitFold" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Fold' (head, tail and nil operations).</value>
-  </data>
-  <data name="TraitGen" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Gen' (cannot be used in comprehensions and ranges).</value>
-  </data>
-  <data name="TraitGet" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Get' (read through indexer).</value>
-  </data>
-  <data name="TraitInsert" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Insert' (insert operation).</value>
-  </data>
-  <data name="TraitIter" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Iter' (can't create an iterator).</value>
-  </data>
-  <data name="TraitLen" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Len' (calculation of 'length').</value>
-  </data>
-  <data name="TraitNeg" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Neg' (negation operation).</value>
-  </data>
-  <data name="TraitNum" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Num' (basic arithmetic operations).</value>
-  </data>
-  <data name="TraitOrd" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Ord' (comparison operations).</value>
-  </data>
-  <data name="TraitSet" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Set' (write through indexer).</value>
-  </data>
-  <data name="TraitShow" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Show' (cannot be represented as a string).</value>
-  </data>
-  <data name="TraitTag" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Tag' (it doesn't support a notion of 'tag').</value>
-  </data>
-  <data name="TraitThunk" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support trait 'Thunk' (is not a 'lazy' or a similar type and cannot be 'forced').</value>
   </data>
   <data name="TuplesLength" xml:space="preserve">
     <value>The length of two tuples '{0}' and '{1}' should be equal to support some operations (such as comparison).</value>

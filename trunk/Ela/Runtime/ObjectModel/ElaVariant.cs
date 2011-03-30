@@ -46,7 +46,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-        protected internal override ElaValue Untag(ExecutionContext ctx)
+		protected internal override ElaValue Untag(ExecutionContext ctx)
         {
             return Value;
         }

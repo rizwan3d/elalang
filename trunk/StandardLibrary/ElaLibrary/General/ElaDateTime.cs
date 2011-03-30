@@ -121,13 +121,13 @@ namespace Ela.Library.General
         }
 
 
-        protected override ElaValue GetMax(ExecutionContext ctx)
+        protected override ElaValue GetMax(ElaValue @this, ExecutionContext ctx)
         {
             return new ElaValue(new ElaDateTime(DateTime.MaxValue));
         }
 
 
-        protected override ElaValue GetMin(ExecutionContext ctx)
+		protected override ElaValue GetMin(ElaValue @this, ExecutionContext ctx)
         {
             return new ElaValue(new ElaDateTime(DateTime.MinValue));
         }

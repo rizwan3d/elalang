@@ -67,7 +67,7 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        protected internal override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
+		protected internal override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
         {
             if (index.TypeCode == ElaTypeCode.String)
                 return GetField(index.AsString(), ctx);
@@ -89,7 +89,7 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        protected internal override ElaValue GetField(string field, ExecutionContext ctx)
+		protected internal override ElaValue GetField(string field, ExecutionContext ctx)
         {
             var idx = GetOrdinal(field);
 
@@ -103,7 +103,7 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        protected internal override ElaValue GetLength(ExecutionContext ctx)
+		protected internal override ElaValue GetLength(ExecutionContext ctx)
         {
             return new ElaValue(keys.Count);
         }

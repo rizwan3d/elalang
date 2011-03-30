@@ -349,12 +349,12 @@ namespace Ela.Runtime.ObjectModel
                 do
                 {
                     yield return xs.Head(ElaObject.DummyContext).Id(DummyContext);
-                    xs = xs.Tail(ElaObject.DummyContext).Ref;
+					xs = xs.Tail(ElaObject.DummyContext).Ref;
 
                     if (xs.TypeId != ElaMachine.LST)
                         yield break;
                 }
-                while (!xs.IsNil(ElaObject.DummyContext));
+				while (!xs.IsNil(ElaObject.DummyContext));
             }
         }
 
