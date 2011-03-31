@@ -129,30 +129,27 @@ namespace Ela.Compilation
 					cw.Emit(Op.Popvar, obj);
 				}
 
-				if (ind.Index.Type == ElaNodeType.VariableReference)
-				{
-					var vr = (ElaVariableReference)ind.Index;
-					var svar = GetVariable(vr.VariableName, vr.Line, vr.Column);
+                if (ind.Index.Type == ElaNodeType.VariableReference)
+                {
+                    var vr = (ElaVariableReference)ind.Index;
+                    var svar = GetVariable(vr.VariableName, vr.Line, vr.Column);
+                    AddLinePragma(ind);
+                    cw.Emit(Op.Pushelemi, svar.Address);
+                }
+                else
+                {
+                    CompileExpression(ind.Index, map, Hints.None);
 
-					if ((svar.Flags & ElaVariableFlags.Template) != ElaVariableFlags.Template)
-					{
-						AddLinePragma(ind);
-						cw.Emit(Op.Pushelemi, svar.Address);
-						return;
-					}
-				}
-				
-				CompileExpression(ind.Index, map, Hints.None);
+                    if (ind.Index.Type != ElaNodeType.Primitive)
+                    {
+                        idx = AddVariable();
+                        cw.Emit(Op.Dup);
+                        cw.Emit(Op.Popvar, idx);
+                    }
 
-				if (ind.Index.Type != ElaNodeType.Primitive)
-				{
-					idx = AddVariable();
-					cw.Emit(Op.Dup);
-					cw.Emit(Op.Popvar, idx);
-				}
-
-				AddLinePragma(ind);
-				cw.Emit(Op.Pushelem);
+                    AddLinePragma(ind);
+                    cw.Emit(Op.Pushelem);
+                }
 			}
 			else
 				CompileExpression(exp, map, Hints.None);
@@ -182,26 +179,23 @@ namespace Ela.Compilation
 					if (obj == -1)
 						CompileExpression(ind.TargetObject, map, Hints.None);
 
-					if (ind.Index.Type == ElaNodeType.VariableReference)
-					{
-						var vr = (ElaVariableReference)ind.Index;
-						var svar = GetVariable(vr.VariableName, vr.Line, vr.Column);
-
-						if ((svar.Flags & ElaVariableFlags.Template) != ElaVariableFlags.Template)
-						{
-							AddLinePragma(ind);
-							cw.Emit(Op.Popelemi, svar.Address);
-							return;
-						}
-					}
-					
-					if (idx == -1)
-					{
-						CompileExpression(ind.Index, map, Hints.None);
-						cw.Emit(Op.Popelem);
-					}
-					else
-						cw.Emit(Op.Popelemi, idx);
+                    if (ind.Index.Type == ElaNodeType.VariableReference)
+                    {
+                        var vr = (ElaVariableReference)ind.Index;
+                        var svar = GetVariable(vr.VariableName, vr.Line, vr.Column);
+                        AddLinePragma(ind);
+                        cw.Emit(Op.Popelemi, svar.Address);
+                    }
+                    else
+                    {
+                        if (idx == -1)
+                        {
+                            CompileExpression(ind.Index, map, Hints.None);
+                            cw.Emit(Op.Popelem);
+                        }
+                        else
+                            cw.Emit(Op.Popelemi, idx);
+                    }
 				}
 			}
 			else

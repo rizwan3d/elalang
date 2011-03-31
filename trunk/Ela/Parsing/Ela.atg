@@ -166,30 +166,10 @@ PRODUCTIONS
 			| FALSE (. exp = new ElaPrimitive(t) { Value = new ElaLiteralValue(false) }; .)
 		).
 		
-	OperatorExpr<out ElaExpression exp> = 
-		Operators (. exp = new ElaVariableReference(t) { VariableName = t.val }; .).
-		
 	VariableReference<out ElaExpression exp> =
-		(. exp = null; var name = String.Empty; .)
+		(. exp = null; .)
 		(
-			(
-				ident (. name = t.val; .)
-				[ 
-					"!" "["					
-					(. 
-						var tr = new ElaTemplateReference(t) { FunctionName = name };
-						var cexp = default(ElaExpression);
-						exp = tr;
-					.)
-					(Literal<out cexp>|OperatorExpr<out cexp>) (. tr.Parameters.Add(cexp); .)
-					{ (Literal<out cexp>|OperatorExpr<out cexp>) (. tr.Parameters.Add(cexp); .) }
-					"]"
-				]				
-				(. 
-					if (exp == null)
-						exp = new ElaVariableReference(t) { VariableName = name }; 
-				.)
-			)
+			ident (. exp = new ElaVariableReference(t) { VariableName = t.val }; .)
 			| "_" (. exp = new ElaPlaceholder(t); .)
 		).
 		
@@ -1014,15 +994,6 @@ PRODUCTIONS
 			(. ProcessFunctionParameters(mi, ot); .)			
 		).
 		
-	WithExpr<ElaFunctionLiteral fun> = 
-		(
-			(. scanner.InjectBlock(); .)
-			SYNC WITH
-			(ident|Operators) (. fun.TemplateParameters.Add(t.val); .)							
-			{ (ident|Operators) (. fun.TemplateParameters.Add(t.val); .) }						
-			EndBlock
-		).
-		
 	FunBodyExpr<ElaFunctionLiteral fun> =
 		(.
 			var ot = t;
@@ -1061,13 +1032,8 @@ PRODUCTIONS
 				(. entry.Expression = fexp; .)
 			)
 			[ WhereBinding<out cexp> (. entry.Where = cexp; .) ]
-			[ WithExpr<fun> ]
 			(. if (RequireEndBlock()) .) EndBlock
 			[ 
-				(. 
-					if (fun.IsTemplate)
-						AddError(ElaParserError.InvalidFunctionWith);
-				.)
 				(
 					(
 						(. scanner.InjectBlock(); .)
@@ -1096,13 +1062,8 @@ PRODUCTIONS
 				(. entry.Expression = fexp; .)
 			)
 			[ WhereBinding<out cexp> (. entry.Where = cexp; .) ]
-			[ WithExpr<fun> ]
 			(. if (RequireEndBlock()) .) EndBlock
 			[ 
-				(. 
-					if (fun.IsTemplate)
-						AddError(ElaParserError.InvalidFunctionWith);
-				.)
 				(
 					(
 						(. scanner.InjectBlock(); .)

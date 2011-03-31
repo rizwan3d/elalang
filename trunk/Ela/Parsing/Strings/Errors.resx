@@ -432,7 +432,4 @@
   <data name="InvalidOperation" xml:space="preserve">
     <value>Invalid syntax for an operation.</value>
   </data>
-  <data name="InvalidFunctionWith" xml:space="preserve">
-    <value>Invalid function declaration, 'with' should be the last statement in a function.</value>
-  </data>
 </root>

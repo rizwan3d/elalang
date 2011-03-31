@@ -88,19 +88,6 @@ namespace Ela.CodeModel
 						op = p.Pattern;
 				}
 			}
-
-			if (_templateParameters != null)
-			{
-				sb.AppendLine();
-				sb.Append(' ', fmt.Indent);
-				sb.Append("with ");
-
-				foreach (var t in _templateParameters)
-				{
-					sb.Append(t);
-					sb.Append(' ');
-				}
-			}
 		}
 		#endregion
 
@@ -120,20 +107,6 @@ namespace Ela.CodeModel
 		public string Name { get; set; }
 
 		public ElaMatch Body { get; set; }
-
-		public bool IsTemplate { get { return _templateParameters != null; } }
-
-		private FastList<String> _templateParameters;
-		public FastList<String> TemplateParameters
-		{
-			get
-			{
-				if (_templateParameters == null)
-					_templateParameters = new FastList<String>();
-
-				return _templateParameters;
-			}
-		}
 		#endregion
 	}
 }

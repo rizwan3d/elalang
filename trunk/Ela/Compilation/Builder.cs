@@ -90,29 +90,6 @@ namespace Ela.Compilation
 
 			switch (exp.Type)
 			{
-				case ElaNodeType.TemplateReference:
-					{
-						var t = (ElaTemplateReference)exp;
-						var sv = GetVariable(t.FunctionName, t.Line, t.Column);
-						var len = t.Parameters.Count;
-						var sys = AddVariable();
-						cw.Emit(Op.Pushvar, sv.Address);
-						cw.Emit(Op.Clone);
-						cw.Emit(Op.Popvar, sys);
-
-						for (var i = 0; i < len; i++)
-						{
-							CompileExpression(t.Parameters[i], map, Hints.None);
-							cw.Emit(Op.Pushvar, sys);
-							cw.Emit(Op.Settab);
-						}
-
-						cw.Emit(Op.Pushvar, sys);
-
-						if ((hints & Hints.Left) == Hints.Left)
-							AddValueNotUsed(exp);
-					}
-					break;
 				case ElaNodeType.Builtin:
 					{
 						var v = (ElaBuiltin)exp;
@@ -452,26 +429,21 @@ namespace Ela.Compilation
 						var v = (ElaIndexer)exp;
 						CompileExpression(v.TargetObject, map, Hints.None);
 
-						if ((hints & Hints.Left) == Hints.Left &&
-							(hints & Hints.Assign) == Hints.Assign)
+						if ((hints & Hints.Left) == Hints.Left && (hints & Hints.Assign) == Hints.Assign)
 						{
-
-							if (v.Index.Type == ElaNodeType.VariableReference)
-							{
-								var vr = (ElaVariableReference)v.Index;
-								var svar = GetVariable(vr.VariableName, vr.Line, vr.Column);
-								
-								if ((svar.Flags & ElaVariableFlags.Template) != ElaVariableFlags.Template)
-								{
-									AddLinePragma(v);
-									cw.Emit(Op.Popelemi, svar.Address);
-									break;
-								}
-							}
-							
-							CompileExpression(v.Index, map, Hints.None);
-							AddLinePragma(v);
-							cw.Emit(Op.Popelem);
+                            if (v.Index.Type == ElaNodeType.VariableReference)
+                            {
+                                var vr = (ElaVariableReference)v.Index;
+                                var svar = GetVariable(vr.VariableName, vr.Line, vr.Column);
+                                AddLinePragma(v);
+                                cw.Emit(Op.Popelemi, svar.Address);
+                            }
+                            else
+                            {
+                                CompileExpression(v.Index, map, Hints.None);
+                                AddLinePragma(v);
+                                cw.Emit(Op.Popelem);
+                            }
 						}
 						else
 						{
@@ -479,18 +451,8 @@ namespace Ela.Compilation
 							{
 								var vr = (ElaVariableReference)v.Index;
 								var svar = GetVariable(vr.VariableName, vr.Line, vr.Column);
-
-								if ((svar.Flags & ElaVariableFlags.Template) != ElaVariableFlags.Template)
-								{
-									AddLinePragma(v);
-									cw.Emit(Op.Pushelemi, svar.Address);
-								}
-								else
-								{
-									CompileExpression(v.Index, map, Hints.None);
-									AddLinePragma(v);
-									cw.Emit(Op.Pushelem);
-								}
+								AddLinePragma(v);
+								cw.Emit(Op.Pushelemi, svar.Address);
 							}
 							else
 							{
@@ -530,10 +492,7 @@ namespace Ela.Compilation
 						}
 						else
 						{
-							if ((scopeVar.VariableFlags & ElaVariableFlags.Template) == ElaVariableFlags.Template)
-								cw.Emit(Op.Pushtab, scopeVar.Data);
-							else
-								cw.Emit(Op.Pushvar, scopeVar.Address);
+							cw.Emit(Op.Pushvar, scopeVar.Address);
 
 							if ((hints & Hints.Left) == Hints.Left)
 								AddValueNotUsed(v);
@@ -768,7 +727,7 @@ namespace Ela.Compilation
 			var name = v.Target.GetName();
 			var fun = default(ElaFunctionLiteral);
 
-			if (!inlineFuns.TryGetValue(name, out fun))
+			if (!inlineFuns.TryGetValue(name, out fun) || GetScope(name) != globalScope)
 				return false;
 
 			var len = v.Parameters.Count;
@@ -842,18 +801,13 @@ namespace Ela.Compilation
 				}
 				else
 				{
-					if ((sv.Flags & ElaVariableFlags.Template) != ElaVariableFlags.Template)
-					{
-						AddLinePragma(v.Target);
-						cw.Emit(Op.Pushvar, sv.Address);
+					AddLinePragma(v.Target);
+					cw.Emit(Op.Pushvar, sv.Address);
 
-						if ((sv.VariableFlags & ElaVariableFlags.Function) == ElaVariableFlags.Function)
-							ed = new ExprData(DataKind.FunParams, sv.Data);
-						else if ((sv.VariableFlags & ElaVariableFlags.ObjectLiteral) == ElaVariableFlags.ObjectLiteral)
-							ed = new ExprData(DataKind.VarType, (Int32)ElaVariableFlags.ObjectLiteral);
-					}
-					else
-						ed = CompileExpression(v.Target, map, Hints.None);
+					if ((sv.VariableFlags & ElaVariableFlags.Function) == ElaVariableFlags.Function)
+						ed = new ExprData(DataKind.FunParams, sv.Data);
+					else if ((sv.VariableFlags & ElaVariableFlags.ObjectLiteral) == ElaVariableFlags.ObjectLiteral)
+						ed = new ExprData(DataKind.VarType, (Int32)ElaVariableFlags.ObjectLiteral);
 				}
 			}
 			else

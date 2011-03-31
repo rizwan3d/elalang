@@ -42,13 +42,7 @@ namespace Ela.Compilation
 			AddLinePragma(dec);
 
 			var address = cw.Offset;
-			
-			if (dec.IsTemplate)
-			{
-				for (var i = 0; i < dec.TemplateParameters.Count; i++)
-					AddVariable(dec.TemplateParameters[i], dec, ElaVariableFlags.Template, i);
-			}
-			
+						
 			if (flag != FunFlag.Lazy)
 				CompileParameters(dec, map);
 
@@ -79,17 +73,8 @@ namespace Ela.Compilation
 
 				AddLinePragma(dec);
 
-				if (dec.IsTemplate)
-				{
-					cw.Emit(Op.PushI4, dec.TemplateParameters.Count);
-					cw.Emit(Op.PushI4, pars);
-					cw.Emit(Op.Newfunt, funHandle);
-				}
-				else
-				{
-					cw.Emit(Op.PushI4, pars);
-					cw.Emit(Op.Newfun, funHandle);
-				}
+				cw.Emit(Op.PushI4, pars);
+				cw.Emit(Op.Newfun, funHandle);
 			}
 		}
 

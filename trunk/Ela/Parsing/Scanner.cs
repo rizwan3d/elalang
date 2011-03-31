@@ -395,11 +395,11 @@ internal sealed class Scanner {
 			case "fail": t.kind = 44; break;
 			case "where": t.kind = 45; break;
 			case "et": t.kind = 46; break;
-			case "!": t.kind = 48; break;
-			case "_": t.kind = 49; break;
-			case "=": t.kind = 53; break;
-			case ":": t.kind = 56; break;
-			case "::": t.kind = 57; break;
+			case "_": t.kind = 48; break;
+			case "=": t.kind = 52; break;
+			case ":": t.kind = 55; break;
+			case "::": t.kind = 56; break;
+			case "!": t.kind = 57; break;
 			case "&": t.kind = 59; break;
 			case "inline": t.kind = 60; break;
 			case "__internal": t.kind = 61; break;
@@ -862,11 +862,11 @@ internal sealed class Scanner {
 				else if (ch == 39) {AddCh(); goto case 84;}
 				else {t.kind = 2; break;}
 			case 87:
-				{t.kind = 51; break;}
+				{t.kind = 50; break;}
 			case 88:
-				{t.kind = 52; break;}
+				{t.kind = 51; break;}
 			case 89:
-				{t.kind = 55; break;}
+				{t.kind = 54; break;}
 			case 90:
 				{t.kind = 58; break;}
 			case 91:
@@ -874,10 +874,10 @@ internal sealed class Scanner {
 			case 92:
 				{t.kind = 70; break;}
 			case 93:
-				recEnd = pos; recKind = 54;
+				recEnd = pos; recKind = 53;
 				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 79;}
 				else if (ch == 39) {AddCh(); goto case 80;}
-				else {t.kind = 54; break;}
+				else {t.kind = 53; break;}
 			case 94:
 				recEnd = pos; recKind = 69;
 				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 7;}
@@ -889,9 +889,9 @@ internal sealed class Scanner {
 				else if (ch == '.') {AddCh(); goto case 90;}
 				else {t.kind = 27; break;}
 			case 96:
-				recEnd = pos; recKind = 50;
+				recEnd = pos; recKind = 49;
 				if (ch == '&') {AddCh(); goto case 92;}
-				else {t.kind = 50; break;}
+				else {t.kind = 49; break;}
 
 		}
 		t.val = new String(tval, 0, tlen);			
