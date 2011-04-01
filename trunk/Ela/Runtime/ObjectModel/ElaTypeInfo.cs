@@ -12,7 +12,7 @@ namespace Ela.Runtime.ObjectModel
         private List<String> keys;
         private List<ElaValue> values;
 
-		internal ElaTypeInfo() : base(ElaTraits.Eq|ElaTraits.Show|ElaTraits.FieldGet|ElaTraits.Get|ElaTraits.Len|ElaTraits.Ix)
+		internal ElaTypeInfo()
 		{
             keys = new List<String>();
             values = new List<ElaValue>();
@@ -20,13 +20,13 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-        #region Traits
+        #region Operations
         protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             var li = default(ElaTypeInfo);
             var ri = default(ElaTypeInfo);
 
-            if (!Cast(left, right, out li, out ri, ElaTraits.Eq, ctx))
+            if (!Cast(left, right, out li, out ri, "equal", ctx))
                 return Default();
 
             return new ElaValue(CompareInfos(li, ri));
@@ -38,7 +38,7 @@ namespace Ela.Runtime.ObjectModel
             var li = default(ElaTypeInfo);
             var ri = default(ElaTypeInfo);
 
-            if (!Cast(left, right, out li, out ri, ElaTraits.Eq, ctx))
+            if (!Cast(left, right, out li, out ri, "notequal", ctx))
                 return Default();
 
             return new ElaValue(!CompareInfos(li, ri));
@@ -117,20 +117,20 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        private bool Cast(ElaValue left, ElaValue right, out ElaTypeInfo li, out ElaTypeInfo ri, ElaTraits trait, ExecutionContext ctx)
+        private bool Cast(ElaValue left, ElaValue right, out ElaTypeInfo li, out ElaTypeInfo ri, string op, ExecutionContext ctx)
         {
             li = left.As<ElaTypeInfo>();
             ri = right.As<ElaTypeInfo>();
 
             if (li == null)
             {
-                ctx.InvalidLeftOperand(left, right, trait);
+                ctx.InvalidLeftOperand(left, right, op);
                 return false;
             }
 
             if (ri == null)
             {
-                ctx.InvalidRightOperand(left, right, trait);
+                ctx.InvalidRightOperand(left, right, op);
                 return false;
             }
 
@@ -150,6 +150,12 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Methods
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.Record|ElaPatterns.Tuple;
+        }
+
+
         protected internal override string GetTypeName()
         {
             return TYPE_NAME;

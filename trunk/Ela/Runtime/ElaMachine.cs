@@ -645,8 +645,8 @@ namespace Ela.Runtime
 							goto SWITCH_MEM;
 						}
                         break;
-					case Op.Trait:
-						evalStack.Replace(new ElaValue(((Int32)evalStack.Peek().Id(ctx).Ref.Traits & opd) == opd));
+					case Op.Pat:
+						evalStack.Replace(new ElaValue(((Int32)evalStack.Peek().Id(ctx).Ref.GetSupportedPatterns() & opd) == opd));
 
 						if (ctx.Failed)
 						{
@@ -780,49 +780,7 @@ namespace Ela.Runtime
 							goto SWITCH_MEM;
 						}
 						break;
-					case Op.Settab:
-						{
-							var fun = evalStack.Pop().Ref as ElaFunction;
-
-							if (fun == null || fun.Table == null)
-							{
-								ExecuteFail(new ElaError(ElaRuntimeError.NotGenericFun, fun.ToString()), thread, evalStack);
-								goto SWITCH_MEM;
-							}
-
-							if (fun.Specialized >= fun.Table.Length)
-							{
-								ExecuteFail(ElaRuntimeError.TableTooMany, thread, evalStack);
-								goto SWITCH_MEM;
-							}
-
-							var val = evalStack.Pop();
-							fun.Table[fun.Specialized] = val;
-							fun.Specialized++;							
-						}
-						break;
-					case Op.Pushtab:
-						{
-							var cp = callStack.Peek();
-
-							if (cp.Table.Length <= opd)
-							{
-								ExecuteFail(ElaRuntimeError.TableNoInit, thread, evalStack);
-								goto SWITCH_MEM;
-							}
-
-							right = cp.Table[opd];
-
-							if (right.Ref == null)
-							{
-								ExecuteFail(ElaRuntimeError.TableNoInit, thread, evalStack);
-								goto SWITCH_MEM;
-							}
-
-							evalStack.Push(right);
-						}
-						break;
-                    case Op.Elem:
+					case Op.Elem:
                         right = evalStack.Peek().Id(ctx);
                         res = right.Ref.GetLength(ctx);
 
@@ -1306,15 +1264,6 @@ namespace Ela.Runtime
 					case Op.Newlazy:
 						evalStack.Push(new ElaValue(new ElaLazy((ElaFunction)evalStack.Pop().Ref)));
 						break;
-					case Op.Newfunt:
-						{
-							var lst = new FastList<ElaValue[]>(captures);
-							lst.Add(locals);
-							var fun = new ElaFunction(opd, thread.ModuleHandle, evalStack.Pop().I4, lst, this);
-							fun.Table = new ElaValue[evalStack.Pop().I4];
-							evalStack.Push(new ElaValue(fun));						
-						}
-						break;
 					case Op.Newfun:
 						{
 							var lst = new FastList<ElaValue[]>(captures);
@@ -1745,26 +1694,16 @@ namespace Ela.Runtime
 		{
 			if (fun.TypeId != FUN)
 			{
-				if ((fun.Traits & ElaTraits.Call) == ElaTraits.Call)
-				{
-					var res = fun.Call(stack.Peek(), thread.Context);
-					stack.Replace(res);
+				var res = fun.Call(stack.Peek(), thread.Context);
+				stack.Replace(res);
 
-					if (thread.Context.Failed)
-					{
-						ExecuteThrow(thread, stack);
-						return true;
-					}
-
-					return false;
-				}
-				else
+				if (thread.Context.Failed)
 				{
-					thread.Context.Fail(new ElaError(ElaRuntimeError.ExpectedFunction, TypeCodeFormat.GetShortForm((ElaTypeCode)fun.TypeId)));
 					ExecuteThrow(thread, stack);
+					return true;
 				}
 
-				return true;
+				return false;
 			}
 
 			var pop = true;
@@ -1799,9 +1738,6 @@ namespace Ela.Runtime
 						newStack.Replace(right);
 						newStack.Push(left);
 					}
-
-					if (natFun.Table != null)
-						newMem.Table = natFun.Table;
 
 					thread.CallStack.Push(newMem);
 					thread.Offset = layout.Address;

@@ -24,17 +24,7 @@ namespace Ela.CodeModel
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			sb.Append('?');
-			sb.Append(Traits != ElaTraits.None ? FormatTraitList() : TypeCodeFormat.GetShortForm(TypeAffinity));
-		}
-
-
-		private string FormatTraitList()
-		{
-			var sb = new StringBuilder();
-			sb.Append('(');
-			sb.Append(Traits.ToString().Replace('|', ','));
-			sb.Append(')');
-			return sb.ToString();
+			sb.Append(!String.IsNullOrEmpty(TypeName) ? TypeName : TypeCodeFormat.GetShortForm(TypeCode));
 		}
 
 
@@ -68,16 +58,15 @@ namespace Ela.CodeModel
             else
                 return true;
 
-			return (@is.TypeAffinity != TypeAffinity || @is.TypeAffinity == default(ElaTypeCode)) 
-                && (@is.Traits == default(ElaTraits) || @is.Traits != Traits);
+			return @is.TypeCode != TypeCode || @is.TypeName != TypeName;
 		}
 		#endregion
 
 
 		#region Properties
-		public ElaTypeCode TypeAffinity { get; set; }
+		public ElaTypeCode TypeCode { get; set; }
 
-		public ElaTraits Traits { get; set; }
+        public string TypeName { get; set; }
 		#endregion
 	}
 }

@@ -5,11 +5,9 @@ namespace Ela.Runtime.ObjectModel
 	internal sealed class ElaChar : ElaObject
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Ord | ElaTraits.Convert | ElaTraits.Enum;
-		
 		internal static readonly ElaChar Instance = new ElaChar();
 
-		private ElaChar() : base(ElaTypeCode.Char, TRAITS)
+		private ElaChar() : base(ElaTypeCode.Char)
 		{
 
 		}
@@ -17,6 +15,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.None;
+        }
+
+
 		internal protected override int Compare(ElaValue @this, ElaValue other)
 		{
 			return other.TypeCode == ElaTypeCode.Char ? @this.I4 - other.I4 : -1;
@@ -24,7 +28,7 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Traits
+		#region Operations
 		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId == ElaMachine.CHR)
@@ -32,7 +36,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.Equals(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Eq);
+				ctx.InvalidLeftOperand(left, right, "equal");
 				return Default();
 			}
 		}
@@ -45,7 +49,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.NotEquals(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Eq);
+				ctx.InvalidLeftOperand(left, right, "notequal");
 				return Default();
 			}
 		}
@@ -58,7 +62,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.Greater(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				ctx.InvalidLeftOperand(left, right, "greater");
 				return Default();
 			}
 		}
@@ -71,7 +75,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.Lesser(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				ctx.InvalidLeftOperand(left, right, "lesser");
 				return Default();
 			}
 		}
@@ -84,7 +88,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.GreaterEquals(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				ctx.InvalidLeftOperand(left, right, "greaterequal");
 				return Default();
 			}
 		}
@@ -97,7 +101,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.LesserEquals(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				ctx.InvalidLeftOperand(left, right, "lesserequal");
 				return Default();
 			}
 		}

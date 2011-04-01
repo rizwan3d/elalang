@@ -18,9 +18,9 @@ namespace Ela.Library.General
         }
 
 
-        internal ElaDateTime(long ticks) : base(ElaTraits.Eq|ElaTraits.Ord|ElaTraits.Show|ElaTraits.Convert|ElaTraits.Bound)
+        internal ElaDateTime(long ticks)
         {
-
+            Ticks = ticks;
         }
         #endregion
 
@@ -39,6 +39,12 @@ namespace Ela.Library.General
 
 
         #region Methods
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.None;
+        }
+
+
         protected override string GetTypeName()
         {
             return TYPE_NAME;
@@ -140,13 +146,13 @@ namespace Ela.Library.General
 
             if (ld == null)
             {
-                ctx.InvalidLeftOperand(left, right, Trait(comp));
+                ctx.InvalidLeftOperand(left, right, Op(comp));
                 return Default();
             }
 
             if (rd == null)
             {
-                ctx.InvalidRightOperand(left, right, Trait(comp));
+                ctx.InvalidRightOperand(left, right, Op(comp));
                 return Default();
             }
 
@@ -163,9 +169,18 @@ namespace Ela.Library.General
         }
 
 
-        private ElaTraits Trait(Comparison comp)
+        private string Op(Comparison comp)
         {
-            return comp == Comparison.Eq || comp == Comparison.Neq ? ElaTraits.Eq : ElaTraits.Ord;
+            switch (comp)
+            {
+                case Comparison.Eq: return "equal";
+                case Comparison.Neq: return "notequal";
+                case Comparison.Gt: return "greater";
+                case Comparison.Lt: return "lesser";
+                case Comparison.GtEq: return "greaterequal";
+                case Comparison.LtEq: return "lesserequal";
+                default: return String.Empty;
+            }
         }
         #endregion
 

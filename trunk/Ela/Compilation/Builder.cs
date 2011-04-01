@@ -727,7 +727,8 @@ namespace Ela.Compilation
 			var name = v.Target.GetName();
 			var fun = default(ElaFunctionLiteral);
 
-			if (!inlineFuns.TryGetValue(name, out fun) || GetScope(name) != globalScope)
+			if (!inlineFuns.TryGetValue(name, out fun) || GetScope(name) != globalScope || 
+                map.FunctionName == name)
 				return false;
 
 			var len = v.Parameters.Count;

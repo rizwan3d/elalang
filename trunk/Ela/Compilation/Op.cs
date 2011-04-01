@@ -140,13 +140,9 @@ namespace Ela.Compilation
 
         Clone,		
 		
-		Settab,        
-
-
 		
-		Pushtab,
-        
-        Elem,
+		
+		Elem,
 
 		Skiptag,
 
@@ -164,7 +160,7 @@ namespace Ela.Compilation
 
 		Skiptl,
 
-		Trait,
+		Pat,
 
 		PushelemI4,
 
@@ -216,8 +212,6 @@ namespace Ela.Compilation
 
 		Brnil,
 
-		Newfun,
-
-		Newfunt,
+		Newfun
 	}
 }

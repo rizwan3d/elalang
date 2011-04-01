@@ -69,9 +69,9 @@ namespace Ela.CodeModel
 
 		Cons,
 
-		Equals,
+		Equal,
 
-		NotEquals,
+		NotEqual,
 
 		Concat,
 

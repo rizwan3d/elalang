@@ -14,7 +14,7 @@ namespace Ela.Library.Collections
         private ElaList forward;
         private ElaList backward;
 
-        internal ElaQueue(ElaList forward, ElaList backward) : base(ElaTraits.Eq|ElaTraits.Show|ElaTraits.Len|ElaTraits.Convert|ElaTraits.Seq|ElaTraits.Cons)
+        internal ElaQueue(ElaList forward, ElaList backward)
         {
             this.forward = forward;
             this.backward = backward;
@@ -29,6 +29,12 @@ namespace Ela.Library.Collections
 
 
         #region Methods
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.HeadTail;
+        }
+
+
         protected override string GetTypeName()
         {
             return TYPENAME;

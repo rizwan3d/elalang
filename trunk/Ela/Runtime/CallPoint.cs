@@ -30,8 +30,6 @@ namespace Ela.Runtime
 		internal int StackOffset;
 
 		internal int? CatchMark;
-
-		internal ElaValue[] Table;
 		#endregion
 	}
 }

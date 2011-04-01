@@ -115,7 +115,7 @@ namespace Ela.Runtime
 
 		public ElaValue Id(ExecutionContext ctx)
 		{
-			return (Ref.Traits & ElaTraits.Thunk) == ElaTraits.Thunk ? Ref.Force(ctx) : this;
+			return Ref.TypeId == ElaMachine.LAZ ? Ref.Force(ctx) : this;
 		}
 
 
@@ -335,7 +335,7 @@ namespace Ela.Runtime
 
 		public bool AsBoolean()
 		{
-			if ((Traits & ElaTraits.Bool) == ElaTraits.Bool)
+			if (TypeId == ElaMachine.BYT)
                 return Bool(ElaObject.DummyContext);
             else if (TypeCode == ElaTypeCode.Lazy)
                 return ((ElaLazy)Ref).AsBoolean();
@@ -460,7 +460,7 @@ namespace Ela.Runtime
 		#endregion
 
 
-        #region Traits
+        #region Operations
         public ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return Ref.Equals(left, right, ctx);
@@ -723,6 +723,12 @@ namespace Ela.Runtime
         {
 			return Ref.Untag(ctx);
         }
+
+
+        public ElaValue Clone(ExecutionContext ctx)
+        {
+            return Ref.Clone(ctx);
+        }
         #endregion
         
 
@@ -744,12 +750,6 @@ namespace Ela.Runtime
 		{
 			get { return Ref.TypeId; }
 		}
-
-
-        public ElaTraits Traits
-        {
-            get { return Ref.Traits; }
-        }
 		#endregion
 	}
 }

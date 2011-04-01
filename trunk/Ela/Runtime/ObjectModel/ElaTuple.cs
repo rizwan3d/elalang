@@ -8,10 +8,9 @@ namespace Ela.Runtime.ObjectModel
 	public class ElaTuple : ElaObject, IEnumerable<ElaValue>
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Ord | ElaTraits.Enum | ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Gen | ElaTraits.Len | ElaTraits.Convert | ElaTraits.Num | ElaTraits.Bit | ElaTraits.Bool | ElaTraits.Neg | ElaTraits.Concat | ElaTraits.Ix;
 		private int cons;
 		
-		public ElaTuple(params object[] args) : base(ElaTypeCode.Tuple, TRAITS)
+		public ElaTuple(params object[] args) : base(ElaTypeCode.Tuple)
 		{
 			Values = new ElaValue[args.Length];
 
@@ -22,33 +21,33 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		public ElaTuple(params ElaValue[] args) : base(ElaTypeCode.Tuple, TRAITS)
+		public ElaTuple(params ElaValue[] args) : base(ElaTypeCode.Tuple)
 		{
 			Values = args;
 			cons = args.Length;
 		}
 
 
-		internal ElaTuple(int size) : this(size, ElaTypeCode.Tuple, TRAITS)
+		internal ElaTuple(int size) : this(size, ElaTypeCode.Tuple)
 		{
 
 		}
 
 		
-		internal ElaTuple(int size, ElaTypeCode type, ElaTraits traits) : base(type, traits)
+		internal ElaTuple(int size, ElaTypeCode type) : base(type)
 		{
 			Values = new ElaValue[size];
 		}
 
 
-		private ElaTuple() : base(ElaTypeCode.Tuple, TRAITS)
+		private ElaTuple() : base(ElaTypeCode.Tuple)
 		{
 
 		}
 		#endregion
 
 
-		#region Traits
+		#region Operations
 		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.Ref == right.Ref)
@@ -807,6 +806,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.Tuple;
+        }
+
+
 		internal static ElaTuple FromArray(ElaValue[] array)
 		{
 			var tup = new ElaTuple();

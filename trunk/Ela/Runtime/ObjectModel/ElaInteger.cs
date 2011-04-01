@@ -5,12 +5,9 @@ namespace Ela.Runtime.ObjectModel
 	internal sealed class ElaInteger : ElaObject
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Ord | ElaTraits.Bound | 
-			ElaTraits.Enum | ElaTraits.Show | ElaTraits.Convert | ElaTraits.Neg | ElaTraits.Num | ElaTraits.Bit | ElaTraits.Int;
-
 		internal static readonly ElaInteger Instance = new ElaInteger();
 		
-		private ElaInteger() : base(ElaTypeCode.Integer, TRAITS)
+		private ElaInteger() : base(ElaTypeCode.Integer)
 		{
 			
 		}
@@ -18,6 +15,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.None;
+        }
+
+
         internal protected override int Compare(ElaValue @this, ElaValue other)
 		{
 			return other.TypeCode == ElaTypeCode.Integer ? @this.I4.CompareTo(other.I4) :
@@ -29,7 +32,7 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Traits
+		#region Operations
 		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId == ElaMachine.INT)
@@ -37,7 +40,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.Equals(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				ctx.InvalidLeftOperand(left, right, "equal");
 				return Default();
 			}
 		}
@@ -50,7 +53,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.NotEquals(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				ctx.InvalidLeftOperand(left, right, "notequal");
 				return Default();
 			}
 		}
@@ -63,7 +66,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.Greater(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				ctx.InvalidLeftOperand(left, right, "greater");
 				return Default();
 			}
 		}
@@ -76,7 +79,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.Lesser(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				ctx.InvalidLeftOperand(left, right, "lesser");
 				return Default();
 			}
 		}
@@ -89,7 +92,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.GreaterEquals(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				ctx.InvalidLeftOperand(left, right, "greaterequal");
 				return Default();
 			}
 		}
@@ -102,7 +105,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.LesserEquals(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				ctx.InvalidLeftOperand(left, right, "lesserequal");
 				return Default();
 			}
 		}
@@ -180,7 +183,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.Add(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Num);
+				ctx.InvalidLeftOperand(left, right, "add");
 				return Default();
 			}
 		}
@@ -193,7 +196,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.Subtract(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Num);
+				ctx.InvalidLeftOperand(left, right, "subtract");
 				return Default();
 			}
 		}
@@ -206,7 +209,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.Multiply(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Num);
+				ctx.InvalidLeftOperand(left, right, "multiply");
 				return Default();
 			}
 		}
@@ -231,7 +234,7 @@ namespace Ela.Runtime.ObjectModel
 			}
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Num);
+				ctx.InvalidLeftOperand(left, right, "divide");
 				return Default();
 			}
 		}
@@ -256,7 +259,7 @@ namespace Ela.Runtime.ObjectModel
 			}
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Num);
+				ctx.InvalidLeftOperand(left, right, "remainder");
 				return Default();
 			}
 		}
@@ -269,7 +272,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.Power(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Num);
+				ctx.InvalidLeftOperand(left, right, "power");
 				return Default();
 			}
 		}
@@ -282,7 +285,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.BitwiseAnd(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Bit);
+				ctx.InvalidLeftOperand(left, right, "bitwiseand");
 				return Default();
 			}
 		}
@@ -295,7 +298,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.BitwiseOr(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Bit);
+				ctx.InvalidLeftOperand(left, right, "bitwiseor");
 				return Default();
 			}
 		}
@@ -308,7 +311,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.BitwiseXor(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Bit);
+				ctx.InvalidLeftOperand(left, right, "bitwisexor");
 				return Default();
 			}
 		}
@@ -327,7 +330,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.ShiftLeft(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Bit);
+				ctx.InvalidLeftOperand(left, right, "shiftleft");
 				return Default();
 			}
 		}
@@ -340,7 +343,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.ShiftRight(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Bit);
+				ctx.InvalidLeftOperand(left, right, "shiftright");
 				return Default();
 			}
 		}

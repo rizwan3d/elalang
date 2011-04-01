@@ -11,7 +11,7 @@ namespace Ela.Library.Collections
         private const string NOKEY = "NoKey";
 		private const string TYPENAME = "mutableMap";
 		
-        public ElaMutableMap() : base(ElaTraits.Eq | ElaTraits.Show | ElaTraits.Get | ElaTraits.Set | ElaTraits.Convert | ElaTraits.Len)
+        public ElaMutableMap()
         {
             Map = new Dictionary<ElaValue,ElaValue>();
         }
@@ -19,7 +19,13 @@ namespace Ela.Library.Collections
 
 
         #region Methods
-		protected override string GetTypeName()
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.None;
+        }
+
+
+        protected override string GetTypeName()
 		{
 			return TYPENAME;
 		}

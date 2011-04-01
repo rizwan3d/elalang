@@ -5,7 +5,7 @@ namespace Ela.Runtime.ObjectModel
 	internal sealed class ElaLazy : ElaObject
 	{
 		#region Construction
-		internal ElaLazy(ElaFunction function) : base(ElaTypeCode.Lazy, ElaTraits.Thunk)
+		internal ElaLazy(ElaFunction function) : base(ElaTypeCode.Lazy)
 		{
 			Function = function;
 			_value = default(ElaValue);
@@ -14,6 +14,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.None;
+        }
+
+
         public override int GetHashCode()
         {
             return Value.Ref != null ? Value.GetHashCode() : 0;
@@ -154,15 +160,15 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Tail(ExecutionContext ctx)
 		{
-			return Value.Ref != null && (Value.Ref.Traits & ElaTraits.Seq) == ElaTraits.Seq ? Value.Ref.Tail(ctx) : 
-				new ElaValue(ElaList.Empty);
+			return Value.Ref != null && (Value.Ref.GetSupportedPatterns() & ElaPatterns.HeadTail) == ElaPatterns.HeadTail ? 
+                Value.Ref.Tail(ctx) : new ElaValue(ElaList.Empty);
 		}
 
 
 		protected internal override ElaValue Head(ExecutionContext ctx)
 		{
-			return Value.Ref != null ? 
-				((Value.Ref.Traits & ElaTraits.Seq) == ElaTraits.Seq ? Value.Ref.Head(ctx) : Value) : 
+			return Value.Ref != null ?
+                ((Value.Ref.GetSupportedPatterns() & ElaPatterns.HeadTail) == ElaPatterns.HeadTail ? Value.Ref.Head(ctx) : Value) : 
 				Default();
 		}
 

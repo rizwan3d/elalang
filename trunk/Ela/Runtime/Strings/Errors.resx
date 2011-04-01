@@ -130,7 +130,7 @@
     <value>Division by zero of value '{0}' of type '{1}'.</value>
   </data>
   <data name="ExpectedFunction" xml:space="preserve">
-    <value>A functional type is expected, got '{0}'.</value>
+    <value>A function is expected.</value>
   </data>
   <data name="FieldImmutable" xml:space="preserve">
     <value>Field '{0}' of the record '{1}' is immutable and cannot be changed.</value>
@@ -154,7 +154,7 @@
     <value>Invalid type. Expected: '{0}', got: '{1}'.</value>
   </data>
   <data name="LeftOperand" xml:space="preserve">
-    <value>The value '{0}' of type '{1}' is not a valid left operand for the value '{2}' of type '{3}' in an operation defined in trait '{4}'.</value>
+    <value>The value '{0}' of type '{1}' is not a valid left operand for the value '{2}' of type '{3}' in an operation '{4}'.</value>
   </data>
   <data name="MatchFailed" xml:space="preserve">
     <value>Match failed. None of the patterns were successful.</value>
@@ -172,7 +172,7 @@
     <value>Testing for reference equality is not supported for built-in types int, single, boolean and char.</value>
   </data>
   <data name="RightOperand" xml:space="preserve">
-    <value>The value '{0}' of type '{1}' is not a valid right operand for the value '{2}' of type '{3}' in an operation defined in trait '{4}'.</value>
+    <value>The value '{0}' of type '{1}' is not a valid right operand for the value '{2}' of type '{3}' in an operation '{4}'.</value>
   </data>
   <data name="TableNoInit" xml:space="preserve">
     <value>Template parameter not initialized.</value>

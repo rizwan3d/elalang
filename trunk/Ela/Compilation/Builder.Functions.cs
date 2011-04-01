@@ -290,10 +290,10 @@ namespace Ela.Compilation
 				case ElaBuiltinKind.Lesser:
 					cw.Emit(Op.Clt);
 					break;
-				case ElaBuiltinKind.Equals:
+				case ElaBuiltinKind.Equal:
 					cw.Emit(Op.Ceq);
 					break;
-				case ElaBuiltinKind.NotEquals:
+				case ElaBuiltinKind.NotEqual:
 					cw.Emit(Op.Cneq);
 					break;
 				case ElaBuiltinKind.GreaterEqual:

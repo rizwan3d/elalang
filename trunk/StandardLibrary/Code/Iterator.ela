@@ -20,3 +20,15 @@ let when p it | r is (`Some x), p x = `Some x
               where r = it () 
 
 let project f it = f <| it () 
+
+
+let iter arr = iter' {!ix=0} arr
+               where iter' cell arr () | n < len = cell.ix <- cell.ix + 1 $ `Some (arr.[n])
+                                       | else    = `None
+                                       where n   = cell.ix
+                                          et len = length arr
+                                          
+let iter xs = iter' {!xs=xs}
+              where iter' cell () | l is (x::xs) = cell.xs <- xs $ `Some x
+                                  | else         = `None
+                                  where l = cell.xs

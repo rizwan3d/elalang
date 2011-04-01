@@ -174,14 +174,7 @@ namespace Ela.Parsing
 				val == "module" ? ElaTypeCode.Module :
 				val == "lazy" ? ElaTypeCode.Lazy :
 				val == "variant" ? ElaTypeCode.Variant :
-				TypeError(val);
-		}
-
-
-		private ElaTypeCode TypeError(string val)
-		{
-			AddError(ElaParserError.UnknownConversionType, val);
-			return ElaTypeCode.None;
+				ElaTypeCode.None;
 		}
 
 

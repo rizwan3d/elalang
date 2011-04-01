@@ -74,10 +74,8 @@ namespace Ela.Compilation
 			-1, //Ceqref
 			0, //Nil
             0, //Clone			
-			-2, //Settab        
-
-			1, //Pushtab        
-            0, //Elem
+			
+			0, //Elem
 			0, //Skiptag
 			0, //Isfun
 			0, //Conv
@@ -86,7 +84,7 @@ namespace Ela.Compilation
 			1, //Newtup
 			-1, //Skiptn
 			-1, //Skiptl
-			0, //Trait
+			0, //Pat
 			0, //PushelemI4			
 			0, //Pushelemi
 			-1, //Popelemi
@@ -112,8 +110,7 @@ namespace Ela.Compilation
 			-2, //Br_eq
 			-2, //Br_neq
 			-1, //Brnil
-			0, //Newfun
-			-1, //Newfunt			
+			0, //Newfun			
 		};
 	}
 }

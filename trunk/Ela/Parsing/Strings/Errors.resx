@@ -243,9 +243,6 @@
   <data name="InvalidTry" xml:space="preserve">
     <value>Invalid syntax for the 'try' expression.</value>
   </data>
-  <data name="UnknownConversionType" xml:space="preserve">
-    <value>Unknown type '{0}'. An expression should be one of the standard Ela types.</value>
-  </data>
   <data name="ExpectedLambda" xml:space="preserve">
     <value>Expected lambda operator '\'.</value>
   </data>
@@ -404,9 +401,6 @@
   </data>
   <data name="InvalidWhereBinding" xml:space="preserve">
     <value>Invalid variable declaration through 'where' clause.</value>
-  </data>
-  <data name="UnknownTrait" xml:space="preserve">
-    <value>There is no such trait as '{0}'.</value>
   </data>
   <data name="ComprehensionOpInvalidOperand" xml:space="preserve">
     <value>Invalid right operand for the comprehension '@@' operator.</value>

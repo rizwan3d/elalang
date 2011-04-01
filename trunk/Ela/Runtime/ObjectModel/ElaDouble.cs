@@ -5,10 +5,7 @@ namespace Ela.Runtime.ObjectModel
 	public sealed class ElaDouble : ElaObject
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Ord | ElaTraits.Bound | ElaTraits.Enum | ElaTraits.Show | 
-			ElaTraits.Convert | ElaTraits.Neg | ElaTraits.Num | ElaTraits.Real;
-
-		public ElaDouble(double value) : base(ElaTypeCode.Double, TRAITS)
+		public ElaDouble(double value) : base(ElaTypeCode.Double)
 		{
 			InternalValue = value;
 		}
@@ -16,6 +13,12 @@ namespace Ela.Runtime.ObjectModel
 		  
 
         #region Methods
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.None;
+        }
+
+
         public override int GetHashCode()
         {
             return InternalValue.GetHashCode();
@@ -33,7 +36,7 @@ namespace Ela.Runtime.ObjectModel
         #endregion
 
 
-        #region Traits
+        #region Operations
         protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId <= ElaMachine.DBL)
@@ -44,7 +47,7 @@ namespace Ela.Runtime.ObjectModel
 					return right.Ref.Equals(left, right, ctx);
 			}
 			
-			ctx.InvalidLeftOperand(left, right, ElaTraits.Eq);
+			ctx.InvalidLeftOperand(left, right, "equal");
 			return Default();
 		}
 
@@ -59,7 +62,7 @@ namespace Ela.Runtime.ObjectModel
 					return right.Ref.NotEquals(left, right, ctx);
 			}
 			
-			ctx.InvalidLeftOperand(left, right, ElaTraits.Eq);
+			ctx.InvalidLeftOperand(left, right, "notequal");
 			return Default();
 		}
 
@@ -74,7 +77,7 @@ namespace Ela.Runtime.ObjectModel
 					return right.Ref.Greater(left, right, ctx);
 			}
 			
-			ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+			ctx.InvalidLeftOperand(left, right, "greater");
 			return Default();
 		}
 
@@ -89,7 +92,7 @@ namespace Ela.Runtime.ObjectModel
 					return right.Ref.Lesser(left, right, ctx);
 			}
 			
-			ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+			ctx.InvalidLeftOperand(left, right, "lesser");
 			return Default();
 		}
 
@@ -104,7 +107,7 @@ namespace Ela.Runtime.ObjectModel
 					return right.Ref.GreaterEquals(left, right, ctx);
 			}
 			
-			ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+			ctx.InvalidLeftOperand(left, right, "greaterequal");
 			return Default();
 		}
 
@@ -119,7 +122,7 @@ namespace Ela.Runtime.ObjectModel
 					return right.Ref.LesserEquals(left, right, ctx);
 			}
 			
-			ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+			ctx.InvalidLeftOperand(left, right, "lesserequal");
 			return Default();
 		}
 
@@ -199,7 +202,7 @@ namespace Ela.Runtime.ObjectModel
 					return right.Ref.Add(left, right, ctx);
 			}
 			
-			ctx.InvalidLeftOperand(left, right, ElaTraits.Num);
+			ctx.InvalidLeftOperand(left, right, "add");
 			return Default();
 		}
 
@@ -214,7 +217,7 @@ namespace Ela.Runtime.ObjectModel
 					return right.Ref.Subtract(left, right, ctx);
 			}
 			
-			ctx.InvalidLeftOperand(left, right, ElaTraits.Num);
+			ctx.InvalidLeftOperand(left, right, "subtract");
 			return Default();
 		}
 
@@ -229,7 +232,7 @@ namespace Ela.Runtime.ObjectModel
 					return right.Ref.Multiply(left, right, ctx);
 			}
 			
-			ctx.InvalidLeftOperand(left, right, ElaTraits.Num);
+			ctx.InvalidLeftOperand(left, right, "multiply");
 			return Default();
 		}
 
@@ -244,7 +247,7 @@ namespace Ela.Runtime.ObjectModel
 					return right.Ref.Divide(left, right, ctx);
 			}
 			
-			ctx.InvalidLeftOperand(left, right, ElaTraits.Num);
+			ctx.InvalidLeftOperand(left, right, "divide");
 			return Default();
 		}
 
@@ -259,7 +262,7 @@ namespace Ela.Runtime.ObjectModel
 					return right.Ref.Remainder(left, right, ctx);
 			}
 			
-			ctx.InvalidLeftOperand(left, right, ElaTraits.Num);
+			ctx.InvalidLeftOperand(left, right, "remainder");
 			return Default();
 		}
 
@@ -274,7 +277,7 @@ namespace Ela.Runtime.ObjectModel
 					return right.Ref.Power(left, right, ctx);
 			}
 			
-			ctx.InvalidLeftOperand(left, right, ElaTraits.Num);
+			ctx.InvalidLeftOperand(left, right, "power");
 			return Default();
 		}
 

@@ -7,7 +7,6 @@ namespace Ela.Runtime.ObjectModel
 	public class ElaFunction : ElaObject
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Show | ElaTraits.Call;
 		private ElaMachine vm;
 		private static readonly ElaValue[] defaultParams = new ElaValue[] { new ElaValue(ElaUnit.Instance) };
 		private static readonly ElaValue[] emptyParams = new ElaValue[0];
@@ -26,7 +25,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 		
 		
-		protected ElaFunction(int parCount) : base(ElaTypeCode.Function, TRAITS)
+		protected ElaFunction(int parCount) : base(ElaTypeCode.Function)
 		{
 			if (parCount == 0)
 				parCount = 1;
@@ -38,7 +37,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 		
-		internal ElaFunction(int handle, int module, int parCount, FastList<ElaValue[]> captures, ElaMachine vm) : base(ElaTypeCode.Function, TRAITS)
+		internal ElaFunction(int handle, int module, int parCount, FastList<ElaValue[]> captures, ElaMachine vm) : base(ElaTypeCode.Function)
 		{
 			Handle = handle;
 			ModuleHandle = module;
@@ -48,14 +47,14 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		private ElaFunction(ElaValue[] pars) : base(ElaTypeCode.Function, TRAITS)
+		private ElaFunction(ElaValue[] pars) : base(ElaTypeCode.Function)
 		{
 			Parameters = pars;
 		}
 		#endregion
 
 
-		#region Traits
+		#region Operations
 		protected internal override ElaValue Call(ElaValue value, ExecutionContext ctx)
 		{
 			try
@@ -100,12 +99,6 @@ namespace Ela.Runtime.ObjectModel
 			}
 
 			return GetFunctionName() + ":" + sb.ToString();
-		}
-
-
-		protected internal override ElaValue Clone(ExecutionContext ctx)
-		{
-			return new ElaValue(Clone());
 		}
 		#endregion
 
@@ -173,6 +166,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.None;
+        }
+
+
 		internal ElaFunction CloneFast()
 		{
 			var pars = new ElaValue[Parameters.Length];
@@ -188,16 +187,6 @@ namespace Ela.Runtime.ObjectModel
 			ret.vm = vm;
 			ret.Captures = Captures;
 			ret.Flip = Flip;
-			ret.Specialized = Specialized;
-
-			if (Table != null)
-			{
-				ret.Table = new ElaValue[Table.Length];
-
-				for (var i = 0; i < Table.Length; i++)
-					ret.Table[i] = Table[i];
-			}
-
 			return ret;
 		}
 
@@ -217,16 +206,6 @@ namespace Ela.Runtime.ObjectModel
 			newInstance.vm = vm;
 			newInstance.Captures = Captures;
 			newInstance.Flip = Flip;
-			newInstance.Specialized = Specialized;
-
-			if (Table != null)
-			{
-				newInstance.Table = new ElaValue[Table.Length];
-
-				for (var i = 0; i < Table.Length; i++)
-					newInstance.Table[i] = Table[i];
-			}
-
 			return newInstance;
 		}
 
@@ -301,10 +280,6 @@ namespace Ela.Runtime.ObjectModel
 		internal ElaValue[] Parameters { get; set; }
 
 		internal ElaValue LastParameter { get; set; }
-
-		internal ElaValue[] Table { get; set; }
-
-		internal int Specialized { get; set; }
 
 		private bool _flip;
 		internal bool Flip 

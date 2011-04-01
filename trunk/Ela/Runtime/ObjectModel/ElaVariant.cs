@@ -19,7 +19,7 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-		public ElaVariant(string tag, ElaValue value) : base(ElaTypeCode.Variant, ElaTraits.Tag)
+		public ElaVariant(string tag, ElaValue value) : base(ElaTypeCode.Variant)
 		{
 			Tag = tag;
 			Value = value;
@@ -27,7 +27,7 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Traits
+		#region Operations
 		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(left.Ref == right.Ref);
@@ -70,6 +70,12 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Methods
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.Variant;
+        }
+
+
         public override ElaTypeInfo GetTypeInfo()
         {
             var info = base.GetTypeInfo();

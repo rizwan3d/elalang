@@ -34,7 +34,7 @@ namespace Ela.Runtime.ObjectModel
         private const string MODULE = "[module:{0}]";
 		private ElaMachine vm;
 
-		internal ElaModule(int handle, ElaMachine vm) : base(ElaTypeCode.Module, ElaTraits.Eq|ElaTraits.Show|ElaTraits.FieldGet)
+		internal ElaModule(int handle, ElaMachine vm) : base(ElaTypeCode.Module)
 		{
 			Handle = handle;
 			this.vm = vm;
@@ -42,7 +42,7 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Traits
+		#region Operations
 		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(left.TypeCode == right.TypeCode &&
@@ -110,6 +110,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.Record;
+        }
+
+
 		public override ElaTypeInfo GetTypeInfo()
 		{
             var frame = vm != null ? vm.Assembly.GetModule(Handle) : null;

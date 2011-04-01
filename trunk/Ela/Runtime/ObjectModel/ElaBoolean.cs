@@ -5,11 +5,9 @@ namespace Ela.Runtime.ObjectModel
 	internal sealed class ElaBoolean : ElaObject
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Bool | ElaTraits.Show | ElaTraits.Eq | ElaTraits.Convert;
-
 		internal static readonly ElaBoolean Instance = new ElaBoolean();
 
-		private ElaBoolean() : base(ElaTypeCode.Boolean, TRAITS)
+		private ElaBoolean() : base(ElaTypeCode.Boolean)
 		{
 
 		}
@@ -17,6 +15,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.None;
+        }
+
+
         internal protected override int Compare(ElaValue @this, ElaValue other)
 		{
 			return other.TypeCode == ElaTypeCode.Boolean ? @this.I4 - other.I4 : -1;
@@ -24,7 +28,7 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Traits
+		#region Operations
 		protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
 		{
 			return @this.I4 == 1;
@@ -38,7 +42,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.Equals(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Eq);
+				ctx.InvalidLeftOperand(left, right, "equal");
 				return Default();
 			}
 		}
@@ -51,7 +55,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.NotEquals(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Eq);
+				ctx.InvalidLeftOperand(left, right, "notequal");
 				return Default();
 			}
 		}

@@ -9,7 +9,6 @@ namespace Ela.Runtime.ObjectModel
 	public class ElaList : ElaObject, IEnumerable<ElaValue>
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Len | ElaTraits.Gen | ElaTraits.Seq | ElaTraits.Cons | ElaTraits.Concat | ElaTraits.Convert | ElaTraits.Ix;
 		internal static readonly ElaList Empty = ElaNilList.Instance;
 
 		public ElaList(ElaObject next, object value) : this(next, ElaValue.FromObject(value))
@@ -18,7 +17,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		public ElaList(ElaObject next, ElaValue value) : base(ElaTypeCode.List, TRAITS)
+		public ElaList(ElaObject next, ElaValue value) : base(ElaTypeCode.List)
 		{
 			InternalNext = next;
 			InternalValue = value;
@@ -53,7 +52,7 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Traits
+		#region Operations
 		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(left.Ref == right.Ref);
@@ -169,7 +168,7 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Cons(ElaObject next, ElaValue value, ExecutionContext ctx)
 		{
-			if (next is ElaList || (next.Traits & ElaTraits.Thunk) == ElaTraits.Thunk)
+			if (next is ElaList || next.TypeId == ElaMachine.LAZ)
 				return new ElaValue(new ElaList(next, value));
 
 			ctx.Fail(ElaRuntimeError.InvalidType, ElaTypeCode.List, (ElaTypeCode)next.TypeId);
@@ -201,7 +200,7 @@ namespace Ela.Runtime.ObjectModel
 			}
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Concat);
+				ctx.InvalidLeftOperand(left, right, "concat");
 				return Default();
 			}
 		}
@@ -245,7 +244,7 @@ namespace Ela.Runtime.ObjectModel
 					count++;
 					xs = xs.Tail(ElaObject.DummyContext).Ref;
 
-					if ((xs.Traits & ElaTraits.Thunk) == ElaTraits.Thunk)
+					if (xs.TypeId == ElaMachine.LAZ)
 					{
 						if (count < 50)
 							xs.Force(ElaObject.DummyContext);
@@ -280,6 +279,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.Tuple|ElaPatterns.HeadTail;
+        }
+
+
 		public static ElaList FromEnumerable(IEnumerable seq)
 		{
 			var list = ElaList.Empty;
@@ -321,7 +326,7 @@ namespace Ela.Runtime.ObjectModel
 
         public bool HasLazyTail()
         {
-            return InternalNext != null && (InternalNext.Traits & ElaTraits.Thunk) == ElaTraits.Thunk;
+            return InternalNext != null && InternalNext.TypeId == ElaMachine.LAZ;
         }
 		
 
@@ -370,7 +375,7 @@ namespace Ela.Runtime.ObjectModel
 					yield return xs.Head(ElaObject.DummyContext).Id(DummyContext);
 					xs = xs.Tail(ElaObject.DummyContext).Ref;
 
-					if ((xs.Traits & ElaTraits.Thunk) == ElaTraits.Thunk)
+					if (xs.TypeId == ElaMachine.LAZ)
 						xs.Force(ElaObject.DummyContext);
 					else if (xs.TypeId != ElaMachine.LST)
 						yield break;
@@ -398,7 +403,7 @@ namespace Ela.Runtime.ObjectModel
 			{
                 if (InternalNext == null)
                     return null;
-                else if ((InternalNext.Traits & ElaTraits.Thunk) == ElaTraits.Thunk)
+                else if (InternalNext.TypeId == ElaMachine.LAZ)
                 {
                     var val = InternalNext.Force(DummyContext);
 

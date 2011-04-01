@@ -20,7 +20,7 @@ namespace Ela.Library.General
         public sealed class ElaStringBuilder : ElaObject
         {
             #region Construction
-            internal ElaStringBuilder(StringBuilder builder) : base(ElaTraits.Eq | ElaTraits.Show | ElaTraits.Len | ElaTraits.Convert)
+            internal ElaStringBuilder(StringBuilder builder)
             {
                 Builder = builder;
             }
@@ -28,6 +28,12 @@ namespace Ela.Library.General
 
 
             #region Methods
+            public override ElaPatterns GetSupportedPatterns()
+            {
+                return ElaPatterns.None;
+            }
+
+
             protected override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
             {
                 return new ElaValue(left.ReferenceEquals(right));

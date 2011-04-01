@@ -25,7 +25,7 @@ namespace Ela.Library.General
 			private const string TYPENAME = "async";
 			internal readonly object SyncRoot = new Object();
 
-			internal ElaAsync(AsyncModule mod, ElaFunction fun) : base(TYPENAME, ElaTraits.None)
+			internal ElaAsync(AsyncModule mod, ElaFunction fun) : base(TYPENAME)
 			{
 				Thread = new Thread(() => Return = fun.Call());
 				mod.threads.Add(Thread);

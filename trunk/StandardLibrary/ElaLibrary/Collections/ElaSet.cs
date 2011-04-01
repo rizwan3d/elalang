@@ -12,7 +12,7 @@ namespace Ela.Library.Collections
 		public static readonly ElaSet Empty = new ElaSet(AvlTree.Empty);
 		private const string TYPENAME = "set";
 		
-		internal ElaSet(AvlTree tree) : base(ElaTraits.Eq | ElaTraits.Show | ElaTraits.Len | ElaTraits.Seq | ElaTraits.Gen | ElaTraits.Cons)
+		internal ElaSet(AvlTree tree)
 		{
 			Tree = tree;
 		}
@@ -20,7 +20,13 @@ namespace Ela.Library.Collections
 
 
 		#region Methods
-		protected override string GetTypeName()
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.HeadTail;
+        }
+
+
+        protected override string GetTypeName()
 		{
 			return TYPENAME;
 		}
@@ -94,7 +100,7 @@ namespace Ela.Library.Collections
 		#endregion
 
 
-		#region Traits
+		#region Operations
 		protected override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(left.ReferenceEquals(right));

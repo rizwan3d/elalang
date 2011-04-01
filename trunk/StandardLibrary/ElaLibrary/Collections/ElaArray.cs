@@ -11,12 +11,11 @@ namespace Ela.Library.Collections
 		#region Construction
 		private const int DEFAULT_SIZE = 4;
 		private const string TYPENAME = "array";
-		private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Len | ElaTraits.Get | ElaTraits.Set | ElaTraits.Gen | ElaTraits.Seq | ElaTraits.Concat | ElaTraits.Show | ElaTraits.Ix | ElaTraits.Cons;
 		private int size;
 		private ElaValue[] array;
 		private int headIndex;
 
-		public ElaArray(ElaValue[] arr) : base(TRAITS)
+		public ElaArray(ElaValue[] arr)
 		{
 			if (arr == null)
 				throw new ArgumentNullException("arr");
@@ -31,7 +30,7 @@ namespace Ela.Library.Collections
 		}
 
 
-		public ElaArray(object[] arr) : base(TRAITS)
+		public ElaArray(object[] arr)
 		{
 			if (arr == null)
 				throw new ArgumentNullException("arr");
@@ -46,7 +45,7 @@ namespace Ela.Library.Collections
 		}
 
 
-		public ElaArray(int size) : base(TRAITS)
+		public ElaArray(int size)
 		{
 			array = new ElaValue[size == 0 ? DEFAULT_SIZE : size];
 		}
@@ -58,7 +57,7 @@ namespace Ela.Library.Collections
 		}
 
 
-		private ElaArray(ElaValue[] arr, int size, int headIndex) : base(TRAITS)
+		private ElaArray(ElaValue[] arr, int size, int headIndex)
 		{
 			array = arr;
 			this.size = size;
@@ -67,7 +66,7 @@ namespace Ela.Library.Collections
 		#endregion
 		
 
-		#region Traits
+		#region Operations
 		protected override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(left.ReferenceEquals(right));
@@ -179,7 +178,7 @@ namespace Ela.Library.Collections
 			}
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Concat);
+				ctx.InvalidLeftOperand(left, right, "concat");
 				return Default();
 			}
 		}
@@ -225,6 +224,12 @@ namespace Ela.Library.Collections
 
 
 		#region Methods
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.Tuple|ElaPatterns.HeadTail;
+        }
+
+
 		protected override string GetTypeName()
 		{
 			return TYPENAME;

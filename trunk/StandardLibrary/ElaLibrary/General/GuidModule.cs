@@ -21,7 +21,7 @@ namespace Ela.Library.General
         public sealed class ElaGuid : ElaObject
         {
             #region Construction
-            internal ElaGuid(Guid value) : base(ElaTraits.Eq|ElaTraits.Show|ElaTraits.Convert)
+            internal ElaGuid(Guid value)
             {
                 Value = value;
             }
@@ -29,6 +29,12 @@ namespace Ela.Library.General
 
 
             #region Methods
+            public override ElaPatterns GetSupportedPatterns()
+            {
+                return ElaPatterns.None;
+            }
+
+
             protected override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
             {
                 var lg = left.As<ElaGuid>();
@@ -40,7 +46,7 @@ namespace Ela.Library.General
                     return right.Equals(left, right, ctx);
                 else
                 {
-                    ctx.InvalidLeftOperand(left, right, ElaTraits.Eq);
+                    ctx.InvalidLeftOperand(left, right, "equal");
                     return Default();
                 }
             }
@@ -57,7 +63,7 @@ namespace Ela.Library.General
                     return right.NotEquals(left, right, ctx);
                 else
                 {
-                    ctx.InvalidLeftOperand(left, right, ElaTraits.Eq);
+                    ctx.InvalidLeftOperand(left, right, "notequal");
                     return Default();
                 }
             }

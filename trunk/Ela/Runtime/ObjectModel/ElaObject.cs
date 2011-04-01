@@ -13,16 +13,15 @@ namespace Ela.Runtime.ObjectModel
         private const string TYPECODE = "typeCode";
         private const string ISBYREF = "byRef";
 
-		protected ElaObject(ElaTraits traits) : this(ElaTypeCode.Object, traits)
+		protected ElaObject() : this(ElaTypeCode.Object)
 		{
 			
 		}
 
 		
-		internal ElaObject(ElaTypeCode type, ElaTraits traits)
+		internal ElaObject(ElaTypeCode type)
 		{
 			TypeId = (Int32)type;
-			Traits = traits;
 		} 
 		#endregion
 
@@ -32,17 +31,25 @@ namespace Ela.Runtime.ObjectModel
         {
             internal static readonly ElaInvalidObject Instance = new ElaInvalidObject();
 
-            internal ElaInvalidObject() : base(ElaTraits.None) { }
+            internal ElaInvalidObject() { }
 
             protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
             {
                 return INVALID;
+            }
+
+            public override ElaPatterns GetSupportedPatterns()
+            {
+                return ElaPatterns.None;
             }
         }
         #endregion
 
 
         #region Methods
+        public abstract ElaPatterns GetSupportedPatterns();
+
+
         public virtual ElaTypeInfo GetTypeInfo()
 		{
             var info = new ElaTypeInfo();
@@ -101,17 +108,17 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Traits
+		#region Operations
 		protected internal virtual ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.NoOperator(This(left, right), "equals");
+			ctx.NoOperator(This(left, right), "equal");
 			return Default();
 		}
 
 
 		protected internal virtual ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.NoOperator(This(left, right), "notequals");
+			ctx.NoOperator(This(left, right), "notequal");
 			return Default();
 		}
 
@@ -418,8 +425,6 @@ namespace Ela.Runtime.ObjectModel
 
 		#region Properties
 		internal int TypeId { get; set; }
-
-		internal protected ElaTraits Traits { get; protected set; }
 		#endregion
 	}
 }

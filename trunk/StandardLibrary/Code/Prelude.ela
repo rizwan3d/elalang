@@ -13,9 +13,8 @@ let ~~~ = __internal bitwisenot
 let >>> = __internal shiftright
 let <<< = __internal shiftleft
 
-let == = __internal equals
-let <> = __internal notequals
-
+let == = __internal equal
+let <> = __internal notequal
 let <  = __internal lesser
 let >  = __internal greater
 let >= = __internal greaterequal

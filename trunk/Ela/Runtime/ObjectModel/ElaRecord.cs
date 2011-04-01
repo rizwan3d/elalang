@@ -9,8 +9,7 @@ namespace Ela.Runtime.ObjectModel
 	{
 		#region Construction
         private const string FIELDS = "fields";
-        private const ElaTraits TRAITS = ElaTraits.Eq | ElaTraits.Get | ElaTraits.Set | ElaTraits.Len | ElaTraits.FieldGet | ElaTraits.FieldSet | ElaTraits.Convert | ElaTraits.Show | ElaTraits.Ix;
-		private string[] keys;
+        private string[] keys;
         private ElaValue[] values;
 		private bool[] flags;
         private int cons;
@@ -23,7 +22,7 @@ namespace Ela.Runtime.ObjectModel
 			Immutable
 		}
 
-		public ElaRecord(params ElaRecordField[] fields) : base(ElaTypeCode.Record, TRAITS)
+		public ElaRecord(params ElaRecordField[] fields) : base(ElaTypeCode.Record)
 		{
 			keys = new string[fields.Length];
             values = new ElaValue[fields.Length];
@@ -34,7 +33,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		internal ElaRecord(int size) : base(ElaTypeCode.Record, TRAITS)
+		internal ElaRecord(int size) : base(ElaTypeCode.Record)
 		{
 			keys = new string[size];
 			flags = new bool[size];
@@ -43,7 +42,7 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Traits
+		#region Operations
         protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(Eq(left, right, ctx));
@@ -190,11 +189,31 @@ namespace Ela.Runtime.ObjectModel
         {
             return new ElaValue(keys.Length);
         }
-		#endregion
 
 
-		#region Methods
-		public override ElaTypeInfo GetTypeInfo()
+        protected internal override ElaValue Clone(ExecutionContext ctx)
+        {
+            var rec = new ElaRecord(values.Length);
+
+            for (var i = 0; i < values.Length; i++)
+            {
+                var v = values[i];
+                rec.AddField(i, keys[i], flags[i], v);
+            }
+
+            return new ElaValue(rec);
+        }
+        #endregion
+
+
+        #region Methods
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.Record|ElaPatterns.Tuple;
+        }
+
+
+        public override ElaTypeInfo GetTypeInfo()
 		{
             var info = base.GetTypeInfo();
             info.AddField(FIELDS, keys);

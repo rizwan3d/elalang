@@ -28,17 +28,17 @@ namespace Ela.Runtime
 		}
 
 
-		public void InvalidRightOperand(ElaValue left, ElaValue right, ElaTraits trait)
+		public void InvalidRightOperand(ElaValue left, ElaValue right, string op)
 		{
 			Fail(ElaRuntimeError.RightOperand, right.ToString(), right.GetTypeName(),
-				left.ToString(), left.GetTypeName(), trait.ToString());
+				left.ToString(), left.GetTypeName(), op);
 		}
 
 
-		public void InvalidLeftOperand(ElaValue left, ElaValue right, ElaTraits trait)
+		public void InvalidLeftOperand(ElaValue left, ElaValue right, string op)
 		{
 			Fail(ElaRuntimeError.LeftOperand, left.ToString(), left.GetTypeName(), 
-				right.ToString(), right.GetTypeName(), trait.ToString());
+				right.ToString(), right.GetTypeName(), op);
 		}
 
 

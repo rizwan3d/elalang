@@ -13,7 +13,7 @@ namespace Ela.Library.Collections
         public static readonly ElaMap Empty = new ElaMap(AvlTree.Empty);
 		private const string TYPENAME = "map";
 		
-        internal ElaMap(AvlTree tree) : base(ElaTraits.Eq | ElaTraits.Show | ElaTraits.Get | ElaTraits.Len | ElaTraits.Convert)
+        internal ElaMap(AvlTree tree)
         {
             Tree = tree;
         }
@@ -21,7 +21,13 @@ namespace Ela.Library.Collections
 
 
         #region Methods
-		protected override string GetTypeName()
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.None;
+        }
+
+
+        protected override string GetTypeName()
 		{
 			return TYPENAME;
 		}

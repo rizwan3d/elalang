@@ -18,7 +18,7 @@ namespace Ela.Runtime
 
 		IndexOutOfRange = 805,
 
-		ExpectedFunction = 806,
+        ExpectedFunction = 806,
 
 		LeftOperand = 807,
 

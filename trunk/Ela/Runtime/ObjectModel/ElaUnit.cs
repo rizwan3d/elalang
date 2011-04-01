@@ -10,7 +10,7 @@ namespace Ela.Runtime.ObjectModel
 		private const string STR = "()";
 		public static readonly ElaUnit Instance = new ElaUnit();
 
-		private ElaUnit() : base(ElaTypeCode.Unit, ElaTraits.Eq | ElaTraits.Show)
+		private ElaUnit() : base(ElaTypeCode.Unit)
 		{
 
 		}
@@ -18,6 +18,12 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Methods
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.None;
+        }
+
+
         public override int GetHashCode()
         {
             return 0;
@@ -25,7 +31,7 @@ namespace Ela.Runtime.ObjectModel
         #endregion
 
 
-		#region Traits
+		#region Operations
 		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(left.Ref == right.Ref);

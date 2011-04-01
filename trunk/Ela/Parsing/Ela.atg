@@ -26,11 +26,6 @@ TOKENS
 				| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ]
 			).
 			
-	traitTok =  "^"(
-				letter { letter | digit | "'" }
-				| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ]
-			).
-			
 	argIdent = "$"(
 				letter { letter | digit | "'" }
 				| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ]
@@ -446,40 +441,17 @@ PRODUCTIONS
 	TypeCheckPattern<out ElaPattern pat> = 
 		(. 
 			var eis = new ElaIsPattern(t);
-			var tmp = default(ElaTraits);
 			pat = eis; 			
 		.)
 		"?" 
 		(
-			ident (. eis.TypeAffinity = GetType(t.val); .)
-			|
-			(
-				(. .)
-				"("
-					ident 
-					(. 
-						tmp = Builtins.Trait(t.val); 
-						
-						if (tmp == ElaTraits.None) {
-							AddError(ElaParserError.UnknownTrait, t.val);
-						}
-						
-						eis.Traits |= tmp;
-					.)
-					{ 
-						"," ident 
-						(. 
-							tmp = Builtins.Trait(t.val); 
-							
-							if (tmp == ElaTraits.None) {
-								AddError(ElaParserError.UnknownTrait, t.val);
-							}
-							
-							eis.Traits |= tmp;
-						.)
-					}
-				")"
-			)
+			ident 
+			(. 
+				eis.TypeCode = GetType(t.val); 
+				
+				if (eis.TypeCode == ElaTypeCode.None)
+					eis.TypeName = t.val;
+			.)
 		).		
 						
 	IdentPattern<out ElaPattern pat> =
@@ -487,9 +459,11 @@ PRODUCTIONS
 		(			
 			ident (. var name = t.val; .)
 			[
-				":" 
-				(. var cst = new ElaCastPattern(t) { VariableName = name }; pat = cst; .)
-				ident (. cst.TypeAffinity = GetType(t.val); .)
+				(
+					":" 
+					(. var cst = new ElaCastPattern(t) { VariableName = name }; pat = cst; .)
+					ident (. cst.TypeAffinity = GetType(t.val); .)
+				)
 			]			
 			(. 
 				if (pat == null)

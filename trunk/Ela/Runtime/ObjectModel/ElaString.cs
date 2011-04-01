@@ -8,7 +8,6 @@ namespace Ela.Runtime.ObjectModel
 	public sealed class ElaString : ElaObject, IEnumerable<ElaValue>
 	{
 		#region Construction
-		private const ElaTraits TRAITS = ElaTraits.Show | ElaTraits.Eq | ElaTraits.Get | ElaTraits.Ord | ElaTraits.Len | ElaTraits.Convert | ElaTraits.Concat | ElaTraits.Seq | ElaTraits.Cons | ElaTraits.Ix;
 		private string buffer;
 		private int headIndex;
 		
@@ -18,7 +17,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		private ElaString(string value, int headIndex) : base(ElaTypeCode.String, TRAITS)
+		private ElaString(string value, int headIndex) : base(ElaTypeCode.String)
 		{
 			this.buffer = value ?? String.Empty;
 			this.headIndex = headIndex;
@@ -27,6 +26,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.None;
+        }
+
+
         internal protected override int Compare(ElaValue @this, ElaValue other)
 		{
 			return other.TypeCode == ElaTypeCode.String ? buffer.CompareTo(((ElaString)other.Ref).buffer) :
@@ -35,7 +40,7 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Traits
+		#region Operations
 		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(left.TypeId == right.TypeId && left.AsString() == right.AsString());
@@ -55,7 +60,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.Greater(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				ctx.InvalidLeftOperand(left, right, "greater");
 				return Default();
 			}
 		}
@@ -68,7 +73,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.Lesser(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				ctx.InvalidLeftOperand(left, right, "lesser");
 				return Default();
 			}
 		}
@@ -81,7 +86,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.GreaterEquals(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				ctx.InvalidLeftOperand(left, right, "greaterequal");
 				return Default();
 			}
 		}
@@ -94,7 +99,7 @@ namespace Ela.Runtime.ObjectModel
 					right.Ref.LesserEquals(left, right, ctx);
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Ord);
+				ctx.InvalidLeftOperand(left, right, "lesserequal");
 				return Default();
 			}
 		}
@@ -137,7 +142,7 @@ namespace Ela.Runtime.ObjectModel
 			}
 			else
 			{
-				ctx.InvalidLeftOperand(left, right, ElaTraits.Concat);
+				ctx.InvalidLeftOperand(left, right, "concat");
 				return Default();
 			}
 		}

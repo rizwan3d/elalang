@@ -9,15 +9,23 @@ namespace Ela.Library
 		#region Construction
 		private string typeName;
 
-		protected ElaRefObject(string typeName, ElaTraits traits) : base(traits | ElaTraits.Eq | ElaTraits.Show)
+		protected ElaRefObject(string typeName)
 		{
 			this.typeName = typeName;
 		}
 		#endregion
 
 
-		#region Traits
-		protected override string GetTypeName()
+        #region Methods
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.None;
+        }
+        #endregion
+
+
+        #region Operations
+        protected override string GetTypeName()
 		{
 			return typeName;
 		}
