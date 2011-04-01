@@ -19,6 +19,7 @@ namespace Ela.Runtime.ObjectModel
         private const string ISGLOBAL = "isGlobal";
         private const string ISPARTIAL = "isPartial";
 
+
 		protected ElaFunction() : this(1)
 		{
 
@@ -75,13 +76,13 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(left.Ref == right.Ref);
 		}
 
 
-		protected internal override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(left.Ref != right.Ref);
 		}
@@ -166,13 +167,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
-        public override ElaPatterns GetSupportedPatterns()
-        {
-            return ElaPatterns.None;
-        }
-
-
-		internal ElaFunction CloneFast()
+        internal ElaFunction CloneFast()
 		{
 			var pars = new ElaValue[Parameters.Length];
 

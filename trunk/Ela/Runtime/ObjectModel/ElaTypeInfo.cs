@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Ela.Runtime.ObjectModel;
 
 namespace Ela.Runtime.ObjectModel
 {
@@ -20,8 +19,36 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
+		#region Methods
+		public override ElaPatterns GetSupportedPatterns()
+		{
+			return ElaPatterns.Record|ElaPatterns.Tuple;
+		}
+
+
+		protected internal override string GetTypeName()
+		{
+			return TYPE_NAME;
+		}
+
+
+		public void AddField(string field, ElaValue value)
+		{
+			keys.Add(field);
+			values.Add(value);
+		}
+
+
+		public void AddField<T>(string field, T value)
+		{
+			keys.Add(field);
+			values.Add(ElaValue.FromObject(value));
+		}
+		#endregion
+
+
         #region Operations
-        protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             var li = default(ElaTypeInfo);
             var ri = default(ElaTypeInfo);
@@ -33,7 +60,7 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        protected internal override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             var li = default(ElaTypeInfo);
             var ri = default(ElaTypeInfo);
@@ -145,34 +172,6 @@ namespace Ela.Runtime.ObjectModel
                     return i;
 
             return -1;
-        }
-        #endregion
-
-
-        #region Methods
-        public override ElaPatterns GetSupportedPatterns()
-        {
-            return ElaPatterns.Record|ElaPatterns.Tuple;
-        }
-
-
-        protected internal override string GetTypeName()
-        {
-            return TYPE_NAME;
-        }
-
-
-        public void AddField(string field, ElaValue value)
-        {
-            keys.Add(field);
-            values.Add(value);
-        }
-
-
-        public void AddField<T>(string field, T value)
-        {
-            keys.Add(field);
-            values.Add(ElaValue.FromObject(value));
         }
         #endregion
     }

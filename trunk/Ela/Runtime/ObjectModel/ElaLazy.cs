@@ -14,13 +14,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
-        public override ElaPatterns GetSupportedPatterns()
-        {
-            return ElaPatterns.None;
-        }
-
-
-        public override int GetHashCode()
+		public override int GetHashCode()
         {
             return Value.Ref != null ? Value.GetHashCode() : 0;
         }

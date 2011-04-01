@@ -64,13 +64,13 @@ namespace Ela.Library.Collections
         }
 
 
-        protected override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.ReferenceEquals(right));
         }
 
 
-        protected override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(!left.ReferenceEquals(right));
         }
@@ -123,7 +123,7 @@ namespace Ela.Library.Collections
             if (type == ElaTypeCode.Record)
                 return new ElaValue(ConvertToRecord());
 
-            ctx.ConversionFailed(new ElaValue(this), type);
+            ctx.ConversionFailed(@this, type);
             return Default();
         }
 
@@ -157,6 +157,5 @@ namespace Ela.Library.Collections
             }
         }
         #endregion
-    }
-		
+    }		
 }

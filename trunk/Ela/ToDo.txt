@@ -2,42 +2,5 @@
 2. Make type conversion operator (:) extendable (probably through pervasives).==Probably remove this syntax at all.
 3. Move all reflection API to the standard library.==Reconsidered. API refactored but will remain the part of Ela core.
 4. Think about inability to convert to other than built-in types.
-5. Make sequencing operator a function. (Important)==Done
-6. Traits
-
-------
-Traits are:
-+ internal checks (mostly PM)
-+ user checks
-+ overloading
-+ documentation
-
-Need:
-+ "explain" how standard operators are overloaded
-+ custom types can overload (not only redefine) custom operators
-+ ad-hoc polymorphism
-
-Problems with implementation:
-+ performance degradation in comparison with regular method calls
-+ "this" semantics, function vocabulary is bound to an object
-+ no conflict resolution
-+ traits are attached to values, not types
-
-Problems in principle:
-+ Ela doesn't allow to define custom types
-+ Because of dynamic typing the most natural implementation of traits is through existentials
-+ Traits make Ela closer to OOP which is the design goal
-+ This is a huge infrastracture for solving minor problems (might not come out very useful)
-+ Conflict resolution is hard (overlapping function names, overlapping trait names)
-
-Not having traits problems:
-1. Built-in operators are overridable only from C#
-2. As a result one can create a new type only from C#
-3. No extensible "tagging" mechanism to check values at run-time
-4. No easy-to-use ad-hoc polymorphism
-
-Mitigation:
-1. ?
-2. ?
-3. Need to explain the real need. +Variants. +Some additional "pattern" check mechanism.
-4. HOF, Modules, PM
+5. Make sequencing operator a function. (Important)==Done ==Reconsidered.
+6. Traits ==Mitigated

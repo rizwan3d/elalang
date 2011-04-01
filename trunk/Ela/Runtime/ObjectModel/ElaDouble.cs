@@ -13,12 +13,6 @@ namespace Ela.Runtime.ObjectModel
 		  
 
         #region Methods
-        public override ElaPatterns GetSupportedPatterns()
-        {
-            return ElaPatterns.None;
-        }
-
-
         public override int GetHashCode()
         {
             return InternalValue.GetHashCode();
@@ -37,14 +31,14 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Operations
-        protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId <= ElaMachine.DBL)
 			{
 				if (right.TypeId <= ElaMachine.DBL)
 					return new ElaValue(left.GetDouble() == right.GetDouble());
 				else
-					return right.Ref.Equals(left, right, ctx);
+					return right.Ref.Equal(left, right, ctx);
 			}
 			
 			ctx.InvalidLeftOperand(left, right, "equal");
@@ -52,14 +46,14 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId <= ElaMachine.DBL)
 			{
 				if (right.TypeId <= ElaMachine.DBL)
 					return new ElaValue(left.GetDouble() != right.GetDouble());
 				else
-					return right.Ref.NotEquals(left, right, ctx);
+					return right.Ref.NotEqual(left, right, ctx);
 			}
 			
 			ctx.InvalidLeftOperand(left, right, "notequal");
@@ -97,14 +91,14 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue GreaterEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId <= ElaMachine.DBL)
 			{
 				if (right.TypeId <= ElaMachine.DBL)
 					return new ElaValue(left.GetDouble() >= right.GetDouble());
 				else
-					return right.Ref.GreaterEquals(left, right, ctx);
+					return right.Ref.GreaterEqual(left, right, ctx);
 			}
 			
 			ctx.InvalidLeftOperand(left, right, "greaterequal");
@@ -112,14 +106,14 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue LesserEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId <= ElaMachine.DBL)
 			{
 				if (right.TypeId <= ElaMachine.DBL)
 					return new ElaValue(left.GetDouble() >= right.GetDouble());
 				else
-					return right.Ref.LesserEquals(left, right, ctx);
+					return right.Ref.LesserEqual(left, right, ctx);
 			}
 			
 			ctx.InvalidLeftOperand(left, right, "lesserequal");
@@ -175,12 +169,12 @@ namespace Ela.Runtime.ObjectModel
 			{
 				case ElaTypeCode.Integer: return new ElaValue((Int32)InternalValue);
 				case ElaTypeCode.Single: return new ElaValue((float)InternalValue);
-				case ElaTypeCode.Double: return new ElaValue(this);
-				case ElaTypeCode.Long: return new ElaValue((long)InternalValue);
+				case ElaTypeCode.Double: return @this;
+				case ElaTypeCode.Long: return new ElaValue((Int64)InternalValue);
 				case ElaTypeCode.Char: return new ElaValue((Char)InternalValue);
 				case ElaTypeCode.String: return new ElaValue(Show(@this, ShowInfo.Default, ctx));
 				default:
-					ctx.ConversionFailed(new ElaValue(this), type);
+					ctx.ConversionFailed(@this, type);
 					return Default();
 			}
 		}

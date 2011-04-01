@@ -5,7 +5,7 @@ using Ela.Debug;
 
 namespace Ela.Runtime.ObjectModel
 {
-	public class ElaRecord : ElaObject
+	public sealed class ElaRecord : ElaObject
 	{
 		#region Construction
         private const string FIELDS = "fields";
@@ -43,13 +43,13 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-        protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(Eq(left, right, ctx));
         }
 
 
-        protected internal override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(!Eq(left, right, ctx));
         }
@@ -145,14 +145,12 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
 		{
 			if (type == ElaTypeCode.Record)
-				return new ElaValue(this);
+				return @this;
 			else if (type == ElaTypeCode.Tuple)
 				return new ElaValue(new ElaTuple(values));
-			else
-			{
-				ctx.ConversionFailed(new ElaValue(this), type);
-                return Default();
-			}
+			
+			ctx.ConversionFailed(new ElaValue(this), type);
+               return Default();
 		}
 
 
@@ -227,17 +225,9 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		internal void AddField(string key, ElaValue value)
-		{
-			AddField(key, false, value);
-		}
-
-
 		internal void AddField(string key, bool mutable, ElaValue value)
 		{
-            keys[cons] = key;
-            flags[cons] = mutable;
-			values[cons] = value;
+            AddField(cons, key, mutable, value);
             cons++;
 		}
 

@@ -9,7 +9,7 @@ namespace Ela.Library.Collections
     public sealed class ElaQueue : ElaObject, IEnumerable<ElaValue>
     {
         #region Construction
-        public static readonly ElaQueue Empty = new ElaQueue(ElaList.GetNil(), ElaList.GetNil());
+        public static readonly ElaQueue Empty = new ElaQueue(ElaList.Empty, ElaList.Empty);
         private const string TYPENAME = "queue";
         private ElaList forward;
         private ElaList backward;
@@ -21,7 +21,7 @@ namespace Ela.Library.Collections
         }
 
 
-        public ElaQueue(IEnumerable<ElaValue> seq) : this(ElaList.FromEnumerable(seq).Reverse(), ElaList.GetNil())
+        public ElaQueue(IEnumerable<ElaValue> seq) : this(ElaList.FromEnumerable(seq).Reverse(), ElaList.Empty)
         {
 
         }
@@ -41,13 +41,13 @@ namespace Ela.Library.Collections
         }
 
 
-        protected override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.ReferenceEquals(right));
         }
 
 
-        protected override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(!left.ReferenceEquals(right));
         }
@@ -88,7 +88,7 @@ namespace Ela.Library.Collections
             if (type == ElaTypeCode.List)
                 return new ElaValue(ToList());
 
-            ctx.ConversionFailed(new ElaValue(this), type);
+            ctx.ConversionFailed(@this, type);
             return Default();
         }
 
@@ -140,7 +140,7 @@ namespace Ela.Library.Collections
             else if (new ElaValue(backward).IsNil(null))
                 return ElaQueue.Empty;
             else
-                return new ElaQueue(backward.Reverse(), ElaList.GetNil());
+                return new ElaQueue(backward.Reverse(), ElaList.Empty);
         }
 
 
@@ -168,5 +168,4 @@ namespace Ela.Library.Collections
         }
         #endregion
     }
-
 }

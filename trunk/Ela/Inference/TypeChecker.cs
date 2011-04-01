@@ -98,8 +98,8 @@
 //                case ElaOperator.LesserEqual:
 //                case ElaOperator.GreaterEqual:
 //                    return ElaTraits.Ord;
-//                case ElaOperator.Equals:
-//                case ElaOperator.NotEquals:
+//                case ElaOperator.Equal:
+//                case ElaOperator.NotEqual:
 //                    return ElaTraits.Eq;
 //                default:
 //                    return ElaTraits.None;

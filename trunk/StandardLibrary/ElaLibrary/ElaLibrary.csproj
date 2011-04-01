@@ -97,7 +97,10 @@
     <Compile Include="General\CoreInternalModule.cs" />
     <Compile Include="General\DateTimeModule.cs" />
     <Compile Include="General\DebugModule.cs" />
+    <Compile Include="General\ElaAsync.cs" />
     <Compile Include="General\ElaDateTime.cs" />
+    <Compile Include="General\ElaGuid.cs" />
+    <Compile Include="General\ElaStringBuilder.cs" />
     <Compile Include="General\GuidModule.cs" />
     <Compile Include="General\ShellModule.cs" />
     <Compile Include="Modules.cs" />

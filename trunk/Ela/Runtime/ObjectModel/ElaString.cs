@@ -8,6 +8,7 @@ namespace Ela.Runtime.ObjectModel
 	public sealed class ElaString : ElaObject, IEnumerable<ElaValue>
 	{
 		#region Construction
+		public static readonly ElaString Empty = new ElaString(String.Empty);
 		private string buffer;
 		private int headIndex;
 		
@@ -28,26 +29,50 @@ namespace Ela.Runtime.ObjectModel
 		#region Methods
         public override ElaPatterns GetSupportedPatterns()
         {
-            return ElaPatterns.None;
+            return ElaPatterns.Tuple|ElaPatterns.HeadTail;
         }
+
+
+		public override int GetHashCode()
+		{
+			return buffer.GetHashCode();
+		}
 
 
         internal protected override int Compare(ElaValue @this, ElaValue other)
 		{
-			return other.TypeCode == ElaTypeCode.String ? buffer.CompareTo(((ElaString)other.Ref).buffer) :
-				-1;
+			return other.TypeCode == ElaTypeCode.String ? buffer.CompareTo(((ElaString)other.Ref).buffer) : -1;
+		}
+		
+
+		public IEnumerator<ElaValue> GetEnumerator()
+		{
+			foreach (var c in GetValue())
+				yield return new ElaValue(c);
+		}
+
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+
+
+		internal string GetValue()
+		{
+			return headIndex == 0 ? buffer : buffer.Substring(headIndex);
 		}
 		#endregion
 
 
 		#region Operations
-		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(left.TypeId == right.TypeId && left.AsString() == right.AsString());
 		}
 
 
-		protected internal override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(left.TypeId != right.TypeId || left.AsString() != right.AsString());
 		}
@@ -58,11 +83,9 @@ namespace Ela.Runtime.ObjectModel
 			if (left.TypeId == ElaMachine.STR)
 				return right.TypeId == ElaMachine.STR ? new ElaValue(left.AsString().CompareTo(right.AsString()) > 0) :
 					right.Ref.Greater(left, right, ctx);
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "greater");
-				return Default();
-			}
+			
+			ctx.InvalidLeftOperand(left, right, "greater");
+			return Default();
 		}
 
 
@@ -71,37 +94,31 @@ namespace Ela.Runtime.ObjectModel
 			if (left.TypeId == ElaMachine.STR)
 				return right.TypeId == ElaMachine.STR ? new ElaValue(left.AsString().CompareTo(right.AsString()) < 0) :
 					right.Ref.Lesser(left, right, ctx);
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "lesser");
-				return Default();
-			}
+			
+			ctx.InvalidLeftOperand(left, right, "lesser");
+			return Default();
 		}
 
 
-		protected internal override ElaValue GreaterEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId == ElaMachine.STR)
 				return right.TypeId == ElaMachine.STR ? new ElaValue(left.AsString().CompareTo(right.AsString()) >= 0) :
-					right.Ref.GreaterEquals(left, right, ctx);
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "greaterequal");
-				return Default();
-			}
+					right.Ref.GreaterEqual(left, right, ctx);
+			
+			ctx.InvalidLeftOperand(left, right, "greaterequal");
+			return Default();
 		}
 
 
-		protected internal override ElaValue LesserEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId == ElaMachine.STR)
 				return right.TypeId == ElaMachine.STR ? new ElaValue(left.AsString().CompareTo(right.AsString()) <= 0) :
-					right.Ref.LesserEquals(left, right, ctx);
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "lesserequal");
-				return Default();
-			}
+					right.Ref.LesserEqual(left, right, ctx);
+			
+			ctx.InvalidLeftOperand(left, right, "lesserequal");
+			return Default();
 		}
 
 
@@ -116,7 +133,7 @@ namespace Ela.Runtime.ObjectModel
 			if (key.TypeId != ElaMachine.INT)
 			{
 				ctx.InvalidIndexType(key);
-				return base.GetValue(key, ctx);
+				return Default();
 			}
 
 			var val = GetValue();
@@ -124,7 +141,7 @@ namespace Ela.Runtime.ObjectModel
 			if (key.I4 >= val.Length || key.I4 < 0)
 			{
 				ctx.IndexOutOfRange(key, new ElaValue(this));
-				return base.GetValue(key, ctx);
+				return Default();
 			}
 
 			return new ElaValue(val[key.I4]);
@@ -133,18 +150,13 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.TypeId == ElaMachine.STR)
-			{
-				if (right.TypeId == ElaMachine.STR)
-					return new ElaValue(new ElaString(left.AsString() + right.AsString()));
-				else
-					return right.Ref.Concatenate(left, right, ctx);
-			}
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "concat");
-				return Default();
-			}
+			if (left.TypeId == ElaMachine.STR && right.TypeId == ElaMachine.STR)
+				return new ElaValue(new ElaString(left.AsString() + right.AsString()));
+			else if (left.TypeId == ElaMachine.STR)
+				return right.Ref.Concatenate(left, right, ctx);
+			
+			ctx.InvalidLeftOperand(left, right, "concat");
+			return Default();
 		}
 
 
@@ -165,7 +177,7 @@ namespace Ela.Runtime.ObjectModel
 				}
 				catch (Exception ex)
 				{
-					ctx.ConversionFailed(new ElaValue(this), type, ex.Message);
+					ctx.ConversionFailed(@this, type, ex.Message);
 					return Default();
 				}
 			}
@@ -177,7 +189,7 @@ namespace Ela.Runtime.ObjectModel
 				}
 				catch (Exception ex)
 				{
-					ctx.ConversionFailed(new ElaValue(this), type, ex.Message);
+					ctx.ConversionFailed(@this, type, ex.Message);
 					return Default();
 				}
 			}
@@ -185,11 +197,11 @@ namespace Ela.Runtime.ObjectModel
 			{
 				try
 				{
-					return new ElaValue(float.Parse(GetValue(), Culture.NumberFormat));
+					return new ElaValue(Single.Parse(GetValue(), Culture.NumberFormat));
 				}
 				catch (Exception ex)
 				{
-					ctx.ConversionFailed(new ElaValue(this), type, ex.Message);
+					ctx.ConversionFailed(@this, type, ex.Message);
 					return Default();
 				}
 			}
@@ -197,11 +209,11 @@ namespace Ela.Runtime.ObjectModel
 			{
 				try
 				{
-					return new ElaValue(double.Parse(GetValue(), Culture.NumberFormat));
+					return new ElaValue(Double.Parse(GetValue(), Culture.NumberFormat));
 				}
 				catch (Exception ex)
 				{
-					ctx.ConversionFailed(new ElaValue(this), type, ex.Message);
+					ctx.ConversionFailed(@this, type, ex.Message);
 					return Default();
 				}
 			}
@@ -209,19 +221,17 @@ namespace Ela.Runtime.ObjectModel
 			{
 				try
 				{
-					return new ElaValue(bool.Parse(GetValue()));
+					return new ElaValue(Boolean.Parse(GetValue()));
 				}
 				catch (Exception ex)
 				{
-					ctx.ConversionFailed(new ElaValue(this), type, ex.Message);
+					ctx.ConversionFailed(@this, type, ex.Message);
 					return Default();
 				}
 			}
-			else
-			{
-				ctx.ConversionFailed(new ElaValue(this), type);
-				return Default();
-			}
+			
+			ctx.ConversionFailed(@this, type);
+			return Default();
 		}
 
 
@@ -274,34 +284,7 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Nil(ExecutionContext ctx)
 		{
-			return new ElaValue(new ElaString(String.Empty));
-		}
-		#endregion
-
-
-		#region Methods
-        public override int GetHashCode()
-        {
-            return buffer.GetHashCode();
-        }
-
-
-		public IEnumerator<ElaValue> GetEnumerator()
-		{
-			foreach (var c in GetValue())
-				yield return new ElaValue(c);
-		}
-
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
-
-
-		internal string GetValue()
-		{
-			return headIndex == 0 ? buffer : buffer.Substring(headIndex);
+			return new ElaValue(ElaString.Empty);
 		}
 		#endregion
 	}

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Ela.Debug;
 using System.Text;
 
 namespace Ela.Runtime.ObjectModel
@@ -9,7 +8,7 @@ namespace Ela.Runtime.ObjectModel
 	public class ElaList : ElaObject, IEnumerable<ElaValue>
 	{
 		#region Construction
-		internal static readonly ElaList Empty = ElaNilList.Instance;
+		public static readonly ElaList Empty = ElaNilList.Instance;
 
 		public ElaList(ElaObject next, object value) : this(next, ElaValue.FromObject(value))
 		{
@@ -53,13 +52,13 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(left.Ref == right.Ref);
 		}
 
 
-		protected internal override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(left.Ref != right.Ref);
 		}
@@ -162,7 +161,7 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override bool IsNil(ExecutionContext ctx)
 		{
-			return this == Empty;
+			return false;
 		}
 
 
@@ -184,25 +183,20 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.TypeId == ElaMachine.LST)
+			if (left.TypeId == ElaMachine.LST && right.TypeId == ElaMachine.LST)
 			{
-				if (right.TypeId == ElaMachine.LST)
-				{
-					var list = (ElaList)right.Ref;
+				var list = (ElaList)right.Ref;
 
-					foreach (var e in ((ElaList)left.Ref).Reverse())
-						list = new ElaList(list, e);
+				foreach (var e in ((ElaList)left.Ref).Reverse())
+					list = new ElaList(list, e);
 
-					return new ElaValue(list);
-				}
-				else
-					return right.Ref.Concatenate(left, right, ctx);
+				return new ElaValue(list);				
 			}
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "concat");
-				return Default();
-			}
+			else if (left.TypeId == ElaMachine.LST)
+				return right.Ref.Concatenate(left, right, ctx);
+			
+			ctx.InvalidLeftOperand(left, right, "concat");
+			return Default();
 		}
 
 
@@ -304,12 +298,6 @@ namespace Ela.Runtime.ObjectModel
 				list = new ElaList(list, e);
 
 			return list.Reverse();
-		}
-
-
-		public static ElaList GetNil()
-		{
-			return ElaList.Empty;
 		}
 
 

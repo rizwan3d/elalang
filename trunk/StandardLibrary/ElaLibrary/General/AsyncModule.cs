@@ -10,35 +10,9 @@ namespace Ela.Library.General
 	public sealed class AsyncModule : ForeignModule
 	{
 		#region Construction
-		private List<Thread> threads;
-
 		public AsyncModule()
 		{
-			threads = new List<Thread>();
-		}
-		#endregion
-
-
-		#region Nested Classes
-		public sealed class ElaAsync : ElaRefObject
-		{
-			private const string TYPENAME = "async";
-			internal readonly object SyncRoot = new Object();
-
-			internal ElaAsync(AsyncModule mod, ElaFunction fun) : base(TYPENAME)
-			{
-				Thread = new Thread(() => Return = fun.Call());
-				mod.threads.Add(Thread);
-			}
-
-			internal void Run()
-			{
-				Thread.Start();
-			}
-
-			internal Thread Thread { get; set; }
-
-			internal ElaValue Return { get; private set; }
+			Threads = new List<Thread>();
 		}
 		#endregion
 
@@ -46,7 +20,7 @@ namespace Ela.Library.General
 		#region Methods
 		public override void Close()
 		{
-			foreach (var t in threads)
+			foreach (var t in Threads)
 			{
 				if (t.IsAlive)
 				{
@@ -109,7 +83,7 @@ namespace Ela.Library.General
 			{
 				if (th.Join(timeout))
 				{
-					threads.Remove(th);
+					Threads.Remove(th);
 					obj.Thread = null;
 				}
 			}
@@ -125,6 +99,11 @@ namespace Ela.Library.General
 
 			return ElaUnit.Instance;
 		}
+		#endregion
+
+
+		#region Properties
+		public List<Thread> Threads { get; private set; }
 		#endregion
 	}
 }

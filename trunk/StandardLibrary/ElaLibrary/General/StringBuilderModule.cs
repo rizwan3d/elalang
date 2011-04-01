@@ -16,66 +16,6 @@ namespace Ela.Library.General
         #endregion
 
 
-        #region Nested Classes
-        public sealed class ElaStringBuilder : ElaObject
-        {
-            #region Construction
-            internal ElaStringBuilder(StringBuilder builder)
-            {
-                Builder = builder;
-            }
-            #endregion
-
-
-            #region Methods
-            public override ElaPatterns GetSupportedPatterns()
-            {
-                return ElaPatterns.None;
-            }
-
-
-            protected override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
-            {
-                return new ElaValue(left.ReferenceEquals(right));
-            }
-
-
-            protected override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
-            {
-                return new ElaValue(left.ReferenceEquals(right));
-            }
-
-
-            protected override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
-            {
-                return Builder.ToString();
-            }
-
-
-            protected override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
-            {
-                if (type == ElaTypeCode.String)
-                    return new ElaValue(Builder.ToString());
-                
-                ctx.ConversionFailed(new ElaValue(this), type);
-                return Default();
-            }
-
-
-            protected override ElaValue GetLength(ExecutionContext ctx)
-            {
-                return new ElaValue(Builder.Length);
-            }
-            #endregion
-
-
-            #region Properties
-            internal StringBuilder Builder { get; private set; }
-            #endregion
-        }
-        #endregion
-
-
         #region Methods
         public override void Initialize()
         {

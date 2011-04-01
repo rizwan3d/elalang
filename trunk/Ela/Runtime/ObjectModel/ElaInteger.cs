@@ -15,12 +15,6 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
-        public override ElaPatterns GetSupportedPatterns()
-        {
-            return ElaPatterns.None;
-        }
-
-
         internal protected override int Compare(ElaValue @this, ElaValue other)
 		{
 			return other.TypeCode == ElaTypeCode.Integer ? @this.I4.CompareTo(other.I4) :
@@ -33,29 +27,25 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId == ElaMachine.INT)
 				return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 == right.I4) :
-					right.Ref.Equals(left, right, ctx);
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "equal");
-				return Default();
-			}
+					right.Ref.Equal(left, right, ctx);
+			
+			ctx.InvalidLeftOperand(left, right, "equal");
+			return Default();
 		}
 
 
-		protected internal override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId == ElaMachine.INT)
 				return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 != right.I4) :
-					right.Ref.NotEquals(left, right, ctx);
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "notequal");
-				return Default();
-			}
+					right.Ref.NotEqual(left, right, ctx);
+			
+			ctx.InvalidLeftOperand(left, right, "notequal");
+			return Default();
 		}
 
 
@@ -64,11 +54,9 @@ namespace Ela.Runtime.ObjectModel
 			if (left.TypeId == ElaMachine.INT)
 				return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 > right.I4) :
 					right.Ref.Greater(left, right, ctx);
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "greater");
-				return Default();
-			}
+			
+			ctx.InvalidLeftOperand(left, right, "greater");
+			return Default();
 		}
 
 
@@ -77,37 +65,31 @@ namespace Ela.Runtime.ObjectModel
 			if (left.TypeId == ElaMachine.INT)
 				return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 < right.I4) :
 					right.Ref.Lesser(left, right, ctx);
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "lesser");
-				return Default();
-			}
+			
+			ctx.InvalidLeftOperand(left, right, "lesser");
+			return Default();
 		}
 
 
-		protected internal override ElaValue GreaterEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId == ElaMachine.INT)
 				return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 >= right.I4) :
-					right.Ref.GreaterEquals(left, right, ctx);
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "greaterequal");
-				return Default();
-			}
+					right.Ref.GreaterEqual(left, right, ctx);
+			
+			ctx.InvalidLeftOperand(left, right, "greaterequal");
+			return Default();
 		}
 
 
-		protected internal override ElaValue LesserEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId == ElaMachine.INT)
 				return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 <= right.I4) :
-					right.Ref.LesserEquals(left, right, ctx);
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "lesserequal");
-				return Default();
-			}
+					right.Ref.LesserEqual(left, right, ctx);
+			
+			ctx.InvalidLeftOperand(left, right, "lesserequal");
+			return Default();
 		}
 
 
@@ -157,8 +139,8 @@ namespace Ela.Runtime.ObjectModel
 		{
 			switch (type)
 			{
-				case ElaTypeCode.Integer: return new ElaValue(@this.I4);
-				case ElaTypeCode.Single: return new ElaValue((float)@this.I4);
+				case ElaTypeCode.Integer: return @this;
+				case ElaTypeCode.Single: return new ElaValue((Single)@this.I4);
 				case ElaTypeCode.Double: return new ElaValue((Double)@this.I4);
 				case ElaTypeCode.Long: return new ElaValue((Int64)@this.I4);
 				case ElaTypeCode.Char: return new ElaValue((Char)@this.I4);
@@ -181,11 +163,9 @@ namespace Ela.Runtime.ObjectModel
 			if (left.TypeId == ElaMachine.INT)
 				return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 + right.I4) :
 					right.Ref.Add(left, right, ctx);
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "add");
-				return Default();
-			}
+			
+			ctx.InvalidLeftOperand(left, right, "add");
+			return Default();
 		}
 
 
@@ -194,11 +174,9 @@ namespace Ela.Runtime.ObjectModel
 			if (left.TypeId == ElaMachine.INT)
 				return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 - right.I4) :
 					right.Ref.Subtract(left, right, ctx);
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "subtract");
-				return Default();
-			}
+			
+			ctx.InvalidLeftOperand(left, right, "subtract");
+			return Default();
 		}
 
 
@@ -207,11 +185,9 @@ namespace Ela.Runtime.ObjectModel
 			if (left.TypeId == ElaMachine.INT)
 				return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 * right.I4) :
 					right.Ref.Multiply(left, right, ctx);
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "multiply");
-				return Default();
-			}
+			
+			ctx.InvalidLeftOperand(left, right, "multiply");
+			return Default();
 		}
 
 
@@ -270,11 +246,9 @@ namespace Ela.Runtime.ObjectModel
 			if (left.TypeId == ElaMachine.INT)
 				return right.TypeId == ElaMachine.INT ? new ElaValue((Int32)Math.Pow(left.I4, right.I4)) :
 					right.Ref.Power(left, right, ctx);
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "power");
-				return Default();
-			}
+			
+			ctx.InvalidLeftOperand(left, right, "power");
+			return Default();
 		}
 
 
@@ -283,11 +257,9 @@ namespace Ela.Runtime.ObjectModel
 			if (left.TypeId == ElaMachine.INT)
 				return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 & right.I4) :
 					right.Ref.BitwiseAnd(left, right, ctx);
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "bitwiseand");
-				return Default();
-			}
+			
+			ctx.InvalidLeftOperand(left, right, "bitwiseand");
+			return Default();
 		}
 
 
@@ -296,11 +268,9 @@ namespace Ela.Runtime.ObjectModel
 			if (left.TypeId == ElaMachine.INT)
 				return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 | right.I4) :
 					right.Ref.BitwiseOr(left, right, ctx);
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "bitwiseor");
-				return Default();
-			}
+			
+			ctx.InvalidLeftOperand(left, right, "bitwiseor");
+			return Default();
 		}
 
 
@@ -309,11 +279,9 @@ namespace Ela.Runtime.ObjectModel
 			if (left.TypeId == ElaMachine.INT)
 				return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 ^ right.I4) :
 					right.Ref.BitwiseXor(left, right, ctx);
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "bitwisexor");
-				return Default();
-			}
+			
+			ctx.InvalidLeftOperand(left, right, "bitwisexor");
+			return Default();
 		}
 
 
@@ -328,11 +296,9 @@ namespace Ela.Runtime.ObjectModel
 			if (left.TypeId == ElaMachine.INT)
 				return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 << right.I4) :
 					right.Ref.ShiftLeft(left, right, ctx);
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "shiftleft");
-				return Default();
-			}
+			
+			ctx.InvalidLeftOperand(left, right, "shiftleft");
+			return Default();
 		}
 
 
@@ -341,11 +307,9 @@ namespace Ela.Runtime.ObjectModel
 			if (left.TypeId == ElaMachine.INT)
 				return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 >> right.I4) :
 					right.Ref.ShiftRight(left, right, ctx);
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "shiftright");
-				return Default();
-			}
+			
+			ctx.InvalidLeftOperand(left, right, "shiftright");
+			return Default();
 		}
 		#endregion
 	}

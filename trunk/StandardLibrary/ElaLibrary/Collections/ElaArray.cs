@@ -67,13 +67,13 @@ namespace Ela.Library.Collections
 		
 
 		#region Operations
-		protected override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(left.ReferenceEquals(right));
 		}
 
 
-		protected override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(left.ReferenceEquals(right));
 		}
@@ -162,25 +162,20 @@ namespace Ela.Library.Collections
 
 		protected override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Is<ElaArray>())
+			if (left.Is<ElaArray>() && right.Is<ElaArray>())
 			{
-				if (right.Is<ElaArray>())
-				{
-					var thisArr = left.As<ElaArray>();
-					var otherArr = right.As<ElaArray>();
-					var arr = new ElaValue[thisArr.Length + otherArr.Length];
-					Array.Copy(thisArr.array, 0, arr, 0, thisArr.Length);
-					Array.Copy(otherArr.array, 0, arr, thisArr.Length, otherArr.Length);
-					return new ElaValue(new ElaArray(arr, arr.Length, 0));
-				}
-				else
-					return right.Concatenate(left, right, ctx);
+				var thisArr = left.As<ElaArray>();
+				var otherArr = right.As<ElaArray>();
+				var arr = new ElaValue[thisArr.Length + otherArr.Length];
+				Array.Copy(thisArr.array, 0, arr, 0, thisArr.Length);
+				Array.Copy(otherArr.array, 0, arr, thisArr.Length, otherArr.Length);
+				return new ElaValue(new ElaArray(arr, arr.Length, 0));
 			}
-			else
-			{
-				ctx.InvalidLeftOperand(left, right, "concat");
-				return Default();
-			}
+			else if (left.Is<ElaArray>())
+				return right.Concatenate(left, right, ctx);
+			
+			ctx.InvalidLeftOperand(left, right, "concat");
+			return Default();
 		}
 
 

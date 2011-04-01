@@ -39,12 +39,6 @@ namespace Ela.Library.General
 
 
         #region Methods
-        public override ElaPatterns GetSupportedPatterns()
-        {
-            return ElaPatterns.None;
-        }
-
-
         protected override string GetTypeName()
         {
             return TYPE_NAME;
@@ -74,13 +68,13 @@ namespace Ela.Library.General
         }
 
 
-        protected override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return Compare(left, right, Comparison.Eq, ctx);   
         }
 
 
-        protected override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return Compare(left, right, Comparison.Neq, ctx);
         }
@@ -98,13 +92,13 @@ namespace Ela.Library.General
         }
 
 
-        protected override ElaValue GreaterEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected override ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return Compare(left, right, Comparison.GtEq, ctx);
         }
 
 
-        protected override ElaValue LesserEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected override ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return Compare(left, right, Comparison.LtEq, ctx);
         }
@@ -122,7 +116,7 @@ namespace Ela.Library.General
             if (type == ElaTypeCode.Long)
                 return new ElaValue(Ticks);
 
-            ctx.ConversionFailed(new ElaValue(this), type);
+            ctx.ConversionFailed(@this, type);
             return Default();
         }
 

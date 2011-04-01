@@ -157,7 +157,7 @@ namespace Ela.Library.General
 		public ElaList Split(string[] seps, string str)
 		{
 			var arr = str.Split(seps, StringSplitOptions.RemoveEmptyEntries);
-			var list = ElaList.GetNil();
+			var list = ElaList.Empty;
 
 			for (var i = arr.Length - 1; i > -1; i--)
 				list = new ElaList(list, new ElaValue(arr[i]));

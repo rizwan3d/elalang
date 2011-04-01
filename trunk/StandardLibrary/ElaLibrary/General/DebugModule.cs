@@ -13,8 +13,7 @@ namespace Ela.Library.General
 
 		}
 		#endregion
-
-
+		
 		
 		#region Methods
 		public override void Initialize()

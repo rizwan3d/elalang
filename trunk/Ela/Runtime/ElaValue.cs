@@ -103,13 +103,13 @@ namespace Ela.Runtime
 
         public override bool Equals(object obj)
         {
-            return obj is ElaValue ? Equals(this, (ElaValue)obj, ElaObject.DummyContext).AsBoolean() : false;
+            return obj is ElaValue ? Equal(this, (ElaValue)obj, ElaObject.DummyContext).AsBoolean() : false;
         }
 
 
         public bool Equals(ElaValue other)
         {
-            return Equals(this, other, ElaObject.DummyContext).AsBoolean();
+            return Equal(this, other, ElaObject.DummyContext).AsBoolean();
         }
 
 
@@ -461,15 +461,15 @@ namespace Ela.Runtime
 
 
         #region Operations
-        public ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+        public ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            return Ref.Equals(left, right, ctx);
+            return Ref.Equal(left, right, ctx);
         }
 
 
-        public ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+        public ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            return Ref.NotEquals(left, right, ctx);
+            return Ref.NotEqual(left, right, ctx);
         }
 
 
@@ -485,15 +485,15 @@ namespace Ela.Runtime
         }
 
 
-        public ElaValue GreaterEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+        public ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            return Ref.GreaterEquals(left, right, ctx);
+            return Ref.GreaterEqual(left, right, ctx);
         }
 
 
-        public ElaValue LesserEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+        public ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            return Ref.LesserEquals(left, right, ctx);
+            return Ref.LesserEqual(left, right, ctx);
         }
 
 

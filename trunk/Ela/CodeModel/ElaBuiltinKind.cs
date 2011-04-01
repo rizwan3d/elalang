@@ -6,8 +6,6 @@ namespace Ela.CodeModel
 	{
 		None,
 
-		Typeid,
-
 		Not,
 
 		Flip,
@@ -25,8 +23,6 @@ namespace Ela.CodeModel
 		Max,
 
 		Min,
-
-		Show,
 
 		Nil,
 

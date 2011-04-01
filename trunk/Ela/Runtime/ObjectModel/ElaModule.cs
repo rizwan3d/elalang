@@ -17,20 +17,16 @@ namespace Ela.Runtime.ObjectModel
         private const string CODEBASE = "codeBase";
         private const string ISNATIVE = "isNative";
         private const string ISMAINMODULE = "isMainModule";
-
         private const string ADDRESS = "address";
         private const string VARNAME = "name";
         private const string ISPRIVATE = "isPrivate";
         private const string VALUE = "value";
-
         private const string MODULENAME = "moduleName";
         private const string DLLNAME = "dllName";
         private const string ALIAS = "alias";
         private const string PATH = "path";
-
         private const string MODULECOUNT = "moduleCount";
-        private const string ARGCOUNT = "argumentCount";
-		
+        private const string ARGCOUNT = "argumentCount";		
         private const string MODULE = "[module:{0}]";
 		private ElaMachine vm;
 
@@ -43,14 +39,14 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(left.TypeCode == right.TypeCode &&
 				((ElaModule)left.Ref).Handle == ((ElaModule)right.Ref).Handle);
 		}
 
 
-		protected internal override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(left.TypeCode != right.TypeCode ||
 				((ElaModule)left.Ref).Handle != ((ElaModule)right.Ref).Handle);

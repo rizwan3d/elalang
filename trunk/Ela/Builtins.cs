@@ -16,7 +16,6 @@ namespace Ela
 		{
 			switch (func)
 			{
-				case "typeid": return ElaBuiltinKind.Typeid;
 				case "not": return ElaBuiltinKind.Not;
 				case "flip": return ElaBuiltinKind.Flip;
 				case "force": return ElaBuiltinKind.Force;
@@ -26,7 +25,6 @@ namespace Ela
 				case "pred": return ElaBuiltinKind.Pred;
 				case "max": return ElaBuiltinKind.Max;
 				case "min": return ElaBuiltinKind.Min;
-				case "show": return ElaBuiltinKind.Show;
 				case "isref": return ElaBuiltinKind.IsRef;
 				case "nil": return ElaBuiltinKind.Nil;
                 case "head": return ElaBuiltinKind.Head;

@@ -101,13 +101,13 @@ namespace Ela.Library.Collections
 
 
 		#region Operations
-		protected override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(left.ReferenceEquals(right));
 		}
 
 
-		protected override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(!left.ReferenceEquals(right));
 		}
@@ -169,6 +169,16 @@ namespace Ela.Library.Collections
 			}
 
 			return new ElaValue(next.Add(value));
+		}
+
+
+		protected override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+		{
+			if (type == ElaTypeCode.List)
+				return new ElaValue(ElaList.FromEnumerable(this));
+
+			ctx.ConversionFailed(@this, type);
+			return Default();
 		}
 
 

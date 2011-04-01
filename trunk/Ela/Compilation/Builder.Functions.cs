@@ -228,9 +228,6 @@ namespace Ela.Compilation
 				case ElaBuiltinKind.Force:
 					cw.Emit(Op.Force);
 					break;
-				case ElaBuiltinKind.Typeid:
-					cw.Emit(Op.Typeid);
-					break;
 				case ElaBuiltinKind.Not:
 					cw.Emit(Op.Not);
 					break;
@@ -239,10 +236,6 @@ namespace Ela.Compilation
 					break;
 				case ElaBuiltinKind.Nil:
 					cw.Emit(Op.Nil);
-					break;
-				case ElaBuiltinKind.Show:
-					cw.Emit(Op.Pushstr_0);
-					cw.Emit(Op.Show);
 					break;
 				case ElaBuiltinKind.Showf:
 					cw.Emit(Op.Show);

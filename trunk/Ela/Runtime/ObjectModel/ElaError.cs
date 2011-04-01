@@ -54,6 +54,7 @@ namespace Ela.Runtime.ObjectModel
 			}
 		}
 
+
 		internal string FullMessage
 		{
 			get
@@ -64,6 +65,7 @@ namespace Ela.Runtime.ObjectModel
 					!String.IsNullOrEmpty(Tag) ? Tag : Message;
 			}
 		}
+
 
 		internal ElaRuntimeError Code { get; private set; }
 

@@ -16,14 +16,6 @@ namespace Ela.Library
 		#endregion
 
 
-        #region Methods
-        public override ElaPatterns GetSupportedPatterns()
-        {
-            return ElaPatterns.None;
-        }
-        #endregion
-
-
         #region Operations
         protected override string GetTypeName()
 		{
@@ -31,13 +23,13 @@ namespace Ela.Library
 		}
 
 
-		protected override ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(left.ReferenceEquals(right));
 		}
 
 
-		protected override ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(!left.ReferenceEquals(right));
 		}

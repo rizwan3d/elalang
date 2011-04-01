@@ -1,9 +1,11 @@
-0.8.6.99:Change:Variants are now not transparent.
-0.8.6.98:Fix:Stack behavior for Newfun op code was calculated incorrectly.
-0.8.6.97:Fix:Match was incorrectly compiled when a single tuple element was used as a match expression.
-0.8.6.96:Fix:Ela linker didn't correctly process situations when an object file wasn't coupled with a source code file.
-0.8.6.95:Fix:Arguments for Ela functions passed from external context (such as .NET code) were passed in a wrong order.
-0.8.6.94:Change:Trait implementation logic is refactored.
+0.8.6.101:New:Now Ela supports inline functions through an 'inline' modifier.
+0.8.6.100:Change:ElaTraits flags are decomissioned. Instead ElaPatterns flags will be used.
+0.8.6.99:Change:Builtin functions 'typeid' and 'show' are decomissioned. Function 'show' will now be defined as a partially applied 'showf'.
+0.8.6.98:Change:Variants are now not transparent.
+0.8.6.97:Fix:Stack behavior for Newfun op code was calculated incorrectly.
+0.8.6.96:Fix:Match was incorrectly compiled when a single tuple element was used as a match expression.
+0.8.6.95:Fix:Ela linker didn't correctly process situations when an object file wasn't coupled with a source code file.
+0.8.6.94:Fix:Arguments for Ela functions passed from external context (such as .NET code) were passed in a wrong order.
 0.8.6.93:Fix:A bug fixed in head/tail pattern compilation logic.
 0.8.6.92:Change:Compilation stage and linking stage are now overlapping. All incudles are processed exactly after an include node is found by compiler. Compiler uses metadata from compiled imported modules to decide whether it is possible to inline some of the operators.
 0.8.6.91:Change:Compiler now has a setting that allows to specify the name of a module used as a Predule module (in this case no explicit import is required).

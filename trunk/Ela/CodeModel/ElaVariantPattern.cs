@@ -45,18 +45,11 @@ namespace Ela.CodeModel
 
 				if (var.Tag != Tag)
 					return true;
-
-				if (Pattern == null && var.Pattern == null)
+				else if (var.Pattern == null)
 					return false;
-
-				if (Pattern == null)
-					return true;
-
-				return Pattern.CanFollow(var.Pattern);
+				else if (Pattern != null)
+					return Pattern.CanFollow(var.Pattern);
 			}
-
-			if (Pattern != null)
-				return Pattern.CanFollow(pat);
 
 			return true;
 		}

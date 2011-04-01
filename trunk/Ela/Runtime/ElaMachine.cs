@@ -703,7 +703,7 @@ namespace Ela.Runtime
 						}
 
 						res = left.Id(ctx);
-						evalStack.Replace(res.Ref.Equals(res, right.Id(ctx), ctx));
+						evalStack.Replace(res.Ref.Equal(res, right.Id(ctx), ctx));
 
 						if (ctx.Failed)
 						{
@@ -722,7 +722,7 @@ namespace Ela.Runtime
 						}
 
 						res = left.Id(ctx);
-						evalStack.Replace(res.Ref.NotEquals(res, right.Id(ctx), ctx));
+						evalStack.Replace(res.Ref.NotEqual(res, right.Id(ctx), ctx));
 
 						if (ctx.Failed)
 						{
@@ -741,7 +741,7 @@ namespace Ela.Runtime
 						}
 
 						res = left.Id(ctx);
-						evalStack.Replace(res.Ref.GreaterEquals(res, right.Id(ctx), ctx));
+						evalStack.Replace(res.Ref.GreaterEqual(res, right.Id(ctx), ctx));
 
 						if (ctx.Failed)
 						{
@@ -760,7 +760,7 @@ namespace Ela.Runtime
 						}
 
 						res = left.Id(ctx);
-						evalStack.Replace(res.Ref.LesserEquals(res, right.Id(ctx), ctx));
+						evalStack.Replace(res.Ref.LesserEqual(res, right.Id(ctx), ctx));
 
 						if (ctx.Failed)
 						{
@@ -784,7 +784,7 @@ namespace Ela.Runtime
                         right = evalStack.Peek().Id(ctx);
                         res = right.Ref.GetLength(ctx);
 
-                        if (!res.Equals(res, new ElaValue(opd & Byte.MaxValue), ctx).Bool(ctx))
+                        if (!res.Equal(res, new ElaValue(opd & Byte.MaxValue), ctx).Bool(ctx))
                         {
                             ExecuteFail(ElaRuntimeError.MatchFailed, thread, evalStack);
                             goto SWITCH_MEM;
@@ -1147,7 +1147,7 @@ namespace Ela.Runtime
 						}
 
 						left = left.Id(ctx);
-						left = left.Ref.Equals(left, right.Id(ctx), ctx);
+						left = left.Ref.Equal(left, right.Id(ctx), ctx);
 
 						if (left.Ref.Bool(left, ctx) && !ctx.Failed)
 						{
@@ -1174,7 +1174,7 @@ namespace Ela.Runtime
 						}
 
 						left = left.Id(ctx);
-						left = left.Ref.NotEquals(left, right.Id(ctx), ctx);
+						left = left.Ref.NotEqual(left, right.Id(ctx), ctx);
 
 						if (left.Ref.Bool(left, ctx) && !ctx.Failed)
 						{

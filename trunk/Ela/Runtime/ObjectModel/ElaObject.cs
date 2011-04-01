@@ -37,17 +37,15 @@ namespace Ela.Runtime.ObjectModel
             {
                 return INVALID;
             }
-
-            public override ElaPatterns GetSupportedPatterns()
-            {
-                return ElaPatterns.None;
-            }
         }
         #endregion
 
 
         #region Methods
-        public abstract ElaPatterns GetSupportedPatterns();
+		public virtual ElaPatterns GetSupportedPatterns()
+		{
+			return ElaPatterns.None;
+		}
 
 
         public virtual ElaTypeInfo GetTypeInfo()
@@ -109,14 +107,14 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal virtual ElaValue Equals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal virtual ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			ctx.NoOperator(This(left, right), "equal");
 			return Default();
 		}
 
 
-		protected internal virtual ElaValue NotEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal virtual ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			ctx.NoOperator(This(left, right), "notequal");
 			return Default();
@@ -137,14 +135,14 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal virtual ElaValue GreaterEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal virtual ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			ctx.NoOperator(This(left, right), "greaterequal");
 			return Default();
 		}
 
 
-		protected internal virtual ElaValue LesserEquals(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal virtual ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			ctx.NoOperator(This(left, right), "lesserequal");
 			return Default();
