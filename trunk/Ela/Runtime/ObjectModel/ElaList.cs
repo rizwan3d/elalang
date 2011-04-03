@@ -10,13 +10,13 @@ namespace Ela.Runtime.ObjectModel
 		#region Construction
 		public static readonly ElaList Empty = ElaNilList.Instance;
 
-		public ElaList(ElaObject next, object value) : this(next, ElaValue.FromObject(value))
+		public ElaList(ElaList next, object value) : this(next, ElaValue.FromObject(value))
 		{
 
 		}
 
 
-		public ElaList(ElaObject next, ElaValue value) : base(ElaTypeCode.List)
+		public ElaList(ElaList next, ElaValue value) : base(ElaTypeCode.List)
 		{
 			InternalNext = next;
 			InternalValue = value;
@@ -67,30 +67,15 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue GetLength(ExecutionContext ctx)
 		{
 			var count = 0;
-			ElaObject xs = this;
-
+			ElaList xs = this;
+			
 			while (!xs.IsNil(ctx))
 			{
 				count++;
-				xs = xs.Tail(ctx).Ref;
+				xs = xs.Tail(ctx).Ref as ElaList;
 
-				if (xs.TypeId == ElaMachine.LAZ)
-				{
-					var la = (ElaLazy)xs;
-
-					if (la.Value.Ref == null)
-					{
-						try
-						{
-							la.Value = la.Force();
-						}
-						catch (ElaCodeException ex)
-						{
-							ctx.Fail(ex.ErrorObject);
-							return Default();
-						}
-					}
-				}
+				if (xs == null)
+					throw InvalidDefinition();
 			}
 
 			return new ElaValue(count);
@@ -99,51 +84,34 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
 		{
-			index = index.Id(ctx);
-
 			if (index.TypeId != ElaMachine.INT)
 			{
 				ctx.InvalidIndexType(index);
-				return base.GetValue(index, ctx);
+				return Default();
 			}
 			else if (index.I4 < 0)
 			{
 				ctx.IndexOutOfRange(index, new ElaValue(this));
-				return base.GetValue(index, ctx);
+				return Default();
 			}
 
-			ElaObject l = this;
+			ElaList xs = this;
 
 			for (var i = 0; i < index.I4; i++)
 			{
-				l = l.Tail(ctx).Ref;
+				xs = xs.Tail(ctx).Ref as ElaList;
 
-				if (l.TypeId == ElaMachine.LAZ)
-				{
-					var la = (ElaLazy)l;
+				if (xs == null)
+					throw InvalidDefinition();
 
-					if (la.Value.Ref == null)
-					{
-						try
-						{
-							la.Value = la.Force();
-						}
-						catch (ElaCodeException ex)
-						{
-							ctx.Fail(ex.ErrorObject);
-							return base.GetValue(index, ctx);
-						}
-					}
-				}
-
-				if (l.IsNil(ctx))
+				if (xs.IsNil(ctx))
 				{
 					ctx.IndexOutOfRange(index, new ElaValue(this));
-					return base.GetValue(index, ctx);
+					return Default();
 				}
 			}
 
-			return l.Head(ctx);
+			return xs.Head(ctx);
 		}
 
 
@@ -167,8 +135,10 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Cons(ElaObject next, ElaValue value, ExecutionContext ctx)
 		{
-			if (next is ElaList || next.TypeId == ElaMachine.LAZ)
-				return new ElaValue(new ElaList(next, value));
+			var xs = next as ElaList;
+
+			if (xs != null)
+				return new ElaValue(new ElaList(xs, value));
 
 			ctx.Fail(ElaRuntimeError.InvalidType, ElaTypeCode.List, (ElaTypeCode)next.TypeId);
 			return Default();
@@ -205,57 +175,14 @@ namespace Ela.Runtime.ObjectModel
 			if (type == ElaTypeCode.List)
 				return new ElaValue(this);
 
-			ctx.ConversionFailed(new ElaValue(this), type);
+			ctx.ConversionFailed(@this, type);
             return Default();
 		}
 
 
         protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
-			var maxLen = info.SequenceLength;
-			var sb = new StringBuilder();
-			sb.Append('[');
-			var count = 0;
-
-			if (this != Empty)
-			{
-				ElaObject xs = this;
-
-				do
-				{
-					if (maxLen > 0 && count > maxLen)
-					{
-						sb.Append("...");
-						break;
-					}
-					
-					var v = xs.Head(ElaObject.DummyContext).Id(DummyContext);
-
-					if (count > 0)
-						sb.Append(',');
-
-					sb.Append(v.Show(info, ctx));
-					count++;
-					xs = xs.Tail(ElaObject.DummyContext).Ref;
-
-					if (xs.TypeId == ElaMachine.LAZ)
-					{
-						if (count < 50)
-							xs.Force(ElaObject.DummyContext);
-						else
-						{
-							sb.Append("...");
-							break;
-						}
-					}
-					else if (xs.TypeId != ElaMachine.LST)
-						break;
-				}
-				while (!xs.IsNil(ElaObject.DummyContext));
-			}
-
-			sb.Append(']');
-			return sb.ToString();
+			return "[" + FormatHelper.FormatEnumerable(this, ctx, info) + "]";
 		}
 
 
@@ -312,13 +239,7 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        public bool HasLazyTail()
-        {
-            return InternalNext != null && InternalNext.TypeId == ElaMachine.LAZ;
-        }
-		
-
-		public ElaList Reverse()
+		public virtual ElaList Reverse()
 		{
 			var newLst = ElaList.Empty;
 			var lst = this;
@@ -333,42 +254,18 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-        public IEnumerable<ElaValue> GetEagerPart()
-        {
-            if (this != Empty)
-            {
-                ElaObject xs = this;
-
-                do
-                {
-                    yield return xs.Head(ElaObject.DummyContext).Id(DummyContext);
-					xs = xs.Tail(ElaObject.DummyContext).Ref;
-
-                    if (xs.TypeId != ElaMachine.LST)
-                        yield break;
-                }
-				while (!xs.IsNil(ElaObject.DummyContext));
-            }
-        }
-
-
 		public IEnumerator<ElaValue> GetEnumerator()
 		{
-			if (this != Empty)
+			ElaList xs = this;
+			var ctx = new ExecutionContext();
+
+			while (!xs.IsNil(ctx))
 			{
-				ElaObject xs = this;
+				yield return xs.Head(ctx);
+				xs = xs.Tail(ctx).Ref as ElaList;
 
-				do
-				{
-					yield return xs.Head(ElaObject.DummyContext).Id(DummyContext);
-					xs = xs.Tail(ElaObject.DummyContext).Ref;
-
-					if (xs.TypeId == ElaMachine.LAZ)
-						xs.Force(ElaObject.DummyContext);
-					else if (xs.TypeId != ElaMachine.LST)
-						yield break;
-				}
-				while (!xs.IsNil(ElaObject.DummyContext));
+				if (xs == null)
+					throw InvalidDefinition();
 			}
 		}
 
@@ -377,13 +274,18 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return GetEnumerator();
 		}
+
+
+		protected virtual Exception InvalidDefinition()
+		{
+			return new ElaRuntimeException("InvalidList", "Invalid list definition.");
+		}
 		#endregion
 
 
 		#region Properties
-		internal protected ElaValue InternalValue;
-
-		internal protected ElaObject InternalNext;
+		protected ElaValue InternalValue;
+		protected ElaList InternalNext;
 
 		public virtual ElaList Next
 		{
@@ -393,7 +295,7 @@ namespace Ela.Runtime.ObjectModel
                     return null;
                 else if (InternalNext.TypeId == ElaMachine.LAZ)
                 {
-                    var val = InternalNext.Force(DummyContext);
+                    var val = InternalNext.Force(new ElaValue(InternalNext), DummyContext);
 
                     if (val.TypeId == ElaMachine.LST)
                         return (ElaList)val.Ref;

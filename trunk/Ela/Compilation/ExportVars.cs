@@ -15,8 +15,7 @@ namespace Ela.Compilation
         }
         #endregion
 
-
-
+		
         #region Methods
         public void AddBuiltin(string name, ElaBuiltinKind kind)
         {
@@ -31,6 +30,12 @@ namespace Ela.Compilation
             map.TryGetValue(name, out ret);
             return ret;
         }
+
+
+		internal Dictionary<String,ElaBuiltinKind> GetMap()
+		{
+			return map;
+		}
         #endregion
     }
 }

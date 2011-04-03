@@ -67,19 +67,19 @@ let boolOperators {eq,neq} =
         $ eq (1 > 2 && 2 < 1 || 1 == 1)
     
 let pipeOperators {eq} =
-        let fun1 x y = x + y in
-        let fun2 x = x * 2 in
-        let fun3 x = x - 2 in
+        let fun1 x y = x + y
+         et fun2 x = x * 2
+         et fun3 x = x - 2 in
           eq (fun1 2 2 |> fun2 |> fun3) 6 
-        $ eq (fun2 <| fun1 2 2) 8
+        $ eq (fun3 <| fun2 <| fun1 2 2) 6
     
 let compositionOperators {eq} =
-        let fun1 x = x + 2 in
-        let fun2 x = x * 2 in
-        let fun3 x = x - 2 in
-        let comp1 = fun1 >> fun2 >> fun3 in
-        let comp2 = fun3 << fun2 << fun1 in
-        eq (comp1 2) 6 $ eq (comp2 2) 6
+        let fun1 x = x + 2
+         et fun2 x = x * 2
+         et fun3 x = x - 2
+         et comp1 = fun1 >> fun2 >> fun3
+         et comp2 = fun3 << fun2 << fun1 in
+         eq (comp1 2) 6 $ eq (comp2 2) 6
     
 let bitwiseOperators {eq} =
         let v = 2 ||| (12 <<< 8) in

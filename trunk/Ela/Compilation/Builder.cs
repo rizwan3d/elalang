@@ -508,7 +508,7 @@ namespace Ela.Compilation
 					break;
 				case ElaNodeType.Placeholder:
 					{
-						if ((hints & Hints.Left) == Hints.Left)
+						if ((hints & Hints.Left) != Hints.Left)
 							AddError(ElaCompilerError.PlaceholderNotValid, exp);
 						else
 						{
@@ -521,6 +521,9 @@ namespace Ela.Compilation
 					{
 						var v = (ElaFunctionCall)exp;
 						CompileFunctionCall(v, map, hints);
+
+						if ((hints & Hints.Left) == Hints.Left)
+							AddValueNotUsed(v);
 					}
 					break;
 				case ElaNodeType.Cast:
@@ -764,7 +767,7 @@ namespace Ela.Compilation
 				return;
 			}
 			
-			if (CompileInlineCall(v, map, hints))
+			if (opt && CompileInlineCall(v, map, hints))
 				return;			
 
 			var ed = ExprData.Empty;
@@ -829,9 +832,6 @@ namespace Ela.Compilation
 				else
 					cw.Emit(Op.Call);
 			}
-
-			if ((hints & Hints.Left) == Hints.Left)
-				cw.Emit(Op.Pop);
 		}
 		#endregion
 		

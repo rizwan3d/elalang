@@ -60,6 +60,7 @@ namespace Ela.Compilation
 					break;
 				case ElaOperator.Sequence:
 					CompileExpression(bin.Left, map, Hints.None);
+					cw.Emit(Op.Force);
 					cw.Emit(Op.Pop);
 					CompileExpression(bin.Right, map, hints);
 					break;

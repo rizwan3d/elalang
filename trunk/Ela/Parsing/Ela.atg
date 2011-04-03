@@ -800,13 +800,13 @@ PRODUCTIONS
 		(. flags = ElaVariableFlags.None; .)
 		(
 			(
-				"private" (. flags = ElaVariableFlags.Private; .)
-				[ "inline" (. flags = ElaVariableFlags.Inline; .) ]
+				"private" (. flags |= ElaVariableFlags.Private; .)
+				[ "inline" (. flags |= ElaVariableFlags.Inline; .) ]
 			)
 			|
 			(
-				"inline" (. flags = ElaVariableFlags.Inline; .)					
-				[ "private" (. flags = ElaVariableFlags.Private; .) ]
+				"inline" (. flags |= ElaVariableFlags.Inline; .)					
+				[ "private" (. flags |= ElaVariableFlags.Private; .) ]
 			)
 		).			
 		

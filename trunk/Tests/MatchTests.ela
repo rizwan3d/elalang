@@ -61,12 +61,7 @@ let typeCheckMatch {eqt} =
           eqt (match 1 with ?int = true; _ = false;;)
         $ eqt (match (1,2) with ?tuple = true; _ = false;;)
         $ eqt (match [1,2] with ?list = true; _ = false;;)
-    
-let traitCheckMatch {eqt} =
-          eqt (match 1 with ?(Num,Eq) = true; _ = false;;)
-        $ eqt (match (1,2) with ?(Get,Len) = true; _ = false;;)
-        $ eqt (match [1,2] with ?(Seq,Cons) = true; _ = false;;)
-    
+  
 let castMatch {eqt} =
         eqt (match "1" with x:int = x == 1;;)
         $ eqt (match 1 with x:string = x == "1";;)
@@ -102,7 +97,15 @@ let guards4 {eqt} = eqt v
                               | x == 'L' = false
                         "ELA"            = false
                         str              = str == "ela"
-                        
+
+let guards6 {eqt} =
+        eqt <| (compare 100 12) is (`Lt)
+        $ eqt <| (compare 12 100) is (`Gt)
+        $ eqt <| (compare 13 13) is (`Eq)
+        where compare x y | y >  x = `Gt
+                          | y == x = `Eq
+                          | else   = `Lt 
+
 let parallel {eqt} = eqt v
         where v = match (1,2,3) with
                         (x,y,z) = x + y + z == 6
@@ -126,3 +129,8 @@ let shortMatch2 {eq,eqt} =
         else
             eqt false
         where v = `Some [12,2]
+        
+let firstSecond {eq} =
+        eq (fst (2, 3)) 2 $ eq (snd (3, 4)) 4
+        where fst (x,_) = x
+           et snd (_,y) = y

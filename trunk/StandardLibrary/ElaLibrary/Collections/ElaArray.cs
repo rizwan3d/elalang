@@ -87,8 +87,6 @@ namespace Ela.Library.Collections
 
 		protected override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
 		{
-			index = index.Id(ctx);
-
 			if (index.TypeCode != ElaTypeCode.Integer)
 			{
 				ctx.InvalidIndexType(index);
@@ -109,8 +107,6 @@ namespace Ela.Library.Collections
 
 		protected override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
 		{
-			index = index.Id(ctx);
-
 			if (index.TypeCode != ElaTypeCode.Integer)
 			{
 				ctx.InvalidIndexType(index);

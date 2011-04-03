@@ -955,17 +955,17 @@ internal sealed partial class Parser {
 		flags = ElaVariableFlags.None; 
 		if (la.kind == 33) {
 			Get();
-			flags = ElaVariableFlags.Private; 
+			flags |= ElaVariableFlags.Private; 
 			if (la.kind == 59) {
 				Get();
-				flags = ElaVariableFlags.Inline; 
+				flags |= ElaVariableFlags.Inline; 
 			}
 		} else if (la.kind == 59) {
 			Get();
-			flags = ElaVariableFlags.Inline; 
+			flags |= ElaVariableFlags.Inline; 
 			if (la.kind == 33) {
 				Get();
-				flags = ElaVariableFlags.Private; 
+				flags |= ElaVariableFlags.Private; 
 			}
 		} else SynErr(90);
 	}

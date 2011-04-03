@@ -1,18 +1,3 @@
-let firstSecond {eq} =
-        let fst (x, _) = x in
-        let snd (_, y) = y in
-        eq (fst (2, 3)) 2 $ eq (snd (3, 4)) 4
-
-let triangles {eq,eqt} =
-        let head' x::xs = x in
-        let triangles' = [ (a,b,c) \\ c <- [1..10], b <- [1..c], a <- [1..b] |
-                            a**2 + b**2 == c**2, a+b+c == 24]
-        in
-        eqt ((head' triangles') is ?tuple)
-        $ eq (head' triangles').[0] 6
-        $ eq (head' triangles').[1] 8
-        $ eq (head' triangles').[2] 10
-
 let zips {eqt} =
         let zip x::xs y::ys = (x, y) :: zip xs ys
             zip _ _         = [] in

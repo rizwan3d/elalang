@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Ela.Compilation;
 
 namespace Ela.Runtime
 {
@@ -30,6 +31,8 @@ namespace Ela.Runtime
 		public int SequenceLength { get; private set; }
 
 		public string Format { get; private set; }
+
+		public int Flags { get; set; }
 		#endregion
 	}
 }

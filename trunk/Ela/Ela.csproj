@@ -240,6 +240,7 @@
     <Compile Include="Debug\SymTables.cs" />
     <Compile Include="Runtime\ObjectModel\ElaBoolean.cs" />
     <Compile Include="Runtime\ObjectModel\ElaChar.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaLazyList.cs" />
     <Compile Include="Runtime\ObjectModel\ElaUnit.cs" />
     <Compile Include="FormatHelper.cs" />
     <Compile Include="Debug\VarSym.cs" />

@@ -63,3 +63,25 @@ let partialOperators {eq} =
            et sub2 = (-2)
            et div = (/)
            et div2 = (8/)
+
+let private inline
+    sum x y = x + y
+ et even x = x % 2 == 0
+ et odd x = x % 2 <> 0
+ et calc x y = (x / y) * (x + y) 
+ et compare x y = if x > y then `Gt else `NotGt
+
+let inline1 {eq,eqt,eqf} =
+        eq (sum 2 3) 5
+        $ eq (sum 4 12.2) 16.2
+        $ eqt (even 4)
+        $ eqf (even 3)
+        $ eqt (odd 3)
+        $ eqf (odd 6)
+
+let inline2 {eq} =
+        eq (calc 123 23) 730
+        $ eq (calc 700 14) 35700
+        $ eq (compare 10 2) (`Gt)
+        $ eq (compare 18 1.222) (`Gt)
+        $ eq (compare 13 13.9) (`NotGt)

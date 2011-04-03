@@ -55,3 +55,12 @@ let listLazy2 {eqt} =
 let compOperator {eqt} =
         eqt (lst is [2,4,6,8,10])
         where lst = [] @@ [x \\ x <- [1..10] | x % 2 == 0]
+        
+let triangles {eq,eqt} =
+        eqt ((head triangles) is ?tuple)
+        $ eq (head triangles).[0] 6
+        $ eq (head triangles).[1] 8
+        $ eq (head triangles).[2] 10
+        where head x::xs = x
+           et triangles = [(a,b,c) \\ c <- [1..10], b <- [1..c], a <- [1..b] |
+                            a**2 + b**2 == c**2, a+b+c == 24]

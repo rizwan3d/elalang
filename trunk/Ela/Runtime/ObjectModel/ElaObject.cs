@@ -392,10 +392,9 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal virtual ElaValue Force(ExecutionContext ctx)
+		protected internal virtual ElaValue Force(ElaValue @this, ExecutionContext ctx)
 		{
-			ctx.NoOperator(new ElaValue(this), "force");
-			return Default();
+			return @this;
 		}
 
 

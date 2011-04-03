@@ -5,9 +5,15 @@
         where t = (& 2 + 2)
     
 let lazyList {eqt} =
-        eqt (lst is (_::_::(?lazy)))
-        $ eqt (lst is (1::5::xs))
-        where lst = 1 :: (& 2 + 3) :: (& 44 - 40) 
+        eqt (lst is (0::1::xs))
+        where make n = n :: (& make (n + 1))
+           et lst = make 0
+           
+let lazyList2 {eqt} =
+          eqt <| xs is (1::2::3::_)
+        $ eqt <| xs is (1::2::3::1::2::3::_)
+        where cycle xs = xs ++ (& cycle xs)
+           et xs = cycle [1,2,3]
                 
 let memoization {eq} =
         let x = {!x=0} in

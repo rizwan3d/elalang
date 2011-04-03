@@ -115,7 +115,7 @@ namespace Ela.Runtime
 
 		public ElaValue Id(ExecutionContext ctx)
 		{
-			return Ref.TypeId == ElaMachine.LAZ ? Ref.Force(ctx) : this;
+			return Ref.TypeId == ElaMachine.LAZ ? Ref.Force(this, ctx) : this;
 		}
 
 
@@ -709,7 +709,7 @@ namespace Ela.Runtime
 
         public ElaValue Force(ExecutionContext ctx)
         {
-            return Ref.Force(ctx);
+            return Ref.Force(this, ctx);
         }
 
 

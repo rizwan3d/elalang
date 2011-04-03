@@ -52,9 +52,9 @@ namespace Ela.CodeModel
 		}
 
 
-		//public static string BuiltinAsString(ElaOperator op)
+		//public static string BuiltinAsString(ElaOperator Op)
 		//{
-		//    switch (op)
+		//    switch (Op)
 		//    {
 		//        case ElaOperator.Add: return "+";
 		//        case ElaOperator.Assign: return "<-";

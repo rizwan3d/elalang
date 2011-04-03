@@ -48,7 +48,7 @@ namespace Ela.Library.Collections
 
         public ElaUnit Add(ElaValue value, ElaArray arr)
         {
-            arr.Add(value);
+            //arr.Add(value);
             return ElaUnit.Instance;
         }
 

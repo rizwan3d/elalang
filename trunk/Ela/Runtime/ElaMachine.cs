@@ -110,11 +110,11 @@ namespace Ela.Runtime
 			}
 			//catch (Exception ex)
 			//{
-			//    var op = MainThread.Module != null && MainThread.Offset > 0 &&
+			//    var Op = MainThread.Module != null && MainThread.Offset > 0 &&
 			//        MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
 			//        MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
 
-			//    throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
+			//    throw Exception("CriticalError", ex, MainThread.Offset - 1, Op);
 			//}
 
 			var evalStack = MainThread.CallStack[0].Stack;
@@ -286,7 +286,7 @@ namespace Ela.Runtime
 					case Op.Pushelem:
 						right = evalStack.Pop();
 						left = evalStack.PopFast();
-						evalStack.Push(left.Id(ctx).Ref.GetValue(right.Id(ctx), ctx));
+						evalStack.Push(left.Ref.GetValue(right.Id(ctx), ctx));
 
 						if (ctx.Failed)
 						{
@@ -297,7 +297,7 @@ namespace Ela.Runtime
 						break;
 					case Op.PushelemI4:
 						right = evalStack.Peek();
-						evalStack.Replace(right.Id(ctx).Ref.GetValue(new ElaValue(opd), ctx));
+						evalStack.Replace(right.Ref.GetValue(new ElaValue(opd), ctx));
 
 						if (ctx.Failed)
 						{
@@ -309,7 +309,7 @@ namespace Ela.Runtime
 					case Op.Pushelemi:
 						right = evalStack.PopFast();
 						i4 = opd & Byte.MaxValue;
-						evalStack.Push(right.Id(ctx).Ref.GetValue(i4 == 0 ? locals[opd >> 8] :
+						evalStack.Push(right.Ref.GetValue(i4 == 0 ? locals[opd >> 8] :
 							captures[captures.Count - i4][opd >> 8], ctx));
 
 						if (ctx.Failed)
@@ -322,7 +322,7 @@ namespace Ela.Runtime
 					case Op.Pushfld:
 						{
 							var fld = frame.Strings[opd];
-							right = evalStack.PopFast().Id(ctx);
+							right = evalStack.PopFast();
 
 							if (right.TypeId == MOD)
 							{
@@ -438,8 +438,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Id(ctx);
-						evalStack.Replace(res.Ref.BitwiseAnd(res, right.Id(ctx), ctx));
+						evalStack.Replace(left.Ref.BitwiseAnd(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -457,8 +456,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Id(ctx);
-						evalStack.Replace(res.Ref.BitwiseOr(res, right.Id(ctx), ctx));
+						evalStack.Replace(left.Ref.BitwiseOr(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -476,8 +474,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Id(ctx);
-						evalStack.Replace(res.Ref.BitwiseXor(res, right.Id(ctx), ctx));
+						evalStack.Replace(left.Ref.BitwiseXor(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -495,8 +492,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Id(ctx);
-						evalStack.Replace(res.Ref.ShiftLeft(res, right.Id(ctx), ctx));
+						evalStack.Replace(left.Ref.ShiftLeft(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -514,8 +510,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Id(ctx);
-						evalStack.Replace(res.Ref.ShiftRight(res, right.Id(ctx), ctx));
+						evalStack.Replace(left.Ref.ShiftRight(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -525,8 +520,8 @@ namespace Ela.Runtime
 						break;
 					case Op.Concat:
 						left = evalStack.Pop();
-						right = evalStack.Peek().Id(ctx);
-						evalStack.Replace(left.Ref.Concatenate(left, right.Id(ctx), ctx));
+						right = evalStack.Peek();
+						evalStack.Replace(left.Concatenate(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -544,8 +539,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Id(ctx);
-						evalStack.Replace(res.Ref.Add(res, right.Id(ctx), ctx));
+						evalStack.Replace(left.Ref.Add(left, right, ctx));
 						
 						if (ctx.Failed)
 						{
@@ -563,8 +557,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Id(ctx);
-						evalStack.Replace(res.Ref.Subtract(res, right.Id(ctx), ctx));
+						evalStack.Replace(left.Ref.Subtract(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -574,8 +567,8 @@ namespace Ela.Runtime
 						break;
 					case Op.Div:
 						left = evalStack.Pop();
-						right = evalStack.Peek().Id(ctx);
-						evalStack.Replace(left.Ref.Divide(left, right.Id(ctx), ctx));
+						right = evalStack.Peek();
+						evalStack.Replace(left.Divide(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -593,8 +586,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Id(ctx);
-						evalStack.Replace(res.Ref.Multiply(res, right.Id(ctx), ctx));
+						evalStack.Replace(left.Ref.Multiply(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -604,8 +596,8 @@ namespace Ela.Runtime
 						break;
 					case Op.Pow:
 						left = evalStack.Pop();
-						right = evalStack.Peek().Id(ctx);
-						evalStack.Replace(left.Ref.Power(left, right.Id(ctx), ctx));
+						right = evalStack.Peek();
+						evalStack.Replace(left.Ref.Power(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -615,8 +607,8 @@ namespace Ela.Runtime
 						break;
 					case Op.Rem:
 						left = evalStack.Pop();
-						right = evalStack.Peek().Id(ctx);
-						evalStack.Replace(left.Ref.Remainder(left, right.Id(ctx), ctx));
+						right = evalStack.Peek();
+						evalStack.Replace(left.Ref.Remainder(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -664,8 +656,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Id(ctx);
-						evalStack.Replace(res.Ref.Greater(res, right.Id(ctx), ctx));
+						evalStack.Replace(left.Ref.Greater(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -683,8 +674,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Id(ctx);
-						evalStack.Replace(res.Ref.Lesser(res, right.Id(ctx), ctx));
+						evalStack.Replace(left.Ref.Lesser(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -702,8 +692,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Id(ctx);
-						evalStack.Replace(res.Ref.Equal(res, right.Id(ctx), ctx));
+						evalStack.Replace(left.Ref.Equal(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -721,8 +710,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Id(ctx);
-						evalStack.Replace(res.Ref.NotEqual(res, right.Id(ctx), ctx));
+						evalStack.Replace(left.Ref.NotEqual(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -740,8 +728,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Id(ctx);
-						evalStack.Replace(res.Ref.GreaterEqual(res, right.Id(ctx), ctx));
+						evalStack.Replace(left.Ref.GreaterEqual(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -759,8 +746,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Id(ctx);
-						evalStack.Replace(res.Ref.LesserEqual(res, right.Id(ctx), ctx));
+						evalStack.Replace(left.Ref.LesserEqual(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -781,7 +767,7 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Elem:
-                        right = evalStack.Peek().Id(ctx);
+                        right = evalStack.Peek();
                         res = right.Ref.GetLength(ctx);
 
                         if (!res.Equal(res, new ElaValue(opd & Byte.MaxValue), ctx).Bool(ctx))
@@ -824,7 +810,6 @@ namespace Ela.Runtime
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
-
 						break;
 					case Op.Gen:
 						right = evalStack.Pop();
@@ -848,7 +833,7 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Tail:
-						evalStack.Replace(evalStack.Peek().Id(ctx).Ref.Tail(ctx));
+						evalStack.Replace(evalStack.Peek().Ref.Tail(ctx));
 						
 						if (ctx.Failed)
 						{
@@ -857,7 +842,7 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Head:
-						evalStack.Replace(evalStack.Peek().Id(ctx).Ref.Head(ctx));
+						evalStack.Replace(evalStack.Peek().Ref.Head(ctx));
 
 						if (ctx.Failed)
 						{
@@ -866,7 +851,7 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Nil:
-						evalStack.Replace(evalStack.Peek().Id(ctx).Nil(ctx));
+						evalStack.Replace(evalStack.Peek().Nil(ctx));
 
 						if (ctx.Failed)
 						{
@@ -875,7 +860,7 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Isnil:
-						evalStack.Replace(new ElaValue(evalStack.Peek().Id(ctx).Ref.IsNil(ctx)));
+						evalStack.Replace(new ElaValue(evalStack.Peek().Ref.IsNil(ctx)));
 
 						if (ctx.Failed)
 						{
@@ -884,7 +869,7 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Len:
-						evalStack.Replace(evalStack.Peek().Id(ctx).Ref.GetLength(ctx));
+						evalStack.Replace(evalStack.Peek().Ref.GetLength(ctx));
 
 						if (ctx.Failed)
 						{
@@ -894,7 +879,7 @@ namespace Ela.Runtime
 
 						break;
 					case Op.Hasfld:
-						evalStack.Replace(evalStack.Peek().Id(ctx).Ref.HasField(frame.Strings[opd], ctx));
+						evalStack.Replace(evalStack.Peek().Ref.HasField(frame.Strings[opd], ctx));
 
 						if (ctx.Failed)
 						{
@@ -927,7 +912,6 @@ namespace Ela.Runtime
 							break;
 						}
 
-						right = right.Id(ctx);
 						evalStack.Replace(right.Ref.Bool(right, ctx));
 
 						if (ctx.Failed)
@@ -945,7 +929,6 @@ namespace Ela.Runtime
 							break;
 						}
 
-						right = right.Id(ctx);
 						evalStack.Replace(right.Ref.Negate(right, ctx));
 
 						if (ctx.Failed)
@@ -963,7 +946,6 @@ namespace Ela.Runtime
 							break;
 						}
 
-						right = right.Id(ctx);
 						evalStack.Replace(right.Ref.BitwiseNot(right, ctx));
 
 						if (ctx.Failed)
@@ -973,7 +955,7 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Conv:
-						right = evalStack.Peek().Id(ctx);
+						right = evalStack.Peek();
 						evalStack.Replace(right.Ref.Convert(right, (ElaTypeCode)opd, ctx));
 
 						if (ctx.Failed)
@@ -986,7 +968,7 @@ namespace Ela.Runtime
 
 					#region Goto Operations
 					case Op.Skiptl:
-						right = evalStack.PopFast().Id(ctx);
+						right = evalStack.PopFast();
 
 						if (right.Ref.IsNil(ctx))
 						{
@@ -1025,7 +1007,7 @@ namespace Ela.Runtime
 								break;
 							}
 
-							var obj = right.Ref.Tail(ctx).Id(ctx);
+							var obj = right.Ref.Tail(ctx);
 
 							if (!obj.Ref.IsNil(ctx))
 							{
@@ -1050,7 +1032,7 @@ namespace Ela.Runtime
 							break;
 						}
 					case Op.Skiphtag:
-						right = evalStack.Pop().Id(ctx);
+						right = evalStack.Pop();
 
 						if (!String.IsNullOrEmpty(right.Ref.GetTag(ctx)))
 						{
@@ -1066,7 +1048,7 @@ namespace Ela.Runtime
 
 						break;
 					case Op.Skiptag:
-						right = evalStack.Pop().Id(ctx);
+						right = evalStack.Pop();
 
 						if (frame.Strings[opd] == right.Ref.GetTag(ctx))
 						{
@@ -1092,8 +1074,6 @@ namespace Ela.Runtime
 							break;
 						}
 
-						right = right.Id(ctx);
-
 						if (right.Ref.Bool(right, ctx) && !ctx.Failed)
 						{
 							thread.Offset = opd;
@@ -1116,8 +1096,6 @@ namespace Ela.Runtime
 
 							break;
 						}
-
-						right = right.Id(ctx);
 
 						if (!right.Ref.Bool(right, ctx) && !ctx.Failed)
 						{
@@ -1146,8 +1124,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						left = left.Id(ctx);
-						left = left.Ref.Equal(left, right.Id(ctx), ctx);
+						left = left.Ref.Equal(left, right, ctx);
 
 						if (left.Ref.Bool(left, ctx) && !ctx.Failed)
 						{
@@ -1173,8 +1150,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						left = left.Id(ctx);
-						left = left.Ref.NotEqual(left, right.Id(ctx), ctx);
+						left = left.Ref.NotEqual(left, right, ctx);
 
 						if (left.Ref.Bool(left, ctx) && !ctx.Failed)
 						{
@@ -1200,8 +1176,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						left = left.Id(ctx);
-						left = left.Ref.Lesser(left, right.Id(ctx), ctx);
+						left = left.Ref.Lesser(left, right, ctx);
 
 						if (left.Ref.Bool(left, ctx) && !ctx.Failed)
 						{
@@ -1227,8 +1202,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						left = left.Id(ctx);
-						left = left.Ref.Greater(left, right.Id(ctx), ctx);
+						left = left.Ref.Greater(left, right, ctx);
 
 						if (left.Ref.Bool(left, ctx) && !ctx.Failed)
 						{
@@ -1243,7 +1217,7 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Brnil:
-						right = evalStack.PopFast().Id(ctx);
+						right = evalStack.PopFast();
 
 						if (right.IsNil(ctx))
 							thread.Offset = opd;
@@ -1262,7 +1236,7 @@ namespace Ela.Runtime
 						evalStack.Replace(new ElaValue(new ElaVariant(frame.Strings[opd], right)));
 						break;
 					case Op.Newlazy:
-						evalStack.Push(new ElaValue(new ElaLazy((ElaFunction)evalStack.Pop().Ref)));
+						evalStack.Push(new ElaValue(new ElaLazy((ElaFunction)evalStack.Pop().Ref, thread.Module)));
 						break;
 					case Op.Newfun:
 						{
@@ -1335,7 +1309,7 @@ namespace Ela.Runtime
 					#region Function Operations
 					case Op.Flip:
 						{
-							right = evalStack.Peek();
+							right = evalStack.Peek().Id(ctx);
 
 							if (right.TypeId != FUN)
 							{
@@ -1351,21 +1325,21 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Call:
-						if (Call(evalStack.Pop().Id(ctx).Ref, thread, evalStack, null))
+						if (Call(evalStack.Pop().Ref, thread, evalStack, null))
 							goto SWITCH_MEM;
 						break;
 					case Op.LazyCall:
 						{
 							var fun = ((ElaFunction)evalStack.Pop().Ref).CloneFast();
 							fun.LastParameter = evalStack.Pop();
-							evalStack.Push(new  ElaValue(new ElaLazy(fun)));
+							evalStack.Push(new  ElaValue(new ElaLazy(fun, thread.Module)));
 						}
 						break;
 					case Op.Callt:
 						{
 							var cp = callStack.Pop();
 
-							if (Call(evalStack.Pop().Id(ctx).Ref, thread, evalStack, cp))
+							if (Call(evalStack.Pop().Ref, thread, evalStack, cp))
 								goto SWITCH_MEM;
 							else
 								callStack.Push(cp);
@@ -1403,7 +1377,6 @@ namespace Ela.Runtime
 							break;
 						}
 
-						right = right.Id(ctx);
 						evalStack.Replace(right.Ref.Successor(right, ctx));
 
 						if (ctx.Failed)
@@ -1421,7 +1394,6 @@ namespace Ela.Runtime
 							break;
 						}
 
-						right = right.Id(ctx);
 						evalStack.Replace(right.Ref.Predecessor(right, ctx));
 
 						if (ctx.Failed)
@@ -1431,7 +1403,7 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Max:
-						right = evalStack.Peek().Id(ctx);
+						right = evalStack.Peek();
 						evalStack.Replace(right.Ref.GetMax(right, ctx));
 
 						if (ctx.Failed)
@@ -1442,7 +1414,7 @@ namespace Ela.Runtime
 
 						break;
 					case Op.Min:
-						right = evalStack.Peek().Id(ctx);
+						right = evalStack.Peek();
 						evalStack.Replace(right.Ref.GetMin(right, ctx));
 
 						if (ctx.Failed)
@@ -1459,8 +1431,8 @@ namespace Ela.Runtime
 						break;
 					case Op.Show:
 						{
-							left = evalStack.Pop().Id(ctx);
-							right = evalStack.Peek().Id(ctx);
+							left = evalStack.Pop();
+							right = evalStack.Peek();
 
 							if (left.TypeId != STR)
 							{

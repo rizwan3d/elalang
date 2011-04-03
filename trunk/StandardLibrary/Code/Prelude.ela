@@ -43,3 +43,4 @@ let fst3 = __internal fst3
 let snd3 = __internal snd3
 
 let type = __internal type
+let force = __internal force

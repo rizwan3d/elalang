@@ -40,6 +40,8 @@ namespace Ela.CodeModel
 
         Snd3,
 
+		Clone,
+
 
 		Negate,
 

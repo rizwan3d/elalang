@@ -1,3 +1,5 @@
+0.8.6.103:Fix:Placeholder symbol '_' was compiled with an error.
+0.8.6.102:Fix:Function call on a left-hand side could cause VM stack corruption (compilation logic error).
 0.8.6.101:New:Now Ela supports inline functions through an 'inline' modifier.
 0.8.6.100:Change:ElaTraits flags are decomissioned. Instead ElaPatterns flags will be used.
 0.8.6.99:Change:Builtin functions 'typeid' and 'show' are decomissioned. Function 'show' will now be defined as a partially applied 'showf'.

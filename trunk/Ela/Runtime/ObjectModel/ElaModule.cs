@@ -136,15 +136,19 @@ namespace Ela.Runtime.ObjectModel
             {
                 foreach (var v in frame.GlobalScope.EnumerateNames())
                 {
-                    var sv = frame.GlobalScope.GetVariable(v);
-                    var val = vm.GetVariableByHandle(Handle, sv.Address);
+					var sv = frame.GlobalScope.GetVariable(v);
 
-                    if (val.Ref != null)
-                        yield return new ElaRecord(
-                            new ElaRecordField(ADDRESS, sv.Address, false),
-                            new ElaRecordField(VARNAME, v, false),
-                            new ElaRecordField(VALUE, val, false),
-                            new ElaRecordField(ISPRIVATE, (sv.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private, false));
+					if ((sv.Flags & ElaVariableFlags.Private) != ElaVariableFlags.Private)
+					{
+						var val = vm.GetVariableByHandle(Handle, sv.Address);
+
+						if (val.Ref != null)
+							yield return new ElaRecord(
+								new ElaRecordField(ADDRESS, sv.Address, false),
+								new ElaRecordField(VARNAME, v, false),
+								new ElaRecordField(VALUE, val, false),
+								new ElaRecordField(ISPRIVATE, (sv.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private, false));
+					}
                 }
             }
         }

@@ -1,14 +1,20 @@
 ﻿using System;
+using Ela.CodeModel;
+using Ela.Compilation;
 
 namespace Ela.Runtime.ObjectModel
 {
-	internal sealed class ElaLazy : ElaObject
+	public sealed class ElaLazy : ElaObject
 	{
 		#region Construction
-		internal ElaLazy(ElaFunction function) : base(ElaTypeCode.Lazy)
+		private const int SEVAL = -1000;
+		private CodeFrame curMod;
+
+		internal ElaLazy(ElaFunction function, CodeFrame curMod) : base(ElaTypeCode.Lazy)
 		{
 			Function = function;
 			_value = default(ElaValue);
+			this.curMod = curMod;
 		}
 		#endregion
 
@@ -115,34 +121,248 @@ namespace Ela.Runtime.ObjectModel
 		internal ElaValue Force()
 		{
 			if (Value.Ref == null)
+			{
 				Value = Function.CallWithThrow(
 					Function.LastParameter.Ref != null ? Function.LastParameter :
 					new ElaValue(ElaUnit.Instance));
+			}
 
 			return Value;
 		}
 
 
-		protected internal override ElaValue Force(ExecutionContext ctx)
+		protected internal override ElaValue Force(ElaValue @this, ExecutionContext ctx)
+		{
+			return Force(ctx);
+		}
+
+
+		internal ElaValue Force(ExecutionContext ctx)
 		{
 			if (Value.Ref == null)
+			{
 				Value = Function.Call(
 					Function.LastParameter.Ref != null ? Function.LastParameter :
 					new ElaValue(ElaUnit.Instance), ctx);
+			}
 
 			return Value;
 		}
+		#endregion
 
 
-		protected internal override ElaValue Cons(ElaObject next, ElaValue value, ExecutionContext ctx)
+		#region Operations
+		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return new ElaValue(new ElaList(this, value));
+			return left.Force(ctx).Equal(left.Force(ctx), right.Force(ctx), ctx);
+		}
+
+
+		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return left.Force(ctx).NotEqual(left.Force(ctx), right.Force(ctx), ctx);
+		}
+
+
+		protected internal override ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return left.Force(ctx).Greater(left.Force(ctx), right.Force(ctx), ctx);
+		}
+
+
+		protected internal override ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return left.Force(ctx).Lesser(left.Force(ctx), right.Force(ctx), ctx);
+		}
+
+
+		protected internal override ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return left.Force(ctx).GreaterEqual(left.Force(ctx), right.Force(ctx), ctx);
+		}
+
+
+		protected internal override ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return left.Force(ctx).LesserEqual(left.Force(ctx), right.Force(ctx), ctx);
+		}
+
+
+		protected internal override ElaValue GetLength(ExecutionContext ctx)
+		{
+			return Force(ctx).Ref.GetLength(ctx);
+		}
+
+
+		protected internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
+		{
+			return Force(ctx).Ref.Successor(Value, ctx);
+		}
+
+
+		protected internal override ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
+		{
+			return Force(ctx).Ref.Predecessor(Value, ctx);
+		}
+
+
+		protected internal override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
+		{
+			return Force(ctx).Ref.GetValue(index.Force(ctx), ctx);
+		}
+
+
+		protected internal override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
+		{
+			Force(ctx).SetValue(index.Force(ctx), value, ctx);
+		}
+
+
+		protected internal override ElaValue GetMax(ElaValue @this, ExecutionContext ctx)
+		{
+			return Force(ctx).Ref.GetMax(Value, ctx);
+		}
+
+
+		protected internal override ElaValue GetMin(ElaValue @this, ExecutionContext ctx)
+		{
+			return Force(ctx).Ref.GetMin(Value, ctx);
+		}
+
+
+		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			if (left.Ref is ElaLazyList)
+				return ((ElaLazyList)left.Ref).Concatenate(left, right, ctx);
+			else if (right.Ref is ElaLazyList)
+				return ((ElaLazyList)right.Ref).Concatenate(left, right, ctx);
+			else if (left.Ref == this)
+				return Force(ctx).Ref.Concatenate(left, right, ctx);
+			else if (right.Ref == this && left.Ref is ElaList)
+			{
+				var xs = (ElaList)left.Ref;
+				var c = 0;
+				var newLst = default(ElaLazyList);
+
+				foreach (var e in xs.Reverse())
+				{
+					if (c == 0)
+						newLst = new ElaLazyList(this, e);
+					else
+						newLst = new ElaLazyList(newLst, e);
+
+					c++;
+				}
+
+				return new ElaValue(newLst);
+			}
+			else
+			{
+				ctx.Fail("Unable to concatenate two entities.");
+				return Default();
+			}
+		}
+
+
+		protected internal override ElaValue Add(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return left.Force(ctx).Add(left.Force(ctx), right.Force(ctx), ctx);		
+		}
+
+
+		protected internal override ElaValue Subtract(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return left.Force(ctx).Subtract(left.Force(ctx), right.Force(ctx), ctx);
+		}
+
+
+		protected internal override ElaValue Multiply(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return left.Force(ctx).Multiply(left.Force(ctx), right.Force(ctx), ctx);
+		}
+
+
+		protected internal override ElaValue Divide(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return left.Force(ctx).Divide(left.Force(ctx), right.Force(ctx), ctx);
+		}
+
+
+		protected internal override ElaValue Remainder(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return left.Force(ctx).Remainder(left.Force(ctx), right.Force(ctx), ctx);
+		}
+
+
+		protected internal override ElaValue Power(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return left.Force(ctx).Power(left.Force(ctx), right.Force(ctx), ctx);
+		}
+
+
+		protected internal override ElaValue BitwiseOr(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return left.Force(ctx).BitwiseOr(left.Force(ctx), right.Force(ctx), ctx);
+		}
+
+
+		protected internal override ElaValue BitwiseAnd(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return left.Force(ctx).BitwiseAnd(left.Force(ctx), right.Force(ctx), ctx);
+		}
+
+
+		protected internal override ElaValue BitwiseXor(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return left.Force(ctx).BitwiseXor(left.Force(ctx), right.Force(ctx), ctx);
+		}
+
+
+		protected internal override ElaValue BitwiseNot(ElaValue @this, ExecutionContext ctx)
+		{
+			return Force(ctx).Ref.BitwiseNot(Value, ctx);
+		}
+
+
+		protected internal override ElaValue ShiftRight(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return left.Force(ctx).ShiftRight(left.Force(ctx), right.Force(ctx), ctx);
+		}
+
+
+		protected internal override ElaValue ShiftLeft(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return left.Force(ctx).ShiftLeft(left.Force(ctx), right.Force(ctx), ctx);
+		}
+
+
+		protected internal override ElaValue Negate(ElaValue @this, ExecutionContext ctx)
+		{
+			return Force(ctx).Ref.Negate(Value, ctx);
+		}
+
+
+		protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
+		{
+			return Force(ctx).Ref.Bool(Value, ctx);
+		}
+		
+		
+		protected internal override ElaValue Cons(ElaObject instance, ElaValue value, ExecutionContext ctx)
+		{
+			return new ElaValue(new ElaLazyList(this, value));
+		}
+
+
+		protected internal override ElaValue Nil(ExecutionContext ctx)
+		{
+			return new ElaValue(ElaLazyList.Empty);
 		}
 
 
 		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
 		{
-			return new ElaValue(new ElaList(this, value));
+			return new ElaValue(new ElaLazyList(this, value));
 		}
 
 
@@ -152,24 +372,60 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Tail(ExecutionContext ctx)
+		protected internal override ElaValue GetField(string field, ExecutionContext ctx)
 		{
-			return Value.Ref != null && (Value.Ref.GetSupportedPatterns() & ElaPatterns.HeadTail) == ElaPatterns.HeadTail ? 
-                Value.Ref.Tail(ctx) : new ElaValue(ElaList.Empty);
+			return Force(ctx).Ref.GetField(field, ctx);
 		}
 
 
-		protected internal override ElaValue Head(ExecutionContext ctx)
+		protected internal override void SetField(string field, ElaValue value, ExecutionContext ctx)
 		{
-			return Value.Ref != null ?
-                ((Value.Ref.GetSupportedPatterns() & ElaPatterns.HeadTail) == ElaPatterns.HeadTail ? Value.Ref.Head(ctx) : Value) : 
-				Default();
+			Force(ctx).Ref.SetField(field, value, ctx);
 		}
 
 
-		protected internal override bool IsNil(ExecutionContext ctx)
+		protected internal override bool HasField(string field, ExecutionContext ctx)
 		{
-			return false;
+			return Force(ctx).Ref.HasField(field, ctx);
+		}
+
+
+		protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
+		{
+			if (Function == null)
+				return Value.Ref.Show(@this, info, ctx);
+			else
+				return "<thunk>";
+		}
+
+
+		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+		{
+			return Force(ctx).Ref.Convert(Value, type, ctx);
+		}
+
+
+		protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
+		{
+			return Force(ctx).Ref.Call(arg, ctx);
+		}
+
+
+		protected internal override string GetTag(ExecutionContext ctx)
+		{
+			return Force(ctx).Ref.GetTag(ctx);
+		}
+
+
+		protected internal override ElaValue Untag(ExecutionContext ctx)
+		{
+			return Force(ctx).Ref.Untag(ctx);
+		}
+
+
+		protected internal override ElaValue Clone(ExecutionContext ctx)
+		{
+			return Force(ctx).Ref.Clone(ctx);
 		}
 		#endregion
 

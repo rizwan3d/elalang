@@ -74,8 +74,6 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue GetValue(ElaValue key, ExecutionContext ctx)
 		{
-			key = key.Id(ctx);
-
 			if (key.TypeId == ElaMachine.STR)
 				return GetField(key.AsString(), ctx);
 			else if (key.TypeId == ElaMachine.INT)
@@ -96,7 +94,6 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
 		{
-			index = index.Id(ctx);
 			var res = SetResult.None;
 
 			if (index.TypeId == ElaMachine.STR)
