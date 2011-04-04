@@ -109,6 +109,7 @@
     <Compile Include="General\RealModule.cs" />
     <Compile Include="General\StringBuilderModule.cs" />
     <Compile Include="General\StringModule.cs" />
+    <Compile Include="Wrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Ela\Ela.csproj">

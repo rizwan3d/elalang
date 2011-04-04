@@ -1,3 +1,4 @@
+0.8.6.104:Fix:Recovery of Ela machine after errors in interactive mode wasn't always done correctly.
 0.8.6.103:Fix:Placeholder symbol '_' was compiled with an error.
 0.8.6.102:Fix:Function call on a left-hand side could cause VM stack corruption (compilation logic error).
 0.8.6.101:New:Now Ela supports inline functions through an 'inline' modifier.

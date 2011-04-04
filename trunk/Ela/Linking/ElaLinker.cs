@@ -73,8 +73,15 @@ namespace Ela.Linking
 
 			if (unres.Count > 0)
 			{
-				foreach (var u in unres)
-					AddError(ElaLinkerError.UnresolvedVariable, fi, u.Line, u.Column, u.Name);
+                var root = frame == this.Assembly.GetRootModule();
+
+                foreach (var u in unres)
+                {
+                    AddError(ElaLinkerError.UnresolvedVariable, fi, u.Line, u.Column, u.Name);
+
+                    if (root)
+                        frame.GlobalScope.Locals.Remove(u.Name);
+                }
 			}
 		}
 

@@ -22,7 +22,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionTracker", "Utils\Ver
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{4583F31E-CD15-4494-8307-E3BA0949C8E6}"
 	ProjectSection(SolutionItems) = preProject
-		Docs\ElaBook.doc = Docs\ElaBook.doc
+		Docs\CodeProjectArticle.htm = Docs\CodeProjectArticle.htm
 		Docs\ElaOverview1.txt = Docs\ElaOverview1.txt
 		Docs\ElaOverview2.txt = Docs\ElaOverview2.txt
 		Docs\ElaOverview3.txt = Docs\ElaOverview3.txt

@@ -2,6 +2,7 @@
 using Ela.Linking;
 using Ela.Runtime.ObjectModel;
 using Ela.Runtime;
+using System.Diagnostics;
 
 namespace Ela.Library.General
 {
@@ -18,20 +19,23 @@ namespace Ela.Library.General
 		#region Methods
 		public override void Initialize()
 		{
-			Add<Int64>("startClock", StartClock);
-			Add<Int64,String>("stopClock", StopClock);
+			Add<ElaObject>("startClock", StartClock);
+            Add<Wrapper<Stopwatch>,String>("stopClock", StopClock);
 		}
 
 
-		public long StartClock()
+		public ElaObject StartClock()
 		{
-			return DateTime.Now.Ticks;
+            var t = new Stopwatch();
+            t.Start();
+            return new Wrapper<Stopwatch>(t);
 		}
 
 
-		public string StopClock(long val)
+		public string StopClock(Wrapper<Stopwatch> val)
 		{
-			return ((Int32)(DateTime.Now - new DateTime(val)).TotalMilliseconds).ToString();
+            val.Value.Stop();
+            return val.Value.Elapsed.ToString();
 		}
 		#endregion
 	}

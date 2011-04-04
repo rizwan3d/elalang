@@ -256,7 +256,6 @@ namespace ElaConsole
 		private static int InterpretFile()
 		{
 			var res = default(LinkerResult);			
-			var dt = DateTime.Now;
 			
 			try 
 			{
@@ -294,11 +293,23 @@ namespace ElaConsole
 			linker.SetSource(source);
 			var res = linker.Build();
 			helper.PrintErrors(res.Messages);
-				
-			if (!res.Success)
-				return R_ERR;
-			else
-				return Execute(res.Assembly, true);
+
+            if (!res.Success)
+            {
+                if (res.Assembly != null)
+                {
+                    var r = res.Assembly.GetRootModule();
+
+                    if (r != null)
+                        lastOffset = r.Ops.Count;
+
+                    vm.Recover();
+                }
+
+                return R_ERR;
+            }
+            else
+                return Execute(res.Assembly, true);
 		}
 
 
@@ -323,36 +334,40 @@ namespace ElaConsole
 			{
 				try
 				{
-					if (vm == null)
-					{
-						if (opt.Arguments.Count > 0)
-						{
-							var tup = CompileArguments();
-							asm.AddArgument("args", tup);
-						}
+                    if (vm == null)
+                    {
+                        if (opt.Arguments.Count > 0)
+                        {
+                            var tup = CompileArguments();
+                            asm.AddArgument("args", tup);
+                        }
 
-						vm = new ElaMachine(asm);
-					}
-					else
-						vm.RefreshState();
+                        vm = new ElaMachine(asm);
+                    }
+                    else
+                    {
+                        vm.RefreshState();
+                        vm.Recover();
+                    }
 
 					if (opt.ShowTime && !interactive)
 						Warmup(asm); //GIT
 					
 					var os = lastOffset;
 					lastOffset = mod.Ops.Count;
-					var dt = DateTime.Now;
+                    var sw = new Stopwatch();
+                    sw.Start();
 					var exer = vm.Run(os);
+                    sw.Stop();
 
 					if (opt.ShowTime && !interactive)
-						Console.WriteLine("Execution time: {0}", DateTime.Now - dt);
+						Console.WriteLine("Execution time: {0}", sw.Elapsed);
 
 					if (exer.ReturnValue.TypeCode != ElaTypeCode.None && exer.ReturnValue.TypeCode != ElaTypeCode.Unit)
 						Console.WriteLine(exer.ReturnValue.ToString());
 				}
 				catch (ElaCodeException ex)
 				{
-					vm.Recover();
 					helper.PrintError(ex.ToString());
 					return R_ERR;
 				}
