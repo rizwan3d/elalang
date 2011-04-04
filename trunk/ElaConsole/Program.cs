@@ -302,8 +302,6 @@ namespace ElaConsole
 
                     if (r != null)
                         lastOffset = r.Ops.Count;
-
-                    vm.Recover();
                 }
 
                 return R_ERR;

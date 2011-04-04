@@ -1192,6 +1192,17 @@ namespace Ela.Compilation
 			return index;
 		}
 		#endregion
+
+
+		#region Misc
+		private Hints Untail(Hints hints)
+		{
+			if ((hints & Hints.Tail) == Hints.Tail)
+				return hints ^ Hints.Tail;
+			else
+				return hints;
+		}
+		#endregion
 		#endregion
 
 

@@ -1,3 +1,4 @@
+0.8.0.12:Fix:Interactive mode didn't always correctly process situation when Ela machine recovery is needed.
 0.8.0.11:Change:Now Ela Console support multiline mode through -ml switch.
 0.8.0.10:Change:Algorithm for execution speed calculation is enhanced.
 0.8.0.9:Change: A 'reload' command is removed. Now one can't reload an already loaded module because of possible problems with automatically declared names.

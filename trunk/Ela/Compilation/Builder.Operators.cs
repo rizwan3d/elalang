@@ -8,13 +8,10 @@ namespace Ela.Compilation
 		#region Main
 		private ExprData CompileBinary(ElaBinary bin, LabelMap map, Hints hints)
 		{
-			var newHints =
-				((hints & Hints.Scope) == Hints.Scope ? Hints.Scope : Hints.None) |
-				((hints & Hints.Nested) == Hints.Nested ? Hints.Nested : Hints.None);
+			CompileBinaryMain(bin.Operator, bin, map, hints);
 
-			CompileBinaryMain(bin.Operator, bin, map, newHints);
-
-			if ((hints & Hints.Left) == Hints.Left)
+			if ((hints & Hints.Left) == Hints.Left &&
+				bin.Operator != ElaOperator.Assign && bin.Operator != ElaOperator.Swap)
 				AddValueNotUsed(bin);
 
 			return ExprData.Empty;
@@ -25,15 +22,16 @@ namespace Ela.Compilation
 		{
 			var exitLab = default(Label);
 			var termLab = default(Label);
+			var ut = Untail(hints);
 
 			switch (op)
 			{
 				case ElaOperator.BooleanAnd:
-					CompileExpression(bin.Left, map, hints);
+					CompileExpression(bin.Left, map, ut);
 					termLab = cw.DefineLabel();
 					exitLab = cw.DefineLabel();
 					cw.Emit(Op.Brfalse, termLab);
-					CompileExpression(bin.Right, map, hints);
+					CompileExpression(bin.Right, map, ut);
 					cw.Emit(Op.Br, exitLab);
 					cw.MarkLabel(termLab);
 					cw.Emit(Op.PushI1_0);
@@ -41,11 +39,11 @@ namespace Ela.Compilation
 					cw.Emit(Op.Nop);
 					break;
 				case ElaOperator.BooleanOr:
-					CompileExpression(bin.Left, map, hints);
+					CompileExpression(bin.Left, map, ut);
 					termLab = cw.DefineLabel();
 					exitLab = cw.DefineLabel();
 					cw.Emit(Op.Brtrue, termLab);
-					CompileExpression(bin.Right, map, hints);
+					CompileExpression(bin.Right, map, ut);
 					cw.Emit(Op.Br, exitLab);
 					cw.MarkLabel(termLab);
 					cw.Emit(Op.PushI1_1);
@@ -53,10 +51,10 @@ namespace Ela.Compilation
 					cw.Emit(Op.Nop);
 					break;
 				case ElaOperator.Assign:
-					CompileAssign(bin, bin.Left, bin.Right, hints, map);
+					CompileAssign(bin, bin.Left, bin.Right, ut, map);
 					break;
 				case ElaOperator.Swap:
-					CompileSwap(bin, map, hints);
+					CompileSwap(bin, map, ut);
 					break;
 				case ElaOperator.Sequence:
 					CompileExpression(bin.Left, map, Hints.None);

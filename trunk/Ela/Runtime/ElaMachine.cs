@@ -8,6 +8,7 @@ using Ela.Compilation;
 using Ela.Debug;
 using Ela.Linking;
 using Ela.Runtime.ObjectModel;
+using System.Runtime.InteropServices;
 
 namespace Ela.Runtime
 {
@@ -1326,7 +1327,7 @@ namespace Ela.Runtime
 						break;
 					case Op.Call:
 						if (Call(evalStack.Pop().Ref, thread, evalStack, null))
-							goto SWITCH_MEM;
+						    goto SWITCH_MEM;
 						break;
 					case Op.LazyCall:
 						{
@@ -1660,7 +1661,7 @@ namespace Ela.Runtime
 			return Execute(t);
 
 		}
-
+		
 
 		private bool Call(ElaObject fun, WorkerThread thread, EvalStack stack, CallPoint cp)
 		{
@@ -1678,11 +1679,19 @@ namespace Ela.Runtime
 				return false;
 			}
 
-			var pop = true;
 			var natFun = (ElaFunction)fun;
 
 			if (natFun.Captures != null)
 			{
+				if (natFun.AppliedParameters < natFun.Parameters.Length)
+				{
+					var newFun = natFun.CloneFast();
+					newFun.Parameters[natFun.AppliedParameters] = stack.Peek();
+					newFun.AppliedParameters++;
+					stack.Replace(new ElaValue(newFun));
+					return false;
+				}
+				
 				if (natFun.AppliedParameters == natFun.Parameters.Length)
 				{
 					if (natFun.ModuleHandle != thread.ModuleHandle)
@@ -1698,7 +1707,7 @@ namespace Ela.Runtime
 					if (cp == null)
 						thread.CallStack.Peek().BreakAddress = thread.Offset;
 
-					newStack.Push(stack.Pop());
+					newStack.Push(stack.PopFast());
 					
 					for (var i = 0; i < natFun.Parameters.Length; i++)
 						newStack.Push(natFun.Parameters[natFun.Parameters.Length - i - 1]);
@@ -1713,36 +1722,29 @@ namespace Ela.Runtime
 
 					thread.CallStack.Push(newMem);
 					thread.Offset = layout.Address;
+					return true;
 				}
-				else if (natFun.AppliedParameters < natFun.Parameters.Length)
-				{
-					var newFun = natFun.CloneFast();
-					newFun.Parameters[newFun.AppliedParameters] = stack.Pop();
-					newFun.AppliedParameters++;
-					stack.Push(new ElaValue(newFun));
-					pop = false;
-				}
-				else
-					InvalidParameterNumber(natFun.Parameters.Length + 1, natFun.Parameters.Length + 2, thread, stack);
+				
+				InvalidParameterNumber(natFun.Parameters.Length + 1, natFun.Parameters.Length + 2, thread, stack);
+				return true;
 			}
-			else
+
+			if (natFun.AppliedParameters == natFun.Parameters.Length)
 			{
-				pop = false;
-
-				if (natFun.AppliedParameters == natFun.Parameters.Length)
-					CallExternal(thread, stack, natFun);
-				else if (natFun.AppliedParameters < natFun.Parameters.Length)
-				{
-					var newFun = natFun.Clone();
-					newFun.Parameters[newFun.AppliedParameters] = stack.Pop();
-					newFun.AppliedParameters++;
-					stack.Push(new ElaValue(newFun));
-				}
-				else
-					InvalidParameterNumber(natFun.Parameters.Length + 1, natFun.Parameters.Length + 2, thread, stack);
+				CallExternal(thread, stack, natFun);
+				return false;
 			}
-
-			return pop;
+			else if (natFun.AppliedParameters < natFun.Parameters.Length)
+			{
+				var newFun = natFun.Clone();
+				newFun.Parameters[newFun.AppliedParameters] = stack.Peek();
+				newFun.AppliedParameters++;
+				stack.Replace(new ElaValue(newFun));
+				return true;
+			}
+			
+			InvalidParameterNumber(natFun.Parameters.Length + 1, natFun.Parameters.Length + 2, thread, stack);		
+			return true;
 		}
 
 

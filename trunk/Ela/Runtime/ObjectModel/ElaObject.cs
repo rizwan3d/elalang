@@ -332,8 +332,7 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal virtual ElaValue Nil(ExecutionContext ctx)
 		{
-			ctx.NoOperator(new ElaValue(this), "nil");
-			return Default();
+			return new ElaValue(ElaList.Empty);
 		}
 
 
