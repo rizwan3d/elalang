@@ -19,10 +19,10 @@ Ela Console uses a standard application configuration file for settings. If you 
 </configuration>
 }}}
 
-You can add multiple keys to the `appSettings` section. In order to learn how Ela Console can be configured simply lunch it with the `-help` key. You will see a list of command line options - all of these options can be specified via configuration file as well. For example lunching Ela Console like so `elac.exe -strict` is the same as having the following key in the configuration file:
+You can add multiple keys to the `appSettings` section. In order to learn how Ela Console can be configured simply lunch it with the `-help` key. You will see a list of command line options - all of these options can be specified via configuration file as well. For example lunching Ela Console like so `elac.exe -t` is the same as having the following key in the configuration file:
 
 {{{
-<add key="strict" value="true" />
+<add key="t" value="true" />
 }}}
 
 Normally you might need to provide some settings to Ela linker such as the locations where linker should look for the modules. It can be specified in the following manner:
@@ -36,7 +36,7 @@ You specify several folders separated by semicolon. Ela linker will use these fo
 
 == Compiling Ela ==
 
-Ela is implemented using C# 3.0 and runs on the .NET Framework 3.5 (or Mono 2.6). Higher versions of both .NET Framework and Mono are supported as well. All published builds are compiled using Microsoft C# 3.0 however the project can be also compiled with Microsoft C# 4.0. Other compilers (such as Mono C# compiler) are not currently used but would most likely work as well.
+Ela is implemented using C# 3.0 and runs on the .NET Framework 2.0 (or Mono 2.6). Higher versions of both .NET Framework and Mono are supported as well. All published builds are compiled using Microsoft C# 3.0 however the project can be also compiled with Microsoft C# 4.0. Other compilers (such as Mono C# compiler) are not currently used but would work as well.
 
 The code repository contains a Visual Studio 2008 solution that includes several projects - the core of them are Ela (which is a language implementation) and Ela Console (a command line utility that can be used to run Ela programs). If you need the language itself than _Ela_ project is all you need - this project is implemented in pure C#, without unsafe code and doesn't have any external dependencies except of the .NET Framework.
 
@@ -136,7 +136,7 @@ And now you can seamlessly use this module from Ela:
 {{{
 open Math
 
-let r = Math.rnd 0 42
+let r = rnd 0 42
 }}}
 
 You can also compile your module into regular .NET assembly, reference _Ela.dll_ and specify the following attribute:
@@ -145,4 +145,4 @@ You can also compile your module into regular .NET assembly, reference _Ela.dll_
 [assembly:ElaModule("Math", typeof(MathModule)]
 }}}
 
-Now you don't have to manually add this module into collection of modules. Ela linker will be able to find it without your help. But you will have to specify the dll name in your `open` directive like so: `open Math[MyMathDll]`.
+Now you don't have to manually add this module into collection of modules. Ela linker will be able to find it without your help. But you will have to specify the dll name in your `open` directive like so: `open Math#MyMathDll`.
