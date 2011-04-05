@@ -1,4 +1,5 @@
 #summary Code samples in Ela.
+#labels Featured
 
 = Code samples in Ela =
 
