@@ -49,8 +49,13 @@ namespace ElaConsole
 					break;
                 case "ml":
                     opts.Multiline = !opts.Multiline;
-                    Console.WriteLine("Multiline mode is {0}", opts.Multiline ? "on" : "off");
+					Console.WriteLine();
+					Console.WriteLine("Multiline mode is {0}.", opts.Multiline ? "on" : "off");
                     break;
+				default:
+					Console.WriteLine();
+					Console.WriteLine("Unrecognized interactive command '{0}'.", cmd);
+					break;
 			}
 		}
 

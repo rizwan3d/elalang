@@ -10,6 +10,7 @@ namespace Ela.Runtime.ObjectModel
 		private ElaMachine vm;
 		private static readonly ElaValue[] defaultParams = new ElaValue[] { new ElaValue(ElaUnit.Instance) };
 		private static readonly ElaValue[] emptyParams = new ElaValue[0];
+		private static readonly char[] ops = new char[] { '!', '%', '&', '*', '+', '-', '.', ':', '/', '<', '=', '>', '?', '@', '^', '|', '~' };
 		private const string DEF_NAME = "<f>";
         private const string MODULE = "module";
         private const string HANDLE = "handle";
@@ -259,7 +260,23 @@ namespace Ela.Runtime.ObjectModel
 					if (fs != null && fs.Name != null)
 						funName = fs.Name;
 				}
+				else
+				{
+					foreach (var sv in mod.GlobalScope.Locals)
+					{
+						var v = vm.GetVariableByHandle(ModuleHandle, sv.Value.Address);
+
+						if (v.TypeId == ElaMachine.FUN && ((ElaFunction)v.Ref).Handle == Handle)
+						{
+							funName = sv.Key;
+							break;
+						}
+					}
+				}
 			}
+
+			if (funName.IndexOfAny(ops) != -1)
+				funName = "(" + funName + ")";
 
 			return funName;
 		}

@@ -1,3 +1,5 @@
+0.9.0.2:Change:Now when function is formatter to a string function name is enclosed in parenthesis if it is an operator.
+0.9.0.1:Change:Now Ela function can determine its name even if there is no source code available and a module was read from an object file (works only for global functions).
 0.9.0.0:Release:Release of Ela 0.9.0
 0.8.6.103:Change:Now functions fst, snd, fst3 and snd3 are implemented as built-in functions.
 0.8.6.102:New:New built-in functions tag and untag are implemented (when applied to a variant they return a variant tag and tagged value respectively).
