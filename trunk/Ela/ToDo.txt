@@ -1,6 +1,8 @@
-﻿1. Possibly change syntax for partial application of operators, e.g. instead of (+2) use <+2>.==Reconsidered. Braces now are not needed at all.
-2. Make type conversion operator (:) extendable (probably through pervasives).==Probably remove this syntax at all.
-3. Move all reflection API to the standard library.==Reconsidered. API refactored but will remain the part of Ela core.
-4. Think about inability to convert to other than built-in types.
-5. Make sequencing operator a function. (Important)==Done ==Reconsidered.
-6. Traits ==Mitigated
+﻿1. Change syntax for comprehension operator (\\) or (:::)
+2. Bug in Core.all
+3. Names of functions are lost in object files
+4. Overloading
+5. "Interfaces"
+6. Symbolic equatations
+7. "Expression" pattern
+8. Tree data type and literal
