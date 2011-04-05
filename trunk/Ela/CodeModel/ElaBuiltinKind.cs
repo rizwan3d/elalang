@@ -42,6 +42,10 @@ namespace Ela.CodeModel
 
 		Clone,
 
+        Gettag,
+
+        Untag,
+
 
 		Negate,
 

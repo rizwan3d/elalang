@@ -73,7 +73,8 @@ namespace Ela.Compilation
 			1, //Skiphtag
 			1, //Ceqref,
 			1, //Nil
-        	1, //Clone			
+        	1, //Clone	
+		    1, //Gettag
 			
 			5, //Elem
 			5, //Skiptag

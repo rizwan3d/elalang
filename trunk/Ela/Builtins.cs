@@ -34,6 +34,10 @@ namespace Ela
                 case "fst3": return ElaBuiltinKind.Fst3;
                 case "snd": return ElaBuiltinKind.Snd;
                 case "snd3": return ElaBuiltinKind.Snd3;
+                case "clone": return ElaBuiltinKind.Clone;
+                case "gettag": return ElaBuiltinKind.Gettag;
+                case "untag": return ElaBuiltinKind.Untag;
+
 				case "showf": return ElaBuiltinKind.Showf;
 				
 				case "equal": return ElaBuiltinKind.Equal;

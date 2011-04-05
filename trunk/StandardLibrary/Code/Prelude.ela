@@ -20,8 +20,6 @@ let >  = __internal greater
 let >= = __internal greaterequal
 let <= = __internal lesserequal
 
-let === = __internal isref
-
 let :: = __internal cons
 let ++ = __internal concat
 let >> = __internal compforward
@@ -29,11 +27,18 @@ let << = __internal compbackward
 
 let not = __internal not
 
+let ===     = __internal isref
+let !== x y = not (x === y)
+
 let succ = __internal succ
 let pred = __internal pred
 
 let length = __internal length
-let nil = __internal nil
+
+let nil   = __internal nil
+let isNil = __internal isnil
+let head  = __internal head
+let tail  = __internal tail
 
 let flip = __internal flip
 
@@ -44,3 +49,11 @@ let snd3 = __internal snd3
 
 let type = __internal type
 let force = __internal force
+
+let showf = __internal showf
+let show  = showf ""
+
+let clone = __internal clone
+
+let tag   = __internal gettag
+let untag = __internal untag

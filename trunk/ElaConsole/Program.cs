@@ -225,8 +225,9 @@ namespace ElaConsole
 						{
 							if (!opt.Multiline)
 							{
-								InterpretString(source);
-								helper.PrintPrompt();
+                                Console.WriteLine();
+                                InterpretString(source);
+                                helper.PrintPrompt();
 							}
 							else
 							{
@@ -236,7 +237,7 @@ namespace ElaConsole
 								{
 									codeLines.AppendLine(source.TrimEnd(';'));
 									Console.WriteLine();
-									InterpretString(codeLines.ToString());
+                                    InterpretString(codeLines.ToString());
 									codeLines = new StringBuilder();
 									helper.PrintPrompt();
 								}

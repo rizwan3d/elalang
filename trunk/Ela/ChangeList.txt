@@ -1,3 +1,4 @@
+0.8.6.105:New:New built-in functions tag and untag are implement (when applied to a variant they return a variant tag and tagged value respectively).
 0.8.6.104:Fix:Recovery of Ela machine after errors in interactive mode wasn't always done correctly.
 0.8.6.103:Fix:Placeholder symbol '_' was compiled with an error.
 0.8.6.102:Fix:Function call on a left-hand side could cause VM stack corruption (compilation logic error).

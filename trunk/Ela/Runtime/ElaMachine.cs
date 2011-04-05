@@ -900,7 +900,22 @@ namespace Ela.Runtime
 						break;
 					case Op.Untag:
 						evalStack.Replace(evalStack.Peek().Ref.Untag(ctx));
+
+                        if (ctx.Failed)
+						{
+							ExecuteThrow(thread, evalStack);
+							goto SWITCH_MEM;
+						}
 						break;
+                    case Op.Gettag:
+                        evalStack.Replace(new ElaValue(evalStack.Peek().Ref.GetTag(ctx)));
+
+                        if (ctx.Failed)
+                        {
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
 					#endregion
 
 					#region Unary Operations
