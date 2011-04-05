@@ -75,14 +75,16 @@ let _ = subs [1,2,3] //[[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
 === Permutations ===
 
 {{{
+open Core
 let permutations []@n = n
     permutations xs0  = xs0 :: perms xs0 []
-                        where perms []    _   = []
-                              perms t::ts is' = foldr interleave (perms ts (t::is')) (permutations is')
-                                                where interleave xs r       = let (_,zs) = interleave' id xs r in zs
-                                                   et interleave' _ [] r    = (ts, r)
-                                                      interleave' f y::ys r = let (us,zs) = interleave' (f << (y::)) ys r
-                                                                              in  (y::us, f (t::y::us) :: zs)
+                where perms []    _   = []
+                      perms t::ts is' = foldr interleave (perms ts (t::is')) (permutations is')
+                            where interleave xs r       = let (_,zs) = interleave' id xs r in zs
+                               et interleave' _ [] r    = (ts, r)
+                                  interleave' f y::ys r = let (us,zs) = interleave' (f << (y::)) ys r
+                                                          in  (y::us, f (t::y::us) :: zs)
+
 let _ = permutations "abc"   //["abc","bac","cba","bca","cab","acb"]
 let _ = permutations [1,2,3] //[[1,2,3],[2,1,3],[3,2,1],[2,3,1],[3,1,2],[1,3,2]]
 }}}
