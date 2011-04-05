@@ -94,7 +94,7 @@ namespace Ela.Linking
 			{
 				foreach (var u in unres)
 				{
-					if (u.Line > mod.Line)
+					if (u.Line >= mod.Line)
 					{
 						ScopeVar sv;
 

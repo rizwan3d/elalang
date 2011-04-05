@@ -62,56 +62,12 @@ let e = CoreInternal.e
 
 
 /* Basic */
-
-/* a function with a recursive definition that can be
-    evaluated solely for the side effects of it first argument.
-    rec can be used for the function 'f' of one argument, rec2 - 
-    for the function 'f' of two arguments. */
-let rec f x = f x $ rec f
-
-let rec2 f x y = f x y $ rec2 f
-
-let until p f x | p x  = x
-                | else = until p f (f x)
-
-let compare x y | x == y = `EQ
-                | x <= y = `LT
-                | else   = `GT
-
 let chr (?int)@x = x:char
 
 let ord (?char)@x = x:int
 
 
-/* COMBINATORS */
-
-/* id, const and sub are SKI combinators */
-let id x = x//I
-
-let const x _ = x//K
-
-let sub x y z = x z (y z)//S
-
-/* fixed point combinator with non strict behavior
-    strict version of this function is as follows:
-    let fix f x = f (fix f) x */
-let fix f = f (& fix f)
-
-let on cmb f x y = f x `cmb` f y
-
-
 /* LIST FUNCTIONS */
-
-//Ix->a->a
-let !! x y = x.[y]
-
-//Seq->a
-let head x::_ = x
-    head []   = fail "Core.head: Empty list"
-
-//Seq->Seq
-let tail _::xs = xs
-    tail []    = fail "Core.tail: Empty list"
 
 //Seq->a
 let last x::[] = x
@@ -372,29 +328,3 @@ let intersectBy eq xs ys =  [x \\ x <- xs | any (eq x) ys]
 
 //Seq->Seq
 let intersect = intersectBy (==) 
-
-
-/* TUPLE FUNCTIONS */
-
-let => x y = (x, y)
-
-let fst (x, _) = x
-
-let snd (_, y) = y
-
-let fst3 (x, _, _) = x
-
-let snd3 (_, y, _) = y
-
-let swap (x, y) = (y, x)
-
-let swap3 (x, y, z) = (y, x, z)
-
-/* currying and uncurrying for functions with pairs and with triples. */
-let curry f x y = f (x, y)
-
-let uncurry f (x, y) = f x y
-
-let curry3 f x y z = f (x, y, z)
-
-let uncurry3 f (x, y, z) = f x y z

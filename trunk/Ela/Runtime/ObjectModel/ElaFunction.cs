@@ -248,12 +248,17 @@ namespace Ela.Runtime.ObjectModel
 
 			if (vm != null)
 			{
-				var syms = vm.Assembly.GetModule(ModuleHandle).Symbols;
-				var dr = new DebugReader(syms);
-				var fs = dr.GetFunSymByHandle(Handle);
+				var mod = vm.Assembly.GetModule(ModuleHandle);
+				var syms = mod.Symbols;
 
-				if (fs != null && fs.Name != null)
-					funName = fs.Name;
+				if (syms != null)
+				{
+					var dr = new DebugReader(syms);
+					var fs = dr.GetFunSymByHandle(Handle);
+
+					if (fs != null && fs.Name != null)
+						funName = fs.Name;
+				}
 			}
 
 			return funName;

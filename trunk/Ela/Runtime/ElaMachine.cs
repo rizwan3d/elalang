@@ -109,14 +109,14 @@ namespace Ela.Runtime
 			{
 				throw;
 			}
-            //catch (Exception ex)
-            //{
-            //    var Op = MainThread.Module != null && MainThread.Offset > 0 &&
-            //        MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
-            //        MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
+			catch (Exception ex)
+			{
+				var Op = MainThread.Module != null && MainThread.Offset > 0 &&
+					MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
+					MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
 
-            //    throw Exception("CriticalError", ex, MainThread.Offset - 1, Op);
-            //}
+				throw Exception("CriticalError", ex, MainThread.Offset - 1, Op);
+			}
 
 			var evalStack = MainThread.CallStack[0].Stack;
 

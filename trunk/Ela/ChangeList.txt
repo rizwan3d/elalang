@@ -1,106 +1,105 @@
-0.8.6.105:New:New built-in functions tag and untag are implement (when applied to a variant they return a variant tag and tagged value respectively).
-0.8.6.104:Fix:Recovery of Ela machine after errors in interactive mode wasn't always done correctly.
-0.8.6.103:Fix:Placeholder symbol '_' was compiled with an error.
-0.8.6.102:Fix:Function call on a left-hand side could cause VM stack corruption (compilation logic error).
-0.8.6.101:New:Now Ela supports inline functions through an 'inline' modifier.
-0.8.6.100:Change:ElaTraits flags are decomissioned. Instead ElaPatterns flags will be used.
-0.8.6.99:Change:Builtin functions 'typeid' and 'show' are decomissioned. Function 'show' will now be defined as a partially applied 'showf'.
-0.8.6.98:Change:Variants are now not transparent.
-0.8.6.97:Fix:Stack behavior for Newfun op code was calculated incorrectly.
-0.8.6.96:Fix:Match was incorrectly compiled when a single tuple element was used as a match expression.
-0.8.6.95:Fix:Ela linker didn't correctly process situations when an object file wasn't coupled with a source code file.
-0.8.6.94:Fix:Arguments for Ela functions passed from external context (such as .NET code) were passed in a wrong order.
-0.8.6.93:Fix:A bug fixed in head/tail pattern compilation logic.
-0.8.6.92:Change:Compilation stage and linking stage are now overlapping. All incudles are processed exactly after an include node is found by compiler. Compiler uses metadata from compiled imported modules to decide whether it is possible to inline some of the operators.
-0.8.6.91:Change:Compiler now has a setting that allows to specify the name of a module used as a Predule module (in this case no explicit import is required).
-0.8.6.90:Change:An ability to define/redefine any operator added. All standard operators now will be added through 'Prelude' module.
-0.8.6.89:Change:Major redesign in Ela parser and grammar. Now instead of specific operators Ela defines several tokens for operators. Priorioty and precendence is controlled by the first character (similar to OCaml/F#). Ela doesn't have built-in operators anymore except of special forms.
-0.8.6.88:Change:Most of Ela operators now uses a different evaluation order (from right to left) and are no more than regular functions. Because of that sequencing operator that requires left to right order is no longer a function, but a special form.
-0.8.6.87:Change:Ela multiline strings now have '<[ ... ]>' syntax.
-0.8.6.86:Change:Operators '<|' and '<<' are not right associative, but '>>' is not.
-0.8.6.85:Change:Minor refactoring in parsing of comprehensions (potential LL conflict in grammar is removed, no syntax changes).
-0.8.6.84:New:Now implicit naming of record fields is supported when records elements are variable references, e.g. '{x,y}'.
-0.8.6.83:Change:An ability to use negative numerics in pattern matching is (probably temporary) disabled.
-0.8.6.82:Change:Now it is possible to declare non-global operators and to pair operators with other declarations using 'et' keyword.
-0.8.6.81:Change:Pervasives engine is decomissioned (it is no longer needed with the new automatic module open procedure) along with corresponding op code and data structures. Custom operators are not treated like regular functions.
-0.8.6.80:Change:Now compiler doesn't track undefined variables. Linker does.
-0.8.6.79:Change:Now all module variables are imported automatically. An explicit import list is decomissioned.
-0.8.6.78:Fix:A critical bug in VM fixed - pervasives (such as operators) were initialized only for the first module that referenced a module with pervasives.
-0.8.6.77:New:Now Ela linker generates a warning if there is an referenced argument that wasn't supplied.
-0.8.6.76:Fix:A critical bug with pervasives fixed - VM crushed in pervasives (such as operators) were used not in a main module.
-0.8.6.75:New:New traits (with no corresponding logic) 'Int' and 'Real' are added to denote integer and real numbers.
-0.8.6.74:Change:Ela 'Fold' trait renamed to 'Seq'.
-0.8.6.73:Change:Type verification of pattern match is decomissioned. According to the language sematics all possible combinations of patterns are correct.
-0.8.6.72:Change:All previous warnings and hints that were generates in a case when an irrefutable pattern was used before other patterns are decomissioned.
-0.8.6.71:Change:MatchEntryAlwaysFail warning message now displays the pattern that will never match.
-0.8.6.70:Change:MatchEntryTypingFailed error now made into warning.
-0.8.6.69:New:Check for overlapping match entries is implemented (experimental).
-0.8.6.68:Change:Pretty printer for Ela AST is completely redesigned to support indented output.
-0.8.6.67:Fix:A bug in type check of patterns in pattern matching construct is fixed (string pattern and list pattern could be considered as invalid when this is a valid combination).
-0.8.6.66:Change:Ela now doesn't have any special treatment for unary operators. They are treated in the same way as binary. Unary notiation is allowed using "partial application" syntax. It changes almost nothing with the only exception that unary operators can be called using postfix notation.
-0.8.6.64:Change:Partial application for operators as well as operator referencing as functions now don't require braces.
-0.8.6.63:Change:Keyword 'and' is not replaced by keyword 'et'.
-0.8.6.62:Change:Now it is required to write function name before each function body.
-0.8.6.61:Fix:Syntax for 'binding' pattern changed.
-0.8.6.60:Fix:Now 'where' clause is correctly processed when it is attached to another 'where' clause (which e.g. is a regular variable binding).
-0.8.6.59:Change:Multiple refactorings in Ela parser.
-0.8.6.58:Fix:Multiple corrections in Ela parser error messages.
-0.8.6.57:New:Now 'F' (or 'f') prefix is supported by Ela numeric literals to denote single precision floating numbers.
-0.8.6.56:Fix:A critical error in compilation logic of comprehensions is fixed - multiple generators used to crash Ela machine.
-0.8.6.55:Change:Now ForeignModule has a Close method that is called when Ela machine is disposed (Ela machine implements IDisposable for that and now it is mandatory to dispose it).
-0.8.6.54:New:A sequencing operator '$' is now a function.
-0.8.6.53:Change:Parsing rules for 'match' and 'try' expressions are changed. Now they are not 'simple' expressions anymore and cannot be used in function application without parenthesis.
-0.8.6.52:Change:Minor enhancements in parser error reporting.
-0.8.6.51:Fix:A bug in parser fixed - parser could crash if you try to use an operator as a function when an operator is not a function but is a special form.
-0.8.6.50:New:Now Ela linker can accept files with no extension, files with .ela extension and files with .elaobj extension as primary module. It will always first try to read object file and only then - to compile a file.
-0.8.6.49:Fix:An error in object file reader and writer is fixed that could cause a linker crush or incorrect module deserialization because of an error in they way how module references were processed.
-0.8.6.48:Change:Ela supports optional "no layout" mode when semicolons are used as a replacement for indentation (will be useful in interactive mode).
-0.8.6.47:Change:Ela now supports entering expressions directly at the top level.
-0.8.6.46:Change:A new layout based syntax is implemented. Keyword 'end' is not longer required for 'let' and 'where' bindings (as well as for 'match' and 'try' expressions). Also semicolons are not required between match entries.
-0.8.6.45:Fix:A bug in functional literal compilation logic fixed - it could cause stack corruption when used on a left side of an expression.
-0.8.6.44:Fix:Parser could crush on a syntax error binding pattern.
-0.8.6.43:Fix:A bug in range compilation logic fixed - it didn't take into account situations when range is used at the left hand side and as a result generate code could cause stack corruption.
-0.8.6.42:Fix:A critical bug fixed in compilation logic of guards in pattern matching constructs.
-0.8.6.41:Fix:A critical bug fixed in compilation logic of head/tail pattern.
-0.8.6.40:Fix:Corrections in error message for 'TraitFieldSet' run time error.
-0.8.6.39:Fix:A warning ELA400 (UnitAlwaysFail) could be generated in an incorrect case (when applying 'Eq' trait to unit which is legal).
-0.8.6.38:Change:Now one can write expressions directly in the global scope.
-0.8.6.37:Change:Syntax for 'module open' directive is changed from 'open Foo[dllname] as MyFoo with x,y' to 'open Foo#dllname@MyFoo with x,y'.
-0.8.6.36:Fix:Minor fixes in implementation of 'Show' trait for ElaList.
-0.8.6.35:Change:All imperative cycles including 'for-to', 'for-downto', 'for-in' and 'while' are decomissioned. Also 'return', 'break' and 'continue' keywords are removed.
-0.8.6.34:Change:Syntax for mutable record fields changed from '{mutable x=...}' to '{!x=...}'.
-0.8.6.33:Change:Strict compiler mode is decomissioned (it only enforced errors on global mutable variables which are useless as soon as there are no mutable variables at all).
-0.8.6.32:Change:Ela doesn't support mutable variables anymore. One should use reference cells to achieve the same effect, e.g. '{!value=...}'.
-0.8.6.31:Fix:Parse could crash on a binding expression without initialization block, e.g. 'let foo'.
-0.8.6.30:Change:Minor corrections in compiler error messages.
-0.8.6.29:Change:Multiple code refactorings in order to support .NET 2.0 as a minimum requirement (C# 3.0 is still a minimum version of compiler that is needed to build Ela projects).
-0.8.6.28:New:Now ElaModule supports trait 'FieldGet'.
-0.8.6.27:Change:Now printing infinite lists (using 'show' trait and built-in formatter helper) cannot cycle - looping through the list will always stop after first 50 elements. If one needs to show more elements than these elements should be explicitely taken from list before that ('take').
-0.8.6.26:Change:Built-in function 'cout' (along with corresponding op code) is decomissioned. One should should use Con module for console output.
-0.8.6.25:Change:ElaRecord fully refactored. Now it doesn't inherit ElaTuple. Also support for 'Ord' and 'Num' traits is dropped. However records still provide structural equality.
-0.8.6.24:Change:Pattern matching in bindings ('let' and 'where') has changed. Now all patterns except of variant pattern can be used without extra parenthesis.
-0.8.6.23:New:Trait 'Cons' extended with a 'Nil' method that can be used to get a 'nil' instance of an entity. Also a new built-in 'nil' function is added to is mapped to this action.
-0.8.6.22:New:Not is is possible to create pervasives (such as custom operators) from foreign modules (modules written in .NET).
-0.8.6.21:New:A new built-in function 'ref' added (along with new op code Ceqref). This function can be used to test two given object using reference equality.
-0.8.6.20:Fix:A bug fixed in compilation logic of head/tail pattern for patterns that are combined from two nested patterns. A typical example of a case when this bug could be reproduced is when you have a head/tail pattern that ends with (xs@n) - in such as case 'n' variable wasn't declared at all.
-0.8.6.19:Change:Trait 'Seq' renamed to 'Ix'.
-0.8.6.18:New:A new public 'Concatenate' method added to ElaList (method can be used from .NET code to concatenate two lists).
-0.8.6.17:Change:Ela reflection API is fully refactored.
-0.8.6.16:New:Methods Left and Some added to ElaVariant to simplify construction of 'Either' variant (for operation in .NET code).
-0.8.6.15:Change:Method for comparison (ElaObject.Compare) can now be overriden by the types defined outside of Ela core assembly.
-0.8.6.14:Fix:Now ElaString supports 'Seq' trait (which supported by string as soon as it represents an ordered structure of elements).
-0.8.6.13:Fix:Location information corrected for the literal patterns.
-0.8.6.12:Fix:Pattern type check logic corrected in according to the recent type system changes (it used to generate errors for the correct cases).
-0.8.6.11:Fix:Multiple corrections in Ela AST pretty printing logic.
-0.8.6.10:New:Now all Ela types expose a GetTypeName method that is used internally by Ela machine to determine type name.
-0.8.6.9:Change:Verification of function application at compile time is enhanced - it will now generate warning for all attempts to call something different than function if it was directly initialized with a literal.
-0.8.6.8:Change:ElaArray now moved from the built-in types to the standard library. Arrcons op code, array literal, array pattern, etc. are decomissioned.
-0.8.6.7:Change:'Tagval' op code renamed to 'Untag'.
-0.8.6.6:Fix:'Tag' trait didn't have a full implementation. The direct casting to ElaVariant still took place for the 'untag' operation. A new 'Untag' method added to the trait 'Tag' to avoid this.
-0.8.6.5:Change:FormatHelper class made public so it can be used when implementing 'Show' trait for custom types.
-0.8.6.4:New:A new 'GetEagerPart' method added to ElaList that returns IEnumerable<ElaValue> only for the part of the list that is already evaluated.
-0.8.6.3:New:A new public 'Traits' property added to ElaValue (previously it was impossible to check traits of a given value from .NET code).
-0.8.6.2:New:A new public 'HasLazyTail' method added to ElaList which allows to determine if a list tail is a thunk.
+0.9.0.0:Release:Release of Ela 0.9.0
+0.8.6.103:Change:Now functions fst, snd, fst3 and snd3 are implemented as built-in functions.
+0.8.6.102:New:New built-in functions tag and untag are implemented (when applied to a variant they return a variant tag and tagged value respectively).
+0.8.6.101:Fix:Recovery of Ela machine after errors in interactive mode wasn't always done correctly.
+0.8.6.100:Fix:Placeholder symbol '_' was compiled with an error.
+0.8.6.99:Fix:Function call on a left-hand side could cause VM stack corruption (compilation logic error).
+0.8.6.98:New:Now Ela supports inline functions through an 'inline' modifier.
+0.8.6.97:Change:ElaTraits flags are decomissioned. Instead ElaPatterns flags will be used.
+0.8.6.96:Change:Builtin functions 'typeid' and 'show' are decomissioned. Function 'show' will now be defined as a partially applied 'showf'.
+0.8.6.95:Change:Variants are now not transparent.
+0.8.6.94:Fix:Stack behavior for Newfun op code was calculated incorrectly.
+0.8.6.93:Fix:Match was incorrectly compiled when a single tuple element was used as a match expression.
+0.8.6.92:Fix:Ela linker didn't correctly process situations when an object file wasn't coupled with a source code file.
+0.8.6.91:Fix:Arguments for Ela functions passed from external context (such as .NET code) were passed in a wrong order.
+0.8.6.90:Fix:A bug fixed in head/tail pattern compilation logic.
+0.8.6.89:Change:Compilation stage and linking stage are now overlapping. All incudles are processed exactly after an include node is found by compiler. Compiler uses metadata from compiled imported modules to decide whether it is possible to inline some of the operators.
+0.8.6.88:Change:Compiler now has a setting that allows to specify the name of a module used as a Predule module (in this case no explicit import is required).
+0.8.6.87:Change:An ability to define/redefine any operator added. All standard operators now will be added through 'Prelude' module.
+0.8.6.86:Change:Major redesign in Ela parser and grammar. Now instead of specific operators Ela defines several tokens for operators. Priorioty and precendence is controlled by the first character (similar to OCaml/F#). Ela doesn't have built-in operators anymore except of special forms.
+0.8.6.85:Change:Most of Ela operators now uses a different evaluation order (from right to left) and are no more than regular functions. Because of that sequencing operator that requires left to right order is no longer a function, but a special form.
+0.8.6.84:Change:Ela multiline strings now have '<[ ... ]>' syntax.
+0.8.6.83:Change:Operators '<|' and '<<' are not right associative, but '>>' is not.
+0.8.6.82:Change:Minor refactoring in parsing of comprehensions (potential LL conflict in grammar is removed, no syntax changes).
+0.8.6.81:New:Now implicit naming of record fields is supported when records elements are variable references, e.g. '{x,y}'.
+0.8.6.80:Change:An ability to use negative numerics in pattern matching is (probably temporary) disabled.
+0.8.6.79:Change:Now it is possible to declare non-global operators and to pair operators with other declarations using 'et' keyword.
+0.8.6.78:Change:Pervasives engine is decomissioned (it is no longer needed with the new automatic module open procedure) along with corresponding op code and data structures. Custom operators are not treated like regular functions.
+0.8.6.77:Change:Now compiler doesn't track undefined variables. Linker does.
+0.8.6.76:Change:Now all module variables are imported automatically. An explicit import list is decomissioned.
+0.8.6.75:Fix:A critical bug in VM fixed - pervasives (such as operators) were initialized only for the first module that referenced a module with pervasives.
+0.8.6.74:New:Now Ela linker generates a warning if there is an referenced argument that wasn't supplied.
+0.8.6.73:Fix:A critical bug with pervasives fixed - VM crushed in pervasives (such as operators) were used not in a main module.
+0.8.6.72:New:New traits (with no corresponding logic) 'Int' and 'Real' are added to denote integer and real numbers.
+0.8.6.71:Change:Ela 'Fold' trait renamed to 'Seq'.
+0.8.6.70:Change:Type verification of pattern match is decomissioned. According to the language sematics all possible combinations of patterns are correct.
+0.8.6.69:Change:All previous warnings and hints that were generates in a case when an irrefutable pattern was used before other patterns are decomissioned.
+0.8.6.68:Change:MatchEntryAlwaysFail warning message now displays the pattern that will never match.
+0.8.6.67:Change:MatchEntryTypingFailed error now made into warning.
+0.8.6.66:New:Check for overlapping match entries is implemented (experimental).
+0.8.6.65:Change:Pretty printer for Ela AST is completely redesigned to support indented output.
+0.8.6.64:Fix:A bug in type check of patterns in pattern matching construct is fixed (string pattern and list pattern could be considered as invalid when this is a valid combination).
+0.8.6.63:Change:Ela now doesn't have any special treatment for unary operators. They are treated in the same way as binary. Unary notiation is allowed using "partial application" syntax. It changes almost nothing with the only exception that unary operators can be called using postfix notation.
+0.8.6.61:Change:Partial application for operators as well as operator referencing as functions now don't require braces.
+0.8.6.60:Change:Keyword 'and' is not replaced by keyword 'et'.
+0.8.6.59:Change:Now it is required to write function name before each function body.
+0.8.6.58:Fix:Syntax for 'binding' pattern changed.
+0.8.6.57:Fix:Now 'where' clause is correctly processed when it is attached to another 'where' clause (which e.g. is a regular variable binding).
+0.8.6.56:Change:Multiple refactorings in Ela parser.
+0.8.6.55:Fix:Multiple corrections in Ela parser error messages.
+0.8.6.54:New:Now 'F' (or 'f') prefix is supported by Ela numeric literals to denote single precision floating numbers.
+0.8.6.53:Fix:A critical error in compilation logic of comprehensions is fixed - multiple generators used to crash Ela machine.
+0.8.6.52:Change:Now ForeignModule has a Close method that is called when Ela machine is disposed (Ela machine implements IDisposable for that and now it is mandatory to dispose it).
+0.8.6.51:New:A sequencing operator '$' is now a function.
+0.8.6.50:Change:Parsing rules for 'match' and 'try' expressions are changed. Now they are not 'simple' expressions anymore and cannot be used in function application without parenthesis.
+0.8.6.49:Change:Minor enhancements in parser error reporting.
+0.8.6.48:Fix:A bug in parser fixed - parser could crash if you try to use an operator as a function when an operator is not a function but is a special form.
+0.8.6.47:New:Now Ela linker can accept files with no extension, files with .ela extension and files with .elaobj extension as primary module. It will always first try to read object file and only then - to compile a file.
+0.8.6.46:Fix:An error in object file reader and writer is fixed that could cause a linker crush or incorrect module deserialization because of an error in they way how module references were processed.
+0.8.6.45:Change:Ela supports optional "no layout" mode when semicolons are used as a replacement for indentation (will be useful in interactive mode).
+0.8.6.44:Change:Ela now supports entering expressions directly at the top level.
+0.8.6.43:Change:A new layout based syntax is implemented. Keyword 'end' is not longer required for 'let' and 'where' bindings (as well as for 'match' and 'try' expressions). Also semicolons are not required between match entries.
+0.8.6.42:Fix:A bug in functional literal compilation logic fixed - it could cause stack corruption when used on a left side of an expression.
+0.8.6.41:Fix:Parser could crush on a syntax error binding pattern.
+0.8.6.40:Fix:A bug in range compilation logic fixed - it didn't take into account situations when range is used at the left hand side and as a result generate code could cause stack corruption.
+0.8.6.39:Fix:A critical bug fixed in compilation logic of guards in pattern matching constructs.
+0.8.6.38:Fix:A critical bug fixed in compilation logic of head/tail pattern.
+0.8.6.37:Fix:Corrections in error message for 'TraitFieldSet' run time error.
+0.8.6.36:Fix:A warning ELA400 (UnitAlwaysFail) could be generated in an incorrect case (when applying 'Eq' trait to unit which is legal).
+0.8.6.35:Change:Now one can write expressions directly in the global scope.
+0.8.6.34:Change:Syntax for 'module open' directive is changed from 'open Foo[dllname] as MyFoo with x,y' to 'open Foo#dllname@MyFoo with x,y'.
+0.8.6.33:Fix:Minor fixes in implementation of 'Show' trait for ElaList.
+0.8.6.32:Change:All imperative cycles including 'for-to', 'for-downto', 'for-in' and 'while' are decomissioned. Also 'return', 'break' and 'continue' keywords are removed.
+0.8.6.31:Change:Syntax for mutable record fields changed from '{mutable x=...}' to '{!x=...}'.
+0.8.6.30:Change:Strict compiler mode is decomissioned (it only enforced errors on global mutable variables which are useless as soon as there are no mutable variables at all).
+0.8.6.29:Change:Ela doesn't support mutable variables anymore. One should use reference cells to achieve the same effect, e.g. '{!value=...}'.
+0.8.6.28:Fix:Parse could crash on a binding expression without initialization block, e.g. 'let foo'.
+0.8.6.27:Change:Minor corrections in compiler error messages.
+0.8.6.26:Change:Multiple code refactorings in order to support .NET 2.0 as a minimum requirement (C# 3.0 is still a minimum version of compiler that is needed to build Ela projects).
+0.8.6.25:New:Now ElaModule supports trait 'FieldGet'.
+0.8.6.24:Change:Now printing infinite lists (using 'show' trait and built-in formatter helper) cannot cycle - looping through the list will always stop after first 50 elements. If one needs to show more elements than these elements should be explicitely taken from list before that ('take').
+0.8.6.23:Change:Built-in function 'cout' (along with corresponding op code) is decomissioned. One should should use Con module for console output.
+0.8.6.22:Change:ElaRecord fully refactored. Now it doesn't inherit ElaTuple. Also support for 'Ord' and 'Num' traits is dropped. However records still provide structural equality.
+0.8.6.21:Change:Pattern matching in bindings ('let' and 'where') has changed. Now all patterns except of variant pattern can be used without extra parenthesis.
+0.8.6.20:New:Trait 'Cons' extended with a 'Nil' method that can be used to get a 'nil' instance of an entity. Also a new built-in 'nil' function is added to is mapped to this action.
+0.8.6.19:New:Not is is possible to create pervasives (such as custom operators) from foreign modules (modules written in .NET).
+0.8.6.18:New:A new built-in function 'ref' added (along with new op code Ceqref). This function can be used to test two given object using reference equality.
+0.8.6.17:Fix:A bug fixed in compilation logic of head/tail pattern for patterns that are combined from two nested patterns. A typical example of a case when this bug could be reproduced is when you have a head/tail pattern that ends with (xs@n) - in such as case 'n' variable wasn't declared at all.
+0.8.6.16:Change:Trait 'Seq' renamed to 'Ix'.
+0.8.6.15:New:A new public 'Concatenate' method added to ElaList (method can be used from .NET code to concatenate two lists).
+0.8.6.14:Change:Ela reflection API is fully refactored.
+0.8.6.13:New:Methods Left and Some added to ElaVariant to simplify construction of 'Either' variant (for operation in .NET code).
+0.8.6.12:Change:Method for comparison (ElaObject.Compare) can now be overriden by the types defined outside of Ela core assembly.
+0.8.6.11:Fix:Now ElaString supports 'Seq' trait (which supported by string as soon as it represents an ordered structure of elements).
+0.8.6.10:Fix:Location information corrected for the literal patterns.
+0.8.6.9:Fix:Pattern type check logic corrected in according to the recent type system changes (it used to generate errors for the correct cases).
+0.8.6.8:Fix:Multiple corrections in Ela AST pretty printing logic.
+0.8.6.7:New:Now all Ela types expose a GetTypeName method that is used internally by Ela machine to determine type name.
+0.8.6.6:Change:Verification of function application at compile time is enhanced - it will now generate warning for all attempts to call something different than function if it was directly initialized with a literal.
+0.8.6.5:Change:ElaArray now moved from the built-in types to the standard library. Arrcons op code, array literal, array pattern, etc. are decomissioned.
+0.8.6.4:Change:'Tagval' op code renamed to 'Untag'.
+0.8.6.3:Fix:'Tag' trait didn't have a full implementation. The direct casting to ElaVariant still took place for the 'untag' operation. A new 'Untag' method added to the trait 'Tag' to avoid this.
+0.8.6.2:Change:FormatHelper class made public so it can be used when implementing 'Show' trait for custom types.
 0.8.6.1:New:Now lazy lists can be fully used from .NET code - ElaList.Next correctly processes a situation when a list is lazy and forces thunk evaluation.
 0.8.6.0:Release:Release of Ela 0.8.6
 0.8.5.24:Fix:Module name wasn't preserved when using incremental linker (and as a result didn't show up in call stack).

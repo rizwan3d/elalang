@@ -1,12 +1,12 @@
-0.0.1.34:New:An initial version of Async module is implemented.
-0.0.1.33:New:Functions 'intersectBy' and 'intersect' added to Core module.
-0.0.1.32:New:Functions 'groupBy' and 'group' added to Core module.
-0.0.1.31:New:Function 'permutations' added to Core module.
-0.0.1.30:New:Functions 'intercalate', 'nonEmptySubsequences', 'subsequences' added to Core module.
-0.0.1.29:New:Functions 'intersperse' and 'transpose' added to Core module.
-0.0.1.28:New:Functions 'insert' and 'insertBy' added to Core module.
-0.0.1.27:New:Iterator module is implemented.
-0.0.1.26:New:An initial version of List module is implemented.
+0.0.2.0:Release:Release of 0.0.2
+0.0.1.33:New:A Prelude module is introduced, some basic functions are moved to Prelude.
+0.0.1.32:New:An initial version of Async module is implemented.
+0.0.1.31:New:Functions 'intersectBy' and 'intersect' added to Core module.
+0.0.1.30:New:Functions 'groupBy' and 'group' added to Core module.
+0.0.1.29:New:Function 'permutations' added to Core module.
+0.0.1.28:New:Functions 'intercalate', 'nonEmptySubsequences', 'subsequences' added to Core module.
+0.0.1.27:New:Functions 'intersperse' and 'transpose' added to Core module.
+0.0.1.26:New:Functions 'insert' and 'insertBy' added to Core module.
 0.0.1.25:New:Functions 'nub' and 'nubBy' added to Core module.
 0.0.1.23:New:Functions 'delete' and 'deleteBy' added to Core module.
 0.0.1.22:New:Functions 'scanl' and 'scanr' added to Core module.

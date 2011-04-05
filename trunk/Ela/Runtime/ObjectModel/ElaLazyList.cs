@@ -110,6 +110,11 @@ namespace Ela.Runtime.ObjectModel
 			if (t != null)
 				return new ElaValue(new ElaLazyList(t, value));
 
+			var tl = next as ElaLazyList;
+
+			if (tl != null)
+				return new ElaValue(new ElaLazyList(tl, value));
+
 			ctx.Fail("InvalidLazyList", "Invalid lazy list definition.");
 			return Default();
 		}

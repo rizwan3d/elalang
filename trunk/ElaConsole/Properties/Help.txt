@@ -81,6 +81,8 @@ or -rc			object file available.
 
 -linkNowarn		Suppress all linker warnings.
 
+-prelude		Specify a name of a Prelude module.
+
 
 File name can be omitted. In this case Ela Console is started in interactive 
 mode. 
