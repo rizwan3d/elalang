@@ -176,7 +176,7 @@ let any f x::xs | f x  = true
 //Call->Seq->bool
 let all f x::xs | f x  = all f xs
                 | else = false
-    all _ []           = false
+    all _ []           = true
 
 //Num->(Seq,Cons)->tuple[(Seq,Cons)]
 let splitAt 0 xs            = (nil xs,xs)

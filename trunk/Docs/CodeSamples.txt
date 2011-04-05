@@ -1,0 +1,121 @@
+#summary Code samples in Ela.
+
+= Code samples in Ela =
+
+
+=== Quick sort ===
+
+{{{
+let quickSort [] = []
+    quickSort x::xs = quickSort [ y \\ y <- xs | y < x ] 
+                      ++ [x] ++ quickSort [ y \\ y <- xs | y >= x]
+
+let _ = quickSort [10,9..1] //[1,2,3,4,5,6,7,8,9,10]
+}}}
+
+
+=== Factorial === 
+
+{{{
+let fact = fact' 1L 
+           where fact' acc 0 = acc
+                 fact' acc n = fact' (n * acc) (n - 1)
+
+let _ = fact 20 //2432902008176640000
+}}}
+
+
+=== Fibonacci ===
+
+{{{
+let fib = fib' 0 1
+          where fib' a b 0 = a
+                fib' a b n = fib' b (a + b) (n - 1)
+
+let _ = fib 12 //144
+}}}
+
+
+=== Reverse a list ===
+
+{{{
+let foldl f z x::xs = foldl f (f z x) xs
+    foldl _ z []    = z
+
+let reverse xs = foldl (flip (::)) [] xs
+
+let _ = reverse' [0..5] //[5,4,3,2,1,0]
+}}}
+
+
+=== Transpose rows and columns in a list ===
+
+{{{
+let transpose [] = []
+    transpose []::xs      = transpose xs
+    transpose (x::xs)::ys = (x :: [h \\ (h::_) <- ys]) :: transpose (xs :: [t \\ (_::t) <- ys])
+
+let _ = transpose [[1,2,3],[4,5,6]] //[[1,4],[2,5],[3,6]]
+}}}
+
+
+=== Subsequences in a list ===
+
+{{{
+open Core
+let subs [] = []
+    subs x::xs = [x] :: fold f (subs xs)
+                 where f ys r = ys :: (x :: ys) :: r                         
+
+let _ = subs [1,2,3] //[[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+}}}
+
+
+=== Permutations ===
+
+{{{
+let permutations []@n = n
+    permutations xs0  = xs0 :: perms xs0 []
+                        where perms []    _   = []
+                              perms t::ts is' = foldr interleave (perms ts (t::is')) (permutations is')
+                                                where interleave xs r       = let (_,zs) = interleave' id xs r in zs
+                                                   et interleave' _ [] r    = (ts, r)
+                                                      interleave' f y::ys r = let (us,zs) = interleave' (f << (y::)) ys r
+                                                                              in  (y::us, f (t::y::us) :: zs)
+let _ = permutations "abc"   //["abc","bac","cba","bca","cab","acb"]
+let _ = permutations [1,2,3] //[[1,2,3],[2,1,3],[3,2,1],[2,3,1],[3,1,2],[1,3,2]]
+}}}
+
+
+=== ABIN theorem prover ===
+
+{{{
+open Core
+let is_true x            = is_axiom x || is_theorem x
+ et is_expr x            = is_b_expr x || is_n_expr x || is_a_expr x
+ et is_axiom x           = is_n_expr x && is_b_expr (tail x)
+ et is_b_expr ['B']      = true
+    is_b_expr 'B'::xs    = all (=='I') xs
+    is_b_expr  _         = false 
+ et is_n_expr 'N'::xs    = is_expr xs
+    is_n_expr  _         = false               
+ et split _ []           = []
+    split p x::xs        = split' [x] xs
+                           where split' _  [] = false
+                                 split' l1 (x::xs)@l2 | p l1 l2 = l1 | else    = split' (l1 ++ [x]) xs
+ et have_two_exprs xs ys = is_expr xs && is_expr ys
+ et check_two_exprs lst  = (split have_two_exprs lst) is ?list
+ et is_a_expr 'A'::xs    = check_two_exprs xs
+    is_a_expr  _         = false               
+ et is_theorem x         = is_n_expr x && is_a_expr (tail x) && has_subtheorem x
+                           where has_subtheorem lst = is_true ('N'::first)
+                                                      where first = split have_two_exprs (tail (tail x))
+
+let xs = ["NBI", "NBIBI", "NABIBI", "NANBBI", "ABB", "NABIBIBI", "NAABABBBI"]
+
+let _ = map is_true xs //[True,False,True,False,False,False,True]
+}}}
+
+ABIN theorem is taken from: W. Robinson, Computers, minds and robots, Temple University Press, 1992.
+
+Implementation in [http://code.google.com/p/pure-lang Pure]: [http://code.google.com/p/pure-lang/wiki/PurePrimer2#Complete_code_for_ABIN here]
