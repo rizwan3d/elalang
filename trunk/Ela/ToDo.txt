@@ -6,3 +6,4 @@
 6. Symbolic equatations
 7. "Expression" pattern
 8. Tree data type and literal
+9. Doc comments
