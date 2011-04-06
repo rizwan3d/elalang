@@ -122,3 +122,27 @@ let _ = map is_true xs //[True,False,True,False,False,False,True]
 ABIN theorem is taken from: W. Robinson, Computers, minds and robots, Temple University Press, 1992.
 
 Implementation in [http://code.google.com/p/pure-lang Pure]: [http://code.google.com/p/pure-lang/wiki/PurePrimer2#Complete_code_for_ABIN here]
+
+
+=== Iterator pattern ===
+
+{{{
+open Con
+
+let iter ?list@xs = iter' {!xs=xs}
+                     where iter' cell () | l is (x::xs) = cell.xs <- xs $ `Some x
+                                         | else         = `None
+                                         where l = cell.xs
+    iter arr      = iter' {!ix=0} arr
+                    where iter' cell arr () | n < len = cell.ix <- cell.ix + 1 $ `Some (arr.[n])
+                                            | else    = `None
+                                            where n   = cell.ix
+                                               et len = length arr
+
+let each f xs = for' (iter xs)
+                where for' it | r is (`Some x) = f x $ for' it
+                              | else           = ()
+                              where r = it ()
+
+each write [1..5] $ each write "Hello" //prints to console list and string
+}}}
