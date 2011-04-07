@@ -1,3 +1,4 @@
+0.9.0.12:Fix:'InvalidLazyListDefinition' run-time exception wasn't generated correctly (it cause VM to crush).
 0.9.0.11:Fix:Flipping of parameters wasn't always done correctly when compiling partial applications of built-in functions.
 0.9.0.10:Fix:Postfix and prefix calls for custom operators was compiled incorrectly.
 0.9.0.8:Fix:'NotEqual' operation for ElaTuple was implemented incorrectly.

@@ -64,8 +64,11 @@ namespace Ela.Runtime.ObjectModel
 			{
 				InternalNext = thunk.Force(ctx).Ref as ElaList;
 
-				if (InternalNext == null)
-					throw InvalidDefinition();
+                if (InternalNext == null)
+                {
+                    ctx.Fail("InvalidLazyList", "Invalid lazy list definition.");
+                    return Default();
+                }
 
 				thunk = null;
 			}
