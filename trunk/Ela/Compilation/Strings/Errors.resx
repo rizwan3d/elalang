@@ -135,12 +135,6 @@
   <data name="InfiniteRangeOnlyList" xml:space="preserve">
     <value>Range: {0} is invalid. Only lists can be generated using infinite ranges.</value>
   </data>
-  <data name="InlineOnlyFunctions" xml:space="preserve">
-    <value>Modifier 'inline' is not valid on declaration '{0}'. Only functions can be declared inline.</value>
-  </data>
-  <data name="InlineOnlyGlobal" xml:space="preserve">
-    <value>Only global functions can be declared inline.</value>
-  </data>
   <data name="MatchEntryEmptyNoGuard" xml:space="preserve">
     <value>An empty match entry should have a mandatory guard clause.</value>
   </data>
@@ -155,6 +149,9 @@
   </data>
   <data name="PlaceholderNotValid" xml:space="preserve">
     <value>An expression '_' is not valid in this context.</value>
+  </data>
+  <data name="PrivateOnlyGlobal" xml:space="preserve">
+    <value>A 'private' modifier is valid only on global bindings.</value>
   </data>
   <data name="UnableAssignExpression" xml:space="preserve">
     <value>Unable to assign a value to the expression {0}.</value>

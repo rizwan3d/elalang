@@ -19,7 +19,7 @@ namespace Ela.Runtime
 		{
 			Assembly = asm;
 			Module = asm.GetRootModule();
-			CallStack = new FastStack<CallPoint>();
+            CallStack = new FastStack<CallPoint>();
 			Context = new ExecutionContext();
 		}
 		#endregion

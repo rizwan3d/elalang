@@ -22,7 +22,27 @@ let memoization {eq} =
           t + 0
         $ t + 1
         $ eq x.x 1
-    
+
+let sequencing {eq} = 
+          (& t.val <- 2)
+        $ eq t.val 2
+        $ (& t.val <- t.val + t.val)
+        $ eq t.val 4
+        where t = {!val=0}
+
+let fixPoint {eq} =
+        let fix' f = f (& fix' f) in
+        let factabs fact 0 = 1
+            factabs fact x = x * fact (x - 1) in
+        let res = (fix' factabs) 5 in
+        eq res 120
+
+let forceTest {eqt} = 
+        let _ = eqt (th is ?lazy) in
+        let _ = force th
+        in eqt (th is ?int)
+        where th = (& 2 + 2)
+
 let typeCheck {eqt} =
         let t = (& 2 * 2) in
         eqt (t is ?lazy)

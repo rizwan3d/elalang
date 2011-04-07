@@ -23,7 +23,7 @@ namespace Ela.Compilation
 		private Scope globalScope;
 		private ExportVars exports;
 		private ElaCompiler comp;
-		private Dictionary<String,ElaFunctionLiteral> inlineFuns;
+		private Dictionary<String,InlineFun> inlineFuns;
 
 		internal Builder(CodeFrame frame, ElaCompiler comp, ExportVars builtins, Scope globalScope)
 		{
@@ -43,7 +43,7 @@ namespace Ela.Compilation
 			stringLookup = new Dictionary<String, Int32>();
 			Success = true;
 			shownHints = new Dictionary<ElaCompilerHint,ElaCompilerHint>();
-			inlineFuns = new Dictionary<String,ElaFunctionLiteral>();
+			inlineFuns = new Dictionary<String,InlineFun>();
 		}
 		#endregion
 
@@ -728,25 +728,23 @@ namespace Ela.Compilation
 				return false;
 
 			var name = v.Target.GetName();
-			var fun = default(ElaFunctionLiteral);
+			var fun = default(InlineFun);
 
-			if (!inlineFuns.TryGetValue(name, out fun) || GetScope(name) != globalScope || 
+			if (!inlineFuns.TryGetValue(name, out fun) || fun.Scope != CurrentScope || 
                 map.FunctionName == name)
 				return false;
 
 			var len = v.Parameters.Count;
 			
-			if (len != fun.ParameterCount)
+			if (len != fun.Literal.ParameterCount)
 				return false;
 
-			CurrentScope = new Scope(false, CurrentScope);
-			var par = CurrentScope.Parent;
-			CurrentScope.Parent = globalScope;
-
-			CompileFunction(fun, FunFlag.Inline);
+            var oc = CurrentScope;
+			CurrentScope = new Scope(false, fun.Scope);
 			
-			EndScope();
-			CurrentScope = par;
+			CompileFunction(fun.Literal, FunFlag.Inline);
+
+            CurrentScope = oc;
 			return true;
 		}
 
@@ -786,6 +784,9 @@ namespace Ela.Compilation
 					{
 						AddLinePragma(bf);
 						CompileBuiltin(kind, v.Target, map);
+
+                        if (v.FlipParameters)
+                            cw.Emit(Op.Flip);
 
 						for (var i = 0; i < len; i++)
 							cw.Emit(Op.Call);

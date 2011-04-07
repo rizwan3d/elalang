@@ -1,25 +1,3 @@
-let zips {eqt} =
-        let zip x::xs y::ys = (x, y) :: zip xs ys
-            zip _ _         = [] in
-        let f1 = zip [1,2,3,4,5] [5,5,5,5,5] in
-        let f2 = zip [5,3,2,6,2,7,2,5,4,6,6] ["im","a","turtle"] in
-        eqt (f1.[0] is (1, 5))
-        $ eqt (f1.[1] is (2, 5))
-        $ eqt (f1.[2] is (3, 5))
-        $ eqt (f1.[3] is (4, 5))
-        $ eqt (f1.[4] is (5, 5))
-        $ eqt (f2.[0] is (5,"im"))
-        $ eqt (f2.[1] is (3,"a"))
-        $ eqt (f2.[2] is (2,"turtle"))
-        
-let calcFact {eq} =
-        let fact = 
-            let f acc 0 = acc
-                f acc n = f (n * acc) (n - 1) in
-            f 1L 
-        in
-        eq (fact 20) 2432902008176640000L
-    
 let skipElems {eqt} = 
         let skip lst n = 
                     let ps x::xs i | i == n = xs
@@ -50,47 +28,6 @@ let reverseElems {eqt} =
         let res = reverse' [0, 1, 2, 3, 4, 5] in
         eqt (res is [5,4,3,2,1,0])
 
-let compare {eqt} =
-        let compare' x y | y >  x = `Gt
-                         | y == x = `Eq
-                         | else   = `Lt 
-        in
-        let compareWithHundred = compare' 100 in
-        eqt <| (compareWithHundred 12) is (`Lt)
-
-let flipFold {eq} =  
-        let fold' x::xs f = f x :: fold' xs f
-            fold' [] f    = [] in
-        let list = [1, 2, 3] in
-        let f = flip fold' (*10) in
-        let res = f list 
-        in
-        eq res.[0] 10
-        $ eq res.[1] 20
-        $ eq res.[2] 30
-                
-let mutualRecur {eq} =
-        let Mtake x::xs = x::(Mskip xs); Mtake [] = [] et
-            Mskip _::xs = Mtake xs; Mskip [] = [] in
-        let res = Mtake [1, 2, 3, 4] in
-        eq res.[0] 1 $ eq res.[1] 3
-    
-
-let fixPoint {eq} =
-        let fix' f = f (& fix' f) in
-        let factabs fact 0 = 1
-            factabs fact x = x * fact (x - 1) in
-        let res = (fix' factabs) 5 in
-        eq res 120
-    
-let fibNumbers {eq} =  
-        let fib =
-            let fib' a b 0 = a
-                fib' a b n = fib' b (a + b) (n - 1) in
-            fib' 0 1 
-        in
-        eq (fib 24) 46368
-    
 let iterators {eqt} =
         let counter f = counter'
                 where cc = {!cc=0}
@@ -119,11 +56,3 @@ let iterators {eqt} =
                       nl = filter f nl
         et iterate' = iterate (counter comparer)        
         in filter iterate' lst
-
-let birthday {eq} =
-        let year_size = 365f
-         et birthday' prob people | prob' < 0.5 = people + 1f
-                                  | else        = birthday' prob' (people + incr)
-                                  where prob' = (year_size - people) / year_size * prob
-                                     et incr  = 1f
-        in eq (birthday' 1f 1f) 23f

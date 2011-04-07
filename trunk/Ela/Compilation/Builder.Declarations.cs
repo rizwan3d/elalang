@@ -12,7 +12,7 @@ namespace Ela.Compilation
 			if (s.InitExpression == null)
 				AddError(ElaCompilerError.VariableDeclarationInitMissing, s);
 
-			var rec = IsMutualRecursive(s);
+            var rec = IsMutualRecursive(s);
 			var data = -1;
 			var flags = s.VariableFlags;
 
@@ -26,13 +26,11 @@ namespace Ela.Compilation
 			if (s.In != null)
 				StartScope(false);
 
-			var inline = (s.VariableFlags & ElaVariableFlags.Inline) == ElaVariableFlags.Inline;
+            if ((s.VariableFlags & ElaVariableFlags.Private) == ElaVariableFlags.Private &&
+                CurrentScope != globalScope)
+                AddError(ElaCompilerError.PrivateOnlyGlobal, s);
 
-			if (inline && s.InitExpression.Type != ElaNodeType.FunctionLiteral)
-				AddError(ElaCompilerError.InlineOnlyFunctions, s, s);
-
-			if (inline && CurrentScope != globalScope)
-				AddError(ElaCompilerError.InlineOnlyGlobal, s);
+            var inline = (s.VariableFlags & ElaVariableFlags.Inline) == ElaVariableFlags.Inline;
 			
 			if (s.Pattern == null)
 			{
@@ -46,10 +44,10 @@ namespace Ela.Compilation
 						GetVariable(s.VariableName, s.Line, s.Column).Address :
 						AddVariable(s.VariableName, s, flags, data);
 
-					if (CurrentScope == globalScope && inline)
+					if (inline)
 					{
 						inlineFuns.Remove(fun.Name);
-						inlineFuns.Add(fun.Name, fun);
+						inlineFuns.Add(fun.Name, new InlineFun(fun, CurrentScope));
 					}
 				}
 				else

@@ -82,8 +82,7 @@ namespace Ela.Parsing
                 {
                     if (patterns != null && patterns[i].Type == ElaNodeType.VariablePattern)
                     {
-                        tp.Parameters.Add(new ElaVariableReference(ot)
-                        {
+                        tp.Parameters.Add(new ElaVariableReference(ot) {
                             VariableName = ((ElaVariablePattern)patterns[i]).Name
                         });
                     }
@@ -99,30 +98,18 @@ namespace Ela.Parsing
 		private ElaExpression GetOperatorFun(string op, ElaExpression left, ElaExpression right)
 		{
             var fc = new ElaFunctionCall(t) {
-				Target = new ElaVariableReference(t) { VariableName = op }
-			};
+                Target = new ElaVariableReference(t) { VariableName = op }
+            };
 
-			fc.Parameters.Add(left ?? hiddenVar);
-			fc.Parameters.Add(right ?? hiddenVar);
-			
-			var m = new ElaMatch(t);
-			m.Entries.Add(new ElaMatchEntry { Expression = fc, Pattern = hiddenPattern });
-			return new ElaFunctionLiteral(t) { Body = m };
-		}
+            if (left != null)
+                fc.Parameters.Add(left);
+            else
+                fc.FlipParameters = true;
 
+            if (right != null)
+                fc.Parameters.Add(right);
 
-		private ElaExpression GetBinaryFunction(string name, ElaExpression left, ElaExpression right)
-		{
-			var fc = new ElaFunctionCall(t) {
-				Target = new ElaVariableReference(t) { VariableName = name }
-			};
-
-			fc.Parameters.Add(left);
-			
-			if (right != null)
-				fc.Parameters.Add(right);
-
-			return fc;
+            return fc;
 		}
 
 

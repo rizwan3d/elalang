@@ -37,7 +37,10 @@ namespace Ela.CodeModel
 
 			if ((VariableFlags & ElaVariableFlags.Private) == ElaVariableFlags.Private)
 				sb.Append("private ");
-			
+
+            if ((VariableFlags & ElaVariableFlags.Inline) == ElaVariableFlags.Inline)
+                sb.Append("inline ");
+
 			if (InitExpression.Type == ElaNodeType.FunctionLiteral)
 			{
 				var fun = (ElaFunctionLiteral)InitExpression;

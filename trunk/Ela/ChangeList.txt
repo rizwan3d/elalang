@@ -1,4 +1,12 @@
-0.9.0.2:Change:Now when function is formatter to a string function name is enclosed in parenthesis if it is an operator.
+0.9.0.11:Fix:Flipping of parameters wasn't always done correctly when compiling partial applications of built-in functions.
+0.9.0.10:Fix:Postfix and prefix calls for custom operators was compiled incorrectly.
+0.9.0.8:Fix:'NotEqual' operation for ElaTuple was implemented incorrectly.
+0.9.0.7:Fix:Pretty printer didn't generate 'inline' modifier for bindings with 'inline' modifier.
+0.9.0.6:Change:Now compiler doesn't generate 'InlineOnlyFunctions' error.
+0.9.0.5:Change:Now it is possible to use 'inline' modifier on non-global functions as well.
+0.9.0.4:Fix:'Not' op code (and 'not' built-in function) worked correctly only with boolean types (e.g. it didn't work correctly with tuples).
+0.9.0.3:Change:Tuples now no longer support bitwise operations (which was of low use anyway).
+0.9.0.2:Change:Now when function is formatted to a string function name is enclosed in parenthesis if it is an operator.
 0.9.0.1:Change:Now Ela function can determine its name even if there is no source code available and a module was read from an object file (works only for global functions).
 0.9.0.0:Release:Release of Ela 0.9.0
 0.8.6.103:Change:Now functions fst, snd, fst3 and snd3 are implemented as built-in functions.

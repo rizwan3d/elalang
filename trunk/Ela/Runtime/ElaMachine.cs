@@ -928,7 +928,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						evalStack.Replace(right.Ref.Bool(right, ctx));
+						evalStack.Replace(!right.Ref.Bool(right, ctx));
 
 						if (ctx.Failed)
 						{

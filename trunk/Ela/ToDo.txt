@@ -7,3 +7,4 @@
 7. "Expression" pattern
 8. Tree data type and literal
 9. Doc comments
+10. Consider a different implementation of concat on tuples

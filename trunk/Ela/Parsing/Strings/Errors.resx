@@ -252,9 +252,6 @@
   <data name="ExpectedDot" xml:space="preserve">
     <value>A member access operator '.' is expected.</value>
   </data>
-  <data name="ExpectedFunctionToken" xml:space="preserve">
-    <value>Invalid infix function syntax. A infix function reference should be a valid identifier enclosed in apostrophes, e.g. `func`.</value>
-  </data>
   <data name="ExpectedKeywordEt" xml:space="preserve">
     <value>Expected keyword 'et'.</value>
   </data>
@@ -425,5 +422,8 @@
   </data>
   <data name="InvalidOperation" xml:space="preserve">
     <value>Invalid syntax for an operation.</value>
+  </data>
+  <data name="ExpectedFuncToken" xml:space="preserve">
+    <value>A function token in the form `funName` is expected.</value>
   </data>
 </root>

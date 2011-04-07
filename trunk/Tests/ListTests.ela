@@ -31,7 +31,21 @@ let changeItem {eqt=eqt} =
         try 
             (let list = [0] in list.[0] <- 1)
             $ eqt false with _ = eqt true
-
+            
+let zips {eqt} =
+        let zip x::xs y::ys = (x, y) :: zip xs ys
+            zip _ _         = [] in
+        let f1 = zip [1,2,3,4,5] [5,5,5,5,5] in
+        let f2 = zip [5,3,2,6,2,7,2,5,4,6,6] ["im","a","turtle"] in
+        eqt (f1.[0] is (1, 5))
+        $ eqt (f1.[1] is (2, 5))
+        $ eqt (f1.[2] is (3, 5))
+        $ eqt (f1.[3] is (4, 5))
+        $ eqt (f1.[4] is (5, 5))
+        $ eqt (f2.[0] is (5,"im"))
+        $ eqt (f2.[1] is (3,"a"))
+        $ eqt (f2.[2] is (2,"turtle"))
+        
 let typeCheck {eqt} =
         let list = [0, 1] in
         eqt (list is ?list)

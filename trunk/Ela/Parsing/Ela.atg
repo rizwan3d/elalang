@@ -811,9 +811,13 @@ PRODUCTIONS
 		).			
 		
 	WhereBinding<out ElaExpression exp> = 
-		(. scanner.InjectBlock(); .) 
+		(.
+			var flags = default(ElaVariableFlags); 
+			scanner.InjectBlock(); 
+		.) 
 		SYNC WHERE 
-		BindingBody<ElaVariableFlags.None, out exp> 
+		[VariableAttributes<out flags>] 			
+		BindingBody<flags, out exp> 
 		EndBlock.
 		
 	BindingGuard<out ElaExpression exp> = 
@@ -1279,12 +1283,7 @@ PRODUCTIONS
 					(. var cexp = default(ElaExpression); .)
 					operatorTok1 (. op = t.val; .)
 					[ OpExpr2<out cexp> ]
-					(. 
-						if (cexp == null)
-							exp = GetOperatorFun(op, exp, null);
-						else
-							exp = GetBinaryFunction(op, exp, cexp);
-					.)
+					(. exp = GetOperatorFun(op, exp, cexp); .)
 				}
 			)
 			|
@@ -1314,12 +1313,7 @@ PRODUCTIONS
 					(. var cexp = default(ElaExpression); .)
 					operatorTok2 (. op = t.val; .)
 					[ OpExpr3<out cexp> ]
-					(. 
-						if (cexp == null)
-							exp = GetOperatorFun(op, exp, null);
-						else
-							exp = GetBinaryFunction(op, exp, cexp);
-					.)
+					(. exp = GetOperatorFun(op, exp, cexp); .)
 				}
 			)
 			|
@@ -1350,12 +1344,7 @@ PRODUCTIONS
 					(. var cexp = default(ElaExpression); .)
 					(operatorTok3|"::") (. op = t.val; .)
 					[ OpExpr3<out cexp> ]
-					(. 
-						if (cexp == null)
-							exp = GetOperatorFun(op, exp, null);
-						else
-							exp = GetBinaryFunction(op, exp, cexp);
-					.)
+					(. exp = GetOperatorFun(op, exp, cexp); .)
 				}			
 			)
 			|
@@ -1385,12 +1374,7 @@ PRODUCTIONS
 					(. var cexp = default(ElaExpression); .)
 					operatorTok4 (. op = t.val; .)
 					[ OpExpr5<out cexp> ]
-					(. 
-						if (cexp == null)
-							exp = GetOperatorFun(op, exp, null);
-						else
-							exp = GetBinaryFunction(op, exp, cexp);
-					.)
+					(. exp = GetOperatorFun(op, exp, cexp); .)
 				}
 			)
 			|
@@ -1420,12 +1404,7 @@ PRODUCTIONS
 					(. var cexp = default(ElaExpression); .)
 					operatorTok5 (. op = t.val; .)
 					[ CastExpr<out cexp> ]
-					(. 
-						if (cexp == null)
-							exp = GetOperatorFun(op, exp, null);
-						else
-							exp = GetBinaryFunction(op, exp, cexp);
-					.)
+					(. exp = GetOperatorFun(op, exp, cexp); .)
 				}
 			)
 			|
@@ -1457,7 +1436,7 @@ PRODUCTIONS
 					(. exp = new ElaIs(t) { Expression = exp, Pattern = pat }; .)
 				)
 				|
-				"@@" ComprehensionOpExpr<exp, out exp>
+				COMPH ComprehensionOpExpr<exp, out exp>
 			)
 		}.		
 		
@@ -1548,12 +1527,7 @@ PRODUCTIONS
 					(. var cexp = default(ElaExpression); .)
 					operatorTok6 (. op = t.val; .)
 					[ OpExpr6<out cexp> ]
-					(. 
-						if (cexp == null)
-							exp = GetOperatorFun(op, exp, null);
-						else
-							exp = GetBinaryFunction(op, exp, cexp);
-					.)
+					(. exp = GetOperatorFun(op, exp, cexp); .)
 				}			
 			)
 			|
@@ -1583,12 +1557,7 @@ PRODUCTIONS
 					(. var cexp = default(ElaExpression); .)
 					operatorTok7 (. op = t.val; .)
 					[ OpExpr8<out cexp> ]
-					(. 
-						if (cexp == null)
-							exp = GetOperatorFun(op, exp, null);
-						else
-							exp = GetBinaryFunction(op, exp, cexp);
-					.)
+					(. exp = GetOperatorFun(op, exp, cexp); .)
 				}			
 			)
 			|
@@ -1616,7 +1585,7 @@ PRODUCTIONS
 				Application<out exp>
 				{
 					operatorTok8 (. op = t.val; .)
-					(. exp = GetBinaryFunction(op, exp, null); .)
+					(. exp = GetOperatorFun(op, exp, null); .)
 				}
 			)
 			|
@@ -1624,7 +1593,7 @@ PRODUCTIONS
 				operatorTok8 (. op = t.val; .)
 				[ 
 					Application<out exp> 
-					(. exp = GetBinaryFunction(op, exp, null); .)
+					(. exp = GetOperatorFun(op, exp, null); .)
 				]
 				(.
 					if (exp == null)

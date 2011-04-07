@@ -90,11 +90,11 @@ namespace Ela.Runtime.ObjectModel
 				var snd = rt.Values[i].Id(ctx);
 				var eq = fst.Ref.NotEqual(fst, snd, ctx);
 
-				if (!eq.Ref.Bool(eq, ctx))
-					return new ElaValue(false);
+				if (eq.Ref.Bool(eq, ctx))
+					return new ElaValue(true);
 			}
 
-			return new ElaValue(true);
+			return new ElaValue(false);
 		}
 
 
@@ -484,195 +484,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue BitwiseAnd(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			var lt = GetOther(null, left, ctx);
-
-			if (lt == null)
-				return Default();
-			
-			if (right.TypeId != ElaMachine.TUP && right.TypeId != ElaMachine.REC)
-			{
-				var ret = new ElaTuple(Length);
-				ret.cons = Length;
-
-				for (var i = 0; i < Length; i++)
-				{
-					var val = lt.Values[i].Id(ctx);
-					ret.Values[i] = val.Ref.BitwiseAnd(val, right, ctx);
-				}
-
-				return new ElaValue(ret);
-			}
-			else
-			{
-				var t = GetOther(lt, right, ctx);
-				var ret = new ElaTuple(Length);
-				ret.cons = Length;
-
-				if (t == null)
-				{
-					ctx.Fail(ElaRuntimeError.TuplesLength, ToString(), right.ToString());
-					return Default();
-				}
-
-				for (var i = 0; i < Length; i++)
-				{
-					var fst = lt.Values[i].Id(ctx);
-					var snd = t.Values[i].Id(ctx);
-					ret.Values[i] = fst.Ref.BitwiseAnd(fst, snd, ctx);
-				}
-
-				return new ElaValue(ret);
-			}
-		}
-
-
-		protected internal override ElaValue BitwiseOr(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			var lt = GetOther(null, left, ctx);
-
-			if (lt == null)
-				return Default();
-			
-			if (right.TypeId != ElaMachine.TUP && right.TypeId != ElaMachine.REC)
-			{
-				var ret = new ElaTuple(Length);
-				ret.cons = Length;
-
-				for (var i = 0; i < Length; i++)
-				{
-					var val = lt.Values[i].Id(ctx);
-					ret.Values[i] = val.Ref.BitwiseOr(val, right, ctx);
-				}
-
-				return new ElaValue(ret);
-			}
-			else
-			{
-				var t = GetOther(lt, right, ctx);
-				var ret = new ElaTuple(Length);
-				ret.cons = Length;
-
-				if (t == null)
-				{
-					ctx.Fail(ElaRuntimeError.TuplesLength, ToString(), right.ToString());
-					return Default();
-				}
-
-				for (var i = 0; i < Length; i++)
-				{
-					var fst = lt.Values[i].Id(ctx);
-					var snd = t.Values[i].Id(ctx);
-					ret.Values[i] = fst.Ref.BitwiseOr(fst, snd, ctx);
-				}
-
-				return new ElaValue(ret);
-			}
-		}
-
-
-		protected internal override ElaValue BitwiseXor(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			var lt = GetOther(null, left, ctx);
-
-			if (lt == null)
-				return Default();
-			
-			if (right.TypeId != ElaMachine.TUP && right.TypeId != ElaMachine.REC)
-			{
-				var ret = new ElaTuple(Length);
-				ret.cons = Length;
-
-				for (var i = 0; i < Length; i++)
-				{
-					var val = lt.Values[i].Id(ctx);
-					ret.Values[i] = val.Ref.BitwiseXor(val, right, ctx);
-				}
-
-				return new ElaValue(ret);
-			}
-			else
-			{
-				var t = GetOther(lt, right, ctx);
-				var ret = new ElaTuple(Length);
-				ret.cons = Length;
-
-				if (t == null)
-				{
-					ctx.Fail(ElaRuntimeError.TuplesLength, ToString(), right.ToString());
-					return Default();
-				}
-
-				for (var i = 0; i < Length; i++)
-				{
-					var fst = lt.Values[i].Id(ctx);
-					var snd = t.Values[i].Id(ctx);
-					ret.Values[i] = fst.Ref.BitwiseXor(fst, snd, ctx);
-				}
-
-				return new ElaValue(ret);
-			}
-		}
-
-
-		protected internal override ElaValue BitwiseNot(ElaValue @this, ExecutionContext ctx)
-		{
-			var ret = new ElaTuple(Length);
-			ret.cons = Length;
-
-			for (var i = 0; i < Length; i++)
-			{
-				var left = Values[i].TypeId == ElaMachine.LAZ ?
-					((ElaLazy)Values[i].Ref).Force() : Values[i];
-
-				ret.Values[i] = left.Ref.BitwiseNot(left, ctx);
-			}
-
-			return new ElaValue(ret);
-		}
-
-
-		protected internal override ElaValue ShiftLeft(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			var lt = GetOther(null, left, ctx);
-
-			if (lt == null)
-				return Default();
-			
-			var ret = new ElaTuple(Length);
-			ret.cons = Length;
-
-			for (var i = 0; i < lt.Length; i++)
-			{
-				var fst = lt.Values[i].Id(ctx);
-				ret.Values[i] = fst.Ref.ShiftLeft(fst, right, ctx);
-			}
-
-			return new ElaValue(ret);
-		}
-
-
-		protected internal override ElaValue ShiftRight(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			var lt = GetOther(null, left, ctx);
-
-			if (lt == null)
-				return Default();
-			
-			var ret = new ElaTuple(Length);
-			ret.cons = Length;
-
-			for (var i = 0; i < lt.Length; i++)
-			{
-				var fst = lt.Values[i].Id(ctx);
-				ret.Values[i] = fst.Ref.ShiftRight(fst, right, ctx);
-			}
-
-			return new ElaValue(ret);
-		}
-
-
 		protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
 		{
 			var ret = new ElaTuple(Length);
@@ -680,8 +491,7 @@ namespace Ela.Runtime.ObjectModel
 
 			for (var i = 0; i < Length; i++)
 			{
-				var left = Values[i].TypeId == ElaMachine.LAZ ?
-					((ElaLazy)Values[i].Ref).Force() : Values[i];
+				var left = Values[i].Ref.Force(Values[i], ctx);
 
 				if (!left.Ref.Bool(left, ctx))
 					return false;

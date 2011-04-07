@@ -9,6 +9,7 @@ let equals {eq,eqt,eqf} =
         $ eq typ1 typ1 
         $ eq "first" "first" 
         $ eq 'f' 'f'
+        $ eq (1,2) (1,2)
 
 let notEquals {neq} =
           neq 2 3 
@@ -18,14 +19,31 @@ let notEquals {neq} =
         $ neq typ1 typ2 
         $ neq "first" "second" 
         $ neq 'f' 'F'
+        $ neq (2,3) (2,4)
 
-let notEquals2 {eqt} =
+let notEquals2 {eqt,eqf} =
           eqt (typ1 <> typ2)
+        $ eqf (typ1 <> typ1)
         $ eqt (3 <> 4)
+        $ eqf (3 <> 3)
         $ eqt (13L <> 12)
+        $ eqf (13L <> 13L)
         $ eqt (true <> false)
+        $ eqf (true <> true)
         $ eqt ("first" <> "second") 
+        $ eqf ("first" <> "first") 
         $ eqt ('F' <> 'f')
+        $ eqf ('F' <> 'F')
+        $ eqt ((2,3) <> (2,4))
+        $ eqf ((2,3) <> (2,3))
+        
+let refEquals {eqt,eqf} =
+          eqf (t1 === t2)
+        $ eqt (t1 == t2)
+        $ eqf (s1 === s2)
+        $ eqt (s1 == s2)
+        where t1 = (1,2) et t2 = (1,2)
+           et s1 = "str" et s2 = "str"
 
 let compare {eqt} =
           eqt (12.3 - 12.3 < .001)
@@ -37,6 +55,16 @@ let compare {eqt} =
         $ eqt (45 <= 46)
         $ eqt (45 <= 45)
 
+let compare2 {eqt,eqf} =
+          eqt ("ABC" > "abc")
+        $ eqf ("abc" > "ABC")
+        $ eqf ("EFG" <= "efg")
+        $ eqt ("EFG" >= "efg")
+        $ eqt ('a' > 'A')
+        $ eqf ('A' > 'a')
+        $ eqf ('e' <= 'E')
+        $ eqt ('e' >= 'E')
+        
 let simpleMath {eq,gt,lt} =
           eq (2 + 2) 4 
         $ eq (2 - 2) 0 
@@ -46,8 +74,10 @@ let simpleMath {eq,gt,lt} =
         $ gt (12.0 * 65.3) 771.0
         $ eq (24 / 2) 12 
         $ eq (25 / 2) 12 
-        $ gt (25d / 2.0) 12.0 
+        $ gt (25f / 2.0) 12.0 
         $ eq (25 % 2) 1 
+        $ eq (23.456 % 12.2) 11.256
+        $ eq (24 % 2) 0
         $ eq (3 ** 2) 9
     
 let concat {eq} =
@@ -59,8 +89,14 @@ let priorities {eq} =
         $ eq (14 / 2 + 4 * 6) 31 
         $ eq (2 + 6 / 3) 4 
         $ eq (1 + 12 - 4 / 2 + 144 * 24 / 12) 299
-    
-let boolOperators {eq,neq} =
+
+let boolOperators {eqt,eqf} =
+          eqt <| not (2 <> 2)
+        $ eqf <| not (2 == 2)
+        $ eqt <| not ("First" == "first")
+        $ eqt <| not ('A' == 'a')
+
+let boolOperators2 {eq,neq} =
           neq (2 == 2 && 3 <> 3) 
         $ eq (2 <> 2 || 44 == 44) 
         $ eq (124 > 123 || 3 == 3 && true) 
@@ -109,7 +145,26 @@ let unaryMinus {eq} =
         $ eq (--2.2) (0-2.2)
         $ eq (--45L) (0-45L)
         $ eq (--42.42D) (0-42.42D)
-   
+
+let succPred {eq} =
+          eq (succ 1) 2
+        $ eq (succ 12.2) 13.2
+        $ eq (succ 12.22D) 13.22D
+        $ eq (succ 'A') 'B'
+        $ eq (succ (1,)) (2,)
+        $ eq (pred 1) 0
+        $ eq (pred 12.2) 11.2
+        $ eq (pred 12.22D) 11.22D
+        $ eq (pred 'B') 'A'
+        $ eq (pred (1,)) (0,)
+
+let assign {eq} =
+          r.val <- 2
+        $ eq r.val 2
+        $ r.val <- r.val * 2
+        $ eq r.val 4
+        where r = {!val = 0}
+
 let swap {eq} =
         let rec = {!x=1,!y=2,!z=3} in
         (

@@ -142,11 +142,11 @@ namespace Ela.Parsing
 				case Parser._ident: return ElaParserError.ExpectedIdentifierToken;
 				case Parser._variantTok: return ElaParserError.ExpectedVariantToken;
 				case Parser._argIdent: return ElaParserError.ExpectedArgumentIdentToken;
-				case Parser._funcTok: return ElaParserError.ExpectedFunctionToken;				
 				case Parser._intTok: return ElaParserError.ExpectedIntToken;
 				case Parser._realTok: return ElaParserError.ExpectedRealToken;
 				case Parser._stringTok: return ElaParserError.ExpectedStringToken;
 				case Parser._charTok: return ElaParserError.ExpectedCharToken;
+                case Parser._funcTok: return ElaParserError.ExpectedFuncToken;
 				case Parser._operatorTok1:
 				case Parser._operatorTok2:
 				case Parser._operatorTok3:

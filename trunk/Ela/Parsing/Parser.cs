@@ -457,10 +457,15 @@ internal sealed partial class Parser {
 	}
 
 	void WhereBinding(out ElaExpression exp) {
+		var flags = default(ElaVariableFlags); 
 		scanner.InjectBlock(); 
+		
 		while (!(la.kind == 0 || la.kind == 44)) {SynErr(78); Get();}
 		Expect(44);
-		BindingBody(ElaVariableFlags.None, out exp);
+		if (la.kind == 33 || la.kind == 59) {
+			VariableAttributes(out flags);
+		}
+		BindingBody(flags, out exp);
 		EndBlock();
 	}
 
@@ -1506,11 +1511,7 @@ internal sealed partial class Parser {
 				if (StartOf(18)) {
 					OpExpr2(out cexp);
 				}
-				if (cexp == null)
-				exp = GetOperatorFun(op, exp, null);
-				else
-					exp = GetBinaryFunction(op, exp, cexp);
-				
+				exp = GetOperatorFun(op, exp, cexp); 
 			}
 		} else if (la.kind == 9) {
 			Get();
@@ -1539,11 +1540,7 @@ internal sealed partial class Parser {
 				if (StartOf(19)) {
 					OpExpr3(out cexp);
 				}
-				if (cexp == null)
-				exp = GetOperatorFun(op, exp, null);
-				else
-					exp = GetBinaryFunction(op, exp, cexp);
-				
+				exp = GetOperatorFun(op, exp, cexp); 
 			}
 		} else if (la.kind == 10) {
 			Get();
@@ -1576,11 +1573,7 @@ internal sealed partial class Parser {
 				if (StartOf(19)) {
 					OpExpr3(out cexp);
 				}
-				if (cexp == null)
-				exp = GetOperatorFun(op, exp, null);
-				else
-					exp = GetBinaryFunction(op, exp, cexp);
-				
+				exp = GetOperatorFun(op, exp, cexp); 
 			}
 		} else if (la.kind == 11 || la.kind == 55) {
 			if (la.kind == 11) {
@@ -1613,11 +1606,7 @@ internal sealed partial class Parser {
 				if (StartOf(21)) {
 					OpExpr5(out cexp);
 				}
-				if (cexp == null)
-				exp = GetOperatorFun(op, exp, null);
-				else
-					exp = GetBinaryFunction(op, exp, cexp);
-				
+				exp = GetOperatorFun(op, exp, cexp); 
 			}
 		} else if (la.kind == 12) {
 			Get();
@@ -1646,11 +1635,7 @@ internal sealed partial class Parser {
 				if (StartOf(22)) {
 					CastExpr(out cexp);
 				}
-				if (cexp == null)
-				exp = GetOperatorFun(op, exp, null);
-				else
-					exp = GetBinaryFunction(op, exp, cexp);
-				
+				exp = GetOperatorFun(op, exp, cexp); 
 			}
 		} else if (la.kind == 13) {
 			Get();
@@ -1762,11 +1747,7 @@ internal sealed partial class Parser {
 				if (StartOf(23)) {
 					OpExpr6(out cexp);
 				}
-				if (cexp == null)
-				exp = GetOperatorFun(op, exp, null);
-				else
-					exp = GetBinaryFunction(op, exp, cexp);
-				
+				exp = GetOperatorFun(op, exp, cexp); 
 			}
 		} else if (la.kind == 14) {
 			Get();
@@ -1795,11 +1776,7 @@ internal sealed partial class Parser {
 				if (StartOf(25)) {
 					OpExpr8(out cexp);
 				}
-				if (cexp == null)
-				exp = GetOperatorFun(op, exp, null);
-				else
-					exp = GetBinaryFunction(op, exp, cexp);
-				
+				exp = GetOperatorFun(op, exp, cexp); 
 			}
 		} else if (la.kind == 15) {
 			Get();
@@ -1824,14 +1801,14 @@ internal sealed partial class Parser {
 			while (la.kind == 16) {
 				Get();
 				op = t.val; 
-				exp = GetBinaryFunction(op, exp, null); 
+				exp = GetOperatorFun(op, exp, null); 
 			}
 		} else if (la.kind == 16) {
 			Get();
 			op = t.val; 
 			if (StartOf(26)) {
 				Application(out exp);
-				exp = GetBinaryFunction(op, exp, null); 
+				exp = GetOperatorFun(op, exp, null); 
 			}
 			if (exp == null)
 			exp = new ElaVariableReference(ot) { VariableName = t.val };

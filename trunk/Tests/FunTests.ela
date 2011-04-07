@@ -1,4 +1,11 @@
-﻿let partial1 {eq} =
+﻿let private inline
+    sum x y = x + y
+ et even x = x % 2 == 0
+ et odd x = x % 2 <> 0
+ et calc x y = (x / y) * (x + y) 
+ et compare x y = if x > y then `Gt else `NotGt
+ 
+let partial1 {eq} =
           eq (sum 2 3) 5
         $ eq (sum2 3) 5
         $ eq (sum3 2) 5    
@@ -49,7 +56,16 @@ let flipped2 {eq} =
         eq (sub 3 2 1) 0
         $ eq (flip sub 3 2 (--1)) 0
         where sub x y z = x - y - z
-    
+
+let flipped3 {eq} =  
+        let xs = [1, 2, 3] et res = f xs 
+        in eq res.[0] 10
+        $ eq res.[1] 20
+        $ eq res.[2] 30
+        where fold' [] f = []
+              fold' x::xs f = f x :: fold' xs f
+           et f = flip fold' (*10)
+        
 let partialOperators {eq} =
         eq (add' 7 2) 9
         $ eq (add2 3) 5
@@ -64,12 +80,22 @@ let partialOperators {eq} =
            et div = (/)
            et div2 = (8/)
 
-let private inline
-    sum x y = x + y
- et even x = x % 2 == 0
- et odd x = x % 2 <> 0
- et calc x y = (x / y) * (x + y) 
- et compare x y = if x > y then `Gt else `NotGt
+let partialOperators2 {eq} =
+          eq ((^^^5) 10) 5
+        $ eq ((5^^^) 10) (--5)
+        where ^^^ x y = x - y
+
+let funcTok {eq} =
+          eq ((`sub` 8) 20) 12
+        $ eq ((sub 8) 20) (--12)
+        $ eq ((8 `sub`) 20) (--12)
+        where sub x y = x - y
+
+let postfixOperators {eq} =
+          eq ((3-) 2) 1
+        $ eq ((10/) 2) 5
+        $ eq (12 ^^^) 24
+        where ^^^ x = x + x
 
 let inline1 {eq,eqt,eqf} =
         eq (sum 2 3) 5
@@ -85,3 +111,73 @@ let inline2 {eq} =
         $ eq (compare 10 2) (`Gt)
         $ eq (compare 18 1.222) (`Gt)
         $ eq (compare 13 13.9) (`NotGt)
+
+let inline3 {eq} = 
+        eq (sum 2 3) 10
+        where getFun z = let inline sum x y = x + y + z in sum
+           et sum = getFun 5
+
+let inline4 {eq} = 
+        let inline sum x y = x + y + z
+        in eq (sum 2 3) 8
+        where z = 3
+        
+let inline5 {eq} = 
+          eq (add 3) 5
+        $ eq (div 6) 3
+        where inline y = 2
+           et add x = x + y
+           et div x = x / y
+
+let infix1 {eq} =
+          eq (2 `add` 3) 5
+        $ eq (8 `sub` 9) (--1)
+        where add x y = x + y
+           et sub x y = x - y
+
+let infix2 {eq} =
+        let f = 7 `fun` 4
+        in eq (f 3) 0
+        where fun x y z = x - y -z
+
+let postfix1 {eqt,eqf} =
+          eqt (2 `even`)
+        $ eqf (5 `even`)
+        $ eqt (3 `odd`)
+        $ eqf (10 `odd`)
+        where even x = x % 2 == 0
+           et odd x = x % 2 <> 0
+
+let postfix2 {eq} =
+        let add' = 2 `add`
+         et sub' = 4 `sub`
+         in eq (add' 3) 5
+         $ eq (sub' 3) 1
+        where add x y = x + y
+           et sub x y = x - y
+
+let recursion1 {eq} =
+        eq (fact 20) 2432902008176640000L
+        where fact = f 1L
+              where f acc 0 = acc
+                    f acc n = f (n * acc) (n - 1)
+
+let recursion2 {eq} =  
+        eq (fib 24) 46368
+        where fib = fib' 0 1
+              where fib' a b 0 = a
+                    fib' a b n = fib' b (a + b) (n - 1)
+
+let recursion3 {eq} =
+        let year_size = 365f
+         et birthday' prob people | prob' < 0.5 = people + 1f
+                                  | else        = birthday' prob' (people + incr)
+                                  where prob' = (year_size - people) / year_size * prob
+                                     et incr  = 1f
+        in eq (birthday' 1f 1f) 23f
+
+let mutualRecur {eq} =
+        let Mtake x::xs = x::(Mskip xs); Mtake [] = [] et
+            Mskip _::xs = Mtake xs; Mskip [] = [] in
+        let res = Mtake [1, 2, 3, 4] in
+        eq res.[0] 1 $ eq res.[1] 3

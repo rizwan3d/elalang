@@ -36,8 +36,7 @@ let <= = __internal lesserequal
 let not = __internal not
 
 /* Reference equality */
-let ===     = __internal isref
-let !== x y = not (x === y)
+let === = __internal isref
 
 /* Construction and concatenation */
 let :: = __internal cons
@@ -58,10 +57,10 @@ let pred = __internal pred
 
 /* List functions */
 let !! x y = x.[y]
-let nil   = __internal nil
-let isNil = __internal isnil
-let head  = __internal head
-let tail  = __internal tail
+let nil    = __internal nil
+let isNil  = __internal isnil
+let head   = __internal head
+let tail   = __internal tail
 let length = __internal length
 
 /* Tuple functions */
@@ -79,7 +78,7 @@ let show  = showf ""
 
 /* Complex behaviors */
 let clone = __internal clone
-let type = __internal type
+let type  = __internal type
 let force = __internal force
 
 /* Variants */

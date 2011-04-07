@@ -54,7 +54,7 @@ namespace Ela.Parsing
 
 		ExpectedBooleanToken = 109,
 
-		ExpectedFunctionToken = 110,
+		ExpectedFuncToken = 110,
 
 		ExpectedCurlyBrace = 111,
 
