@@ -3,7 +3,7 @@
 
 == Introduction ==
 
-This article provides a brief overview of differences between Ela and Haskell. It can be used a "quick start" guide for those who are familiar with Haskell.
+This article provides a brief overview of differences between Ela and Haskell. It can be used as a a "quick start" guide for those who are familiar with Haskell.
 
 
 == Feature comparison ==
@@ -143,7 +143,7 @@ Ela:
 {{{
 let div2 = (/2)
 
-let x = div2 10 {- 5 -}
+let x = div2 10 //5
 }}}
 
 ===Pattern matching===
@@ -194,7 +194,7 @@ let x = match (1,2) with
 
 ===Ranges===
 
-Both Ela and Haskell support rages with similar syntax.
+Both Ela and Haskell support ranges with similar syntax.
 
 Haskell:
 
