@@ -21,6 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{4583F31E-C
 	ProjectSection(SolutionItems) = preProject
 		Docs\CodeProjectArticle.htm = Docs\CodeProjectArticle.htm
 		Docs\CodeSamples.txt = Docs\CodeSamples.txt
+		ElaAndHaskell.txt = ElaAndHaskell.txt
 		Docs\ElaBook.doc = Docs\ElaBook.doc
 		Docs\ElaOverview1.txt = Docs\ElaOverview1.txt
 		Docs\ElaOverview2.txt = Docs\ElaOverview2.txt
