@@ -187,9 +187,9 @@ Ela:
 
 {{{
 let x = match (1,2) with
-              (x,y) | x > y -> x
-                    | x < y -> y
-                    | else  -> x + y
+              (x,y) | x > y = x
+                    | x < y = y
+                    | else  = x + y
 }}}
 
 ===Ranges===
