@@ -1,4 +1,5 @@
 #summary A brief comparison between Ela and Haskell.
+#labels Featured
 
 == Introduction ==
 
