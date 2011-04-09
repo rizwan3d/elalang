@@ -91,7 +91,7 @@ let takeWhile f x::xs | f x  = x :: takeWhile f xs
 //Num->(Seq,Cons)->(Seq,Cons)
 let take 0 xs    = nil xs
     take n x::xs = x :: take (n - 1) xs
-    take _ []@n   = n
+    take _ []@n  = n
 
 //Num->(Seq,Cons)->(Seq,Cons)
 let skip 0 xs    = xs
@@ -255,8 +255,8 @@ let delete = deleteBy (==)
 
 //Call->a->(Seq,Cons)->(Seq,Cons)
 let insertBy _   x []@n = x::n
-    insertBy cmp x (y::ys')@ys | cmp x y is (`GT) = y :: insertBy cmp x ys'
-                               | else             = x :: ys
+    insertBy cmp x (y::ys')@ys | cmp x y is (GT) = y :: insertBy cmp x ys'
+                               | else            = x :: ys
 
 //a->(Seq,Cons)->(Seq,Cons)
 let insert = insertBy compare

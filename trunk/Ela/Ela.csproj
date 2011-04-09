@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7BDF4A1E-DFFF-4AE5-BD2D-1B1F4BE84B1D}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -116,7 +116,6 @@
     <Compile Include="Builtins.cs" />
     <Compile Include="CodeModel\ElaBlock.cs" />
     <Compile Include="CodeModel\ElaBuiltin.cs" />
-    <Compile Include="CodeModel\ElaCastPattern.cs" />
     <Compile Include="CodeModel\ElaBuiltinKind.cs" />
     <Compile Include="CodeModel\ElaComprehension.cs" />
     <Compile Include="CodeModel\ElaGenerator.cs" />
@@ -242,6 +241,7 @@
     <Compile Include="Runtime\ObjectModel\ElaBoolean.cs" />
     <Compile Include="Runtime\ObjectModel\ElaChar.cs" />
     <Compile Include="Runtime\ObjectModel\ElaLazyList.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaProxy.cs" />
     <Compile Include="Runtime\ObjectModel\ElaUnit.cs" />
     <Compile Include="FormatHelper.cs" />
     <Compile Include="Debug\VarSym.cs" />

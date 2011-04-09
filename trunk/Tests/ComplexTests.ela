@@ -4,10 +4,10 @@ let skipElems {eqt} =
                                    | else   = ps xs (i + 1)
                         ps _     _          = () 
                     in
-                    if ps lst 1 is (list@r) then `Some r else `None 
+                    if ps lst 1 is (list@r) then Some r else None 
         in
         let res = skip [0, 1, 2, 3] 2 in
-        eqt <| res is (`Some [2,3])
+        eqt <| res is Some [2,3]
 
 let takeElems {eqt} =
         let take lst n =
@@ -16,10 +16,10 @@ let takeElems {eqt} =
                         pt _     _          = [] 
                     in
                     let r = pt lst 1 in
-                    if r is [] then `None else `Some r 
+                    if r is [] then None else Some r 
         in
         let res = take [0, 1, 2, 3, 4] 3 in
-        eqt <| res is (`Some [0,1,2])
+        eqt <| res is Some [0,1,2]
 
 let reverseElems {eqt} =
         let reverse' x::xs = reverse' xs ++ [x]
@@ -43,11 +43,11 @@ let iterators {eqt} =
             comparer 8 9 = eqt true
             comparer _ _ = eqt false
          et lst = [ [1,2,3], [4,5,6], [7,8,9] ]
-         et iterate fun x::xs = fun x $ `Some xs
-            iterate _   []    = `None
+         et iterate fun x::xs = fun x $ Some xs
+            iterate _   []    = None
          et filter f lst = 
-                let filter' x::xs | r is (`Some v) = v :: filter' xs
-                                  | r is (`None)   = filter' xs
+                let filter' x::xs | r is Some v = v :: filter' xs
+                                  | r is None   = filter' xs
                                   where r = f x
                     filter' []                     = []
                 in 

@@ -50,11 +50,11 @@ namespace Ela.Parsing
 
 		ExpectedOperatorToken = 107,
 
-		ExpectedVariantToken = 108,
+		// = 108,
 
 		ExpectedBooleanToken = 109,
 
-		ExpectedFuncToken = 110,
+		// = 110,
 
 		ExpectedCurlyBrace = 111,
 

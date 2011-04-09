@@ -46,25 +46,21 @@ let unitMatch {eqt} =
         $ eqt (match 123 with () = false; _ = true;;)
     
 let variantMatch {eqt} =
-          eqt (match s with `Some = true; _ = false;;)
-        $ eqt (match s with `Some 12 = true; _ = false;;)
-        $ eqt (match s with `Some x = x == 12; _ = false;;)
-        $ eqt (match s2 with `Some = true; _ = false;;)
-        $ eqt (match s2 with `Some (1,2,3) = true; _ = false;;)
-        $ eqt (match s2 with `Some x = x == (1,2,3); _ = false;;)
-        $ eqt (match n with `None = true; _ = false;;)
-        where s = `Some 12
-           et s2 = `Some (1,2,3)
-           et n = `None
+          eqt (match s with Some = true; _ = false;;)
+        $ eqt (match s with Some 12 = true; _ = false;;)
+        $ eqt (match s with Some x = x == 12; _ = false;;)
+        $ eqt (match s2 with Some = true; _ = false;;)
+        $ eqt (match s2 with Some (1,2,3) = true; _ = false;;)
+        $ eqt (match s2 with Some x = x == (1,2,3); _ = false;;)
+        $ eqt (match n with None = true; _ = false;;)
+        where s  = Some 12
+           et s2 = Some (1,2,3)
+           et n  = None
     
 let typeCheckMatch {eqt} =
           eqt (match 1 with ?int = true; _ = false;;)
         $ eqt (match (1,2) with ?tuple = true; _ = false;;)
         $ eqt (match [1,2] with ?list = true; _ = false;;)
-  
-let castMatch {eqt} =
-        eqt (match "1" with x:int = x == 1;;)
-        $ eqt (match 1 with x:string = x == "1";;)
     
 let asMatch {eqt} =
         eqt (match 4 with 4@n = n == 4; _ = false;;)
@@ -99,12 +95,12 @@ let guards4 {eqt} = eqt v
                         str              = str == "ela"
 
 let guards6 {eqt} =
-        eqt <| (compare 100 12) is (`Lt)
-        $ eqt <| (compare 12 100) is (`Gt)
-        $ eqt <| (compare 13 13) is (`Eq)
-        where compare x y | y >  x = `Gt
-                          | y == x = `Eq
-                          | else   = `Lt 
+        eqt <| (compare 100 12) is Lt
+        $ eqt <| (compare 12 100) is Gt
+        $ eqt <| (compare 13 13) is Eq
+        where compare x y | y >  x = Gt
+                          | y == x = Eq
+                          | else   = Lt 
 
 let parallel {eqt} = eqt v
         where v = match (1,2,3) with
@@ -124,11 +120,11 @@ let shortMatch {eq,eqt} =
         where v = (1,2,3)
     
 let shortMatch2 {eq,eqt} =
-        if v is (`Some [x,2]) then
+        if v is Some [x,2] then
             eq x 12
         else
             eqt false
-        where v = `Some [12,2]
+        where v = Some [12,2]
         
 let firstSecond {eq} =
         eq (fst (2, 3)) 2 $ eq (snd (3, 4)) 4

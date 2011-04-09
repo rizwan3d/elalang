@@ -235,34 +235,6 @@ namespace Ela.Compilation
 						}
 					}
 					break;
-				case ElaNodeType.CastPattern:
-					{
-						var cp = (ElaCastPattern)patExp;
-
-						if (tuple != null &&
-							cp.TypeAffinity != ElaTypeCode.Tuple &&
-							cp.TypeAffinity != ElaTypeCode.String &&
-							cp.TypeAffinity != ElaTypeCode.List &&
-							cp.TypeAffinity != ElaTypeCode.Record)
-							MatchEntryAlwaysFail(cp, nextLab);
-						else
-						{
-							if (tuple != null)
-							{
-								CompileExpression(tuple, map, Hints.None);
-								pushSys = AddVariable();
-								cw.Emit(Op.Dup);
-								cw.Emit(Op.Popvar, pushSys);
-							}
-							else
-								cw.Emit(Op.Pushvar, pushSys);
-
-							AddConv(cp.TypeAffinity, cp);
-							var addr = GetMatchVariable(cp.VariableName, hints, flags, cp);
-							cw.Emit(Op.Popvar, addr);
-						}
-					}
-					break;
 				case ElaNodeType.UnitPattern:
 					{
 						if (tuple != null)

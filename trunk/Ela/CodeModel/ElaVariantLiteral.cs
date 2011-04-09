@@ -23,23 +23,20 @@ namespace Ela.CodeModel
 
 
 		#region Methods
+		internal override string GetName()
+		{
+			return Tag;
+		}
+
+
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
-			sb.Append('`');
 			sb.Append(Tag);
-
-			if (Expression != null)
-			{
-				sb.Append(' ');
-				Expression.ToString(sb, fmt);
-			}
 		}
 		#endregion
 
 
 		#region Properties
-		public ElaExpression Expression { get; set; }
-
 		public string Tag { get; set; }
 		#endregion
 	}

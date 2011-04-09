@@ -96,8 +96,6 @@ namespace Ela.CodeModel
 
 		IsPattern,
 
-		CastPattern,
-
 		AsPattern,
 
 		PatternGroup

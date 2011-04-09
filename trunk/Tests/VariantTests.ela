@@ -1,38 +1,38 @@
 let simple {eqt} =
-        eqt <| v is (`Some)
-        $ eqt <| v2 is (`Some 2)
-        $ eqt <| v3 is (`None)
-        where v = `Some
-           et v2 = `Some 2
-           et v3 = `None
+        eqt <| v is Some
+        $ eqt <| v2 is Some 2
+        $ eqt <| v3 is None
+        where v = Some
+           et v2 = Some 2
+           et v3 = None
     
 let simple2 {eqt} = 
-        eqt <| v is (`Some (12, _))
-        $ eqt <| v2 is (`Some (1::x::xs))
-        where v = `Some (12, 20)
-           et v2 = `Some [1,2,3]
+        eqt <| v is (Some (12, _))
+        $ eqt <| v2 is (Some (1::x::xs))
+        where v = Some (12, 20)
+           et v2 = Some [1,2,3]
     
 let matchTest {eq} =
         match v with
-                `Some m = eq m "message"
-        where v = `Some "message"
+                Some m = eq m "message"
+        where v = Some "message"
 
 let tagTest {eq} =
           eq (tag v) "Some"
         $ eq (tag v2) "Foo"
         $ eq (tag v3) "Bar"
-        where v  = `Some "message"
-           et v2 = `Foo (1,2,3)
-           et v3 = `Bar
+        where v  = Some "message"
+           et v2 = Foo (1,2,3)
+           et v3 = Bar
 
 let untagTest {eq} = 
           eq (untag v) "message"
         $ eq (untag v2) (1,2,3)
         $ eq (untag v3) ()
-        where v  = `Some "message"
-           et v2 = `Foo (1,2,3)
-           et v3 = `Bar
+        where v  = Some "message"
+           et v2 = Foo (1,2,3)
+           et v3 = Bar
 
 let typeCheck {eqt} =
-        let vr  = `None in
+        let vr  = None in
         eqt (vr is ?variant)

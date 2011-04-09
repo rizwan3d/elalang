@@ -23,7 +23,6 @@ namespace Ela.CodeModel
 		#region Methods
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
-			sb.Append('`');
 			sb.Append(Tag);
 
 			if (Pattern != null)

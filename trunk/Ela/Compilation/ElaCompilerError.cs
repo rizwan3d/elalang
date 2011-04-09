@@ -34,5 +34,7 @@ namespace Ela.Compilation
 		MatchEntryEmptyNoGuard = 312,
 
         PrivateOnlyGlobal = 313,
+
+		InvalidVariant = 314,
 	}
 }

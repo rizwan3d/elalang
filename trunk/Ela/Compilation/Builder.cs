@@ -119,14 +119,18 @@ namespace Ela.Compilation
 				case ElaNodeType.VariantLiteral:
 					{
 						var v = (ElaVariantLiteral)exp;
+						ScopeVar sv;
 
-						if (v.Expression != null)
-							CompileExpression(v.Expression, map, Hints.None);
+						if (globalScope.Locals.TryGetValue(v.Tag, out sv) && (sv.VariableFlags & ElaVariableFlags.Module) == ElaVariableFlags.Module)
+						{
+							AddLinePragma(v);
+							cw.Emit(Op.Pushvar, counters.Count | sv.Address << 8);
+						}
 						else
-							cw.Emit(Op.Pushunit);
-						
-						AddLinePragma(v);
-						cw.Emit(Op.Newvar, AddString(v.Tag));
+							CompileVariant(v, null, map);
+
+						if ((hints & Hints.Left) == Hints.Left)
+							AddValueNotUsed(v);
 					}
 					break;
 				case ElaNodeType.LazyLiteral:
@@ -381,7 +385,14 @@ namespace Ela.Compilation
 						}
 						else
 						{
-							CompileExpression(p.TargetObject, map, Hints.None);
+							if (p.TargetObject.Type == ElaNodeType.VariantLiteral)
+							{
+								AddLinePragma(p.TargetObject);
+								cw.Emit(Op.Pushvar, GetVariable(p.TargetObject.GetName(), p.Line, p.Column).Address);
+							}
+							else
+								CompileExpression(p.TargetObject, map, Hints.None);
+
 							AddLinePragma(p);
 
 							if ((hints & Hints.Left) == Hints.Left &&
@@ -722,6 +733,18 @@ namespace Ela.Compilation
 		}
 
 
+		private void CompileVariant(ElaVariantLiteral v, ElaExpression arg, LabelMap map)
+		{
+			if (arg == null)
+				cw.Emit(Op.Pushunit);
+			else
+				CompileExpression(arg, map, Hints.None);
+
+			AddLinePragma(v);
+			cw.Emit(Op.Newvar, AddString(v.Tag));
+		}
+
+
 		private bool CompileInlineCall(ElaFunctionCall v, LabelMap map, Hints hints)
 		{
 			if (v.Target.Type != ElaNodeType.VariableReference)
@@ -751,6 +774,15 @@ namespace Ela.Compilation
 
 		private void CompileFunctionCall(ElaFunctionCall v, LabelMap map, Hints hints)
 		{
+			if (v.Target.Type == ElaNodeType.VariantLiteral)
+			{
+				if (v.Parameters.Count != 1)
+					AddError(ElaCompilerError.InvalidVariant, v, v);
+
+				CompileVariant((ElaVariantLiteral)v.Target, v.Parameters[0], map);
+				return;
+			}
+
 			var tail = (hints & Hints.Tail) == Hints.Tail;
 			var len = v.Parameters.Count;
 

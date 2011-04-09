@@ -26,8 +26,8 @@ let regFuns mod xs = xs ++ (vals |> filter (\x -> x is ?fun) |> map funData)
 
 let run xs = (res, failed)
         where exec (n, f) = try (f assert $ n, true, "") with 
-                                 `AssertFailed m = (n, false, ": Assert failed: " ++ m)
-                                 v               = (n, false, ": Error occured: " ++ untag v)
+                                 AssertFailed m = (n, false, ": Assert failed: " ++ m)
+                                 v              = (n, false, ": Error occured: " ++ untag v)
            et count f xs = length <| filter f xs
            et res = map exec xs
            et failed = count (\(_,y,_) -> not y) res

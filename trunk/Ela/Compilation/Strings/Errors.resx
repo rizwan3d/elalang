@@ -135,6 +135,9 @@
   <data name="InfiniteRangeOnlyList" xml:space="preserve">
     <value>Range: {0} is invalid. Only lists can be generated using infinite ranges.</value>
   </data>
+  <data name="InvalidVariant" xml:space="preserve">
+    <value>Invalid variant declaration '{0}'. Only one value can be tagged. Use tuples to tag several values.</value>
+  </data>
   <data name="MatchEntryEmptyNoGuard" xml:space="preserve">
     <value>An empty match entry should have a mandatory guard clause.</value>
   </data>

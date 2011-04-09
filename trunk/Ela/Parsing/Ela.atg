@@ -6,6 +6,8 @@ CHARACTERS
 	newLine = cr + lf.
 	tab = '\t'.    
 	letter = 'A' .. 'Z' + 'a' .. 'z' + '_'.
+	ucase = 'A' .. 'Z'.
+	lcase = 'a' .. 'z'.
 	digit = "0123456789".
 	notDigit = ANY - digit.
 	hexDigit = digit + "ABCDEFabcdef".
@@ -18,25 +20,16 @@ CHARACTERS
 	op4 = "!%&*+.:/<=>?@^|~".
 
 TOKENS
-	ident = letter { letter | digit | "'" }
+	ident = lcase { letter | digit | "'" }
 			| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ].	
 	
-	variantTok = "`"(
-				letter { letter | digit | "'" }
-				| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ]
-			).
-			
+	variantTok = ucase { letter | digit | "'" }.
+				
 	argIdent = "$"(
 				letter { letter | digit | "'" }
 				| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ]
 				).
 	
-	funcTok = "`"(
-					letter { letter | digit | "'" }
-					| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ]
-				)
-			"`".
-
 	intTok = ( digit { digit } | digit { digit } CONTEXT ("." notDigit) | 
 			( "0x" | "0X" ) hexDigit { hexDigit } ) [ "L" | "l" ].
 			
@@ -126,8 +119,12 @@ PRODUCTIONS
 			| RecordLiteral<out exp>
 			| ListLiteral<out exp>
 			| TupleLiteral<out exp>
-			| SimpleExpr<out exp>					
-		).
+			| SimpleExpr<out exp>
+			| VariantLiteral<out exp>
+		).		
+		
+	VariantLiteral<out ElaExpression exp> = 
+		variantTok (. exp = new ElaVariantLiteral(t) { Tag = t.val }; .).
 		
 	SimpleExpr<out ElaExpression exp> = 
 		(. exp = null; .)
@@ -136,18 +133,6 @@ PRODUCTIONS
 			| BaseReference<out exp>
 			| VariableReference<out exp>			
 			| LazyExpr<out exp>	
-		).
-		
-	VariantLiteral<out ElaExpression exp> = 
-		(. 
-			exp = null; 
-			var vl = default(ElaVariantLiteral);
-		.)
-		(
-			variantTok 
-			(. vl = new ElaVariantLiteral(t) { Tag = t.val.Substring(1) }; .)
-			[ Literal<out exp> (. vl.Expression = exp; .) ]
-			(. exp = vl; .)
 		).
 		
 	Primitive<out ElaExpression exp> = 
@@ -338,14 +323,15 @@ PRODUCTIONS
 		.)
 		(
 			(
-				variantTok (. vp = new ElaVariantPattern(t) { Tag = t.val.Substring(1) }; .)
-				[ AsPattern<out cpat> (. vp.Pattern = cpat; .) ]
-				(. pat = vp; .)
-			)
-			|
-			(
-				"`" (. vp = new ElaVariantPattern(t); .)
-				[ AsPattern<out cpat> (. vp.Pattern = cpat; .) ]
+				variantTok  
+				(. 
+					vp = new ElaVariantPattern(t);
+					vp.Tag = t.val; 
+				.)
+				[ 
+					AsPattern<out cpat> 
+					(. vp.Pattern = cpat; .)
+				]
 				(. pat = vp; .)
 			)
 		).
@@ -436,6 +422,7 @@ PRODUCTIONS
 			| RecordPattern<out pat>
 			| ListPattern<out pat>
 			| UnitPattern<out pat>
+			| VariantPattern<out pat>
 		).
 		
 	TypeCheckPattern<out ElaPattern pat> = 
@@ -455,21 +442,7 @@ PRODUCTIONS
 		).		
 						
 	IdentPattern<out ElaPattern pat> =
-		(. pat = null; .)
-		(			
-			ident (. var name = t.val; .)
-			[
-				(
-					":" 
-					(. var cst = new ElaCastPattern(t) { VariableName = name }; pat = cst; .)
-					ident (. cst.TypeAffinity = GetType(t.val); .)
-				)
-			]			
-			(. 
-				if (pat == null)
-					pat = new ElaVariablePattern(t) { Name = t.val }; 
-			.)
-		).	
+		ident (. pat = new ElaVariablePattern(t) { Name = t.val }; .).	
 		
 	RecordPattern<out ElaPattern pat> = 
 		(. 
@@ -1113,8 +1086,8 @@ PRODUCTIONS
 				"#"
 				(
 					ident (. inc.DllName = t.val; .)
-					| 
-					stringTok (. inc.DllName = ReadString(t.val); .)
+					| variantTok (. inc.DllName = t.val; .)
+					| stringTok (. inc.DllName = ReadString(t.val); .)
 				)
 			]		
 			[ "@" ident (. inc.Alias = t.val; .) ]
@@ -1125,6 +1098,7 @@ PRODUCTIONS
 		(. var val = String.Empty; .)
 		(
 			ident (. val = t.val; .)
+			| variantTok (. val = t.val; .)
 			| stringTok (. val = ReadString(t.val); .)
 		)
 		(. path.Add(val); .)
@@ -1149,7 +1123,7 @@ PRODUCTIONS
 			var cexp = default(ElaExpression); 
 			var code = String.Empty;
 		.)		
-		ident (. code = t.val; .)
+		variantTok (. code = t.val; .)
 		[ "(" Expr<out cexp> ")" ]
 		(. 
 			r.ErrorCode = code;
@@ -1447,31 +1421,33 @@ PRODUCTIONS
 			var rng = default(ElaRange);
 			exp = null;
 		.)
-		"["
-			(
-				ParamList<out list, out comp, out rng>
-				(.
-					if (rng != null) {
-						rng.Initial = init;
-						exp = rng;
-					}
-					else if (comp != null) {
-						comp.Initial = init;
-						exp = comp;
-					}
-					else {
-						AddError(ElaParserError.ComprehensionOpInvalidOperand);
-						exp = new ElaRange();
-					}
-				.)
-			)
-		"]".
+		(
+			"["
+				(
+					ParamList<out list, out comp, out rng>
+					(.
+						if (rng != null) {
+							rng.Initial = init;
+							exp = rng;
+						}
+						else if (comp != null) {
+							comp.Initial = init;
+							exp = comp;
+						}
+						else {
+							AddError(ElaParserError.ComprehensionOpInvalidOperand);
+							exp = new ElaRange();
+						}
+					.)
+				)
+			"]"		
+		).
 		
 	InfixExpr<out ElaExpression exp> = 
 		(. 
 			exp = null;
 			var ot = t; 
-			var name = String.Empty;
+			var funexp = default(ElaExpression);
 		.)				
 		(
 			(
@@ -1482,12 +1458,12 @@ PRODUCTIONS
 						ot = t;
 					.)
 					(
-						funcTok (. name = t.val.Trim('`'); .)
+						"`" Literal<out funexp> "`"
 					)
 					[ OpExpr6<out cexp> ]
 					(. 
 						var fc = new ElaFunctionCall(ot) { 
-								Target = new ElaVariableReference(t) { VariableName = name }
+								Target = funexp
 							};
 						fc.Parameters.Add(exp);			
 						
@@ -1501,15 +1477,15 @@ PRODUCTIONS
 			|
 			(
 				(
-					funcTok (. name = t.val.Trim('`'); .)
+					"`" Literal<out funexp> "`"
 				)
 				[ 
 					OpExpr6<out exp> 
-					(. exp = GetPrefixFun(name, exp, true);	.)
+					(. exp = GetPrefixFun(funexp, exp, true);	.)
 				]
 				(.
 					if (exp == null)
-						exp = new ElaVariableReference(ot) { VariableName = name };
+						exp = funexp;
 				.)				
 			)
 		).
@@ -1592,7 +1568,7 @@ PRODUCTIONS
 			(
 				operatorTok8 (. op = t.val; .)
 				[ 
-					Application<out exp> 
+					Application<out exp>
 					(. exp = GetOperatorFun(op, exp, null); .)
 				]
 				(.
@@ -1601,32 +1577,28 @@ PRODUCTIONS
 				.)
 			)
 		).
-		
+			
 	Application<out ElaExpression exp> = 
 		(. exp = null; .)
 		(
-			(
-				AccessExpr<out exp>
+			AccessExpr<out exp>
+			(. 
+				var ot = t;
+				var mi = default(ElaFunctionCall); 
+				var cexp = default(ElaExpression);
+			.)	
+			{
+				AccessExpr<out cexp>					
 				(. 
-					var ot = t;
-					var mi = default(ElaFunctionCall); 
-					var cexp = default(ElaExpression);
-				.)	
-				{
-					AccessExpr<out cexp>					
-					(. 
-						if (mi == null)
-						{
-							mi = new ElaFunctionCall(ot) { Target = exp };
-							exp = mi; 
-						}
-					
-						mi.Parameters.Add(cexp); 
-					.)					
-				}								
-			)
-			|
-			VariantLiteral<out exp>				
+					if (mi == null)
+					{
+						mi = new ElaFunctionCall(ot) { Target = exp };
+						exp = mi; 
+					}
+				
+					mi.Parameters.Add(cexp); 
+				.)					
+			}								
 		).
 		
 	AccessExpr<out ElaExpression exp> =

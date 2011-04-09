@@ -134,7 +134,7 @@ namespace Ela.Runtime.ObjectModel
 
         protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
-			return "`" + Tag + (Value.Ref != ElaUnit.Instance ? " " + Value.Ref.Show(Value, info, ctx) : String.Empty);
+			return Tag + (Value.Ref != ElaUnit.Instance ? " " + Value.Ref.Show(Value, info, ctx) : String.Empty);
 		}
 
 

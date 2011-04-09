@@ -113,12 +113,9 @@ namespace Ela.Parsing
 		}
 
 
-		private ElaExpression GetPrefixFun(string name, ElaExpression par, bool flip)
+		private ElaExpression GetPrefixFun(ElaExpression funexp, ElaExpression par, bool flip)
 		{
-			var fc = new ElaFunctionCall(t) {
-				Target = new ElaVariableReference(t) { VariableName = name }
-			};
-
+			var fc = new ElaFunctionCall(t) { Target = funexp };
 			fc.Parameters.Add(par);
 			fc.FlipParameters = flip;
 			return fc;

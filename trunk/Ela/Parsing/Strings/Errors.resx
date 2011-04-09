@@ -192,9 +192,6 @@
   <data name="ExpectedToken" xml:space="preserve">
     <value>Invalid syntax. Expected: {0}.</value>
   </data>
-  <data name="ExpectedVariantToken" xml:space="preserve">
-    <value>Invalid variant declaration syntax.</value>
-  </data>
   <data name="InvalidAssignment" xml:space="preserve">
     <value>Invalid assignment syntax.</value>
   </data>
@@ -422,8 +419,5 @@
   </data>
   <data name="InvalidOperation" xml:space="preserve">
     <value>Invalid syntax for an operation.</value>
-  </data>
-  <data name="ExpectedFuncToken" xml:space="preserve">
-    <value>A function token in the form `funName` is expected.</value>
   </data>
 </root>

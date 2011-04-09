@@ -3,7 +3,7 @@
  et even x = x % 2 == 0
  et odd x = x % 2 <> 0
  et calc x y = (x / y) * (x + y) 
- et compare x y = if x > y then `Gt else `NotGt
+ et compare x y = if x > y then Gt else NotGt
  
 let partial1 {eq} =
           eq (sum 2 3) 5
@@ -108,9 +108,9 @@ let inline1 {eq,eqt,eqf} =
 let inline2 {eq} =
         eq (calc 123 23) 730
         $ eq (calc 700 14) 35700
-        $ eq (compare 10 2) (`Gt)
-        $ eq (compare 18 1.222) (`Gt)
-        $ eq (compare 13 13.9) (`NotGt)
+        $ eq (compare 10 2) Gt
+        $ eq (compare 18 1.222) Gt
+        $ eq (compare 13 13.9) NotGt
 
 let inline3 {eq} = 
         eq (sum 2 3) 10
@@ -177,7 +177,7 @@ let recursion3 {eq} =
         in eq (birthday' 1f 1f) 23f
 
 let mutualRecur {eq} =
-        let Mtake x::xs = x::(Mskip xs); Mtake [] = [] et
-            Mskip _::xs = Mtake xs; Mskip [] = [] in
-        let res = Mtake [1, 2, 3, 4] in
+        let mtake x::xs = x::(mskip xs); mtake [] = [] et
+            mskip _::xs = mtake xs; mskip [] = [] in
+        let res = mtake [1, 2, 3, 4] in
         eq res.[0] 1 $ eq res.[1] 3
