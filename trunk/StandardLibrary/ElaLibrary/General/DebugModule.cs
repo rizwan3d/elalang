@@ -3,6 +3,7 @@ using Ela.Linking;
 using Ela.Runtime.ObjectModel;
 using Ela.Runtime;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Ela.Library.General
 {
@@ -21,6 +22,7 @@ namespace Ela.Library.General
 		{
 			Add<ElaObject>("startClock", StartClock);
             Add<Wrapper<Stopwatch>,String>("stopClock", StopClock);
+			Add<Int32,ElaUnit>("sleep", Sleep);
 		}
 
 
@@ -36,6 +38,13 @@ namespace Ela.Library.General
 		{
             val.Value.Stop();
             return val.Value.Elapsed.ToString();
+		}
+
+
+		public ElaUnit Sleep(int ms)
+		{
+			Thread.Sleep(ms);
+			return ElaUnit.Instance;
 		}
 		#endregion
 	}

@@ -142,7 +142,7 @@ Ela:
 {{{
 let div2 = (/2)
 
-let x = div2 10 //5
+let x = div2 10 /* 5 */
 }}}
 
 ===Pattern matching===
@@ -162,7 +162,7 @@ res = case xs of
 Ela:
 
 {{{
-let xs = 1:2:3:[]
+let xs = 1::2::3::[]
 
 let res = match xs with 
                 x::xs = x
@@ -258,4 +258,63 @@ let map' f x::xs = f x :: (& map' f xs)
     map' _ []    = []
 
 let cycle' xs = xs ++ (& cycle xs)
+}}}
+
+
+===Function application and composition===
+
+Haskell uses `(.)` operator for function composition (right associative, with applicative order) and `($)` operator for function application (right associative, with applicative order).
+By default Ela has four operators instead (similar to F#). These are forward pipe `(|>)`, backward pipe `(<|)`, forward composition `(>>)` and backward composition `(<<)`. Backward pipe is
+fully equivalent to `($)` and backward composition is equivalent to `(.)`. They are both right associative and use applicative order. (Remember, that `(.)` is a different operator in Ela and is used
+specifically for "member access"; and `($)` is a different operator as well that is used for sequencing).
+
+Haskell:
+
+{{{
+funk = (negate . abs)
+
+funk x = negate $ abs $ x
+}}}
+
+Ela:
+
+{{{
+let funk = negate << abs
+
+let funk x = negate <| abs <| x
+}}}
+
+
+===Tuples===
+
+Tuples in Haskell support nesting while in Ela tuples are always flat.
+
+Haskell:
+
+{{{
+t = (1,2,(3,4,(5,6))) //t is (1,2,(3,4,(5,6)))
+}}}
+
+Ela:
+
+{{{
+let t = (1,2,(3,4,(5,6))) //t is (1,2,3,4,5,6)
+}}}
+
+In Ela `(,)` is not an operator but syntax. One can use `(=>)` operator from `Core` module to construct tuples.
+
+Haskell:
+
+{{{
+{-# LANGUAGE TupleSections #-}
+
+t = map (\x -> map (,x) [1..3]) [3,2..1] //[[(1,3),(2,3),(3,3)],[(1,2),(2,2),(3,2)],[(1,1),(2,1),(3,1)]]
+}}}
+
+Ela:
+
+{{{
+open Core
+
+let t = map (\x -> map (=>x) [1..3]) [3,2..1] //[[(1,3),(2,3),(3,3)],[(1,2),(2,2),(3,2)],[(1,1),(2,1),(3,1)]]
 }}}

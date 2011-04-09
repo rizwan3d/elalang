@@ -27,47 +27,44 @@ namespace ElaConsole
 				opt.Debug = true;
 
 			if (opt.Silent && opt.ShowEil)
-			{
-				PrintErrorAlways("Unable to use -silent option and -eil option together.");
-				return false;
-			}
+				return IncompatibleOptions("-silent", "-eil");
 			else if (opt.Silent && opt.ShowHelp)
-			{
-				PrintErrorAlways("Unable to use -silent option and -help option together.");
-				return false;
-			}
+				return IncompatibleOptions("-silent", "-help");
 			else if (opt.ShowTime && String.IsNullOrEmpty(opt.FileName))
-			{
-				PrintErrorAlways("Unable to use -time option in interactive mode.");
-				return false;
-			}
+				return NotInteractiveOption("-time");
 			else if (opt.LunchInteractive && String.IsNullOrEmpty(opt.FileName))
-			{
-				PrintErrorAlways("Unable to use -inter option when a file name is not specified.");
-				return false;
-			}
+				return RequireFileOption("-inter");
 			else if (opt.Compile && String.IsNullOrEmpty(opt.FileName))
-			{
-				PrintErrorAlways("Unable to use -compile option when a file name is not specified.");
-				return false;
-			}
+				return RequireFileOption("-compile");
 			else if (opt.Compile && opt.LunchInteractive)
-			{
-				PrintErrorAlways("Unable to use -compile option and -inter option together.");
-				return false;
-			}
+				return IncompatibleOptions("-compile", "-inter");
 			else if (opt.WarningsAsErrors && opt.NoWarnings)
-			{
-				PrintErrorAlways("Unable to use -warnaserr option and -nowarn option together.");
-				return false;
-			}
+				return IncompatibleOptions("-warnaserr", "-nowarn");
 			else if (opt.LinkerWarningsAsErrors && opt.LinkerNoWarnings)
-			{
-				PrintErrorAlways("Unable to use -linkWarnaserr option and -linkNowarn option together.");
-				return false;
-			}
-
+				return IncompatibleOptions("-linkWarnaserr", "-linkNowarn");
+			
 			return true;
+		}
+
+
+		private bool IncompatibleOptions(params string[] names)
+		{
+			PrintErrorAlways("Unable to use the following options at the same time: {0}.", String.Join(",", names));
+			return false;
+		}
+
+
+		private bool RequireFileOption(string name)
+		{
+			PrintErrorAlways("Unable to use {0} option when a file name is not specified.", name);
+			return false;
+		}
+
+
+		private bool NotInteractiveOption(string name)
+		{
+			PrintErrorAlways("Unable to use {0} option in interactive mode.", name);
+			return false;
 		}
 		
 
@@ -200,6 +197,13 @@ namespace ElaConsole
 				foreach (var e in errors)
 					WriteMessage(e.ToString(), e.Type);
 			}
+		}
+
+
+
+		internal void PrintInternalError(Exception ex)
+		{
+			PrintError("Internal error: {0}", ex.Message);
 		}
 
 

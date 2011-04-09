@@ -12,8 +12,8 @@ let cons {eq} =
         $ eq list.[3] 3
 
 let headTail {eq} =
-        let head x::xs = x
-         et tail x::xs = xs
+        let head x::_ = x
+         et tail _::xs = xs
          et list = [0, 1, 2, 3]
         in
         eq (head list) 0

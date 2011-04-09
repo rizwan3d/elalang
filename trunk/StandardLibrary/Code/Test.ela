@@ -1,3 +1,5 @@
+open Core
+
 let inline ^^ x y = x:string ++ y:string
 
 let assert =
@@ -14,34 +16,25 @@ let assert =
     where op' m op x y | op x y = ()
                        | else   = raise AssertFailed (m)
 
-let funData fun = (funName fun, fun)
-                  where funName f = t.module.name ++ "." ++ t.name
-                                    where t = type f 
+let funData fun = (t.module.name ++ "." ++ t.name, fun)
+                  where t = type fun
     
-let regFun fun lst = fd :: lst
-                     where fd = funData fun 
+let regFun fun xs = funData fun  :: xs
 
-let regFuns mod lst = each' funData (\x -> x is ?fun) vals
-                      where vals = [ v.value \\ v <- (type mod).globals ]
-                         et each' f p x::xs | p x  = f x :: each' f p xs
-                                            | else = each' f p xs
-                            each' _ _ []           = lst
+let regFuns mod xs = xs ++ (vals |> filter (\x -> x is ?fun) |> map funData)
+                     where vals = [ v.value \\ v <- (type mod).globals ]
 
-let run lst = (res, failed)
+let run xs = (res, failed)
         where exec (n, f) = try (f assert $ n, true, "") with 
                                  `AssertFailed m = (n, false, ": Assert failed: " ++ m)
                                  `             m = (n, false, ": Error occured: " ++ m)
-           et run' x::xs = exec x :: run' xs
-              run' []    = []
-           et count f i x::xs | f x  = count f (i + 1) xs
-                              | else = count f i xs
-              count f i []           = i
-           et res = run' lst
-           et failed = count (\(_,y,_) -> not y) 0 res
+           et count f xs = length <| filter f xs
+           et res = map exec xs
+           et failed = count (\(_,y,_) -> not y) res
               
 let fmt prf (tests, failed) =
         out "Test session started" 
-            (all' tests 1)
+            (all' tests 1 "")
             "Test session finished"
             ("Executed tests: " ^^ (length tests))
             ("Successful tests: " ^^ (length tests - failed))
@@ -49,6 +42,6 @@ let fmt prf (tests, failed) =
         where out v = prf v $ out
            et tag' true  = "Success "
               tag' false = "FAILED "
-           et fmt' i (n, r, m) = i ^^ ". " ^^ n ^^ ": " ^^ (tag' r) ^^ " " ^^ m
-           et all' x::xs i = prf <| fmt' i x $ all' xs (i + 1)
-              all' [] i    = ""
+           et fmt' i (n, r, m) = i ^^ ". " ^^ n ^^ ": " ^^ (tag' r) ^^ " " ^^ m ^^ "\r\n"
+           et all' x::xs i s = (s ++ fmt' i x) |> all' xs (i + 1)
+              all' []    _ s = s

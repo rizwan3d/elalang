@@ -1,4 +1,5 @@
-0.9.0.1:Fix:Console didn't report an error if a user enter invalid interactive mode command.
+0.9.0.2:Change:Error reporting is refactored.
+0.9.0.1:Fix:Console didn't report an error if a user enters invalid interactive mode command.
 0.9.0.0:Release:Release of Ela Console 0.9.0
 0.8.0.12:Fix:Interactive mode didn't always correctly process situation when Ela machine recovery is needed.
 0.8.0.11:Change:Now Ela Console support multiline mode through -ml switch.
