@@ -1,3 +1,4 @@
+0.9.1.0:Release:Release of Ela 0.9.1
 0.9.0.13:Change:Minor refactoring in strict range compilation logic.
 0.9.0.12:Fix:'InvalidLazyListDefinition' run-time exception wasn't generated correctly (it cause VM to crush).
 0.9.0.11:Fix:Flipping of parameters wasn't always done correctly when compiling partial applications of built-in functions.
