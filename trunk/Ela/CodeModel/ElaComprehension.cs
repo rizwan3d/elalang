@@ -47,14 +47,6 @@ namespace Ela.CodeModel
 		public ElaExpression Initial { get; set; }
 
 		public bool Lazy { get; set; }
-		
-		public ElaPattern Pattern { get; set; }
-
-		public ElaExpression Guard { get; set; }
-
-		public ElaExpression Target { get; set; }
-
-		public ElaExpression Body { get; set; }
 		#endregion
 	}
 }
