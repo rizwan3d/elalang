@@ -55,8 +55,6 @@ namespace Ela.CodeModel
 		public ElaExpression Target { get; set; }
 
 		public ElaExpression Body { get; set; }
-
-		public ElaExpression InitExpression { get; set; }
 		#endregion
 	}
 }
