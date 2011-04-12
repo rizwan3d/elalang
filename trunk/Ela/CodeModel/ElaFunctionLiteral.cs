@@ -40,7 +40,7 @@ namespace Ela.CodeModel
 		#region Methods
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
-			if (String.IsNullOrEmpty(Name))
+            if (String.IsNullOrEmpty(Name))
 			{
 				var pat = Body.Entries[0].Pattern;
 
@@ -54,40 +54,40 @@ namespace Ela.CodeModel
 					Body.Entries[0].Expression.ToString(sb, fmt);
 				}
 			}
-			else
-			{
-				var indent = fmt.Indent;
+            else
+            {
+                var indent = fmt.Indent;
 
-				sb.Append(Name);
-				sb.Append(' ');
-				var c = 0;
-				var op = default(ElaPattern);
+                sb.Append(Name);
+                sb.Append(' ');
+                var c = 0;
+                var op = default(ElaPattern);
 
-				foreach (var p in Body.Entries)
-				{
-					if (c++ > 0)
-					{
-						sb.AppendLine();
-						sb.Append(' ', indent);
+                foreach (var p in Body.Entries)
+                {
+                    if (c++ > 0)
+                    {
+                        sb.AppendLine();
+                        sb.Append(' ', indent);
 
-						if (p.Pattern != null)
-						{
-							sb.Append(Name);
-							sb.Append(' ');
-						}
-						else
-							sb.Append(' ', Name.Length + 1);
-					}
+                        if (p.Pattern != null)
+                        {
+                            sb.Append(Name);
+                            sb.Append(' ');
+                        }
+                        else
+                            sb.Append(' ', Name.Length + 1);
+                    }
 
-					if (p.Pattern == null && op != null)
-						sb.Append(' ', op.ToString().Length);
+                    if (p.Pattern == null && op != null)
+                        sb.Append(' ', op.ToString().Length);
 
-					p.ToString(sb, new Fmt(indent + Name.Length + 1, fmt.Flags | FmtFlags.Paren));
-					
-					if (p.Pattern != null)
-						op = p.Pattern;
-				}
-			}
+                    p.ToString(sb, new Fmt(indent + Name.Length + 1, fmt.Flags | FmtFlags.Paren));
+
+                    if (p.Pattern != null)
+                        op = p.Pattern;
+                }
+            }
 		}
 		#endregion
 

@@ -4,47 +4,47 @@
 */
 
 /* Arithmetic operators */
-let +  = __internal add
-let -  = __internal subtract
-let *  = __internal multiply
-let /  = __internal divide
-let %  = __internal remainder
-let ** = __internal power
-let -- = __internal negate
+let (+)  = __internal add
+let (-)  = __internal subtract
+let (*)  = __internal multiply
+let (/)  = __internal divide
+let (%)  = __internal remainder
+let (**) = __internal power
+let (--) = __internal negate
 
 /* Bounds */
 let min = __internal min
 let max = __internal max
 
 /* Bitwise operators */
-let &&& = __internal bitwiseand
-let ||| = __internal bitwiseor
-let ^^^ = __internal bitwisexor
-let ~~~ = __internal bitwisenot
-let >>> = __internal shiftright
-let <<< = __internal shiftleft
+let ( &&& ) = __internal bitwiseand
+let (|||) = __internal bitwiseor
+let (^^^) = __internal bitwisexor
+let (~~~) = __internal bitwisenot
+let (>>>) = __internal shiftright
+let (<<<) = __internal shiftleft
 
 /* Equality and comparison */
-let == = __internal equal
-let <> = __internal notequal
-let <  = __internal lesser
-let >  = __internal greater
-let >= = __internal greaterequal
-let <= = __internal lesserequal
+let (==) = __internal equal
+let (<>) = __internal notequal
+let (>=) = __internal greaterequal
+let (<=) = __internal lesserequal
+let (<)  = __internal lesser
+let (>)  = __internal greater
 
 /* Boolean operators */
 let not = __internal not
 
 /* Reference equality */
-let === = __internal isref
+let (===) = __internal isref
 
 /* Construction and concatenation */
-let :: = __internal cons
-let ++ = __internal concat
+let (::) = __internal cons
+let (++) = __internal concat
 
 /* Function related operators and functions */
-let >> = __internal compforward
-let << = __internal compbackward
+let (>>) = __internal compforward
+let (<<) = __internal compbackward
 let flip = __internal flip
 let curry f x y = f (x, y)
 let uncurry f (x, y) = f x y
@@ -56,7 +56,7 @@ let succ = __internal succ
 let pred = __internal pred
 
 /* List functions */
-let !! x y = x.[y]
+let (!!) x y = x.[y]
 let nil    = __internal nil
 let isNil  = __internal isnil
 let head   = __internal head
@@ -64,7 +64,7 @@ let tail   = __internal tail
 let length = __internal length
 
 /* Tuple functions */
-let => x y = (x, y)
+let (=>) x y = (x, y)
 let swap (x, y) = (y, x)
 let swap3 (x, y, z) = (y, x, z)
 let fst = __internal fst
@@ -93,6 +93,7 @@ let fix f = f (& fix f)
 let on cmb f x y = f x `cmb` f y
 
 /* Misc */
+let (!) = __internal apply
 let rec f x = f x $ rec f
 let rec2 f x y = f x y $ rec2 f
 let until p f x | p x  = x  | else = until p f (f x)

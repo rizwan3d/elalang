@@ -36,5 +36,7 @@ namespace Ela.Compilation
         PrivateOnlyGlobal = 313,
 
 		InvalidVariant = 314,
+
+        InvalidBuiltinBinding = 315
 	}
 }

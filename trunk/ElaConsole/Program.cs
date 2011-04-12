@@ -31,7 +31,7 @@ namespace ElaConsole
 		#region Methods
 		private static int Main(string[] args) 
 		{
-			if (!ReadOptions(args))
+            if (!ReadOptions(args))
 				return R_ERR;
 
 			helper = new MessageHelper(opt);
@@ -129,8 +129,7 @@ namespace ElaConsole
 				}
 				catch (Exception ex)
 				{
-					helper.PrintError("Unable to write to the file {0}. Error: {1}",
-						opt.OutputFile, ex.Message);
+                    helper.PrintUnableWriteFile(opt.OutputFile, ex);
 					return R_ERR;
 				}
 			}
@@ -145,8 +144,7 @@ namespace ElaConsole
 				}
 				catch (Exception ex)
 				{
-					helper.PrintError("Unable to write to the file {0}. Error: {1}",
-						opt.OutputFile, ex.Message);
+					helper.PrintUnableWriteFile(opt.OutputFile, ex);
 					return R_ERR;
 				}
 			}
@@ -181,20 +179,7 @@ namespace ElaConsole
 			catch (ElaOptionException ex)
 			{
 				helper = new MessageHelper(null);
-
-				switch (ex.Error)
-				{
-					case ElaOptionError.InvalidFormat:
-						if (!String.IsNullOrEmpty(ex.Option))
-							helper.PrintErrorAlways("Invalid format for the '{0}' option.", ex.Option);
-						else
-							helper.PrintErrorAlways("Invalid command line format.");
-						break;
-					case ElaOptionError.UnknownOption:
-						helper.PrintErrorAlways("Unknown command line option '{0}'.", ex.Option);
-						break;
-				}
-					
+                helper.PrintInvalidOption(ex);
 				return false;
 			}
 		}
@@ -204,10 +189,11 @@ namespace ElaConsole
 		{
 			codeLines = new StringBuilder();
 			helper.PrintPrompt();
+            var app = String.Empty;
 				
 			for (;;)
 			{
-				var source = Console.ReadLine();
+                var source = app + Console.ReadLine();
 
 				if (!String.IsNullOrEmpty(source))
 				{
@@ -219,7 +205,8 @@ namespace ElaConsole
 						{
 							var cmd = new InteractiveCommands(vm, helper, opt);
 							cmd.ProcessCommand(source);
-							helper.PrintPrompt();				
+							helper.PrintPrompt();
+                            app = String.Empty;
 						}
 						else
 						{
@@ -228,6 +215,7 @@ namespace ElaConsole
                                 Console.WriteLine();
                                 InterpretString(source);
                                 helper.PrintPrompt();
+                                app = String.Empty;
 							}
 							else
 							{
@@ -240,11 +228,16 @@ namespace ElaConsole
                                     InterpretString(codeLines.ToString());
 									codeLines = new StringBuilder();
 									helper.PrintPrompt();
+                                    app = String.Empty;
 								}
 								else
 								{
 									codeLines.AppendLine(source);
 									helper.PrintSecondaryPrompt();
+
+                                    var indent = IndentHelper.GetIndent(source);
+                                    app = new String(' ', indent);
+                                    Console.Write(app);
 								}
 							}
 						}

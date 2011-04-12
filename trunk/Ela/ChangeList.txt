@@ -1,3 +1,12 @@
+0.9.1.9:Change:When declaring operator in infix form it is possible to use parenthesis around operator name (or to omit parenthesis as is worked before), e.g. both 'let + x = ...' and 'let (+) x = ...' are valid.
+0.9.1.8:Change:Now it is not possible to omit a variant name and to match any variant.
+0.9.1.7:Change:Now variant names don't have to be prepended with an apostrophe however all variants should start with an uppercase letter.
+0.9.1.6:Change:Now all regular variables (except of modules and variants) should start from the lowercase letter.
+0.9.1.5:Change:Now when applying a function using infix form, e.g. x `fun` y, one can writen any literal expression (not just identifier) inside apostrophes.
+0.9.1.4:Change:Now parenthesis around head/tail pattern are required everywhere except regular match construct.
+0.9.1.3:New:Now one can declare functions in both infix and postfix forms.
+0.9.1.2:New:Now one can use symbolic names in patterns (by enclosing them in parenthesis, e.g. 'fun (+) x y' is now valid'.
+0.9.1.1:New:Now one can reference a symbolic name declared in a module (or a symbolic field in a record) using syntax 'Module.(op)'.
 0.9.1.0:Release:Release of Ela 0.9.1
 0.9.0.13:Change:Minor refactoring in strict range compilation logic.
 0.9.0.12:Fix:'InvalidLazyListDefinition' run-time exception wasn't generated correctly (it cause VM to crush).

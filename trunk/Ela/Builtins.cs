@@ -37,6 +37,7 @@ namespace Ela
                 case "clone": return ElaBuiltinKind.Clone;
                 case "gettag": return ElaBuiltinKind.Gettag;
                 case "untag": return ElaBuiltinKind.Untag;
+                case "apply": return ElaBuiltinKind.Apply;
 
 				case "showf": return ElaBuiltinKind.Showf;
 				

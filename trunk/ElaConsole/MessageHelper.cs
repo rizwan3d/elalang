@@ -190,6 +190,29 @@ namespace ElaConsole
 		}
 
 
+        internal void PrintUnableWriteFile(string file, Exception ex)
+        {
+            PrintError("Unable to write to the file {0}. Error: {1}", file, ex.Message);
+        }
+
+
+        internal void PrintInvalidOption(ElaOptionException ex)
+        {
+            switch (ex.Error)
+            {
+                case ElaOptionError.InvalidFormat:
+                    if (!String.IsNullOrEmpty(ex.Option))
+                        PrintErrorAlways("Invalid format for the '{0}' option.", ex.Option);
+                    else
+                        PrintErrorAlways("Invalid command line format.");
+                    break;
+                case ElaOptionError.UnknownOption:
+                    PrintErrorAlways("Unknown command line option '{0}'.", ex.Option);
+                    break;
+            }
+        }
+
+
 		internal void PrintErrors(IEnumerable<ElaMessage> errors)
 		{
 			if (!opt.Silent)

@@ -135,6 +135,9 @@
   <data name="InfiniteRangeOnlyList" xml:space="preserve">
     <value>Range: {0} is invalid. Only lists can be generated using infinite ranges.</value>
   </data>
+  <data name="InvalidBuiltinBinding" xml:space="preserve">
+    <value>Invalid binding for a built-in function implementation. Function head is missing.</value>
+  </data>
   <data name="InvalidVariant" xml:space="preserve">
     <value>Invalid variant declaration '{0}'. Only one value can be tagged. Use tuples to tag several values.</value>
   </data>

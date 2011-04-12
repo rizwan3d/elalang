@@ -1,3 +1,5 @@
+0.9.1.2:New:Now console auto-indents code when in multi-line mode.
+0.9.1.1:Change:Minor refactoring of error reporting and message printing.
 0.9.1.0:Release:Release of Ela Console 0.9.1
 0.9.0.2:Change:Error reporting is refactored.
 0.9.0.1:Fix:Console didn't report an error if a user enters invalid interactive mode command.

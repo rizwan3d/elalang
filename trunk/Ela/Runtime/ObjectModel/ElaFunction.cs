@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using Ela.Debug;
+using Ela.CodeModel;
 
 namespace Ela.Runtime.ObjectModel
 {
@@ -10,7 +11,6 @@ namespace Ela.Runtime.ObjectModel
 		private ElaMachine vm;
 		private static readonly ElaValue[] defaultParams = new ElaValue[] { new ElaValue(ElaUnit.Instance) };
 		private static readonly ElaValue[] emptyParams = new ElaValue[0];
-		private static readonly char[] ops = new char[] { '!', '%', '&', '*', '+', '-', '.', ':', '/', '<', '=', '>', '?', '@', '^', '|', '~' };
 		private const string DEF_NAME = "<f>";
         private const string MODULE = "module";
         private const string HANDLE = "handle";
@@ -275,7 +275,7 @@ namespace Ela.Runtime.ObjectModel
 				}
 			}
 
-			if (funName.IndexOfAny(ops) != -1)
+			if (Format.IsSymbolic(funName))
 				funName = "(" + funName + ")";
 
 			return funName;

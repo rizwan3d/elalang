@@ -21,10 +21,21 @@ namespace Ela.CodeModel
 
 
 		#region Methods
+        internal override string GetName()
+        {
+            return Name;
+        }
+
+
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
-			if (Name[0] != '$')
-				sb.Append(Name);
+            if (Name[0] != '$')
+            {
+                if (Format.IsSymbolic(Name))
+                    sb.AppendFormat("({0})", Name);
+                else
+                    sb.Append(Name);
+            }
 		}
 
 

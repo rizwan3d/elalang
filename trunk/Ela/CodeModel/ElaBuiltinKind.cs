@@ -46,6 +46,8 @@ namespace Ela.CodeModel
 
         Untag,
 
+        Apply,
+
 
 		Negate,
 

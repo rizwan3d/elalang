@@ -232,41 +232,41 @@ internal sealed class Scanner {
 	static Scanner() {
 		start = new Hashtable(128);
 		for (int i = 97; i <= 122; ++i) start[i] = 1;
-		for (int i = 65; i <= 90; ++i) start[i] = 3;
-		for (int i = 49; i <= 57; ++i) start[i] = 55;
-		start[39] = 56; 
-		start[36] = 90; 
-		start[48] = 57; 
-		start[46] = 91; 
-		start[34] = 24; 
-		start[60] = 58; 
-		for (int i = 38; i <= 38; ++i) start[i] = 37;
-		for (int i = 61; i <= 61; ++i) start[i] = 37;
-		for (int i = 124; i <= 124; ++i) start[i] = 37;
-		start[62] = 59; 
-		start[94] = 40; 
-		start[58] = 41; 
-		start[43] = 42; 
-		start[45] = 60; 
-		for (int i = 37; i <= 37; ++i) start[i] = 44;
-		for (int i = 42; i <= 42; ++i) start[i] = 44;
-		for (int i = 47; i <= 47; ++i) start[i] = 44;
-		for (int i = 33; i <= 33; ++i) start[i] = 47;
-		for (int i = 126; i <= 126; ++i) start[i] = 47;
-		start[123] = 48; 
-		start[125] = 49; 
-		start[91] = 50; 
-		start[93] = 51; 
-		start[92] = 61; 
-		start[64] = 62; 
-		start[59] = 54; 
-		start[95] = 92; 
-		start[40] = 93; 
-		start[41] = 74; 
-		start[44] = 75; 
-		start[63] = 76; 
-		start[35] = 87; 
-		start[96] = 88; 
+		for (int i = 65; i <= 90; ++i) start[i] = 4;
+		for (int i = 49; i <= 57; ++i) start[i] = 56;
+		start[95] = 82; 
+		start[39] = 57; 
+		start[36] = 83; 
+		start[48] = 58; 
+		start[46] = 84; 
+		start[34] = 25; 
+		start[60] = 59; 
+		for (int i = 38; i <= 38; ++i) start[i] = 38;
+		for (int i = 61; i <= 61; ++i) start[i] = 38;
+		for (int i = 124; i <= 124; ++i) start[i] = 38;
+		start[62] = 60; 
+		start[94] = 41; 
+		start[58] = 42; 
+		start[43] = 43; 
+		start[45] = 61; 
+		for (int i = 37; i <= 37; ++i) start[i] = 45;
+		for (int i = 42; i <= 42; ++i) start[i] = 45;
+		for (int i = 47; i <= 47; ++i) start[i] = 45;
+		for (int i = 33; i <= 33; ++i) start[i] = 48;
+		for (int i = 126; i <= 126; ++i) start[i] = 48;
+		start[123] = 49; 
+		start[125] = 50; 
+		start[91] = 51; 
+		start[93] = 52; 
+		start[92] = 62; 
+		start[64] = 63; 
+		start[59] = 55; 
+		start[40] = 85; 
+		start[41] = 75; 
+		start[44] = 76; 
+		start[63] = 77; 
+		start[96] = 79; 
+		start[35] = 80; 
 		start[Buffer.EOF] = -1;
 
 	}
@@ -400,13 +400,14 @@ internal sealed class Scanner {
 			case "!": t.kind = 53; break;
 			case "&": t.kind = 55; break;
 			case "inline": t.kind = 56; break;
-			case "<-": t.kind = 59; break;
-			case "<->": t.kind = 60; break;
-			case "<|": t.kind = 61; break;
-			case "|>": t.kind = 62; break;
-			case "||": t.kind = 63; break;
-			case "&&": t.kind = 64; break;
-			case ":": t.kind = 65; break;
+			case "__internal": t.kind = 57; break;
+			case "<-": t.kind = 60; break;
+			case "<->": t.kind = 61; break;
+			case "<|": t.kind = 62; break;
+			case "|>": t.kind = 63; break;
+			case "||": t.kind = 64; break;
+			case "&&": t.kind = 65; break;
+			case ":": t.kind = 66; break;
 			default: break;
 		}
 	}
@@ -507,102 +508,103 @@ internal sealed class Scanner {
 				if (ch == 39 || ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 1;}
 				else {t.kind = 1; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 			case 2:
-				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 63;}
-				else if (ch >= '0' && ch <= '9') {AddCh(); goto case 64;}
-				else if (ch == 39) {AddCh(); goto case 2;}
-				else {goto case 0;}
+				recEnd = pos; recKind = 1;
+				if (ch == 39 || ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 2;}
+				else {t.kind = 1; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 			case 3:
-				recEnd = pos; recKind = 2;
-				if (ch == 39 || ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 3;}
-				else {t.kind = 2; break;}
+				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 64;}
+				else if (ch >= '0' && ch <= '9') {AddCh(); goto case 65;}
+				else if (ch == 39) {AddCh(); goto case 3;}
+				else {goto case 0;}
 			case 4:
-				recEnd = pos; recKind = 3;
+				recEnd = pos; recKind = 2;
 				if (ch == 39 || ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 4;}
-				else {t.kind = 3; break;}
+				else {t.kind = 2; break;}
 			case 5:
-				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 6;}
-				else {goto case 0;}
-			case 6:
 				recEnd = pos; recKind = 3;
-				if (ch == 39 || ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 7;}
+				if (ch == 39 || ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 5;}
 				else {t.kind = 3; break;}
-			case 7:
-				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 65;}
-				else if (ch >= '0' && ch <= '9') {AddCh(); goto case 66;}
-				else if (ch == 39) {AddCh(); goto case 7;}
+			case 6:
+				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 7;}
 				else {goto case 0;}
+			case 7:
+				recEnd = pos; recKind = 3;
+				if (ch == 39 || ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 8;}
+				else {t.kind = 3; break;}
 			case 8:
+				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 66;}
+				else if (ch >= '0' && ch <= '9') {AddCh(); goto case 67;}
+				else if (ch == 39) {AddCh(); goto case 8;}
+				else {goto case 0;}
+			case 9:
 				{
 					tlen -= apx;
 					SetScannerBehindT();
 					t.kind = 4; break;}
-			case 9:
-				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 10;}
-				else {goto case 0;}
 			case 10:
-				recEnd = pos; recKind = 4;
-				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 10;}
-				else if (ch == 'L' || ch == 'l') {AddCh(); goto case 11;}
-				else {t.kind = 4; break;}
-			case 11:
-				{t.kind = 4; break;}
-			case 12:
-				recEnd = pos; recKind = 5;
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 12;}
-				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 23;}
-				else if (ch == 'E' || ch == 'e') {AddCh(); goto case 13;}
-				else {t.kind = 5; break;}
-			case 13:
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 15;}
-				else if (ch == '+' || ch == '-') {AddCh(); goto case 14;}
+				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 11;}
 				else {goto case 0;}
+			case 11:
+				recEnd = pos; recKind = 4;
+				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 11;}
+				else if (ch == 'L' || ch == 'l') {AddCh(); goto case 12;}
+				else {t.kind = 4; break;}
+			case 12:
+				{t.kind = 4; break;}
+			case 13:
+				recEnd = pos; recKind = 5;
+				if (ch >= '0' && ch <= '9') {AddCh(); goto case 13;}
+				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 24;}
+				else if (ch == 'E' || ch == 'e') {AddCh(); goto case 14;}
+				else {t.kind = 5; break;}
 			case 14:
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 15;}
+				if (ch >= '0' && ch <= '9') {AddCh(); goto case 16;}
+				else if (ch == '+' || ch == '-') {AddCh(); goto case 15;}
 				else {goto case 0;}
 			case 15:
-				recEnd = pos; recKind = 5;
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 15;}
-				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 23;}
-				else {t.kind = 5; break;}
+				if (ch >= '0' && ch <= '9') {AddCh(); goto case 16;}
+				else {goto case 0;}
 			case 16:
 				recEnd = pos; recKind = 5;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 16;}
-				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 23;}
-				else if (ch == 'E' || ch == 'e') {AddCh(); goto case 17;}
+				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 24;}
 				else {t.kind = 5; break;}
 			case 17:
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 19;}
-				else if (ch == '+' || ch == '-') {AddCh(); goto case 18;}
-				else {goto case 0;}
+				recEnd = pos; recKind = 5;
+				if (ch >= '0' && ch <= '9') {AddCh(); goto case 17;}
+				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 24;}
+				else if (ch == 'E' || ch == 'e') {AddCh(); goto case 18;}
+				else {t.kind = 5; break;}
 			case 18:
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 19;}
+				if (ch >= '0' && ch <= '9') {AddCh(); goto case 20;}
+				else if (ch == '+' || ch == '-') {AddCh(); goto case 19;}
 				else {goto case 0;}
 			case 19:
-				recEnd = pos; recKind = 5;
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 19;}
-				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 23;}
-				else {t.kind = 5; break;}
-			case 20:
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 22;}
-				else if (ch == '+' || ch == '-') {AddCh(); goto case 21;}
+				if (ch >= '0' && ch <= '9') {AddCh(); goto case 20;}
 				else {goto case 0;}
+			case 20:
+				recEnd = pos; recKind = 5;
+				if (ch >= '0' && ch <= '9') {AddCh(); goto case 20;}
+				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 24;}
+				else {t.kind = 5; break;}
 			case 21:
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 22;}
+				if (ch >= '0' && ch <= '9') {AddCh(); goto case 23;}
+				else if (ch == '+' || ch == '-') {AddCh(); goto case 22;}
 				else {goto case 0;}
 			case 22:
-				recEnd = pos; recKind = 5;
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 22;}
-				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 23;}
-				else {t.kind = 5; break;}
-			case 23:
-				{t.kind = 5; break;}
-			case 24:
-				if (ch <= 9 || ch >= 11 && ch <= 12 || ch >= 14 && ch <= '!' || ch >= '#' && ch <= '[' || ch >= ']' && ch <= 65535) {AddCh(); goto case 24;}
-				else if (ch == '"') {AddCh(); goto case 30;}
-				else if (ch == 92) {AddCh(); goto case 67;}
+				if (ch >= '0' && ch <= '9') {AddCh(); goto case 23;}
 				else {goto case 0;}
+			case 23:
+				recEnd = pos; recKind = 5;
+				if (ch >= '0' && ch <= '9') {AddCh(); goto case 23;}
+				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 24;}
+				else {t.kind = 5; break;}
+			case 24:
+				{t.kind = 5; break;}
 			case 25:
-				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 26;}
+				if (ch <= 9 || ch >= 11 && ch <= 12 || ch >= 14 && ch <= '!' || ch >= '#' && ch <= '[' || ch >= ']' && ch <= 65535) {AddCh(); goto case 25;}
+				else if (ch == '"') {AddCh(); goto case 31;}
+				else if (ch == 92) {AddCh(); goto case 68;}
 				else {goto case 0;}
 			case 26:
 				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 27;}
@@ -611,19 +613,19 @@ internal sealed class Scanner {
 				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 28;}
 				else {goto case 0;}
 			case 28:
-				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 24;}
+				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 29;}
 				else {goto case 0;}
 			case 29:
-				if (ch <= 92 || ch >= '^' && ch <= 65535) {AddCh(); goto case 29;}
-				else if (ch == ']') {AddCh(); goto case 68;}
+				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 25;}
 				else {goto case 0;}
 			case 30:
-				{t.kind = 6; break;}
-			case 31:
-				if (ch == 39) {AddCh(); goto case 36;}
+				if (ch <= 92 || ch >= '^' && ch <= 65535) {AddCh(); goto case 30;}
+				else if (ch == ']') {AddCh(); goto case 69;}
 				else {goto case 0;}
+			case 31:
+				{t.kind = 6; break;}
 			case 32:
-				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 33;}
+				if (ch == 39) {AddCh(); goto case 37;}
 				else {goto case 0;}
 			case 33:
 				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 34;}
@@ -632,14 +634,13 @@ internal sealed class Scanner {
 				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 35;}
 				else {goto case 0;}
 			case 35:
-				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 31;}
+				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 36;}
 				else {goto case 0;}
 			case 36:
-				{t.kind = 7; break;}
+				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 32;}
+				else {goto case 0;}
 			case 37:
-				recEnd = pos; recKind = 8;
-				if (ch == '!' || ch >= '%' && ch <= '&' || ch >= '*' && ch <= '+' || ch >= '-' && ch <= '/' || ch == ':' || ch >= '<' && ch <= '@' || ch == '^' || ch == '|' || ch == '~') {AddCh(); goto case 37;}
-				else {t.kind = 8; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
+				{t.kind = 7; break;}
 			case 38:
 				recEnd = pos; recKind = 8;
 				if (ch == '!' || ch >= '%' && ch <= '&' || ch >= '*' && ch <= '+' || ch >= '-' && ch <= '/' || ch == ':' || ch >= '<' && ch <= '@' || ch == '^' || ch == '|' || ch == '~') {AddCh(); goto case 38;}
@@ -649,211 +650,189 @@ internal sealed class Scanner {
 				if (ch == '!' || ch >= '%' && ch <= '&' || ch >= '*' && ch <= '+' || ch >= '-' && ch <= '/' || ch == ':' || ch >= '<' && ch <= '@' || ch == '^' || ch == '|' || ch == '~') {AddCh(); goto case 39;}
 				else {t.kind = 8; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 			case 40:
-				recEnd = pos; recKind = 9;
+				recEnd = pos; recKind = 8;
 				if (ch == '!' || ch >= '%' && ch <= '&' || ch >= '*' && ch <= '+' || ch >= '-' && ch <= '/' || ch == ':' || ch >= '<' && ch <= '@' || ch == '^' || ch == '|' || ch == '~') {AddCh(); goto case 40;}
-				else {t.kind = 9; break;}
+				else {t.kind = 8; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 			case 41:
-				recEnd = pos; recKind = 10;
+				recEnd = pos; recKind = 9;
 				if (ch == '!' || ch >= '%' && ch <= '&' || ch >= '*' && ch <= '+' || ch >= '-' && ch <= '/' || ch == ':' || ch >= '<' && ch <= '@' || ch == '^' || ch == '|' || ch == '~') {AddCh(); goto case 41;}
-				else {t.kind = 10; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
+				else {t.kind = 9; break;}
 			case 42:
-				recEnd = pos; recKind = 11;
+				recEnd = pos; recKind = 10;
 				if (ch == '!' || ch >= '%' && ch <= '&' || ch >= '*' && ch <= '+' || ch >= '-' && ch <= '/' || ch == ':' || ch >= '<' && ch <= '@' || ch == '^' || ch == '|' || ch == '~') {AddCh(); goto case 42;}
-				else {t.kind = 11; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
+				else {t.kind = 10; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 			case 43:
 				recEnd = pos; recKind = 11;
 				if (ch == '!' || ch >= '%' && ch <= '&' || ch >= '*' && ch <= '+' || ch >= '-' && ch <= '/' || ch == ':' || ch >= '<' && ch <= '@' || ch == '^' || ch == '|' || ch == '~') {AddCh(); goto case 43;}
 				else {t.kind = 11; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 			case 44:
-				recEnd = pos; recKind = 12;
+				recEnd = pos; recKind = 11;
 				if (ch == '!' || ch >= '%' && ch <= '&' || ch >= '*' && ch <= '+' || ch >= '-' && ch <= '/' || ch == ':' || ch >= '<' && ch <= '@' || ch == '^' || ch == '|' || ch == '~') {AddCh(); goto case 44;}
-				else {t.kind = 12; break;}
+				else {t.kind = 11; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 			case 45:
-				recEnd = pos; recKind = 13;
+				recEnd = pos; recKind = 12;
 				if (ch == '!' || ch >= '%' && ch <= '&' || ch >= '*' && ch <= '+' || ch >= '-' && ch <= '/' || ch == ':' || ch >= '<' && ch <= '@' || ch == '^' || ch == '|' || ch == '~') {AddCh(); goto case 45;}
-				else {t.kind = 13; break;}
+				else {t.kind = 12; break;}
 			case 46:
-				recEnd = pos; recKind = 14;
+				recEnd = pos; recKind = 13;
 				if (ch == '!' || ch >= '%' && ch <= '&' || ch >= '*' && ch <= '+' || ch >= '-' && ch <= '/' || ch == ':' || ch >= '<' && ch <= '@' || ch == '^' || ch == '|' || ch == '~') {AddCh(); goto case 46;}
-				else {t.kind = 14; break;}
+				else {t.kind = 13; break;}
 			case 47:
-				recEnd = pos; recKind = 15;
+				recEnd = pos; recKind = 14;
 				if (ch == '!' || ch >= '%' && ch <= '&' || ch >= '*' && ch <= '+' || ch >= '-' && ch <= '/' || ch == ':' || ch >= '<' && ch <= '@' || ch == '^' || ch == '|' || ch == '~') {AddCh(); goto case 47;}
-				else {t.kind = 15; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
+				else {t.kind = 14; break;}
 			case 48:
-				{t.kind = 16; break;}
+				recEnd = pos; recKind = 15;
+				if (ch == '!' || ch >= '%' && ch <= '&' || ch >= '*' && ch <= '+' || ch >= '-' && ch <= '/' || ch == ':' || ch >= '<' && ch <= '@' || ch == '^' || ch == '|' || ch == '~') {AddCh(); goto case 48;}
+				else {t.kind = 15; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 			case 49:
-				{t.kind = 17; break;}
+				{t.kind = 16; break;}
 			case 50:
-				{t.kind = 18; break;}
+				{t.kind = 17; break;}
 			case 51:
-				{t.kind = 19; break;}
+				{t.kind = 18; break;}
 			case 52:
-				{t.kind = 23; break;}
+				{t.kind = 19; break;}
 			case 53:
-				{t.kind = 24; break;}
+				{t.kind = 23; break;}
 			case 54:
-				{t.kind = 45; break;}
+				{t.kind = 24; break;}
 			case 55:
-				recEnd = pos; recKind = 4;
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 55;}
-				else if (ch == 'L' || ch == 'l') {AddCh(); goto case 11;}
-				else if (ch == '.') {apx++; AddCh(); goto case 70;}
-				else if (ch == 'E' || ch == 'e') {AddCh(); goto case 20;}
-				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 23;}
-				else {t.kind = 4; break;}
+				{t.kind = 45; break;}
 			case 56:
-				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 71;}
-				else if (ch <= 9 || ch >= 11 && ch <= 12 || ch >= 14 && ch <= '&' || ch >= '(' && ch <= '@' || ch == '[' || ch >= ']' && ch <= '^' || ch == '`' || ch >= '{' && ch <= 65535) {AddCh(); goto case 31;}
-				else if (ch == 92) {AddCh(); goto case 69;}
-				else {goto case 0;}
-			case 57:
 				recEnd = pos; recKind = 4;
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 55;}
-				else if (ch == 'L' || ch == 'l') {AddCh(); goto case 11;}
-				else if (ch == '.') {apx++; AddCh(); goto case 70;}
-				else if (ch == 'X' || ch == 'x') {AddCh(); goto case 9;}
-				else if (ch == 'E' || ch == 'e') {AddCh(); goto case 20;}
-				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 23;}
+				if (ch >= '0' && ch <= '9') {AddCh(); goto case 56;}
+				else if (ch == 'L' || ch == 'l') {AddCh(); goto case 12;}
+				else if (ch == '.') {apx++; AddCh(); goto case 71;}
+				else if (ch == 'E' || ch == 'e') {AddCh(); goto case 21;}
+				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 24;}
 				else {t.kind = 4; break;}
+			case 57:
+				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 72;}
+				else if (ch <= 9 || ch >= 11 && ch <= 12 || ch >= 14 && ch <= '&' || ch >= '(' && ch <= '@' || ch == '[' || ch >= ']' && ch <= '^' || ch == '`' || ch >= '{' && ch <= 65535) {AddCh(); goto case 32;}
+				else if (ch == 92) {AddCh(); goto case 70;}
+				else {goto case 0;}
 			case 58:
-				recEnd = pos; recKind = 8;
-				if (ch == '!' || ch >= '%' && ch <= '&' || ch >= '*' && ch <= '+' || ch >= '-' && ch <= '/' || ch == ':' || ch >= '=' && ch <= '@' || ch == '^' || ch == '|' || ch == '~') {AddCh(); goto case 39;}
-				else if (ch == '[') {AddCh(); goto case 29;}
-				else if (ch == '<') {AddCh(); goto case 45;}
-				else {t.kind = 8; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
+				recEnd = pos; recKind = 4;
+				if (ch >= '0' && ch <= '9') {AddCh(); goto case 56;}
+				else if (ch == 'L' || ch == 'l') {AddCh(); goto case 12;}
+				else if (ch == '.') {apx++; AddCh(); goto case 71;}
+				else if (ch == 'X' || ch == 'x') {AddCh(); goto case 10;}
+				else if (ch == 'E' || ch == 'e') {AddCh(); goto case 21;}
+				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 24;}
+				else {t.kind = 4; break;}
 			case 59:
 				recEnd = pos; recKind = 8;
-				if (ch == '!' || ch >= '%' && ch <= '&' || ch >= '*' && ch <= '+' || ch >= '-' && ch <= '/' || ch == ':' || ch >= '<' && ch <= '=' || ch >= '?' && ch <= '@' || ch == '^' || ch == '|' || ch == '~') {AddCh(); goto case 38;}
-				else if (ch == '>') {AddCh(); goto case 46;}
+				if (ch == '!' || ch >= '%' && ch <= '&' || ch >= '*' && ch <= '+' || ch >= '-' && ch <= '/' || ch == ':' || ch >= '=' && ch <= '@' || ch == '^' || ch == '|' || ch == '~') {AddCh(); goto case 40;}
+				else if (ch == '[') {AddCh(); goto case 30;}
+				else if (ch == '<') {AddCh(); goto case 46;}
 				else {t.kind = 8; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 			case 60:
-				recEnd = pos; recKind = 11;
-				if (ch == '!' || ch >= '%' && ch <= '&' || ch >= '*' && ch <= '+' || ch >= '.' && ch <= '/' || ch == ':' || ch >= '<' && ch <= '@' || ch == '^' || ch == '|' || ch == '~') {AddCh(); goto case 43;}
-				else if (ch == '-') {AddCh(); goto case 47;}
-				else {t.kind = 11; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
+				recEnd = pos; recKind = 8;
+				if (ch == '!' || ch >= '%' && ch <= '&' || ch >= '*' && ch <= '+' || ch >= '-' && ch <= '/' || ch == ':' || ch >= '<' && ch <= '=' || ch >= '?' && ch <= '@' || ch == '^' || ch == '|' || ch == '~') {AddCh(); goto case 39;}
+				else if (ch == '>') {AddCh(); goto case 47;}
+				else {t.kind = 8; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 			case 61:
-				recEnd = pos; recKind = 22;
-				if (ch == 92) {AddCh(); goto case 53;}
-				else {t.kind = 22; break;}
+				recEnd = pos; recKind = 11;
+				if (ch == '!' || ch >= '%' && ch <= '&' || ch >= '*' && ch <= '+' || ch >= '.' && ch <= '/' || ch == ':' || ch >= '<' && ch <= '@' || ch == '^' || ch == '|' || ch == '~') {AddCh(); goto case 44;}
+				else if (ch == '-') {AddCh(); goto case 48;}
+				else {t.kind = 11; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 			case 62:
-				recEnd = pos; recKind = 29;
-				if (ch == '@') {AddCh(); goto case 52;}
-				else {t.kind = 29; break;}
+				recEnd = pos; recKind = 22;
+				if (ch == 92) {AddCh(); goto case 54;}
+				else {t.kind = 22; break;}
 			case 63:
-				recEnd = pos; recKind = 1;
-				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 63;}
-				else if (ch >= '0' && ch <= '9') {AddCh(); goto case 64;}
-				else if (ch == 39) {AddCh(); goto case 2;}
-				else {t.kind = 1; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
+				recEnd = pos; recKind = 29;
+				if (ch == '@') {AddCh(); goto case 53;}
+				else {t.kind = 29; break;}
 			case 64:
 				recEnd = pos; recKind = 1;
-				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 63;}
-				else if (ch >= '0' && ch <= '9') {AddCh(); goto case 64;}
-				else if (ch == 39) {AddCh(); goto case 2;}
+				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 64;}
+				else if (ch >= '0' && ch <= '9') {AddCh(); goto case 65;}
+				else if (ch == 39) {AddCh(); goto case 3;}
 				else {t.kind = 1; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 			case 65:
-				recEnd = pos; recKind = 3;
-				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 65;}
-				else if (ch >= '0' && ch <= '9') {AddCh(); goto case 66;}
-				else if (ch == 39) {AddCh(); goto case 7;}
-				else {t.kind = 3; break;}
+				recEnd = pos; recKind = 1;
+				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 64;}
+				else if (ch >= '0' && ch <= '9') {AddCh(); goto case 65;}
+				else if (ch == 39) {AddCh(); goto case 3;}
+				else {t.kind = 1; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 			case 66:
 				recEnd = pos; recKind = 3;
-				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 65;}
-				else if (ch >= '0' && ch <= '9') {AddCh(); goto case 66;}
-				else if (ch == 39) {AddCh(); goto case 7;}
+				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 66;}
+				else if (ch >= '0' && ch <= '9') {AddCh(); goto case 67;}
+				else if (ch == 39) {AddCh(); goto case 8;}
 				else {t.kind = 3; break;}
 			case 67:
-				if (ch == '"' || ch == 39 || ch == '0' || ch == 92 || ch == 'b' || ch == 'n' || ch == 'r' || ch == 't') {AddCh(); goto case 24;}
-				else if (ch == 'u') {AddCh(); goto case 25;}
-				else {goto case 0;}
+				recEnd = pos; recKind = 3;
+				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 66;}
+				else if (ch >= '0' && ch <= '9') {AddCh(); goto case 67;}
+				else if (ch == 39) {AddCh(); goto case 8;}
+				else {t.kind = 3; break;}
 			case 68:
-				if (ch <= '=' || ch >= '?' && ch <= 92 || ch >= '^' && ch <= 65535) {AddCh(); goto case 29;}
-				else if (ch == ']') {AddCh(); goto case 68;}
-				else if (ch == '>') {AddCh(); goto case 72;}
+				if (ch == '"' || ch == 39 || ch == '0' || ch == 92 || ch == 'b' || ch == 'n' || ch == 'r' || ch == 't') {AddCh(); goto case 25;}
+				else if (ch == 'u') {AddCh(); goto case 26;}
 				else {goto case 0;}
 			case 69:
-				if (ch == '"' || ch == 39 || ch == '0' || ch == 92 || ch == 'b' || ch == 'n' || ch == 'r' || ch == 't') {AddCh(); goto case 31;}
-				else if (ch == 'u') {AddCh(); goto case 32;}
+				if (ch <= '=' || ch >= '?' && ch <= 92 || ch >= '^' && ch <= 65535) {AddCh(); goto case 30;}
+				else if (ch == ']') {AddCh(); goto case 69;}
+				else if (ch == '>') {AddCh(); goto case 73;}
 				else {goto case 0;}
 			case 70:
-				if (ch <= '/' || ch >= ':' && ch <= 65535) {apx++; AddCh(); goto case 8;}
-				else if (ch >= '0' && ch <= '9') {apx = 0; AddCh(); goto case 16;}
+				if (ch == '"' || ch == 39 || ch == '0' || ch == 92 || ch == 'b' || ch == 'n' || ch == 'r' || ch == 't') {AddCh(); goto case 32;}
+				else if (ch == 'u') {AddCh(); goto case 33;}
 				else {goto case 0;}
 			case 71:
-				recEnd = pos; recKind = 1;
-				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 2;}
-				else if (ch == 39) {AddCh(); goto case 73;}
-				else {t.kind = 1; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
+				if (ch <= '/' || ch >= ':' && ch <= 65535) {apx++; AddCh(); goto case 9;}
+				else if (ch >= '0' && ch <= '9') {apx = 0; AddCh(); goto case 17;}
+				else {goto case 0;}
 			case 72:
-				recEnd = pos; recKind = 6;
-				if (ch <= 92 || ch >= '^' && ch <= 65535) {AddCh(); goto case 29;}
-				else if (ch == ']') {AddCh(); goto case 68;}
-				else {t.kind = 6; break;}
+				recEnd = pos; recKind = 1;
+				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 3;}
+				else if (ch == 39) {AddCh(); goto case 74;}
+				else {t.kind = 1; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 			case 73:
-				recEnd = pos; recKind = 7;
-				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 63;}
-				else if (ch >= '0' && ch <= '9') {AddCh(); goto case 64;}
-				else if (ch == 39) {AddCh(); goto case 2;}
-				else {t.kind = 7; break;}
+				recEnd = pos; recKind = 6;
+				if (ch <= 92 || ch >= '^' && ch <= 65535) {AddCh(); goto case 30;}
+				else if (ch == ']') {AddCh(); goto case 69;}
+				else {t.kind = 6; break;}
 			case 74:
-				{t.kind = 48; break;}
+				recEnd = pos; recKind = 7;
+				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 64;}
+				else if (ch >= '0' && ch <= '9') {AddCh(); goto case 65;}
+				else if (ch == 39) {AddCh(); goto case 3;}
+				else {t.kind = 7; break;}
 			case 75:
-				{t.kind = 49; break;}
+				{t.kind = 48; break;}
 			case 76:
-				{t.kind = 51; break;}
+				{t.kind = 49; break;}
 			case 77:
-				{t.kind = 54; break;}
+				{t.kind = 51; break;}
 			case 78:
-				if (ch == 'i') {AddCh(); goto case 79;}
-				else {goto case 0;}
+				{t.kind = 54; break;}
 			case 79:
-				if (ch == 'n') {AddCh(); goto case 80;}
-				else {goto case 0;}
-			case 80:
-				if (ch == 't') {AddCh(); goto case 81;}
-				else {goto case 0;}
-			case 81:
-				if (ch == 'e') {AddCh(); goto case 82;}
-				else {goto case 0;}
-			case 82:
-				if (ch == 'r') {AddCh(); goto case 83;}
-				else {goto case 0;}
-			case 83:
-				if (ch == 'n') {AddCh(); goto case 84;}
-				else {goto case 0;}
-			case 84:
-				if (ch == 'a') {AddCh(); goto case 85;}
-				else {goto case 0;}
-			case 85:
-				if (ch == 'l') {AddCh(); goto case 86;}
-				else {goto case 0;}
-			case 86:
-				{t.kind = 57; break;}
-			case 87:
 				{t.kind = 58; break;}
-			case 88:
-				{t.kind = 66; break;}
-			case 89:
+			case 80:
+				{t.kind = 59; break;}
+			case 81:
 				{t.kind = 68; break;}
-			case 90:
-				recEnd = pos; recKind = 67;
-				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 4;}
-				else if (ch == 39) {AddCh(); goto case 5;}
-				else {t.kind = 67; break;}
-			case 91:
-				recEnd = pos; recKind = 25;
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 12;}
-				else if (ch == '.') {AddCh(); goto case 77;}
-				else {t.kind = 25; break;}
-			case 92:
+			case 82:
 				recEnd = pos; recKind = 46;
-				if (ch == '_') {AddCh(); goto case 78;}
+				if (ch == 39 || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 2;}
 				else {t.kind = 46; break;}
-			case 93:
+			case 83:
+				recEnd = pos; recKind = 67;
+				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 5;}
+				else if (ch == 39) {AddCh(); goto case 6;}
+				else {t.kind = 67; break;}
+			case 84:
+				recEnd = pos; recKind = 25;
+				if (ch >= '0' && ch <= '9') {AddCh(); goto case 13;}
+				else if (ch == '.') {AddCh(); goto case 78;}
+				else {t.kind = 25; break;}
+			case 85:
 				recEnd = pos; recKind = 47;
-				if (ch == '&') {AddCh(); goto case 89;}
+				if (ch == '&') {AddCh(); goto case 81;}
 				else {t.kind = 47; break;}
 
 		}

@@ -183,6 +183,11 @@ namespace Ela.Compilation
 		{
 			switch (kind)
 			{
+                case ElaBuiltinKind.Apply:
+                    cw.Emit(Op.Pushunit);
+                    cw.Emit(Op.Swap);
+                    cw.Emit(Op.Call);
+                    break;
                 case ElaBuiltinKind.Gettag:
                     cw.Emit(Op.Gettag);
                     break;

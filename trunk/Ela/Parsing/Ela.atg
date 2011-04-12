@@ -21,6 +21,7 @@ CHARACTERS
 
 TOKENS
 	ident = lcase { letter | digit | "'" }
+			| "_" ("'"|letter) { letter | digit | "'" }
 			| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ].	
 	
 	variantTok = ucase { letter | digit | "'" }.
@@ -328,12 +329,12 @@ PRODUCTIONS
 					vp = new ElaVariantPattern(t);
 					vp.Tag = t.val; 
 				.)
-				[ 
-					AsPattern<out cpat> 
-					(. vp.Pattern = cpat; .)
-				]
-				(. pat = vp; .)
 			)
+			[ 
+				AsPattern<out cpat> 
+				(. vp.Pattern = cpat; .)
+			]
+			(. pat = vp; .)
 		).
 			
 	OrPattern<out ElaPattern pat> =	
@@ -341,8 +342,11 @@ PRODUCTIONS
 		(VariantPattern<out pat> | AsPattern<out pat>).
 		
 	FuncPattern<out ElaPattern pat> =
-		AsPattern<out pat> [ ConsPattern<pat, out pat> ].
+		AsPattern<out pat>.// [ ConsPattern<pat, out pat> ].
 					
+	FuncPattern2<out ElaPattern pat> =
+		AsPattern<out pat> [ ConsPattern<pat, out pat> ].
+
 	SinglePattern<out ElaPattern pat> =			
 		(. pat = null; .)
 		(
@@ -365,7 +369,13 @@ PRODUCTIONS
 					var asPat = new ElaAsPattern(t) { Pattern = pat }; 
 					pat = asPat;				
 				.)
-				ident (. asPat.Name = t.val; .)
+				(
+					ident (. asPat.Name = t.val; .)
+					| 
+					(
+						"(" Operators (. asPat.Name = t.val; .) ")"
+					)
+				)
 			]		
 		).
 		
@@ -375,7 +385,9 @@ PRODUCTIONS
 			pat = null;
 		.)
 		(
-			"(" [ ParenPattern<out pat> ] ")" 
+			"(" 
+				[ ParenPattern<out pat> | SymbolicIdentPattern<out pat> ] 
+			")" 
 		)
 		(. 
 			if (pat == null)
@@ -384,6 +396,9 @@ PRODUCTIONS
 		
 	DefaultPattern<out ElaPattern pat> = 
 		"_" (. pat = new ElaDefaultPattern(t); .). 
+		
+	SymbolicIdentPattern<out ElaPattern pat> = 
+		Operators (. pat = new ElaVariablePattern(t) { Name = t.val }; .).
 		
 	BindingPattern<out ElaPattern pat> =
 		(. pat = null; .)
@@ -401,13 +416,19 @@ PRODUCTIONS
 				var asPat = new ElaAsPattern(t) { Pattern = pat }; 
 				pat = asPat;				
 			.)
-			ident (. asPat.Name = t.val; .)
+			(
+				ident (. asPat.Name = t.val; .)
+				| 
+				(
+					"(" Operators (. asPat.Name = t.val; .) ")"
+				)
+			)
 		].		
 		
 	GeneratorPattern<out ElaPattern pat> =
 		(. pat = null; string name = null; .)
 		(
-			ident (. name = t.val; .) (. pat = new ElaVariablePattern(t) { Name = name }; .)							
+			  IdentPattern<out pat> (. name = pat.GetName(); .)
 			| LiteralPattern<out pat>
 			| RecordPattern<out pat>
 			| ListPattern<out pat>
@@ -847,10 +868,36 @@ PRODUCTIONS
 					  FunExpr<varExp>
 					| BindingBodyGuards<varExp>
 					| BindingBodyInit<varExp>
+					| InfixFunExpr<new ElaVariablePattern(t) { Name = t.val },varExp>
 				]
 				(. SetObjectMetadata(varExp, cexp); .)
 			)
-			| BindingPattern<out pat> (. varExp.Pattern = pat; .) [ BindingBodyInit<varExp> ]
+			| 
+			(
+				BindingPattern<out pat> 
+				(. 
+					if (pat.Type != ElaNodeType.VariablePattern)
+						varExp.Pattern = pat; 
+					else
+						varExp.VariableName = pat.GetName();
+				.) 
+				[ 
+					BindingBodyInit<varExp> 
+					| 
+					(
+						(. varExp.Pattern = null; .)
+						InfixFunExpr<pat,varExp>
+					)
+					|
+					(
+						(. 
+							if (pat.Type != ElaNodeType.VariablePattern)
+								AddError(ElaParserError.InvalidFunctionDeclaration, pat);
+						.)						
+						FunExpr<varExp>
+					)
+				]
+			)
 			| BindingBodyOperator<varExp>
 		)		
 		[
@@ -920,7 +967,152 @@ PRODUCTIONS
 			BindingGuardList<ref cond>
 		).
 		
-	Operators = operatorTok1|operatorTok2|operatorTok3|operatorTok4|operatorTok5|operatorTok6|operatorTok7|operatorTok8|"::".
+	InfixFunExpr<ElaPattern pat, ElaBinding varExp> =
+		(
+			(. 
+				var ot = t;
+				var mi = new ElaFunctionLiteral(t);
+				varExp.InitExpression = mi;
+				mi.Body = new ElaMatch(t);            
+				scanner.InjectBlock(t.col);				
+			.)	
+			InfixFunBodyExprFirst<pat,mi>
+			(. 
+				varExp.VariableName = mi.Name;
+				ProcessFunctionParameters(mi, ot); 
+			.)			
+		).
+    
+	InfixFunBodyExprFirst<ElaPattern pat, ElaFunctionLiteral fun> =
+		(.
+			var ot = t;
+			var match = fun.Body;
+			var cexp = default(ElaExpression);			
+			var entry = new ElaMatchEntry(t);
+			match.Entries.Add(entry);
+			entry.Pattern = pat;
+		.)		
+		(
+			InfixFunName<fun> 
+			[
+				FuncPattern<out pat>
+				(.
+					var seq = new ElaPatternGroup(ot);
+					seq.Patterns.Add(entry.Pattern);
+					seq.Patterns.Add(pat);
+					entry.Pattern = seq;
+				.)
+			]            
+			[
+				Guard<out cexp>
+				(. entry.Guard = cexp; .)
+			]
+			"=" 
+			(
+				(. var fexp = default(ElaExpression); .)
+				Expr<out fexp>
+				(. entry.Expression = fexp; .)
+			)
+			[ WhereBinding<out cexp> (. entry.Where = cexp; .) ]
+			(. if (RequireEndBlock()) .) EndBlock
+			[ 
+				(
+					(
+						(. scanner.InjectBlock(); .)
+						InfixFunBodyExpr<fun>
+					)
+					| InfixChildFunBodyExpr<fun>
+				)
+			]
+		).
+
+	InfixFunBodyExpr<ElaFunctionLiteral fun> =
+		(.
+			var ot = t;
+			var match = fun.Body;
+			var pat = default(ElaPattern);
+			var cexp = default(ElaExpression);			
+			var entry = new ElaMatchEntry(t);
+			match.Entries.Add(entry);
+		.)		
+		(
+			( FuncPattern<out pat> (. entry.Pattern = pat; .) )
+			InfixFunName<fun> 
+			[
+				FuncPattern<out pat>
+				(.
+					var seq = new ElaPatternGroup(ot);
+					seq.Patterns.Add(entry.Pattern);
+					seq.Patterns.Add(pat);
+					entry.Pattern = seq;
+				.)
+			]            
+			[
+				Guard<out cexp>
+				(. entry.Guard = cexp; .)
+			]
+			"=" 
+			(
+				(. var fexp = default(ElaExpression); .)
+				Expr<out fexp>
+				(. entry.Expression = fexp; .)
+			)
+			[ WhereBinding<out cexp> (. entry.Where = cexp; .) ]
+			(. if (RequireEndBlock()) .) EndBlock
+			[ 
+				(
+					(
+						(. scanner.InjectBlock(); .)
+						InfixFunBodyExpr<fun>
+					)
+					| InfixChildFunBodyExpr<fun>
+				)
+			]
+		).
+			
+	InfixChildFunBodyExpr<ElaFunctionLiteral fun> =
+		(.
+			var ot = t;
+			var match = fun.Body;
+			var cexp = default(ElaExpression);
+			var entry = new ElaMatchEntry(t);
+			match.Entries.Add(entry);
+		.)
+		(
+			Guard<out cexp>
+			(. entry.Guard = cexp; .)
+			"=" 
+			(
+				(. var fexp = default(ElaExpression); .)
+				Expr<out fexp>
+				(. entry.Expression = fexp; .)
+			)
+			[ WhereBinding<out cexp> (. entry.Where = cexp; .) ]
+			(. if (RequireEndBlock()) .) EndBlock
+			[ 
+				(
+					(
+						(. scanner.InjectBlock(); .)
+						InfixFunBodyExpr<fun>
+					)
+					| InfixChildFunBodyExpr<fun>
+				)
+			]
+		).
+	    
+	InfixFunName<ElaFunctionLiteral fun> = 
+		(
+			(. var name = String.Empty; .)
+			("`" ident (. name = t.val; .) "`"| Operators (. name = t.val; .))
+			(.
+				if (String.IsNullOrEmpty(fun.Name))
+					fun.Name = name;
+				else if (name != fun.Name)
+					AddError(ElaParserError.InvalidFunctionDeclaration, name);
+			.)
+		).
+		
+	Operators = operatorTok1|operatorTok2|operatorTok3|operatorTok4|operatorTok5|operatorTok6|operatorTok7|operatorTok8|"::"|"!".
 		
 	FunName<ElaFunctionLiteral fun> = 
 		(
@@ -957,9 +1149,9 @@ PRODUCTIONS
 		.)		
 		(
 			(	
-				FuncPattern<out pat> (. entry.Pattern = pat; .)
+				FuncPattern2<out pat> (. entry.Pattern = pat; .)
 				{ 
-					FuncPattern<out pat> 
+					FuncPattern2<out pat> 
 					(. 
 						if (seq == null)
 						{
@@ -1042,9 +1234,9 @@ PRODUCTIONS
 		.)
 		(
 			(		
-				FuncPattern<out pat> (. entry.Pattern = pat; .)
+				FuncPattern2<out pat> (. entry.Pattern = pat; .)
 				{ 
-					FuncPattern<out pat> 
+					FuncPattern2<out pat> 
 					(. 
 						if (seq == null)
 						{
@@ -1560,13 +1752,13 @@ PRODUCTIONS
 			(
 				Application<out exp>
 				{
-					operatorTok8 (. op = t.val; .)
+					(operatorTok8|"!") (. op = t.val; .)
 					(. exp = GetOperatorFun(op, exp, null); .)
 				}
 			)
 			|
 			(
-				operatorTok8 (. op = t.val; .)
+				(operatorTok8|"!") (. op = t.val; .)
 				[ 
 					Application<out exp>
 					(. exp = GetOperatorFun(op, exp, null); .)
@@ -1616,6 +1808,13 @@ PRODUCTIONS
 						Expr<out cexp>
 						(. indExp.Index = cexp;	.)
 					"]"
+				)
+				|
+				(
+					"("
+						(ident|Operators)
+						(. exp = new ElaFieldReference(t) { FieldName = t.val, TargetObject = exp }; .)
+					")"
 				)
 				|
 				(
