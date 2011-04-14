@@ -51,8 +51,7 @@ namespace Ela.Compilation
 		#region Main
 		internal void CompileUnit(ElaExpression expr)
 		{
-            Console.WriteLine(expr);
-			frame.Layouts.Add(new MemoryLayout(0, 0, 1));
+            frame.Layouts.Add(new MemoryLayout(0, 0, 1));
 			cw.StartFrame(0);
 			var map = new LabelMap();
 
