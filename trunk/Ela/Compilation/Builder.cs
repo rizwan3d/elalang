@@ -24,6 +24,7 @@ namespace Ela.Compilation
 		private ExportVars exports;
 		private ElaCompiler comp;
 		private Dictionary<String,InlineFun> inlineFuns;
+		private FastStack<Boolean> allowNoInits;
 
 		internal Builder(CodeFrame frame, ElaCompiler comp, ExportVars builtins, Scope globalScope)
 		{
@@ -44,6 +45,7 @@ namespace Ela.Compilation
 			Success = true;
 			shownHints = new Dictionary<ElaCompilerHint,ElaCompilerHint>();
 			inlineFuns = new Dictionary<String,InlineFun>();
+			allowNoInits = new FastStack<Boolean>();
 		}
 		#endregion
 
@@ -1005,6 +1007,15 @@ namespace Ela.Compilation
 
 
 		#region Variables
+		[Flags]
+		private enum GetFlags
+		{
+			None = 0x00,
+			OnlyGet = 0x02,
+			SkipValidation = 0x04
+		}
+
+
 		private Scope FindGlobalScope()
 		{
 			var sc = CurrentScope;
@@ -1066,13 +1077,23 @@ namespace Ela.Compilation
 		}
 
 
-		private ScopeVar GetLocalVariable(string name)
+		private bool Validate(ScopeVar var)
+		{
+			return (var.Flags & ElaVariableFlags.NoInit) != ElaVariableFlags.NoInit || (allowNoInits.Count > 0 && allowNoInits.Peek());
+		}
+
+
+		private ScopeVar GetLocalVariable(string name, ElaExpression exp)
 		{
 			var var = default(ScopeVar);
 
 			if (CurrentScope.Locals.TryGetValue(name, out var))
 			{
 				var.Address = 0 | var.Address << 8;
+				
+				if (!Validate(var))
+					AddError(ElaCompilerError.ReferNoInit, exp, name);
+
 				return var;
 			}
 			else
@@ -1080,7 +1101,7 @@ namespace Ela.Compilation
 		}
 
 
-		private ScopeVar GetLocalOrBaseVariable(string name, out bool parent)
+		private ScopeVar GetLocalOrBaseVariable(string name, ElaExpression exp, out bool parent)
 		{
 			var var = default(ScopeVar);
 			parent = false;
@@ -1094,6 +1115,10 @@ namespace Ela.Compilation
 			{
 				parent = true;
 				var.Address = 0 | var.Address << 8;
+
+				if (!Validate(var))
+					AddError(ElaCompilerError.ReferNoInit, exp, name);
+
 				return var;
 			}
 			else
@@ -1103,11 +1128,11 @@ namespace Ela.Compilation
 
 		private ScopeVar GetVariable(string name, int line, int col)
 		{
-			return GetVariable(name, CurrentScope, 0, line, col);
+			return GetVariable(name, CurrentScope, 0, GetFlags.None, line, col);
 		}
 
 
-		private ScopeVar GetVariable(string name, Scope startScope, int startShift, int line, int col)
+		private ScopeVar GetVariable(string name, Scope startScope, int startShift, GetFlags getFlags, int line, int col)
 		{
 			var cur = startScope;
 			var shift = startShift;
@@ -1119,6 +1144,10 @@ namespace Ela.Compilation
 				if (cur.Locals.TryGetValue(name, out var))
 				{
                     var.Address = shift | var.Address << 8;
+
+					if ((getFlags & GetFlags.SkipValidation) != GetFlags.SkipValidation && !Validate(var))
+						AddError(ElaCompilerError.ReferNoInit, line, col, name);
+
 					return var;
 				}
 
@@ -1128,6 +1157,9 @@ namespace Ela.Compilation
 				cur = cur.Parent;
 			}
 			while (cur != null);
+
+			if ((getFlags & GetFlags.OnlyGet) == GetFlags.OnlyGet)
+				return new ScopeVar(-1);
 
 			var vk = exports.FindBuiltin(name);
 			var flags = vk != ElaBuiltinKind.None ? ElaVariableFlags.Builtin : ElaVariableFlags.None;
@@ -1213,7 +1245,7 @@ namespace Ela.Compilation
 			else
 				error = true;
 
-			return cur == null ? ScopeVar.Empty : GetVariable(name, cur, 1, line, col);
+			return cur == null ? ScopeVar.Empty : GetVariable(name, cur, 1, GetFlags.None, line, col);
 		}
 		#endregion
 

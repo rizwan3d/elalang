@@ -571,7 +571,7 @@ namespace Ela.Compilation
 		{
 			var parent = false;
 			var patVar = (hints & Hints.FunBody) == Hints.FunBody ?
-				GetLocalOrBaseVariable(varName, out parent) : GetLocalVariable(varName);
+				GetLocalOrBaseVariable(varName, exp, out parent) : GetLocalVariable(varName, exp);
 			var addr = patVar.Address;
 
 			if (patVar.IsEmpty())

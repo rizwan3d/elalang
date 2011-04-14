@@ -159,6 +159,9 @@
   <data name="PrivateOnlyGlobal" xml:space="preserve">
     <value>A 'private' modifier is valid only on global bindings.</value>
   </data>
+  <data name="ReferNoInit" xml:space="preserve">
+    <value>Unable to reference a variable '{0}' before it is declared.</value>
+  </data>
   <data name="UnableAssignExpression" xml:space="preserve">
     <value>Unable to assign a value to the expression {0}.</value>
   </data>

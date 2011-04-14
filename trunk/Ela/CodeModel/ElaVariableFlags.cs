@@ -23,6 +23,8 @@ namespace Ela.CodeModel
 
 		Builtin = 0x80,
 
-		Inline = 0x100
+		Inline = 0x100,
+
+		NoInit = 0x200
 	}
 }
