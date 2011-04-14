@@ -138,9 +138,6 @@
   <data name="ExpectedKeywordAsAmp" xml:space="preserve">
     <value>Expected 'as' operator, e.g. 'expr@name'.</value>
   </data>
-  <data name="ExpectedKeywordBase" xml:space="preserve">
-    <value>Expected keyword 'base'.</value>
-  </data>
   <data name="ExpectedKeywordCatch" xml:space="preserve">
     <value>Expected keyword 'catch'.</value>
   </data>

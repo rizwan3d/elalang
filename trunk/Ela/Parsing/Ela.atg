@@ -83,7 +83,6 @@ TOKENS
 	
 	DOT = ".".
 	IN = "in".
-	BASE = "base".
 	MATCH = "match".
 	ASAMP = "@".
 	IS = "is".	
@@ -131,7 +130,6 @@ PRODUCTIONS
 		(. exp = null; .)
 		(	
 			ArgumentReference<out exp>
-			| BaseReference<out exp>
 			| VariableReference<out exp>
 		).
 		
@@ -201,20 +199,6 @@ PRODUCTIONS
 	
 	ArgumentReference<out ElaExpression exp> =					
 		argIdent (. exp = new ElaArgument(t) { ArgumentName = t.val.Substring(1) }; .).
-		
-	BaseReference<out ElaExpression exp> =
-		(.
-			var baseRef = default(ElaBaseReference);
-			exp = null;
-		.)
-		(
-			BASE 
-			(. baseRef = new ElaBaseReference(t); .)
-			"." 
-			(. var ot = t; .)
-			ident
-			(. exp = new ElaFieldReference(ot) { FieldName = t.val, TargetObject = baseRef }; .)
-		).
 			
 		
 	/* Match */

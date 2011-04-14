@@ -158,9 +158,6 @@ namespace Ela.Compilation
 							AddValueNotUsed(v);
 					}
 					break;
-				case ElaNodeType.BaseReference:
-					AddError(ElaCompilerError.BaseNotAllowed, exp);
-					break;
 				case ElaNodeType.Try:
 					{
 						var s = (ElaTry)exp;
@@ -371,52 +368,26 @@ namespace Ela.Compilation
 					{
 						var p = (ElaFieldReference)exp;
 
-						if (p.TargetObject.Type == ElaNodeType.BaseReference)
+						if (p.TargetObject.Type == ElaNodeType.VariantLiteral)
 						{
-							var error = false;
-							var var = GetParentVariable(p.FieldName, p.Line, p.Column, out error);
-
-							if (error)
-								AddError(ElaCompilerError.BaseNotAllowed, exp);
-							else if (var.IsEmpty())
-								AddError(ElaCompilerError.BaseVariableNotFound, p, p.FieldName);
-							else
-							{
-								AddLinePragma(p);
-
-								if ((hints & Hints.Left) == Hints.Left && (hints & Hints.Assign) == Hints.Assign)
-								{
-									AddError(ElaCompilerError.AssignImmutableVariable, p, p.FieldName);
-									AddHint(ElaCompilerHint.UseReferenceCell, p);
-								}
-								else
-									cw.Emit(Op.Pushvar, var.Address);
-							}
+							AddLinePragma(p.TargetObject);
+							cw.Emit(Op.Pushvar, GetVariable(p.TargetObject.GetName(), p.Line, p.Column).Address);
 						}
 						else
+							CompileExpression(p.TargetObject, map, Hints.None);
+
+						AddLinePragma(p);
+
+						if ((hints & Hints.Left) == Hints.Left &&
+							(hints & Hints.Assign) == Hints.Assign)
+							cw.Emit(Op.Popfld, AddString(p.FieldName));
+						else
 						{
-							if (p.TargetObject.Type == ElaNodeType.VariantLiteral)
-							{
-								AddLinePragma(p.TargetObject);
-								cw.Emit(Op.Pushvar, GetVariable(p.TargetObject.GetName(), p.Line, p.Column).Address);
-							}
-							else
-								CompileExpression(p.TargetObject, map, Hints.None);
+							cw.Emit(Op.Pushfld, AddString(p.FieldName));
 
-							AddLinePragma(p);
-
-							if ((hints & Hints.Left) == Hints.Left &&
-								(hints & Hints.Assign) == Hints.Assign)
-								cw.Emit(Op.Popfld, AddString(p.FieldName));
-							else
-							{
-								cw.Emit(Op.Pushfld, AddString(p.FieldName));
-
-								if ((hints & Hints.Left) == Hints.Left)
-									AddValueNotUsed(exp);
-							}
+							if ((hints & Hints.Left) == Hints.Left)
+								AddValueNotUsed(exp);
 						}
-
 					}
 					break;
 				case ElaNodeType.ListLiteral:
@@ -1080,49 +1051,6 @@ namespace Ela.Compilation
 		private bool Validate(ScopeVar var)
 		{
 			return (var.Flags & ElaVariableFlags.NoInit) != ElaVariableFlags.NoInit || (allowNoInits.Count > 0 && allowNoInits.Peek());
-		}
-
-
-		private ScopeVar GetLocalVariable(string name, ElaExpression exp)
-		{
-			var var = default(ScopeVar);
-
-			if (CurrentScope.Locals.TryGetValue(name, out var))
-			{
-				var.Address = 0 | var.Address << 8;
-				
-				if (!Validate(var))
-					AddError(ElaCompilerError.ReferNoInit, exp, name);
-
-				return var;
-			}
-			else
-				return ScopeVar.Empty;
-		}
-
-
-		private ScopeVar GetLocalOrBaseVariable(string name, ElaExpression exp, out bool parent)
-		{
-			var var = default(ScopeVar);
-			parent = false;
-
-			if (CurrentScope.Locals.TryGetValue(name, out var))
-			{
-				var.Address = 0 | var.Address << 8;
-				return var;
-			}
-			else if (CurrentScope.Parent.Locals.TryGetValue(name, out var))
-			{
-				parent = true;
-				var.Address = 0 | var.Address << 8;
-
-				if (!Validate(var))
-					AddError(ElaCompilerError.ReferNoInit, exp, name);
-
-				return var;
-			}
-			else
-				return ScopeVar.Empty;
 		}
 
 

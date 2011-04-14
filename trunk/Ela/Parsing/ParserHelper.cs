@@ -80,13 +80,13 @@ namespace Ela.Parsing
 
                 for (var i = 0; i < pars; i++)
                 {
-                    if (patterns != null && patterns[i].Type == ElaNodeType.VariablePattern)
-                    {
-                        tp.Parameters.Add(new ElaVariableReference(ot) {
-                            VariableName = ((ElaVariablePattern)patterns[i]).Name
-                        });
-                    }
-                    else
+					//if (patterns != null && patterns[i].Type == ElaNodeType.VariablePattern)
+					//{
+					//    tp.Parameters.Add(new ElaVariableReference(ot) {
+					//        VariableName = ((ElaVariablePattern)patterns[i]).Name
+					//    });
+					//}
+					//else
                         tp.Parameters.Add(new ElaVariableReference(ot) { VariableName = "$" + i });
                 }
 

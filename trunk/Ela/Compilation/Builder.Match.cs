@@ -81,8 +81,8 @@ namespace Ela.Compilation
 				}
 				else if (e.Pattern == null)
 				{
-					if (prevEntry != null && prevEntry.Pattern != null)
-						CompilePattern(serv, tuple, prevEntry.Pattern, map, next, ElaVariableFlags.None, hints);
+					//if (prevEntry != null && prevEntry.Pattern != null)
+					//    CompilePattern(serv, tuple, prevEntry.Pattern, map, next, ElaVariableFlags.None, hints);
 					
 					if (!nextGuard.IsEmpty())
 						cw.MarkLabel(nextGuard);
@@ -246,7 +246,7 @@ namespace Ela.Compilation
 				case ElaNodeType.AsPattern:
 					{
 						var asPat = (ElaAsPattern)patExp;
-						var addr = GetMatchVariable(asPat.Name, hints, flags, asPat);
+						var addr = AddMatchVariable(asPat.Name, flags, asPat);
 
 						if (tuple != null)
 						{
@@ -303,7 +303,7 @@ namespace Ela.Compilation
 							cw.Emit(Op.Popvar, pushSys);
 						}
 
-						var addr = GetMatchVariable(vexp.Name, hints, flags, vexp);
+						var addr = AddMatchVariable(vexp.Name, flags, vexp);
 
 						if (pushSys != addr)
 						{
@@ -359,14 +359,14 @@ namespace Ela.Compilation
 				var v1 = 0;
 				
 				if (pe1.Type == ElaNodeType.VariablePattern)
-					v1 = GetMatchVariable(((ElaVariablePattern)pe1).Name, newHints, flags, pe1);
+					v1 = AddMatchVariable(((ElaVariablePattern)pe1).Name, flags, pe1);
 				else
 					v1 = AddVariable();
 
 				if (pe2.Type == ElaNodeType.VariablePattern || pe2.Type == ElaNodeType.DefaultPattern)
 				{
 					if (pe2.Type == ElaNodeType.VariablePattern)
-						GetMatchVariable(((ElaVariablePattern)pe2).Name, newHints, flags, pe2); //v2
+						AddMatchVariable(((ElaVariablePattern)pe2).Name, flags, pe2); //v2
 					else
 						AddVariable(); //v2
 
@@ -416,7 +416,7 @@ namespace Ela.Compilation
 					if (e.Type == ElaNodeType.VariablePattern)
 					{
 						var nm = ((ElaVariablePattern)e).Name;
-						var a = GetMatchVariable(nm, hints, flags, e);
+						var a = AddMatchVariable(nm, flags, e);
 						cw.Emit(Op.Popvar, a);
 					}
 					else if (e.Type == ElaNodeType.DefaultPattern)
@@ -493,7 +493,7 @@ namespace Ela.Compilation
 						if (p.Type == ElaNodeType.VariableReference)
 						{
 							var v = (ElaVariableReference)p;
-							var sv = GetVariable(v.VariableName, v.Line, v.Column);
+							var sv = GetVariable(v.VariableName, CurrentScope, 0, GetFlags.OnlyGet, v.Line, v.Column);
 							newSys = sv.Address;
 						}
 						else
@@ -567,19 +567,15 @@ namespace Ela.Compilation
 		}
 
 
-		private int GetMatchVariable(string varName, Hints hints, ElaVariableFlags flags, ElaExpression exp)
+		private int AddMatchVariable(string varName, ElaVariableFlags flags, ElaExpression exp)
 		{
-			var parent = false;
-			var patVar = (hints & Hints.FunBody) == Hints.FunBody ?
-				GetLocalOrBaseVariable(varName, exp, out parent) : GetLocalVariable(varName, exp);
-			var addr = patVar.Address;
+			if (IsRegistered(varName))
+			{
+				AddError(ElaCompilerError.RedefinitionNotAllowed, exp, varName);
+				return -1;
+			}
 
-			if (patVar.IsEmpty())
-				addr = AddVariable(varName, exp, flags, -1);
-			else if (!parent)
-				addr = patVar.Address;
-
-			return addr;
+			return AddVariable(varName, exp, flags, -1);
 		}
 		#endregion
 	}

@@ -49,8 +49,6 @@ namespace Ela.CodeModel
 
 		Is,
 
-		BaseReference,
-		
 		Condition,
 
 		Try,

@@ -9,9 +9,9 @@ namespace Ela.Compilation
 
 		VariableAlreadyDeclared = 300,
 
-		BaseNotAllowed = 301,
+		RedefinitionNotAllowed = 301,
 
-		BaseVariableNotFound = 302,
+		// = 302,
 
 		AssignImmutableVariable = 303,
 

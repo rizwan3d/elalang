@@ -1,3 +1,6 @@
+0.9.1.16:Change:The 'base' is decomissioned.
+0.9.1.15:Change:Compilation of pattern matching with guards optimized.
+0.9.1.14:Change:Now redefinition of variables is not allowed in pattern matching.
 0.9.1.13:Change:Now rules for mutual recursive declarations are relaxed. The work for any declarations but for regular strict binding an error will be generated if a particular bindings refer to a non-initialized value.
 0.9.1.12:Fix:A bug fixed in declaration of mutually recursive functions.
 0.9.1.11:New:Now Ela supports custom attribute both on module and on 'let' binding level. The first are serialized to object files and preserved in run-time, the latter can be used by external tools such as documentation generators.

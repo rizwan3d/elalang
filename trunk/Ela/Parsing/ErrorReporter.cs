@@ -169,7 +169,6 @@ namespace Ela.Parsing
 				case Parser._LAMBDA: return ElaParserError.ExpectedLambda;
 				case Parser._DOT: return ElaParserError.ExpectedDot;
 				case Parser._IN: return ElaParserError.ExpectedKeywordIn;
-				case Parser._BASE: return ElaParserError.ExpectedKeywordBase;
 				case Parser._MATCH: return ElaParserError.ExpectedKeywordMatch;
 				case Parser._ASAMP: return ElaParserError.ExpectedKeywordAsAmp;
 				case Parser._COMPH: return ElaParserError.ExpectedComprehensionOp;

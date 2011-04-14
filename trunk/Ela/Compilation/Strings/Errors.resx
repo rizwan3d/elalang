@@ -120,12 +120,6 @@
   <data name="AssignImmutableVariable" xml:space="preserve">
     <value>Unable to change a value bound to the name '{0}'.</value>
   </data>
-  <data name="BaseNotAllowed" xml:space="preserve">
-    <value>Keyword 'base' is not valid in this context.</value>
-  </data>
-  <data name="BaseVariableNotFound" xml:space="preserve">
-    <value>A name '{0}' is not defined in the parent scope (referenced using 'base').</value>
-  </data>
   <data name="CastNotSupported" xml:space="preserve">
     <value>Casting to the type '{0}' is not supported.</value>
   </data>
@@ -158,6 +152,9 @@
   </data>
   <data name="PrivateOnlyGlobal" xml:space="preserve">
     <value>A 'private' modifier is valid only on global bindings.</value>
+  </data>
+  <data name="RedefinitionNotAllowed" xml:space="preserve">
+    <value>Redefinition of name '{0}' is not allowed.</value>
   </data>
   <data name="ReferNoInit" xml:space="preserve">
     <value>Unable to reference a variable '{0}' before it is declared.</value>

@@ -105,9 +105,7 @@ namespace Ela.Compilation
 			idx = -1;
 			var fr = default(ElaFieldReference);
 
-			if (exp.Type == ElaNodeType.FieldReference &&
-				(fr = (ElaFieldReference)exp).TargetObject.Type != ElaNodeType.BaseReference &&
-				fr.TargetObject.Type != ElaNodeType.VariableReference)
+			if (exp.Type == ElaNodeType.FieldReference && (fr = (ElaFieldReference)exp).TargetObject.Type != ElaNodeType.VariableReference)
 			{
 				CompileExpression(fr.TargetObject, map, Hints.None);
 				obj = AddVariable();
