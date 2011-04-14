@@ -1,7 +1,7 @@
-/* 
-    Ela Prelude module
-    Created in 2011 by Basil Voronkov
-*/
+@product Ela Standard Prelude module
+@description Ela Standard Prelude module
+@copyright Copyright Basil Voronkov (c) 2011
+@version 0.1
 
 /* Arithmetic operators */
 let (+)  = __internal add
@@ -17,7 +17,7 @@ let min = __internal min
 let max = __internal max
 
 /* Bitwise operators */
-let ( &&& ) = __internal bitwiseand
+let (&&&) = __internal bitwiseand
 let (|||) = __internal bitwiseor
 let (^^^) = __internal bitwisexor
 let (~~~) = __internal bitwisenot

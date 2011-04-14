@@ -37,6 +37,8 @@ namespace Ela.CodeModel
 
 		VariableReference,
 
+        Attribute,
+
 		Argument,
 
 		FieldReference,

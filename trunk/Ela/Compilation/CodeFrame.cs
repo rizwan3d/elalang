@@ -29,6 +29,7 @@ namespace Ela.Compilation
 			_references = new ReferenceMap();
 			Arguments = new Dictionary<String,Loc>();
 			Unresolves = new FastList<UnresolvedSymbol>();
+            _attributes = new AttributeMap();
 		}
 		#endregion
 
@@ -39,6 +40,12 @@ namespace Ela.Compilation
 			internal ReferenceMap() { }
 			internal ReferenceMap(ReferenceMap copy) : base(copy) { }
 		}
+
+
+        private sealed class AttributeMap : Dictionary<String,String>, IReadOnlyMap<String,String>
+        {
+            internal AttributeMap() { }
+        }
 		#endregion
 
 
@@ -55,6 +62,7 @@ namespace Ela.Compilation
 			copy.Symbols = Symbols != null ? Symbols.Clone() : null;
 			copy.Arguments = new Dictionary<String,Loc>(Arguments);
 			copy.Unresolves = new FastList<UnresolvedSymbol>();
+            copy._attributes = _attributes;
 			return copy;
 		}
 
@@ -66,11 +74,24 @@ namespace Ela.Compilation
 
 			_references.Add(alias, mr);
 		}
+
+
+        internal void AddAttribute(string key, string value)
+        {
+            _attributes.Remove(key);
+            _attributes.Add(key, value);
+        }
 		#endregion
 
 
 		#region Properties
-		private ReferenceMap _references;
+        private AttributeMap _attributes;
+        public IReadOnlyMap<String,String> Attributes
+        {
+            get { return _attributes; }
+        }
+        
+        private ReferenceMap _references;
 		public IReadOnlyMap<String,ModuleReference> References
 		{
 			get { return _references; }

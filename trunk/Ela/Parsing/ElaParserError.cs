@@ -8,7 +8,7 @@ namespace Ela.Parsing
 
 		InvalidSyntax = 1,
 
-		// = 2,
+        InvalidFunName = 2,
 
 		InvalidIntegerSyntax = 3,
 
@@ -16,7 +16,7 @@ namespace Ela.Parsing
 
 		InvalidEscapeCode = 5,
 
-		// = 6,
+		InvalidAttribute = 6,
 
 		InvalidFunctionDeclaration = 7,
 
@@ -164,7 +164,7 @@ namespace Ela.Parsing
 
 		InvalidLiteralPattern = 205,
 
-		// = 206,
+		InvalidOperator = 206,
 
 		InvalidBindingPattern = 207,
 

@@ -49,7 +49,9 @@ namespace Ela.Parsing
 		{
 			switch (prod)
 			{
-				case "Literal": return ElaParserError.InvalidLiteral;
+                case "Attribute": return ElaParserError.InvalidAttribute;
+                case "Literal": return ElaParserError.InvalidLiteral;
+                case "Operators": return ElaParserError.InvalidOperator;
 				case "SimpleExpr": return ElaParserError.InvalidSimpleExpression;
 				case "VariantLiteral": return ElaParserError.InvalidVariant;
 				case "Primitive": return ElaParserError.InvalidPrimitive;
@@ -65,6 +67,7 @@ namespace Ela.Parsing
 				case "ParenPattern": return ElaParserError.InvalidParenPattern;
 				case "VariantPattern": return ElaParserError.InvalidVariantPattern;
 				case "FuncPattern": return ElaParserError.InvalidFuncPattern;
+                case "FuncPattern2": return ElaParserError.InvalidFuncPattern;
 				case "SinglePattern": return ElaParserError.InvalidPattern;
 				case "AsPattern": return ElaParserError.InvalidPattern;
 				case "UnitPattern": return ElaParserError.InvalidUnitPattern;
@@ -94,7 +97,13 @@ namespace Ela.Parsing
                 case "BindingBodyOperator": return ElaParserError.InvalidBinding;
                 case "BindingBodyInit": return ElaParserError.InvalidBinding;
                 case "BindingBodyGuards": return ElaParserError.InvalidBinding;
-				case "FunExpr": return ElaParserError.InvalidFunction;
+                case "InfixFunName": return ElaParserError.InvalidFunName;
+                case "InfixFunExpr": return ElaParserError.InvalidFunction;
+                case "InfixFunBodyExpr": return ElaParserError.InvalidFunction;
+                case "InfixFunBodyExprFirst": return ElaParserError.InvalidFunction;
+                case "InfixChildFunBodyExpr": return ElaParserError.InvalidFunction;				
+                case "FunName": return ElaParserError.InvalidFunName;
+                case "FunExpr": return ElaParserError.InvalidFunction;
 				case "FunBodyExpr": return ElaParserError.InvalidFunction;
 				case "ChildFunBodyExpr": return ElaParserError.InvalidFunction;
 				case "LambdaExpr": return ElaParserError.InvalidLambda;
@@ -124,7 +133,8 @@ namespace Ela.Parsing
 				case "BinaryExpr": return ElaParserError.InvalidSequence;
 				case "LazyExpr": return ElaParserError.InvalidLazy;
 				case "ComprehensionExpr": return ElaParserError.InvalidComprehension;
-				case "ComprehensionEntry": return ElaParserError.InvalidComprehension;				
+				case "ComprehensionEntry": return ElaParserError.InvalidComprehension;
+                case "ComprehensionOpExpr": return ElaParserError.InvalidComprehension;
 				case "Expr": return ElaParserError.InvalidExpression;
 				case "EmbExpr": return ElaParserError.InvalidExpression;
 				case "DeclarationBlock": return ElaParserError.InvalidRoot;

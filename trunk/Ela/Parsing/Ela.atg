@@ -132,8 +132,7 @@ PRODUCTIONS
 		(	
 			ArgumentReference<out exp>
 			| BaseReference<out exp>
-			| VariableReference<out exp>			
-			| LazyExpr<out exp>	
+			| VariableReference<out exp>
 		).
 		
 	Primitive<out ElaExpression exp> = 
@@ -162,7 +161,10 @@ PRODUCTIONS
 		(
 			"(" 
 				(. ot = t; .)
-				[ GroupExpr<out exp> ] 
+				[ 
+					GroupExpr<out exp> 
+					| LazyExpr<out exp>
+				] 
 			")"
 		)
 		(.
@@ -342,7 +344,7 @@ PRODUCTIONS
 		(VariantPattern<out pat> | AsPattern<out pat>).
 		
 	FuncPattern<out ElaPattern pat> =
-		AsPattern<out pat>.// [ ConsPattern<pat, out pat> ].
+		AsPattern<out pat>.
 					
 	FuncPattern2<out ElaPattern pat> =
 		AsPattern<out pat> [ ConsPattern<pat, out pat> ].
@@ -1864,16 +1866,15 @@ PRODUCTIONS
 		
 	LazyExpr<out ElaExpression exp> =
 		(
-			"(&" 
-				(. var lazy = new ElaLazyLiteral(t); .)
-				Expr<out exp>
-				(.
-					var m = new ElaMatch(t);
-					m.Entries.Add(new ElaMatchEntry { Pattern = new ElaUnitPattern(), Expression = exp });
-					lazy.Body = m;
-					exp = lazy;
-				.)
-			")"
+			"&" 
+			(. var lazy = new ElaLazyLiteral(t); .)
+			Expr<out exp>
+			(.
+				var m = new ElaMatch(t);
+				m.Entries.Add(new ElaMatchEntry { Pattern = new ElaUnitPattern(), Expression = exp });
+				lazy.Body = m;
+				exp = lazy;
+			.)
 		).
 	
 	ComprehensionExpr<ElaExpression sel, out ElaComprehension exp> =
@@ -1925,8 +1926,34 @@ PRODUCTIONS
 		(
 			RootLetBinding<out exp>
 			| IncludeStat<out exp>
-			| EmbExpr<out exp> (. if (FALSE) .) EBLOCK			
+			| EmbExpr<out exp> (. if (FALSE) .) EBLOCK	
+			| Attribute<out exp>
 		)
 		(. b.Expressions.Add(exp); .).
+	
+	Attribute<out ElaExpression exp> = 
+		(. 
+			var attr = new ElaAttribute(t);
+			exp = attr;
+		.)
+		(
+			(. scanner.InjectBlock(); .)
+			"@" (ident|variantTok)
+			(. attr.Name = t.val; .)
+			[ 
+				":" (ident|"let")
+				(.
+					if (t.val == "let")
+						attr.Local = true;
+				.)
+			]
+			(. var p = t.pos + t.val.Length; .)
+			[ ANY {ANY} ]
+			EndBlock
+			(. 
+				var val = scanner.buffer.GetString(p, t.pos).Trim(' ','\r','\n','\t');
+				attr.Value = val;
+			.)
+		).
 		
 END Ela.

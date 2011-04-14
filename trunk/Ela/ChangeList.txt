@@ -1,3 +1,5 @@
+0.9.1.11:New:Now Ela supports custom attribute both on module and on 'let' binding level. The first are serialized to object files and preserved in run-time, the latter can be used by external tools such as documentation generators.
+0.9.1.10:Change:Refactoring in parsing of lazy expressions. Now both '(& expr )' and '( & expr)' are valid.
 0.9.1.9:Change:When declaring operator in infix form it is possible to use parenthesis around operator name (or to omit parenthesis as is worked before), e.g. both 'let + x = ...' and 'let (+) x = ...' are valid.
 0.9.1.8:Change:Now it is not possible to omit a variant name and to match any variant.
 0.9.1.7:Change:Now variant names don't have to be prepended with an apostrophe however all variants should start with an uppercase letter.

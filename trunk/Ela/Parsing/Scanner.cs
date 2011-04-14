@@ -209,8 +209,8 @@ internal sealed class Scanner {
 	const char EOL = '\n';
 	const int eofSym = 0; /* pdt */
 	
-	const int maxT = 69;
-	const int noSym = 69;
+	const int maxT = 68;
+	const int noSym = 68;
 
 
 	public Buffer buffer; // scanner buffer
@@ -261,12 +261,12 @@ internal sealed class Scanner {
 		start[92] = 62; 
 		start[64] = 63; 
 		start[59] = 55; 
-		start[40] = 85; 
-		start[41] = 75; 
-		start[44] = 76; 
-		start[63] = 77; 
-		start[96] = 79; 
-		start[35] = 80; 
+		start[40] = 75; 
+		start[41] = 76; 
+		start[44] = 77; 
+		start[63] = 78; 
+		start[96] = 80; 
+		start[35] = 81; 
 		start[Buffer.EOF] = -1;
 
 	}
@@ -803,19 +803,19 @@ internal sealed class Scanner {
 				else if (ch == 39) {AddCh(); goto case 3;}
 				else {t.kind = 7; break;}
 			case 75:
-				{t.kind = 48; break;}
+				{t.kind = 47; break;}
 			case 76:
-				{t.kind = 49; break;}
+				{t.kind = 48; break;}
 			case 77:
-				{t.kind = 51; break;}
+				{t.kind = 49; break;}
 			case 78:
-				{t.kind = 54; break;}
+				{t.kind = 51; break;}
 			case 79:
-				{t.kind = 58; break;}
+				{t.kind = 54; break;}
 			case 80:
-				{t.kind = 59; break;}
+				{t.kind = 58; break;}
 			case 81:
-				{t.kind = 68; break;}
+				{t.kind = 59; break;}
 			case 82:
 				recEnd = pos; recKind = 46;
 				if (ch == 39 || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 2;}
@@ -828,12 +828,8 @@ internal sealed class Scanner {
 			case 84:
 				recEnd = pos; recKind = 25;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 13;}
-				else if (ch == '.') {AddCh(); goto case 78;}
+				else if (ch == '.') {AddCh(); goto case 79;}
 				else {t.kind = 25; break;}
-			case 85:
-				recEnd = pos; recKind = 47;
-				if (ch == '&') {AddCh(); goto case 81;}
-				else {t.kind = 47; break;}
 
 		}
 		t.val = new String(tval, 0, tlen);			

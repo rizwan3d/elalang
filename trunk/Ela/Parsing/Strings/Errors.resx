@@ -420,4 +420,13 @@
   <data name="InvalidOperation" xml:space="preserve">
     <value>Invalid syntax for an operation.</value>
   </data>
+  <data name="InvalidFunName" xml:space="preserve">
+    <value>Invalid function name.</value>
+  </data>
+  <data name="InvalidOperator" xml:space="preserve">
+    <value>Invalid operator.</value>
+  </data>
+  <data name="InvalidAttribute" xml:space="preserve">
+    <value>Invalid attribute declaration.</value>
+  </data>
 </root>
