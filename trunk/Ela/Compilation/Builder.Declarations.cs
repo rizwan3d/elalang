@@ -65,8 +65,8 @@ namespace Ela.Compilation
 
 				while (and != null && (hints & Hints.And) != Hints.And && rec)
 				{
-					AddVariable(and.VariableName, and, and.VariableFlags, -1);
-					and = and.And;
+                    AddVariable(and.VariableName, and, and.VariableFlags, -1);					
+                    and = and.And;
 				}
 
 				if (s.Where != null)
@@ -193,7 +193,7 @@ namespace Ela.Compilation
 		#region Helper
 		private bool IsMutualRecursive(ElaBinding s)
 		{
-			if (s.And != null)
+            if (s.And != null)
 			{
 				if (s.InitExpression.Type != ElaNodeType.FunctionLiteral)
 					return false;
