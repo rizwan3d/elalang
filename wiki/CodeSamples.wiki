@@ -8,8 +8,8 @@
 
 {{{
 let quickSort [] = []
-    quickSort x::xs = quickSort [ y \\ y <- xs | y < x ] 
-                      ++ [x] ++ quickSort [ y \\ y <- xs | y >= x]
+    quickSort (x::xs) = quickSort [ y \\ y <- xs | y < x ] 
+                        ++ [x] ++ quickSort [ y \\ y <- xs | y >= x]
 
 let _ = quickSort [10,9..1] //[1,2,3,4,5,6,7,8,9,10]
 }}}
@@ -40,8 +40,8 @@ let _ = fib 12 //144
 === Reverse a list ===
 
 {{{
-let foldl f z x::xs = foldl f (f z x) xs
-    foldl _ z []    = z
+let foldl f z (x::xs) = foldl f (f z x) xs
+    foldl _ z []      = z
 
 let reverse xs = foldl (flip (::)) [] xs
 
@@ -65,8 +65,8 @@ primes [2..] |> take 10 //[2,3,5,7,11,13,17,19,23,29]
 
 {{{
 let transpose [] = []
-    transpose []::xs      = transpose xs
-    transpose (x::xs)::ys = (x :: [h \\ (h::_) <- ys]) :: transpose (xs :: [t \\ (_::t) <- ys])
+    transpose ([]::xs)      = transpose xs
+    transpose ((x::xs)::ys) = (x :: [h \\ (h::_) <- ys]) :: transpose (xs :: [t \\ (_::t) <- ys])
 
 let _ = transpose [[1,2,3],[4,5,6]] //[[1,4],[2,5],[3,6]]
 }}}
@@ -77,8 +77,8 @@ let _ = transpose [[1,2,3],[4,5,6]] //[[1,4],[2,5],[3,6]]
 {{{
 open Core
 let subs [] = []
-    subs x::xs = [x] :: fold f (subs xs)
-                 where f ys r = ys :: (x :: ys) :: r                         
+    subs (x::xs) = [x] :: fold f (subs xs)
+                   where f ys r = ys :: (x :: ys) :: r                         
 
 let _ = subs [1,2,3] //[[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
 }}}
@@ -91,11 +91,11 @@ open Core
 let permutations []@n = n
     permutations xs0  = xs0 :: perms xs0 []
                 where perms []    _   = []
-                      perms t::ts is' = foldr interleave (perms ts (t::is')) (permutations is')
-                            where interleave xs r       = let (_,zs) = interleave' id xs r in zs
-                               et interleave' _ [] r    = (ts, r)
-                                  interleave' f y::ys r = let (us,zs) = interleave' (f << (y::)) ys r
-                                                          in  (y::us, f (t::y::us) :: zs)
+                      perms (t::ts) is' = foldr interleave (perms ts (t::is')) (permutations is')
+                            where interleave xs r         = let (_,zs) = interleave' id xs r in zs
+                               et interleave' _ [] r      = (ts, r)
+                                  interleave' f (y::ys) r = let (us,zs) = interleave' (f << (y::)) ys r
+                                                            in  (y::us, f (t::y::us) :: zs)
 
 let _ = permutations "abc"   //["abc","bac","cba","bca","cab","acb"]
 let _ = permutations [1,2,3] //[[1,2,3],[2,1,3],[3,2,1],[2,3,1],[3,1,2],[1,3,2]]
@@ -110,17 +110,17 @@ let is_true x            = is_axiom x || is_theorem x
  et is_expr x            = is_b_expr x || is_n_expr x || is_a_expr x
  et is_axiom x           = is_n_expr x && is_b_expr (tail x)
  et is_b_expr ['B']      = true
-    is_b_expr 'B'::xs    = all (=='I') xs
+    is_b_expr ('B'::xs)  = all (=='I') xs
     is_b_expr  _         = false 
- et is_n_expr 'N'::xs    = is_expr xs
+ et is_n_expr ('N'::xs)  = is_expr xs
     is_n_expr  _         = false               
  et split _ []           = []
-    split p x::xs        = split' [x] xs
+    split p (x::xs)      = split' [x] xs
                            where split' _  [] = false
                                  split' l1 (x::xs)@l2 | p l1 l2 = l1 | else    = split' (l1 ++ [x]) xs
  et have_two_exprs xs ys = is_expr xs && is_expr ys
  et check_two_exprs lst  = (split have_two_exprs lst) is ?list
- et is_a_expr 'A'::xs    = check_two_exprs xs
+ et is_a_expr ('A'::xs)  = check_two_exprs xs
     is_a_expr  _         = false               
  et is_theorem x         = is_n_expr x && is_a_expr (tail x) && has_subtheorem x
                            where has_subtheorem lst = is_true ('N'::first)
@@ -142,17 +142,17 @@ Implementation in [http://code.google.com/p/pure-lang Pure]: [http://code.google
 open Con
 
 let iter ?list@xs = iter' {!xs=xs}
-                     where iter' cell () | l is (x::xs) = cell.xs <- xs $ `Some x
-                                         | else         = `None
+                     where iter' cell () | l is (x::xs) = cell.xs <- xs $ Some x
+                                         | else         = None
                                          where l = cell.xs
     iter arr      = iter' {!ix=0} arr
-                    where iter' cell arr () | n < len = cell.ix <- cell.ix + 1 $ `Some (arr.[n])
-                                            | else    = `None
+                    where iter' cell arr () | n < len = cell.ix <- cell.ix + 1 $ Some (arr.[n])
+                                            | else    = None
                                             where n   = cell.ix
                                                et len = length arr
 
 let each f xs = for' (iter xs)
-                where for' it | r is (`Some x) = f x $ for' it
+                where for' it | r is Some x = f x $ for' it
                               | else           = ()
                               where r = it ()
 
