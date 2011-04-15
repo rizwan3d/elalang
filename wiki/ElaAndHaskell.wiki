@@ -86,6 +86,47 @@ let fib = let fib' a b 0 = a
           in fib' 0 1
 }}}
 
+===Prefix, infix and postfix===
+
+Haskell supports function declaration in infix and prefix forms. Ela supports declarations of functions in infix, prefix and postfix forms.
+
+Haskell:
+
+{{{
+x `sum` y = x + y
+
+sum x y = x + y
+}}}
+
+Ela:
+
+{{{
+let x `sum` y = x + y
+
+let sum x y = x + y
+
+let x `negate` = --x
+}}}
+
+===Unary negation===
+
+Haskell uses a common notation for unary negation, e.g. `-x`, when Ela has a different operator for unary negation.
+
+Haskell:
+
+{{{
+y = -2 --unary negation
+}}}
+
+Ela:
+
+{{{
+let y = --2
+
+let f = -2 //Right section for a binary minus
+f 10 //8
+}}}
+
 ===List construction and list pattern matching===
 
 By default Ela uses `(::)` operator for list construction. Haskell uses `(:)` operator.
