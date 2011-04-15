@@ -61,17 +61,18 @@ namespace Ela.Compilation
 
 				var po = cw.Offset;
 				var and = s.And;
+                var noInitCode = allowNoInits.Count;
 
 				while (and != null && (hints & Hints.And) != Hints.And)
 				{
-                    AddVariable(and.VariableName, and, and.VariableFlags | ElaVariableFlags.NoInit, -1);					
+                    AddVariable(and.VariableName, and, and.VariableFlags | ElaVariableFlags.NoInit, noInitCode);					
                     and = and.And;
 				}
 
 				if (s.Where != null)
 					CompileWhere(s.Where, map, Hints.Left);
 
-				allowNoInits.Push(!addSym);
+                allowNoInits.Push(new NoInit(noInitCode, !addSym));
 				var ed = s.InitExpression != null ? CompileExpression(s.InitExpression, map, Hints.None) : default(ExprData);
 				var fc = ed.Type == DataKind.FunCurry || ed.Type == DataKind.FunParams;
 				allowNoInits.Pop();

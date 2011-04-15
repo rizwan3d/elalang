@@ -121,8 +121,8 @@ unbox (Bar a) = a
 Ela:
 
 {{{
-let unbox (`Foo a) = a
-          (`Bar a) = a
+let unbox (Foo a) = a
+          (Bar a) = a
 }}}
 
 ===Partial operator application===
@@ -254,8 +254,8 @@ cycle' xs = xs ++ cycle xs
 Ela:
 
 {{{
-let map' f x::xs = f x :: (& map' f xs)
-    map' _ []    = []
+let map' f (x::xs) = f x :: (& map' f xs)
+    map' _ []      = []
 
 let cycle' xs = xs ++ (& cycle xs)
 }}}

@@ -1,3 +1,6 @@
+0.0.4.0:Release:Release of 0.0.4
+0.0.3.2.New:A new (!) operator is now available in Prelude. Code like so 'fun!' is equivalent to 'fun ()' but tends to be more visual.
+0.0.3.1:Fix:A bug fixed in Prelude.compare function.
 0.0.3.0:Release:Release of 0.0.3
 0.0.2.3:Change:Refactoring in Test module.
 0.0.2.2:New:A 'sleep' function that can suspend a currently executing thread by a provided number of ms added to Debug module.

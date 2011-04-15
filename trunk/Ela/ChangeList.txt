@@ -1,3 +1,4 @@
+0.9.2.0:Release:Release of Ela 0.9.2
 0.9.1.16:Change:The 'base' is decomissioned.
 0.9.1.15:Change:Compilation of pattern matching with guards optimized.
 0.9.1.14:Change:Now redefinition of variables is not allowed in pattern matching.

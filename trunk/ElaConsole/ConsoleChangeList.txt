@@ -1,3 +1,4 @@
+0.9.2.0:Release:Release of Ela Console 0.9.2
 0.9.1.2:New:Now console auto-indents code when in multi-line mode.
 0.9.1.1:Change:Minor refactoring of error reporting and message printing.
 0.9.1.0:Release:Release of Ela Console 0.9.1

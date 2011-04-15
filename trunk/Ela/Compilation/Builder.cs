@@ -24,7 +24,7 @@ namespace Ela.Compilation
 		private ExportVars exports;
 		private ElaCompiler comp;
 		private Dictionary<String,InlineFun> inlineFuns;
-		private FastStack<Boolean> allowNoInits;
+        private FastStack<NoInit> allowNoInits;
 
 		internal Builder(CodeFrame frame, ElaCompiler comp, ExportVars builtins, Scope globalScope)
 		{
@@ -45,7 +45,7 @@ namespace Ela.Compilation
 			Success = true;
 			shownHints = new Dictionary<ElaCompilerHint,ElaCompilerHint>();
 			inlineFuns = new Dictionary<String,InlineFun>();
-			allowNoInits = new FastStack<Boolean>();
+			allowNoInits = new FastStack<NoInit>();
 		}
 		#endregion
 
@@ -1050,7 +1050,22 @@ namespace Ela.Compilation
 
 		private bool Validate(ScopeVar var)
 		{
-			return (var.Flags & ElaVariableFlags.NoInit) != ElaVariableFlags.NoInit || (allowNoInits.Count > 0 && allowNoInits.Peek());
+			if ((var.Flags & ElaVariableFlags.NoInit) != ElaVariableFlags.NoInit)
+                return true;
+
+            if (allowNoInits.Count == 0)
+                return false;
+
+            var d = allowNoInits.Peek();
+
+            if (d.Allow && d.Code == var.Data)
+                return true;
+
+            foreach (var n in allowNoInits)
+                if (n.Allow && n.Code == var.Data)
+                    return true;
+
+            return false;
 		}
 
 
