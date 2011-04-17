@@ -43,6 +43,8 @@ namespace Ela.Compilation
 		public int VariableAddress { get { return Address; } }
 
 		public ElaVariableFlags VariableFlags { get { return Flags; } }
+
+		public int VariableData { get { return Data; } }
 		#endregion
 	}
 }

@@ -753,15 +753,17 @@ namespace Ela.Compilation
 		}
 
 
-		private void CompileFunctionCall(ElaFunctionCall v, LabelMap map, Hints hints)
+		private ExprData CompileFunctionCall(ElaFunctionCall v, LabelMap map, Hints hints)
 		{
+			var ed = ExprData.Empty;
+						
 			if (v.Target.Type == ElaNodeType.VariantLiteral)
 			{
 				if (v.Parameters.Count != 1)
 					AddError(ElaCompilerError.InvalidVariant, v, v);
 
 				CompileVariant((ElaVariantLiteral)v.Target, v.Parameters[0], map);
-				return;
+				return ed;
 			}
 
 			var tail = (hints & Hints.Tail) == Hints.Tail;
@@ -775,14 +777,12 @@ namespace Ela.Compilation
 			{
 				AddLinePragma(v);
 				cw.Emit(Op.Br, map.FunStart);
-				return;
+				return ed;
 			}
 			
 			if (opt && CompileInlineCall(v, map, hints))
-				return;			
+				return ed;			
 
-			var ed = ExprData.Empty;
-			
 			if (v.Target.Type == ElaNodeType.VariableReference)
 			{
 				var bf = (ElaVariableReference)v.Target;
@@ -815,7 +815,7 @@ namespace Ela.Compilation
 							cw.Emit(Op.Pop);
 					}
 
-					return;
+					return ed;
 				}
 				else
 				{
@@ -846,6 +846,8 @@ namespace Ela.Compilation
 				else
 					cw.Emit(Op.Call);
 			}
+
+			return ed;
 		}
 		#endregion
 		
@@ -1015,9 +1017,12 @@ namespace Ela.Compilation
 			}
 
 			CurrentScope.Locals.Add(name, new ScopeVar(flags, currentCounter, data));
-			
+
 			if (exp != null)
+			{
 				AddVarPragma(name, currentCounter, cw.Offset);
+				AddLinePragma(exp);
+			}
 
 			return AddVariable();
 		}

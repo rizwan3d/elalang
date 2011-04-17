@@ -9,7 +9,7 @@ namespace Ela.Compilation
         #region Construction
         private Dictionary<String,ElaBuiltinKind> map;
 
-        internal ExportVars()
+        public ExportVars()
         {
             map = new Dictionary<String,ElaBuiltinKind>();
         }

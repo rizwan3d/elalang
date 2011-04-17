@@ -1,3 +1,4 @@
+0.9.2.1:Change:'ExportVars' now has a public constructor.
 0.9.2.0:Release:Release of Ela 0.9.2
 0.9.1.16:Change:The 'base' is decomissioned.
 0.9.1.15:Change:Compilation of pattern matching with guards optimized.
