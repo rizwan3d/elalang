@@ -176,7 +176,7 @@ Haskell:
 {{{
 div2 = (/2)
 
-x = div2 10 {- 5.0 -}
+x = div2 10 --5.0
 }}}
 
 Ela:
@@ -184,7 +184,7 @@ Ela:
 {{{
 let div2 = (/2)
 
-let x = div2 10 /* 5 */
+let x = div2 10 //5
 }}}
 
 ===Pattern matching===
@@ -240,13 +240,13 @@ Both Ela and Haskell support ranges with similar syntax.
 Haskell:
 
 {{{
-r1 = [1..] {- infinite range -}
+r1 = [1..] --infinite range
 
-r2 = [10,9..] {- infinite range -}
+r2 = [10,9..] --infinite range
 
-r3 = [1..10] {- finite range -}
+r3 = [1..10] --finite range
 
-r4 = [10,9..1] {- finite range -}
+r4 = [10,9..1] --finite range
 }}}
 
 Ela:
@@ -334,7 +334,7 @@ Tuples in Haskell support nesting while in Ela tuples are always flat.
 Haskell:
 
 {{{
-t = (1,2,(3,4,(5,6))) //t is (1,2,(3,4,(5,6)))
+t = (1,2,(3,4,(5,6))) --t is (1,2,(3,4,(5,6)))
 }}}
 
 Ela:
@@ -350,7 +350,7 @@ Haskell:
 {{{
 {-# LANGUAGE TupleSections #-}
 
-t = map (\x -> map (,x) [1..3]) [3,2..1] //[[(1,3),(2,3),(3,3)],[(1,2),(2,2),(3,2)],[(1,1),(2,1),(3,1)]]
+t = map (\x -> map (,x) [1..3]) [3,2..1] --[[(1,3),(2,3),(3,3)],[(1,2),(2,2),(3,2)],[(1,1),(2,1),(3,1)]]
 }}}
 
 Ela:
