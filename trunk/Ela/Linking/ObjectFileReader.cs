@@ -36,11 +36,6 @@ namespace Ela.Linking
 
             var c = bw.ReadInt32();
 
-            for (var i = 0; i < c; i++)
-                frame.AddAttribute(bw.ReadString(), bw.ReadString());
-            
-			c = bw.ReadInt32();
-
 			for (var i = 0; i < c; i++)
 			{
 				var alias = bw.ReadString();

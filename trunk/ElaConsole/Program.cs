@@ -341,6 +341,9 @@ namespace ElaConsole
                         vm.RefreshState();
                         vm.Recover();
                     }
+
+					if (opt.ShowTime && !interactive)
+						Warmup(asm); //GIT
 					
 					var os = lastOffset;
 					lastOffset = mod.Ops.Count;
@@ -407,6 +410,14 @@ namespace ElaConsole
 				linkOpt.CodeBase.Directories.Add(new DirectoryInfo(s));
 
 			return linkOpt;
+		}
+
+
+		private static void Warmup(CodeAssembly asm)//GIT
+		{
+			helper.PrintExecuteFirstTime();
+			new ElaMachine(asm).Run();
+			helper.PrintExecuteSecondTime();
 		}
 		#endregion
 	}

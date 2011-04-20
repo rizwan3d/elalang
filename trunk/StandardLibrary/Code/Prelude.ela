@@ -1,7 +1,7 @@
-@product Ela Standard Prelude module
-@description Ela Standard Prelude module
-@copyright Copyright Basil Voronkov (c) 2011
-@version 0.1
+/* 
+    Ela standard Prelude module
+    Created in 2011 by Basil Voronkov
+*/
 
 /* Arithmetic operators */
 let (+)  = __internal add

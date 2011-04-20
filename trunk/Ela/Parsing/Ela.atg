@@ -1911,33 +1911,7 @@ PRODUCTIONS
 			RootLetBinding<out exp>
 			| IncludeStat<out exp>
 			| EmbExpr<out exp> (. if (FALSE) .) EBLOCK	
-			| Attribute<out exp>
 		)
 		(. b.Expressions.Add(exp); .).
-	
-	Attribute<out ElaExpression exp> = 
-		(. 
-			var attr = new ElaAttribute(t);
-			exp = attr;
-		.)
-		(
-			(. scanner.InjectBlock(); .)
-			"@" (ident|variantTok)
-			(. attr.Name = t.val; .)
-			[ 
-				":" (ident|"let")
-				(.
-					if (t.val == "let")
-						attr.Local = true;
-				.)
-			]
-			(. var p = t.pos + t.val.Length; .)
-			[ ANY {ANY} ]
-			EndBlock
-			(. 
-				var val = scanner.buffer.GetString(p, t.pos).Trim(' ','\r','\n','\t');
-				attr.Value = val;
-			.)
-		).
 		
 END Ela.

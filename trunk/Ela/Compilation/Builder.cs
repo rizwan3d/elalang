@@ -92,15 +92,7 @@ namespace Ela.Compilation
 
 			switch (exp.Type)
 			{
-                case ElaNodeType.Attribute:
-                    {
-                        var a = (ElaAttribute)exp;
-
-                        if (!a.Local)
-                            frame.AddAttribute(a.Name, a.Value);
-                    }
-                    break;
-				case ElaNodeType.Builtin:
+                case ElaNodeType.Builtin:
 					{
 						var v = (ElaBuiltin)exp;
 						CompileBuiltin(v.Kind, v, map);
@@ -1018,8 +1010,9 @@ namespace Ela.Compilation
 
 			CurrentScope.Locals.Add(name, new ScopeVar(flags, currentCounter, data));
 
-			if (exp != null)
+			if (debug && exp != null)
 			{
+				cw.Emit(Op.Nop);
 				AddVarPragma(name, currentCounter, cw.Offset);
 				AddLinePragma(exp);
 			}

@@ -91,7 +91,7 @@ namespace Ela.Compilation
 					if (fc)
 						CurrentScope.ChangeVariable(s.VariableName, new ScopeVar(s.VariableFlags | ElaVariableFlags.Function, addr >> 8, ed.Data));
 					else
-						CurrentScope.ChangeVariable(s.VariableName, new ScopeVar(s.VariableFlags, addr >> 8, -1));
+						CurrentScope.ChangeVariable(s.VariableName, new ScopeVar(s.VariableFlags | flags, addr >> 8, data));
 				}
 				else if (addr == -1)
 				{

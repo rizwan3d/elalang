@@ -2142,46 +2142,8 @@ internal sealed partial class Parser {
 			EmbExpr(out exp);
 			if (FALSE) 
 			Expect(44);
-		} else if (la.kind == 28) {
-			Attribute(out exp);
 		} else SynErr(114);
 		b.Expressions.Add(exp); 
-	}
-
-	void Attribute(out ElaExpression exp) {
-		var attr = new ElaAttribute(t);
-		exp = attr;
-		
-		scanner.InjectBlock(); 
-		Expect(28);
-		if (la.kind == 1) {
-			Get();
-		} else if (la.kind == 2) {
-			Get();
-		} else SynErr(115);
-		attr.Name = t.val; 
-		if (la.kind == 65) {
-			Get();
-			if (la.kind == 1) {
-				Get();
-			} else if (la.kind == 30) {
-				Get();
-			} else SynErr(116);
-			if (t.val == "let")
-			attr.Local = true;
-			
-		}
-		var p = t.pos + t.val.Length; 
-		if (StartOf(30)) {
-			Get();
-			while (StartOf(31)) {
-				Get();
-			}
-		}
-		EndBlock();
-		var val = scanner.buffer.GetString(p, t.pos).Trim(' ','\r','\n','\t');
-		attr.Value = val;
-		
 	}
 
 
@@ -2225,9 +2187,7 @@ internal sealed partial class Parser {
 		{x,T,T,T, T,T,T,T, x,x,x,x, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,T,T,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,T,T,T, T,T,T,T, x,x,x,x, x,x,x,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,T,T,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,T,T,T, T,T,T,T, x,x,x,x, x,x,x,x, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,x,T,x, x,x,T,x, x,x,x,T, T,x,T,x, T,x,T,x, x,T,T,T, T,T,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,x,T,T, x},
-		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x}
+		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,x,T,x, x,x,T,x, x,x,x,T, x,x,T,x, T,x,T,x, x,T,T,T, T,T,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x}
 
 	};
 } // end Parser
@@ -2360,8 +2320,6 @@ internal sealed class Errors {
 			case 112: s = "invalid AccessExpr"; break;
 			case 113: s = "invalid EmbExpr"; break;
 			case 114: s = "invalid DeclarationBlock"; break;
-			case 115: s = "invalid Attribute"; break;
-			case 116: s = "invalid Attribute"; break;
 
 			default: s = "error " + n; break;
 		}
