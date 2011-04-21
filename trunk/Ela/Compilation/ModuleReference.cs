@@ -34,11 +34,16 @@ namespace Ela.Compilation
 		}
 
 
+		public string GetPath()
+		{
+			return String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), Path);
+		}
+
+
 		private string BuildFullName(string name)
 		{
 			return Path.Length == 0 ? name :
-				String.Concat(String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), Path), 
-					System.IO.Path.DirectorySeparatorChar, name);
+				String.Concat(GetPath(), System.IO.Path.DirectorySeparatorChar, name);
 		}
 		#endregion
 
@@ -48,11 +53,11 @@ namespace Ela.Compilation
 
 		public readonly string DllName;
 
-		public readonly string[] Path;
-
 		public readonly int Line;
 
 		public readonly int Column;
+
+		internal readonly string[] Path;
 		#endregion
 
 

@@ -144,8 +144,12 @@ namespace Ela.Linking
 							return frame;
 						}
 					}
-
-					return null;
+					else
+					{
+						frame = TryResolveModule(mod);
+						RegisterFrame(mod, frame, fi);
+						return frame;
+					}
 				}
 			}
 			else
@@ -257,7 +261,10 @@ namespace Ela.Linking
 				fi = FindModule(mod, dll, null, out uns);
 
 				if (fi == null)
+				{
+					UnresolvedModule(mod);
 					return false;
+				}
 				else
 					return LoadAssembly(mod, fi);
 			}
@@ -492,9 +499,27 @@ namespace Ela.Linking
 				}
 			}
 
-			AddError(ElaLinkerError.UnresolvedModule, new FileInfo(firstName), mod.Line, mod.Column, 
-				Path.GetFileNameWithoutExtension(firstName));
 			return null;
+		}
+
+
+		private CodeFrame TryResolveModule(ModuleReference mod)
+		{
+			var e = new ModuleEventArgs(mod);
+			OnModuleResolve(e);
+
+			if (e.HasModule)
+				return e.GetFrame();
+
+			UnresolvedModule(mod);
+			return null;
+		}
+
+
+		private void UnresolvedModule(ModuleReference mod)
+		{
+			AddError(ElaLinkerError.UnresolvedModule, new FileInfo(mod.ToString()), mod.Line, mod.Column,
+				Path.GetFileNameWithoutExtension(mod.ToString()));
 		}
 
 
@@ -557,6 +582,18 @@ namespace Ela.Linking
 		internal CodeAssembly Assembly { get; set; }
 
 		internal bool Success { get; set; }
+		#endregion
+
+
+		#region Events
+		public event EventHandler<ModuleEventArgs> ModuleResolve;
+		protected virtual void OnModuleResolve(ModuleEventArgs e)
+		{
+			var h = ModuleResolve;
+
+			if (h != null)
+				h(this, e);
+		}
 		#endregion
 	}
 }

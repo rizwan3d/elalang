@@ -45,6 +45,19 @@ let zips {eqt} =
         $ eqt (f2.[0] is (5,"im"))
         $ eqt (f2.[1] is (3,"a"))
         $ eqt (f2.[2] is (2,"turtle"))
+
+let structuralComp {eqt,eqf} =
+        eqt (xs1 == xs2)
+        $ eqf (xs1 == xs3)
+        $ eqt (xs1 <> xs3)
+        $ eqt (xs2 <> xs3)
+        $ eqt (xs3 == [1..10])
+        $ eqt (xs3 == xs4)
+        $ eqf (xs2 == xs4)
+        where xs1 = [1..5]
+           et xs2 = [1..5]
+           et xs3 = [1..10]
+           et xs4 = [& x \\ x <- [1..10]]
         
 let typeCheck {eqt} =
         let list = [0, 1] in

@@ -36,7 +36,7 @@ namespace Ela.Linking
 
 
 		#region Methods
-		public void AddModule(string name, ForeignModule module)
+		internal void AddModule(string name, ForeignModule module)
 		{
 			var frame = module.Compile();
 			foreignModules.Add(module);
@@ -51,7 +51,7 @@ namespace Ela.Linking
 		}
 
 
-		public void AddModule(string name, CodeFrame module)
+		internal void AddModule(string name, CodeFrame module)
 		{
 			var hdl = 0;
 

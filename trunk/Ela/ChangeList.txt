@@ -1,3 +1,7 @@
+0.9.2.8:New:Now lists support structural comparison.
+0.9.2.7:Fix:A bug in ElaList.GetLength and ElaList.GetValue fixed. They used to raise actual exceptions instead of reporting about errors through execution context (could cause Ela VM to crush).
+0.9.2.6:New:Now linker generates a 'ModuleResolve' event when it can't find a module (without the DLL specified). In this case user code has an ability to manually supply an instance of a module.
+0.9.2.5:Change:Refactoring in Ela linker - all 'AddModule' methods of CodeAssembly are not internal. Also public interface for the ModuleReference is cleaned up.
 0.9.2.4:New:Now compiler is able to recognize builtin functions (and inline) them when they are declared using 'et' (mutual recursion).
 0.9.2.3:Fix:Minor fixes in generation of debug info for variable declarations.
 0.9.2.2:Change:Attributes are decomissioned.

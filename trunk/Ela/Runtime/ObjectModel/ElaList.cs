@@ -54,13 +54,51 @@ namespace Ela.Runtime.ObjectModel
 		#region Operations
 		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return new ElaValue(left.Ref == right.Ref);
+			return new ElaValue(Equal(left, right, "equal", ctx));
 		}
 
 
 		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return new ElaValue(left.Ref != right.Ref);
+			return new ElaValue(!Equal(left, right, "notequal", ctx));
+		}
+
+
+		private bool Equal(ElaValue left, ElaValue right, string op, ExecutionContext ctx)
+		{
+			if (left.TypeId != ElaMachine.LST)
+			{
+				ctx.InvalidLeftOperand(left, right, op);
+				return false;
+			}
+
+			if (right.TypeId != ElaMachine.LST)
+			{
+				ctx.InvalidRightOperand(left, right, op);
+				return false;
+			}
+
+			ElaList xs1 = (ElaList)left.Ref;
+			ElaList xs2 = (ElaList)right.Ref;
+
+			while (!xs1.IsNil(ctx) && !xs2.IsNil(ctx))
+			{
+				var eq = xs1.Value.Equal(xs1.Value, xs2.Value, ctx);
+
+				if (!eq.Ref.Bool(eq, ctx))
+					return false;
+
+				xs1 = xs1.Tail(ctx).Ref as ElaList;
+				xs2 = xs2.Tail(ctx).Ref as ElaList;
+
+				if (xs1 == null || xs2 == null)
+				{
+					ctx.Fail(new ElaError("InvalidList", "Invalid list definition."));
+					return false;
+				}
+			}
+
+			return xs1.IsNil(ctx) && xs2.IsNil(ctx);
 		}
 
 
@@ -75,7 +113,10 @@ namespace Ela.Runtime.ObjectModel
 				xs = xs.Tail(ctx).Ref as ElaList;
 
 				if (xs == null)
-					throw InvalidDefinition();
+				{
+					ctx.Fail(new ElaError("InvalidList", "Invalid list definition."));
+					return Default();
+				}
 			}
 
 			return new ElaValue(count);
@@ -102,7 +143,10 @@ namespace Ela.Runtime.ObjectModel
 				xs = xs.Tail(ctx).Ref as ElaList;
 
 				if (xs == null)
-					throw InvalidDefinition();
+				{
+					ctx.Fail(new ElaError("InvalidList", "Invalid list definition."));
+					return Default();
+				}
 
 				if (xs.IsNil(ctx))
 				{
