@@ -50,7 +50,7 @@ namespace Ela.Debug
 					return l;
 			}
 
-			return offset == 0 ? null : FindLineSym(offset + 1);
+			return offset == 0 ? null : FindLineSym(offset - 1);
 		}
 
 

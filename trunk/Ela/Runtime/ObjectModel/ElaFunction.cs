@@ -275,7 +275,7 @@ namespace Ela.Runtime.ObjectModel
 				}
 			}
 
-			if (Format.IsSymbolic(funName))
+			if (funName != DEF_NAME && Format.IsSymbolic(funName))
 				funName = "(" + funName + ")";
 
 			return funName;
