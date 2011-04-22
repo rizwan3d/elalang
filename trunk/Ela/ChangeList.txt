@@ -1,3 +1,4 @@
+0.9.3.0:Release:Release of Ela 0.9.3
 0.9.2.9:Fix:Minor corrections in implementation of Show by ElaFunction.
 0.9.2.8:New:Now lists support structural comparison.
 0.9.2.7:Fix:A bug in ElaList.GetLength and ElaList.GetValue fixed. They used to raise actual exceptions instead of reporting about errors through execution context (could cause Ela VM to crush).
