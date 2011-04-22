@@ -126,9 +126,12 @@ And this is what you need to do to make this module available in Ela:
 
 {{{
     var l = new ElaIncrementalLinker(CompilerOptions.Default, new LinkerOptions());
+    l.ModuleResolve += (o,e) => {
+		if (e.Module.ModuleName == "Math")
+			e.AddModule(new MathModule());
+	};
     l.SetSource(source);
     var res = l.Build();
-    res.Assembly.AddModule("Math", new MathModule());
 }}}
 
 And now you can seamlessly use this module from Ela:
