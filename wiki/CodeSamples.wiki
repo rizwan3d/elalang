@@ -4,17 +4,6 @@
 = Code samples in Ela =
 
 
-=== Quick sort ===
-
-{{{
-let quickSort [] = []
-    quickSort (x::xs) = quickSort [ y \\ y <- xs | y < x ] 
-                        ++ [x] ++ quickSort [ y \\ y <- xs | y >= x]
-
-let _ = quickSort [10,9..1] //[1,2,3,4,5,6,7,8,9,10]
-}}}
-
-
 === Factorial === 
 
 {{{
@@ -46,6 +35,18 @@ let foldl f z (x::xs) = foldl f (f z x) xs
 let reverse xs = foldl (flip (::)) [] xs
 
 let _ = reverse' [0..5] //[5,4,3,2,1,0]
+}}}
+
+
+=== Intersperse ===
+
+{{{
+let intersperse e (x::[]@n) = x :: intersperse e n
+    intersperse e (x::xs)   = x :: e :: intersperse e xs
+    intersperse _ []@n      = n
+    
+let _ = intersperse "," "abcdef" //"a,b,c,d,e,f"
+let _ = intersperse 0 [1,2,3] //[1,0,2,0,3]
 }}}
 
 
