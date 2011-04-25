@@ -163,7 +163,7 @@ Ela:
 
 {{{
 let unbox (Foo a) = a
-          (Bar a) = a
+    unbox (Bar a) = a
 }}}
 
 ===Partial operator application===
