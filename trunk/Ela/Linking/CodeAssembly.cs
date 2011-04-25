@@ -110,7 +110,7 @@ namespace Ela.Linking
 		}
 
 
-		public bool AddArgument(string name, object value)
+		internal bool AddArgument(string name, object value)
 		{
 			if (!arguments.ContainsKey(name))
 			{
@@ -120,12 +120,6 @@ namespace Ela.Linking
 			}
 			else
 				return false;
-		}
-
-
-		public bool HasArgument(string name)
-		{
-			return arguments.ContainsKey(name);
 		}
 
 

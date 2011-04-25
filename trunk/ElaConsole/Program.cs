@@ -31,7 +31,7 @@ namespace ElaConsole
 		#region Methods
 		private static int Main(string[] args) 
 		{
-            if (!ReadOptions(args))
+			if (!ReadOptions(args))
 				return R_ERR;
 
 			helper = new MessageHelper(opt);
@@ -330,8 +330,12 @@ namespace ElaConsole
                     {
                         if (opt.Arguments.Count > 0)
                         {
-                            var tup = CompileArguments();
-                            asm.AddArgument("args", tup);
+							var tup = CompileArguments();
+                            linker.ArgumentResolve += (o, e) =>
+								{
+									if (e.Name == "args")
+										e.Value = tup;
+								};
                         }
 
                         vm = new ElaMachine(asm);

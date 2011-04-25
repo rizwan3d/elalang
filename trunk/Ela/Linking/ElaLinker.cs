@@ -4,6 +4,7 @@ using System.IO;
 using Ela.CodeModel;
 using Ela.Compilation;
 using Ela.Parsing;
+using Ela.Runtime;
 
 namespace Ela.Linking
 {
@@ -215,10 +216,17 @@ namespace Ela.Linking
 				frame.File = fi;
 				Assembly.AddModule(mod.ToString(), frame);
 				ProcessIncludes(fi, frame);
-
+				
 				foreach (var kv in frame.Arguments)
-					if (!Assembly.HasArgument(kv.Key))
+				{
+					var e = new ArgumentEventArgs(kv.Key);
+					OnArgumentResolve(e);
+
+					if (e.Value == null)
 						AddError(ElaLinkerError.UnresolvedArgument, fi, kv.Value.Line, kv.Value.Column, kv.Key);
+					else
+						Assembly.AddArgument(kv.Key, ElaValue.FromObject(e.Value));
+				}
 			}
 		}
 
@@ -590,6 +598,16 @@ namespace Ela.Linking
 		protected virtual void OnModuleResolve(ModuleEventArgs e)
 		{
 			var h = ModuleResolve;
+
+			if (h != null)
+				h(this, e);
+		}
+
+
+		public event EventHandler<ArgumentEventArgs> ArgumentResolve;
+		protected virtual void OnArgumentResolve(ArgumentEventArgs e)
+		{
+			var h = ArgumentResolve;
 
 			if (h != null)
 				h(this, e);

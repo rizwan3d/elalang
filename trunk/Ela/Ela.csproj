@@ -158,6 +158,7 @@
     <Compile Include="IReadOnlyMap.cs" />
     <Compile Include="Compilation\OpSizeHelper.cs" />
     <Compile Include="ElaTranslationException.cs" />
+    <Compile Include="Linking\ArgumentEventArgs.cs" />
     <Compile Include="Linking\ModuleEventArgs.cs" />
     <Compile Include="Loc.cs" />
     <Compile Include="Runtime\ElaRuntimeException.cs" />

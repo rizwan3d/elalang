@@ -9,7 +9,8 @@ namespace Ela.Compilation
 		{
 			WarningsAsErrors = false,
 			ShowHints = true,
-			Optimize = true
+			Optimize = true,
+			Prelude = "prelude"
 		};
 
 		public CompilerOptions()
