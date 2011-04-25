@@ -65,33 +65,42 @@ if (res.Success)
 In many cases you might need to provide some arguments to Ela code. Here is a full example of a _Eval_ function in C# that uses an anonymous class to capture arguments and their names:
 
 {{{
-public object Eval(string source, object args)
+public static object Eval(string source, object args)
 {
-    var l = new ElaIncrementalLinker(new LinkerOptions(), CompilerOptions.Default);
-    l.SetSource(source);
-    var res = l.Build();
+	var argType = args.GetType();
+	var l = new ElaIncrementalLinker(new LinkerOptions(), CompilerOptions.Default);
+	l.ArgumentResolve += (o,e) =>
+		{
+			var pi = argType.GetProperty(e.Name);
 
-    if (res.Success)
-    {
-        foreach (var pi in args.GetType().GetProperties())
-            res.Assembly.AddArgument(pi.Name, pi.GetValue(args, null));
-    
-        var vm = new ElaMachine(res.Assembly);
-        return vm.Run().ReturnValue.AsObject();
-    }
-    else
-    {
-        var sb = new StringBuilder();
-        
-        foreach (var m in res.Messages)
-            sb.AppendLine(m.ToString());
-    
-        throw new ElaTranslationException(sb.ToString());    
-    }
+			if (pi != null)
+				e.Value = pi.GetValue(args, null);
+		};
+	l.SetSource(source);
+	var res = l.Build();
+
+	if (res.Success)
+	{
+		var vm = new ElaMachine(res.Assembly);
+		return vm.Run().ReturnValue.AsObject();
+	}
+	else
+	{
+		var sb = new StringBuilder();
+
+		foreach (var m in res.Messages)
+			sb.AppendLine(m.ToString());
+
+		throw new ElaTranslationException(sb.ToString());
+	}
 }
 
 //sample usage
-var r = Eval("$x + $y", new { x = 2, y = 4 });
+var r = Eval("$fun $x $y", new { 
+	fun = ElaFunction.Create<int,int,int>((x,y) => x + y), 
+	x = 2, 
+	y = 4 
+	}); 
 }}}
 
 Notice the `$` prefix - it is mandatory if you want to reference an argument from Ela code.
