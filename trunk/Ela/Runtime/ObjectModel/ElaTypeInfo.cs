@@ -97,7 +97,7 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
         {
             if (index.TypeCode == ElaTypeCode.String)
-                return GetField(index.AsString(), ctx);
+                return GetField(index.DirectGetString(), ctx);
             else if (index.TypeCode == ElaTypeCode.Integer)
             {
                 var idx = index.AsInteger();

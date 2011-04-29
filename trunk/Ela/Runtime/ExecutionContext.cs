@@ -8,7 +8,7 @@ namespace Ela.Runtime
 		#region Construction
 		private const string DEF_CATEGORY = "Failure";
 
-		internal ExecutionContext()
+		public ExecutionContext()
 		{
 
 		}

@@ -59,6 +59,8 @@ namespace Ela.CodeModel
 
 		public string DllName { get; set; }
 
+        public bool RequireQuailified { get; set; }
+
 		public List<String> Path { get; private set; }		
 		#endregion
 	}

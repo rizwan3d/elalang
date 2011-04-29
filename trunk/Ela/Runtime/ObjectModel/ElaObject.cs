@@ -42,6 +42,54 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Methods
+        protected internal virtual bool Is<T>(ElaValue value) where T : ElaObject
+        {
+            return this is T;
+        }
+        
+        
+        protected internal virtual T As<T>(ElaValue value) where T : ElaObject
+        {
+            return this as T;
+        }
+
+
+        protected internal virtual int AsInteger(ElaValue value)
+        {
+            throw InvalidCast(ElaTypeCode.Integer, value.GetTypeName());
+        }
+
+
+        protected internal virtual float AsSingle(ElaValue value)
+        {
+            throw InvalidCast(ElaTypeCode.Single, value.GetTypeName());
+        }
+
+
+        protected internal virtual bool AsBoolean(ElaValue value)
+        {
+            throw InvalidCast(ElaTypeCode.Boolean, value.GetTypeName());
+        }
+
+
+        protected internal virtual char AsChar(ElaValue value)
+        {
+            throw InvalidCast(ElaTypeCode.Char, value.GetTypeName());
+        }
+
+
+        protected InvalidCastException InvalidCast(ElaTypeCode target, string source)
+        {
+            return InvalidCast(TypeCodeFormat.GetShortForm(target), source);
+        }
+
+
+        protected InvalidCastException InvalidCast(string target, string source)
+        {
+            return new InvalidCastException(Strings.GetMessage("InvalidCast", source, target));
+        }
+
+
 		public virtual ElaPatterns GetSupportedPatterns()
 		{
 			return ElaPatterns.None;
@@ -107,7 +155,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal virtual ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected internal virtual ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			ctx.NoOperator(This(left, right), "equal");
 			return Default();

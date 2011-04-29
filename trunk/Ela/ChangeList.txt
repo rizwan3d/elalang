@@ -1,5 +1,9 @@
-0.9.3.2:Fix:Arguments were completely broken. Mechanism that supports arguments is now rewritten and is based on the ArgumentResolve event.
-0.9.3.1:Change:Now Prelude added to the default compiler settings.
+0.9.3.6:Fix:Lazy comprehensions didn't work correctly - references of variables declared in generator 'select' clause from another 'select' clause didn't work, e.g. this code would never compile: [& (x,y,z) \\ x <- [1..n], y <- [x..n], z <- [y..n] | x**2 + y**2 == z**2].
+0.9.3.5:New:Now it is possible to open module with a qualified access only using new 'qualified' keyword, e.g. 'open qualified Foo'.
+0.9.3.4:Change:Conversion routines for ElaValue/ElaObject are refactored in order to be more extensible.
+0.9.3.3:Change:Now ElaLinker has an AddArgument method. This method simulates arguments using an implicit $Args module.
+0.9.3.2:Change:Arguments engine is decomissioned (arg tokens are removed from the language as well as corresponding op codes).
+0.9.3.1:Fix:Arguments didn't work at all.
 0.9.3.0:Release:Release of Ela 0.9.3
 0.9.2.9:Fix:Minor corrections in implementation of Show by ElaFunction.
 0.9.2.8:New:Now lists support structural comparison.

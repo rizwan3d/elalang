@@ -52,7 +52,7 @@ namespace Ela.Library.General
             if (other.TypeCode == ElaTypeCode.Integer)
                 otherInt = other.AsInteger();
             else if (other.TypeCode == ElaTypeCode.Long)
-                otherInt = other.AsLong();
+                otherInt = other.As<ElaLong>().Value;
             else if (other.Is<ElaDateTime>())
                 otherInt = other.As<ElaDateTime>().Ticks;
             else

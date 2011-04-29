@@ -26,7 +26,6 @@ namespace Ela.Runtime.ObjectModel
         private const string ALIAS = "alias";
         private const string PATH = "path";
         private const string MODULECOUNT = "moduleCount";
-        private const string ARGCOUNT = "argumentCount";		
         private const string MODULE = "[module:{0}]";
 		private ElaMachine vm;
 
@@ -172,8 +171,7 @@ namespace Ela.Runtime.ObjectModel
         {
             if (vm != null)
                 return new ElaRecord(
-                    new ElaRecordField(MODULECOUNT, vm.Assembly.ModuleCount, false),
-                    new ElaRecordField(ARGCOUNT, vm.Assembly.ArgumentCount, false));
+                    new ElaRecordField(MODULECOUNT, vm.Assembly.ModuleCount, false));
             else
                 return ElaUnit.Instance;
         }

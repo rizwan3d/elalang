@@ -15,12 +15,18 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        protected internal override int AsInteger(ElaValue value)
+        {
+            return value.I4;
+        }
+
+
         internal protected override int Compare(ElaValue @this, ElaValue other)
 		{
 			return other.TypeCode == ElaTypeCode.Integer ? @this.I4.CompareTo(other.I4) :
-				other.TypeCode == ElaTypeCode.Long ? ((Int64)@this.I4).CompareTo(other.AsLong()) :
+				other.TypeCode == ElaTypeCode.Long ? ((Int64)@this.I4).CompareTo(((ElaLong)other.Ref).Value) :
 				other.TypeCode == ElaTypeCode.Single ? ((Single)@this.I4).CompareTo(other.DirectGetReal()) :
-				other.TypeCode == ElaTypeCode.Double ? ((Double)@this.I4).CompareTo(other.AsDouble()) :
+				other.TypeCode == ElaTypeCode.Double ? ((Double)@this.I4).CompareTo(other.GetDouble()) :
 				-1;
 		}
 		#endregion
@@ -29,11 +35,11 @@ namespace Ela.Runtime.ObjectModel
 		#region Operations
 		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.TypeId == ElaMachine.INT)
-				return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 == right.I4) :
-					right.Ref.Equal(left, right, ctx);
-			
-			ctx.InvalidLeftOperand(left, right, "equal");
+            if (left.TypeId == ElaMachine.INT)
+                return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 == right.I4) :
+                    right.Ref.Equal(left, right, ctx);
+                        
+            ctx.InvalidLeftOperand(left, right, "equal");
 			return Default();
 		}
 
@@ -160,11 +166,11 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Add(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.TypeId == ElaMachine.INT)
-				return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 + right.I4) :
-					right.Ref.Add(left, right, ctx);
-			
-			ctx.InvalidLeftOperand(left, right, "add");
+            if (left.TypeId == ElaMachine.INT)
+                return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 + right.I4) :
+                    right.Ref.Add(left, right, ctx);
+
+            ctx.InvalidLeftOperand(left, right, "add");
 			return Default();
 		}
 

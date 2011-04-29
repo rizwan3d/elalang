@@ -42,13 +42,14 @@ namespace Ela.Linking
 				var modName = bw.ReadString();
 				var dllName = bw.ReadString();
                 dllName = dllName.Length == 0 ? null : dllName;
-				var pl = bw.ReadInt32();
-				var list = new string[pl];
+                var qual = bw.ReadBoolean();
+                var pl = bw.ReadInt32();
+                var list = new string[pl];
 
 				for (var j = 0; j < pl; j++)
 					list[j] = bw.ReadString();
 				
-				frame.AddReference(alias, new ModuleReference(modName, dllName, list, 0, 0));
+				frame.AddReference(alias, new ModuleReference(modName, dllName, list, 0, 0, qual));
 			}
 
 			c = bw.ReadInt32();

@@ -15,12 +15,18 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        protected internal override float AsSingle(ElaValue value)
+        {
+            return value.DirectGetReal();
+        }
+
+
         internal protected override int Compare(ElaValue @this, ElaValue other)
 		{
 			return other.TypeCode == ElaTypeCode.Single ? @this.DirectGetReal().CompareTo(other.DirectGetReal()) :
 				other.TypeCode == ElaTypeCode.Integer ? @this.DirectGetReal().CompareTo((Single)other.I4) :
-				other.TypeCode == ElaTypeCode.Long ? @this.DirectGetReal().CompareTo((Single)other.AsLong()) :
-				other.TypeCode == ElaTypeCode.Double ? ((Double)@this.DirectGetReal()).CompareTo(other.AsDouble()) :
+                other.TypeCode == ElaTypeCode.Long ? @this.DirectGetReal().CompareTo((Single)((ElaLong)other.Ref).Value) :
+				other.TypeCode == ElaTypeCode.Double ? ((Double)@this.DirectGetReal()).CompareTo(other.GetDouble()) :
 				-1;
 		}
 		#endregion

@@ -40,6 +40,12 @@ namespace Ela.Linking
 		}
 
 
+        internal bool IsRegistered(string name)
+        {
+            return scope.Locals.ContainsKey(name);
+        }
+
+
 		protected void Add(string name, int val)
 		{
 			Add(name, new ElaValue(val));
@@ -118,11 +124,11 @@ namespace Ela.Linking
 		}
 
 
-		private void Add(string name, ElaValue value)
+		protected void Add(string name, ElaValue value)
 		{
 			scope.Locals.Add(name, new ScopeVar(ElaVariableFlags.None, locals.Count, -1));
 			locals.Add(value);
 		}
 		#endregion
-	}
+    }
 }

@@ -31,7 +31,7 @@ namespace ElaConsole
 		#region Methods
 		private static int Main(string[] args) 
 		{
-			if (!ReadOptions(args))
+            if (!ReadOptions(args))
 				return R_ERR;
 
 			helper = new MessageHelper(opt);
@@ -255,6 +255,13 @@ namespace ElaConsole
 			{
 				linker = new ElaIncrementalLinker(CreateLinkerOptions(), CreateCompilerOptions(),
 					new FileInfo(opt.FileName));
+                
+                if (opt.Arguments.Count > 0)
+                {
+                    var tup = CompileArguments();
+                    linker.AddArgument("args", tup);
+                }
+                        
 				res = linker.Build();
 			}
 			catch (ElaException ex)
@@ -281,8 +288,16 @@ namespace ElaConsole
 
 		private static int InterpretString(string source)
 		{
-			if (linker == null)
-				linker = new ElaIncrementalLinker(CreateLinkerOptions(), CreateCompilerOptions());
+            if (linker == null)
+            {
+                linker = new ElaIncrementalLinker(CreateLinkerOptions(), CreateCompilerOptions());
+
+                if (opt.Arguments.Count > 0)
+                {
+                    var tup = CompileArguments();
+                    linker.AddArgument("args", tup);
+                }
+            }
 
 			linker.SetSource(source);
 			var res = linker.Build();
@@ -327,19 +342,7 @@ namespace ElaConsole
 				try
 				{
                     if (vm == null)
-                    {
-                        if (opt.Arguments.Count > 0)
-                        {
-							var tup = CompileArguments();
-                            linker.ArgumentResolve += (o, e) =>
-								{
-									if (e.Name == "args")
-										e.Value = tup;
-								};
-                        }
-
                         vm = new ElaMachine(asm);
-                    }
                     else
                     {
                         vm.RefreshState();

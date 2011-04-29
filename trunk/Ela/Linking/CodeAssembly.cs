@@ -13,8 +13,8 @@ namespace Ela.Linking
 		
 		private Dictionary<String,Int32> moduleMap;
 		private FastList<CodeFrame> modules;
-		private FastList<ForeignModule> foreignModules;
-		private Dictionary<String,ElaValue> arguments;
+        private FastList<Boolean> quals;
+        private FastList<ForeignModule> foreignModules;
 		
 		public static readonly CodeAssembly Empty = new CodeAssembly(CodeFrame.Empty);
 
@@ -30,28 +30,19 @@ namespace Ela.Linking
 			modules = new FastList<CodeFrame>();
 			foreignModules = new FastList<ForeignModule>();
 			moduleMap = new Dictionary<String,Int32>();
-			arguments = new Dictionary<String,ElaValue>();
+            quals = new FastList<Boolean>();
 		}
 		#endregion
 
 
 		#region Methods
-		internal void AddModule(string name, ForeignModule module)
-		{
-			var frame = module.Compile();
-			foreignModules.Add(module);
-			AddModule(name, frame);
-		}
-
-
-
-		internal void RegisterForeignModule(ForeignModule module)
+        internal void RegisterForeignModule(ForeignModule module)
 		{
 			foreignModules.Add(module);
 		}
 
 
-		internal void AddModule(string name, CodeFrame module)
+		internal void AddModule(string name, CodeFrame module, bool qual)
 		{
 			var hdl = 0;
 
@@ -62,6 +53,8 @@ namespace Ela.Linking
 			}
 			else
 				modules[hdl] = module;
+
+            quals[hdl] = qual;
 		}
 
 
@@ -94,6 +87,17 @@ namespace Ela.Linking
 		}
 
 
+        internal int TryGetModuleHandle(string name)
+        {
+            var val = 0;
+
+            if (!moduleMap.TryGetValue(name, out val))
+                return -1;
+
+            return val;
+        }
+
+
 		public int GetModuleHandle(string name)
 		{
 			return moduleMap[name];
@@ -110,19 +114,6 @@ namespace Ela.Linking
 		}
 
 
-		internal bool AddArgument(string name, object value)
-		{
-			if (!arguments.ContainsKey(name))
-			{
-				var val = ElaValue.FromObject(value);
-				arguments.Add(name, val);
-				return true;
-			}
-			else
-				return false;
-		}
-
-
 		public IEnumerable<ForeignModule> EnumerateForeignModules()
 		{
 			return foreignModules;
@@ -135,23 +126,17 @@ namespace Ela.Linking
 		}
 
 
-		public IEnumerable<String> EnumerateArguments()
-		{
-			return arguments.Keys;
-		}
-
-
-		internal bool TryGetArgument(string name, out ElaValue arg)
-		{
-			return arguments.TryGetValue(name, out arg);
-		}
-
-
 		internal void RefreshRootModule(CodeFrame frame)
 		{
 			if (frame != null)
 				modules[0] = frame;
 		}
+
+
+        internal bool RequireQuailified(int moduleHandle)
+        {
+            return quals[moduleHandle];
+        }
 		#endregion
 
 
@@ -159,12 +144,6 @@ namespace Ela.Linking
 		public int ModuleCount
 		{
 			get { return modules.Count; }
-		}
-
-
-		public int ArgumentCount
-		{
-			get { return arguments.Count; }
 		}
 		#endregion
 	}

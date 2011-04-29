@@ -9,19 +9,20 @@ namespace Ela.Compilation
 		#region Construction
 		private const string FORMAT = "{0}[{1}]";
 
-		internal ModuleReference(string moduleName) : this(moduleName, null, null, 0, 0)
+		internal ModuleReference(string moduleName) : this(moduleName, null, null, 0, 0, false)
 		{
 
 		}
 
 
-		internal ModuleReference(string moduleName, string dllName, string[] path, int line, int column)
+		internal ModuleReference(string moduleName, string dllName, string[] path, int line, int column, bool requireQualified)
 		{
 			ModuleName = moduleName;
 			DllName = dllName;
 			Path = path ?? new string[0];
 			Line = line;
 			Column = column;
+            RequireQuailified = requireQualified;
 		}
 		#endregion
 
@@ -56,6 +57,8 @@ namespace Ela.Compilation
 		public readonly int Line;
 
 		public readonly int Column;
+
+        public readonly bool RequireQuailified;
 
 		internal readonly string[] Path;
 		#endregion

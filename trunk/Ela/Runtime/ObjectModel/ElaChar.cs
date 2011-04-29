@@ -15,6 +15,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        protected internal override char AsChar(ElaValue value)
+        {
+            return (Char)value.I4;
+        }
+
+
         internal protected override int Compare(ElaValue @this, ElaValue other)
 		{
 			return other.TypeCode == ElaTypeCode.Char ? @this.I4 - other.I4 : -1;

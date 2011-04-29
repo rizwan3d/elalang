@@ -68,20 +68,20 @@ namespace Ela.Runtime.ObjectModel
 		#region Operations
 		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return new ElaValue(left.TypeId == right.TypeId && left.AsString() == right.AsString());
+            return new ElaValue(left.TypeId == right.TypeId && left.DirectGetString() == right.DirectGetString());
 		}
 
 
 		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return new ElaValue(left.TypeId != right.TypeId || left.AsString() != right.AsString());
+            return new ElaValue(left.TypeId != right.TypeId || left.DirectGetString() != right.DirectGetString());
 		}
 
 
 		protected internal override ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId == ElaMachine.STR)
-				return right.TypeId == ElaMachine.STR ? new ElaValue(left.AsString().CompareTo(right.AsString()) > 0) :
+                return right.TypeId == ElaMachine.STR ? new ElaValue(left.DirectGetString().CompareTo(right.DirectGetString()) > 0) :
 					right.Ref.Greater(left, right, ctx);
 			
 			ctx.InvalidLeftOperand(left, right, "greater");
@@ -92,7 +92,7 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId == ElaMachine.STR)
-				return right.TypeId == ElaMachine.STR ? new ElaValue(left.AsString().CompareTo(right.AsString()) < 0) :
+                return right.TypeId == ElaMachine.STR ? new ElaValue(left.DirectGetString().CompareTo(right.DirectGetString()) < 0) :
 					right.Ref.Lesser(left, right, ctx);
 			
 			ctx.InvalidLeftOperand(left, right, "lesser");
@@ -103,7 +103,7 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId == ElaMachine.STR)
-				return right.TypeId == ElaMachine.STR ? new ElaValue(left.AsString().CompareTo(right.AsString()) >= 0) :
+				return right.TypeId == ElaMachine.STR ? new ElaValue(left.DirectGetString().CompareTo(right.DirectGetString()) >= 0) :
 					right.Ref.GreaterEqual(left, right, ctx);
 			
 			ctx.InvalidLeftOperand(left, right, "greaterequal");
@@ -114,7 +114,7 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId == ElaMachine.STR)
-				return right.TypeId == ElaMachine.STR ? new ElaValue(left.AsString().CompareTo(right.AsString()) <= 0) :
+				return right.TypeId == ElaMachine.STR ? new ElaValue(left.DirectGetString().CompareTo(right.DirectGetString()) <= 0) :
 					right.Ref.LesserEqual(left, right, ctx);
 			
 			ctx.InvalidLeftOperand(left, right, "lesserequal");
@@ -151,7 +151,7 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId == ElaMachine.STR && right.TypeId == ElaMachine.STR)
-				return new ElaValue(new ElaString(left.AsString() + right.AsString()));
+                return new ElaValue(new ElaString(left.DirectGetString() + right.DirectGetString()));
 			else if (left.TypeId == ElaMachine.STR)
 				return right.Ref.Concatenate(left, right, ctx);
 			

@@ -35,7 +35,7 @@ namespace Ela.Runtime.ObjectModel
 
 		public override ElaValue Call(params ElaValue[] args)
 		{
-			args[0].AsUnit();
+			args[0].As<ElaUnit>();
 			return ElaValue.FromObject(func());
 		}
 

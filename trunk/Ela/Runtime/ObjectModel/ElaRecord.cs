@@ -75,7 +75,7 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue GetValue(ElaValue key, ExecutionContext ctx)
 		{
 			if (key.TypeId == ElaMachine.STR)
-				return GetField(key.AsString(), ctx);
+                return GetField(key.DirectGetString(), ctx);
 			else if (key.TypeId == ElaMachine.INT)
 			{
 				if (key.I4 != -1 && key.I4 < values.Length)

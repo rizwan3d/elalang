@@ -150,7 +150,6 @@ namespace Ela.Parsing
 			{
 				case Parser._EOF: return ElaParserError.ExpectedEof;
 				case Parser._ident: return ElaParserError.ExpectedIdentifierToken;
-				case Parser._argIdent: return ElaParserError.ExpectedArgumentIdentToken;
 				case Parser._intTok: return ElaParserError.ExpectedIntToken;
 				case Parser._realTok: return ElaParserError.ExpectedRealToken;
 				case Parser._stringTok: return ElaParserError.ExpectedStringToken;

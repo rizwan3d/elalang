@@ -70,7 +70,6 @@ namespace Ela.CodeModel
 				p.Type == ElaNodeType.ListLiteral ||
 				p.Type == ElaNodeType.RecordLiteral ||
 				p.Type == ElaNodeType.TupleLiteral ||
-				p.Type == ElaNodeType.Argument ||
 				p.Type == ElaNodeType.LazyLiteral ||
 				p.Type == ElaNodeType.UnitLiteral;
 		}

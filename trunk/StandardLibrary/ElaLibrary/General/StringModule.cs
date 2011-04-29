@@ -189,7 +189,7 @@ namespace Ela.Library.General
             var sb = new StringBuilder();
 
             foreach (var e in list)
-                sb.Append(e.AsChar());
+                sb.Append((Char)e.AsObject());
 
             return sb.ToString();
         }

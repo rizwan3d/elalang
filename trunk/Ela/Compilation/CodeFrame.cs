@@ -27,7 +27,6 @@ namespace Ela.Compilation
 			OpData = new FastList<Int32>();
 			Strings = new FastList<String>();
 			_references = new ReferenceMap();
-			Arguments = new Dictionary<String,Loc>();
 			Unresolves = new FastList<UnresolvedSymbol>();
        	}
 		#endregion
@@ -59,7 +58,6 @@ namespace Ela.Compilation
 			copy.OpData = OpData.Clone();
 			copy._references = new ReferenceMap(_references);
 			copy.Symbols = Symbols != null ? Symbols.Clone() : null;
-			copy.Arguments = new Dictionary<String,Loc>(Arguments);
 			copy.Unresolves = new FastList<UnresolvedSymbol>();
          	return copy;
 		}
@@ -95,8 +93,6 @@ namespace Ela.Compilation
 		internal FastList<MemoryLayout> Layouts { get; private set; }
 
 		internal FastList<String> Strings { get; private set; }
-
-		internal Dictionary<String,Loc> Arguments { get; private set; }
 
 		internal FastList<UnresolvedSymbol> Unresolves { get; private set; }
 		#endregion

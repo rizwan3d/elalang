@@ -189,9 +189,6 @@
   <data name="TuplesLength" xml:space="preserve">
     <value>The length of two tuples '{0}' and '{1}' should be equal to support some operations (such as comparison).</value>
   </data>
-  <data name="UndefinedArgument" xml:space="preserve">
-    <value>An argument with the name '{0}' is undefined.</value>
-  </data>
   <data name="UndefinedVariable" xml:space="preserve">
     <value>A name '{0}' is not defined in the module '{1}'.</value>
   </data>

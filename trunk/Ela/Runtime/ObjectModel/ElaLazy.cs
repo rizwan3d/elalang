@@ -26,96 +26,40 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-		public string AsString()
-		{
-			return Force().AsString();
-		}
+        protected internal override T As<T>(ElaValue value)
+        {
+            return Force().As<T>();
+        }
 
 
-		public bool AsBoolean()
-		{
-			return Force().AsBoolean();
-		}
+        protected internal override bool Is<T>(ElaValue value)
+        {
+            return Force().Is<T>();
+        }
 
 
-		public char AsChar()
-		{
-			return Force().AsChar();
-		}
+        protected internal override int AsInteger(ElaValue value)
+        {
+            return Force().AsInteger();
+        }
 
 
-		public double AsDouble()
-		{
-			return Force().AsDouble();
-		}
+        protected internal override float AsSingle(ElaValue value)
+        {
+            return Force().AsSingle();
+        }
 
 
-		public float AsSingle()
-		{
-			return Force().AsSingle();
-		}
+        protected internal override char AsChar(ElaValue value)
+        {
+            return Force().AsChar();
+        }
 
 
-		public int AsInteger()
-		{
-			return Force().AsInteger();
-		}
-
-
-		public long AsLong()
-		{
-			return Force().AsLong();
-		}
-
-
-		public ElaList AsList()
-		{
-			return Force().AsList();
-		}
-
-
-		public ElaTuple AsTuple()
-		{
-			return Force().AsTuple();
-		}
-
-
-		public ElaRecord AsRecord()
-		{
-			return Force().AsRecord();
-		}
-
-
-		public ElaFunction AsFunction()
-		{
-			return Force().AsFunction();
-		}
-
-
-		public object AsObject()
-		{
-			switch (Force().TypeCode)
-			{
-				case ElaTypeCode.Boolean: return Value.AsBoolean();
-				case ElaTypeCode.Char: return Value.AsChar();
-				case ElaTypeCode.Double: return Value.AsDouble();
-				case ElaTypeCode.Function: return Value.AsFunction();
-				case ElaTypeCode.Integer: return Value.AsInteger();
-				case ElaTypeCode.List: return Value.AsList();
-				case ElaTypeCode.Long: return Value.AsLong();
-				case ElaTypeCode.Record: return Value.AsRecord();
-				case ElaTypeCode.Single: return Value.AsSingle();
-				case ElaTypeCode.String: return Value.AsString();
-				case ElaTypeCode.Tuple: return Value.AsTuple();
-				case ElaTypeCode.Unit: return null;
-				case ElaTypeCode.Lazy: return Value.AsObject();
-				default:
-					if (Value.Ref != null)
-						return Value.Ref;
-					else
-						throw new NotSupportedException();
-			}
-		}
+        protected internal override bool AsBoolean(ElaValue value)
+        {
+            return Force().AsBoolean();
+        }
 
 
 		internal ElaValue Force()

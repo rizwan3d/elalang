@@ -184,8 +184,6 @@ namespace Ela.Compilation
 
 		PushR4,
 
-		Pusharg,
-
 		Pushvar,
 
 		Pushfld,

@@ -28,9 +28,12 @@ namespace Ela.Linking
 		private const string DLLEXT = ".dll";
 
 		internal static readonly string MemoryFile = "memory";
+        private static readonly ModuleReference argModuleRef = new ModuleReference("$Args");
 		private Dictionary<String,Dictionary<String,ElaModuleAttribute>> foreignModules;
 		private FastList<DirectoryInfo> dirs;
 		private ExportVars builtins;
+        private ArgumentModule argModule;
+        private bool argModuleAdded;
 		private bool stdLoaded;
 		
 		public ElaLinker(LinkerOptions linkerOptions, CompilerOptions compOptions, FileInfo rootFile)
@@ -54,6 +57,15 @@ namespace Ela.Linking
 
 
 		#region Methods
+        public virtual void AddArgument(string name, object value)
+        {
+            if (argModule == null)
+                argModule = new ArgumentModule();
+
+            argModule.AddArgument(name, value);
+        }
+
+
 		public virtual LinkerResult Build()
 		{
 			var mod = new ModuleReference(Path.GetFileNameWithoutExtension(RootFile != null ? RootFile.Name : MemoryFile));
@@ -69,9 +81,13 @@ namespace Ela.Linking
 			var unres = frame.Unresolves.Clone();
 			var dels = new FastList<UnresolvedSymbol>();
 
-			foreach (var kv in frame.References)
-				CheckReference(kv.Value, unres, dels);
-
+            if (argModule != null)
+                CheckReference(argModuleRef, unres, dels);
+            
+            foreach (var kv in frame.References)
+                if (!kv.Value.RequireQuailified)
+				    CheckReference(kv.Value, unres, dels);
+                       
 			if (unres.Count > 0)
 			{
                 var root = frame == this.Assembly.GetRootModule();
@@ -189,7 +205,7 @@ namespace Ela.Linking
 		{
 			if (!stdLoaded && !String.IsNullOrEmpty(LinkerOptions.StandardLibrary))
 			{
-				var mod = new ModuleReference(null, LinkerOptions.StandardLibrary, null, 0, 0) { IsStandardLibrary = true };
+				var mod = new ModuleReference(null, LinkerOptions.StandardLibrary, null, 0, 0, false) { IsStandardLibrary = true };
 				var fi = default(FileInfo);
 				LoadAssemblyFile(mod, out fi);
 				stdLoaded = true;
@@ -214,19 +230,16 @@ namespace Ela.Linking
 			if (frame != null)
 			{
 				frame.File = fi;
-				Assembly.AddModule(mod.ToString(), frame);
-				ProcessIncludes(fi, frame);
-				
-				foreach (var kv in frame.Arguments)
-				{
-					var e = new ArgumentEventArgs(kv.Key);
-					OnArgumentResolve(e);
 
-					if (e.Value == null)
-						AddError(ElaLinkerError.UnresolvedArgument, fi, kv.Value.Line, kv.Value.Column, kv.Key);
-					else
-						Assembly.AddArgument(kv.Key, ElaValue.FromObject(e.Value));
-				}
+                if (argModule != null && !argModuleAdded)
+                {
+                    var f = argModule.Compile();
+                    Assembly.AddModule(argModuleRef.ToString(), f, mod.RequireQuailified);
+                    argModuleAdded = true;
+                }
+
+				Assembly.AddModule(mod.ToString(), frame, mod.RequireQuailified);
+				ProcessIncludes(fi, frame);
 			}
 		}
 
@@ -375,7 +388,7 @@ namespace Ela.Linking
 		{
 
 			if (Assembly.ModuleCount == 0)
-				Assembly.AddModule(mod.ToString(), frame);
+				Assembly.AddModule(mod.ToString(), frame, mod.RequireQuailified);
 			
             var ret = default(CodeFrame);
            
@@ -598,16 +611,6 @@ namespace Ela.Linking
 		protected virtual void OnModuleResolve(ModuleEventArgs e)
 		{
 			var h = ModuleResolve;
-
-			if (h != null)
-				h(this, e);
-		}
-
-
-		public event EventHandler<ArgumentEventArgs> ArgumentResolve;
-		protected virtual void OnArgumentResolve(ArgumentEventArgs e)
-		{
-			var h = ArgumentResolve;
 
 			if (h != null)
 				h(this, e);

@@ -12,11 +12,13 @@ using System.Runtime.InteropServices;
 
 namespace Ela.Runtime
 {
-	public sealed class ElaMachine : IDisposable
+    public sealed class ElaMachine : IDisposable
 	{
 		#region Construction
 		internal ElaValue[][] modules;
-		private CodeAssembly asm;
+		private readonly CodeAssembly asm;
+        private readonly IntrinsicFrame argMod;
+        private readonly int argModHandle;
 		
 		public ElaMachine(CodeAssembly asm)
 		{
@@ -27,13 +29,23 @@ namespace Ela.Runtime
 			modules = new ElaValue[asm.ModuleCount][];
 			var mem = new ElaValue[lays.Size];
 			modules[0] = mem;
+
+            argModHandle = asm.TryGetModuleHandle("$Args");
+
+            if (argModHandle != -1)
+            {
+                argMod = (IntrinsicFrame)asm.GetModule(argModHandle);
+                modules[argModHandle] = argMod.Memory;
+                ReadPervasives(MainThread, argMod, argModHandle);
+            }
+
 			MainThread.CallStack.Push(new CallPoint(0, new EvalStack(lays.StackSize), mem, FastList<ElaValue[]>.Empty));
 		}
 		#endregion
 
 
-		#region Types
-		internal const int UNI = (Int32)ElaTypeCode.Unit;
+        #region Types
+        internal const int UNI = (Int32)ElaTypeCode.Unit;
 		internal const int INT = (Int32)ElaTypeCode.Integer;
 		internal const int REA = (Int32)ElaTypeCode.Single;
 		internal const int BYT = (Int32)ElaTypeCode.Boolean;
@@ -109,14 +121,14 @@ namespace Ela.Runtime
 			{
 				throw;
 			}
-			catch (Exception ex)
-			{
-				var Op = MainThread.Module != null && MainThread.Offset > 0 &&
-					MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
-					MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
+            catch (Exception ex)
+            {
+                var Op = MainThread.Module != null && MainThread.Offset > 0 &&
+                    MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
+                    MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
 
-				throw Exception("CriticalError", ex, MainThread.Offset - 1, Op);
-			}
+                throw Exception("CriticalError", ex, MainThread.Offset - 1, Op);
+            }
 
 			var evalStack = MainThread.CallStack[0].Stack;
 
@@ -413,19 +425,6 @@ namespace Ela.Runtime
 						evalStack.Replace(right);
 						evalStack.Push(left);
 						break;
-					case Op.Pusharg:
-						{
-							var name = frame.Strings[opd];
-
-							if (asm.TryGetArgument(name, out right))
-								evalStack.Push(right);
-							else
-							{
-								UndefinedArgument(name, thread, evalStack);
-								goto SWITCH_MEM;
-							}
-						}
-						break;
 					#endregion
 
 					#region Binary Operations
@@ -534,19 +533,19 @@ namespace Ela.Runtime
 						left = evalStack.Pop();
 						right = evalStack.Peek();
 
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 + right.I4);
-							break;
-						}
+                        if (left.TypeId == INT && right.TypeId == INT)
+                        {
+                            evalStack.Replace(left.I4 + right.I4);
+                            break;
+                        }
 
-						evalStack.Replace(left.Ref.Add(left, right, ctx));
-						
-						if (ctx.Failed)
-						{
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
+                        evalStack.Replace(left.Ref.Add(left, right, ctx));
+                        
+                        if (ctx.Failed)
+                        {
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
 						break;
 					case Op.Sub:
 						left = evalStack.Pop();
@@ -793,7 +792,7 @@ namespace Ela.Runtime
 							var rec = evalStack.Peek();
 
 							if (rec.TypeId == REC)
-								((ElaRecord)rec.Ref).AddField(right.AsString(), mut.I4 == 1, left);
+								((ElaRecord)rec.Ref).AddField(right.DirectGetString(), mut.I4 == 1, left);
 							else
 							{
 								InvalidType(left, thread, evalStack, TypeCodeFormat.GetShortForm(ElaTypeCode.Record));
@@ -1456,7 +1455,7 @@ namespace Ela.Runtime
 								goto SWITCH_MEM;
 							}
 
-							evalStack.Replace(new ElaValue(right.Ref.Show(right, new ShowInfo(0, 0, left.AsString()), ctx)));
+                            evalStack.Replace(new ElaValue(right.Ref.Show(right, new ShowInfo(0, 0, left.DirectGetString()), ctx)));
 
 							if (ctx.Failed)
 							{
@@ -1523,8 +1522,11 @@ namespace Ela.Runtime
 							var om = thread.Module;
 							var omh = thread.ModuleHandle;
 							thread.SwitchModule(modMem.ModuleHandle);
-							ReadPervasives(thread, om, omh);
-							right = evalStack.Pop();
+
+                            if (!asm.RequireQuailified(omh))
+							    ReadPervasives(thread, om, omh);
+							
+                            right = evalStack.Pop();
 
 							if (modMem.BreakAddress == 0)
 								return right;
@@ -1544,7 +1546,9 @@ namespace Ela.Runtime
 								if (frm is IntrinsicFrame)
 								{
 									modules[hdl] = ((IntrinsicFrame)frm).Memory;
-									ReadPervasives(thread, frm, hdl);
+
+                                    if (!asm.RequireQuailified(hdl))
+									    ReadPervasives(thread, frm, hdl);
 								}
 								else
 								{
@@ -1555,13 +1559,19 @@ namespace Ela.Runtime
 									callStack.Push(new CallPoint(hdl, new EvalStack(frm.Layouts[0].StackSize), loc, FastList<ElaValue[]>.Empty));
 									thread.SwitchModule(hdl);
 									thread.Offset = 0;
+                                    
+                                    if (argMod != null)
+                                        ReadPervasives(thread, argMod, argModHandle);
+
 									goto SWITCH_MEM;
 								}
 							}
 							else
 							{
 								var frm = asm.GetModule(hdl);
-								ReadPervasives(thread, frm, hdl);
+
+                                if (!asm.RequireQuailified(hdl))
+                                    ReadPervasives(thread, frm, hdl);
 							}
 						}
 						break;
@@ -1915,12 +1925,6 @@ namespace Ela.Runtime
 		{
 			ExecuteFail(new ElaError(ElaRuntimeError.ConversionFailed, val.GetTypeName(),
 				TypeCodeFormat.GetShortForm((ElaTypeCode)target), err), thread, evalStack);
-		}
-
-
-		private void UndefinedArgument(string name, WorkerThread thread, EvalStack evalStack)
-		{
-			ExecuteFail(new ElaError(ElaRuntimeError.UndefinedArgument, name), thread, evalStack);
 		}
 		#endregion
 

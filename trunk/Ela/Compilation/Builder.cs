@@ -204,7 +204,7 @@ namespace Ela.Compilation
 					{
 						var s = (ElaModuleInclude)exp;
 
-						var modRef = new ModuleReference(s.Name, s.DllName, s.Path.ToArray(), s.Line, s.Column);
+						var modRef = new ModuleReference(s.Name, s.DllName, s.Path.ToArray(), s.Line, s.Column, s.RequireQuailified);
 						frame.AddReference(s.Alias, modRef);
 						AddLinePragma(s);
 						var modIndex = AddString(modRef.ToString());
@@ -448,19 +448,6 @@ namespace Ela.Compilation
 							if ((hints & Hints.Left) == Hints.Left)
 								AddValueNotUsed(exp);
 						}
-					}
-					break;
-				case ElaNodeType.Argument:
-					{
-						var v = (ElaArgument)exp;
-						AddLinePragma(v);
-						cw.Emit(Op.Pusharg, AddString(v.ArgumentName));
-
-						if (!frame.Arguments.ContainsKey(v.ArgumentName))
-							frame.Arguments.Add(v.ArgumentName, new Loc(v.Line, v.Column));
-
-						if ((hints & Hints.Left) == Hints.Left)
-							AddValueNotUsed(v);
 					}
 					break;
 				case ElaNodeType.VariableReference:
@@ -1004,7 +991,7 @@ namespace Ela.Compilation
 		{
 			if (IsRegistered(name))
 			{
-				AddError(ElaCompilerError.VariableAlreadyDeclared, exp != null ? exp.Line : 0, exp != null ? exp.Column : 0, name);
+                AddError(ElaCompilerError.VariableAlreadyDeclared, exp != null ? exp.Line : 0, exp != null ? exp.Column : 0, name);
 				return 0;
 			}
 

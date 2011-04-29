@@ -26,11 +26,6 @@ TOKENS
 	
 	variantTok = ucase { letter | digit | "'" }.
 				
-	argIdent = "$"(
-				letter { letter | digit | "'" }
-				| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ]
-				).
-	
 	intTok = ( digit { digit } | digit { digit } CONTEXT ("." notDigit) | 
 			( "0x" | "0X" ) hexDigit { hexDigit } ) [ "L" | "l" ].
 			
@@ -99,6 +94,7 @@ TOKENS
 	FALSE = "false".
 	FAIL = "fail".
 	WHERE = "where".
+	QUALIFIED = "qualified".
 	
 	ET = "et".
 	
@@ -129,8 +125,7 @@ PRODUCTIONS
 	SimpleExpr<out ElaExpression exp> = 
 		(. exp = null; .)
 		(	
-			ArgumentReference<out exp>
-			| VariableReference<out exp>
+			VariableReference<out exp>
 		).
 		
 	Primitive<out ElaExpression exp> = 
@@ -196,9 +191,6 @@ PRODUCTIONS
 				)
 			]
 		).
-	
-	ArgumentReference<out ElaExpression exp> =					
-		argIdent (. exp = new ElaArgument(t) { ArgumentName = t.val.Substring(1) }; .).
 			
 		
 	/* Match */
@@ -1253,6 +1245,7 @@ PRODUCTIONS
 		(
 			(. scanner.InjectBlock(); .)
 			SYNC OPEN (. var inc = new ElaModuleInclude(t); .)
+			[ QUALIFIED (. inc.RequireQuailified = true; .) ]
 			Qualident<inc.Path>
 			(.
 				var name = inc.Path[inc.Path.Count - 1];				
