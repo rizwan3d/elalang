@@ -11,6 +11,7 @@ namespace Ela.Runtime.ObjectModel
 		public static readonly ElaString Empty = new ElaString(String.Empty);
 		private string buffer;
 		private int headIndex;
+		private Guid g = Guid.NewGuid();
 		
 		public ElaString(string value) : this(value, 0)
 		{

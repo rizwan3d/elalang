@@ -102,7 +102,7 @@ namespace Ela.Library.General
 
         public int Rnd(int seed, int min, int max)
         {
-            var rnd = new Random(seed);
+			var rnd = new Random(seed);
             return rnd.Next(min, max);
         }
 		#endregion

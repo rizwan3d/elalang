@@ -64,3 +64,10 @@ let triangles {eq,eqt} =
         where head x::xs = x
            et triangles = [(a,b,c) \\ c <- [1..10], b <- [1..c], a <- [1..b] |
                             a**2 + b**2 == c**2, a+b+c == 24]
+let pythTriples {eq} =
+            eq (pyth 12) [(3,4,5),(5,12,13),(6,8,10)]
+            where pyth n = [(x,y,z) \\ x <- [1..n], y <- [x..n], z <- [y..n] | x**2 + y**2 == z**2]
+            
+let pythTriplesLazy {eq} =
+            eq (pyth 12) [(3,4,5),(5,12,13),(6,8,10)]
+            where pyth n = [& (x,y,z) \\ x <- [1..n], y <- [x..n], z <- [y..n] | x**2 + y**2 == z**2]

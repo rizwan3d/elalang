@@ -121,14 +121,14 @@ namespace Ela.Runtime
 			{
 				throw;
 			}
-            catch (Exception ex)
-            {
-                var Op = MainThread.Module != null && MainThread.Offset > 0 &&
-                    MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
-                    MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
+			//catch (Exception ex)
+			//{
+			//    var Op = MainThread.Module != null && MainThread.Offset > 0 &&
+			//        MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
+			//        MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
 
-                throw Exception("CriticalError", ex, MainThread.Offset - 1, Op);
-            }
+			//    throw Exception("CriticalError", ex, MainThread.Offset - 1, Op);
+			//}
 
 			var evalStack = MainThread.CallStack[0].Stack;
 
@@ -572,7 +572,7 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
-							ExecuteThrow(thread, evalStack);
+							  ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
 						break;
@@ -1876,8 +1876,8 @@ namespace Ela.Runtime
 		{
 			var deb = new ElaDebugger(asm);
 			var mod = asm.GetModule(err.Module);
-			var cs = deb.BuildCallStack(err.CodeOffset, mod.Symbols, mod.File, err.Stack);
-			return new ElaCodeException(err.FullMessage, err.Code, cs.File, cs.Line, cs.Column, cs, err);
+			var cs = deb.BuildCallStack(err.CodeOffset, mod, mod.File, err.Stack);
+			return new ElaCodeException(err.FullMessage.Replace("\0",""), err.Code, cs.File, cs.Line, cs.Column, cs, err);
 		}
 
 

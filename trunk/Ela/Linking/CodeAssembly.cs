@@ -50,11 +50,13 @@ namespace Ela.Linking
 			{
 				moduleMap.Add(name, modules.Count);
 				modules.Add(module);
+				quals.Add(qual);
 			}
 			else
+			{
 				modules[hdl] = module;
-
-            quals[hdl] = qual;
+				quals[hdl] = qual;
+			}
 		}
 
 

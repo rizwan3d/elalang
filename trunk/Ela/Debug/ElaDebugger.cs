@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Ela.Linking;
 using Ela.Runtime;
+using Ela.Compilation;
 
 namespace Ela.Debug
 {
@@ -20,9 +21,9 @@ namespace Ela.Debug
 		
 
 		#region Methods
-		public CallStack BuildCallStack(int currentOffset, DebugInfo symbols, FileInfo moduleFile, Stack<StackPoint> callChain)
+		public CallStack BuildCallStack(int currentOffset, CodeFrame errModule, FileInfo moduleFile, Stack<StackPoint> callChain)
 		{
-			var syms = new DebugReader(symbols);
+			var syms = new DebugReader(errModule.Symbols);
 			var frames = new List<CallFrame>();
 			var lp = syms.FindLineSym(currentOffset - 1);			
 			var retval = new CallStack(
@@ -42,11 +43,12 @@ namespace Ela.Debug
 			do
 			{
 				mem = callChain.Pop();
+				var mod = Assembly.GetModuleName(mem.ModuleHandle);
+				syms = new DebugReader(Assembly.GetModule(mem.ModuleHandle).Symbols);
 				offset = first ? currentOffset - 1 : mem.BreakAddress - 1;
 				var glob = callChain.Count == 0 || offset < 0;
 				var funSym = !glob ? syms.FindFunSym(offset) : null;
 				var line = syms != null && offset > 0 ? syms.FindLineSym(offset) : null;
-				var mod = Assembly.GetModuleName(mem.ModuleHandle);
 				frames.Add(new CallFrame(glob, mod,
 					funSym != null ? 
 						funSym.Name != null ? funSym.Name : String.Format(FUNC_PARS, funSym.Parameters) :

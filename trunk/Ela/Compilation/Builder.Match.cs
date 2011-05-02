@@ -350,7 +350,6 @@ namespace Ela.Compilation
                 pexp.Patterns[1].Type == ElaNodeType.NilPattern))
 			{
 				Silent(pushSys, nextLab, hints, ElaPatterns.HeadTail);
-
 				cw.Emit(Op.Pushvar, pushSys);
 
 				var newHints = (hints & Hints.FunBody) == Hints.FunBody ? hints ^ Hints.FunBody : hints;

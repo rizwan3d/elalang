@@ -1,4 +1,5 @@
-0.9.3.6:Fix:Lazy comprehensions didn't work correctly - references of variables declared in generator 'select' clause from another 'select' clause didn't work, e.g. this code would never compile: [& (x,y,z) \\ x <- [1..n], y <- [x..n], z <- [y..n] | x**2 + y**2 == z**2].
+0.9.3.7:Fix:A bug fixed in lazy list comprehension - variable references inside generator expressions weren't correctly resolved.
+0.9.3.6:Fix:A bug fixed in call stack generation - function names weren't always determined correctly.
 0.9.3.5:New:Now it is possible to open module with a qualified access only using new 'qualified' keyword, e.g. 'open qualified Foo'.
 0.9.3.4:Change:Conversion routines for ElaValue/ElaObject are refactored in order to be more extensible.
 0.9.3.3:Change:Now ElaLinker has an AddArgument method. This method simulates arguments using an implicit $Args module.

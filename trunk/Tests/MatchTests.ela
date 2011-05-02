@@ -130,3 +130,10 @@ let firstSecond {eq} =
         eq (fst (2, 3)) 2 $ eq (snd (3, 4)) 4
         where fst (x,_) = x
            et snd (_,y) = y
+
+let nestedMatch {eqt} = 
+        eqt res
+            where xs = [[1,2],[3,4]]
+               et res = match xs with
+                              x::xs = match x with [1,2] = true; _     = false
+                              []    = false
