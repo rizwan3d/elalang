@@ -1,3 +1,5 @@
+0.0.4.2:New:Functions 'acos' and 'asin' added to Core module.
+0.0.4.1:Change:CoreInternal module renamed to $Core.
 0.0.4.0:Release:Release of 0.0.4
 0.0.3.1:Fix:A bug fixed in Prelude.compare function.
 0.0.3.0:Release:Release of 0.0.3

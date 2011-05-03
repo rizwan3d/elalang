@@ -2,45 +2,49 @@
     Ela Core module
     Created in 2011 by Basil Voronkov
 */
-open CoreInternal#elalib
+open "$Core"#elalib@cm
 
 /* MATH */
 
 let abs x | x >= 0 = x
           | else   = --x
 
-let exp = CoreInternal.exp
+let exp = cm.exp
 
 let gcd 0 0 = fail "Core.gcd: gcd 0 0 is undefined"
     gcd x y = gcd' (abs x) (abs y)
               where gcd' x 0 = x
                     gcd' x y = gcd' y (x % y)
                 
-let cos = CoreInternal.cos
+let cos = cm.cos
 
-let sin = CoreInternal.sin
+let sin = cm.sin
 
-let tan = CoreInternal.tan
+let acos = cm.acos
 
-let quot = CoreInternal.quot
+let asin = cm.asin
+
+let tan = cm.tan
+
+let quot = cm.quot
 
 let lcm _ 0 = 0
     lcm 0 _ = 0
     lcm x y = abs ((x `quot` gcd x y) * y)
 
-let floor = CoreInternal.floor
+let floor = cm.floor
 
-let ceiling = CoreInternal.ceiling
+let ceiling = cm.ceiling
 
 let subtract = flip (-)
 
-let atan = CoreInternal.atan
+let atan = cm.atan
 
 let sqrt x = x ** 0.5
 
-let truncate = CoreInternal.truncate
+let truncate = cm.truncate
 
-let log = CoreInternal.log
+let log = cm.log
 
 let even x = x % 2 == 0
 
@@ -52,13 +56,13 @@ let maxValue x y | x >= y = x
 let minValue x y | x <= y = x
                  | else   = y
 
-let round = CoreInternal.round
+let round = cm.round
 
-let rnd = CoreInternal.rnd
+let rnd = cm.rnd
 
-let pi = CoreInternal.pi
+let pi = cm.pi
 
-let e = CoreInternal.e
+let e = cm.e
 
 
 /* Basic */

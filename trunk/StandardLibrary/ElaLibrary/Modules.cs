@@ -2,7 +2,7 @@
 using Ela.Library.General;
 using Ela.Library.Collections;
 
-[assembly: ElaModule("CoreInternal", typeof(CoreInternalModule))]
+[assembly: ElaModule("$Core", typeof(CoreModule))]
 
 [assembly: ElaModule("Debug", typeof(DebugModule))]
 [assembly: ElaModule("String", typeof(StringModule))]

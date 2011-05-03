@@ -3,10 +3,10 @@ using Ela.Linking;
 
 namespace Ela.Library.General
 {
-	public sealed class CoreInternalModule : ForeignModule
+	public sealed class CoreModule : ForeignModule
 	{
 		#region Construction
-		public CoreInternalModule()
+		public CoreModule()
 		{
 
 		}
@@ -19,6 +19,8 @@ namespace Ela.Library.General
 			Add<Double,Double>("exp", Exp);
 			Add<Double,Double>("cos", Cos);
 			Add<Double,Double>("sin", Sin);
+			Add<Double,Double>("acos", Acos);
+			Add<Double,Double>("asin", Asin);
 			Add<Double,Double>("tan", Tan);
 			Add<Int64,Int64,Int64>("quot", Quot);
 			Add<Double,Double>("floor", Floor);
@@ -49,6 +51,18 @@ namespace Ela.Library.General
 		{
 			return Math.Sin(val);
 		}
+
+
+        public double Acos(double val)
+        {
+            return Math.Acos(val);
+        }
+
+
+        public double Asin(double val)
+        {
+            return Math.Asin(val);
+        }
 
 
 		public double Tan(double val)
