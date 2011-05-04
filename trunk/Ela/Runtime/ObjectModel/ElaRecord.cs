@@ -230,7 +230,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		internal void AddField(int index, string key, bool mutable, ElaValue value)
-		{
+		 {
 			keys[index] = key;
 			values[index] = value;
 			flags[index] = mutable;

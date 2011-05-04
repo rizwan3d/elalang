@@ -1,3 +1,4 @@
+0.9.4.0:Release:Release of Ela 0.9.4
 0.9.3.7:Fix:A bug fixed in lazy list comprehension - variable references inside generator expressions weren't correctly resolved.
 0.9.3.6:Fix:A bug fixed in call stack generation - function names weren't always determined correctly.
 0.9.3.5:New:Now it is possible to open module with a qualified access only using new 'qualified' keyword, e.g. 'open qualified Foo'.
