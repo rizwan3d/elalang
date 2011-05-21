@@ -298,7 +298,7 @@ namespace Ela.Runtime
 					case Op.Pushelem:
 						right = evalStack.Pop();
 						left = evalStack.Peek();
-						evalStack.Replace(left.Ref.GetValue(right.Id(ctx), ctx));
+						evalStack.Replace(left.Ref.GetValue(right.Id(ctx), ctx)); //use of ElaValue.Id
 
 						if (ctx.Failed)
 						{
@@ -307,19 +307,6 @@ namespace Ela.Runtime
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
-
-						break;
-					case Op.PushelemI4:
-						right = evalStack.Peek();
-						evalStack.Replace(right.Ref.GetValue(new ElaValue(opd), ctx));
-
-						if (ctx.Failed)
-						{
-							evalStack.Replace(right);
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
-
 						break;
 					case Op.Pushfld:
 						{
@@ -376,7 +363,7 @@ namespace Ela.Runtime
 							right = evalStack.Pop();
 							left = evalStack.Pop();
 							var val = evalStack.Pop();
-							left.Ref.SetValue(right.Id(ctx), val, ctx);
+							left.Ref.SetValue(right.Id(ctx), val, ctx); //Use of ElaValue.Id
 
 							if (ctx.Failed)
 							{
@@ -403,8 +390,7 @@ namespace Ela.Runtime
 
 						break;
 					case Op.Dup:
-						right = evalStack.Peek();
-						evalStack.Push(right);
+						evalStack.Push(evalStack.Peek());
 						break;
 					case Op.Swap:
 						right = evalStack.Pop();

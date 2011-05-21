@@ -86,7 +86,6 @@ namespace Ela.Compilation
 			5, //Skiptn
 			5, //Skiptl
 			5, //Pat
-			5, //PushelemI4			
 			5, //Tupex
 			5, //Failwith
 			5, //Start

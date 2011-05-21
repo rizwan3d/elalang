@@ -164,8 +164,6 @@ namespace Ela.Compilation
 
 		Pat,
 
-		PushelemI4,
-
 		Tupex,
 
 		Failwith,
