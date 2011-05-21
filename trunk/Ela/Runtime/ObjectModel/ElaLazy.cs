@@ -1,6 +1,7 @@
 ﻿using System;
 using Ela.CodeModel;
 using Ela.Compilation;
+using System.Threading;
 
 namespace Ela.Runtime.ObjectModel
 {
@@ -77,17 +78,43 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Force(ElaValue @this, ExecutionContext ctx)
 		{
+			if (ctx == ElaObject.DummyContext)
+				return Force();
+
 			return Force(ctx);
 		}
 
 
-		internal ElaValue Force(ExecutionContext ctx)
+		internal override ElaValue InternalForce(ElaValue @this, ExecutionContext ctx)
 		{
 			if (Value.Ref == null)
 			{
 				Value = Function.Call(
 					Function.LastParameter.Ref != null ? Function.LastParameter :
 					new ElaValue(ElaUnit.Instance), ctx);
+			}
+
+			return Value;
+		}
+
+
+		internal ElaValue Force(ExecutionContext ctx)
+		{
+			//if (Value.Ref == null)
+			//{
+			//    Value = Function.Call(
+			//        Function.LastParameter.Ref != null ? Function.LastParameter :
+			//        new ElaValue(ElaUnit.Instance), ctx);
+			//}
+
+			//return Value;
+			var f = Function;
+
+			if (f != null)
+			{
+				ctx.Failed = true;
+				ctx.Thunk = this;
+				return new ElaValue(ElaDummyObject.Instance);
 			}
 
 			return Value;

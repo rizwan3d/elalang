@@ -491,7 +491,7 @@ namespace Ela.Runtime.ObjectModel
 
 			for (var i = 0; i < Length; i++)
 			{
-				var left = Values[i].Ref.Force(Values[i], ctx);
+				var left = Values[i];
 
 				if (!left.Ref.Bool(left, ctx))
 					return false;

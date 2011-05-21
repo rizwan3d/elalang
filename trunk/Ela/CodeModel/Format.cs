@@ -53,7 +53,6 @@ namespace Ela.CodeModel
 				case ElaOperator.Assign: return "<-";
 				case ElaOperator.BooleanAnd: return "&&";
 				case ElaOperator.BooleanOr: return "||";
-				case ElaOperator.Swap: return "<->";
 				case ElaOperator.Sequence: return "$";
 				default:
 					return String.Empty;

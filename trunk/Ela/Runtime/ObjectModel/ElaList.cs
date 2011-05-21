@@ -337,19 +337,8 @@ namespace Ela.Runtime.ObjectModel
 			{
                 if (InternalNext == null)
                     return null;
-                else if (InternalNext.TypeId == ElaMachine.LAZ)
-                {
-                    var val = InternalNext.Force(new ElaValue(InternalNext), DummyContext);
-
-                    if (val.TypeId == ElaMachine.LST)
-                        return (ElaList)val.Ref;
-                    else
-                        return new ElaList(ElaList.Empty, val);
-                }
-                else if (InternalNext.TypeId == ElaMachine.LST)
-                    return (ElaList)InternalNext;
-                else
-                    return null;
+				else
+					return InternalNext;
 			}
 		}
 

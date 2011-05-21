@@ -157,11 +157,3 @@ let assign {eq} =
         $ r.val <- r.val * 2
         $ eq r.val 4
         where r = {!val = 0}
-
-let swap {eq} =
-        let rec = {!x=1,!y=2,!z=3} in
-        (
-            rec.[0] <-> rec.[1]
-            $ eq rec.[0] 2
-            $ eq rec.[1] 1
-        )

@@ -1,3 +1,6 @@
+0.9.4.3:Change:Major improvemenet in thunk calculation. Performance for thunks is increased, also thunk calculation cannot cause stack overflow anymore in a case of long recursion spree.
+0.9.4.2:Change:Pushelemi and Popelemi op codes are now decomissioned.
+0.9.4.1:Change:Swap operator (<->) is now decomissioned.
 0.9.4.0:Release:Release of Ela 0.9.4
 0.9.3.7:Fix:A bug fixed in lazy list comprehension - variable references inside generator expressions weren't correctly resolved.
 0.9.3.6:Fix:A bug fixed in call stack generation - function names weren't always determined correctly.

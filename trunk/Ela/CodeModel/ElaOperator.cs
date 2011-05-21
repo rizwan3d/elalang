@@ -8,8 +8,6 @@ namespace Ela.CodeModel
 
 		Assign,
 
-		Swap,
-		
 		BooleanAnd,
 
 		BooleanOr,

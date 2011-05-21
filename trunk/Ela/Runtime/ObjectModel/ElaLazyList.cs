@@ -62,7 +62,7 @@ namespace Ela.Runtime.ObjectModel
 		{
 			if (thunk != null)
 			{
-				InternalNext = thunk.Force(ctx).Ref as ElaList;
+				InternalNext = thunk.InternalForce(new ElaValue(thunk), ctx).Ref as ElaList;
 
                 if (InternalNext == null)
                 {

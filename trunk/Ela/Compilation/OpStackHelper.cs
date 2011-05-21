@@ -87,8 +87,6 @@ namespace Ela.Compilation
 			-1, //Skiptl
 			0, //Pat
 			0, //PushelemI4			
-			0, //Pushelemi
-			-1, //Popelemi
 			-1, //Tupex
 			0, //Failwith
 			0, //Start

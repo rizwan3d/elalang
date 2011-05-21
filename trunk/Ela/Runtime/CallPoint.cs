@@ -6,6 +6,8 @@ namespace Ela.Runtime
 	internal sealed class CallPoint
 	{
 		#region Construction
+		internal static readonly CallPoint Spec = new CallPoint(0, null, null, null);
+
 		internal CallPoint(int modHandle, EvalStack stack, ElaValue[] locals, FastList<ElaValue[]> captures)
 		{
 			ModuleHandle = modHandle;
@@ -30,6 +32,8 @@ namespace Ela.Runtime
 		internal int StackOffset;
 
 		internal int? CatchMark;
+
+		internal ElaLazy Thunk;
 		#endregion
 	}
 }

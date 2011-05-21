@@ -31,7 +31,10 @@ namespace Ela.Runtime.ObjectModel
         {
             internal static readonly ElaInvalidObject Instance = new ElaInvalidObject();
 
-            internal ElaInvalidObject() { }
+            internal ElaInvalidObject() 
+			{ 
+			
+			}
 
             protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
             {
@@ -440,6 +443,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		protected internal virtual ElaValue Force(ElaValue @this, ExecutionContext ctx)
+		{
+			return @this;
+		}
+
+
+		internal virtual ElaValue InternalForce(ElaValue @this, ExecutionContext ctx)
 		{
 			return @this;
 		}

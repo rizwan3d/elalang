@@ -166,10 +166,6 @@ namespace Ela.Compilation
 
 		PushelemI4,
 
-		Pushelemi,
-
-		Popelemi,
-
 		Tupex,
 
 		Failwith,

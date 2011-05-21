@@ -415,35 +415,15 @@ namespace Ela.Compilation
 
 						if ((hints & Hints.Left) == Hints.Left && (hints & Hints.Assign) == Hints.Assign)
 						{
-                            if (v.Index.Type == ElaNodeType.VariableReference)
-                            {
-                                var vr = (ElaVariableReference)v.Index;
-                                var svar = GetVariable(vr.VariableName, vr.Line, vr.Column);
-                                AddLinePragma(v);
-                                cw.Emit(Op.Popelemi, svar.Address);
-                            }
-                            else
-                            {
-                                CompileExpression(v.Index, map, Hints.None);
-                                AddLinePragma(v);
-                                cw.Emit(Op.Popelem);
-                            }
+                            CompileExpression(v.Index, map, Hints.None);
+                            AddLinePragma(v);
+							cw.Emit(Op.Popelem);
 						}
 						else
 						{
-							if (v.Index.Type == ElaNodeType.VariableReference)
-							{
-								var vr = (ElaVariableReference)v.Index;
-								var svar = GetVariable(vr.VariableName, vr.Line, vr.Column);
-								AddLinePragma(v);
-								cw.Emit(Op.Pushelemi, svar.Address);
-							}
-							else
-							{
-								CompileExpression(v.Index, map, Hints.None);
-								AddLinePragma(v);
-								cw.Emit(Op.Pushelem);
-							}
+							CompileExpression(v.Index, map, Hints.None);
+							AddLinePragma(v);
+							cw.Emit(Op.Pushelem);
 
 							if ((hints & Hints.Left) == Hints.Left)
 								AddValueNotUsed(exp);
@@ -1003,6 +983,11 @@ namespace Ela.Compilation
 				AddVarPragma(name, currentCounter, cw.Offset);
 				AddLinePragma(exp);
 			}
+
+			//if (CurrentScope == globalScope)
+			//{
+			//    exports.AddBuiltin(name, (flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin ? (ElaBuiltinKind)data : ElaBuiltinKind.None);
+			//}
 
 			return AddVariable();
 		}

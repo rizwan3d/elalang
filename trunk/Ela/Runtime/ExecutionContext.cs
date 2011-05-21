@@ -126,6 +126,8 @@ namespace Ela.Runtime
 		internal bool Failed { get; set; }
 
 		internal ElaError Error { get; set; }
+
+		internal ElaLazy Thunk;
 		#endregion
 	}
 }

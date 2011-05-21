@@ -77,7 +77,7 @@ namespace Ela.Runtime
             false,//<none>
             false,//Tuple
             false,//Record
-            false,//Function
+            false,//Thunk
             false,//Object
             false,//Module
             false,//Lazy
@@ -123,11 +123,10 @@ namespace Ela.Runtime
 			}
 			catch (Exception ex)
 			{
-				var Op = MainThread.Module != null && MainThread.Offset > 0 &&
+				var op = MainThread.Module != null && MainThread.Offset > 0 &&
 					MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
 					MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
-
-				throw Exception("CriticalError", ex, MainThread.Offset - 1, Op);
+				throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
 			}
 			
 			var evalStack = MainThread.CallStack[0].Stack;
@@ -298,11 +297,13 @@ namespace Ela.Runtime
 						break;
 					case Op.Pushelem:
 						right = evalStack.Pop();
-						left = evalStack.PopFast();
-						evalStack.Push(left.Ref.GetValue(right.Id(ctx), ctx));
+						left = evalStack.Peek();
+						evalStack.Replace(left.Ref.GetValue(right.Id(ctx), ctx));
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(left);
+							evalStack.Push(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -314,19 +315,7 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
-
-						break;
-					case Op.Pushelemi:
-						right = evalStack.PopFast();
-						i4 = opd & Byte.MaxValue;
-						evalStack.Push(right.Ref.GetValue(i4 == 0 ? locals[opd >> 8] :
-							captures[captures.Count - i4][opd >> 8], ctx));
-
-						if (ctx.Failed)
-						{
+							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -363,6 +352,7 @@ namespace Ela.Runtime
 
 							if (ctx.Failed)
 							{
+								evalStack.Replace(right);
 								ExecuteThrow(thread, evalStack);
 								goto SWITCH_MEM;
 							}
@@ -382,34 +372,31 @@ namespace Ela.Runtime
 							captures[captures.Count - i4][opd >> 8] = right;
 						break;
 					case Op.Popelem:
-						right = evalStack.Pop();
-						evalStack.Pop().Id(ctx).Ref.SetValue(right.Id(ctx), evalStack.Pop(), ctx);
-
-						if (ctx.Failed)
 						{
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
+							right = evalStack.Pop();
+							left = evalStack.Pop();
+							var val = evalStack.Pop();
+							left.Ref.SetValue(right.Id(ctx), val, ctx);
+
+							if (ctx.Failed)
+							{
+								evalStack.Push(val);
+								evalStack.Push(left);
+								evalStack.Push(right);
+								ExecuteThrow(thread, evalStack);
+								goto SWITCH_MEM;
+							}
 						}
-
-						break;
-					case Op.Popelemi:
-						i4 = opd & Byte.MaxValue;
-						evalStack.Pop().Id(ctx).Ref.SetValue(i4 == 0 ?
-							locals[opd >> 8] : captures[captures.Count - i4][opd >> 8],
-							evalStack.Pop(), ctx);
-
-						if (ctx.Failed)
-						{
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
-
 						break;
 					case Op.Popfld:
-						evalStack.Pop().Id(ctx).Ref.SetField(frame.Strings[opd], evalStack.Pop(), ctx);
+						right = evalStack.Pop();
+						left = evalStack.Pop();
+						right.Ref.SetField(frame.Strings[opd], left, ctx);
 
 						if (ctx.Failed)
 						{
+							evalStack.Push(left);
+							evalStack.Push(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -442,6 +429,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
+							evalStack.Push(left);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -460,6 +449,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
+							evalStack.Push(left);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -478,6 +469,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
+							evalStack.Push(left);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -496,6 +489,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
+							evalStack.Push(left);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -514,6 +509,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
+							evalStack.Push(left);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -525,6 +522,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
+							evalStack.Push(left);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -543,7 +542,9 @@ namespace Ela.Runtime
                         
                         if (ctx.Failed)
                         {
-                            ExecuteThrow(thread, evalStack);
+							evalStack.Replace(right);
+							evalStack.Push(left);
+							ExecuteThrow(thread, evalStack);
                             goto SWITCH_MEM;
                         }
 						break;
@@ -561,6 +562,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
+							evalStack.Push(left);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -572,7 +575,9 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
-							  ExecuteThrow(thread, evalStack);
+							evalStack.Replace(right);
+							evalStack.Push(left);
+							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
 						break;
@@ -590,6 +595,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
+							evalStack.Push(left);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -601,6 +608,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
+							evalStack.Push(left);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -612,6 +621,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
+							evalStack.Push(left);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -638,10 +649,12 @@ namespace Ela.Runtime
 						}
                         break;
 					case Op.Pat:
-						evalStack.Replace(new ElaValue(((Int32)evalStack.Peek().Id(ctx).Ref.GetSupportedPatterns() & opd) == opd));
+						right = evalStack.Peek();
+						evalStack.Replace(new ElaValue(((Int32)right.Id(ctx).Ref.GetSupportedPatterns() & opd) == opd));
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -660,6 +673,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
+							evalStack.Push(left);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -678,6 +693,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
+							evalStack.Push(left);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -696,6 +713,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
+							evalStack.Push(left);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -714,6 +733,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
+							evalStack.Push(left);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -732,6 +753,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
+							evalStack.Push(left);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -750,6 +773,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
+							evalStack.Push(left);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -758,10 +783,12 @@ namespace Ela.Runtime
 
 					#region Object Operations
 					case Op.Clone:
-						evalStack.Replace(evalStack.Peek().Ref.Clone(ctx));
+						right = evalStack.Peek();
+						evalStack.Replace(right.Ref.Clone(ctx));
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -780,7 +807,8 @@ namespace Ela.Runtime
 
                         if (ctx.Failed)
                         {
-                            ExecuteThrow(thread, evalStack);
+							evalStack.Replace(right);
+							ExecuteThrow(thread, evalStack);
                             goto SWITCH_MEM;
                         }
                         break;
@@ -807,6 +835,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
+							evalStack.Push(left);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -818,6 +848,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
+							evalStack.Push(left);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -828,90 +860,101 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
 						break;
 					case Op.Tail:
-						evalStack.Replace(evalStack.Peek().Ref.Tail(ctx));
+						evalStack.Replace((right = evalStack.Peek()).Ref.Tail(ctx));
 						
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
 						break;
 					case Op.Head:
-						evalStack.Replace(evalStack.Peek().Ref.Head(ctx));
+						evalStack.Replace((right = evalStack.Peek()).Ref.Head(ctx));
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
 						break;
 					case Op.Nil:
-						evalStack.Replace(evalStack.Peek().Nil(ctx));
+						evalStack.Replace((right = evalStack.Peek()).Nil(ctx));
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
 						break;
 					case Op.Isnil:
-						evalStack.Replace(new ElaValue(evalStack.Peek().Ref.IsNil(ctx)));
+						evalStack.Replace(new ElaValue((right = evalStack.Peek()).Ref.IsNil(ctx)));
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
 						break;
 					case Op.Len:
-						evalStack.Replace(evalStack.Peek().Ref.GetLength(ctx));
+						evalStack.Replace((right = evalStack.Peek()).Ref.GetLength(ctx));
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
 
 						break;
 					case Op.Hasfld:
-						evalStack.Replace(evalStack.Peek().Ref.HasField(frame.Strings[opd], ctx));
+						evalStack.Replace((right = evalStack.Peek()).Ref.HasField(frame.Strings[opd], ctx));
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
 
 						break;
 					case Op.Force:
-						evalStack.Replace(evalStack.Peek().Id(ctx));
+						right = evalStack.Peek();
+						evalStack.Replace(right.Ref.InternalForce(right, ctx));
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
 						break;
 					case Op.Untag:
-						evalStack.Replace(evalStack.Peek().Ref.Untag(ctx));
+						evalStack.Replace((right = evalStack.Peek()).Ref.Untag(ctx));
 
                         if (ctx.Failed)
 						{
+							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
 						break;
                     case Op.Gettag:
-                        evalStack.Replace(new ElaValue(evalStack.Peek().Ref.GetTag(ctx)));
+                        evalStack.Replace(new ElaValue((right = evalStack.Peek()).Ref.GetTag(ctx)));
 
                         if (ctx.Failed)
                         {
-                            ExecuteThrow(thread, evalStack);
+							evalStack.Replace(right);
+							ExecuteThrow(thread, evalStack);
                             goto SWITCH_MEM;
                         }
                         break;
@@ -931,6 +974,7 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -948,6 +992,7 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -965,6 +1010,7 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -975,6 +1021,7 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -989,6 +1036,7 @@ namespace Ela.Runtime
 						{
 							if (ctx.Failed)
 							{
+								evalStack.Push(right);
 								ExecuteThrow(thread, evalStack);
 								goto SWITCH_MEM;
 							}
@@ -1002,6 +1050,7 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Push(right);
 							thread.Offset--;
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
@@ -1015,6 +1064,7 @@ namespace Ela.Runtime
 							{
 								if (ctx.Failed)
 								{
+									evalStack.Push(right);
 									ExecuteThrow(thread, evalStack);
 									goto SWITCH_MEM;
 								}
@@ -1040,6 +1090,7 @@ namespace Ela.Runtime
 
 							if (ctx.Failed)
 							{
+								evalStack.Push(right);
 								thread.Offset--;
 								ExecuteThrow(thread, evalStack);
 								goto SWITCH_MEM;
@@ -1053,6 +1104,7 @@ namespace Ela.Runtime
 						{
 							if (ctx.Failed)
 							{
+								evalStack.Push(right);
 								ExecuteThrow(thread, evalStack);
 								goto SWITCH_MEM;
 							}
@@ -1069,6 +1121,7 @@ namespace Ela.Runtime
 						{
 							if (ctx.Failed)
 							{
+								evalStack.Push(right);
 								ExecuteThrow(thread, evalStack);
 								goto SWITCH_MEM;
 							}
@@ -1097,6 +1150,7 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Push(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -1120,6 +1174,7 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Push(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -1139,9 +1194,9 @@ namespace Ela.Runtime
 							break;
 						}
 
-						left = left.Ref.Equal(left, right, ctx);
+						res = left.Ref.Equal(left, right, ctx);
 
-						if (left.Ref.Bool(left, ctx) && !ctx.Failed)
+						if (res.Ref.Bool(res, ctx) && !ctx.Failed)
 						{
 							thread.Offset = opd;
 							break;
@@ -1149,6 +1204,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Push(left);
+							evalStack.Push(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -1165,9 +1222,9 @@ namespace Ela.Runtime
 							break;
 						}
 
-						left = left.Ref.NotEqual(left, right, ctx);
+						res = left.Ref.NotEqual(left, right, ctx);
 
-						if (left.Ref.Bool(left, ctx) && !ctx.Failed)
+						if (res.Ref.Bool(res, ctx) && !ctx.Failed)
 						{
 							thread.Offset = opd;
 							break;
@@ -1175,6 +1232,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Push(left);
+							evalStack.Push(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -1191,9 +1250,9 @@ namespace Ela.Runtime
 							break;
 						}
 
-						left = left.Ref.Lesser(left, right, ctx);
+						res = left.Ref.Lesser(res, right, ctx);
 
-						if (left.Ref.Bool(left, ctx) && !ctx.Failed)
+						if (res.Ref.Bool(res, ctx) && !ctx.Failed)
 						{
 							thread.Offset = opd;
 							break;
@@ -1201,6 +1260,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Push(left);
+							evalStack.Push(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -1217,9 +1278,9 @@ namespace Ela.Runtime
 							break;
 						}
 
-						left = left.Ref.Greater(left, right, ctx);
+						res = left.Ref.Greater(left, right, ctx);
 
-						if (left.Ref.Bool(left, ctx) && !ctx.Failed)
+						if (res.Ref.Bool(res, ctx) && !ctx.Failed)
 						{
 							thread.Offset = opd;
 							break;
@@ -1227,6 +1288,8 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Push(left);
+							evalStack.Push(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -1239,6 +1302,7 @@ namespace Ela.Runtime
 						
 						if (ctx.Failed)
 						{
+							evalStack.Push(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -1321,7 +1385,7 @@ namespace Ela.Runtime
 						break;
 					#endregion
 
-					#region Function Operations
+					#region Thunk Operations
 					case Op.Flip:
 						{
 							right = evalStack.Peek().Id(ctx);
@@ -1337,6 +1401,13 @@ namespace Ela.Runtime
 							fun = fun.Captures != null ? fun.CloneFast() : fun.Clone();
 							fun.Flip = !fun.Flip;
 							evalStack.Replace(new ElaValue(fun));
+
+							if (ctx.Failed)
+							{
+								evalStack.Push(right);
+								ExecuteThrow(thread, evalStack);
+								goto SWITCH_MEM;
+							}
 						}
 						break;
 					case Op.Call:
@@ -1352,6 +1423,14 @@ namespace Ela.Runtime
 						break;
 					case Op.Callt:
 						{
+							if (callStack.Peek().Thunk != null)
+							{
+								if (Call(evalStack.Pop().Ref, thread, evalStack, null))
+									goto SWITCH_MEM;
+
+								break;
+							}
+
 							var cp = callStack.Pop();
 
 							if (Call(evalStack.Pop().Ref, thread, evalStack, cp))
@@ -1362,7 +1441,14 @@ namespace Ela.Runtime
 						break;
 					case Op.Ret:
 						{
-							callStack.Pop();
+							var cc = callStack.Pop();
+
+							if (cc.Thunk != null)
+							{
+								cc.Thunk.Value = evalStack.Pop();
+								thread.Offset = callStack.Peek().BreakAddress;
+								goto SWITCH_MEM;
+							}
 
 							if (callStack.Count > 0)
 							{
@@ -1396,6 +1482,7 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -1413,6 +1500,7 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -1423,6 +1511,7 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -1434,6 +1523,7 @@ namespace Ela.Runtime
 
 						if (ctx.Failed)
 						{
+							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -1459,6 +1549,8 @@ namespace Ela.Runtime
 
 							if (ctx.Failed)
 							{
+								evalStack.Replace(right);
+								evalStack.Push(left);
 								ExecuteFail(ctx.Error, thread, evalStack);
 								goto SWITCH_MEM;
 							}
@@ -1497,9 +1589,20 @@ namespace Ela.Runtime
 						break;
 					case Op.Throw:
 						{
-							var code = evalStack.Pop().ToString();
-							var msg = evalStack.Pop().ToString();
-							ExecuteFail(new ElaError(code, msg), thread, evalStack);
+							left = evalStack.Pop();
+							right = evalStack.Pop();
+							var code = left.Show(ShowInfo.Default, ctx);
+							var msg = right.Show(ShowInfo.Default, ctx);
+						
+							if (ctx.Failed)
+							{
+								evalStack.Push(right);
+								evalStack.Push(left);
+								ExecuteThrow(thread, evalStack);
+							}
+							else
+								ExecuteFail(new ElaError(code, msg), thread, evalStack);
+							
 							goto SWITCH_MEM;
 						}
 					case Op.Rethrow:
@@ -1692,11 +1795,14 @@ namespace Ela.Runtime
 		{
 			if (fun.TypeId != FUN)
 			{
-				var res = fun.Call(stack.Peek(), thread.Context);
+				var arg = stack.Peek();
+				var res = fun.Call(arg, thread.Context);
 				stack.Replace(res);
 
 				if (thread.Context.Failed)
 				{
+					stack.Replace(arg);
+					stack.Push(new ElaValue(fun));
 					ExecuteThrow(thread, stack);
 					return true;
 				}
@@ -1729,11 +1835,12 @@ namespace Ela.Runtime
 					var newStack = new EvalStack(layout.StackSize);
 					var newMem = new CallPoint(natFun.ModuleHandle, newStack, newLoc, natFun.Captures);
 
-					if (cp == null)
+					if (cp == null || cp == CallPoint.Spec)
 						thread.CallStack.Peek().BreakAddress = thread.Offset;
 
-					newStack.Push(stack.PopFast());
-					
+					if (cp != CallPoint.Spec)
+						newStack.Push(stack.PopFast());
+
 					for (var i = 0; i < natFun.Parameters.Length; i++)
 						newStack.Push(natFun.Parameters[natFun.Parameters.Length - i - 1]);
 					
@@ -1822,6 +1929,17 @@ namespace Ela.Runtime
 
 		private void ExecuteThrow(WorkerThread thread, EvalStack stack)
 		{
+			if (thread.Context.Thunk != null)
+			{
+				thread.Context.Failed = false;
+				var t = thread.Context.Thunk;
+				thread.Context.Thunk = null;
+				thread.Offset--;
+				Call(t.Function, thread, stack, CallPoint.Spec);
+				thread.CallStack.Peek().Thunk = t;
+				return;
+			}
+
 			var err = thread.Context.Error;
 			thread.Context.Reset();
 			var callStack = thread.CallStack;
