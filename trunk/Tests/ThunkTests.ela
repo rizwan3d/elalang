@@ -59,3 +59,28 @@ let lazyEquals {eqt} =
         $ eqt (thunk2 == 5)
         $ eqt (thunk2 <> 4)
 
+let lazyCompare {eqt,eqf} =
+        eqt (thunk1 > 3)
+        $ eqf (thunk1 > 4)
+        $ eqt (thunk1 <= 4)
+        $ eqt (thunk2 >= 5)
+        $ eqf (thunk2 > 6)
+        $ eqt (thunk2 < 6)
+
+let lazyMath {eq} =
+        eq (thunk1 + 2) 6
+        $ eq (thunk1 - 2) 2
+        $ eq (thunk1 * 3) 12
+        $ eq (thunk1 / 2) 2
+        $ eq (thunk1 ** 2) 16
+        $ eq (thunk1 % 3) 1
+        $ eq (thunk2 + 2) 7
+        $ eq (thunk2 - 2) 3
+        $ eq (thunk2 * 3) 15
+        $ eq (thunk2 / 2) 2
+        $ eq (thunk2 ** 2) 25
+        $ eq (thunk2 % 2) 1
+
+let lazyConcat {eq} =
+        eq ((show <| force thunk1) ++ "str") "4str"
+        $ eq ((show <| force thunk2) ++ "str") "5str"
