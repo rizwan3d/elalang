@@ -1,4 +1,8 @@
-﻿let simple {eq,eqt} =
+﻿let private thunk1 = (& 2 + 2)
+let private thunk2 = (& add 2 3)
+                   where add x y = x + y
+
+let simple {eq,eqt} =
         eq (t + 2) 6
         $ eq t 4
         $ eqt (t == 4)
@@ -48,3 +52,10 @@ let typeCheck {eqt} =
         eqt (t is ?lazy)
         $ t + 0
         $ eqt (t is ?int)
+        
+let lazyEquals {eqt} =
+        eqt (thunk1 == 4)
+        $ eqt (thunk1 <> 5)
+        $ eqt (thunk2 == 5)
+        $ eqt (thunk2 <> 4)
+

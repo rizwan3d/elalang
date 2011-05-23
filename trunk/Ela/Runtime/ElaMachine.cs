@@ -121,13 +121,13 @@ namespace Ela.Runtime
 			{
 				throw;
 			}
-			catch (Exception ex)
-			{
-				var op = MainThread.Module != null && MainThread.Offset > 0 &&
-					MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
-					MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
-				throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
-			}
+			//catch (Exception ex)
+			//{
+			//    var op = MainThread.Module != null && MainThread.Offset > 0 &&
+			//        MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
+			//        MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
+			//    throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
+			//}
 			
 			var evalStack = MainThread.CallStack[0].Stack;
 
@@ -1826,6 +1826,8 @@ namespace Ela.Runtime
 
 					if (cp != CallPoint.Spec)
 						newStack.Push(stack.PopFast());
+					else if (natFun.LastParameter.Ref != null)
+						newStack.Push(natFun.LastParameter);
 
 					for (var i = 0; i < natFun.Parameters.Length; i++)
 						newStack.Push(natFun.Parameters[natFun.Parameters.Length - i - 1]);
