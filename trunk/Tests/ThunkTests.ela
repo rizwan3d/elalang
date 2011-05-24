@@ -84,3 +84,13 @@ let lazyMath {eq} =
 let lazyConcat {eq} =
         eq ((show <| force thunk1) ++ "str") "4str"
         $ eq ((show <| force thunk2) ++ "str") "5str"
+        
+let lazyBool {eqt} =
+        eqt <| not (thunk1 == 5)
+        $ eqt <| not (thunk2 == 4)
+        
+let lazyFunc {eq} =
+        eq (lf 2 3) 5
+        $ eq (lf2 3) (--3)
+        where lf = (& \x y -> x + y)
+           et lf2 = (& \x -> --x)
