@@ -94,3 +94,14 @@ let lazyFunc {eq} =
         $ eq (lf2 3) (--3)
         where lf = (& \x y -> x + y)
            et lf2 = (& \x -> --x)
+
+let lazyIndexer {eq} =
+        eq rec.[ix1] 0
+        $ rec2.[ix2] <- 3
+        $ eq rec2.[ix3] 3
+        $ eq rec2.[ix3] 3
+        where rec = (& { !x = 0, !y = 1 })
+           et rec2 = (& { !x = 0, !y = 1 })
+           et ix1 = (& 0)
+           et ix2 = (& 1)
+           et ix3 = (& 1)

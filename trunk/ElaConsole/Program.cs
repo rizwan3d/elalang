@@ -10,6 +10,7 @@ using Ela.Parsing;
 using Ela.Runtime;
 using Ela.Runtime.ObjectModel;
 using ElaConsole.Options;
+using System.Reflection;
 
 namespace ElaConsole
 {
@@ -31,7 +32,7 @@ namespace ElaConsole
 		#region Methods
 		private static int Main(string[] args) 
 		{
-            if (!ReadOptions(args))
+			if (!ReadOptions(args))
 				return R_ERR;
 
 			helper = new MessageHelper(opt);
