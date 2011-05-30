@@ -1,8 +1,4 @@
-﻿let private thunk1 = (& 2 + 2)
-let private thunk2 = (& add 2 3)
-                   where add x y = x + y
-
-let simple {eq,eqt} =
+﻿let simple {eq,eqt} =
         eq (t + 2) 6
         $ eq t 4
         $ eqt (t == 4)
@@ -58,6 +54,9 @@ let lazyEquals {eqt} =
         $ eqt (thunk1 <> 5)
         $ eqt (thunk2 == 5)
         $ eqt (thunk2 <> 4)
+        where thunk1 = (& 2 + 2)
+           et thunk2 = (& add 2 3)
+                   where add x y = x + y
 
 let lazyCompare {eqt,eqf} =
         eqt (thunk1 > 3)
@@ -66,6 +65,9 @@ let lazyCompare {eqt,eqf} =
         $ eqt (thunk2 >= 5)
         $ eqf (thunk2 > 6)
         $ eqt (thunk2 < 6)
+        where thunk1 = (& 2 + 2)
+           et thunk2 = (& add 2 3)
+                   where add x y = x + y
 
 let lazyMath {eq} =
         eq (thunk1 + 2) 6
@@ -80,14 +82,23 @@ let lazyMath {eq} =
         $ eq (thunk2 / 2) 2
         $ eq (thunk2 ** 2) 25
         $ eq (thunk2 % 2) 1
+        where thunk1 = (& 2 + 2)
+           et thunk2 = (& add 2 3)
+                   where add x y = x + y
 
 let lazyConcat {eq} =
         eq ((show <| force thunk1) ++ "str") "4str"
         $ eq ((show <| force thunk2) ++ "str") "5str"
+        where thunk1 = (& 2 + 2)
+           et thunk2 = (& add 2 3)
+                   where add x y = x + y
         
 let lazyBool {eqt} =
         eqt <| not (thunk1 == 5)
         $ eqt <| not (thunk2 == 4)
+        where thunk1 = (& 2 + 2)
+           et thunk2 = (& add 2 3)
+                   where add x y = x + y
         
 let lazyFunc {eq} =
         eq (lf 2 3) 5
@@ -105,3 +116,22 @@ let lazyIndexer {eq} =
            et ix1 = (& 0)
            et ix2 = (& 1)
            et ix3 = (& 1)
+           
+let lazySuccPred {eq} = 
+        eq (succ thunk1) 5
+        $ eq (pred thunk2) 4
+        where thunk1 = (& 2 + 2)
+           et thunk2 = (& add 2 3)
+                   where add x y = x + y
+
+let lazyAssign {eq} = 
+        thunk1.x <- 1
+        $ eq thunk1.x 1
+        where thunk1 = (& {!x=0})
+
+let lazyUnary {eq} = 
+        eq (~~~thunk1) (--3)
+        $ eq (--thunk2) (--5)
+        where thunk1 = (& 1+1)
+           et thunk2 = (& add 2 3)
+                   where add x y = x + y
