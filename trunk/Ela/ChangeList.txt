@@ -1,3 +1,4 @@
+0.9.5.0:Release:Release of Ela 0.9.5
 0.9.4.4:Change:PushelemI4 op code is now decomissioned (it wasn't emitted by compiler anyway).
 0.9.4.3:Change:Major improvemenet in thunk calculation. Performance for thunks is increased, also thunk calculation cannot cause stack overflow anymore in a case of long recursion spree.
 0.9.4.2:Change:Pushelemi and Popelemi op codes are now decomissioned.

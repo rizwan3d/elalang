@@ -162,7 +162,7 @@ Reccons</pre>
 
 <pre lang="text">open Math
 
-let res = Math.sum 2 2</pre>
+let res = sum 2 2</pre>
 
 <p>The linker task is to locate all referenced modules, build them, and to finally combine everything into a single code assembly ready for execution.</p>
 
@@ -188,35 +188,38 @@ if (res.Success)
 
 <p>In many cases, you might need to provide some arguments to Ela code. Here is a full example of an <code>Eval</code> function in C# that uses an anonymous class to capture arguments and their names:</p>
 
-<pre lang="cs">public object Eval(string source, object args)
+<pre lang="cs">public static object Eval(string source, object args)
 {
-    var l = new ElaIncrementalLinker(new LinkerOptions(), CompilerOptions.Default);
-    l.SetSource(source);
-    var res = l.Build();
-
-    if (res.Success)
-    {
-        foreach (var pi in args.GetType().GetProperties())
-            res.Assembly.AddArgument(pi.Name, pi.GetValue(args, null));
-    
-        var vm = new ElaMachine(res.Assembly);
-        return vm.Run().ReturnValue.AsObject();
-    }
-    else
-    {
-        var sb = new StringBuilder();
+        var l = new ElaIncrementalLinker(new LinkerOptions(), CompilerOptions.Default);
         
-        foreach (var m in res.Messages)
-            sb.AppendLine(m.ToString());
-    
-        throw new ElaTranslationException(sb.ToString());    
-    }
+        foreach (var pi in args.GetType().GetProperties())
+            l.AddArgument(pi.Name, pi.GetValue(args, null));
+            
+        l.SetSource(source);
+        var res = l.Build();
+
+        if (res.Success)
+        {
+                var vm = new ElaMachine(res.Assembly);
+                return vm.Run().ReturnValue.AsObject();
+        }
+        else
+        {
+                var sb = new StringBuilder();
+
+                foreach (var m in res.Messages)
+                        sb.AppendLine(m.ToString());
+
+                throw new ElaTranslationException(sb.ToString());
+        }
 }
 
 //sample usage
-var r = Eval("$x + $y", new { x = 2, y = 4 });</pre>
-
-<p>Notice the $ prefix - it is mandatory if you want to reference an argument from Ela code.</p>
+var r = Eval("fun x y", new { 
+        fun = ElaFunction.Create&lt;int,int,int&gt;((x,y) => x + y), 
+        x = 2, 
+        y = 4 
+        });</pre>
 
 <p>You can also create Ela modules in C# (or any other .NET language). This is an example of a simple module:</p>
 
@@ -237,9 +240,12 @@ var r = Eval("$x + $y", new { x = 2, y = 4 });</pre>
 <p>And this is what you need to do to make this module available in Ela:</p>
 
 <pre lang="cs">var l = new ElaIncrementalLinker(CompilerOptions.Default, new LinkerOptions());
-l.SetSource(source);
-var res = l.Build();
-res.Assembly.AddModule("Math", new MathModule());</pre>
+    l.ModuleResolve += (o,e) => {
+                if (e.Module.ModuleName == "Math")
+                        e.AddModule(new MathModule());
+        };
+    l.SetSource(source);
+    var res = l.Build();</pre>
 
 <p>And now you can seamlessly use this module from Ela:</p>
 
@@ -282,7 +288,7 @@ let x = match xs with
 
 <p>Besides regular <em>match</em> expression, Ela also supports function definition by pattern matching - pretty similar to the one used in Haskell. Here is an example of a well known <code>map</code> function implemented in Ela:</p>
 
-<pre lang="text">let map f x::xs = f x :: map f xs
+<pre lang="text">let map f (x::xs) = f x :: map f xs
     map _ []    = []</pre>
 
 <p>You can introduce both global and local variables using the <code>let</code> keyword. There is also another option to introduce local variables - the <code>where</code> construct. Here is a tail recursive implementation of Fibonacci function in Ela:</p>
@@ -293,10 +299,10 @@ let x = match xs with
 
 <p>The <code>where</code> binding is not always equivalent to <code>let</code>. For example, <code>where</code> allows you to declare variables that are scoped to a specific entry in the pattern matching construct:</p>
 
-<pre lang="text">let filter f x::xs | r    = x :: filter f xs
-                   | else = filter f xs
-                   where r = f x
-    filter _ []           = []</pre>
+<pre lang="text">let filter f (x::xs) | r    = x :: filter f xs
+                     | else = filter f xs
+                     where r = f x
+    filter _ []             = []</pre>
 
 <p>You can also declare several variables at once using the <code>et</code> keyword (this is available for both <code>let</code> and <code>where</code> bindings):</p>
 
@@ -305,12 +311,12 @@ let x = match xs with
 
 <p>If the values of these variables are functions, then the declarations are mutually recursive, like so:</p>
 
-<pre lang="text">let take x::xs = x :: skip xs
-    take []    = [] 
- et skip _::xs = take xs
-    skip []    = []</pre>
+<pre lang="text">let take (x::xs) = x :: skip xs
+    take []      = [] 
+ et skip (_::xs) = take xs
+    skip []      = []</pre>
 
-<p>Of course, it is difficult to describe all the peculiarities of Ela syntax in this section, especially if you don't know any ML style language. To those who want to know more, I can recommend to read the <a href="http://code.google.com/p/elalang/wiki/ElaOverview1">first article</a> in the Ela overview series that deals with the syntax in more detail.</p>
+<p>Of course, it is difficult to describe all the peculiarities of Ela syntax in this section, especially if you don't know any ML style language. To those who want to know more, I can recommend to read a <a href="http://elalang.net/elabook.aspx">book about Ela</a> that deals with the syntax in more detail.</p>
 
 <h3>Curried functions</h3>
 
@@ -353,9 +359,9 @@ let x = match xs with
 
 <p>There are several cases when this possibility can be useful. Let's say that we have an <code>elem</code> function. This function accepts an element, a list, and tests if a given element exists in a given list. This is how this function can be defined:</p>
 
-<pre lang="text">let any f x::xs | f x  = true
-                | else = any f xs    
-    any f []           = false              
+<pre lang="text">let any f (x::xs) | f x  = true
+                  | else = any f xs    
+    any f []             = false              
 
 let elem x = any (==x)</pre>
 
@@ -437,8 +443,8 @@ let _ = rec.y &lt;- 42.42</pre>
 
 <p>As you have seen above, it is absolutely legal to perform arithmetic operations on tuples. Also, strings in Ela are implemented as indexed arrays (like in .NET Framework), but you can also fold them as lists:</p>
 
-<pre lang="text">let foldl f z x::xs = foldl f (f z x) xs
-    foldl _ z []    = z
+<pre lang="text">let foldl f z (x::xs) = foldl f (f z x) xs
+    foldl _ z []      = z
 
 let reverse = foldl (flip (::)) []
 let revStr = reverse "Hello, world!"</pre>
@@ -449,20 +455,14 @@ let revStr = reverse "Hello, world!"</pre>
 
 <p>Polymorphic variants simply give you a way to &quot;tag&quot; a value:</p>
 
-<pre lang="text">let tagged = `Even 12</pre>
+<pre lang="text">let tagged = Even 12</pre>
 
 <p>You can think of them as a tool that allows you to associate some additional information with a value and to use this information further - for example, in pattern matching:</p>
 
 <pre lang="text">let res = match tagged with
-               `Even x = "The number is even!"
-               `Odd x  = "The number is odd!"
+               Even x = "The number is even!"
+               Odd x  = "The number is odd!"
                _       = "Something is wrong here..."</pre>
-
-<p>The cool thing about variants is that they are fully transparent to the client code - e.g., if you tag an integer, you can still treat a tagged value as an integer and perform calculations with it:</p>
-
-<pre lang="text">let tagged2 = `Odd 13
-let res1 = tagged + tagged2 //The results is 25
-let res2 = tagged - 9 //The result is 3</pre>
 
 <h3>Thunks and lazy lists</h3>
 
@@ -543,8 +543,8 @@ foldl ((lambda x, y: x + y), 0, range(1, 5001))
 
 <p>And here is Ela solution:</p>
 
-<pre lang="text">let foldl f z x::xs = foldl f (f z x) xs
-    foldl _ z []    = z
+<pre lang="text">let foldl f z (x::xs) = foldl f (f z x) xs
+    foldl _ z []      = z
     
 let _ = foldl (+) 0 [1..5000]
 </pre>
@@ -573,8 +573,8 @@ OK, this looks surprising. Moreover in order to run this code in Python I had to
 
 <p>Well, let's be frank. Function <code>foldl</code> is a tail recursive function and Ela can optimize tail recursion and elimitate unnecessary function calls when Python obviously can not. As a result the comparison is not very fair. Let' modify Ela code:</p>
 
-<pre lang="text">let foldr f z x::xs = f x (foldr f z xs)
-    foldr _ z []    = z
+<pre lang="text">let foldr f z (x::xs) = f x (foldr f z xs)
+    foldr _ z []      = z
     
 let _ = foldr (+) 0 [1..5000]</pre>
 
@@ -616,7 +616,7 @@ Function <code>foldr</code> processes a list from right to left and is not tail 
 Ela follows the traditions of ML\Haskell. Of course there are many ways to understand and define functional programming but if you prefer to stick with ML tradition than Ela is a right choice for you as soon as it takes functional paradigm in the same way. 
 </p>
 
-<p>But I haven't unswered a question - why do you need it? Well there may be a number of reasons:</p>
+<p>But I haven't answered a question - why do you need it? Well there may be a number of reasons:</p>
 
 <ol type="a">
     <li>Learn functional programming. Ela is really a good choice to learn functional paradigm. It has a much lower entry cost than other popular functional languages but will teach you almost the same. You will definitely be able to reuse your knowledge when learning other languages such as OCaml, F#, Haskell, etc. after Ela.</li>
@@ -634,7 +634,9 @@ Ela follows the traditions of ML\Haskell. Of course there are many ways to under
 <h2>Links</h2>
 
 <ul>
-<li><a href="http://code.google.com/p/elalang/w/list">Documentation</a></li>
+<li><a href="http://elalang.net/elabook.aspx">Book about Ela</a></li>
+
+<li><a href="http://code.google.com/p/elalang/w/list">Wiki</a></li>
 
 <li><a href="http://code.google.com/p/elalang/source/checkout">Source code</a></li>
 
