@@ -175,3 +175,5 @@ let vdc bs n = vdc' 0.0 1.0 n
 
 map' (vdc 2.0) [1..] //[0.5,0.25,0.75,0.125,0.625..]
 }}}
+
+More code samples as [http://rosettacode.org/wiki/Ela RosettaCode].
