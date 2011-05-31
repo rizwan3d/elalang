@@ -68,67 +68,54 @@ In many cases you might need to provide some arguments to Ela code. Here is a fu
 {{{
 public static object Eval(string source, object args)
 {
-	var argType = args.GetType();
-	var l = new ElaIncrementalLinker(new LinkerOptions(), CompilerOptions.Default);
-	l.ArgumentResolve += (o,e) =>
-		{
-			var pi = argType.GetProperty(e.Name);
+        var l = new ElaIncrementalLinker(new LinkerOptions(), CompilerOptions.Default);
+        
+        foreach (var pi in args.GetType().GetProperties())
+            l.AddArgument(pi.Name, pi.GetValue(args, null));
+            
+        l.SetSource(source);
+        var res = l.Build();
 
-			if (pi != null)
-				e.Value = pi.GetValue(args, null);
-		};
-	l.SetSource(source);
-	var res = l.Build();
+        if (res.Success)
+        {
+                var vm = new ElaMachine(res.Assembly);
+                return vm.Run().ReturnValue.AsObject();
+        }
+        else
+        {
+                var sb = new StringBuilder();
 
-	if (res.Success)
-	{
-		var vm = new ElaMachine(res.Assembly);
-		return vm.Run().ReturnValue.AsObject();
-	}
-	else
-	{
-		var sb = new StringBuilder();
+                foreach (var m in res.Messages)
+                        sb.AppendLine(m.ToString());
 
-		foreach (var m in res.Messages)
-			sb.AppendLine(m.ToString());
-
-		throw new ElaTranslationException(sb.ToString());
-	}
+                throw new ElaTranslationException(sb.ToString());
+        }
 }
 
 //sample usage
-var r = Eval("$fun $x $y", new { 
+var r = Eval("fun x y", new { 
 	fun = ElaFunction.Create<int,int,int>((x,y) => x + y), 
 	x = 2, 
 	y = 4 
 	}); 
 }}}
 
-Notice the `$` prefix - it is mandatory if you want to reference an argument from Ela code.
-
 You can also create Ela modules in C# (or any other .NET language). This is an example of a simple module:
 
 {{{
     public class MathModule : Ela.Linking.ForeignModule
-    {
-        private sealed class RandomizeFunction : ElaFunction
-        {
-            //Here we need to specify how many arguments our function has
-            internal RandomizeFunction() : base(2) { }
-                
-            public override RuntimeValue Call(params RuntimeValue[] args)
-            {
-                var rnd = new Random(args[0].AsInt32());
-                var ret = rnd.Next(arg[1].AsInt32());
-                return new RuntimeValue(ret);
-            }
-        }
-      
-        public override void Initialize()
-        {  
-            base.Add("rnd", new RandomizeFunction(this));  
-        }
-    }
+	{
+		public override void Initialize()
+		{  
+			base.Add<Int32,Int32,Int32>("rnd", Randomize);  
+		}
+	    
+		public int Randomize(int seed, int max)
+		{
+			var rnd = new Random(seed);
+			return rnd.next(max);
+		}
+	}
 }}}
 
 And this is what you need to do to make this module available in Ela:
