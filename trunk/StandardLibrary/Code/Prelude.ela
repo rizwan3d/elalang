@@ -35,9 +35,6 @@ let (>)  = __internal greater
 /* Boolean operators */
 let not = __internal not
 
-/* Reference equality */
-let (===) = __internal isref
-
 /* Construction and concatenation */
 let (::) = __internal cons
 let (++) = __internal concat

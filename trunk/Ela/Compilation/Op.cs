@@ -134,8 +134,6 @@ namespace Ela.Compilation
 
 		Skiphtag,
 
-        Ceqref,
-
 		Nil,
 
         Clone,

@@ -25,7 +25,6 @@ namespace Ela
 				case "pred": return ElaBuiltinKind.Pred;
 				case "max": return ElaBuiltinKind.Max;
 				case "min": return ElaBuiltinKind.Min;
-				case "isref": return ElaBuiltinKind.IsRef;
 				case "nil": return ElaBuiltinKind.Nil;
                 case "head": return ElaBuiltinKind.Head;
                 case "tail": return ElaBuiltinKind.Tail;

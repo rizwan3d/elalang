@@ -61,28 +61,6 @@ namespace Ela.Runtime
 		internal const int MOD = (Int32)ElaTypeCode.Module;
 		internal const int LAZ = (Int32)ElaTypeCode.Lazy;
 		internal const int VAR = (Int32)ElaTypeCode.Variant;
-		
-        private static bool[] structs =
-        {
-            false,//None
-		    true,//Integer
-		    false,//Long
-		    true,//Single
-		    false,//Double
-		    true,//Boolean
-		    true,//Char
-            false,//String
-            false,//Unit
-            false,//List
-            false,//<none>
-            false,//Tuple
-            false,//Record
-            false,//Thunk
-            false,//Object
-            false,//Module
-            false,//Lazy
-            false,//Variant
-        };
 		#endregion
 
 
@@ -616,25 +594,7 @@ namespace Ela.Runtime
 					#endregion
 
 					#region Comparison Operations
-                    case Op.Ceqref:
-                        left = evalStack.Pop();
-                        right = evalStack.Peek();
-
-                        if (structs[right.TypeId] || structs[left.TypeId])
-                        {
-                            ExecuteFail(ElaRuntimeError.RefEqualsNotSupported, thread, evalStack);
-                            goto SWITCH_MEM;
-                        }
-
-                        evalStack.Replace(right.Ref == left.Ref);
-
-						if (ctx.Failed)
-						{
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
-                        break;
-					case Op.Pat:
+                    case Op.Pat:
 						right = evalStack.Peek();
 						evalStack.Replace(new ElaValue(((Int32)right.Id(ctx).Ref.GetSupportedPatterns() & opd) == opd));
 

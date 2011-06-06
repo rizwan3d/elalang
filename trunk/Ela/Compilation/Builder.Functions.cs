@@ -254,10 +254,7 @@ namespace Ela.Compilation
 				case ElaBuiltinKind.Showf:
 					cw.Emit(Op.Show);
 					break;
-                case ElaBuiltinKind.IsRef:
-                    cw.Emit(Op.Ceqref);
-                    break;
-				case ElaBuiltinKind.CompBackward:
+                case ElaBuiltinKind.CompBackward:
 					cw.Emit(Op.Swap);
 					CompileComposition(null, map, hints);
 					break;

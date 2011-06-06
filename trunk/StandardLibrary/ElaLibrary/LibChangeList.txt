@@ -1,3 +1,4 @@
+0.0.5.1:Change:A '===' function (tha corresponds to built-in 'isref') is removed from Prelude module.
 0.0.5.0:Release:Release of 0.0.5
 0.0.4.2:New:Functions 'acos' and 'asin' added to Core module.
 0.0.4.1:Change:CoreInternal module renamed to $Core.

@@ -56,8 +56,6 @@ namespace Ela.CodeModel
 
 		Showf,
 
-		IsRef,
-
 		
 		Add,
 
