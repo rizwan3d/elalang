@@ -146,8 +146,6 @@ namespace Ela.Compilation
 
 		Skiptag,
 
-		Isfun,
-
 		Conv,
 
 		Newvar,

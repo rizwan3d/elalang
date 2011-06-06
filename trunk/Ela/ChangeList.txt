@@ -1,3 +1,5 @@
+0.9.5.4:Change:Now one can use variant literal (e.g. upper case identifiers) as a record field name without quotes.
+0.9.5.3:Change:Op code 'Isfun' is now decomissioned (it wasn't emitted by compiler anyway).
 0.9.5.2:Change:Now functions support structural equality.
 0.9.5.1:Change:A built-in 'isref' function is decomissioned along with Ceqref op code.
 0.9.5.0:Release:Release of Ela 0.9.5

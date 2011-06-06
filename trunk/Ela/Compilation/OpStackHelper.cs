@@ -77,7 +77,6 @@ namespace Ela.Compilation
 			
 			0, //Elem
 			0, //Skiptag
-			0, //Isfun
 			0, //Conv
 			0, //Newvar
 			1, //Newrec

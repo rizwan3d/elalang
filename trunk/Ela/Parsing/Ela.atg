@@ -611,7 +611,7 @@ PRODUCTIONS
 			[ "!" (. mutable = true; .) ]
 			(
 				(
-					ident 
+					(ident|variantTok)
 					(. fld = new ElaFieldDeclaration(t) { FieldName = t.val, Mutable = mutable }; .) 
 					[						
 						"=" Expr<out cexp> 
@@ -1790,13 +1790,13 @@ PRODUCTIONS
 				|
 				(
 					"("
-						(ident|Operators)
+						(ident|variantTok|Operators)
 						(. exp = new ElaFieldReference(t) { FieldName = t.val, TargetObject = exp }; .)
 					")"
 				)
 				|
 				(
-					ident
+					(ident|variantTok)
 					(. exp = new ElaFieldReference(t) { FieldName = t.val, TargetObject = exp }; .)
 				)
 			)			

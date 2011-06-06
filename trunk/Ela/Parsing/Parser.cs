@@ -915,8 +915,12 @@ internal sealed partial class Parser {
 			Get();
 			mutable = true; 
 		}
-		if (la.kind == 1) {
-			Get();
+		if (la.kind == 1 || la.kind == 2) {
+			if (la.kind == 1) {
+				Get();
+			} else {
+				Get();
+			}
 			fld = new ElaFieldDeclaration(t) { FieldName = t.val, Mutable = mutable }; 
 			if (la.kind == 49) {
 				Get();
@@ -2040,13 +2044,19 @@ internal sealed partial class Parser {
 				Get();
 				if (la.kind == 1) {
 					Get();
+				} else if (la.kind == 2) {
+					Get();
 				} else if (StartOf(15)) {
 					Operators();
 				} else SynErr(109);
 				exp = new ElaFieldReference(t) { FieldName = t.val, TargetObject = exp }; 
 				Expect(47);
-			} else if (la.kind == 1) {
-				Get();
+			} else if (la.kind == 1 || la.kind == 2) {
+				if (la.kind == 1) {
+					Get();
+				} else {
+					Get();
+				}
 				exp = new ElaFieldReference(t) { FieldName = t.val, TargetObject = exp }; 
 			} else SynErr(110);
 		}

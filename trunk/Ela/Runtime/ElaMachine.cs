@@ -1502,18 +1502,6 @@ namespace Ela.Runtime
 							}
 						}
 						break;
-					case Op.Isfun:
-						right = evalStack.Peek().Id(ctx);
-
-						if (ctx.Failed)
-						{
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
-
-						evalStack.Replace(new ElaValue(right.TypeId == FUN &&
-							((ElaFunction)right.Ref).Parameters.Length + 1 == opd));
-						break;
 					case Op.Type:
 						evalStack.Replace(new ElaValue(evalStack.Peek().Ref.GetTypeInfo()));
 						break;
