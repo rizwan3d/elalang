@@ -1,3 +1,4 @@
+0.9.5.5:New:Now module 'open' directive supports an import list with an ability to specify a visibility modifier, e.g. 'open qualified MyModule (localName=name1,name2,localName2=name3)'.
 0.9.5.4:Change:Now one can use variant literal (e.g. upper case identifiers) as a record field name without quotes.
 0.9.5.3:Change:Op code 'Isfun' is now decomissioned (it wasn't emitted by compiler anyway).
 0.9.5.2:Change:Now functions support structural equality.

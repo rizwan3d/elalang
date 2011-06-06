@@ -215,6 +215,22 @@ namespace Ela.Compilation
 
 						if (addr != -1)
 							cw.Emit(Op.Popvar, addr);
+
+						if (s.HasImportList)
+						{
+							var il = s.ImportList;
+
+							for (var i = 0; i < il.Count; i++)
+							{
+								var im = il[i];
+								var a = AddVariable(im.LocalName, im, im.Private ? ElaVariableFlags.Private : ElaVariableFlags.None, -1);
+
+								AddLinePragma(im);
+								cw.Emit(Op.Pushvar, addr);
+								cw.Emit(Op.Pushfld, AddString(im.Name));
+								cw.Emit(Op.Popvar, a);
+							}
+						}
 					}
 					break;
 				case ElaNodeType.Match:

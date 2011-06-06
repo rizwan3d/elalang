@@ -61,7 +61,24 @@ namespace Ela.CodeModel
 
         public bool RequireQuailified { get; set; }
 
-		public List<String> Path { get; private set; }		
+		public List<String> Path { get; private set; }
+
+		public bool HasImportList
+		{
+			get { return _importList != null; }
+		}
+
+		private List<ElaImportedVariable> _importList;
+		public List<ElaImportedVariable> ImportList
+		{
+			get
+			{
+				if (_importList == null)
+					_importList = new List<ElaImportedVariable>();
+
+				return _importList;
+			}
+		}
 		#endregion
 	}
 }

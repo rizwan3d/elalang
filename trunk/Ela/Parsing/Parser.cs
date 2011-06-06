@@ -1516,6 +1516,18 @@ internal sealed partial class Parser {
 			Expect(1);
 			inc.Alias = t.val; 
 		}
+		if (la.kind == 46) {
+			var imp = default(ElaImportedVariable); 
+			Get();
+			ImportName(out imp);
+			inc.ImportList.Add(imp); 
+			while (la.kind == 48) {
+				Get();
+				ImportName(out imp);
+				inc.ImportList.Add(imp); 
+			}
+			Expect(47);
+		}
 		Expect(44);
 	}
 
@@ -1535,6 +1547,21 @@ internal sealed partial class Parser {
 		if (la.kind == 24) {
 			Get();
 			Qualident(path);
+		}
+	}
+
+	void ImportName(out ElaImportedVariable imp) {
+		imp = new ElaImportedVariable(t); 
+		if (la.kind == 30) {
+			Get();
+			imp.Private = true; 
+		}
+		Expect(1);
+		imp.Name = imp.LocalName = t.val; 
+		if (la.kind == 49) {
+			Get();
+			Expect(1);
+			imp.Name = t.val; 
 		}
 	}
 

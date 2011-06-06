@@ -119,6 +119,7 @@
     <Compile Include="CodeModel\ElaBuiltinKind.cs" />
     <Compile Include="CodeModel\ElaComprehension.cs" />
     <Compile Include="CodeModel\ElaGenerator.cs" />
+    <Compile Include="CodeModel\ElaImportedVariable.cs" />
     <Compile Include="CodeModel\ElaLazyLiteral.cs" />
     <Compile Include="CodeModel\ElaNilPattern.cs" />
     <Compile Include="CodeModel\ElaOtherwiseGuard.cs" />

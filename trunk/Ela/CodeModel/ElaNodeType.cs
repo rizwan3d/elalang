@@ -39,6 +39,8 @@ namespace Ela.CodeModel
 
         FieldReference,
 
+		ImportedVariable,
+		
 		Placeholder,
 
 		Cast,

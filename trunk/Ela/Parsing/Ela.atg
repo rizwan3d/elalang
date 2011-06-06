@@ -1262,7 +1262,22 @@ PRODUCTIONS
 				)
 			]		
 			[ "@" ident (. inc.Alias = t.val; .) ]
+			[
+				(. var imp = default(ElaImportedVariable); .)
+				"("
+					ImportName<out imp> (. inc.ImportList.Add(imp); .)
+					{ "," ImportName<out imp> (. inc.ImportList.Add(imp); .) }
+				")"
+			]
 			EBLOCK
+		).
+		
+	ImportName<out ElaImportedVariable imp> =
+		(. imp = new ElaImportedVariable(t); .)
+		(
+			[ "private" (. imp.Private = true; .) ]
+			ident (. imp.Name = imp.LocalName = t.val; .)
+			[ "=" ident (. imp.Name = t.val; .) ]
 		).
 		
 	Qualident<. List<String> path .> = 
