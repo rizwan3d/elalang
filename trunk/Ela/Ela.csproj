@@ -149,7 +149,7 @@
     <Compile Include="Compilation\NoInit.cs" />
     <Compile Include="Compilation\OpStackHelper.cs" />
     <Compile Include="Compilation\Strings.cs" />
-    <Compile Include="Compilation\UnresolvedSymbol.cs" />
+    <Compile Include="Compilation\LateBoundSymbol.cs" />
     <Compile Include="Culture.cs" />
     <Compile Include="Debug\CallStack.cs" />
     <Compile Include="Debug\ElaDebugException.cs" />

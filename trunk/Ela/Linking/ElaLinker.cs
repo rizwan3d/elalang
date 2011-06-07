@@ -31,7 +31,7 @@ namespace Ela.Linking
         private static readonly ModuleReference argModuleRef = new ModuleReference("$Args");
 		private Dictionary<String,Dictionary<String,ElaModuleAttribute>> foreignModules;
 		private FastList<DirectoryInfo> dirs;
-		private ExportVars builtins;
+		private ExportVars exportVars;
         private ArgumentModule argModule;
         private bool argModuleAdded;
 		private bool stdLoaded;
@@ -39,7 +39,7 @@ namespace Ela.Linking
 		public ElaLinker(LinkerOptions linkerOptions, CompilerOptions compOptions, FileInfo rootFile)
 		{
 			dirs = new FastList<DirectoryInfo>();
-			builtins = new ExportVars();
+			exportVars = new ExportVars();
 
 			if (linkerOptions.CodeBase.LookupStartupDirectory && rootFile != null)
 				dirs.Add(rootFile.Directory);
@@ -76,58 +76,7 @@ namespace Ela.Linking
 		}
 
 
-		internal void ProcessIncludes(FileInfo fi, CodeFrame frame)
-		{
-			var unres = frame.Unresolves.Clone();
-			var dels = new FastList<UnresolvedSymbol>();
-
-            if (argModule != null)
-                CheckReference(argModuleRef, unres, dels);
-            
-            foreach (var kv in frame.References)
-                if (!kv.Value.RequireQuailified)
-				    CheckReference(kv.Value, unres, dels);
-                       
-			if (unres.Count > 0)
-			{
-                var root = frame == this.Assembly.GetRootModule();
-
-                foreach (var u in unres)
-                {
-                    AddError(ElaLinkerError.UnresolvedVariable, fi, u.Line, u.Column, u.Name);
-
-                    if (root)
-                        frame.GlobalScope.Locals.Remove(u.Name);
-                }
-			}
-		}
-
-
-		private void CheckReference(ModuleReference mod, FastList<UnresolvedSymbol> unres, FastList<UnresolvedSymbol> dels)
-		{
-			var incFrame = Assembly.GetModule(mod.ToString());
-
-			if (incFrame != null)
-			{
-				foreach (var u in unres)
-				{
-					if (u.Line >= mod.Line)
-					{
-						ScopeVar sv;
-
-						if (incFrame.GlobalScope.Locals.TryGetValue(u.Name, out sv) && (u.Data == -1 || sv.Data == u.Data))
-							dels.Add(u);
-					}
-				}
-
-				foreach (var u in dels)
-					unres.Remove(u);
-
-				dels.Clear();
-			}
-		}
-
-
+		
 		internal CodeFrame ResolveModule(ModuleReference mod)
 		{
 			LoadStdLib();
@@ -185,7 +134,7 @@ namespace Ela.Linking
 				foreach (var kv in frame.GlobalScope.Locals)
 				{
 					if ((kv.Value.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin)
-						builtins.AddBuiltin(kv.Key, (ElaBuiltinKind)kv.Value.Data);
+						exportVars.AddName(kv.Key, (ElaBuiltinKind)kv.Value.Data);
 				}
 
 				return frame;
@@ -239,7 +188,6 @@ namespace Ela.Linking
                 }
 
 				Assembly.AddModule(mod.ToString(), frame, mod.RequireQuailified);
-				ProcessIncludes(fi, frame);
 			}
 		}
 
@@ -469,8 +417,8 @@ namespace Ela.Linking
 			}
 
 			elac.ModuleInclude += (o, e) => ResolveModule(e.Module);
-			var res = frame != null ? elac.Compile(expr, CompilerOptions, builtins, frame, scope) :
-				elac.Compile(expr, opts, builtins);
+			var res = frame != null ? elac.Compile(expr, CompilerOptions, exportVars, frame, scope) :
+				elac.Compile(expr, opts, exportVars);
 			AddMessages(res.Messages, file);
 			return res;
 		}

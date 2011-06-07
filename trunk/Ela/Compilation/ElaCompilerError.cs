@@ -11,7 +11,7 @@ namespace Ela.Compilation
 
 		RedefinitionNotAllowed = 301,
 
-		// = 302,
+		UndefinedName = 302,
 
 		AssignImmutableVariable = 303,
 

@@ -61,7 +61,7 @@ namespace Ela.Linking
 			c = bw.ReadInt32();
 
 			for (var i = 0; i < c; i++)
-				frame.Unresolves.Add(new UnresolvedSymbol(
+				frame.LateBounds.Add(new LateBoundSymbol(
 					bw.ReadString(), bw.ReadInt32(), bw.ReadInt32(), bw.ReadInt32(),
 					bw.ReadInt32()));
 

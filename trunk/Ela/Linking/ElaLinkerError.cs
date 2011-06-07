@@ -26,9 +26,5 @@ namespace Ela.Linking
 		UnresolvedModule = 608,
 
 		ModuleLinkFailed = 609,
-
-		// = 610,
-
-		UnresolvedVariable = 611,
 	}
 }

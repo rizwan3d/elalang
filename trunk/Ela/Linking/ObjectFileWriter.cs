@@ -49,9 +49,9 @@ namespace Ela.Linking
 				bw.Write(kv.Value.Data);
 			}
 
-			bw.Write(frame.Unresolves.Count);
+			bw.Write(frame.LateBounds.Count);
 
-			foreach (var u in frame.Unresolves)
+			foreach (var u in frame.LateBounds)
 			{
 				bw.Write(u.Name);
 				bw.Write(u.Address);

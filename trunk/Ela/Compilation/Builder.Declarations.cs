@@ -22,8 +22,6 @@ namespace Ela.Compilation
 
                 if (String.IsNullOrEmpty(s.VariableName))
                     AddError(ElaCompilerError.InvalidBuiltinBinding, s);
-                else
-				    exports.AddBuiltin(s.VariableName, (ElaBuiltinKind)data);
 			}
 			
 			if (s.In != null)

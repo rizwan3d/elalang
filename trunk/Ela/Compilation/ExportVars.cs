@@ -15,20 +15,18 @@ namespace Ela.Compilation
         }
         #endregion
 
-		
-        #region Methods
-        public void AddBuiltin(string name, ElaBuiltinKind kind)
+
+		#region Methods
+		public void AddName(string name, ElaBuiltinKind kind)
         {
             map.Remove(name);
             map.Add(name, kind);
         }
 
 
-        public ElaBuiltinKind FindBuiltin(string name)
+        public bool FindName(string name, out ElaBuiltinKind kind)
         {
-            var ret = default(ElaBuiltinKind);
-            map.TryGetValue(name, out ret);
-            return ret;
+            return map.TryGetValue(name, out kind);
         }
 
 

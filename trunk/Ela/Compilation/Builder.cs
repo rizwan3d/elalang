@@ -26,11 +26,11 @@ namespace Ela.Compilation
 		private Dictionary<String,InlineFun> inlineFuns;
         private FastStack<NoInit> allowNoInits;
 
-		internal Builder(CodeFrame frame, ElaCompiler comp, ExportVars builtins, Scope globalScope)
+		internal Builder(CodeFrame frame, ElaCompiler comp, ExportVars exportVars, Scope globalScope)
 		{
 			this.frame = frame;
 			this.options = comp.Options;
-			this.exports = builtins;
+			this.exports = exportVars;
 			this.comp = comp;
 			this.cw = new CodeWriter(frame.Ops, frame.OpData);
 			this.currentCounter = frame.Layouts.Count > 0 ? frame.Layouts[0].Size : 0;
@@ -1000,11 +1000,9 @@ namespace Ela.Compilation
 				AddLinePragma(exp);
 			}
 
-			//if (CurrentScope == globalScope)
-			//{
-			//    exports.AddBuiltin(name, (flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin ? (ElaBuiltinKind)data : ElaBuiltinKind.None);
-			//}
-
+			if (CurrentScope == globalScope)
+				exports.AddName(name, (flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin ? (ElaBuiltinKind)data : ElaBuiltinKind.None);
+			
 			return AddVariable();
 		}
 
@@ -1090,10 +1088,19 @@ namespace Ela.Compilation
 			if ((getFlags & GetFlags.OnlyGet) == GetFlags.OnlyGet)
 				return new ScopeVar(-1);
 
-			var vk = exports.FindBuiltin(name);
-			var flags = vk != ElaBuiltinKind.None ? ElaVariableFlags.Builtin : ElaVariableFlags.None;
-			var data = vk != ElaBuiltinKind.None ? (Int32)vk : -1;
-			return GetExternal(name, flags, data, line, col);
+			var vk = ElaBuiltinKind.None;
+
+			if (exports.FindName(name, out vk))
+			{
+				var flags = vk != ElaBuiltinKind.None ? ElaVariableFlags.Builtin : ElaVariableFlags.None;
+				var data = vk != ElaBuiltinKind.None ? (Int32)vk : -1;
+				return GetExternal(name, flags, data, line, col);
+			}
+			else
+			{
+				AddError(ElaCompilerError.UndefinedName, line, col, name);
+				return default(ScopeVar);
+			}
 		}
 
 
@@ -1112,7 +1119,7 @@ namespace Ela.Compilation
                 counters[0] = counters[0] + 1;
             }
 
-            frame.Unresolves.Add(new UnresolvedSymbol(name, addr, data, line, col));
+            frame.LateBounds.Add(new LateBoundSymbol(name, addr, data, line, col));
             globalScope.Locals.Add(name, new ScopeVar(ElaVariableFlags.External | flags, addr, data));
             return new ScopeVar(flags, counters.Count | addr << 8, data);
         }

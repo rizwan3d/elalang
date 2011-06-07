@@ -147,7 +147,4 @@
   <data name="UnresolvedModule" xml:space="preserve">
     <value>Unable to find referenced module '{0}'.</value>
   </data>
-  <data name="UnresolvedVariable" xml:space="preserve">
-    <value>A name '{0}' is unresolved. It is not declared externally or its type has changed.</value>
-  </data>
 </root>

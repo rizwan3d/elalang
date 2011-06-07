@@ -1651,7 +1651,7 @@ namespace Ela.Runtime
 			var extMem = modules[handle];
 			ScopeVar sv;
 
-			foreach (var s in mod.Unresolves)
+			foreach (var s in mod.LateBounds)
 			{
 				if (externs.TryGetValue(s.Name, out sv))
 					locals[s.Address] = extMem[sv.Address];

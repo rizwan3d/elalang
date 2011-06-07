@@ -27,7 +27,7 @@ namespace Ela.Compilation
 			OpData = new FastList<Int32>();
 			Strings = new FastList<String>();
 			_references = new ReferenceMap();
-			Unresolves = new FastList<UnresolvedSymbol>();
+			LateBounds = new FastList<LateBoundSymbol>();
        	}
 		#endregion
 
@@ -58,7 +58,7 @@ namespace Ela.Compilation
 			copy.OpData = OpData.Clone();
 			copy._references = new ReferenceMap(_references);
 			copy.Symbols = Symbols != null ? Symbols.Clone() : null;
-			copy.Unresolves = new FastList<UnresolvedSymbol>();
+			copy.LateBounds = new FastList<LateBoundSymbol>();
          	return copy;
 		}
 
@@ -94,7 +94,7 @@ namespace Ela.Compilation
 
 		internal FastList<String> Strings { get; private set; }
 
-		internal FastList<UnresolvedSymbol> Unresolves { get; private set; }
+		internal FastList<LateBoundSymbol> LateBounds { get; private set; }
 		#endregion
 	}
 }

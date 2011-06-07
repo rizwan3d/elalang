@@ -162,6 +162,9 @@
   <data name="UnableAssignExpression" xml:space="preserve">
     <value>Unable to assign a value to the expression {0}.</value>
   </data>
+  <data name="UndefinedName" xml:space="preserve">
+    <value>A name '{0}' is not defined in a module or externally.</value>
+  </data>
   <data name="VariableAlreadyDeclared" xml:space="preserve">
     <value>Name '{0}' is already declared.</value>
   </data>
