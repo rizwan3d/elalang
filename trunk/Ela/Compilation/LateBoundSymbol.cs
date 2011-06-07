@@ -3,7 +3,7 @@ using Ela.CodeModel;
 
 namespace Ela.Compilation
 {
-	internal struct UnresolvedSymbol
+	internal struct LateBoundSymbol
 	{
 		internal readonly string Name;
 		internal readonly int Address;
@@ -11,7 +11,7 @@ namespace Ela.Compilation
 		internal readonly int Line;
 		internal readonly int Column;
 
-		internal UnresolvedSymbol(string name, int address, int data, int line, int col)
+		internal LateBoundSymbol(string name, int address, int data, int line, int col)
 		{
 			Name = name;
 			Address = address;
