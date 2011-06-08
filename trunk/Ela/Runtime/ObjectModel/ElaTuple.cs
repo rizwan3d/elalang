@@ -520,45 +520,22 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			var lt = GetOther(null, left, ctx);
+            if (left.TypeId != ElaMachine.TUP)
+            {
+                ctx.InvalidType(TypeCodeFormat.GetShortForm(ElaTypeCode.Tuple), left);
+                return Default();
+            }
 
-			if (lt == null)
-				return Default();
-			
-			if (right.TypeId != ElaMachine.TUP && right.TypeId != ElaMachine.REC)
-			{
-				var ret = new ElaTuple(Length);
-				ret.cons = Length;
+            if (right.TypeId != ElaMachine.TUP)
+            {
+                ctx.InvalidType(TypeCodeFormat.GetShortForm(ElaTypeCode.Tuple), right);
+                return Default();
+            }
 
-				for (var i = 0; i < Length; i++)
-				{
-					var val = lt.Values[i].Id(ctx);
-					ret.Values[i] = val.Ref.Concatenate(val, right, ctx);
-				}
-
-				return new ElaValue(ret);
-			}
-			else
-			{
-				var t = GetOther(lt, right, ctx);
-				var ret = new ElaTuple(Length);
-				ret.cons = Length;
-
-				if (t == null)
-				{
-					ctx.Fail(ElaRuntimeError.TuplesLength, ToString(), right.ToString());
-					return Default();
-				}
-
-				for (var i = 0; i < Length; i++)
-				{
-					var fst = lt.Values[i].Id(ctx);
-					var snd = t.Values[i].Id(ctx);
-					ret.Values[i] = fst.Ref.Concatenate(fst, snd, ctx);
-				}
-
-				return new ElaValue(ret);
-			}
+            var arr1 = ((ElaTuple)left.Ref).Values;
+            var arr2 = ((ElaTuple)right.Ref).Values;
+            var res = new ElaValue[arr1.Length + arr2.Length];
+            return new ElaValue(new ElaTuple(res));
 		}
 
 
