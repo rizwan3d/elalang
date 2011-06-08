@@ -26,5 +26,9 @@ namespace Ela.Linking
 		UnresolvedModule = 608,
 
 		ModuleLinkFailed = 609,
+
+        ExportedNameRemoved = 610,
+
+        ExportedNameChanged = 611
 	}
 }

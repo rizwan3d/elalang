@@ -123,13 +123,36 @@ namespace Ela.Linking
 		}
 
 
+        private void CheckBinaryConsistency(CodeFrame obj, ModuleReference mod, FileInfo fi)
+        {
+            foreach (var l in obj.LateBounds)
+            {
+                var vk = ElaBuiltinKind.None;
+                var found = exportVars.FindName(l.Name, out vk);
+
+                if (!found)
+                    AddError(ElaLinkerError.ExportedNameRemoved, fi, 
+                        mod != null ? mod.Line : 0,
+                        mod != null ? mod.Column : 0, 
+                        l.Name);
+
+                if (found && (Int32)vk != l.Data)
+                    AddError(ElaLinkerError.ExportedNameChanged, fi,
+                        mod != null ? mod.Line : 0,
+                        mod != null ? mod.Column : 0,
+                        l.Name);
+            }
+        }
+
+
 		private CodeFrame ReadObjectFile(ModuleReference mod, FileInfo fi)
 		{
 			var obj = new ObjectFileReader(fi);
 			
 			try
 			{
-				var frame =  obj.Read();
+				var frame = obj.Read();
+                CheckBinaryConsistency(frame, mod, fi);
 
 				foreach (var kv in frame.GlobalScope.Locals)
 				{

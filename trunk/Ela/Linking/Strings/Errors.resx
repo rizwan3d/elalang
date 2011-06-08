@@ -123,6 +123,12 @@
   <data name="DuplicateModuleInAssembly" xml:space="preserve">
     <value>Duplicate module name '{0}' in assembly '{1}'.</value>
   </data>
+  <data name="ExportedNameChanged" xml:space="preserve">
+    <value>A name '{0}' definition available in the current environment is not compatible with the definition assumed during compilation.</value>
+  </data>
+  <data name="ExportedNameRemoved" xml:space="preserve">
+    <value>A name '{0}' exported by the compiled module is not available in the current environment. </value>
+  </data>
   <data name="ForeignModuleDescriptorMissing" xml:space="preserve">
     <value>Invalid foreign module '{0}'. A required module descriptor is missing.</value>
   </data>
