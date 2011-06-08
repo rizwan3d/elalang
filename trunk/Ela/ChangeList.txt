@@ -1,3 +1,4 @@
+0.9.5.8:Change:Concat operation ('++' by default) is now implemented differently by tuples - it concatenates tuples themselves.
 0.9.5.7:New:Now linker performs a consistency check for the deserialized object files.
 0.9.5.6:Change:Now compiler performs a name lookup (not a linker). This brings several breaking changes. Previously it wasn't possible to override a built-in in a referenced module (only locally), now built-ins can be override (all functions are can be overrided in the order in which references are processed).
 0.9.5.5:New:Now module 'open' directive supports an import list with an ability to specify a visibility modifier, e.g. 'open qualified MyModule (localName=name1,name2,localName2=name3)'.

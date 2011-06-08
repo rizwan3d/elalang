@@ -8,10 +8,12 @@ namespace Ela.Linking
         #region Construction
         private CodeFrame frame;
         private ForeignModule foreign;
+        private ExportVars exports;
 
-        internal ModuleEventArgs(ModuleReference mod)
+        internal ModuleEventArgs(ModuleReference mod, ExportVars exports)
         {
-            Module = mod;    
+            Module = mod;
+            this.exports = exports;
         }
         #endregion
 
@@ -31,7 +33,7 @@ namespace Ela.Linking
 
         internal CodeFrame GetFrame()
         {
-            return frame ?? foreign.Compile();
+            return frame ?? foreign.Compile(exports);
         }
         #endregion
 

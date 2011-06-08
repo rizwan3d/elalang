@@ -205,7 +205,7 @@ namespace Ela.Linking
 
                 if (argModule != null && !argModuleAdded)
                 {
-                    var f = argModule.Compile();
+                    var f = argModule.Compile(exportVars);
                     Assembly.AddModule(argModuleRef.ToString(), f, mod.RequireQuailified);
                     argModuleAdded = true;
                 }
@@ -334,7 +334,7 @@ namespace Ela.Linking
 				{
 					obj.Initialize();
 					Assembly.RegisterForeignModule(obj);
-					frame = obj.Compile();
+					frame = obj.Compile(exportVars);
 				}
 				catch (Exception ex)
 				{
@@ -497,7 +497,7 @@ namespace Ela.Linking
 
 		private CodeFrame TryResolveModule(ModuleReference mod)
 		{
-			var e = new ModuleEventArgs(mod);
+			var e = new ModuleEventArgs(mod, exportVars);
 			OnModuleResolve(e);
 
 			if (e.HasModule)

@@ -29,14 +29,6 @@ let notEquals2 {eqt,eqf} =
         $ eqf ('F' <> 'F')
         $ eqt ((2,3) <> (2,4))
         $ eqf ((2,3) <> (2,3))
-        
-let refEquals {eqt,eqf} =
-          eqf (t1 === t2)
-        $ eqt (t1 == t2)
-        $ eqf (s1 === s2)
-        $ eqt (s1 == s2)
-        where t1 = (1,2) et t2 = (1,2)
-           et s1 = "str" et s2 = "str"
 
 let compare {eqt} =
           eqt (12.3 - 12.3 < .001)

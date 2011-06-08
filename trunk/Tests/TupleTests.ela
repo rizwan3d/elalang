@@ -55,10 +55,10 @@ let succPred {eq} =
         $ eq (pred (12.1,'B')) (11.1, 'A')
     
 let concat {eq,eqt} =
-        eq (("H", "w")++("e","o")) ("He", "wo")
-        $ eqt (t.[0] is [1,2,3,4])
-        $ eqt (t.[1] is [10,20,30,40])
-        where t = ([1,2],[10,20])++([3,4],[30,40])
+        eq (t1++t2) (1,2,3,4,5,6)
+        $ eq (t2++t1) (4,5,6,1,2,3)
+        where t1 = (1,2,3)
+           et t2 = (4,5,6)
     
 let genTupleTest {eq} =
         eq t (1,2,4)

@@ -31,11 +31,15 @@ namespace Ela.Linking
 		}
 
 
-		internal IntrinsicFrame Compile()
+		internal IntrinsicFrame Compile(ExportVars exports)
 		{
 			var frame = new IntrinsicFrame(locals.ToArray());
 			frame.Layouts.Add(new MemoryLayout(locals.Count, 0, 0));
 			frame.GlobalScope = scope;
+
+            foreach (var sc in scope.Locals)
+                exports.AddName(sc.Key);
+
 			return frame;
 		}
 

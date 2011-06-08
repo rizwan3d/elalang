@@ -17,6 +17,12 @@ namespace Ela.Compilation
 
 
 		#region Methods
+        public void AddName(string name)
+        {
+            AddName(name, ElaBuiltinKind.None);
+        }
+
+
 		public void AddName(string name, ElaBuiltinKind kind)
         {
             map.Remove(name);

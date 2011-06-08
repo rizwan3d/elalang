@@ -535,6 +535,8 @@ namespace Ela.Runtime.ObjectModel
             var arr1 = ((ElaTuple)left.Ref).Values;
             var arr2 = ((ElaTuple)right.Ref).Values;
             var res = new ElaValue[arr1.Length + arr2.Length];
+            arr1.CopyTo(res, 0);
+            arr2.CopyTo(res, arr1.Length);
             return new ElaValue(new ElaTuple(res));
 		}
 
