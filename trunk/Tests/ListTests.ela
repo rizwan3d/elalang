@@ -65,7 +65,30 @@ let reverseElems {eqt} =
         in
         let res = reverse' [0, 1, 2, 3, 4, 5] in
         eqt (res is [5,4,3,2,1,0])
-         
+        
+let skipElems {eqt} = 
+        let skip lst n = 
+                    let ps x::xs i | i == n = xs
+                                   | else   = ps xs (i + 1)
+                        ps _     _          = () 
+                    in
+                    if ps lst 1 is (list@r) then Some r else None 
+        in
+        let res = skip [0, 1, 2, 3] 2 in
+        eqt <| res is Some [2,3]
+
+let takeElems {eqt} =
+        let take lst n =
+                    let pt x::xs i | i == n = [x]
+                                   | else   = x :: pt xs (i + 1)
+                        pt _     _          = [] 
+                    in
+                    let r = pt lst 1 in
+                    if r is [] then None else Some r 
+        in
+        let res = take [0, 1, 2, 3, 4] 3 in
+        eqt <| res is Some [0,1,2]
+
 let typeCheck {eqt} =
         let list = [0, 1] in
         eqt (list is ?list)

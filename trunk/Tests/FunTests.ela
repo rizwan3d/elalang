@@ -181,3 +181,10 @@ let mutualRecur {eq} =
             mskip _::xs = mtake xs; mskip [] = [] in
         let res = mtake [1, 2, 3, 4] in
         eq res.[0] 1 $ eq res.[1] 3
+
+let comparision {eq} =
+        eq fun1 fun2
+        $ eq (getFun!) (getFun!)
+        where getFun () = \x y -> x + y
+           et fun1 = getFun ()
+           et fun2 = getFun ()

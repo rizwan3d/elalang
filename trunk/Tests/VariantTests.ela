@@ -11,11 +11,22 @@ let simple2 {eqt} =
         $ eqt <| v2 is (Some (1::x::xs))
         where v = Some (12, 20)
            et v2 = Some [1,2,3]
-    
+
 let matchTest {eq} =
         match v with
                 Some m = eq m "message"
         where v = Some "message"
+
+let nested {eqt} =
+        match n with
+              Left x = eqt (x is Right)
+              Right _ = eqt false
+        where n = Left (Right 12)
+
+let caseMatch {eqf,eqt} = 
+        eqf (n is Some)
+        $ eqt (n is SOme)
+        where n = SOme 0
 
 let tagTest {eq} =
           eq (tag v) "Some"
