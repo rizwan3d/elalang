@@ -21,13 +21,6 @@ let takeElems {eqt} =
         let res = take [0, 1, 2, 3, 4] 3 in
         eqt <| res is Some [0,1,2]
 
-let reverseElems {eqt} =
-        let reverse' x::xs = reverse' xs ++ [x]
-            reverse' []    = [] 
-        in
-        let res = reverse' [0, 1, 2, 3, 4, 5] in
-        eqt (res is [5,4,3,2,1,0])
-
 let iterators {eqt} =
         let counter f = counter'
                 where cc = {!cc=0}

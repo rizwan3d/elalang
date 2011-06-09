@@ -51,14 +51,21 @@ let structuralComp {eqt,eqf} =
         $ eqf (xs1 == xs3)
         $ eqt (xs1 <> xs3)
         $ eqt (xs2 <> xs3)
-        //$ eqt (xs3 == [1..10])
-        //$ eqt (xs3 == xs4)
+        $ eqt (xs3 == [1..10])
+        $ eqt (xs3 == xs4)
         $ eqf (xs2 == xs4)
         where xs1 = [1..5]
            et xs2 = [1..5]
            et xs3 = [1..10]
            et xs4 = [& x \\ x <- [1..10]]
-         /*
+           
+let reverseElems {eqt} =
+        let reverse' x::xs = reverse' xs ++ [x]
+            reverse' []    = [] 
+        in
+        let res = reverse' [0, 1, 2, 3, 4, 5] in
+        eqt (res is [5,4,3,2,1,0])
+         
 let typeCheck {eqt} =
         let list = [0, 1] in
-        eqt (list is ?list)*/
+        eqt (list is ?list)
