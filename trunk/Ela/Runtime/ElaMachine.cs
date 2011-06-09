@@ -99,13 +99,13 @@ namespace Ela.Runtime
 			{
 				throw;
 			}
-            //catch (Exception ex)
-            //{
-            //    var op = MainThread.Module != null && MainThread.Offset > 0 &&
-            //        MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
-            //        MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
-            //    throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
-            //}
+            catch (Exception ex)
+            {
+                var op = MainThread.Module != null && MainThread.Offset > 0 &&
+                    MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
+                    MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
+                throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
+            }
 			
 			var evalStack = MainThread.CallStack[0].Stack;
 
@@ -1357,7 +1357,7 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Call:
-						if (Call(evalStack.Pop().Ref, thread, evalStack, null))
+						if (Call(evalStack.Pop().Ref, thread, evalStack, CallFlag.None))
 						    goto SWITCH_MEM;
 						break;
 					case Op.LazyCall:
@@ -1371,7 +1371,7 @@ namespace Ela.Runtime
 						{
 							if (callStack.Peek().Thunk != null)
 							{
-								if (Call(evalStack.Pop().Ref, thread, evalStack, null))
+                                if (Call(evalStack.Pop().Ref, thread, evalStack, CallFlag.None))
 									goto SWITCH_MEM;
 
 								break;
@@ -1379,7 +1379,7 @@ namespace Ela.Runtime
 
 							var cp = callStack.Pop();
 
-							if (Call(evalStack.Pop().Ref, thread, evalStack, cp))
+                            if (Call(evalStack.Pop().Ref, thread, evalStack, CallFlag.NoReturn))
 								goto SWITCH_MEM;
 							else
 								callStack.Push(cp);
@@ -1725,7 +1725,7 @@ namespace Ela.Runtime
 		}
 		
 
-		private bool Call(ElaObject fun, WorkerThread thread, EvalStack stack, CallPoint cp)
+		private bool Call(ElaObject fun, WorkerThread thread, EvalStack stack, CallFlag cf)
 		{
 			if (fun.TypeId != FUN)
 			{
@@ -1769,10 +1769,10 @@ namespace Ela.Runtime
 					var newStack = new EvalStack(layout.StackSize);
 					var newMem = new CallPoint(natFun.ModuleHandle, newStack, newLoc, natFun.Captures);
 
-					if (cp == null || cp == CallPoint.Spec)
+					if (cf != CallFlag.NoReturn)
 						thread.CallStack.Peek().BreakAddress = thread.Offset;
 
-					if (cp != CallPoint.Spec)
+					if (cf != CallFlag.AllParams)
 						newStack.Push(stack.PopFast());
 					else if (natFun.LastParameter.Ref != null)
 						newStack.Push(natFun.LastParameter);
@@ -1871,7 +1871,7 @@ namespace Ela.Runtime
 				var t = thread.Context.Thunk;
 				thread.Context.Thunk = null;
 				thread.Offset--;
-				Call(t.Function, thread, stack, CallPoint.Spec);
+                Call(t.Function, thread, stack, CallFlag.AllParams);
 				thread.CallStack.Peek().Thunk = t;
 				return;
 			}

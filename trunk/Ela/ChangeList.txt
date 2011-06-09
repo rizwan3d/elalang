@@ -1,3 +1,4 @@
+0.9.5.9:Change:Refactoring in call routines inside Ela virtual machine.
 0.9.5.8:Change:Concat operation ('++' by default) is now implemented differently by tuples - it concatenates tuples themselves.
 0.9.5.7:New:Now linker performs a consistency check for the deserialized object files.
 0.9.5.6:Change:Now compiler performs a name lookup (not a linker). This brings several breaking changes. Previously it wasn't possible to override a built-in in a referenced module (only locally), now built-ins can be override (all functions are can be overrided in the order in which references are processed).
