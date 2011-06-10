@@ -1,6 +1,6 @@
 ﻿using System;
-using Ela.Parsing;
 using System.Text;
+using Ela.Parsing;
 
 namespace Ela.CodeModel
 {

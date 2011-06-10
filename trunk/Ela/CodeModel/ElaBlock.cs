@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Ela.Parsing;
 using System.Text;
+using Ela.Parsing;
 
 namespace Ela.CodeModel
 {
