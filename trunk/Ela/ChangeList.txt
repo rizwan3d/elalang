@@ -1,3 +1,4 @@
+0.9.6.0:Release:Release of Ela 0.9.6
 0.9.5.9:Change:Refactoring in call routines inside Ela virtual machine.
 0.9.5.8:Change:Concat operation ('++' by default) is now implemented differently by tuples - it concatenates tuples themselves.
 0.9.5.7:New:Now linker performs a consistency check for the deserialized object files.
