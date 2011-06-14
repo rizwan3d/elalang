@@ -250,13 +250,13 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal virtual ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            if (left.Ref == this)
-                return right.Ref.Concatenate(left, right, ctx);
-            else
-            {
+            //if (left.Ref == this)
+            //    return right.Ref.Concatenate(left, right, ctx);
+            //else
+            //{
                 ctx.NoOperator(This(left, right), "concat");
                 return Default();
-            }
+            //}
 		}
 
 

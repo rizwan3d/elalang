@@ -1369,31 +1369,19 @@ namespace Ela.Runtime
 						break;
 					case Op.Callt:
 						{
-							if (callStack.Peek().Thunk != null)
+							if (callStack.Peek().Thunk != null || evalStack.Peek().TypeId == LAZ)
 							{
                                 if (Call(evalStack.Pop().Ref, thread, evalStack, CallFlag.None))
 									goto SWITCH_MEM;
-
 								break;
 							}
 
-                            right = evalStack.Peek();
+                            var cp = callStack.Pop();
 
-                            if (right.TypeId == LAZ)
-                            {
-                                if (Call(evalStack.Pop().Ref, thread, evalStack, CallFlag.None))
-                                    goto SWITCH_MEM;
-                            }
+                            if (Call(evalStack.Pop().Ref, thread, evalStack, CallFlag.NoReturn))
+                                goto SWITCH_MEM;
                             else
-                            {
-                                evalStack.PopVoid();
-                                var cp = callStack.Pop();
-
-                                if (Call(right.Ref, thread, evalStack, CallFlag.NoReturn))
-                                    goto SWITCH_MEM;
-                                else
-                                    callStack.Push(cp);
-                            }
+                                callStack.Push(cp);
 						}
 						break;
 					case Op.Ret:
