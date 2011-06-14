@@ -87,7 +87,7 @@ let id x = x//I
 let const x _ = x//K
 let sub x y z = x z (y z)//S
 let fix f = f (& fix f)
-let on cmb f x y = f x `cmb` f y
+//let on cmb f x y = f x `cmb` f y
 
 /* Misc */
 let (!) = __internal apply

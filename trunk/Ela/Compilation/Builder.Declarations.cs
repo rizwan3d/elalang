@@ -12,6 +12,12 @@ namespace Ela.Compilation
 			if (s.InitExpression == null)
 				AddError(ElaCompilerError.VariableDeclarationInitMissing, s);
 
+            if (s.OverloadVariant != null)
+            {
+                CompileOverloaded(s, map, hints);
+                return;
+            }
+
             var data = -1;
 			var flags = s.VariableFlags;
 
@@ -121,6 +127,50 @@ namespace Ela.Compilation
 			if (s.In != null)
 				EndScope();
 		}
+
+
+        private void CompileOverloaded(ElaBinding s, LabelMap map, Hints hints)
+        {
+            if (CurrentScope != globalScope || s.In != null)
+            {
+                //Error
+            }
+
+            if (s.And != null)
+            {
+                //Error
+            }
+
+            if (s.Pattern != null)
+            {
+                //Error
+            }
+
+            var sv = GetVariable(s.VariableName, CurrentScope, 0, GetFlags.NoError, s.Line, s.Column);
+            var builtin = !sv.IsEmpty() && (sv.VariableFlags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin;
+
+            if (s.Where != null)
+                CompileWhere(s.Where, map, Hints.Left);
+
+            var addr = -1;
+
+            if (sv.IsEmpty())
+               addr = AddVariable(s.VariableName, s, s.VariableFlags, -1);                
+
+            CompileExpression(s.InitExpression, map, Hints.None);
+           
+            if (builtin)
+                cw.Emit(Op.PushI4, sv.Data);
+            else
+                cw.Emit(Op.Pushstr, AddString(s.VariableName));
+
+            cw.Emit(Op.Ovr, AddString(s.OverloadVariant));
+
+            if (sv.IsEmpty() && !builtin)
+                cw.Emit(Op.Popvar, addr);
+            else
+                cw.Emit(Op.Pop);
+        }
 
 
 		private void CompileWhere(ElaBinding s, LabelMap map, Hints hints)

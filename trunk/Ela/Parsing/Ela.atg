@@ -958,7 +958,8 @@ PRODUCTIONS
 				varExp.VariableName = mi.Name;
 				ProcessFunctionParameters(mi, ot); 
 			.)			
-		).
+		)		
+		[ "on" variantTok (. varExp.OverloadVariant = t.val; .) ].
     
 	InfixFunBodyExprFirst<ElaPattern pat, ElaFunctionLiteral fun> =
 		(.
@@ -1112,7 +1113,8 @@ PRODUCTIONS
 			.)	
 			FunBodyExpr<mi>
 			(. ProcessFunctionParameters(mi, ot); .)			
-		).
+		)
+		[ "on" variantTok (. varExp.OverloadVariant = t.val; .) ].
 		
 	FunBodyExpr<ElaFunctionLiteral fun> =
 		(.

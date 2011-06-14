@@ -19,10 +19,12 @@ namespace Ela.Runtime
 		private readonly CodeAssembly asm;
         private readonly IntrinsicFrame argMod;
         private readonly int argModHandle;
+        internal readonly Dictionary<String,Dictionary<String,ElaValue>> overloads;
 		
 		public ElaMachine(CodeAssembly asm)
 		{
 			this.asm = asm;
+            overloads = new Dictionary<String,Dictionary<String,ElaValue>>();
 			var frame = asm.GetRootModule();
 			MainThread = new WorkerThread(asm);
 			var lays = frame.Layouts[0];
@@ -1356,6 +1358,30 @@ namespace Ela.Runtime
 							}
 						}
 						break;
+                    case Op.Ovr:
+                        {
+                            var tag = frame.Strings[opd];
+
+                            var dict = default(Dictionary<String,ElaValue>);
+
+                            if (!overloads.TryGetValue(tag, out dict))
+                            {
+                                dict = new Dictionary<String,ElaValue>();
+                                overloads.Add(tag, dict);
+                            }
+
+                            var fn = evalStack.Pop().ToString();
+
+                            dict.Remove(fn);
+                            dict.Add(fn, evalStack.Pop());
+
+                            var lst = new FastList<ElaValue[]>(captures);
+                            lst.Add(locals);
+                            var fun = new ElaFunction(-1, thread.ModuleHandle, 0, lst, this);
+                            fun.OverloadName = fn;
+                            evalStack.Push(new ElaValue(fun));
+                        }
+                        break;
 					case Op.Call:
 						if (Call(evalStack.Pop().Ref, thread, evalStack, CallFlag.None))
 						    goto SWITCH_MEM;
@@ -1730,11 +1756,6 @@ namespace Ela.Runtime
 			{
 				var arg = stack.Peek();
 				var res = fun.Call(arg, thread.Context);
-
-                //if (res.Ref.TypeId == ElaMachine.FUN &&
-                //    ((ElaFunction)res.Ref).LastParameter.Ref != null)
-                //    return Call(res.Ref, thread, stack, CallFlag.AllParams);
-
 				stack.Replace(res);
 
 				if (thread.Context.Failed)
@@ -1766,6 +1787,15 @@ namespace Ela.Runtime
 					if (natFun.ModuleHandle != thread.ModuleHandle)
 						thread.SwitchModule(natFun.ModuleHandle);
 
+                    var p = cf != CallFlag.AllParams ? stack.PopFast() : natFun.LastParameter;
+                    natFun = natFun.Resolve(p, thread.Context);
+
+                    if (natFun == null)
+                    {
+                        ExecuteThrow(thread, stack);
+                        return true;
+                    }
+                        
 					var mod = thread.Module;
 					var layout = mod.Layouts[natFun.Handle];
 
@@ -1776,10 +1806,7 @@ namespace Ela.Runtime
 					if (cf != CallFlag.NoReturn)
 						thread.CallStack.Peek().BreakAddress = thread.Offset;
 
-					if (cf != CallFlag.AllParams)
-						newStack.Push(stack.PopFast());
-					else if (natFun.LastParameter.Ref != null)
-						newStack.Push(natFun.LastParameter);
+                    newStack.Push(p);
 
 					for (var i = 0; i < natFun.Parameters.Length; i++)
 						newStack.Push(natFun.Parameters[natFun.Parameters.Length - i - 1]);

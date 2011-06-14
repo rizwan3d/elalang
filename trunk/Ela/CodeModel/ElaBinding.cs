@@ -88,6 +88,8 @@ namespace Ela.CodeModel
 		#region Properties
 		public string VariableName { get; set; }
 
+        public string OverloadVariant { get; set; }
+
 		public ElaVariableFlags VariableFlags { get; set; }
 
 		public ElaExpression InitExpression { get; set; }

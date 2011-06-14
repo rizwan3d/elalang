@@ -189,6 +189,35 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        internal ElaFunction Resolve(ElaValue arg, ExecutionContext ctx)
+        {
+            if (OverloadName != null)
+            {
+                var tag = arg.GetTag(ctx);
+
+                if (ctx.Failed)
+                    return null;
+
+                var dict = default(Dictionary<String,ElaValue>);
+
+                if (!vm.overloads.TryGetValue(tag, out dict))
+                {
+                    ctx.Fail(String.Format("Function '{0}' is not implemented for '{1}'.", OverloadName, tag));
+                    return null;
+                }
+
+                var f = dict[OverloadName];
+
+                if (f.TypeId != ElaMachine.FUN)
+                    ctx.InvalidType(TypeCodeFormat.GetShortForm(ElaTypeCode.Function), f);
+
+                return (ElaFunction)f.Ref;
+            }
+            else
+                return this;
+        }
+
+
         internal ElaFunction CloneFast()
 		{
 			var pars = new ElaValue[Parameters.Length];
@@ -204,6 +233,7 @@ namespace Ela.Runtime.ObjectModel
 			ret.vm = vm;
 			ret.Captures = Captures;
 			ret.Flip = Flip;
+            ret.OverloadName = OverloadName;
 			return ret;
 		}
 
@@ -223,6 +253,7 @@ namespace Ela.Runtime.ObjectModel
 			newInstance.vm = vm;
 			newInstance.Captures = Captures;
 			newInstance.Flip = Flip;
+            newInstance.OverloadName = OverloadName;
 			return newInstance;
 		}
 
@@ -318,6 +349,8 @@ namespace Ela.Runtime.ObjectModel
 		internal ElaValue[] Parameters { get; set; }
 
 		internal ElaValue LastParameter { get; set; }
+
+        internal string OverloadName { get; set; }
 
 		private bool _flip;
 		internal bool Flip 

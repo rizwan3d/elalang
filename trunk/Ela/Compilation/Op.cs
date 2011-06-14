@@ -139,8 +139,9 @@ namespace Ela.Compilation
         Clone,
 		
         Gettag,
-		
-		
+
+
+        Ovr,
 		
 		Elem,
 
