@@ -1,3 +1,4 @@
+0.9.6.1:Fix:A critical bug fixed - a tail call of a thunk (not an actual function) could cause VM to crash.
 0.9.6.0:Release:Release of Ela 0.9.6
 0.9.5.9:Change:Refactoring in call routines inside Ela virtual machine.
 0.9.5.8:Change:Concat operation ('++' by default) is now implemented differently by tuples - it concatenates tuples themselves.
