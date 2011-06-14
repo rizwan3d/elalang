@@ -202,7 +202,7 @@ namespace Ela.Runtime.ObjectModel
 
                 if (!vm.overloads.TryGetValue(tag, out dict))
                 {
-                    ctx.Fail(String.Format("Function '{0}' is not implemented for '{1}'.", OverloadName, tag));
+                    ctx.NoOverload(tag, OverloadName);
                     return null;
                 }
 
@@ -364,57 +364,4 @@ namespace Ela.Runtime.ObjectModel
 		}
 		#endregion
 	}
-
-
-    internal sealed class ElaOverrides : ElaObject
-    {
-        private Dictionary<String,ElaFunction> functions;
-
-        internal ElaOverrides()
-        {
-            functions = new Dictionary<String,ElaFunction>();
-        }
-
-
-        internal void AddFunction(string tag, ElaFunction func)
-        {
-            functions.Remove(tag);
-            functions.Add(tag, func);
-        }
-
-
-        protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
-        {
-            var tag = arg.GetTag(ctx);
-
-            if (ctx.Failed)
-                return Default();
-
-            var fun = default(ElaFunction);
-
-            if (!functions.TryGetValue(tag, out fun))
-            {
-                foreach (var f in functions.Values)
-                {
-                    fun = f;
-                    break;
-                }
-
-                ctx.Fail(String.Format("A function '{0}' is not implemented for '{0}'.", fun, tag));
-                return Default();
-            }
-
-            fun = fun.CloneFast();
-            
-            if (fun.Parameters.Length == fun.AppliedParameters)
-                fun.LastParameter = arg;
-            else
-            {
-                fun.Parameters[fun.AppliedParameters] = arg;
-                fun.AppliedParameters++;
-            }
-
-            return new ElaValue(fun);
-        }
-    }
 }

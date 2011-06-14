@@ -16,6 +16,12 @@ namespace Ela.Runtime
 
 
 		#region Methods
+        public void NoOverload(string tag, string function)
+        {
+            Fail(ElaRuntimeError.NoOverload, function, tag);
+        }
+
+
 		public void InvalidFormat(string format, ElaValue value)
 		{
 			Fail(ElaRuntimeError.InvalidFormat, format, value.ToString(), value.GetTypeName());
@@ -128,6 +134,10 @@ namespace Ela.Runtime
 		internal ElaError Error { get; set; }
 
 		internal ElaLazy Thunk;
+
+        internal string Tag;
+
+        internal string OverloadFunction;
 		#endregion
 	}
 }

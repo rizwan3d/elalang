@@ -1370,7 +1370,13 @@ namespace Ela.Runtime
                                 overloads.Add(tag, dict);
                             }
 
-                            var fn = evalStack.Pop().ToString();
+                            right = evalStack.Pop();
+                            var fn = String.Empty;
+
+                            if (right.TypeId == STR)
+                                fn = right.DirectGetString();
+                            else
+                                fn = ("$" + (ElaBuiltinKind)right.I4).ToLower();
 
                             dict.Remove(fn);
                             dict.Add(fn, evalStack.Pop());
@@ -1894,6 +1900,51 @@ namespace Ela.Runtime
 		}
 
 
+        private void RunOverloadedFunction(WorkerThread thread, EvalStack stack)
+        {
+            thread.Context.Failed = false;
+
+            var dict = default(Dictionary<String, ElaValue>);
+
+            if (!overloads.TryGetValue(thread.Context.Tag, out dict))
+            {
+                thread.Context.NoOverload(thread.Context.Tag, thread.Context.OverloadFunction);
+                thread.Context.Tag = thread.Context.OverloadFunction = null;
+                ExecuteThrow(thread, stack);
+                return;
+            }
+
+            var v = default(ElaValue);
+
+            if (!dict.TryGetValue(thread.Context.OverloadFunction, out v))
+            {
+                thread.Context.NoOverload(thread.Context.Tag, thread.Context.OverloadFunction);
+                thread.Context.Tag = thread.Context.OverloadFunction = null;
+                ExecuteThrow(thread, stack);
+                return;
+            }
+
+            if (v.TypeId != FUN)
+            {
+                thread.Context.InvalidType(TypeCodeFormat.GetShortForm(ElaTypeCode.Function), v);
+                thread.Context.Tag = thread.Context.OverloadFunction = null;
+                ExecuteThrow(thread, stack);
+                return;
+            }
+
+            var f = ((ElaFunction)v.Ref).CloneFast();
+            thread.Context.Tag = thread.Context.OverloadFunction = null;
+
+            if (f.Parameters.Length > 0)
+            {
+                f.Parameters[f.AppliedParameters] = stack.Pop();
+                f.AppliedParameters++;
+            }
+
+            Call(f, thread, stack, CallFlag.None);
+        }
+
+
 		private void ExecuteThrow(WorkerThread thread, EvalStack stack)
 		{
 			if (thread.Context.Thunk != null)
@@ -1906,6 +1957,11 @@ namespace Ela.Runtime
 				thread.CallStack.Peek().Thunk = t;
 				return;
 			}
+            else if (thread.Context.Tag != null)
+            {
+                RunOverloadedFunction(thread, stack);
+                return;
+            }
 
 			var err = thread.Context.Error;
 			thread.Context.Reset();

@@ -98,6 +98,15 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
+        protected internal override ElaValue Add(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            ctx.OverloadFunction = "$add";
+            ctx.Tag = Tag;
+            ctx.Failed = true;
+            return Default();
+        }
+
+
 		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId != right.TypeId || left.TypeId != ElaMachine.VAR)
@@ -142,7 +151,7 @@ namespace Ela.Runtime.ObjectModel
 		{
 			if (type == ElaTypeCode.Variant)
 				return @this;
-
+            
 			ctx.ConversionFailed(@this, type);
 			return Default();
 		}
