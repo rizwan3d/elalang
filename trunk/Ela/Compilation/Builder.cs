@@ -960,7 +960,8 @@ namespace Ela.Compilation
 		{
 			None = 0x00,
 			OnlyGet = 0x02,
-			SkipValidation = 0x04
+			SkipValidation = 0x04,
+            NoError = 0x08
 		}
 
 
@@ -1086,7 +1087,7 @@ namespace Ela.Compilation
 			while (cur != null);
 
 			if ((getFlags & GetFlags.OnlyGet) == GetFlags.OnlyGet)
-				return new ScopeVar(-1);
+                return ScopeVar.Empty;
 
 			var vk = ElaBuiltinKind.None;
 
@@ -1098,8 +1099,10 @@ namespace Ela.Compilation
 			}
 			else
 			{
-				AddError(ElaCompilerError.UndefinedName, line, col, name);
-				return default(ScopeVar);
+                if ((getFlags & GetFlags.NoError) != GetFlags.NoError)
+				    AddError(ElaCompilerError.UndefinedName, line, col, name);
+
+				return ScopeVar.Empty;
 			}
 		}
 

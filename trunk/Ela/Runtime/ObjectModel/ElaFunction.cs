@@ -2,6 +2,7 @@
 using System.Text;
 using Ela.Debug;
 using Ela.CodeModel;
+using System.Collections.Generic;
 
 namespace Ela.Runtime.ObjectModel
 {
@@ -332,12 +333,55 @@ namespace Ela.Runtime.ObjectModel
 	}
 
 
-    internal sealed class ElaOverridableFunction : ElaFunction
+    internal sealed class ElaOverrides : ElaObject
     {
-        internal ElaOverridableFunction(int handle, int module, int parCount, FastList<ElaValue[]> captures, ElaMachine vm)
-            : base(handle, module, parCount, captures, vm)
-        {
+        private Dictionary<String,ElaFunction> functions;
 
+        internal ElaOverrides()
+        {
+            functions = new Dictionary<String,ElaFunction>();
+        }
+
+
+        internal void AddFunction(string tag, ElaFunction func)
+        {
+            functions.Remove(tag);
+            functions.Add(tag, func);
+        }
+
+
+        protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
+        {
+            var tag = arg.GetTag(ctx);
+
+            if (ctx.Failed)
+                return Default();
+
+            var fun = default(ElaFunction);
+
+            if (!functions.TryGetValue(tag, out fun))
+            {
+                foreach (var f in functions.Values)
+                {
+                    fun = f;
+                    break;
+                }
+
+                ctx.Fail(String.Format("A function '{0}' is not implemented for '{0}'.", fun, tag));
+                return Default();
+            }
+
+            fun = fun.CloneFast();
+            
+            if (fun.Parameters.Length == fun.AppliedParameters)
+                fun.LastParameter = arg;
+            else
+            {
+                fun.Parameters[fun.AppliedParameters] = arg;
+                fun.AppliedParameters++;
+            }
+
+            return new ElaValue(fun);
         }
     }
 }

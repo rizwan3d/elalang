@@ -136,6 +136,10 @@ let lazyUnary {eq} =
            et thunk2 = (& add 2 3)
                    where add x y = x + y
 
+let lazyCall {eq} =
+        eq (2 `f` 3) 5
+        where f = (& \x y -> x + y)
+
 let lazyTailCall {eq} = 
         eq x 4
         where fake f = f 2
