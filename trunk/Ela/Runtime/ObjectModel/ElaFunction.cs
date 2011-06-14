@@ -330,4 +330,14 @@ namespace Ela.Runtime.ObjectModel
 		}
 		#endregion
 	}
+
+
+    internal sealed class ElaOverridableFunction : ElaFunction
+    {
+        internal ElaOverridableFunction(int handle, int module, int parCount, FastList<ElaValue[]> captures, ElaMachine vm)
+            : base(handle, module, parCount, captures, vm)
+        {
+
+        }
+    }
 }

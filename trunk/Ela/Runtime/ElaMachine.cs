@@ -99,13 +99,13 @@ namespace Ela.Runtime
 			{
 				throw;
 			}
-            catch (Exception ex)
-            {
-                var op = MainThread.Module != null && MainThread.Offset > 0 &&
-                    MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
-                    MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
-                throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
-            }
+            //catch (Exception ex)
+            //{
+            //    var op = MainThread.Module != null && MainThread.Offset > 0 &&
+            //        MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
+            //        MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
+            //    throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
+            //}
 			
 			var evalStack = MainThread.CallStack[0].Stack;
 
@@ -1731,6 +1731,11 @@ namespace Ela.Runtime
 			{
 				var arg = stack.Peek();
 				var res = fun.Call(arg, thread.Context);
+
+                //if (res.Ref.TypeId == ElaMachine.FUN &&
+                //    ((ElaFunction)res.Ref).LastParameter.Ref != null)
+                //    return Call(res.Ref, thread, stack, CallFlag.AllParams);
+
 				stack.Replace(res);
 
 				if (thread.Context.Failed)
