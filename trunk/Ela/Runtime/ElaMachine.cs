@@ -14,7 +14,7 @@ namespace Ela.Runtime
 {
     using FunMap = Dictionary<ParamInfo,ElaFunction>;
     using OvrMap = Dictionary<String,Dictionary<ParamInfo,ElaFunction>>;
-
+ 
     public sealed class ElaMachine : IDisposable
 	{
 		#region Construction
@@ -23,7 +23,7 @@ namespace Ela.Runtime
         private readonly IntrinsicFrame argMod;
         private readonly int argModHandle;
         internal readonly OvrMap overloads;
-		
+
 		public ElaMachine(CodeAssembly asm)
 		{
 			this.asm = asm;
@@ -497,9 +497,9 @@ namespace Ela.Runtime
 							goto SWITCH_MEM;
 						}
 						break;
-					case Op.Add:
-						left = evalStack.Pop();
-						right = evalStack.Peek();
+                    case Op.Add:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
 
                         if (left.TypeId == INT && right.TypeId == INT)
                         {
@@ -508,15 +508,15 @@ namespace Ela.Runtime
                         }
 
                         evalStack.Replace(left.Ref.Add(left, right, ctx));
-                        
+
                         if (ctx.Failed)
                         {
-							evalStack.Replace(right);
-							evalStack.Push(left);
-							ExecuteThrow(thread, evalStack);
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
                             goto SWITCH_MEM;
                         }
-						break;
+                        break;
 					case Op.Sub:
 						left = evalStack.Pop();
 						right = evalStack.Peek();
@@ -1409,7 +1409,18 @@ namespace Ela.Runtime
                             if (funObj == null)
                                 funObj = new ElaOverloadedFunction(map, lst, this);
 
-                            map.Add(new ParamInfo(opd, tag), funObj);
+                            var oldFun = default(ElaFunction);
+                            var pi = new ParamInfo(opd, tag);
+
+                            if (map.TryGetValue(pi, out oldFun))
+                            {
+                                if (!oldFun.Overloaded)
+                                {
+                                    throw new Exception("Duplicate overload!");
+                                }
+                            }
+                            else
+                                map.Add(pi, funObj);
 
                             if (!funObj.Overloaded)
                                 funObj = new ElaOverloadedFunction(map, lst, this);
@@ -1680,7 +1691,13 @@ namespace Ela.Runtime
 						callStack.Peek().CatchMark = null;
 						break;
 					#endregion
-				}
+
+                    #region Jump Tags
+                    case Op._Add:
+                        evalStack.Replace(left.I4 + right.I4);
+                        break;
+                    #endregion
+                }
 				#endregion
 			}
 			goto CYCLE;

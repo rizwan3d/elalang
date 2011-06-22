@@ -40,7 +40,7 @@ namespace Ela.Runtime
 
 		FieldImmutable = 816,
 
-		// = 817,
+		NoOperation = 817,
 
 		UndefinedVariable = 818,
 

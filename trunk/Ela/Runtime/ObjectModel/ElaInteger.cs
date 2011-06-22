@@ -33,14 +33,18 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
+        protected internal override string GetTag(ExecutionContext ctx)
+        {
+            return "Int";
+        }
+
+
 		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            if (left.TypeId == ElaMachine.INT)
-                return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 == right.I4) :
-                    right.Ref.Equal(left, right, ctx);
-                        
-            ctx.InvalidLeftOperand(left, right, "equal");
-			return Default();
+            if (left.TypeId == right.TypeId)
+                return new ElaValue(left.I4 == right.I4);
+            else
+                return base.Equal(left, right, ctx);
 		}
 
 

@@ -361,7 +361,7 @@ namespace Ela.Runtime.ObjectModel
         #region Methods
         internal override ElaFunction Resolve(ElaValue arg, ExecutionContext ctx)
         {            
-            var tag = arg.TypeId != ElaMachine.VAR ? null : arg.GetTag(ctx);
+            var tag = /*arg.TypeId != ElaMachine.VAR ? null :*/ arg.GetTag(ctx);
 
             if (ctx.Failed)
                 return null;

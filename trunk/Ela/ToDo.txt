@@ -7,4 +7,19 @@
 7. "Expression" pattern
 8. Tree data type and literal
 9. Doc comments
-10. Consider a different implementation of concat on tuples
+10. Consider a different implementation of concat on tuples (==done)
+
+===========
+Overloading
+===========
+
+Major:
+Decide - all types are tagged or not.
+
+1. Errors (on compiler level)
+2. Errors (on VM level)
+3. Implementation of Call for ElaOverloadedFunction
+4. Implementation of Show for ElaOverloadedFunction
+5. Implementation of comparison for ElaOverloadedFunction
+6. Problem with hiding/disallowing overloads with the same signature
+7. Disallow to overload non-functions

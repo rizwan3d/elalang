@@ -22,7 +22,8 @@ namespace Ela.Runtime
         #region Methods
         public static bool Equals(ParamInfo left, ParamInfo right)
         {
-            return left.Index == right.Index && left.Tag == right.Tag;
+            return left.Tag == null && right.Tag == null || 
+                (left.Index == right.Index && left.Tag == right.Tag);
         }
 
         public override string ToString()
@@ -37,12 +38,12 @@ namespace Ela.Runtime
 
         public bool Equals(ParamInfo val)
         {
-            return Index == val.Index && Tag == val.Tag;
+            return Equals(this, val);
         }
 
         public override int GetHashCode()
         {
-            return Index.GetHashCode();
+            return Tag == null ? 0 : Index.GetHashCode();
         }
         #endregion
     }

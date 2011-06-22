@@ -9,10 +9,6 @@ namespace Ela.Compilation
 		private ExprData CompileBinary(ElaBinary bin, LabelMap map, Hints hints)
 		{
 			CompileBinaryMain(bin.Operator, bin, map, hints);
-
-			if ((hints & Hints.Left) == Hints.Left && bin.Operator != ElaOperator.Assign)
-				AddValueNotUsed(bin);
-
 			return ExprData.Empty;
 		}
 

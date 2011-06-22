@@ -206,6 +206,10 @@ namespace Ela.Compilation
 
 		Brnil,
 
-		Newfun
+		Newfun,
+
+
+        //Jump Tags
+        _Add
 	}
 }

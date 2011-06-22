@@ -159,6 +159,9 @@
   <data name="MatchFailed" xml:space="preserve">
     <value>Match failed. None of the patterns were successful.</value>
   </data>
+  <data name="NoOperation" xml:space="preserve">
+    <value>Operation '{0}' is not supported for '{1}' and '{2}'.</value>
+  </data>
   <data name="NoOverload" xml:space="preserve">
     <value>Function '{0}' is not implemented for '{1}'.</value>
   </data>

@@ -92,6 +92,12 @@ namespace Ela.Runtime
 		}
 
 
+        public void NoOperation(ElaValue left, ElaValue right, string op)
+        {
+            Fail(ElaRuntimeError.NoOperation, op, left, right);
+        }
+
+
 		public void Fail(ElaRuntimeError error, params object[] args)
 		{
 			Fail(new ElaError(error, args));

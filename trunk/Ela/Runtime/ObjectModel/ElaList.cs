@@ -54,7 +54,12 @@ namespace Ela.Runtime.ObjectModel
 		#region Operations
 		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return new ElaValue(Equal(left, right, "equal", ctx));
+			//return new ElaValue(Equal(left, right, "equal", ctx));
+
+            if (left.TypeId == right.TypeId)
+                return new ElaValue(Equal(left, right, "equal", ctx));
+            else
+                return base.Equal(left, right, ctx);
 		}
 
 

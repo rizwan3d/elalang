@@ -160,8 +160,13 @@ namespace Ela.Runtime.ObjectModel
 		#region Operations
         protected internal virtual ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.NoOperator(This(left, right), "equal");
-			return Default();
+			if (left.Ref == this)
+                return right.Ref.Equal(left, right, ctx);
+            else
+            {
+                ctx.NoOperation(left, right, "equal");
+                return Default();
+            }
 		}
 
 
@@ -250,13 +255,13 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal virtual ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            //if (left.Ref == this)
-            //    return right.Ref.Concatenate(left, right, ctx);
-            //else
-            //{
+            if (left.Ref == this)
+                return right.Ref.Concatenate(left, right, ctx);
+            else
+            {
                 ctx.NoOperator(This(left, right), "concat");
                 return Default();
-            //}
+            }
 		}
 
 
@@ -461,6 +466,7 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal virtual string GetTag(ExecutionContext ctx)
 		{
+            return null;
 			ctx.NoOperator(new ElaValue(this), "gettag");
 			return String.Empty;
 		}

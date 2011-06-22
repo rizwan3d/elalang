@@ -782,14 +782,6 @@ namespace Ela.Compilation
 					else
 						CompileBuiltinInline(kind, v.Target, map, hints);
 
-					if ((hints & Hints.Left) == Hints.Left)
-					{
-						if ((bf.Flags & ElaExpressionFlags.ReturnsUnit) != ElaExpressionFlags.ReturnsUnit)
-							AddValueNotUsed(v.Target);
-						else
-							cw.Emit(Op.Pop);
-					}
-
 					return ed;
 				}
 				else
