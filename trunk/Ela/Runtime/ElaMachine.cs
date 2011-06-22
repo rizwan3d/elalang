@@ -12,6 +12,9 @@ using System.Runtime.InteropServices;
 
 namespace Ela.Runtime
 {
+    using FunMap = Dictionary<ParamInfo,ElaFunction>;
+    using OvrMap = Dictionary<String,Dictionary<ParamInfo,ElaFunction>>;
+
     public sealed class ElaMachine : IDisposable
 	{
 		#region Construction
@@ -19,12 +22,12 @@ namespace Ela.Runtime
 		private readonly CodeAssembly asm;
         private readonly IntrinsicFrame argMod;
         private readonly int argModHandle;
-        internal readonly Dictionary<String,Dictionary<String,ElaValue>> overloads;
+        internal readonly OvrMap overloads;
 		
 		public ElaMachine(CodeAssembly asm)
 		{
 			this.asm = asm;
-            overloads = new Dictionary<String,Dictionary<String,ElaValue>>();
+            overloads = new OvrMap();
 			var frame = asm.GetRootModule();
 			MainThread = new WorkerThread(asm);
 			var lays = frame.Layouts[0];
@@ -1358,34 +1361,60 @@ namespace Ela.Runtime
 							}
 						}
 						break;
-                    case Op.Ovr:
+                    case Op.Checkovr:
                         {
-                            var tag = frame.Strings[opd];
+                            var fn = evalStack.Pop().DirectGetString();
+                            var fun = evalStack.Pop().Ref as ElaFunction;
 
-                            var dict = default(Dictionary<String,ElaValue>);
-
-                            if (!overloads.TryGetValue(tag, out dict))
+                            if (fun == null)
                             {
-                                dict = new Dictionary<String,ElaValue>();
-                                overloads.Add(tag, dict);
+                                //error, unable override non-function
+                                ctx.Fail("Unable to override a non function");
+                                goto SWITCH_MEM;
                             }
 
-                            right = evalStack.Pop();
-                            var fn = String.Empty;
+                            if (!fun.Overloaded)
+                            {
+                                var map = default(FunMap);
 
-                            if (right.TypeId == STR)
-                                fn = right.DirectGetString();
-                            else
-                                fn = ("$" + (ElaBuiltinKind)right.I4).ToLower();
+                                if (!overloads.TryGetValue(fn, out map))
+                                {
+                                    map = new FunMap();
+                                    overloads.Add(fn, map);
+                                }
 
-                            dict.Remove(fn);
-                            dict.Add(fn, evalStack.Pop());
+                                map.Add(ParamInfo.Any, fun);
+                            }
+                        }
+                        break;
+                    case Op.Ovr:
+                        {
+                            var tag = evalStack.Pop().DirectGetString();
+                            var fn = evalStack.Pop().DirectGetString();
+                            var obj = evalStack.PopFast().Ref;
 
                             var lst = new FastList<ElaValue[]>(captures);
                             lst.Add(locals);
-                            var fun = new ElaFunction(-1, thread.ModuleHandle, 0, lst, this);
-                            fun.OverloadName = fn;
-                            evalStack.Push(new ElaValue(fun));
+
+                            var map = default(FunMap);
+
+                            if (!overloads.TryGetValue(fn, out map))
+                            {
+                                map = new FunMap();
+                                overloads.Add(fn, map);
+                            }
+
+                            var funObj = obj as ElaFunction;
+
+                            if (funObj == null)
+                                funObj = new ElaOverloadedFunction(map, lst, this);
+
+                            map.Add(new ParamInfo(opd, tag), funObj);
+
+                            if (!funObj.Overloaded)
+                                funObj = new ElaOverloadedFunction(map, lst, this);
+
+                            evalStack.Push(new ElaValue(funObj));
                         }
                         break;
 					case Op.Call:
@@ -1779,21 +1808,10 @@ namespace Ela.Runtime
 
 			if (natFun.Captures != null)
 			{
-				if (natFun.AppliedParameters < natFun.Parameters.Length)
-				{
-					var newFun = natFun.CloneFast();
-					newFun.Parameters[natFun.AppliedParameters] = stack.Peek();
-					newFun.AppliedParameters++;
-					stack.Replace(new ElaValue(newFun));
-					return false;
-				}
-				
-				if (natFun.AppliedParameters == natFun.Parameters.Length)
-				{
-					if (natFun.ModuleHandle != thread.ModuleHandle)
-						thread.SwitchModule(natFun.ModuleHandle);
+                var p = cf != CallFlag.AllParams ? stack.PopFast() : natFun.LastParameter;
 
-                    var p = cf != CallFlag.AllParams ? stack.PopFast() : natFun.LastParameter;
+                if (natFun.Overloaded)
+                {
                     natFun = natFun.Resolve(p, thread.Context);
 
                     if (natFun == null)
@@ -1801,6 +1819,21 @@ namespace Ela.Runtime
                         ExecuteThrow(thread, stack);
                         return true;
                     }
+                }
+                
+                if (natFun.AppliedParameters < natFun.Parameters.Length)
+				{
+					var newFun = natFun.CloneFast();
+					newFun.Parameters[natFun.AppliedParameters] = p;
+					newFun.AppliedParameters++;
+					stack.Push(new ElaValue(newFun));
+					return false;
+				}
+				
+				if (natFun.AppliedParameters == natFun.Parameters.Length)
+				{
+					if (natFun.ModuleHandle != thread.ModuleHandle)
+						thread.SwitchModule(natFun.ModuleHandle);
                         
 					var mod = thread.Module;
 					var layout = mod.Layouts[natFun.Handle];
@@ -1903,10 +1936,9 @@ namespace Ela.Runtime
         private void RunOverloadedFunction(WorkerThread thread, EvalStack stack)
         {
             thread.Context.Failed = false;
+            var dict = default(FunMap);
 
-            var dict = default(Dictionary<String, ElaValue>);
-
-            if (!overloads.TryGetValue(thread.Context.Tag, out dict))
+            if (!overloads.TryGetValue(thread.Context.OverloadFunction, out dict))
             {
                 thread.Context.NoOverload(thread.Context.Tag, thread.Context.OverloadFunction);
                 thread.Context.Tag = thread.Context.OverloadFunction = null;
@@ -1914,9 +1946,9 @@ namespace Ela.Runtime
                 return;
             }
 
-            var v = default(ElaValue);
+            var fun = default(ElaFunction);
 
-            if (!dict.TryGetValue(thread.Context.OverloadFunction, out v))
+            if (!dict.TryGetValue(new ParamInfo(0, thread.Context.Tag), out fun))
             {
                 thread.Context.NoOverload(thread.Context.Tag, thread.Context.OverloadFunction);
                 thread.Context.Tag = thread.Context.OverloadFunction = null;
@@ -1924,15 +1956,7 @@ namespace Ela.Runtime
                 return;
             }
 
-            if (v.TypeId != FUN)
-            {
-                thread.Context.InvalidType(TypeCodeFormat.GetShortForm(ElaTypeCode.Function), v);
-                thread.Context.Tag = thread.Context.OverloadFunction = null;
-                ExecuteThrow(thread, stack);
-                return;
-            }
-
-            var f = ((ElaFunction)v.Ref).CloneFast();
+            var f = fun.Clone();
             thread.Context.Tag = thread.Context.OverloadFunction = null;
 
             if (f.Parameters.Length > 0)

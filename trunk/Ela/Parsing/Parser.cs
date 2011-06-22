@@ -1157,10 +1157,8 @@ internal sealed partial class Parser {
 		
 		FunBodyExpr(mi);
 		ProcessFunctionParameters(mi, ot); 
-		if (la.kind == 57) {
-			Get();
-			Expect(2);
-			varExp.OverloadVariant = t.val; 
+		if (la.kind == 58) {
+			OverloadExpr(varExp);
 		}
 	}
 
@@ -1209,10 +1207,8 @@ internal sealed partial class Parser {
 		varExp.VariableName = mi.Name;
 		ProcessFunctionParameters(mi, ot); 
 		
-		if (la.kind == 57) {
-			Get();
-			Expect(2);
-			varExp.OverloadVariant = t.val; 
+		if (la.kind == 58) {
+			OverloadExpr(varExp);
 		}
 	}
 
@@ -1273,13 +1269,24 @@ internal sealed partial class Parser {
 		}
 	}
 
+	void OverloadExpr(ElaBinding varExp) {
+		Expect(58);
+		Expect(2);
+		varExp.OverloadNames.Add(t.val); 
+		while (la.kind == 20) {
+			Get();
+			Expect(2);
+			varExp.OverloadNames.Add(t.val); 
+		}
+	}
+
 	void InfixFunName(ElaFunctionLiteral fun) {
 		var name = String.Empty; 
-		if (la.kind == 58) {
+		if (la.kind == 57) {
 			Get();
 			Expect(1);
 			name = t.val; 
-			Expect(58);
+			Expect(57);
 		} else if (StartOf(15)) {
 			Operators();
 			name = t.val; 
@@ -1894,13 +1901,13 @@ internal sealed partial class Parser {
 		
 		if (StartOf(25)) {
 			OpExpr6(out exp);
-			while (la.kind == 58) {
+			while (la.kind == 57) {
 				var cexp = default(ElaExpression); 
 				ot = t;
 				
 				Get();
 				Literal(out funexp);
-				Expect(58);
+				Expect(57);
 				if (StartOf(25)) {
 					OpExpr6(out cexp);
 				}
@@ -1915,10 +1922,10 @@ internal sealed partial class Parser {
 				exp = fc;
 				
 			}
-		} else if (la.kind == 58) {
+		} else if (la.kind == 57) {
 			Get();
 			Literal(out funexp);
-			Expect(58);
+			Expect(57);
 			if (StartOf(25)) {
 				OpExpr6(out exp);
 				exp = GetPrefixFun(funexp, exp, true);	
@@ -2102,7 +2109,7 @@ internal sealed partial class Parser {
 	void EmbExpr(out ElaExpression exp) {
 		exp = null; 
 		switch (la.kind) {
-		case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9: case 10: case 11: case 12: case 13: case 14: case 15: case 17: case 38: case 39: case 45: case 46: case 51: case 52: case 58: {
+		case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9: case 10: case 11: case 12: case 13: case 14: case 15: case 17: case 38: case 39: case 45: case 46: case 51: case 52: case 57: {
 			BinaryExpr(out exp);
 			break;
 		}
@@ -2196,35 +2203,35 @@ internal sealed partial class Parser {
 	
 	static readonly bool[,] set = {
 		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,T,x, x,T,x,T, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,x,x, x,T,x,x, x,x,T,x, x,T,x,x, x,T,x,x, T,T,T,T, T,x,x,x, x,T,T,x, x,x,x,T, T,x,T,x, x,x,T,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,x,x, x,T,x,x, x,x,T,x, x,T,x,x, x,T,x,x, T,T,T,T, T,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,x,x, x,T,x,x, x,x,T,x, x,x,x,x, x,T,x,x, T,T,T,T, T,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x},
+		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,x,x, x,T,x,x, x,x,T,x, x,T,x,x, x,T,x,x, T,T,T,T, T,x,x,x, x,T,T,x, x,x,x,T, T,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
+		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,x,x, x,T,x,x, x,x,T,x, x,T,x,x, x,T,x,x, T,T,T,T, T,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
+		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,x,x, x,T,x,x, x,x,T,x, x,x,x,x, x,T,x,x, T,T,T,T, T,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
 		{x,T,T,T, T,T,T,x, x,x,x,x, x,x,x,T, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,T,T,T, T,T,T,x, x,x,x,x, x,x,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x},
+		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
 		{x,T,x,T, T,T,T,x, x,x,x,x, x,x,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,x,x,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,x,x, x,T,x,x, x,x,T,x, x,T,x,T, x,T,x,x, T,T,T,T, T,T,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x},
-		{x,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,T,T,T, T,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x},
+		{T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,x,x, x,T,x,x, x,x,T,x, x,T,x,T, x,T,x,x, T,T,T,T, T,T,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
+		{x,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,T,T,T, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
 		{x,x,x,T, T,T,T,x, x,x,x,x, x,x,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,T,T,T, T,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,T, T,T,T,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x},
+		{x,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,T,T,T, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,T, T,T,T,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
 		{x,x,x,x, x,x,x,T, T,T,T,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,x,x, x,T,x,x, x,x,T,x, x,T,x,T, x,x,x,x, x,x,T,T, x,T,x,x, x,T,T,x, x,x,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,T,x,T, T,T,T,x, x,x,x,x, x,x,x,T, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,T,x,x, x,x,x,T, T,T,T,T, T,T,T,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,T,x,x, x,x,x,T, T,T,T,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, T,T,T,x, T,T,T,T, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, T,T,T,x, x,T,T,T, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, T,T,T,x, x,x,T,T, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,x,x, T,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, T,T,T,x, x,x,x,T, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,x,x, T,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, T,T,T,x, x,x,x,x, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,x,x, T,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x},
+		{x,T,T,T, T,T,T,x, T,T,T,T, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
+		{x,T,T,T, T,T,T,x, x,T,T,T, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
+		{x,T,T,T, T,T,T,x, x,x,T,T, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,x,x, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
+		{x,T,T,T, T,T,T,x, x,x,x,T, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,x,x, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
+		{x,T,T,T, T,T,T,x, x,x,x,x, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,x,x, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
 		{x,T,T,T, T,T,T,x, x,x,x,x, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,T,T,T, T,T,T,x, x,x,x,x, x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,T,T,T, T,T,T,x, x,x,x,x, x,x,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,T,T,T, T,T,T,x, x,x,x,x, x,x,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,x,x, x,T,x,x, x,x,T,x, x,T,x,T, x,T,x,x, T,T,T,T, T,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x}
+		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,x,x, x,T,x,x, x,x,T,x, x,T,x,T, x,T,x,x, T,T,T,T, T,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x}
 
 	};
 } // end Parser
@@ -2299,8 +2306,8 @@ internal sealed class Errors {
 			case 54: s = "\"&\" expected"; break;
 			case 55: s = "\"inline\" expected"; break;
 			case 56: s = "\"__internal\" expected"; break;
-			case 57: s = "\"on\" expected"; break;
-			case 58: s = "\"`\" expected"; break;
+			case 57: s = "\"`\" expected"; break;
+			case 58: s = "\"on\" expected"; break;
 			case 59: s = "\"#\" expected"; break;
 			case 60: s = "\"<-\" expected"; break;
 			case 61: s = "\"<|\" expected"; break;

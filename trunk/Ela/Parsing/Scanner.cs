@@ -401,7 +401,7 @@ internal sealed class Scanner {
 			case "&": t.kind = 54; break;
 			case "inline": t.kind = 55; break;
 			case "__internal": t.kind = 56; break;
-			case "on": t.kind = 57; break;
+			case "on": t.kind = 58; break;
 			case "<-": t.kind = 60; break;
 			case "<|": t.kind = 61; break;
 			case "|>": t.kind = 62; break;
@@ -785,7 +785,7 @@ internal sealed class Scanner {
 			case 73:
 				{t.kind = 53; break;}
 			case 74:
-				{t.kind = 58; break;}
+				{t.kind = 57; break;}
 			case 75:
 				{t.kind = 59; break;}
 			case 76:

@@ -300,6 +300,7 @@
     <Compile Include="Runtime\ObjectModel\ElaString.cs" />
     <Compile Include="Runtime\ObjectModel\ElaRecord.cs" />
     <Compile Include="Runtime\ObjectModel\ElaTuple.cs" />
+    <Compile Include="Runtime\ParamInfo.cs" />
     <Compile Include="TypeCodeFormat.cs" />
     <Compile Include="Runtime\ObjectModel\ElaVariant.cs" />
     <Compile Include="Runtime\ElaValue.cs" />

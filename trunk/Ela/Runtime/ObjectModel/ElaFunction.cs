@@ -189,37 +189,17 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
-        internal ElaFunction Resolve(ElaValue arg, ExecutionContext ctx)
+        internal virtual ElaFunction Resolve(ElaValue arg, ExecutionContext ctx)
         {
-            if (OverloadName != null)
-            {
-                var tag = arg.GetTag(ctx);
-
-                if (ctx.Failed)
-                    return null;
-
-                var dict = default(Dictionary<String,ElaValue>);
-
-                if (!vm.overloads.TryGetValue(tag, out dict))
-                {
-                    ctx.NoOverload(tag, OverloadName);
-                    return null;
-                }
-
-                var f = dict[OverloadName];
-
-                if (f.TypeId != ElaMachine.FUN)
-                    ctx.InvalidType(TypeCodeFormat.GetShortForm(ElaTypeCode.Function), f);
-
-                return (ElaFunction)f.Ref;
-            }
-            else
-                return this;
+            return this;
         }
 
 
         internal ElaFunction CloneFast()
 		{
+            if (Overloaded)
+                return Clone();
+
 			var pars = new ElaValue[Parameters.Length];
 
 			if (AppliedParameters > 0) //This is faster than Array.Copy
@@ -233,7 +213,6 @@ namespace Ela.Runtime.ObjectModel
 			ret.vm = vm;
 			ret.Captures = Captures;
 			ret.Flip = Flip;
-            ret.OverloadName = OverloadName;
 			return ret;
 		}
 
@@ -253,7 +232,6 @@ namespace Ela.Runtime.ObjectModel
 			newInstance.vm = vm;
 			newInstance.Captures = Captures;
 			newInstance.Flip = Flip;
-            newInstance.OverloadName = OverloadName;
 			return newInstance;
 		}
 
@@ -350,7 +328,7 @@ namespace Ela.Runtime.ObjectModel
 
 		internal ElaValue LastParameter { get; set; }
 
-        internal string OverloadName { get; set; }
+        internal bool Overloaded { get; set; }
 
 		private bool _flip;
 		internal bool Flip 
@@ -364,4 +342,57 @@ namespace Ela.Runtime.ObjectModel
 		}
 		#endregion
 	}
+
+
+    internal sealed class ElaOverloadedFunction : ElaFunction
+    {
+        #region Construction
+        private Dictionary<ParamInfo,ElaFunction> overloads;
+
+        internal ElaOverloadedFunction(Dictionary<ParamInfo,ElaFunction> funs, FastList<ElaValue[]> captures, ElaMachine vm) :
+            base(0, 0, 2, captures, vm)
+        {
+            overloads = funs;
+            Overloaded = true;
+        }
+        #endregion
+
+
+        #region Methods
+        internal override ElaFunction Resolve(ElaValue arg, ExecutionContext ctx)
+        {            
+            var tag = arg.TypeId != ElaMachine.VAR ? null : arg.GetTag(ctx);
+
+            if (ctx.Failed)
+                return null;
+
+            var fun = default(ElaFunction);
+            
+            if (!overloads.TryGetValue(new ParamInfo(AppliedParameters, tag), out fun))
+            {
+                if (tag == null || !overloads.TryGetValue(new ParamInfo(AppliedParameters, null), out fun))
+                {
+                    //error
+                    ctx.Fail("No overloaded for function");
+                    return null;
+                }
+            }
+
+            fun = fun.CloneFast();
+            fun.AppliedParameters = AppliedParameters;
+
+            for (var i = 0; i < AppliedParameters; i++)
+                fun.Parameters[i] = Parameters[i];
+
+            return fun;
+        }
+
+
+        public override ElaFunction Clone()
+        {
+            var newInst = new ElaOverloadedFunction(overloads, Captures, Machine);
+            return CloneFast(newInst);
+        }
+        #endregion
+    }
 }

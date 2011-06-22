@@ -12,7 +12,7 @@ namespace Ela.Compilation
 			if (s.InitExpression == null)
 				AddError(ElaCompilerError.VariableDeclarationInitMissing, s);
 
-            if (s.OverloadVariant != null)
+            if (s.IsOverloaded)
             {
                 CompileOverloaded(s, map, hints);
                 return;
@@ -149,27 +149,44 @@ namespace Ela.Compilation
             var sv = GetVariable(s.VariableName, CurrentScope, 0, GetFlags.NoError, s.Line, s.Column);
             var builtin = !sv.IsEmpty() && (sv.VariableFlags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin;
 
-            if (s.Where != null)
-                CompileWhere(s.Where, map, Hints.Left);
+            if (!sv.IsEmpty() && !builtin)
+            {
+                cw.Emit(Op.Pushvar, sv.Address);
+                cw.Emit(Op.Pushstr, AddString(s.VariableName));
+                cw.Emit(Op.Checkovr);
+            }
 
-            var addr = -1;
+            var addr = sv.Address;
+            var len = s.OverloadNames.Count;
 
             if (sv.IsEmpty())
-               addr = AddVariable(s.VariableName, s, s.VariableFlags, -1);                
+                addr = AddVariable(s.VariableName, s, s.VariableFlags, -1);
 
-            CompileExpression(s.InitExpression, map, Hints.None);
-           
-            if (builtin)
-                cw.Emit(Op.PushI4, sv.Data);
-            else
-                cw.Emit(Op.Pushstr, AddString(s.VariableName));
+            for (var i = 0; i < len; i++)
+            {
+                if (i == len - 1)
+                {
+                    if (s.Where != null)
+                        CompileWhere(s.Where, map, Hints.Left);
 
-            cw.Emit(Op.Ovr, AddString(s.OverloadVariant));
+                    CompileExpression(s.InitExpression, map, Hints.None);
+                }
+                else
+                    cw.Emit(Op.Pushunit);
+                
+                if (builtin)
+                    cw.Emit(Op.Pushstr, AddString("$" + ((ElaBuiltinKind)sv.Data).ToString().ToLower()));
+                else
+                    cw.Emit(Op.Pushstr, AddString(s.VariableName));
 
-            if (sv.IsEmpty() && !builtin)
-                cw.Emit(Op.Popvar, addr);
-            else
-                cw.Emit(Op.Pop);
+                cw.Emit(Op.Pushstr, AddString(s.OverloadNames[i]));
+                cw.Emit(Op.Ovr, i);
+
+                if (i == 0)
+                    cw.Emit(Op.Popvar, addr);
+                else
+                    cw.Emit(Op.Pop);
+            }
         }
 
 

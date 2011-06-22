@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Ela.Parsing;
 
@@ -88,9 +89,7 @@ namespace Ela.CodeModel
 		#region Properties
 		public string VariableName { get; set; }
 
-        public string OverloadVariant { get; set; }
-
-		public ElaVariableFlags VariableFlags { get; set; }
+        public ElaVariableFlags VariableFlags { get; set; }
 
 		public ElaExpression InitExpression { get; set; }
 
@@ -101,6 +100,23 @@ namespace Ela.CodeModel
 		public ElaBinding And { get; set; }
 
 		public ElaExpression In { get; set; }
+
+        public bool IsOverloaded
+        {
+            get { return _overloadNames != null; }
+        }
+
+        private List<String> _overloadNames;
+        public List<String> OverloadNames
+        {
+            get 
+            {
+                if (_overloadNames == null)
+                    _overloadNames = new List<String>();
+
+                return _overloadNames; 
+            }
+        }		
 		#endregion
 	}
 }

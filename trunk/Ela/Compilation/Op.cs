@@ -140,6 +140,9 @@ namespace Ela.Compilation
 		
         Gettag,
 
+        Checkovr,
+
+        
 
         Ovr,
 		

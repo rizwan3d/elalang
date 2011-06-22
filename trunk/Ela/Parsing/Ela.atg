@@ -959,7 +959,7 @@ PRODUCTIONS
 				ProcessFunctionParameters(mi, ot); 
 			.)			
 		)		
-		[ "on" variantTok (. varExp.OverloadVariant = t.val; .) ].
+		[ OverloadExpr<varExp> ].
     
 	InfixFunBodyExprFirst<ElaPattern pat, ElaFunctionLiteral fun> =
 		(.
@@ -1101,6 +1101,12 @@ PRODUCTIONS
 			.)
 		).
 		
+	OverloadExpr<ElaBinding varExp> = 
+		(
+			"on" variantTok (. varExp.OverloadNames.Add(t.val); .)
+			{ "->" variantTok (. varExp.OverloadNames.Add(t.val); .) }
+		).
+		
 	FunExpr<ElaBinding varExp> =
 		(
 			(. 
@@ -1114,7 +1120,7 @@ PRODUCTIONS
 			FunBodyExpr<mi>
 			(. ProcessFunctionParameters(mi, ot); .)			
 		)
-		[ "on" variantTok (. varExp.OverloadVariant = t.val; .) ].
+		[ OverloadExpr<varExp> ].
 		
 	FunBodyExpr<ElaFunctionLiteral fun> =
 		(.
