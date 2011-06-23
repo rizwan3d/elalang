@@ -24,6 +24,23 @@ namespace Ela.Runtime
         private readonly int argModHandle;
         internal readonly OvrMap overloads;
 
+        FunMap AddToMap(string fun, string t1, string t2)
+        {
+            
+
+            var map = default(FunMap);
+
+            if (!overloads.TryGetValue(fun, out map))
+            {
+                map = new FunMap();
+                overloads.Add(fun, map);
+            }
+
+            map.Add(new ParamInfo(0, t1), null);
+            map.Add(new ParamInfo(1, t2), null);
+            return map;
+        }
+
 		public ElaMachine(CodeAssembly asm)
 		{
 			this.asm = asm;
@@ -35,6 +52,7 @@ namespace Ela.Runtime
 			var mem = new ElaValue[lays.Size];
 			modules[0] = mem;
 
+            AddToMap("$add", "Int", "Int");
             argModHandle = asm.TryGetModuleHandle("$Args");
 
             if (argModHandle != -1)
@@ -1414,7 +1432,7 @@ namespace Ela.Runtime
 
                             if (map.TryGetValue(pi, out oldFun))
                             {
-                                if (!oldFun.Overloaded)
+                                if (oldFun == null || !oldFun.Overloaded)
                                 {
                                     throw new Exception("Duplicate overload!");
                                 }
