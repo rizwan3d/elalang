@@ -24,7 +24,7 @@ namespace Ela.Runtime
         internal readonly FunMap overloads;
         private static readonly ElaFunction dummyFun = new ElaFunction(0, 0, 0, null, null);
 
-        void AddToMap(string fun, string t1, string t2)
+        Dictionary<String,ElaFunction> AddToMap(string fun, string t1)
         {
             var funObj = default(ElaOverloadedFunction);
 
@@ -36,7 +36,7 @@ namespace Ela.Runtime
 
             var of = new ElaOverloadedFunction(fun, new Dictionary<String, ElaFunction>(), FastList<ElaValue[]>.Empty, this);
             funObj.overloads.Add(t1, of);
-            of.overloads.Add(t2, dummyFun);
+            return of.overloads;
         }
 
 		public ElaMachine(CodeAssembly asm)
@@ -50,7 +50,10 @@ namespace Ela.Runtime
 			var mem = new ElaValue[lays.Size];
 			modules[0] = mem;
 
-            AddToMap("$add", "Int", "Int");
+            var d = AddToMap("$add", "Int");
+            d.Add("Int", dummyFun);
+            d.Add("Long", dummyFun);
+
             argModHandle = asm.TryGetModuleHandle("$Args");
 
             if (argModHandle != -1)

@@ -10,7 +10,7 @@ namespace Ela.Runtime.ObjectModel
         #region Construction
         internal Dictionary<String,ElaFunction> overloads;
         private string fname;
-
+        
         internal ElaOverloadedFunction(string fname, Dictionary<String,ElaFunction> funs, FastList<ElaValue[]> captures, ElaMachine vm) :
             base(0, 0, 2, captures, vm)
         {
