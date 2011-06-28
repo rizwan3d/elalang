@@ -423,4 +423,10 @@
   <data name="InvalidAttribute" xml:space="preserve">
     <value>Invalid attribute declaration.</value>
   </data>
+  <data name="InvalidOverload" xml:space="preserve">
+    <value>Invalid overload expression for function.</value>
+  </data>
+  <data name="ExpectedOn" xml:space="preserve">
+    <value>Expected 'on' keyword.</value>
+  </data>
 </root>

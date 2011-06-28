@@ -244,6 +244,7 @@
     <Compile Include="Runtime\ObjectModel\ElaChar.cs" />
     <Compile Include="Runtime\ObjectModel\ElaDummyObject.cs" />
     <Compile Include="Runtime\ObjectModel\ElaLazyList.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaOverloadedFunction.cs" />
     <Compile Include="Runtime\ObjectModel\ElaProxy.cs" />
     <Compile Include="Runtime\ObjectModel\ElaUnit.cs" />
     <Compile Include="FormatHelper.cs" />
@@ -300,7 +301,6 @@
     <Compile Include="Runtime\ObjectModel\ElaString.cs" />
     <Compile Include="Runtime\ObjectModel\ElaRecord.cs" />
     <Compile Include="Runtime\ObjectModel\ElaTuple.cs" />
-    <Compile Include="Runtime\ParamInfo.cs" />
     <Compile Include="TypeCodeFormat.cs" />
     <Compile Include="Runtime\ObjectModel\ElaVariant.cs" />
     <Compile Include="Runtime\ElaValue.cs" />

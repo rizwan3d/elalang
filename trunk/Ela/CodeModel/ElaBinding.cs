@@ -67,6 +67,22 @@ namespace Ela.CodeModel
 				Where.ToString(sb, new Fmt(indent), "where");
 			}
 
+            if (IsOverloaded)
+            {
+                sb.AppendLine();
+                sb.Append(' ', indent);
+                var cc = 0;
+                sb.Append("on ");
+
+                foreach (var n in OverloadNames)
+                {
+                    if (cc++ > 0)
+                        sb.Append("->");
+
+                    sb.Append(n);
+                }
+            }
+
 			if (And != null)
 			{
 				sb.AppendLine();

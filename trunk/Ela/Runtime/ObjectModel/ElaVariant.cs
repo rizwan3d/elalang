@@ -101,7 +101,7 @@ namespace Ela.Runtime.ObjectModel
         protected internal override ElaValue Add(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             ctx.OverloadFunction = "$add";
-            ctx.Tag = Tag;
+            ctx.Tag = left.GetTag(ctx);
             ctx.Failed = true;
             return Default();
         }

@@ -170,12 +170,16 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Add(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            if (left.TypeId == ElaMachine.INT)
-                return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 + right.I4) :
-                    right.Ref.Add(left, right, ctx);
+            if (left.TypeId == right.TypeId)
+                return new ElaValue(left.I4 + right.I4);
+            else
+                return base.Add(left, right, ctx);
 
-            ctx.InvalidLeftOperand(left, right, "add");
-			return Default();
+            //    return right.TypeId == ElaMachine.INT ? new ElaValue(left.I4 + right.I4) :
+            //        right.Ref.Add(left, right, ctx);
+
+            //ctx.InvalidLeftOperand(left, right, "add");
+            //return Default();
 		}
 
 

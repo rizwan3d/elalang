@@ -139,6 +139,7 @@ namespace Ela.Parsing
 				case "Expr": return ElaParserError.InvalidExpression;
 				case "EmbExpr": return ElaParserError.InvalidExpression;
 				case "DeclarationBlock": return ElaParserError.InvalidRoot;
+                case "OverloadExpr": return ElaParserError.InvalidOverload;
 				case "Ela": return ElaParserError.InvalidRoot;
 				default: return ElaParserError.InvalidProduction;
 			}
@@ -161,6 +162,7 @@ namespace Ela.Parsing
 				case Parser._operatorTok4:
 				case Parser._operatorTok5: 
 				case Parser._operatorTok6: return ElaParserError.ExpectedOperatorToken;
+                case Parser._ON: return ElaParserError.ExpectedOn;
 				case Parser._LBRA: return ElaParserError.ExpectedCurlyBrace;
 				case Parser._RBRA: return ElaParserError.ExpectedCurlyBrace;
 				case Parser._LILB: return ElaParserError.ExpectedSquareBrace;

@@ -171,6 +171,15 @@
   <data name="OperationNotSupported" xml:space="preserve">
     <value>This operation is not supported by the object of type '{0}'.</value>
   </data>
+  <data name="OverloadDuplicate" xml:space="preserve">
+    <value>Duplicate overload for a function '{0}' is not allowed.</value>
+  </data>
+  <data name="OverloadInvalid" xml:space="preserve">
+    <value>Unable to overload a function '{0}'. Overload by a number of arguments is not supported.</value>
+  </data>
+  <data name="OverloadNotFound" xml:space="preserve">
+    <value>Unable to find an overload '{0}' for a function '{1}'.</value>
+  </data>
   <data name="PrivateVariable" xml:space="preserve">
     <value>The name '{0}' is declared as private and cannot be referenced.</value>
   </data>

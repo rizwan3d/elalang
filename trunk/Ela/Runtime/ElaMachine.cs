@@ -12,9 +12,8 @@ using System.Runtime.InteropServices;
 
 namespace Ela.Runtime
 {
-    using FunMap = Dictionary<ParamInfo,ElaFunction>;
-    using OvrMap = Dictionary<String,Dictionary<ParamInfo,ElaFunction>>;
- 
+    using FunMap = Dictionary<String,ElaOverloadedFunction>;
+   
     public sealed class ElaMachine : IDisposable
 	{
 		#region Construction
@@ -22,29 +21,28 @@ namespace Ela.Runtime
 		private readonly CodeAssembly asm;
         private readonly IntrinsicFrame argMod;
         private readonly int argModHandle;
-        internal readonly OvrMap overloads;
+        internal readonly FunMap overloads;
+        private static readonly ElaFunction dummyFun = new ElaFunction(0, 0, 0, null, null);
 
-        FunMap AddToMap(string fun, string t1, string t2)
+        void AddToMap(string fun, string t1, string t2)
         {
-            
+            var funObj = default(ElaOverloadedFunction);
 
-            var map = default(FunMap);
-
-            if (!overloads.TryGetValue(fun, out map))
+            if (!overloads.TryGetValue(fun, out funObj))
             {
-                map = new FunMap();
-                overloads.Add(fun, map);
+                funObj = new ElaOverloadedFunction(fun, new Dictionary<String,ElaFunction>(), FastList<ElaValue[]>.Empty, this);
+                overloads.Add(fun, funObj);
             }
 
-            map.Add(new ParamInfo(0, t1), null);
-            map.Add(new ParamInfo(1, t2), null);
-            return map;
+            var of = new ElaOverloadedFunction(fun, new Dictionary<String, ElaFunction>(), FastList<ElaValue[]>.Empty, this);
+            funObj.overloads.Add(t1, of);
+            of.overloads.Add(t2, dummyFun);
         }
 
 		public ElaMachine(CodeAssembly asm)
 		{
 			this.asm = asm;
-            overloads = new OvrMap();
+            overloads = new FunMap();
 			var frame = asm.GetRootModule();
 			MainThread = new WorkerThread(asm);
 			var lays = frame.Layouts[0];
@@ -1379,71 +1377,11 @@ namespace Ela.Runtime
 							}
 						}
 						break;
-                    case Op.Checkovr:
-                        {
-                            var fn = evalStack.Pop().DirectGetString();
-                            var fun = evalStack.Pop().Ref as ElaFunction;
-
-                            if (fun == null)
-                            {
-                                //error, unable override non-function
-                                ctx.Fail("Unable to override a non function");
-                                goto SWITCH_MEM;
-                            }
-
-                            if (!fun.Overloaded)
-                            {
-                                var map = default(FunMap);
-
-                                if (!overloads.TryGetValue(fn, out map))
-                                {
-                                    map = new FunMap();
-                                    overloads.Add(fn, map);
-                                }
-
-                                map.Add(ParamInfo.Any, fun);
-                            }
-                        }
-                        break;
                     case Op.Ovr:
+                        if (OverloadFunction(evalStack, captures, locals, thread))
                         {
-                            var tag = evalStack.Pop().DirectGetString();
-                            var fn = evalStack.Pop().DirectGetString();
-                            var obj = evalStack.PopFast().Ref;
-
-                            var lst = new FastList<ElaValue[]>(captures);
-                            lst.Add(locals);
-
-                            var map = default(FunMap);
-
-                            if (!overloads.TryGetValue(fn, out map))
-                            {
-                                map = new FunMap();
-                                overloads.Add(fn, map);
-                            }
-
-                            var funObj = obj as ElaFunction;
-
-                            if (funObj == null)
-                                funObj = new ElaOverloadedFunction(map, lst, this);
-
-                            var oldFun = default(ElaFunction);
-                            var pi = new ParamInfo(opd, tag);
-
-                            if (map.TryGetValue(pi, out oldFun))
-                            {
-                                if (oldFun == null || !oldFun.Overloaded)
-                                {
-                                    throw new Exception("Duplicate overload!");
-                                }
-                            }
-                            else
-                                map.Add(pi, funObj);
-
-                            if (!funObj.Overloaded)
-                                funObj = new ElaOverloadedFunction(map, lst, this);
-
-                            evalStack.Push(new ElaValue(funObj));
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
                         }
                         break;
 					case Op.Call:
@@ -1738,6 +1676,97 @@ namespace Ela.Runtime
 
 
 		#region Operations
+        //This function is a bit over complicated at the moment. VM assumes that Ovr's are called in chain and op code
+        //has a different behavior depending on the fact whether it is a final Ovr or not (stack behavior however is fixed
+        //only internal logic is different)
+        //TODO: consider splitting it into two or even three op codes.
+        private bool OverloadFunction(EvalStack evalStack, FastList<ElaValue[]> captures, ElaValue[] locals, WorkerThread thread)
+        {
+            var tag = evalStack.Pop().DirectGetString();
+            var fn = evalStack.Pop().DirectGetString();
+            var newObj = evalStack.PopFast().Ref;
+            var oldObj = evalStack.Pop().Ref;
+
+            var lst = new FastList<ElaValue[]>(captures);
+            lst.Add(locals);
+
+            var funObj = oldObj as ElaFunction;
+            var nf = newObj as ElaFunction;
+
+            if (funObj == null) //No previous overloads
+            {
+                var of = new ElaOverloadedFunction(fn, new Dictionary<String, ElaFunction>(), lst, this);
+                var funToPush = nf;
+
+                if (nf != null) //An overload by first param only
+                    of.overloads.Add(tag, nf);
+                else            //An overload by multiple params, other Ovr's to come
+                {
+                    funToPush = new ElaOverloadedFunction(fn, new Dictionary<String, ElaFunction>(), lst, this);
+                    of.overloads.Add(tag, funToPush);
+                }
+
+                overloads.Add(fn, of);
+                evalStack.Push(new ElaValue(funToPush));
+            }
+            else //We have previous overloads
+            {
+                if (!funObj.Overloaded) //A previous overload is a regular fun
+                {
+                    var funToAdd = default(ElaOverloadedFunction);
+
+                    if (!overloads.TryGetValue(fn, out funToAdd)) //No overloads are registered for the fun name, patch it
+                    {
+                        funToAdd = new ElaOverloadedFunction(fn, new Dictionary<String, ElaFunction>(), lst, this);
+                        overloads.Add(fn, funToAdd);
+                    }
+
+                    //Register an existing fun as "works for any" overload 
+                    funToAdd.overloads.Add("$Any", funObj);
+                    funObj = funToAdd;
+                }
+
+                var map = ((ElaOverloadedFunction)funObj).overloads;
+                var cfun = default(ElaFunction);
+
+                //A function for such parameter already exists. This is perfectly OK if we will have a longer singature,
+                //otherwise we will fail here.
+                if (map.TryGetValue(tag, out cfun))
+                {
+                    if (nf != null || cfun == dummyFun)
+                    {
+                        thread.Context.Fail(ElaRuntimeError.OverloadDuplicate, fn.Replace("$", String.Empty));
+                        return true;
+                    }
+
+                    var ovrCfun = cfun as ElaOverloadedFunction;
+
+                    if (ovrCfun == null)
+                    {
+                        thread.Context.Fail(ElaRuntimeError.OverloadInvalid, fn.Replace("$", String.Empty));
+                        return true;
+                    }
+
+                    evalStack.Push(new ElaValue(cfun));
+                }
+                else
+                {
+                   var funToPush = nf;
+
+                    if (nf == null) //We have an overload for multiple params, other Ovr's to come
+                        funToPush = new ElaOverloadedFunction(fn, new Dictionary<String, ElaFunction>(), lst, this);
+                    else            //No other overloads, just push the "top" function
+                        funToPush = overloads[fn];
+
+                    map.Add(tag, nf ?? funToPush);
+                    evalStack.Push(new ElaValue(funToPush));
+                }
+            }
+
+            return false;
+        }
+
+
 		private void ReadPervasives(WorkerThread thread, CodeFrame frame, int handle)
 		{
 			var mod = thread.Module;
@@ -1971,9 +2000,9 @@ namespace Ela.Runtime
         private void RunOverloadedFunction(WorkerThread thread, EvalStack stack)
         {
             thread.Context.Failed = false;
-            var dict = default(FunMap);
+            var ofun = default(ElaOverloadedFunction);
 
-            if (!overloads.TryGetValue(thread.Context.OverloadFunction, out dict))
+            if (!overloads.TryGetValue(thread.Context.OverloadFunction, out ofun))
             {
                 thread.Context.NoOverload(thread.Context.Tag, thread.Context.OverloadFunction);
                 thread.Context.Tag = thread.Context.OverloadFunction = null;
@@ -1983,7 +2012,7 @@ namespace Ela.Runtime
 
             var fun = default(ElaFunction);
 
-            if (!dict.TryGetValue(new ParamInfo(0, thread.Context.Tag), out fun))
+            if (ofun == null || !ofun.overloads.TryGetValue(thread.Context.Tag, out fun))
             {
                 thread.Context.NoOverload(thread.Context.Tag, thread.Context.OverloadFunction);
                 thread.Context.Tag = thread.Context.OverloadFunction = null;

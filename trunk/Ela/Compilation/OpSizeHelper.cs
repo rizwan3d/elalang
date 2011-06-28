@@ -73,11 +73,10 @@ namespace Ela.Compilation
 			1, //Skiphtag
 			1, //Nil
         	1, //Clone	
-		    1, //Gettag
-            1, //Checkovr
+		    1, //Gettag            
+            1, //Ovr
 			
-            5, //Ovr
-			5, //Elem
+            5, //Elem
 			5, //Skiptag
 			5, //Conv
 			5, //Newvar

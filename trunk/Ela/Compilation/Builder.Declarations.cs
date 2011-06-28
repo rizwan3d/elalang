@@ -149,18 +149,16 @@ namespace Ela.Compilation
             var sv = GetVariable(s.VariableName, CurrentScope, 0, GetFlags.NoError, s.Line, s.Column);
             var builtin = !sv.IsEmpty() && (sv.VariableFlags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin;
 
-            if (!sv.IsEmpty() && !builtin)
-            {
-                cw.Emit(Op.Pushvar, sv.Address);
-                cw.Emit(Op.Pushstr, AddString(s.VariableName));
-                cw.Emit(Op.Checkovr);
-            }
-
             var addr = sv.Address;
             var len = s.OverloadNames.Count;
 
-            if (sv.IsEmpty())
+            if (!sv.IsEmpty())
+                cw.Emit(Op.Pushvar, sv.Address);
+            else
+            {
                 addr = AddVariable(s.VariableName, s, s.VariableFlags, -1);
+                cw.Emit(Op.Pushunit);
+            }
 
             for (var i = 0; i < len; i++)
             {
@@ -180,13 +178,10 @@ namespace Ela.Compilation
                     cw.Emit(Op.Pushstr, AddString(s.VariableName));
 
                 cw.Emit(Op.Pushstr, AddString(s.OverloadNames[i]));
-                cw.Emit(Op.Ovr, i);
-
-                if (i == 0)
-                    cw.Emit(Op.Popvar, addr);
-                else
-                    cw.Emit(Op.Pop);
+                cw.Emit(Op.Ovr);
             }
+
+            cw.Emit(Op.Popvar, addr);
         }
 
 

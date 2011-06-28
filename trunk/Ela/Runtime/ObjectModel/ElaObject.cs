@@ -259,7 +259,7 @@ namespace Ela.Runtime.ObjectModel
                 return right.Ref.Concatenate(left, right, ctx);
             else
             {
-                ctx.NoOperator(This(left, right), "concat");
+                ctx.NoOperation(left, right, "concat");
                 return Default();
             }
 		}
@@ -267,8 +267,13 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal virtual ElaValue Add(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.NoOperator(This(left, right), "add");
-			return Default();
+            if (left.Ref == this)
+                return right.Ref.Add(left, right, ctx);
+            else
+            {
+                ctx.NoOperation(left, right, "add");
+                return Default();
+            }
 		}
 
 

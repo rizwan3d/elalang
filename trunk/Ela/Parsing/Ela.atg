@@ -97,6 +97,7 @@ TOKENS
 	QUALIFIED = "qualified".
 	
 	ET = "et".
+	ON = "on".
 	
 	EBLOCK = ";".
 	

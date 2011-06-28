@@ -18,8 +18,11 @@ Decide - all types are tagged or not.
 
 1. Errors (on compiler level)
 2. Errors (on VM level)
-3. Implementation of Call for ElaOverloadedFunction
-4. Implementation of Show for ElaOverloadedFunction
+3. Implementation of Call for ElaOverloadedFunction ==done
+4. Implementation of Show for ElaOverloadedFunction ==done
 5. Implementation of comparison for ElaOverloadedFunction
 6. Problem with hiding/disallowing overloads with the same signature
 7. Disallow to overload non-functions
+
+8. Errors (on parser level) ==done
+9. PrettyPrinter (for overload) ==done

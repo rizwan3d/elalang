@@ -66,6 +66,12 @@ namespace Ela.Runtime
 
 		TableTooMany = 829,
 
+        OverloadDuplicate = 830,
+
+        OverloadInvalid = 831,
+
+        OverloadNotFound = 832,
+
 
 		UserCode = 999
 	}

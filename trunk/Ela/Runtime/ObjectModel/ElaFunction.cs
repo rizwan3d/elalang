@@ -20,8 +20,7 @@ namespace Ela.Runtime.ObjectModel
         private const string ISNATIVE = "isNative";
         private const string ISGLOBAL = "isGlobal";
         private const string ISPARTIAL = "isPartial";
-
-
+        
 		protected ElaFunction() : this(1)
 		{
 
@@ -342,57 +341,4 @@ namespace Ela.Runtime.ObjectModel
 		}
 		#endregion
 	}
-
-
-    internal sealed class ElaOverloadedFunction : ElaFunction
-    {
-        #region Construction
-        private Dictionary<ParamInfo,ElaFunction> overloads;
-
-        internal ElaOverloadedFunction(Dictionary<ParamInfo,ElaFunction> funs, FastList<ElaValue[]> captures, ElaMachine vm) :
-            base(0, 0, 2, captures, vm)
-        {
-            overloads = funs;
-            Overloaded = true;
-        }
-        #endregion
-
-
-        #region Methods
-        internal override ElaFunction Resolve(ElaValue arg, ExecutionContext ctx)
-        {            
-            var tag = /*arg.TypeId != ElaMachine.VAR ? null :*/ arg.GetTag(ctx);
-
-            if (ctx.Failed)
-                return null;
-
-            var fun = default(ElaFunction);
-            
-            if (!overloads.TryGetValue(new ParamInfo(AppliedParameters, tag), out fun))
-            {
-                if (tag == null || !overloads.TryGetValue(new ParamInfo(AppliedParameters, null), out fun))
-                {
-                    //error
-                    ctx.Fail("No overloaded for function");
-                    return null;
-                }
-            }
-
-            fun = fun.CloneFast();
-            fun.AppliedParameters = AppliedParameters;
-
-            for (var i = 0; i < AppliedParameters; i++)
-                fun.Parameters[i] = Parameters[i];
-
-            return fun;
-        }
-
-
-        public override ElaFunction Clone()
-        {
-            var newInst = new ElaOverloadedFunction(overloads, Captures, Machine);
-            return CloneFast(newInst);
-        }
-        #endregion
-    }
 }
