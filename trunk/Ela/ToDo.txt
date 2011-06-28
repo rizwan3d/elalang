@@ -26,3 +26,4 @@ Decide - all types are tagged or not.
 
 8. Errors (on parser level) ==done
 9. PrettyPrinter (for overload) ==done
+10. Solve problems with standard functions for variants (comparison, show)
