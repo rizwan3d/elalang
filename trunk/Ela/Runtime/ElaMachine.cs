@@ -50,9 +50,9 @@ namespace Ela.Runtime
 			var mem = new ElaValue[lays.Size];
 			modules[0] = mem;
 
-            var d = AddToMap("$add", "Int");
-            d.Add("Int", dummyFun);
-            d.Add("Long", dummyFun);
+            //var d = AddToMap("$add", "Int");
+            //d.Add("Int", dummyFun);
+            //d.Add("Long", dummyFun);
 
             argModHandle = asm.TryGetModuleHandle("$Args");
 
@@ -85,6 +85,30 @@ namespace Ela.Runtime
 		internal const int MOD = (Int32)ElaTypeCode.Module;
 		internal const int LAZ = (Int32)ElaTypeCode.Lazy;
 		internal const int VAR = (Int32)ElaTypeCode.Variant;
+        private const bool _ = false;
+        
+        private static readonly bool[][] addOverrides =
+        {
+            //           NN IT LN SN DB BL CH ST UN LS __ TP RC FN OB MD LZ VR
+            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //NON
+            new bool[] { _, true, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //INT
+            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //LNG
+            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //SNG
+            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //DBL
+            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //BYT
+            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //CHR
+            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //STR
+            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //UNI
+            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //LST
+            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //___
+            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //TUP
+            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //REC
+            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //FUN
+            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //OBJ
+            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //MOD
+            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //LAZ
+            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //VAR
+        };
 		#endregion
 
 
@@ -520,10 +544,16 @@ namespace Ela.Runtime
                         left = evalStack.Pop();
                         right = evalStack.Peek();
 
-                        if (left.TypeId == INT && right.TypeId == INT)
+                        //if (left.TypeId == INT && right.TypeId == INT)
+                        //{
+                        //    evalStack.Replace(left.I4 + right.I4);
+                        //    break;
+                        //}
+
+                        if (addOverrides[left.TypeId][right.TypeId])
                         {
-                            evalStack.Replace(left.I4 + right.I4);
-                            break;
+                            InvokeOverride("$add", left, right, evalStack, thread, ctx);
+                            goto SWITCH_MEM;
                         }
 
                         evalStack.Replace(left.Ref.Add(left, right, ctx));
@@ -1767,6 +1797,17 @@ namespace Ela.Runtime
             }
 
             return false;
+        }
+
+
+        private void InvokeOverride(string fun, ElaValue left, ElaValue right, EvalStack evalStack, WorkerThread thread, ExecutionContext ctx)
+        {
+            evalStack.Pop();
+            var f = overloads[fun].Resolve(left, ctx).Resolve(right, ctx).CloneFast();
+            f.Parameters[0] = left;
+            f.AppliedParameters = 1;
+            f.LastParameter = right;
+            Call(f, thread, evalStack, CallFlag.AllParams);
         }
 
 
