@@ -86,29 +86,35 @@ namespace Ela.Runtime
 		internal const int LAZ = (Int32)ElaTypeCode.Lazy;
 		internal const int VAR = (Int32)ElaTypeCode.Variant;
         private const bool _ = false;
+
+		class __table
+		{
+			internal readonly bool[][] table =
+			{
+				//           NN IT LN SN DB BL CH ST UN LS __ TP RC FN OB MD LZ VR
+				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //NON
+				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //INT
+				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //LNG
+				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //SNG
+				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //DBL
+				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //BYT
+				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //CHR
+				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //STR
+				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //UNI
+				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //LST
+				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //___
+				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //TUP
+				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //REC
+				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //FUN
+				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //OBJ
+				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //MOD
+				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //LAZ
+				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //VAR
+			};
+		}
         
-        private static readonly bool[][] addOverrides =
-        {
-            //           NN IT LN SN DB BL CH ST UN LS __ TP RC FN OB MD LZ VR
-            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //NON
-            new bool[] { _, true, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //INT
-            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //LNG
-            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //SNG
-            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //DBL
-            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //BYT
-            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //CHR
-            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //STR
-            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //UNI
-            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //LST
-            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //___
-            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //TUP
-            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //REC
-            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //FUN
-            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //OBJ
-            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //MOD
-            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //LAZ
-            new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //VAR
-        };
+        private static readonly bool[][] add_ovl = new __table().table;
+		private static readonly bool[][] sub_ovl = new __table().table;
 		#endregion
 
 
@@ -243,6 +249,18 @@ namespace Ela.Runtime
 		#endregion
 
 
+		class Call2 : ElaObject
+		{
+			public Call2() : base((ElaTypeCode)(-1)) { }
+
+			internal override bool Call(EvalStack stack, ExecutionContext ctx)
+			{
+				stack.Replace(stack.Pop().I4 + stack.Peek().I4);
+				return false;
+			}
+		}
+
+
 		#region Execute
 		private ElaValue Execute(WorkerThread thread)
 		{
@@ -269,6 +287,27 @@ namespace Ela.Runtime
 
 				switch (op)
 				{
+
+					case Op.Pushadd:
+						evalStack.Push(new ElaValue(new Call2()));
+						break;
+					case Op.Call2:
+						{
+							var obj = evalStack.PopFast().Ref;
+
+							if (obj.Call(evalStack, ctx))
+								goto SWITCH_MEM;
+
+							if (ctx.Failed)
+							{
+								evalStack.Push(new ElaValue(obj));
+								ExecuteThrow(thread, evalStack);
+								goto SWITCH_MEM;
+							}
+						}
+						break;
+
+
 					#region Stack Operations
 					case Op.Tupex:
 						{
@@ -544,17 +583,17 @@ namespace Ela.Runtime
                         left = evalStack.Pop();
                         right = evalStack.Peek();
 
-                        //if (left.TypeId == INT && right.TypeId == INT)
-                        //{
-                        //    evalStack.Replace(left.I4 + right.I4);
-                        //    break;
-                        //}
+						//if (left.TypeId == INT && right.TypeId == INT)
+						//{
+						//    evalStack.Replace(left.I4 + right.I4);
+						//    break;
+						//}
 
-                        if (addOverrides[left.TypeId][right.TypeId])
-                        {
-                            InvokeOverride("$add", left, right, evalStack, thread, ctx);
-                            goto SWITCH_MEM;
-                        }
+						if (add_ovl[left.TypeId][right.TypeId])
+						{
+							InvokeOverride("$add", left, right, evalStack, thread, ctx);
+							goto SWITCH_MEM;
+						}
 
                         evalStack.Replace(left.Ref.Add(left, right, ctx));
 
@@ -1803,7 +1842,7 @@ namespace Ela.Runtime
         private void InvokeOverride(string fun, ElaValue left, ElaValue right, EvalStack evalStack, WorkerThread thread, ExecutionContext ctx)
         {
             evalStack.Pop();
-            var f = overloads[fun].Resolve(left, ctx).Resolve(right, ctx).CloneFast();
+            var f = overloads[fun].Resolve(left, ctx).Resolve(right, ctx);
             f.Parameters[0] = left;
             f.AppliedParameters = 1;
             f.LastParameter = right;

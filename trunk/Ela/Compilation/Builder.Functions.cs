@@ -266,6 +266,8 @@ namespace Ela.Compilation
 					break;
 				case ElaBuiltinKind.Add:
 					cw.Emit(Op.Add);
+					//cw.Emit(Op.Pushadd);
+					//cw.Emit(Op.Call2);
 					break;
 				case ElaBuiltinKind.Divide:
 					cw.Emit(Op.Div);

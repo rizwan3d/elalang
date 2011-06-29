@@ -142,6 +142,10 @@ namespace Ela.Compilation
 
         Ovr,
 
+		Call2,
+
+		Pushadd,
+
 
 		
 		Elem,

@@ -158,6 +158,11 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
+		internal virtual bool Call(EvalStack stack, ExecutionContext ctx)
+		{
+			return false;
+		}
+
         protected internal virtual ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.Ref == this)
