@@ -162,6 +162,8 @@
     <Compile Include="Linking\ModuleEventArgs.cs" />
     <Compile Include="Loc.cs" />
     <Compile Include="Runtime\CallFlag.cs" />
+    <Compile Include="Runtime\DispatchBinaryFun.cs" />
+    <Compile Include="Runtime\DispatchTable.cs" />
     <Compile Include="Runtime\ElaRuntimeException.cs" />
     <Compile Include="Runtime\EqHelper.cs" />
     <Compile Include="Runtime\ObjectModel\DelegateFunction.cs" />

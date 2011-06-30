@@ -27,7 +27,7 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Nested Classes
-        private sealed class ElaInvalidObject : ElaObject
+        internal sealed class ElaInvalidObject : ElaObject
         {
             internal static readonly ElaInvalidObject Instance = new ElaInvalidObject();
 
@@ -45,6 +45,12 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Methods
+        internal virtual bool IsEvaluated()
+        {
+            return true;
+        }
+
+
         protected internal virtual bool Is<T>(ElaValue value) where T : ElaObject
         {
             return this is T;
@@ -131,10 +137,16 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected ElaValue Default()
+		internal static ElaValue GetDefault()
 		{
 			return new ElaValue(ElaInvalidObject.Instance);
 		}
+
+
+        protected ElaValue Default()
+        {
+            return new ElaValue(ElaInvalidObject.Instance);
+        }
 
 
 		protected internal virtual string GetTypeName()

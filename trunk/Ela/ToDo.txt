@@ -27,3 +27,11 @@ Decide - all types are tagged or not.
 8. Errors (on parser level) ==done
 9. PrettyPrinter (for overload) ==done
 10. Solve problems with standard functions for variants (comparison, show)
+
+
+Add:Int#->Int#
+Add:Int#->Long#
+Add:Int#->Single#
+Add:Int#->Double#
+Add:Int#->Tuple#
+Add:Long#->Int#

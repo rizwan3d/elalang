@@ -680,8 +680,8 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Properties
-		public ElaValue this[int index]
+        #region Properties
+        public ElaValue this[int index]
 		{
 			get
 			{

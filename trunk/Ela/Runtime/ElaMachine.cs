@@ -64,6 +64,7 @@ namespace Ela.Runtime
             }
 
 			MainThread.CallStack.Push(new CallPoint(0, new EvalStack(lays.StackSize), mem, FastList<ElaValue[]>.Empty));
+            InitializeTables();
 		}
 		#endregion
 
@@ -85,36 +86,593 @@ namespace Ela.Runtime
 		internal const int MOD = (Int32)ElaTypeCode.Module;
 		internal const int LAZ = (Int32)ElaTypeCode.Lazy;
 		internal const int VAR = (Int32)ElaTypeCode.Variant;
-        private const bool _ = false;
 
-		class __table
-		{
-			internal readonly bool[][] table =
-			{
-				//           NN IT LN SN DB BL CH ST UN LS __ TP RC FN OB MD LZ VR
-				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //NON
-				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //INT
-				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //LNG
-				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //SNG
-				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //DBL
-				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //BYT
-				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //CHR
-				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //STR
-				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //UNI
-				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //LST
-				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //___
-				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //TUP
-				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //REC
-				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //FUN
-				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //OBJ
-				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //MOD
-				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //LAZ
-				new bool[] { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ }, //VAR
-			};
-		}
+        private readonly static DispatchBinaryFun ___ = new NoneBinary("addition");
         
-        private static readonly bool[][] add_ovl = new __table().table;
-		private static readonly bool[][] sub_ovl = new __table().table;
+        private sealed class __table
+        {
+            internal readonly DispatchBinaryFun[][] table = 
+            {
+                //                        NON  INT  LNG  SNG  DBL  BYT  CHR  STR  UNI  LST  ___  TUP  REC  FUN  OBJ  MOD  LAZ  VAR
+                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //INT
+                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //NON
+                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //LNG
+                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //SNG
+                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //DBL
+                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //BYT
+                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //CHR
+                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //STR
+                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //UNI
+                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //LST
+                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //___
+                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //TUP
+                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //REC
+                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //FUN
+                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //OBJ
+                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //MOD
+                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //LAZ
+                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //VAR
+            };
+        }
+
+        private readonly DispatchBinaryFun[][] add_ovl = new __table().table;
+        private readonly DispatchBinaryFun[][] sub_ovl = new __table().table;
+        private readonly DispatchBinaryFun[][] mul_ovl = new __table().table;
+        private readonly DispatchBinaryFun[][] div_ovl = new __table().table;
+        private readonly DispatchBinaryFun[][] rem_ovl = new __table().table;
+        private readonly DispatchBinaryFun[][] pow_ovl = new __table().table;
+        private readonly DispatchBinaryFun[][] and_ovl = new __table().table;
+        private readonly DispatchBinaryFun[][] bor_ovl = new __table().table;
+        private readonly DispatchBinaryFun[][] xor_ovl = new __table().table;
+        private readonly DispatchBinaryFun[][] shl_ovl = new __table().table;
+        private readonly DispatchBinaryFun[][] shr_ovl = new __table().table;
+        
+        private DispatchBinaryFun addIntInt;
+        private DispatchBinaryFun addIntLng;
+        private DispatchBinaryFun addIntSng;
+        private DispatchBinaryFun addIntDbl;
+        private DispatchBinaryFun addLngInt;
+        private DispatchBinaryFun addLngLng;
+        private DispatchBinaryFun addLngSng;
+        private DispatchBinaryFun addLngDbl;
+        private DispatchBinaryFun addSngInt;
+        private DispatchBinaryFun addSngLng;
+        private DispatchBinaryFun addSngSng;
+        private DispatchBinaryFun addSngDbl;
+        private DispatchBinaryFun addDblInt;
+        private DispatchBinaryFun addDblLng;
+        private DispatchBinaryFun addDblSng;
+        private DispatchBinaryFun addDblDbl;
+        private DispatchBinaryFun addTupTup;
+        private DispatchBinaryFun addLazLaz;
+
+        private DispatchBinaryFun subIntInt;
+        private DispatchBinaryFun subIntLng;
+        private DispatchBinaryFun subIntSng;
+        private DispatchBinaryFun subIntDbl;
+        private DispatchBinaryFun subLngInt;
+        private DispatchBinaryFun subLngLng;
+        private DispatchBinaryFun subLngSng;
+        private DispatchBinaryFun subLngDbl;
+        private DispatchBinaryFun subSngInt;
+        private DispatchBinaryFun subSngLng;
+        private DispatchBinaryFun subSngSng;
+        private DispatchBinaryFun subSngDbl;
+        private DispatchBinaryFun subDblInt;
+        private DispatchBinaryFun subDblLng;
+        private DispatchBinaryFun subDblSng;
+        private DispatchBinaryFun subDblDbl;
+        private DispatchBinaryFun subTupTup;
+        private DispatchBinaryFun subLazLaz;
+
+        private DispatchBinaryFun mulIntInt;
+        private DispatchBinaryFun mulIntLng;
+        private DispatchBinaryFun mulIntSng;
+        private DispatchBinaryFun mulIntDbl;
+        private DispatchBinaryFun mulLngInt;
+        private DispatchBinaryFun mulLngLng;
+        private DispatchBinaryFun mulLngSng;
+        private DispatchBinaryFun mulLngDbl;
+        private DispatchBinaryFun mulSngInt;
+        private DispatchBinaryFun mulSngLng;
+        private DispatchBinaryFun mulSngSng;
+        private DispatchBinaryFun mulSngDbl;
+        private DispatchBinaryFun mulDblInt;
+        private DispatchBinaryFun mulDblLng;
+        private DispatchBinaryFun mulDblSng;
+        private DispatchBinaryFun mulDblDbl;
+        private DispatchBinaryFun mulTupTup;
+        private DispatchBinaryFun mulLazLaz;
+
+        private DispatchBinaryFun divIntInt;
+        private DispatchBinaryFun divIntLng;
+        private DispatchBinaryFun divIntSng;
+        private DispatchBinaryFun divIntDbl;
+        private DispatchBinaryFun divLngInt;
+        private DispatchBinaryFun divLngLng;
+        private DispatchBinaryFun divLngSng;
+        private DispatchBinaryFun divLngDbl;
+        private DispatchBinaryFun divSngInt;
+        private DispatchBinaryFun divSngLng;
+        private DispatchBinaryFun divSngSng;
+        private DispatchBinaryFun divSngDbl;
+        private DispatchBinaryFun divDblInt;
+        private DispatchBinaryFun divDblLng;
+        private DispatchBinaryFun divDblSng;
+        private DispatchBinaryFun divDblDbl;
+        private DispatchBinaryFun divTupTup;
+        private DispatchBinaryFun divLazLaz;
+
+        private DispatchBinaryFun remIntInt;
+        private DispatchBinaryFun remIntLng;
+        private DispatchBinaryFun remIntSng;
+        private DispatchBinaryFun remIntDbl;
+        private DispatchBinaryFun remLngInt;
+        private DispatchBinaryFun remLngLng;
+        private DispatchBinaryFun remLngSng;
+        private DispatchBinaryFun remLngDbl;
+        private DispatchBinaryFun remSngInt;
+        private DispatchBinaryFun remSngLng;
+        private DispatchBinaryFun remSngSng;
+        private DispatchBinaryFun remSngDbl;
+        private DispatchBinaryFun remDblInt;
+        private DispatchBinaryFun remDblLng;
+        private DispatchBinaryFun remDblSng;
+        private DispatchBinaryFun remDblDbl;
+        private DispatchBinaryFun remTupTup;
+        private DispatchBinaryFun remLazLaz;
+
+        private DispatchBinaryFun powIntInt;
+        private DispatchBinaryFun powIntLng;
+        private DispatchBinaryFun powIntSng;
+        private DispatchBinaryFun powIntDbl;
+        private DispatchBinaryFun powLngInt;
+        private DispatchBinaryFun powLngLng;
+        private DispatchBinaryFun powLngSng;
+        private DispatchBinaryFun powLngDbl;
+        private DispatchBinaryFun powSngInt;
+        private DispatchBinaryFun powSngLng;
+        private DispatchBinaryFun powSngSng;
+        private DispatchBinaryFun powSngDbl;
+        private DispatchBinaryFun powDblInt;
+        private DispatchBinaryFun powDblLng;
+        private DispatchBinaryFun powDblSng;
+        private DispatchBinaryFun powDblDbl;
+        private DispatchBinaryFun powTupTup;
+        private DispatchBinaryFun powLazLaz;
+
+        private DispatchBinaryFun andIntInt;
+        private DispatchBinaryFun andIntLng;
+        private DispatchBinaryFun andLngInt;
+        private DispatchBinaryFun andLngLng;
+        private DispatchBinaryFun andTupTup;
+        private DispatchBinaryFun andLazLaz;
+
+        private DispatchBinaryFun borIntInt;
+        private DispatchBinaryFun borIntLng;
+        private DispatchBinaryFun borLngInt;
+        private DispatchBinaryFun borLngLng;
+        private DispatchBinaryFun borTupTup;
+        private DispatchBinaryFun borLazLaz;
+
+        private DispatchBinaryFun xorIntInt;
+        private DispatchBinaryFun xorIntLng;
+        private DispatchBinaryFun xorLngInt;
+        private DispatchBinaryFun xorLngLng;
+        private DispatchBinaryFun xorTupTup;
+        private DispatchBinaryFun xorLazLaz;
+
+        private DispatchBinaryFun shlIntInt;
+        private DispatchBinaryFun shlIntLng;
+        private DispatchBinaryFun shlLngInt;
+        private DispatchBinaryFun shlLngLng;
+        private DispatchBinaryFun shlTupTup;
+        private DispatchBinaryFun shlLazLaz;
+
+        private DispatchBinaryFun shrIntInt;
+        private DispatchBinaryFun shrIntLng;
+        private DispatchBinaryFun shrLngInt;
+        private DispatchBinaryFun shrLngLng;
+        private DispatchBinaryFun shrTupTup;
+        private DispatchBinaryFun shrLazLaz;
+
+
+        private void InitializeTables()
+        {
+            addIntInt = new AddIntInt(add_ovl);
+            addIntLng = new AddIntLong(add_ovl);
+            addIntSng = new AddIntSingle(add_ovl);
+            addIntDbl = new AddIntDouble(add_ovl);
+            addLngInt = new AddLongInt(add_ovl);
+            addLngLng = new AddLongLong(add_ovl);
+            addLngSng = new AddLongSingle(add_ovl);
+            addLngDbl = new AddLongDouble(add_ovl);
+            addSngInt = new AddSingleInt(add_ovl);
+            addSngLng = new AddSingleLong(add_ovl);
+            addSngSng = new AddSingleSingle(add_ovl);
+            addSngDbl = new AddSingleDouble(add_ovl);
+            addDblInt = new AddDoubleInt(add_ovl);
+            addDblLng = new AddDoubleLong(add_ovl);
+            addDblSng = new AddDoubleSingle(add_ovl);
+            addDblDbl = new AddDoubleDouble(add_ovl);
+            addTupTup = new TupleBinary(add_ovl);
+            addLazLaz = new ThunkBinary(add_ovl);
+
+            subIntInt = new SubIntInt(sub_ovl);
+            subIntLng = new SubIntLong(sub_ovl);
+            subIntSng = new SubIntSingle(sub_ovl);
+            subIntDbl = new SubIntDouble(sub_ovl);
+            subLngInt = new SubLongInt(sub_ovl);
+            subLngLng = new SubLongLong(sub_ovl);
+            subLngSng = new SubLongSingle(sub_ovl);
+            subLngDbl = new SubLongDouble(sub_ovl);
+            subSngInt = new SubSingleInt(sub_ovl);
+            subSngLng = new SubSingleLong(sub_ovl);
+            subSngSng = new SubSingleSingle(sub_ovl);
+            subSngDbl = new SubSingleDouble(sub_ovl);
+            subDblInt = new SubDoubleInt(sub_ovl);
+            subDblLng = new SubDoubleLong(sub_ovl);
+            subDblSng = new SubDoubleSingle(sub_ovl);
+            subDblDbl = new SubDoubleDouble(sub_ovl);
+            subTupTup = new TupleBinary(sub_ovl);
+            subLazLaz = new ThunkBinary(sub_ovl);
+
+            mulIntInt = new MulIntInt(mul_ovl);
+            mulIntLng = new MulIntLong(mul_ovl);
+            mulIntSng = new MulIntSingle(mul_ovl);
+            mulIntDbl = new MulIntDouble(mul_ovl);
+            mulLngInt = new MulLongInt(mul_ovl);
+            mulLngLng = new MulLongLong(mul_ovl);
+            mulLngSng = new MulLongSingle(mul_ovl);
+            mulLngDbl = new MulLongDouble(mul_ovl);
+            mulSngInt = new MulSingleInt(mul_ovl);
+            mulSngLng = new MulSingleLong(mul_ovl);
+            mulSngSng = new MulSingleSingle(mul_ovl);
+            mulSngDbl = new MulSingleDouble(mul_ovl);
+            mulDblInt = new MulDoubleInt(mul_ovl);
+            mulDblLng = new MulDoubleLong(mul_ovl);
+            mulDblSng = new MulDoubleSingle(mul_ovl);
+            mulDblDbl = new MulDoubleDouble(mul_ovl);
+            mulTupTup = new TupleBinary(mul_ovl);
+            mulLazLaz = new ThunkBinary(mul_ovl);
+
+            divIntInt = new DivIntInt(div_ovl);
+            divIntLng = new DivIntLong(div_ovl);
+            divIntSng = new DivIntSingle(div_ovl);
+            divIntDbl = new DivIntDouble(div_ovl);
+            divLngInt = new DivLongInt(div_ovl);
+            divLngLng = new DivLongLong(div_ovl);
+            divLngSng = new DivLongSingle(div_ovl);
+            divLngDbl = new DivLongDouble(div_ovl);
+            divSngInt = new DivSingleInt(div_ovl);
+            divSngLng = new DivSingleLong(div_ovl);
+            divSngSng = new DivSingleSingle(div_ovl);
+            divSngDbl = new DivSingleDouble(div_ovl);
+            divDblInt = new DivDoubleInt(div_ovl);
+            divDblLng = new DivDoubleLong(div_ovl);
+            divDblSng = new DivDoubleSingle(div_ovl);
+            divDblDbl = new DivDoubleDouble(div_ovl);
+            divTupTup = new TupleBinary(div_ovl);
+            divLazLaz = new ThunkBinary(div_ovl);
+
+            remIntInt = new RemIntInt(rem_ovl);
+            remIntLng = new RemIntLong(rem_ovl);
+            remIntSng = new RemIntSingle(rem_ovl);
+            remIntDbl = new RemIntDouble(rem_ovl);
+            remLngInt = new RemLongInt(rem_ovl);
+            remLngLng = new RemLongLong(rem_ovl);
+            remLngSng = new RemLongSingle(rem_ovl);
+            remLngDbl = new RemLongDouble(rem_ovl);
+            remSngInt = new RemSingleInt(rem_ovl);
+            remSngLng = new RemSingleLong(rem_ovl);
+            remSngSng = new RemSingleSingle(rem_ovl);
+            remSngDbl = new RemSingleDouble(rem_ovl);
+            remDblInt = new RemDoubleInt(rem_ovl);
+            remDblLng = new RemDoubleLong(rem_ovl);
+            remDblSng = new RemDoubleSingle(rem_ovl);
+            remDblDbl = new RemDoubleDouble(rem_ovl);
+            remTupTup = new TupleBinary(rem_ovl);
+            remLazLaz = new ThunkBinary(rem_ovl);
+
+            powIntInt = new PowIntInt(pow_ovl);
+            powIntLng = new PowIntLong(pow_ovl);
+            powIntSng = new PowIntSingle(pow_ovl);
+            powIntDbl = new PowIntDouble(pow_ovl);
+            powLngInt = new PowLongInt(pow_ovl);
+            powLngLng = new PowLongLong(pow_ovl);
+            powLngSng = new PowLongSingle(pow_ovl);
+            powLngDbl = new PowLongDouble(pow_ovl);
+            powSngInt = new PowSingleInt(pow_ovl);
+            powSngLng = new PowSingleLong(pow_ovl);
+            powSngSng = new PowSingleSingle(pow_ovl);
+            powSngDbl = new PowSingleDouble(pow_ovl);
+            powDblInt = new PowDoubleInt(pow_ovl);
+            powDblLng = new PowDoubleLong(pow_ovl);
+            powDblSng = new PowDoubleSingle(pow_ovl);
+            powDblDbl = new PowDoubleDouble(pow_ovl);
+            powTupTup = new TupleBinary(pow_ovl);
+            powLazLaz = new ThunkBinary(pow_ovl);
+
+            andIntInt = new AndIntInt(and_ovl);
+            andIntLng = new AndIntLong(and_ovl);
+            andLngInt = new AndLongInt(and_ovl);
+            andLngLng = new AndLongLong(and_ovl);
+            andTupTup = new TupleBinary(and_ovl);
+            andLazLaz = new ThunkBinary(and_ovl);
+
+            borIntInt = new BorIntInt(bor_ovl);
+            borIntLng = new BorIntLong(bor_ovl);
+            borLngInt = new BorLongInt(bor_ovl);
+            borLngLng = new BorLongLong(bor_ovl);
+            borTupTup = new TupleBinary(bor_ovl);
+            borLazLaz = new ThunkBinary(bor_ovl);
+
+            xorIntInt = new XorIntInt(xor_ovl);
+            xorIntLng = new XorIntLong(xor_ovl);
+            xorLngInt = new XorLongInt(xor_ovl);
+            xorLngLng = new XorLongLong(xor_ovl);
+            xorTupTup = new TupleBinary(xor_ovl);
+            xorLazLaz = new ThunkBinary(xor_ovl);
+
+            shlIntInt = new ShlIntInt(shl_ovl);
+            shlIntLng = new ShlIntLong(shl_ovl);
+            shlLngInt = new ShlLongInt(shl_ovl);
+            shlLngLng = new ShlLongLong(shl_ovl);
+            shlTupTup = new TupleBinary(shl_ovl);
+            shlLazLaz = new ThunkBinary(shl_ovl);
+
+            shrIntInt = new ShrIntInt(shr_ovl);
+            shrIntLng = new ShrIntLong(shr_ovl);
+            shrLngInt = new ShrLongInt(shr_ovl);
+            shrLngLng = new ShrLongLong(shr_ovl);
+            shrTupTup = new TupleBinary(shr_ovl);
+            shrLazLaz = new ThunkBinary(shr_ovl);
+
+            add_ovl[INT][INT] = addIntInt;
+            add_ovl[INT][LNG] = addIntLng;
+            add_ovl[INT][REA] = addIntSng;
+            add_ovl[INT][DBL] = addIntDbl;
+            add_ovl[LNG][INT] = addLngInt;
+            add_ovl[LNG][LNG] = addLngLng;
+            add_ovl[LNG][REA] = addLngSng;
+            add_ovl[LNG][DBL] = addLngDbl;
+            add_ovl[REA][INT] = addSngInt;
+            add_ovl[REA][LNG] = addSngLng;
+            add_ovl[REA][REA] = addSngSng;
+            add_ovl[REA][DBL] = addSngDbl;
+            add_ovl[DBL][INT] = addDblInt;
+            add_ovl[DBL][LNG] = addDblLng;
+            add_ovl[DBL][REA] = addDblSng;
+            add_ovl[DBL][DBL] = addDblDbl;
+            add_ovl[TUP][INT] = addTupTup;
+            add_ovl[TUP][LNG] = addTupTup;
+            add_ovl[TUP][REA] = addTupTup;
+            add_ovl[TUP][DBL] = addTupTup;
+            add_ovl[TUP][TUP] = addTupTup;
+            add_ovl[LAZ][INT] = addLazLaz;
+            add_ovl[LAZ][LNG] = addLazLaz;
+            add_ovl[LAZ][REA] = addLazLaz;
+            add_ovl[LAZ][DBL] = addLazLaz;
+            add_ovl[LAZ][TUP] = addLazLaz;
+            add_ovl[LAZ][LAZ] = addLazLaz;
+
+            sub_ovl[INT][INT] = subIntInt;
+            sub_ovl[INT][LNG] = subIntLng;
+            sub_ovl[INT][REA] = subIntSng;
+            sub_ovl[INT][DBL] = subIntDbl;
+            sub_ovl[LNG][INT] = subLngInt;
+            sub_ovl[LNG][LNG] = subLngLng;
+            sub_ovl[LNG][REA] = subLngSng;
+            sub_ovl[LNG][DBL] = subLngDbl;
+            sub_ovl[REA][INT] = subSngInt;
+            sub_ovl[REA][LNG] = subSngLng;
+            sub_ovl[REA][REA] = subSngSng;
+            sub_ovl[REA][DBL] = subSngDbl;
+            sub_ovl[DBL][INT] = subDblInt;
+            sub_ovl[DBL][LNG] = subDblLng;
+            sub_ovl[DBL][REA] = subDblSng;
+            sub_ovl[DBL][DBL] = subDblDbl;
+            sub_ovl[TUP][INT] = subTupTup;
+            sub_ovl[TUP][LNG] = subTupTup;
+            sub_ovl[TUP][REA] = subTupTup;
+            sub_ovl[TUP][DBL] = subTupTup;
+            sub_ovl[TUP][TUP] = subTupTup;
+            sub_ovl[LAZ][INT] = subLazLaz;
+            sub_ovl[LAZ][LNG] = subLazLaz;
+            sub_ovl[LAZ][REA] = subLazLaz;
+            sub_ovl[LAZ][DBL] = subLazLaz;
+            sub_ovl[LAZ][TUP] = subLazLaz;
+            sub_ovl[LAZ][LAZ] = subLazLaz;
+
+            mul_ovl[INT][INT] = mulIntInt;
+            mul_ovl[INT][LNG] = mulIntLng;
+            mul_ovl[INT][REA] = mulIntSng;
+            mul_ovl[INT][DBL] = mulIntDbl;
+            mul_ovl[LNG][INT] = mulLngInt;
+            mul_ovl[LNG][LNG] = mulLngLng;
+            mul_ovl[LNG][REA] = mulLngSng;
+            mul_ovl[LNG][DBL] = mulLngDbl;
+            mul_ovl[REA][INT] = mulSngInt;
+            mul_ovl[REA][LNG] = mulSngLng;
+            mul_ovl[REA][REA] = mulSngSng;
+            mul_ovl[REA][DBL] = mulSngDbl;
+            mul_ovl[DBL][INT] = mulDblInt;
+            mul_ovl[DBL][LNG] = mulDblLng;
+            mul_ovl[DBL][REA] = mulDblSng;
+            mul_ovl[DBL][DBL] = mulDblDbl;
+            mul_ovl[TUP][INT] = mulTupTup;
+            mul_ovl[TUP][LNG] = mulTupTup;
+            mul_ovl[TUP][REA] = mulTupTup;
+            mul_ovl[TUP][DBL] = mulTupTup;
+            mul_ovl[TUP][TUP] = mulTupTup;
+            mul_ovl[LAZ][INT] = mulLazLaz;
+            mul_ovl[LAZ][LNG] = mulLazLaz;
+            mul_ovl[LAZ][REA] = mulLazLaz;
+            mul_ovl[LAZ][DBL] = mulLazLaz;
+            mul_ovl[LAZ][TUP] = mulLazLaz;
+            mul_ovl[LAZ][LAZ] = mulLazLaz;
+
+            div_ovl[INT][INT] = divIntInt;
+            div_ovl[INT][LNG] = divIntLng;
+            div_ovl[INT][REA] = divIntSng;
+            div_ovl[INT][DBL] = divIntDbl;
+            div_ovl[LNG][INT] = divLngInt;
+            div_ovl[LNG][LNG] = divLngLng;
+            div_ovl[LNG][REA] = divLngSng;
+            div_ovl[LNG][DBL] = divLngDbl;
+            div_ovl[REA][INT] = divSngInt;
+            div_ovl[REA][LNG] = divSngLng;
+            div_ovl[REA][REA] = divSngSng;
+            div_ovl[REA][DBL] = divSngDbl;
+            div_ovl[DBL][INT] = divDblInt;
+            div_ovl[DBL][LNG] = divDblLng;
+            div_ovl[DBL][REA] = divDblSng;
+            div_ovl[DBL][DBL] = divDblDbl;
+            div_ovl[TUP][INT] = divTupTup;
+            div_ovl[TUP][LNG] = divTupTup;
+            div_ovl[TUP][REA] = divTupTup;
+            div_ovl[TUP][DBL] = divTupTup;
+            div_ovl[TUP][TUP] = divTupTup;
+            div_ovl[LAZ][INT] = divLazLaz;
+            div_ovl[LAZ][LNG] = divLazLaz;
+            div_ovl[LAZ][REA] = divLazLaz;
+            div_ovl[LAZ][DBL] = divLazLaz;
+            div_ovl[LAZ][TUP] = divLazLaz;
+            div_ovl[LAZ][LAZ] = divLazLaz;
+
+            rem_ovl[INT][INT] = remIntInt;
+            rem_ovl[INT][LNG] = remIntLng;
+            rem_ovl[INT][REA] = remIntSng;
+            rem_ovl[INT][DBL] = remIntDbl;
+            rem_ovl[LNG][INT] = remLngInt;
+            rem_ovl[LNG][LNG] = remLngLng;
+            rem_ovl[LNG][REA] = remLngSng;
+            rem_ovl[LNG][DBL] = remLngDbl;
+            rem_ovl[REA][INT] = remSngInt;
+            rem_ovl[REA][LNG] = remSngLng;
+            rem_ovl[REA][REA] = remSngSng;
+            rem_ovl[REA][DBL] = remSngDbl;
+            rem_ovl[DBL][INT] = remDblInt;
+            rem_ovl[DBL][LNG] = remDblLng;
+            rem_ovl[DBL][REA] = remDblSng;
+            rem_ovl[DBL][DBL] = remDblDbl;
+            rem_ovl[TUP][INT] = remTupTup;
+            rem_ovl[TUP][LNG] = remTupTup;
+            rem_ovl[TUP][REA] = remTupTup;
+            rem_ovl[TUP][DBL] = remTupTup;
+            rem_ovl[TUP][TUP] = remTupTup;
+            rem_ovl[LAZ][INT] = remLazLaz;
+            rem_ovl[LAZ][LNG] = remLazLaz;
+            rem_ovl[LAZ][REA] = remLazLaz;
+            rem_ovl[LAZ][DBL] = remLazLaz;
+            rem_ovl[LAZ][TUP] = remLazLaz;
+            rem_ovl[LAZ][LAZ] = remLazLaz;
+
+            pow_ovl[INT][INT] = powIntInt;
+            pow_ovl[INT][LNG] = powIntLng;
+            pow_ovl[INT][REA] = powIntSng;
+            pow_ovl[INT][DBL] = powIntDbl;
+            pow_ovl[LNG][INT] = powLngInt;
+            pow_ovl[LNG][LNG] = powLngLng;
+            pow_ovl[LNG][REA] = powLngSng;
+            pow_ovl[LNG][DBL] = powLngDbl;
+            pow_ovl[REA][INT] = powSngInt;
+            pow_ovl[REA][LNG] = powSngLng;
+            pow_ovl[REA][REA] = powSngSng;
+            pow_ovl[REA][DBL] = powSngDbl;
+            pow_ovl[DBL][INT] = powDblInt;
+            pow_ovl[DBL][LNG] = powDblLng;
+            pow_ovl[DBL][REA] = powDblSng;
+            pow_ovl[DBL][DBL] = powDblDbl;
+            pow_ovl[TUP][INT] = powTupTup;
+            pow_ovl[TUP][LNG] = powTupTup;
+            pow_ovl[TUP][REA] = powTupTup;
+            pow_ovl[TUP][DBL] = powTupTup;
+            pow_ovl[TUP][TUP] = powTupTup;
+            pow_ovl[LAZ][INT] = powLazLaz;
+            pow_ovl[LAZ][LNG] = powLazLaz;
+            pow_ovl[LAZ][REA] = powLazLaz;
+            pow_ovl[LAZ][DBL] = powLazLaz;
+            pow_ovl[LAZ][TUP] = powLazLaz;
+            pow_ovl[LAZ][LAZ] = powLazLaz;
+
+            and_ovl[INT][INT] = andIntInt;
+            and_ovl[INT][LNG] = andIntLng;
+            and_ovl[LNG][INT] = andLngInt;
+            and_ovl[LNG][LNG] = andLngLng;
+            and_ovl[TUP][INT] = andTupTup;
+            and_ovl[TUP][LNG] = andTupTup;
+            and_ovl[TUP][TUP] = andTupTup;
+            and_ovl[LAZ][INT] = andLazLaz;
+            and_ovl[LAZ][LNG] = andLazLaz;
+            and_ovl[LAZ][TUP] = andLazLaz;
+            and_ovl[LAZ][LAZ] = andLazLaz;
+
+            bor_ovl[INT][INT] = borIntInt;
+            bor_ovl[INT][LNG] = borIntLng;
+            bor_ovl[LNG][INT] = borLngInt;
+            bor_ovl[LNG][LNG] = borLngLng;
+            bor_ovl[TUP][INT] = borTupTup;
+            bor_ovl[TUP][LNG] = borTupTup;
+            bor_ovl[TUP][TUP] = borTupTup;
+            bor_ovl[LAZ][INT] = borLazLaz;
+            bor_ovl[LAZ][LNG] = borLazLaz;
+            bor_ovl[LAZ][TUP] = borLazLaz;
+            bor_ovl[LAZ][LAZ] = borLazLaz;
+
+            xor_ovl[INT][INT] = xorIntInt;
+            xor_ovl[INT][LNG] = xorIntLng;
+            xor_ovl[LNG][INT] = xorLngInt;
+            xor_ovl[LNG][LNG] = xorLngLng;
+            xor_ovl[TUP][INT] = xorTupTup;
+            xor_ovl[TUP][LNG] = xorTupTup;
+            xor_ovl[TUP][TUP] = xorTupTup;
+            xor_ovl[LAZ][INT] = xorLazLaz;
+            xor_ovl[LAZ][LNG] = xorLazLaz;
+            xor_ovl[LAZ][TUP] = xorLazLaz;
+            xor_ovl[LAZ][LAZ] = xorLazLaz;
+
+            shl_ovl[INT][INT] = shlIntInt;
+            shl_ovl[INT][LNG] = shlIntLng;
+            shl_ovl[LNG][INT] = shlLngInt;
+            shl_ovl[LNG][LNG] = shlLngLng;
+            shl_ovl[TUP][INT] = shlTupTup;
+            shl_ovl[TUP][LNG] = shlTupTup;
+            shl_ovl[TUP][TUP] = shlTupTup;
+            shl_ovl[LAZ][INT] = shlLazLaz;
+            shl_ovl[LAZ][LNG] = shlLazLaz;
+            shl_ovl[LAZ][TUP] = shlLazLaz;
+            shl_ovl[LAZ][LAZ] = shlLazLaz;
+
+            shr_ovl[INT][INT] = shrIntInt;
+            shr_ovl[INT][LNG] = shrIntLng;
+            shr_ovl[LNG][INT] = shrLngInt;
+            shr_ovl[LNG][LNG] = shrLngLng;
+            shr_ovl[TUP][INT] = shrTupTup;
+            shr_ovl[TUP][LNG] = shrTupTup;
+            shr_ovl[TUP][TUP] = shrTupTup;
+            shr_ovl[LAZ][INT] = shrLazLaz;
+            shr_ovl[LAZ][LNG] = shrLazLaz;
+            shr_ovl[LAZ][TUP] = shrLazLaz;
+            shr_ovl[LAZ][LAZ] = shrLazLaz;
+        }
+
+
+
+        internal readonly DispatchBinaryFun[] neg_ovl = null;
+
+
+        internal static ElaValue BinaryOp(DispatchBinaryFun[][] funs, ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return funs[left.TypeId][right.TypeId].Call(left, right, ctx);
+        }
+
+
+        internal static ElaValue UnaryOp(DispatchBinaryFun[] funs, ElaValue left, ExecutionContext ctx)
+        {
+            //return funs[left.TypeId].Call(left, ctx));
+            return default(ElaValue);
+        }
 		#endregion
 
 
@@ -583,19 +1141,8 @@ namespace Ela.Runtime
                         left = evalStack.Pop();
                         right = evalStack.Peek();
 
-						//if (left.TypeId == INT && right.TypeId == INT)
-						//{
-						//    evalStack.Replace(left.I4 + right.I4);
-						//    break;
-						//}
-
-						if (add_ovl[left.TypeId][right.TypeId])
-						{
-							InvokeOverride("$add", left, right, evalStack, thread, ctx);
-							goto SWITCH_MEM;
-						}
-
-                        evalStack.Replace(left.Ref.Add(left, right, ctx));
+                        //evalStack.Replace(left.Ref.Add(left, right, ctx));
+                        evalStack.Replace(add_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
 
                         if (ctx.Failed)
                         {
@@ -604,6 +1151,33 @@ namespace Ela.Runtime
                             ExecuteThrow(thread, evalStack);
                             goto SWITCH_MEM;
                         }
+
+
+
+                        //left = evalStack.Pop();
+                        //right = evalStack.Peek();
+
+                        ////if (left.TypeId == INT && right.TypeId == INT)
+                        ////{
+                        ////    evalStack.Replace(left.I4 + right.I4);
+                        ////    break;
+                        ////}
+
+                        ////if (add_ovl[left.TypeId][right.TypeId])
+                        ////{
+                        ////    InvokeOverride("$add", left, right, evalStack, thread, ctx);
+                        ////    goto SWITCH_MEM;
+                        ////}
+
+                        //evalStack.Replace(left.Ref.Add(left, right, ctx));
+
+                        //if (ctx.Failed)
+                        //{
+                        //    evalStack.Replace(right);
+                        //    evalStack.Push(left);
+                        //    ExecuteThrow(thread, evalStack);
+                        //    goto SWITCH_MEM;
+                        //}
                         break;
 					case Op.Sub:
 						left = evalStack.Pop();
