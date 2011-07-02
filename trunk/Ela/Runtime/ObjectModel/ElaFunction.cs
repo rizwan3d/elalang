@@ -89,10 +89,10 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-        private bool IsEqual(ElaObject leftObj, ElaObject rightObj)
+        internal static bool IsEqual(ElaObject leftObj, ElaObject rightObj)
         {
             var left = leftObj as ElaFunction;
-            var right = leftObj as ElaFunction;
+			var right = rightObj as ElaFunction;
 
             if (left == null || right == null)
                 return false;

@@ -87,7 +87,7 @@ namespace Ela.Runtime
 		internal const int LAZ = (Int32)ElaTypeCode.Lazy;
 		internal const int VAR = (Int32)ElaTypeCode.Variant;
 
-        private readonly static DispatchBinaryFun ___ = new NoneBinary("addition");
+        private readonly static DispatchBinaryFun ___ = null;
         
         private sealed class __table
         {
@@ -126,7 +126,14 @@ namespace Ela.Runtime
         private readonly DispatchBinaryFun[][] xor_ovl = new __table().table;
         private readonly DispatchBinaryFun[][] shl_ovl = new __table().table;
         private readonly DispatchBinaryFun[][] shr_ovl = new __table().table;
-        
+		private readonly DispatchBinaryFun[][] eql_ovl = new __table().table;
+		private readonly DispatchBinaryFun[][] neq_ovl = new __table().table;
+		private readonly DispatchBinaryFun[][] gtr_ovl = new __table().table;
+		private readonly DispatchBinaryFun[][] gte_ovl = new __table().table;
+		private readonly DispatchBinaryFun[][] ltr_ovl = new __table().table;
+		private readonly DispatchBinaryFun[][] lte_ovl = new __table().table;
+
+		private static DispatchBinaryFun addErrErr = new NoneBinary("addition");
         private DispatchBinaryFun addIntInt;
         private DispatchBinaryFun addIntLng;
         private DispatchBinaryFun addIntSng;
@@ -146,7 +153,8 @@ namespace Ela.Runtime
         private DispatchBinaryFun addTupTup;
         private DispatchBinaryFun addLazLaz;
 
-        private DispatchBinaryFun subIntInt;
+		private static DispatchBinaryFun subErrErr = new NoneBinary("subtraction");
+		private DispatchBinaryFun subIntInt;
         private DispatchBinaryFun subIntLng;
         private DispatchBinaryFun subIntSng;
         private DispatchBinaryFun subIntDbl;
@@ -165,7 +173,8 @@ namespace Ela.Runtime
         private DispatchBinaryFun subTupTup;
         private DispatchBinaryFun subLazLaz;
 
-        private DispatchBinaryFun mulIntInt;
+		private static DispatchBinaryFun mulErrErr = new NoneBinary("multiplication");
+		private DispatchBinaryFun mulIntInt;
         private DispatchBinaryFun mulIntLng;
         private DispatchBinaryFun mulIntSng;
         private DispatchBinaryFun mulIntDbl;
@@ -184,7 +193,8 @@ namespace Ela.Runtime
         private DispatchBinaryFun mulTupTup;
         private DispatchBinaryFun mulLazLaz;
 
-        private DispatchBinaryFun divIntInt;
+		private static DispatchBinaryFun divErrErr = new NoneBinary("division");
+		private DispatchBinaryFun divIntInt;
         private DispatchBinaryFun divIntLng;
         private DispatchBinaryFun divIntSng;
         private DispatchBinaryFun divIntDbl;
@@ -203,7 +213,8 @@ namespace Ela.Runtime
         private DispatchBinaryFun divTupTup;
         private DispatchBinaryFun divLazLaz;
 
-        private DispatchBinaryFun remIntInt;
+		private static DispatchBinaryFun remErrErr = new NoneBinary("remainder");
+		private DispatchBinaryFun remIntInt;
         private DispatchBinaryFun remIntLng;
         private DispatchBinaryFun remIntSng;
         private DispatchBinaryFun remIntDbl;
@@ -222,7 +233,8 @@ namespace Ela.Runtime
         private DispatchBinaryFun remTupTup;
         private DispatchBinaryFun remLazLaz;
 
-        private DispatchBinaryFun powIntInt;
+		private static DispatchBinaryFun powErrErr = new NoneBinary("power");
+		private DispatchBinaryFun powIntInt;
         private DispatchBinaryFun powIntLng;
         private DispatchBinaryFun powIntSng;
         private DispatchBinaryFun powIntDbl;
@@ -241,40 +253,189 @@ namespace Ela.Runtime
         private DispatchBinaryFun powTupTup;
         private DispatchBinaryFun powLazLaz;
 
-        private DispatchBinaryFun andIntInt;
+		private static DispatchBinaryFun andErrErr = new NoneBinary("bitwise and");
+		private DispatchBinaryFun andIntInt;
         private DispatchBinaryFun andIntLng;
         private DispatchBinaryFun andLngInt;
         private DispatchBinaryFun andLngLng;
         private DispatchBinaryFun andTupTup;
         private DispatchBinaryFun andLazLaz;
 
-        private DispatchBinaryFun borIntInt;
+		private static DispatchBinaryFun borErrErr = new NoneBinary("bitwise or");
+		private DispatchBinaryFun borIntInt;
         private DispatchBinaryFun borIntLng;
         private DispatchBinaryFun borLngInt;
         private DispatchBinaryFun borLngLng;
         private DispatchBinaryFun borTupTup;
         private DispatchBinaryFun borLazLaz;
 
-        private DispatchBinaryFun xorIntInt;
+		private static DispatchBinaryFun xorErrErr = new NoneBinary("xor");
+		private DispatchBinaryFun xorIntInt;
         private DispatchBinaryFun xorIntLng;
         private DispatchBinaryFun xorLngInt;
         private DispatchBinaryFun xorLngLng;
         private DispatchBinaryFun xorTupTup;
         private DispatchBinaryFun xorLazLaz;
 
-        private DispatchBinaryFun shlIntInt;
+		private static DispatchBinaryFun shlErrErr = new NoneBinary("shift left");
+		private DispatchBinaryFun shlIntInt;
         private DispatchBinaryFun shlIntLng;
         private DispatchBinaryFun shlLngInt;
         private DispatchBinaryFun shlLngLng;
         private DispatchBinaryFun shlTupTup;
         private DispatchBinaryFun shlLazLaz;
 
-        private DispatchBinaryFun shrIntInt;
+		private static DispatchBinaryFun shrErrErr = new NoneBinary("shift right");
+		private DispatchBinaryFun shrIntInt;
         private DispatchBinaryFun shrIntLng;
         private DispatchBinaryFun shrLngInt;
         private DispatchBinaryFun shrLngLng;
         private DispatchBinaryFun shrTupTup;
-        private DispatchBinaryFun shrLazLaz;
+		private DispatchBinaryFun shrLazLaz;
+
+		private static DispatchBinaryFun eqlErrErr = new NoneBinary("equal");
+		private DispatchBinaryFun eqlIntInt;
+		private DispatchBinaryFun eqlIntLng;
+		private DispatchBinaryFun eqlIntSng;
+		private DispatchBinaryFun eqlIntDbl;
+		private DispatchBinaryFun eqlLngInt;
+		private DispatchBinaryFun eqlLngLng;
+		private DispatchBinaryFun eqlLngSng;
+		private DispatchBinaryFun eqlLngDbl;
+		private DispatchBinaryFun eqlSngInt;
+		private DispatchBinaryFun eqlSngLng;
+		private DispatchBinaryFun eqlSngSng;
+		private DispatchBinaryFun eqlSngDbl;
+		private DispatchBinaryFun eqlDblInt;
+		private DispatchBinaryFun eqlDblLng;
+		private DispatchBinaryFun eqlDblSng;
+		private DispatchBinaryFun eqlDblDbl;
+		private DispatchBinaryFun eqlTupTup;
+		private DispatchBinaryFun eqlLazLaz;
+		private DispatchBinaryFun eqlChrChr;
+		private DispatchBinaryFun eqlStrStr;
+		private DispatchBinaryFun eqlModMod;
+		private DispatchBinaryFun eqlFunFun;
+		private DispatchBinaryFun eqlRecRec;
+		private DispatchBinaryFun eqlLstLst;
+		private DispatchBinaryFun eqlVarVar;
+		private DispatchBinaryFun eqlUniUni;
+
+		private static DispatchBinaryFun neqErrErr = new NoneBinary("not equal");
+		private DispatchBinaryFun neqIntInt;
+		private DispatchBinaryFun neqIntLng;
+		private DispatchBinaryFun neqIntSng;
+		private DispatchBinaryFun neqIntDbl;
+		private DispatchBinaryFun neqLngInt;
+		private DispatchBinaryFun neqLngLng;
+		private DispatchBinaryFun neqLngSng;
+		private DispatchBinaryFun neqLngDbl;
+		private DispatchBinaryFun neqSngInt;
+		private DispatchBinaryFun neqSngLng;
+		private DispatchBinaryFun neqSngSng;
+		private DispatchBinaryFun neqSngDbl;
+		private DispatchBinaryFun neqDblInt;
+		private DispatchBinaryFun neqDblLng;
+		private DispatchBinaryFun neqDblSng;
+		private DispatchBinaryFun neqDblDbl;
+		private DispatchBinaryFun neqTupTup;
+		private DispatchBinaryFun neqLazLaz;
+		private DispatchBinaryFun neqChrChr;
+		private DispatchBinaryFun neqStrStr;
+		private DispatchBinaryFun neqModMod;
+		private DispatchBinaryFun neqFunFun;
+		private DispatchBinaryFun neqRecRec;
+		private DispatchBinaryFun neqLstLst;
+		private DispatchBinaryFun neqVarVar;
+		private DispatchBinaryFun neqUniUni;
+
+		private static DispatchBinaryFun gtrErrErr = new NoneBinary("greater");
+		private DispatchBinaryFun gtrIntInt;
+		private DispatchBinaryFun gtrIntLng;
+		private DispatchBinaryFun gtrIntSng;
+		private DispatchBinaryFun gtrIntDbl;
+		private DispatchBinaryFun gtrLngInt;
+		private DispatchBinaryFun gtrLngLng;
+		private DispatchBinaryFun gtrLngSng;
+		private DispatchBinaryFun gtrLngDbl;
+		private DispatchBinaryFun gtrSngInt;
+		private DispatchBinaryFun gtrSngLng;
+		private DispatchBinaryFun gtrSngSng;
+		private DispatchBinaryFun gtrSngDbl;
+		private DispatchBinaryFun gtrDblInt;
+		private DispatchBinaryFun gtrDblLng;
+		private DispatchBinaryFun gtrDblSng;
+		private DispatchBinaryFun gtrDblDbl;
+		private DispatchBinaryFun gtrTupTup;
+		private DispatchBinaryFun gtrLazLaz;
+		private DispatchBinaryFun gtrChrChr;
+		private DispatchBinaryFun gtrStrStr;
+
+		private static DispatchBinaryFun ltrErrErr = new NoneBinary("lesser");
+		private DispatchBinaryFun ltrIntInt;
+		private DispatchBinaryFun ltrIntLng;
+		private DispatchBinaryFun ltrIntSng;
+		private DispatchBinaryFun ltrIntDbl;
+		private DispatchBinaryFun ltrLngInt;
+		private DispatchBinaryFun ltrLngLng;
+		private DispatchBinaryFun ltrLngSng;
+		private DispatchBinaryFun ltrLngDbl;
+		private DispatchBinaryFun ltrSngInt;
+		private DispatchBinaryFun ltrSngLng;
+		private DispatchBinaryFun ltrSngSng;
+		private DispatchBinaryFun ltrSngDbl;
+		private DispatchBinaryFun ltrDblInt;
+		private DispatchBinaryFun ltrDblLng;
+		private DispatchBinaryFun ltrDblSng;
+		private DispatchBinaryFun ltrDblDbl;
+		private DispatchBinaryFun ltrTupTup;
+		private DispatchBinaryFun ltrLazLaz;
+		private DispatchBinaryFun ltrChrChr;
+		private DispatchBinaryFun ltrStrStr;
+		
+		private static DispatchBinaryFun lteErrErr = new NoneBinary("lesser or equal");
+		private DispatchBinaryFun lteIntInt;
+		private DispatchBinaryFun lteIntLng;
+		private DispatchBinaryFun lteIntSng;
+		private DispatchBinaryFun lteIntDbl;
+		private DispatchBinaryFun lteLngInt;
+		private DispatchBinaryFun lteLngLng;
+		private DispatchBinaryFun lteLngSng;
+		private DispatchBinaryFun lteLngDbl;
+		private DispatchBinaryFun lteSngInt;
+		private DispatchBinaryFun lteSngLng;
+		private DispatchBinaryFun lteSngSng;
+		private DispatchBinaryFun lteSngDbl;
+		private DispatchBinaryFun lteDblInt;
+		private DispatchBinaryFun lteDblLng;
+		private DispatchBinaryFun lteDblSng;
+		private DispatchBinaryFun lteDblDbl;
+		private DispatchBinaryFun lteTupTup;
+		private DispatchBinaryFun lteLazLaz;
+		private DispatchBinaryFun lteChrChr;
+		private DispatchBinaryFun lteStrStr;
+
+		private static DispatchBinaryFun gteErrErr = new NoneBinary("lesser");
+		private DispatchBinaryFun gteIntInt;
+		private DispatchBinaryFun gteIntLng;
+		private DispatchBinaryFun gteIntSng;
+		private DispatchBinaryFun gteIntDbl;
+		private DispatchBinaryFun gteLngInt;
+		private DispatchBinaryFun gteLngLng;
+		private DispatchBinaryFun gteLngSng;
+		private DispatchBinaryFun gteLngDbl;
+		private DispatchBinaryFun gteSngInt;
+		private DispatchBinaryFun gteSngLng;
+		private DispatchBinaryFun gteSngSng;
+		private DispatchBinaryFun gteSngDbl;
+		private DispatchBinaryFun gteDblInt;
+		private DispatchBinaryFun gteDblLng;
+		private DispatchBinaryFun gteDblSng;
+		private DispatchBinaryFun gteDblDbl;
+		private DispatchBinaryFun gteTupTup;
+		private DispatchBinaryFun gteLazLaz;
+		private DispatchBinaryFun gteChrChr;
+		private DispatchBinaryFun gteStrStr;
 
 
         private void InitializeTables()
@@ -427,6 +588,145 @@ namespace Ela.Runtime
             shrLngLng = new ShrLongLong(shr_ovl);
             shrTupTup = new TupleBinary(shr_ovl);
             shrLazLaz = new ThunkBinary(shr_ovl);
+			
+			eqlIntInt = new EqlIntInt(eql_ovl);
+			eqlIntLng = new EqlIntLong(eql_ovl);
+			eqlIntSng = new EqlIntSingle(eql_ovl);
+			eqlIntDbl = new EqlIntDouble(eql_ovl);
+			eqlLngInt = new EqlLongInt(eql_ovl);
+			eqlLngLng = new EqlLongLong(eql_ovl);
+			eqlLngSng = new EqlLongSingle(eql_ovl);
+			eqlLngDbl = new EqlLongDouble(eql_ovl);
+			eqlSngInt = new EqlSingleInt(eql_ovl);
+			eqlSngLng = new EqlSingleLong(eql_ovl);
+			eqlSngSng = new EqlSingleSingle(eql_ovl);
+			eqlSngDbl = new EqlSingleDouble(eql_ovl);
+			eqlDblInt = new EqlDoubleInt(eql_ovl);
+			eqlDblLng = new EqlDoubleLong(eql_ovl);
+			eqlDblSng = new EqlDoubleSingle(eql_ovl);
+			eqlDblDbl = new EqlDoubleDouble(eql_ovl);
+			eqlChrChr = new EqlCharChar(eql_ovl);
+			eqlStrStr = new EqlStringString(eql_ovl);
+			eqlTupTup = new TupleCompare(eql_ovl, TupleCompare.OpFlag.Eq);
+			eqlLazLaz = new ThunkBinary(eql_ovl);
+			eqlFunFun = new EqlFunFun(eql_ovl);
+			eqlRecRec = new RecordCompare(eql_ovl, RecordCompare.OpFlag.Eq);
+			eqlLstLst = new ListCompare(eql_ovl, ListCompare.OpFlag.Eq);
+			eqlModMod = new EqlModMod(eql_ovl);
+			eqlVarVar = new EqlVariantVariant(eql_ovl);
+			eqlUniUni = new EqlUnitUnit(eql_ovl);
+
+			neqIntInt = new NeqIntInt(neq_ovl);
+			neqIntLng = new NeqIntLong(neq_ovl);
+			neqIntSng = new NeqIntSingle(neq_ovl);
+			neqIntDbl = new NeqIntDouble(neq_ovl);
+			neqLngInt = new NeqLongInt(neq_ovl);
+			neqLngLng = new NeqLongLong(neq_ovl);
+			neqLngSng = new NeqLongSingle(neq_ovl);
+			neqLngDbl = new NeqLongDouble(neq_ovl);
+			neqSngInt = new NeqSingleInt(neq_ovl);
+			neqSngLng = new NeqSingleLong(neq_ovl);
+			neqSngSng = new NeqSingleSingle(neq_ovl);
+			neqSngDbl = new NeqSingleDouble(neq_ovl);
+			neqDblInt = new NeqDoubleInt(neq_ovl);
+			neqDblLng = new NeqDoubleLong(neq_ovl);
+			neqDblSng = new NeqDoubleSingle(neq_ovl);
+			neqDblDbl = new NeqDoubleDouble(neq_ovl);
+			neqChrChr = new NeqCharChar(neq_ovl);
+			neqStrStr = new NeqStringString(neq_ovl);
+			neqTupTup = new TupleCompare(neq_ovl, TupleCompare.OpFlag.Neq);
+			neqLazLaz = new ThunkBinary(neq_ovl);
+			neqFunFun = new NeqFunFun(neq_ovl);
+			neqRecRec = new RecordCompare(neq_ovl, RecordCompare.OpFlag.Neq);
+			neqLstLst = new ListCompare(neq_ovl, ListCompare.OpFlag.Neq);
+			neqModMod = new NeqModMod(neq_ovl);
+			neqVarVar = new NeqVariantVariant(neq_ovl);
+			neqUniUni = new NeqUnitUnit(neq_ovl);
+
+			gtrIntInt = new GtrIntInt(gtr_ovl);
+			gtrIntLng = new GtrIntLong(gtr_ovl);
+			gtrIntSng = new GtrIntSingle(gtr_ovl);
+			gtrIntDbl = new GtrIntDouble(gtr_ovl);
+			gtrLngInt = new GtrLongInt(gtr_ovl);
+			gtrLngLng = new GtrLongLong(gtr_ovl);
+			gtrLngSng = new GtrLongSingle(gtr_ovl);
+			gtrLngDbl = new GtrLongDouble(gtr_ovl);
+			gtrSngInt = new GtrSingleInt(gtr_ovl);
+			gtrSngLng = new GtrSingleLong(gtr_ovl);
+			gtrSngSng = new GtrSingleSingle(gtr_ovl);
+			gtrSngDbl = new GtrSingleDouble(gtr_ovl);
+			gtrDblInt = new GtrDoubleInt(gtr_ovl);
+			gtrDblLng = new GtrDoubleLong(gtr_ovl);
+			gtrDblSng = new GtrDoubleSingle(gtr_ovl);
+			gtrDblDbl = new GtrDoubleDouble(gtr_ovl);
+			gtrChrChr = new GtrCharChar(gtr_ovl);
+			gtrStrStr = new GtrStringString(gtr_ovl);
+			gtrTupTup = new TupleCompare(gtr_ovl, TupleCompare.OpFlag.Gt);
+			gtrLazLaz = new ThunkBinary(gtr_ovl);
+
+			gteIntInt = new GteIntInt(gte_ovl);
+			gteIntLng = new GteIntLong(gte_ovl);
+			gteIntSng = new GteIntSingle(gte_ovl);
+			gteIntDbl = new GteIntDouble(gte_ovl);
+			gteLngInt = new GteLongInt(gte_ovl);
+			gteLngLng = new GteLongLong(gte_ovl);
+			gteLngSng = new GteLongSingle(gte_ovl);
+			gteLngDbl = new GteLongDouble(gte_ovl);
+			gteSngInt = new GteSingleInt(gte_ovl);
+			gteSngLng = new GteSingleLong(gte_ovl);
+			gteSngSng = new GteSingleSingle(gte_ovl);
+			gteSngDbl = new GteSingleDouble(gte_ovl);
+			gteDblInt = new GteDoubleInt(gte_ovl);
+			gteDblLng = new GteDoubleLong(gte_ovl);
+			gteDblSng = new GteDoubleSingle(gte_ovl);
+			gteDblDbl = new GteDoubleDouble(gte_ovl);
+			gteChrChr = new GteCharChar(gte_ovl);
+			gteStrStr = new GteStringString(gte_ovl);
+			gteTupTup = new TupleCompare(gte_ovl, TupleCompare.OpFlag.Gt);
+			gteLazLaz = new ThunkBinary(gte_ovl);		
+
+			ltrIntInt = new LtrIntInt(ltr_ovl);
+			ltrIntLng = new LtrIntLong(ltr_ovl);
+			ltrIntSng = new LtrIntSingle(ltr_ovl);
+			ltrIntDbl = new LtrIntDouble(ltr_ovl);
+			ltrLngInt = new LtrLongInt(ltr_ovl);
+			ltrLngLng = new LtrLongLong(ltr_ovl);
+			ltrLngSng = new LtrLongSingle(ltr_ovl);
+			ltrLngDbl = new LtrLongDouble(ltr_ovl);
+			ltrSngInt = new LtrSingleInt(ltr_ovl);
+			ltrSngLng = new LtrSingleLong(ltr_ovl);
+			ltrSngSng = new LtrSingleSingle(ltr_ovl);
+			ltrSngDbl = new LtrSingleDouble(ltr_ovl);
+			ltrDblInt = new LtrDoubleInt(ltr_ovl);
+			ltrDblLng = new LtrDoubleLong(ltr_ovl);
+			ltrDblSng = new LtrDoubleSingle(ltr_ovl);
+			ltrDblDbl = new LtrDoubleDouble(ltr_ovl);
+			ltrChrChr = new LtrCharChar(ltr_ovl);
+			ltrStrStr = new LtrStringString(ltr_ovl);
+			ltrTupTup = new TupleCompare(ltr_ovl, TupleCompare.OpFlag.Lt);
+			ltrLazLaz = new ThunkBinary(ltr_ovl);
+
+			lteIntInt = new LteIntInt(lte_ovl);
+			lteIntLng = new LteIntLong(lte_ovl);
+			lteIntSng = new LteIntSingle(lte_ovl);
+			lteIntDbl = new LteIntDouble(lte_ovl);
+			lteLngInt = new LteLongInt(lte_ovl);
+			lteLngLng = new LteLongLong(lte_ovl);
+			lteLngSng = new LteLongSingle(lte_ovl);
+			lteLngDbl = new LteLongDouble(lte_ovl);
+			lteSngInt = new LteSingleInt(lte_ovl);
+			lteSngLng = new LteSingleLong(lte_ovl);
+			lteSngSng = new LteSingleSingle(lte_ovl);
+			lteSngDbl = new LteSingleDouble(lte_ovl);
+			lteDblInt = new LteDoubleInt(lte_ovl);
+			lteDblLng = new LteDoubleLong(lte_ovl);
+			lteDblSng = new LteDoubleSingle(lte_ovl);
+			lteDblDbl = new LteDoubleDouble(lte_ovl);
+			lteChrChr = new LteCharChar(lte_ovl);
+			lteStrStr = new LteStringString(lte_ovl);
+			lteTupTup = new TupleCompare(lte_ovl, TupleCompare.OpFlag.Lt);
+			lteLazLaz = new ThunkBinary(lte_ovl);		
+
 
             add_ovl[INT][INT] = addIntInt;
             add_ovl[INT][LNG] = addIntLng;
@@ -455,6 +755,7 @@ namespace Ela.Runtime
             add_ovl[LAZ][DBL] = addLazLaz;
             add_ovl[LAZ][TUP] = addLazLaz;
             add_ovl[LAZ][LAZ] = addLazLaz;
+			FillTable(add_ovl, addErrErr);
 
             sub_ovl[INT][INT] = subIntInt;
             sub_ovl[INT][LNG] = subIntLng;
@@ -483,6 +784,7 @@ namespace Ela.Runtime
             sub_ovl[LAZ][DBL] = subLazLaz;
             sub_ovl[LAZ][TUP] = subLazLaz;
             sub_ovl[LAZ][LAZ] = subLazLaz;
+			FillTable(sub_ovl, subErrErr);
 
             mul_ovl[INT][INT] = mulIntInt;
             mul_ovl[INT][LNG] = mulIntLng;
@@ -511,6 +813,7 @@ namespace Ela.Runtime
             mul_ovl[LAZ][DBL] = mulLazLaz;
             mul_ovl[LAZ][TUP] = mulLazLaz;
             mul_ovl[LAZ][LAZ] = mulLazLaz;
+			FillTable(mul_ovl, mulErrErr);
 
             div_ovl[INT][INT] = divIntInt;
             div_ovl[INT][LNG] = divIntLng;
@@ -539,6 +842,7 @@ namespace Ela.Runtime
             div_ovl[LAZ][DBL] = divLazLaz;
             div_ovl[LAZ][TUP] = divLazLaz;
             div_ovl[LAZ][LAZ] = divLazLaz;
+			FillTable(div_ovl, divErrErr);
 
             rem_ovl[INT][INT] = remIntInt;
             rem_ovl[INT][LNG] = remIntLng;
@@ -567,6 +871,7 @@ namespace Ela.Runtime
             rem_ovl[LAZ][DBL] = remLazLaz;
             rem_ovl[LAZ][TUP] = remLazLaz;
             rem_ovl[LAZ][LAZ] = remLazLaz;
+			FillTable(rem_ovl, remErrErr);
 
             pow_ovl[INT][INT] = powIntInt;
             pow_ovl[INT][LNG] = powIntLng;
@@ -595,6 +900,7 @@ namespace Ela.Runtime
             pow_ovl[LAZ][DBL] = powLazLaz;
             pow_ovl[LAZ][TUP] = powLazLaz;
             pow_ovl[LAZ][LAZ] = powLazLaz;
+			FillTable(pow_ovl, powErrErr);
 
             and_ovl[INT][INT] = andIntInt;
             and_ovl[INT][LNG] = andIntLng;
@@ -607,6 +913,7 @@ namespace Ela.Runtime
             and_ovl[LAZ][LNG] = andLazLaz;
             and_ovl[LAZ][TUP] = andLazLaz;
             and_ovl[LAZ][LAZ] = andLazLaz;
+			FillTable(and_ovl, andErrErr);
 
             bor_ovl[INT][INT] = borIntInt;
             bor_ovl[INT][LNG] = borIntLng;
@@ -619,6 +926,7 @@ namespace Ela.Runtime
             bor_ovl[LAZ][LNG] = borLazLaz;
             bor_ovl[LAZ][TUP] = borLazLaz;
             bor_ovl[LAZ][LAZ] = borLazLaz;
+			FillTable(bor_ovl, borErrErr);
 
             xor_ovl[INT][INT] = xorIntInt;
             xor_ovl[INT][LNG] = xorIntLng;
@@ -631,6 +939,7 @@ namespace Ela.Runtime
             xor_ovl[LAZ][LNG] = xorLazLaz;
             xor_ovl[LAZ][TUP] = xorLazLaz;
             xor_ovl[LAZ][LAZ] = xorLazLaz;
+			FillTable(xor_ovl, xorErrErr);
 
             shl_ovl[INT][INT] = shlIntInt;
             shl_ovl[INT][LNG] = shlIntLng;
@@ -643,6 +952,7 @@ namespace Ela.Runtime
             shl_ovl[LAZ][LNG] = shlLazLaz;
             shl_ovl[LAZ][TUP] = shlLazLaz;
             shl_ovl[LAZ][LAZ] = shlLazLaz;
+			FillTable(shl_ovl, shlErrErr);
 
             shr_ovl[INT][INT] = shrIntInt;
             shr_ovl[INT][LNG] = shrIntLng;
@@ -655,11 +965,208 @@ namespace Ela.Runtime
             shr_ovl[LAZ][LNG] = shrLazLaz;
             shr_ovl[LAZ][TUP] = shrLazLaz;
             shr_ovl[LAZ][LAZ] = shrLazLaz;
+			FillTable(shr_ovl, shrErrErr);
+
+			eql_ovl[INT][INT] = eqlIntInt;
+			eql_ovl[INT][LNG] = eqlIntLng;
+			eql_ovl[INT][REA] = eqlIntSng;
+			eql_ovl[INT][DBL] = eqlIntDbl;
+			eql_ovl[LNG][INT] = eqlLngInt;
+			eql_ovl[LNG][LNG] = eqlLngLng;
+			eql_ovl[LNG][REA] = eqlLngSng;
+			eql_ovl[LNG][DBL] = eqlLngDbl;
+			eql_ovl[REA][INT] = eqlSngInt;
+			eql_ovl[REA][LNG] = eqlSngLng;
+			eql_ovl[REA][REA] = eqlSngSng;
+			eql_ovl[REA][DBL] = eqlSngDbl;
+			eql_ovl[DBL][INT] = eqlDblInt;
+			eql_ovl[DBL][LNG] = eqlDblLng;
+			eql_ovl[DBL][REA] = eqlDblSng;
+			eql_ovl[DBL][DBL] = eqlDblDbl;
+			eql_ovl[TUP][INT] = eqlTupTup;
+			eql_ovl[TUP][LNG] = eqlTupTup;
+			eql_ovl[TUP][REA] = eqlTupTup;
+			eql_ovl[TUP][DBL] = eqlTupTup;
+			eql_ovl[TUP][TUP] = eqlTupTup;
+			eql_ovl[LAZ][INT] = eqlLazLaz;
+			eql_ovl[LAZ][LNG] = eqlLazLaz;
+			eql_ovl[LAZ][REA] = eqlLazLaz;
+			eql_ovl[LAZ][DBL] = eqlLazLaz;
+			eql_ovl[LAZ][TUP] = eqlLazLaz;
+			eql_ovl[LAZ][LAZ] = eqlLazLaz;
+			eql_ovl[CHR][CHR] = eqlChrChr;
+			eql_ovl[STR][STR] = eqlStrStr;
+			eql_ovl[UNI][UNI] = eqlUniUni;
+			eql_ovl[MOD][MOD] = eqlModMod;
+			eql_ovl[FUN][FUN] = eqlFunFun;
+			eql_ovl[VAR][VAR] = eqlVarVar;
+			eql_ovl[REC][REC] = eqlRecRec;
+			eql_ovl[LST][LST] = eqlLstLst;
+			FillTable(eql_ovl, eqlErrErr);
+
+			neq_ovl[INT][INT] = neqIntInt;
+			neq_ovl[INT][LNG] = neqIntLng;
+			neq_ovl[INT][REA] = neqIntSng;
+			neq_ovl[INT][DBL] = neqIntDbl;
+			neq_ovl[LNG][INT] = neqLngInt;
+			neq_ovl[LNG][LNG] = neqLngLng;
+			neq_ovl[LNG][REA] = neqLngSng;
+			neq_ovl[LNG][DBL] = neqLngDbl;
+			neq_ovl[REA][INT] = neqSngInt;
+			neq_ovl[REA][LNG] = neqSngLng;
+			neq_ovl[REA][REA] = neqSngSng;
+			neq_ovl[REA][DBL] = neqSngDbl;
+			neq_ovl[DBL][INT] = neqDblInt;
+			neq_ovl[DBL][LNG] = neqDblLng;
+			neq_ovl[DBL][REA] = neqDblSng;
+			neq_ovl[DBL][DBL] = neqDblDbl;
+			neq_ovl[TUP][INT] = neqTupTup;
+			neq_ovl[TUP][LNG] = neqTupTup;
+			neq_ovl[TUP][REA] = neqTupTup;
+			neq_ovl[TUP][DBL] = neqTupTup;
+			neq_ovl[TUP][TUP] = neqTupTup;
+			neq_ovl[LAZ][INT] = neqLazLaz;
+			neq_ovl[LAZ][LNG] = neqLazLaz;
+			neq_ovl[LAZ][REA] = neqLazLaz;
+			neq_ovl[LAZ][DBL] = neqLazLaz;
+			neq_ovl[LAZ][TUP] = neqLazLaz;
+			neq_ovl[LAZ][LAZ] = neqLazLaz;
+			neq_ovl[CHR][CHR] = neqChrChr;
+			neq_ovl[STR][STR] = neqStrStr;
+			neq_ovl[UNI][UNI] = neqUniUni;
+			neq_ovl[MOD][MOD] = neqModMod;
+			neq_ovl[FUN][FUN] = neqFunFun;
+			neq_ovl[VAR][VAR] = neqVarVar;
+			neq_ovl[REC][REC] = neqRecRec;
+			neq_ovl[LST][LST] = neqLstLst;
+			FillTable(neq_ovl, neqErrErr);
+
+			gtr_ovl[INT][INT] = gtrIntInt;
+			gtr_ovl[INT][LNG] = gtrIntLng;
+			gtr_ovl[INT][REA] = gtrIntSng;
+			gtr_ovl[INT][DBL] = gtrIntDbl;
+			gtr_ovl[LNG][INT] = gtrLngInt;
+			gtr_ovl[LNG][LNG] = gtrLngLng;
+			gtr_ovl[LNG][REA] = gtrLngSng;
+			gtr_ovl[LNG][DBL] = gtrLngDbl;
+			gtr_ovl[REA][INT] = gtrSngInt;
+			gtr_ovl[REA][LNG] = gtrSngLng;
+			gtr_ovl[REA][REA] = gtrSngSng;
+			gtr_ovl[REA][DBL] = gtrSngDbl;
+			gtr_ovl[DBL][INT] = gtrDblInt;
+			gtr_ovl[DBL][LNG] = gtrDblLng;
+			gtr_ovl[DBL][REA] = gtrDblSng;
+			gtr_ovl[DBL][DBL] = gtrDblDbl;
+			gtr_ovl[TUP][TUP] = gtrTupTup;
+			gtr_ovl[LAZ][INT] = gtrLazLaz;
+			gtr_ovl[LAZ][LNG] = gtrLazLaz;
+			gtr_ovl[LAZ][REA] = gtrLazLaz;
+			gtr_ovl[LAZ][DBL] = gtrLazLaz;
+			gtr_ovl[LAZ][TUP] = gtrLazLaz;
+			gtr_ovl[LAZ][LAZ] = gtrLazLaz;
+			gtr_ovl[CHR][CHR] = gtrChrChr;
+			gtr_ovl[STR][STR] = gtrStrStr;
+			FillTable(gtr_ovl, gtrErrErr);
+
+			gte_ovl[INT][INT] = gteIntInt;
+			gte_ovl[INT][LNG] = gteIntLng;
+			gte_ovl[INT][REA] = gteIntSng;
+			gte_ovl[INT][DBL] = gteIntDbl;
+			gte_ovl[LNG][INT] = gteLngInt;
+			gte_ovl[LNG][LNG] = gteLngLng;
+			gte_ovl[LNG][REA] = gteLngSng;
+			gte_ovl[LNG][DBL] = gteLngDbl;
+			gte_ovl[REA][INT] = gteSngInt;
+			gte_ovl[REA][LNG] = gteSngLng;
+			gte_ovl[REA][REA] = gteSngSng;
+			gte_ovl[REA][DBL] = gteSngDbl;
+			gte_ovl[DBL][INT] = gteDblInt;
+			gte_ovl[DBL][LNG] = gteDblLng;
+			gte_ovl[DBL][REA] = gteDblSng;
+			gte_ovl[DBL][DBL] = gteDblDbl;
+			gte_ovl[TUP][TUP] = gteTupTup;
+			gte_ovl[LAZ][INT] = gteLazLaz;
+			gte_ovl[LAZ][LNG] = gteLazLaz;
+			gte_ovl[LAZ][REA] = gteLazLaz;
+			gte_ovl[LAZ][DBL] = gteLazLaz;
+			gte_ovl[LAZ][TUP] = gteLazLaz;
+			gte_ovl[LAZ][LAZ] = gteLazLaz;
+			gte_ovl[CHR][CHR] = gteChrChr;
+			gte_ovl[STR][STR] = gteStrStr;
+			FillTable(gte_ovl, gteErrErr);
+
+			ltr_ovl[INT][INT] = ltrIntInt;
+			ltr_ovl[INT][LNG] = ltrIntLng;
+			ltr_ovl[INT][REA] = ltrIntSng;
+			ltr_ovl[INT][DBL] = ltrIntDbl;
+			ltr_ovl[LNG][INT] = ltrLngInt;
+			ltr_ovl[LNG][LNG] = ltrLngLng;
+			ltr_ovl[LNG][REA] = ltrLngSng;
+			ltr_ovl[LNG][DBL] = ltrLngDbl;
+			ltr_ovl[REA][INT] = ltrSngInt;
+			ltr_ovl[REA][LNG] = ltrSngLng;
+			ltr_ovl[REA][REA] = ltrSngSng;
+			ltr_ovl[REA][DBL] = ltrSngDbl;
+			ltr_ovl[DBL][INT] = ltrDblInt;
+			ltr_ovl[DBL][LNG] = ltrDblLng;
+			ltr_ovl[DBL][REA] = ltrDblSng;
+			ltr_ovl[DBL][DBL] = ltrDblDbl;
+			ltr_ovl[TUP][TUP] = ltrTupTup;
+			ltr_ovl[LAZ][INT] = ltrLazLaz;
+			ltr_ovl[LAZ][LNG] = ltrLazLaz;
+			ltr_ovl[LAZ][REA] = ltrLazLaz;
+			ltr_ovl[LAZ][DBL] = ltrLazLaz;
+			ltr_ovl[LAZ][TUP] = ltrLazLaz;
+			ltr_ovl[LAZ][LAZ] = ltrLazLaz;
+			ltr_ovl[CHR][CHR] = ltrChrChr;
+			ltr_ovl[STR][STR] = ltrStrStr;
+			FillTable(ltr_ovl, ltrErrErr);
+
+			lte_ovl[INT][INT] = lteIntInt;
+			lte_ovl[INT][LNG] = lteIntLng;
+			lte_ovl[INT][REA] = lteIntSng;
+			lte_ovl[INT][DBL] = lteIntDbl;
+			lte_ovl[LNG][INT] = lteLngInt;
+			lte_ovl[LNG][LNG] = lteLngLng;
+			lte_ovl[LNG][REA] = lteLngSng;
+			lte_ovl[LNG][DBL] = lteLngDbl;
+			lte_ovl[REA][INT] = lteSngInt;
+			lte_ovl[REA][LNG] = lteSngLng;
+			lte_ovl[REA][REA] = lteSngSng;
+			lte_ovl[REA][DBL] = lteSngDbl;
+			lte_ovl[DBL][INT] = lteDblInt;
+			lte_ovl[DBL][LNG] = lteDblLng;
+			lte_ovl[DBL][REA] = lteDblSng;
+			lte_ovl[DBL][DBL] = lteDblDbl;
+			lte_ovl[TUP][TUP] = lteTupTup;
+			lte_ovl[LAZ][INT] = lteLazLaz;
+			lte_ovl[LAZ][LNG] = lteLazLaz;
+			lte_ovl[LAZ][REA] = lteLazLaz;
+			lte_ovl[LAZ][DBL] = lteLazLaz;
+			lte_ovl[LAZ][TUP] = lteLazLaz;
+			lte_ovl[LAZ][LAZ] = lteLazLaz;
+			lte_ovl[CHR][CHR] = lteChrChr;
+			lte_ovl[STR][STR] = lteStrStr;
+			FillTable(lte_ovl, lteErrErr);
         }
 
 
+		private void FillTable(DispatchBinaryFun[][] tab, DispatchBinaryFun errOp)
+		{
+			for (var i = 0; i < tab.Length; i++)
+			{
+				var ctab = tab[i];
+				
+				for (var j = 0; j < ctab.Length; j++)
+				{
+					if (ctab[j] == ___)
+						ctab[j] = errOp;
+				}
+			}
+		}
 
-        internal readonly DispatchBinaryFun[] neg_ovl = null;
+
+		internal readonly DispatchBinaryFun[] neg_ovl = null;
 
 
         internal static ElaValue BinaryOp(DispatchBinaryFun[][] funs, ElaValue left, ElaValue right, ExecutionContext ctx)

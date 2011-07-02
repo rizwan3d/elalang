@@ -20,18 +20,159 @@ namespace Ela.Runtime
         }
     }
 
+
+
+	internal sealed class ListCompare : DispatchBinaryFun
+	{
+		private readonly OpFlag flag;
+
+		internal enum OpFlag
+		{
+			Eq,
+			Neq
+		}
+
+		internal ListCompare(DispatchBinaryFun[][] funs, OpFlag flag) : base(funs)
+		{
+			this.flag = flag;
+		}
+
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			if (left.TypeId == right.TypeId)
+				return ListWithList(left, right, ctx);
+			else
+				return new ElaValue(flag == OpFlag.Neq);
+		}
+
+		private ElaValue ListWithList(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			var xs1 = (ElaList)left.Ref;
+			var xs2 = (ElaList)right.Ref;
+
+			while (!xs1.IsNil(ctx) && !xs2.IsNil(ctx))
+			{
+				var eq = PerformOp(xs1.Value, xs2.Value, ctx).I4 == 1;
+
+				if (!eq && flag == OpFlag.Eq)
+					return new ElaValue(false);
+
+				xs1 = xs1.Tail(ctx).Ref as ElaList;
+				xs2 = xs2.Tail(ctx).Ref as ElaList;
+
+				if (xs1 == null || xs2 == null)
+				{
+					ctx.Fail(new ElaError("InvalidList", "Invalid list definition."));
+					return new ElaValue(false);
+				}
+			}
+
+			return new ElaValue(flag == OpFlag.Eq);
+		}
+	}
+
+	internal sealed class RecordCompare : DispatchBinaryFun
+	{
+		private readonly OpFlag flag;
+
+		internal enum OpFlag
+		{
+			Eq,
+			Neq
+		}
+
+		internal RecordCompare(DispatchBinaryFun[][] funs, OpFlag flag) : base(funs)
+		{
+			this.flag = flag;
+		}
+
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			if (left.TypeId == right.TypeId)
+				return RecordWithRecord(left, right, ctx);
+			else
+				return new ElaValue(flag == OpFlag.Neq);
+		}
+
+		private ElaValue RecordWithRecord(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			var recLeft = (ElaRecord)left.Ref;
+			var recRight = (ElaRecord)right.Ref;
+
+			if (recLeft.Length != recRight.Length)
+				return new ElaValue(flag == OpFlag.Neq);
+
+			if (!EqHelper.ListEquals(recLeft.keys, recRight.keys))
+				return new ElaValue(flag == OpFlag.Neq);
+
+			for (var i = 0; i < recLeft.Length; i++)
+				if (PerformOp(recLeft[i], recRight[i], ctx).I4 != 1 && flag == OpFlag.Eq)
+					return new ElaValue(false);
+
+			return new ElaValue(flag == OpFlag.Eq);
+		}
+	}
+
+	internal sealed class TupleCompare : DispatchBinaryFun
+	{
+		private readonly OpFlag flag;
+
+		internal enum OpFlag
+		{
+			Eq,
+			Neq,
+			Gt,
+			Lt
+		}
+
+		internal TupleCompare(DispatchBinaryFun[][] funs, OpFlag flag) : base(funs)
+		{
+			this.flag = flag;
+		}
+
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			if (left.TypeId == right.TypeId)
+				return TupleWithTuple(left, right, ctx);
+			else
+				return new ElaValue(flag == OpFlag.Neq);
+		}
+
+		private ElaValue TupleWithTuple(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			var tupLeft = (ElaTuple)left.Ref;
+			var tupRight = (ElaTuple)right.Ref;
+
+			if (tupLeft.Length > tupRight.Length)
+				return new ElaValue(flag == OpFlag.Gt || flag == OpFlag.Neq);
+
+			if (tupLeft.Length < tupRight.Length)
+				return new ElaValue(flag == OpFlag.Lt || flag == OpFlag.Neq);
+
+			for (var i = 0; i < tupLeft.Length; i++)
+				if (PerformOp(tupLeft.FastGet(i), tupRight.FastGet(i), ctx).I4 != 1 && flag != OpFlag.Neq)
+					return new ElaValue(false);
+
+			return new ElaValue(flag != OpFlag.Neq);
+		}
+	}
+
+
     internal sealed class TupleBinary : DispatchBinaryFun
     {
-        internal TupleBinary(DispatchBinaryFun[][] funs) : base(funs) { }
-        
+		internal TupleBinary(DispatchBinaryFun[][] funs) : base(funs) 
+		{
+			
+		}        
+
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if (left.TypeId == right.TypeId)
                 return TupleWithTuple(left, right, ctx);
-            if (left.TypeId == ElaMachine.TUP)
-                return TupleWithAny(left, right, ctx);
-            else
-                return AnyWithTuple(left, right, ctx);
+			if (left.TypeId == ElaMachine.TUP)
+				return TupleWithAny(left, right, ctx);
+			else
+				return AnyWithTuple(left, right, ctx);
         }
 
         private ElaValue TupleWithTuple(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -41,10 +182,9 @@ namespace Ela.Runtime
 
             if (tupleLeft.Length != tupleRight.Length)
             {
-                ctx.Fail(ElaRuntimeError.TuplesLength, tupleLeft, tupleRight);
+		        ctx.Fail(ElaRuntimeError.TuplesLength, tupleLeft, tupleRight);
                 return ElaObject.GetDefault();
-            }
-				
+            }				
 
             var newArr = new ElaValue[tupleLeft.Length];
 
@@ -1495,163 +1635,163 @@ namespace Ela.Runtime
     #endregion
 
 
-    #region Lsr
-    internal sealed class LsrIntInt : DispatchBinaryFun
+    #region Ltr
+    internal sealed class LtrIntInt : DispatchBinaryFun
     {
-        internal LsrIntInt(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LtrIntInt(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.I4 < right.I4);
         }
     }
 
-    internal sealed class LsrIntLong : DispatchBinaryFun
+    internal sealed class LtrIntLong : DispatchBinaryFun
     {
-        internal LsrIntLong(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LtrIntLong(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.I4 < right.GetLong());
         }
     }
 
-    internal sealed class LsrIntSingle : DispatchBinaryFun
+    internal sealed class LtrIntSingle : DispatchBinaryFun
     {
-        internal LsrIntSingle(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LtrIntSingle(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.I4 < right.DirectGetReal());
         }
     }
 
-    internal sealed class LsrIntDouble : DispatchBinaryFun
+    internal sealed class LtrIntDouble : DispatchBinaryFun
     {
-        internal LsrIntDouble(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LtrIntDouble(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.I4 < right.GetDouble());
         }
     }
 
-    internal sealed class LsrLongInt : DispatchBinaryFun
+    internal sealed class LtrLongInt : DispatchBinaryFun
     {
-        internal LsrLongInt(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LtrLongInt(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.GetLong() < right.I4);
         }
     }
 
-    internal sealed class LsrLongLong : DispatchBinaryFun
+    internal sealed class LtrLongLong : DispatchBinaryFun
     {
-        internal LsrLongLong(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LtrLongLong(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.GetLong() < right.GetLong());
         }
     }
 
-    internal sealed class LsrLongSingle : DispatchBinaryFun
+    internal sealed class LtrLongSingle : DispatchBinaryFun
     {
-        internal LsrLongSingle(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LtrLongSingle(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.GetLong() < right.DirectGetReal());
         }
     }
 
-    internal sealed class LsrLongDouble : DispatchBinaryFun
+    internal sealed class LtrLongDouble : DispatchBinaryFun
     {
-        internal LsrLongDouble(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LtrLongDouble(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.GetLong() < right.GetDouble());
         }
     }
 
-    internal sealed class LsrSingleSingle : DispatchBinaryFun
+    internal sealed class LtrSingleSingle : DispatchBinaryFun
     {
-        internal LsrSingleSingle(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LtrSingleSingle(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.DirectGetReal() < right.DirectGetReal());
         }
     }
 
-    internal sealed class LsrSingleInt : DispatchBinaryFun
+    internal sealed class LtrSingleInt : DispatchBinaryFun
     {
-        internal LsrSingleInt(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LtrSingleInt(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.DirectGetReal() < right.I4);
         }
     }
 
-    internal sealed class LsrSingleLong : DispatchBinaryFun
+    internal sealed class LtrSingleLong : DispatchBinaryFun
     {
-        internal LsrSingleLong(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LtrSingleLong(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.DirectGetReal() < right.GetLong());
         }
     }
 
-    internal sealed class LsrSingleDouble : DispatchBinaryFun
+    internal sealed class LtrSingleDouble : DispatchBinaryFun
     {
-        internal LsrSingleDouble(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LtrSingleDouble(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.DirectGetReal() < right.GetDouble());
         }
     }
 
-    internal sealed class LsrDoubleDouble : DispatchBinaryFun
+    internal sealed class LtrDoubleDouble : DispatchBinaryFun
     {
-        internal LsrDoubleDouble(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LtrDoubleDouble(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.GetDouble() < right.GetDouble());
         }
     }
 
-    internal sealed class LsrDoubleInt : DispatchBinaryFun
+    internal sealed class LtrDoubleInt : DispatchBinaryFun
     {
-        internal LsrDoubleInt(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LtrDoubleInt(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.GetDouble() < right.I4);
         }
     }
 
-    internal sealed class LsrDoubleLong : DispatchBinaryFun
+    internal sealed class LtrDoubleLong : DispatchBinaryFun
     {
-        internal LsrDoubleLong(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LtrDoubleLong(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.GetDouble() < right.GetLong());
         }
     }
 
-    internal sealed class LsrDoubleSingle : DispatchBinaryFun
+    internal sealed class LtrDoubleSingle : DispatchBinaryFun
     {
-        internal LsrDoubleSingle(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LtrDoubleSingle(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.GetDouble() < right.DirectGetReal());
         }
     }
 
-    internal sealed class LsrCharChar : DispatchBinaryFun
+    internal sealed class LtrCharChar : DispatchBinaryFun
     {
-        internal LsrCharChar(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LtrCharChar(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.I4 < right.I4);
         }
     }
 
-    internal sealed class LsrStringString : DispatchBinaryFun
+    internal sealed class LtrStringString : DispatchBinaryFun
     {
-        internal LsrStringString(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LtrStringString(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.DirectGetString().CompareTo(right.DirectGetString()) < 0);
@@ -1825,163 +1965,163 @@ namespace Ela.Runtime
     #endregion
 
 
-    #region Lse
-    internal sealed class LseIntInt : DispatchBinaryFun
+    #region Lte
+    internal sealed class LteIntInt : DispatchBinaryFun
     {
-        internal LseIntInt(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LteIntInt(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.I4 <= right.I4);
         }
     }
 
-    internal sealed class LseIntLong : DispatchBinaryFun
+    internal sealed class LteIntLong : DispatchBinaryFun
     {
-        internal LseIntLong(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LteIntLong(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.I4 <= right.GetLong());
         }
     }
 
-    internal sealed class LseIntSingle : DispatchBinaryFun
+    internal sealed class LteIntSingle : DispatchBinaryFun
     {
-        internal LseIntSingle(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LteIntSingle(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.I4 <= right.DirectGetReal());
         }
     }
 
-    internal sealed class LseIntDouble : DispatchBinaryFun
+    internal sealed class LteIntDouble : DispatchBinaryFun
     {
-        internal LseIntDouble(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LteIntDouble(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.I4 <= right.GetDouble());
         }
     }
 
-    internal sealed class LseLongInt : DispatchBinaryFun
+    internal sealed class LteLongInt : DispatchBinaryFun
     {
-        internal LseLongInt(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LteLongInt(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.GetLong() <= right.I4);
         }
     }
 
-    internal sealed class LseLongLong : DispatchBinaryFun
+    internal sealed class LteLongLong : DispatchBinaryFun
     {
-        internal LseLongLong(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LteLongLong(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.GetLong() <= right.GetLong());
         }
     }
 
-    internal sealed class LseLongSingle : DispatchBinaryFun
+    internal sealed class LteLongSingle : DispatchBinaryFun
     {
-        internal LseLongSingle(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LteLongSingle(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.GetLong() <= right.DirectGetReal());
         }
     }
 
-    internal sealed class LseLongDouble : DispatchBinaryFun
+    internal sealed class LteLongDouble : DispatchBinaryFun
     {
-        internal LseLongDouble(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LteLongDouble(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.GetLong() <= right.GetDouble());
         }
     }
 
-    internal sealed class LseSingleSingle : DispatchBinaryFun
+    internal sealed class LteSingleSingle : DispatchBinaryFun
     {
-        internal LseSingleSingle(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LteSingleSingle(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.DirectGetReal() <= right.DirectGetReal());
         }
     }
 
-    internal sealed class LseSingleInt : DispatchBinaryFun
+    internal sealed class LteSingleInt : DispatchBinaryFun
     {
-        internal LseSingleInt(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LteSingleInt(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.DirectGetReal() <= right.I4);
         }
     }
 
-    internal sealed class LseSingleLong : DispatchBinaryFun
+    internal sealed class LteSingleLong : DispatchBinaryFun
     {
-        internal LseSingleLong(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LteSingleLong(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.DirectGetReal() <= right.GetLong());
         }
     }
 
-    internal sealed class LseSingleDouble : DispatchBinaryFun
+    internal sealed class LteSingleDouble : DispatchBinaryFun
     {
-        internal LseSingleDouble(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LteSingleDouble(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.DirectGetReal() <= right.GetDouble());
         }
     }
 
-    internal sealed class LseDoubleDouble : DispatchBinaryFun
+    internal sealed class LteDoubleDouble : DispatchBinaryFun
     {
-        internal LseDoubleDouble(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LteDoubleDouble(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.GetDouble() <= right.GetDouble());
         }
     }
 
-    internal sealed class LseDoubleInt : DispatchBinaryFun
+    internal sealed class LteDoubleInt : DispatchBinaryFun
     {
-        internal LseDoubleInt(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LteDoubleInt(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.GetDouble() <= right.I4);
         }
     }
 
-    internal sealed class LseDoubleLong : DispatchBinaryFun
+    internal sealed class LteDoubleLong : DispatchBinaryFun
     {
-        internal LseDoubleLong(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LteDoubleLong(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.GetDouble() <= right.GetLong());
         }
     }
 
-    internal sealed class LseDoubleSingle : DispatchBinaryFun
+    internal sealed class LteDoubleSingle : DispatchBinaryFun
     {
-        internal LseDoubleSingle(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LteDoubleSingle(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.GetDouble() <= right.DirectGetReal());
         }
     }
 
-    internal sealed class LseCharChar : DispatchBinaryFun
+    internal sealed class LteCharChar : DispatchBinaryFun
     {
-        internal LseCharChar(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LteCharChar(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.I4 <= right.I4);
         }
     }
 
-    internal sealed class LseStringString : DispatchBinaryFun
+    internal sealed class LteStringString : DispatchBinaryFun
     {
-        internal LseStringString(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal LteStringString(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return new ElaValue(left.DirectGetString().CompareTo(right.DirectGetString()) <= 0);
@@ -2167,19 +2307,231 @@ namespace Ela.Runtime
         internal EqlFunFun(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            var leftFun = (ElaFunction)left.Ref;
-            var rightFun = (ElaFunction)right.Ref;
-
-            var ret = Object.ReferenceEquals(leftFun, rightFun) ||
-                leftFun.Handle == rightFun.Handle &&
-                leftFun.ModuleHandle == rightFun.ModuleHandle &&
-                leftFun.AppliedParameters == rightFun.AppliedParameters &&
-                leftFun.Flip == rightFun.Flip &&
-                EqHelper.ListEquals<ElaValue>(leftFun.Parameters, rightFun.Parameters) &&
-                (Object.ReferenceEquals(leftFun.LastParameter.Ref, rightFun.LastParameter.Ref) ||
-                    leftFun.LastParameter.Equals(rightFun.LastParameter));
-            return new ElaValue(ret);
+            return new ElaValue(ElaFunction.IsEqual(left.Ref, right.Ref));
         }
     }
+
+	internal sealed class EqlVariantVariant : DispatchBinaryFun
+	{
+		internal EqlVariantVariant(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			var v1 = (ElaVariant)left.Ref;
+			var v2 = (ElaVariant)right.Ref;
+			return new ElaValue(v1.Tag == v2.Tag && PerformOp(v1.Value, v2.Value, ctx).I4 == 1);
+		}
+	}
+
+	internal sealed class EqlUnitUnit : DispatchBinaryFun
+	{
+		internal EqlUnitUnit(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(true);
+		}
+	}
     #endregion
+
+
+	#region Neq
+	internal sealed class NeqIntInt : DispatchBinaryFun
+	{
+		internal NeqIntInt(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.I4 != right.I4);
+		}
+	}
+
+	internal sealed class NeqIntLong : DispatchBinaryFun
+	{
+		internal NeqIntLong(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.I4 != right.GetLong());
+		}
+	}
+
+	internal sealed class NeqIntSingle : DispatchBinaryFun
+	{
+		internal NeqIntSingle(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.I4 != right.DirectGetReal());
+		}
+	}
+
+	internal sealed class NeqIntDouble : DispatchBinaryFun
+	{
+		internal NeqIntDouble(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.I4 != right.GetDouble());
+		}
+	}
+
+	internal sealed class NeqLongInt : DispatchBinaryFun
+	{
+		internal NeqLongInt(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.GetLong() != right.I4);
+		}
+	}
+
+	internal sealed class NeqLongLong : DispatchBinaryFun
+	{
+		internal NeqLongLong(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.GetLong() != right.GetLong());
+		}
+	}
+
+	internal sealed class NeqLongSingle : DispatchBinaryFun
+	{
+		internal NeqLongSingle(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.GetLong() != right.DirectGetReal());
+		}
+	}
+
+	internal sealed class NeqLongDouble : DispatchBinaryFun
+	{
+		internal NeqLongDouble(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.GetLong() != right.GetDouble());
+		}
+	}
+
+	internal sealed class NeqSingleSingle : DispatchBinaryFun
+	{
+		internal NeqSingleSingle(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.DirectGetReal() != right.DirectGetReal());
+		}
+	}
+
+	internal sealed class NeqSingleInt : DispatchBinaryFun
+	{
+		internal NeqSingleInt(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.DirectGetReal() != right.I4);
+		}
+	}
+
+	internal sealed class NeqSingleLong : DispatchBinaryFun
+	{
+		internal NeqSingleLong(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.DirectGetReal() != right.GetLong());
+		}
+	}
+
+	internal sealed class NeqSingleDouble : DispatchBinaryFun
+	{
+		internal NeqSingleDouble(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.DirectGetReal() != right.GetDouble());
+		}
+	}
+
+	internal sealed class NeqDoubleDouble : DispatchBinaryFun
+	{
+		internal NeqDoubleDouble(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.GetDouble() != right.GetDouble());
+		}
+	}
+
+	internal sealed class NeqDoubleInt : DispatchBinaryFun
+	{
+		internal NeqDoubleInt(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.GetDouble() != right.I4);
+		}
+	}
+
+	internal sealed class NeqDoubleLong : DispatchBinaryFun
+	{
+		internal NeqDoubleLong(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.GetDouble() != right.GetLong());
+		}
+	}
+
+	internal sealed class NeqDoubleSingle : DispatchBinaryFun
+	{
+		internal NeqDoubleSingle(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.GetDouble() != right.DirectGetReal());
+		}
+	}
+
+	internal sealed class NeqCharChar : DispatchBinaryFun
+	{
+		internal NeqCharChar(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.I4 != right.I4);
+		}
+	}
+
+	internal sealed class NeqStringString : DispatchBinaryFun
+	{
+		internal NeqStringString(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.DirectGetString() != right.DirectGetString());
+		}
+	}
+
+	internal sealed class NeqModMod : DispatchBinaryFun
+	{
+		internal NeqModMod(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(((ElaModule)left.Ref).Handle != ((ElaModule)right.Ref).Handle);
+		}
+	}
+
+	internal sealed class NeqFunFun : DispatchBinaryFun
+	{
+		internal NeqFunFun(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(!ElaFunction.IsEqual(left.Ref, right.Ref));
+		}
+	}
+
+	internal sealed class NeqVariantVariant : DispatchBinaryFun
+	{
+		internal NeqVariantVariant(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			var v1 = (ElaVariant)left.Ref;
+			var v2 = (ElaVariant)right.Ref;
+			return new ElaValue(v1.Tag != v2.Tag || PerformOp(v1.Value, v2.Value, ctx).I4 == 0);
+		}
+	}
+
+	internal sealed class NeqUnitUnit : DispatchBinaryFun
+	{
+		internal NeqUnitUnit(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(false);
+		}
+	}
+	#endregion
 }

@@ -9,7 +9,7 @@ namespace Ela.Runtime.ObjectModel
 	{
 		#region Construction
         private const string FIELDS = "fields";
-        private string[] keys;
+        internal string[] keys;
         private ElaValue[] values;
 		private bool[] flags;
         private int cons;
@@ -45,23 +45,23 @@ namespace Ela.Runtime.ObjectModel
 		#region Operations
         protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            return new ElaValue(Eq(left, right, ctx));
+			return new ElaValue(IsEqual(left.Ref, right.Ref));
         }
 
 
         protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            return new ElaValue(!Eq(left, right, ctx));
+			return new ElaValue(!IsEqual(left.Ref, right.Ref));
         }
 
 
-        private bool Eq(ElaValue left, ElaValue right, ExecutionContext ctx)
+        private static bool IsEqual(ElaObject left, ElaObject right)
         {
-            if (left.Ref == right.Ref)
+            if (left == right)
                 return true;
 
-            var lt = left.Ref as ElaRecord;
-            var rt = right.Ref as ElaRecord;
+            var lt = left as ElaRecord;
+            var rt = right as ElaRecord;
 
             if (lt == null || rt == null || rt.Length != lt.Length || 
                 !(EqHelper.ListEquals(rt.keys, lt.keys)) ||

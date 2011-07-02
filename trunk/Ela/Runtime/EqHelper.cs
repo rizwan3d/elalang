@@ -10,11 +10,11 @@ namespace Ela.Runtime
             if (left.Count != right.Count)
                 return false;
 
-            for (var i = 0; i < left.Count; i++)
-                if (!left[i].Equals(right[i]))
-                    return false;
+			for (var i = 0; i < left.Count; i++)
+				if (!left[i].Equals(right[i]))
+					return false;
 
-            return true;
+			return true;
         }
     }
 }

@@ -1,3 +1,4 @@
+0.9.7.2:Fix:Function comparison didn't work correctly (it always evaluated to 'true').
 0.9.7.1:Fix:A function call on a left hand side (when a return value is not used) not only generated a double warning but also caused VM to crash.
 0.9.7.0:Release:Release of Ela 0.9.7
 0.9.6.1:Fix:A critical bug fixed - a tail call of a thunk (not an actual function) could cause VM to crash.
