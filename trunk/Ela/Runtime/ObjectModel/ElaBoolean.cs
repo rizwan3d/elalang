@@ -35,28 +35,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			if (left.TypeId == ElaMachine.BYT)
-				return right.TypeId == ElaMachine.BYT ? new ElaValue(left.I4 == right.I4) :
-					right.Ref.Equal(left, right, ctx);
-			
-			ctx.InvalidLeftOperand(left, right, "equal");
-			return Default();
-		}
-
-
-		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			if (left.TypeId == ElaMachine.BYT)
-				return right.TypeId == ElaMachine.BYT ? new ElaValue(left.I4 != right.I4) :
-					right.Ref.NotEqual(left, right, ctx);
-			
-			ctx.InvalidLeftOperand(left, right, "notequal");
-			return Default();
-		}
-
-
         protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			return @this.I4 == 1 ? Boolean.TrueString : Boolean.FalseString;

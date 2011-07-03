@@ -38,21 +38,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return new ElaValue(left.TypeCode == right.TypeCode &&
-				((ElaModule)left.Ref).Handle == ((ElaModule)right.Ref).Handle);
-		}
-
-
-		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return new ElaValue(left.TypeCode != right.TypeCode ||
-				((ElaModule)left.Ref).Handle != ((ElaModule)right.Ref).Handle);
-		}
-
-
-        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
+		protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			return String.Format(MODULE, vm != null ? vm.Assembly.GetModuleName(Handle) : String.Empty);
 		}

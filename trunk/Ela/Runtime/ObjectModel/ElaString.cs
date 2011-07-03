@@ -67,62 +67,6 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-            return new ElaValue(left.TypeId == right.TypeId && left.DirectGetString() == right.DirectGetString());
-		}
-
-
-		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-            return new ElaValue(left.TypeId != right.TypeId || left.DirectGetString() != right.DirectGetString());
-		}
-
-
-		protected internal override ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			if (left.TypeId == ElaMachine.STR)
-                return right.TypeId == ElaMachine.STR ? new ElaValue(left.DirectGetString().CompareTo(right.DirectGetString()) > 0) :
-					right.Ref.Greater(left, right, ctx);
-			
-			ctx.InvalidLeftOperand(left, right, "greater");
-			return Default();
-		}
-
-
-		protected internal override ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			if (left.TypeId == ElaMachine.STR)
-                return right.TypeId == ElaMachine.STR ? new ElaValue(left.DirectGetString().CompareTo(right.DirectGetString()) < 0) :
-					right.Ref.Lesser(left, right, ctx);
-			
-			ctx.InvalidLeftOperand(left, right, "lesser");
-			return Default();
-		}
-
-
-		protected internal override ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			if (left.TypeId == ElaMachine.STR)
-				return right.TypeId == ElaMachine.STR ? new ElaValue(left.DirectGetString().CompareTo(right.DirectGetString()) >= 0) :
-					right.Ref.GreaterEqual(left, right, ctx);
-			
-			ctx.InvalidLeftOperand(left, right, "greaterequal");
-			return Default();
-		}
-
-
-		protected internal override ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			if (left.TypeId == ElaMachine.STR)
-				return right.TypeId == ElaMachine.STR ? new ElaValue(left.DirectGetString().CompareTo(right.DirectGetString()) <= 0) :
-					right.Ref.LesserEqual(left, right, ctx);
-			
-			ctx.InvalidLeftOperand(left, right, "lesserequal");
-			return Default();
-		}
-
-
 		protected internal override ElaValue GetLength(ExecutionContext ctx)
 		{
 			return new ElaValue(buffer.Length - headIndex);

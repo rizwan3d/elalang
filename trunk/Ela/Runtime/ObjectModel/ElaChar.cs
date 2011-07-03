@@ -29,73 +29,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			if (left.TypeId == ElaMachine.CHR)
-				return right.TypeId == ElaMachine.CHR ? new ElaValue(left.I4 == right.I4) :
-					right.Ref.Equal(left, right, ctx);
-			
-			ctx.InvalidLeftOperand(left, right, "equal");
-			return Default();
-		}
-
-
-		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			if (left.TypeId == ElaMachine.CHR)
-				return right.TypeId == ElaMachine.CHR ? new ElaValue(left.I4 != right.I4) :
-					right.Ref.NotEqual(left, right, ctx);
-			
-			ctx.InvalidLeftOperand(left, right, "notequal");
-			return Default();
-		}
-
-
-		protected internal override ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			if (left.TypeId == ElaMachine.CHR)
-				return right.TypeId == ElaMachine.CHR ? new ElaValue(left.I4 > right.I4) :
-					right.Ref.Greater(left, right, ctx);
-			
-			ctx.InvalidLeftOperand(left, right, "greater");
-			return Default();
-		}
-
-
-		protected internal override ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			if (left.TypeId == ElaMachine.CHR)
-				return right.TypeId == ElaMachine.CHR ? new ElaValue(left.I4 < right.I4) :
-					right.Ref.Lesser(left, right, ctx);
-			
-			ctx.InvalidLeftOperand(left, right, "lesser");
-			return Default();
-		}
-
-
-		protected internal override ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			if (left.TypeId == ElaMachine.CHR)
-				return right.TypeId == ElaMachine.CHR ? new ElaValue(left.I4 >= right.I4) :
-					right.Ref.GreaterEqual(left, right, ctx);
-			
-			ctx.InvalidLeftOperand(left, right, "greaterequal");
-			return Default();
-		}
-
-
-		protected internal override ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			if (left.TypeId == ElaMachine.CHR)
-				return right.TypeId == ElaMachine.CHR ? new ElaValue(left.I4 <= right.I4) :
-					right.Ref.LesserEqual(left, right, ctx);
-			
-			ctx.InvalidLeftOperand(left, right, "lesserequal");
-			return Default();
-		}
-
-
-        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
+		protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			return ((Char)@this.I4).ToString();
 		}

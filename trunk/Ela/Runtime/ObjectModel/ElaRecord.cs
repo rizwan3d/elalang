@@ -43,36 +43,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-        protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-			return new ElaValue(IsEqual(left.Ref, right.Ref));
-        }
-
-
-        protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-			return new ElaValue(!IsEqual(left.Ref, right.Ref));
-        }
-
-
-        private static bool IsEqual(ElaObject left, ElaObject right)
-        {
-            if (left == right)
-                return true;
-
-            var lt = left as ElaRecord;
-            var rt = right as ElaRecord;
-
-            if (lt == null || rt == null || rt.Length != lt.Length || 
-                !(EqHelper.ListEquals(rt.keys, lt.keys)) ||
-                !(EqHelper.ListEquals(rt.values, lt.values)))
-                return false;
-
-            return true;
-        }
-
-
-		protected internal override ElaValue GetValue(ElaValue key, ExecutionContext ctx)
+       	protected internal override ElaValue GetValue(ElaValue key, ExecutionContext ctx)
 		{
 			if (key.TypeId == ElaMachine.STR)
                 return GetField(key.DirectGetString(), ctx);
@@ -186,7 +157,7 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        protected internal override ElaValue Clone(ExecutionContext ctx)
+        internal ElaValue Clone()
         {
             var rec = new ElaRecord(values.Length);
 

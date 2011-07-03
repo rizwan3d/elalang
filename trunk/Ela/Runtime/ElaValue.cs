@@ -103,13 +103,13 @@ namespace Ela.Runtime
 
         public override bool Equals(object obj)
         {
-            return obj is ElaValue ? Equal(this, (ElaValue)obj, ElaObject.DummyContext).Bool(ElaObject.DummyContext) : false;
+			return false; //obj is ElaValue ? Equal(this, (ElaValue)obj, ElaObject.DummyContext).Bool(ElaObject.DummyContext) : false;
         }
 
 
         public bool Equals(ElaValue other)
         {
-            return Equal(this, other, ElaObject.DummyContext).Bool(ElaObject.DummyContext);
+			return false;// Equal(this, other, ElaObject.DummyContext).Bool(ElaObject.DummyContext);
         }
 
 
@@ -375,42 +375,6 @@ namespace Ela.Runtime
 
 
         #region Operations
-        public ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.Equal(left, right, ctx);
-        }
-
-
-        public ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.NotEqual(left, right, ctx);
-        }
-
-
-        public ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.Greater(left, right, ctx);
-        }
-
-
-        public ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.Lesser(left, right, ctx);
-        }
-
-
-        public ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.GreaterEqual(left, right, ctx);
-        }
-
-
-        public ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.LesserEqual(left, right, ctx);
-        }
-
-
         public ElaValue GetLength(ExecutionContext ctx)
         {
             return Ref.GetLength(ctx);
@@ -456,84 +420,6 @@ namespace Ela.Runtime
         public ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return Ref.Concatenate(left, right, ctx);
-        }
-
-
-        public ElaValue Add(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.Add(left, right, ctx);
-        }
-
-
-        public ElaValue Subtract(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.Subtract(left, right, ctx);
-        }
-
-
-        public ElaValue Multiply(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.Multiply(left, right, ctx);
-        }
-
-
-        public ElaValue Divide(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.Divide(left, right, ctx);
-        }
-
-
-        public ElaValue Remainder(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.Remainder(left, right, ctx);
-        }
-
-
-        public ElaValue Power(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.Power(left, right, ctx);
-        }
-
-
-        public ElaValue BitwiseOr(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.BitwiseOr(left, right, ctx);
-        }
-
-
-        public ElaValue BitwiseAnd(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.BitwiseAnd(left, right, ctx);
-        }
-
-
-        public ElaValue BitwiseXor(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.BitwiseXor(left, right, ctx);
-        }
-
-
-        public ElaValue BitwiseNot(ExecutionContext ctx)
-        {
-            return Ref.BitwiseNot(this, ctx);
-        }
-
-
-        public ElaValue ShiftRight(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.ShiftRight(left, right, ctx);
-        }
-
-
-        public ElaValue ShiftLeft(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.ShiftLeft(left, right, ctx);
-        }
-
-
-        public ElaValue Negate(ExecutionContext ctx)
-        {
-            return Ref.Negate(this, ctx);
         }
 
 
@@ -636,12 +522,6 @@ namespace Ela.Runtime
         public ElaValue Untag(ExecutionContext ctx)
         {
 			return Ref.Untag(ctx);
-        }
-
-
-        public ElaValue Clone(ExecutionContext ctx)
-        {
-            return Ref.Clone(ctx);
         }
         #endregion
         

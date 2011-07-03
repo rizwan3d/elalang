@@ -48,28 +48,28 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Operations
-        protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            var li = default(ElaTypeInfo);
-            var ri = default(ElaTypeInfo);
+		//protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+		//{
+		//    var li = default(ElaTypeInfo);
+		//    var ri = default(ElaTypeInfo);
 
-            if (!Cast(left, right, out li, out ri, "equal", ctx))
-                return Default();
+		//    if (!Cast(left, right, out li, out ri, "equal", ctx))
+		//        return Default();
 
-            return new ElaValue(CompareInfos(li, ri));
-        }
+		//    return new ElaValue(CompareInfos(li, ri));
+		//}
 
 
-        protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            var li = default(ElaTypeInfo);
-            var ri = default(ElaTypeInfo);
+		//protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		//{
+		//    var li = default(ElaTypeInfo);
+		//    var ri = default(ElaTypeInfo);
 
-            if (!Cast(left, right, out li, out ri, "notequal", ctx))
-                return Default();
+		//    if (!Cast(left, right, out li, out ri, "notequal", ctx))
+		//        return Default();
 
-            return new ElaValue(!CompareInfos(li, ri));
-        }
+		//    return new ElaValue(!CompareInfos(li, ri));
+		//}
 
 
         protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)

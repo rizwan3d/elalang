@@ -75,9 +75,7 @@ namespace Ela.Compilation
         	1, //Clone	
 		    1, //Gettag            
             1, //Ovr
-			1, //Call2
-			1, //Pushadd
-			
+
             5, //Elem
 			5, //Skiptag
 			5, //Conv

@@ -77,19 +77,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return new ElaValue(IsEqual(left.Ref, right.Ref));
-		}
-
-
-		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-            return new ElaValue(!IsEqual(left.Ref, right.Ref));
-		}
-
-
-        internal static bool IsEqual(ElaObject leftObj, ElaObject rightObj)
+		internal static bool IsEqual(ElaObject leftObj, ElaObject rightObj)
         {
             var left = leftObj as ElaFunction;
 			var right = rightObj as ElaFunction;
@@ -102,10 +90,9 @@ namespace Ela.Runtime.ObjectModel
                 left.ModuleHandle == right.ModuleHandle &&
                 left.AppliedParameters == right.AppliedParameters &&
                 left.Flip == right.Flip &&
-                EqHelper.ListEquals<ElaValue>(left.Parameters, right.Parameters) &&
-                (Object.ReferenceEquals(left.LastParameter.Ref, right.LastParameter.Ref) ||
-                    left.LastParameter.Equals(right.LastParameter));
-
+                left.Parameters.Length == right.Parameters.Length && 
+				left.AppliedParameters == 0 && right.AppliedParameters == 0 &&
+                left.LastParameter.Ref == right.LastParameter.Ref && right.LastParameter.Ref == null;
         }
 
 

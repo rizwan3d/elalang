@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StandardLibrary", "StandardLibrary", "{290E64EC-5C01-490D-8AFF-101E4D1EB716}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElaLibrary", "StandardLibrary\ElaLibrary\ElaLibrary.csproj", "{AFD398CA-09A8-486A-9C65-EDC4954F08C0}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Code", "Code", "{AB91D945-BA7B-45C8-9226-E861B0FE175A}"
 	ProjectSection(SolutionItems) = preProject
 		StandardLibrary\Code\Core.ela = StandardLibrary\Code\Core.ela
@@ -50,18 +48,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AFD398CA-09A8-486A-9C65-EDC4954F08C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AFD398CA-09A8-486A-9C65-EDC4954F08C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AFD398CA-09A8-486A-9C65-EDC4954F08C0}.Debug|x64.ActiveCfg = Debug|x64
-		{AFD398CA-09A8-486A-9C65-EDC4954F08C0}.Debug|x64.Build.0 = Debug|x64
-		{AFD398CA-09A8-486A-9C65-EDC4954F08C0}.Debug|x86.ActiveCfg = Debug|x86
-		{AFD398CA-09A8-486A-9C65-EDC4954F08C0}.Debug|x86.Build.0 = Debug|x86
-		{AFD398CA-09A8-486A-9C65-EDC4954F08C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AFD398CA-09A8-486A-9C65-EDC4954F08C0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AFD398CA-09A8-486A-9C65-EDC4954F08C0}.Release|x64.ActiveCfg = Release|x64
-		{AFD398CA-09A8-486A-9C65-EDC4954F08C0}.Release|x64.Build.0 = Release|x64
-		{AFD398CA-09A8-486A-9C65-EDC4954F08C0}.Release|x86.ActiveCfg = Release|x86
-		{AFD398CA-09A8-486A-9C65-EDC4954F08C0}.Release|x86.Build.0 = Release|x86
 		{850B41D5-8924-49A1-BE4E-6768CD8CABF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{850B41D5-8924-49A1-BE4E-6768CD8CABF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{850B41D5-8924-49A1-BE4E-6768CD8CABF9}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -115,7 +101,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{AFD398CA-09A8-486A-9C65-EDC4954F08C0} = {290E64EC-5C01-490D-8AFF-101E4D1EB716}
 		{AB91D945-BA7B-45C8-9226-E861B0FE175A} = {290E64EC-5C01-490D-8AFF-101E4D1EB716}
 		{850B41D5-8924-49A1-BE4E-6768CD8CABF9} = {6440104F-093D-47F5-8F7C-3E281483F650}
 		{48AE1C4A-B3A0-4669-A0B1-80D1364531BB} = {6440104F-093D-47F5-8F7C-3E281483F650}

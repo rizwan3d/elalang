@@ -123,42 +123,6 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return left.Force(ctx).Equal(left.Force(ctx), right.Force(ctx), ctx);
-		}
-
-
-		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return left.Force(ctx).NotEqual(left.Force(ctx), right.Force(ctx), ctx);
-		}
-
-
-		protected internal override ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return left.Force(ctx).Greater(left.Force(ctx), right.Force(ctx), ctx);
-		}
-
-
-		protected internal override ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return left.Force(ctx).Lesser(left.Force(ctx), right.Force(ctx), ctx);
-		}
-
-
-		protected internal override ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return left.Force(ctx).GreaterEqual(left.Force(ctx), right.Force(ctx), ctx);
-		}
-
-
-		protected internal override ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return left.Force(ctx).LesserEqual(left.Force(ctx), right.Force(ctx), ctx);
-		}
-
-
 		protected internal override ElaValue GetLength(ExecutionContext ctx)
 		{
 			return Force(ctx).Ref.GetLength(ctx);
@@ -233,86 +197,6 @@ namespace Ela.Runtime.ObjectModel
 				return Default();
 			}
 		}
-
-
-		protected internal override ElaValue Add(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return left.Force(ctx).Add(left.Force(ctx), right.Force(ctx), ctx);		
-		}
-
-
-		protected internal override ElaValue Subtract(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return left.Force(ctx).Subtract(left.Force(ctx), right.Force(ctx), ctx);
-		}
-
-
-		protected internal override ElaValue Multiply(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return left.Force(ctx).Multiply(left.Force(ctx), right.Force(ctx), ctx);
-		}
-
-
-		protected internal override ElaValue Divide(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return left.Force(ctx).Divide(left.Force(ctx), right.Force(ctx), ctx);
-		}
-
-
-		protected internal override ElaValue Remainder(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return left.Force(ctx).Remainder(left.Force(ctx), right.Force(ctx), ctx);
-		}
-
-
-		protected internal override ElaValue Power(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return left.Force(ctx).Power(left.Force(ctx), right.Force(ctx), ctx);
-		}
-
-
-		protected internal override ElaValue BitwiseOr(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return left.Force(ctx).BitwiseOr(left.Force(ctx), right.Force(ctx), ctx);
-		}
-
-
-		protected internal override ElaValue BitwiseAnd(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return left.Force(ctx).BitwiseAnd(left.Force(ctx), right.Force(ctx), ctx);
-		}
-
-
-		protected internal override ElaValue BitwiseXor(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return left.Force(ctx).BitwiseXor(left.Force(ctx), right.Force(ctx), ctx);
-		}
-
-
-		protected internal override ElaValue BitwiseNot(ElaValue @this, ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.BitwiseNot(Value, ctx);
-		}
-
-
-		protected internal override ElaValue ShiftRight(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return left.Force(ctx).ShiftRight(left.Force(ctx), right.Force(ctx), ctx);
-		}
-
-
-		protected internal override ElaValue ShiftLeft(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return left.Force(ctx).ShiftLeft(left.Force(ctx), right.Force(ctx), ctx);
-		}
-
-
-		protected internal override ElaValue Negate(ElaValue @this, ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.Negate(Value, ctx);
-		}
-
-
 		protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
 		{
 			return Force(ctx).Ref.Bool(Value, ctx);
@@ -391,12 +275,6 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue Untag(ExecutionContext ctx)
 		{
 			return Force(ctx).Ref.Untag(ctx);
-		}
-
-
-		protected internal override ElaValue Clone(ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.Clone(ctx);
 		}
 		#endregion
 

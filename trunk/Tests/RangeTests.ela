@@ -41,7 +41,7 @@ let wrong2 {eq,eqt} =
         $ eqt <| rng is (5::10::[])
     
 let tuples1 {eq} =
-        eq (length lst) 10
+        eq (length lst) 11
         $ eq lst.[0] (1,10)
         $ eq lst.[9] (10,19)
         where lst = [(1,10)..(10,20)]

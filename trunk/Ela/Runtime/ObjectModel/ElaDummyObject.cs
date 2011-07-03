@@ -78,42 +78,6 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
 		protected internal override ElaValue GetLength(ExecutionContext ctx)
 		{
 			return Default();
@@ -151,90 +115,6 @@ namespace Ela.Runtime.ObjectModel
 
 
 		protected internal override ElaValue GetMin(ElaValue @this, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue Add(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue Subtract(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue Multiply(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue Divide(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue Remainder(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue Power(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue BitwiseOr(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue BitwiseAnd(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue BitwiseXor(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue BitwiseNot(ElaValue @this, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue ShiftRight(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue ShiftLeft(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue Negate(ElaValue @this, ExecutionContext ctx)
 		{
 			return Default();
 		}
@@ -337,12 +217,6 @@ namespace Ela.Runtime.ObjectModel
 
 
 		protected internal override ElaValue Untag(ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue Clone(ExecutionContext ctx)
 		{
 			return Default();
 		}

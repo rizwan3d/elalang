@@ -98,38 +98,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-        protected internal override ElaValue Add(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            ctx.OverloadFunction = "$add";
-            ctx.Tag = left.GetTag(ctx);
-            ctx.Failed = true;
-            return Default();
-        }
-
-
-		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			if (left.TypeId != right.TypeId || left.TypeId != ElaMachine.VAR)
-				return InvalidOperand(left, right, "equal", ctx);
-
-			var v1 = (ElaVariant)left.Ref;
-			var v2 = (ElaVariant)right.Ref;
-			return new ElaValue(v1.Tag == v2.Tag && v1.Value.Equals(v2.Value));
-		}
-
-
-		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			if (left.TypeId != right.TypeId || left.TypeId != ElaMachine.VAR)
-				return InvalidOperand(left, right, "notequal", ctx);
-
-			var v1 = (ElaVariant)left.Ref;
-			var v2 = (ElaVariant)right.Ref;
-			return new ElaValue(v1.Tag != v2.Tag || !v1.Value.Equals(v2.Value));
-		}
-
-
-		protected internal override string GetTag(ExecutionContext ctx)
+        protected internal override string GetTag(ExecutionContext ctx)
 		{
 			return Tag;
 		}

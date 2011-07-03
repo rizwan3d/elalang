@@ -141,11 +141,7 @@ namespace Ela.Compilation
         Gettag,
 
         Ovr,
-
-		Call2,
-
-		Pushadd,
-
+				
 
 		
 		Elem,

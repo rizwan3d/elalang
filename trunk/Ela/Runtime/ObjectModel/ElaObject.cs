@@ -175,61 +175,13 @@ namespace Ela.Runtime.ObjectModel
 			return false;
 		}
 
-        protected internal virtual ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal virtual ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Ref == this)
-                return right.Ref.Equal(left, right, ctx);
-            else
-            {
-                ctx.NoOperation(left, right, "equal");
-                return Default();
-            }
-		}
-
-
-		protected internal virtual ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			ctx.NoOperator(This(left, right), "notequal");
+			ctx.NoOperation(left, right, "concat");
 			return Default();
 		}
 
-
-		protected internal virtual ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			ctx.NoOperator(This(left, right), "greater");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			ctx.NoOperator(This(left, right), "lesser");			
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			ctx.NoOperator(This(left, right), "greaterequal");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			ctx.NoOperator(This(left, right), "lesserequal");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue GetLength(ExecutionContext ctx)
-		{
-			ctx.NoOperator(new ElaValue(this), "length");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue Successor(ElaValue @this, ExecutionContext ctx)
+       	protected internal virtual ElaValue Successor(ElaValue @this, ExecutionContext ctx)
 		{
 			ctx.NoOperator(@this, "succ");
 			return Default();
@@ -270,114 +222,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal virtual ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-            if (left.Ref == this)
-                return right.Ref.Concatenate(left, right, ctx);
-            else
-            {
-                ctx.NoOperation(left, right, "concat");
-                return Default();
-            }
-		}
-
-
-		protected internal virtual ElaValue Add(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-            if (left.Ref == this)
-                return right.Ref.Add(left, right, ctx);
-            else
-            {
-                ctx.NoOperation(left, right, "add");
-                return Default();
-            }
-		}
-
-
-		protected internal virtual ElaValue Subtract(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			ctx.NoOperator(This(left, right), "subtract");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue Multiply(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			ctx.NoOperator(This(left, right), "multiply");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue Divide(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			ctx.NoOperator(This(left, right), "divide");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue Remainder(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			ctx.NoOperator(This(left, right), "remainder");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue Power(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			ctx.NoOperator(This(left, right), "power");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue BitwiseOr(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			ctx.NoOperator(This(left, right), "bitwiseor");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue BitwiseAnd(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			ctx.NoOperator(This(left, right), "bitwiseand");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue BitwiseXor(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			ctx.NoOperator(This(left, right), "bitwisexor");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue BitwiseNot(ElaValue @this, ExecutionContext ctx)
-		{
-			ctx.NoOperator(@this, "bitwisenot");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue ShiftRight(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			ctx.NoOperator(This(left, right), "shiftright");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue ShiftLeft(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			ctx.NoOperator(This(left, right), "shiftleft");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue Negate(ElaValue @this, ExecutionContext ctx)
-		{
-			ctx.NoOperator(@this, "negate");
-			return Default();
-		}
-
-
 		protected internal virtual bool Bool(ElaValue @this, ExecutionContext ctx)
 		{
 			ctx.NoOperator(@this, "bool");
@@ -385,6 +229,13 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
+		protected internal virtual ElaValue GetLength(ExecutionContext ctx)
+		{
+			ctx.NoOperator(new ElaValue(this), "length");
+			return Default();
+		}
+		
+		
 		protected internal virtual ElaValue Head(ExecutionContext ctx)
 		{
 			ctx.NoOperator(new ElaValue(this), "head");
@@ -499,13 +350,6 @@ namespace Ela.Runtime.ObjectModel
 			ctx.NoOperator(new ElaValue(this), "untag");
 			return Default();
         }
-
-
-		protected internal virtual ElaValue Clone(ExecutionContext ctx)
-		{
-			ctx.NoOperator(new ElaValue(this), "clone");
-			return Default();
-		}
 		#endregion
 
 

@@ -69,7 +69,7 @@ namespace Ela.Runtime
 		#endregion
 
 
-        #region Types
+        #region Operations
         internal const int UNI = (Int32)ElaTypeCode.Unit;
 		internal const int INT = (Int32)ElaTypeCode.Integer;
 		internal const int REA = (Int32)ElaTypeCode.Single;
@@ -88,6 +88,7 @@ namespace Ela.Runtime
 		internal const int VAR = (Int32)ElaTypeCode.Variant;
 
         private readonly static DispatchBinaryFun ___ = null;
+		private readonly static DispatchUnaryFun _ = null;
         
         private sealed class __table
         {
@@ -115,6 +116,31 @@ namespace Ela.Runtime
             };
         }
 
+		private sealed class __table2
+		{
+			internal readonly DispatchUnaryFun[] table = 
+            {
+                _, //INT
+                _, //NON
+                _, //LNG
+                _, //SNG
+                _, //DBL
+                _, //BYT
+                _, //CHR
+                _, //STR
+                _, //UNI
+                _, //LST
+                _, //___
+                _, //TUP
+                _, //REC
+                _, //FUN
+                _, //OBJ
+                _, //MOD
+                _, //LAZ
+                _, //VAR
+            };
+		}
+
         private readonly DispatchBinaryFun[][] add_ovl = new __table().table;
         private readonly DispatchBinaryFun[][] sub_ovl = new __table().table;
         private readonly DispatchBinaryFun[][] mul_ovl = new __table().table;
@@ -132,6 +158,12 @@ namespace Ela.Runtime
 		private readonly DispatchBinaryFun[][] gte_ovl = new __table().table;
 		private readonly DispatchBinaryFun[][] ltr_ovl = new __table().table;
 		private readonly DispatchBinaryFun[][] lte_ovl = new __table().table;
+		private readonly DispatchBinaryFun[][] cat_ovl = new __table().table;
+
+		private readonly DispatchUnaryFun[] neg_ovl = new __table2().table;
+		private readonly DispatchUnaryFun[] bne_ovl = new __table2().table;
+		private readonly DispatchUnaryFun[] cln_ovl = new __table2().table;
+
 
 		private static DispatchBinaryFun addErrErr = new NoneBinary("addition");
         private DispatchBinaryFun addIntInt;
@@ -293,7 +325,7 @@ namespace Ela.Runtime
         private DispatchBinaryFun shrTupTup;
 		private DispatchBinaryFun shrLazLaz;
 
-		private static DispatchBinaryFun eqlErrErr = new NoneBinary("equal");
+		private DispatchBinaryFun eqlErrErr;
 		private DispatchBinaryFun eqlIntInt;
 		private DispatchBinaryFun eqlIntLng;
 		private DispatchBinaryFun eqlIntSng;
@@ -320,8 +352,9 @@ namespace Ela.Runtime
 		private DispatchBinaryFun eqlLstLst;
 		private DispatchBinaryFun eqlVarVar;
 		private DispatchBinaryFun eqlUniUni;
+		private DispatchBinaryFun eqlBytByt;
 
-		private static DispatchBinaryFun neqErrErr = new NoneBinary("not equal");
+		private DispatchBinaryFun neqErrErr;
 		private DispatchBinaryFun neqIntInt;
 		private DispatchBinaryFun neqIntLng;
 		private DispatchBinaryFun neqIntSng;
@@ -348,6 +381,7 @@ namespace Ela.Runtime
 		private DispatchBinaryFun neqLstLst;
 		private DispatchBinaryFun neqVarVar;
 		private DispatchBinaryFun neqUniUni;
+		private DispatchBinaryFun neqBytByt;
 
 		private static DispatchBinaryFun gtrErrErr = new NoneBinary("greater");
 		private DispatchBinaryFun gtrIntInt;
@@ -437,7 +471,32 @@ namespace Ela.Runtime
 		private DispatchBinaryFun gteChrChr;
 		private DispatchBinaryFun gteStrStr;
 
+		private static DispatchBinaryFun catErrErr = new NoneBinary("concatenation");
+		private DispatchBinaryFun catStrStr;
+		private DispatchBinaryFun catChrChr;
+		private DispatchBinaryFun catChrStr;
+		private DispatchBinaryFun catStrChr;
+		private DispatchBinaryFun catLazLaz;
 
+		private static DispatchUnaryFun negErr = new NoneUnary("negate");
+		private DispatchUnaryFun negInt;
+		private DispatchUnaryFun negLng;
+		private DispatchUnaryFun negSng;
+		private DispatchUnaryFun negDbl;
+		private DispatchUnaryFun negTup;
+		private DispatchUnaryFun negLaz;
+
+		private static DispatchUnaryFun bneErr = new NoneUnary("bitwise negate");
+		private DispatchUnaryFun bneInt;
+		private DispatchUnaryFun bneLng;
+		private DispatchUnaryFun bneTup;
+		private DispatchUnaryFun bneLaz;
+
+		private static DispatchUnaryFun clnErr = new NoneUnary("clone");
+		private DispatchUnaryFun clnRec;
+		private DispatchUnaryFun clnLaz;
+
+		
         private void InitializeTables()
         {
             addIntInt = new AddIntInt(add_ovl);
@@ -588,7 +647,8 @@ namespace Ela.Runtime
             shrLngLng = new ShrLongLong(shr_ovl);
             shrTupTup = new TupleBinary(shr_ovl);
             shrLazLaz = new ThunkBinary(shr_ovl);
-			
+
+			eqlErrErr = new EqlAnyAny(eql_ovl);
 			eqlIntInt = new EqlIntInt(eql_ovl);
 			eqlIntLng = new EqlIntLong(eql_ovl);
 			eqlIntSng = new EqlIntSingle(eql_ovl);
@@ -615,7 +675,9 @@ namespace Ela.Runtime
 			eqlModMod = new EqlModMod(eql_ovl);
 			eqlVarVar = new EqlVariantVariant(eql_ovl);
 			eqlUniUni = new EqlUnitUnit(eql_ovl);
+			eqlBytByt = new EqlBoolBool(eql_ovl);
 
+			neqErrErr = new EqlAnyAny(neq_ovl);
 			neqIntInt = new NeqIntInt(neq_ovl);
 			neqIntLng = new NeqIntLong(neq_ovl);
 			neqIntSng = new NeqIntSingle(neq_ovl);
@@ -642,6 +704,7 @@ namespace Ela.Runtime
 			neqModMod = new NeqModMod(neq_ovl);
 			neqVarVar = new NeqVariantVariant(neq_ovl);
 			neqUniUni = new NeqUnitUnit(neq_ovl);
+			neqBytByt = new NeqBoolBool(neq_ovl);
 
 			gtrIntInt = new GtrIntInt(gtr_ovl);
 			gtrIntLng = new GtrIntLong(gtr_ovl);
@@ -725,10 +788,30 @@ namespace Ela.Runtime
 			lteChrChr = new LteCharChar(lte_ovl);
 			lteStrStr = new LteStringString(lte_ovl);
 			lteTupTup = new TupleCompare(lte_ovl, TupleCompare.OpFlag.Lt);
-			lteLazLaz = new ThunkBinary(lte_ovl);		
+			lteLazLaz = new ThunkBinary(lte_ovl);
+			
+			catStrStr = new ConcatStringString(cat_ovl);
+			catChrChr = new ConcatCharChar(cat_ovl);
+			catStrChr = new ConcatStringChar(cat_ovl);
+			catChrStr = new ConcatCharString(cat_ovl);
+			catLazLaz = new ThunkBinary(cat_ovl);
 
+			negInt = new NegInt(neg_ovl);
+			negLng = new NegLong(neg_ovl);
+			negSng = new NegSingle(neg_ovl);
+			negDbl = new NegDouble(neg_ovl);
+			negTup = new TupleUnary(neg_ovl);
+			negLaz = new ThunkUnary(neg_ovl);
 
-            add_ovl[INT][INT] = addIntInt;
+			bneInt = new BinNegInt(bne_ovl);
+			bneLng = new BinNegLong(bne_ovl);
+			bneTup = new TupleUnary(bne_ovl);
+			bneLaz = new ThunkUnary(bne_ovl);
+
+			clnRec = new CloneRec(cln_ovl);
+			clnLaz = new ThunkUnary(cln_ovl);
+			
+			add_ovl[INT][INT] = addIntInt;
             add_ovl[INT][LNG] = addIntLng;
             add_ovl[INT][REA] = addIntSng;
             add_ovl[INT][DBL] = addIntDbl;
@@ -1002,6 +1085,7 @@ namespace Ela.Runtime
 			eql_ovl[VAR][VAR] = eqlVarVar;
 			eql_ovl[REC][REC] = eqlRecRec;
 			eql_ovl[LST][LST] = eqlLstLst;
+			eql_ovl[BYT][BYT] = eqlBytByt;
 			FillTable(eql_ovl, eqlErrErr);
 
 			neq_ovl[INT][INT] = neqIntInt;
@@ -1039,6 +1123,7 @@ namespace Ela.Runtime
 			neq_ovl[VAR][VAR] = neqVarVar;
 			neq_ovl[REC][REC] = neqRecRec;
 			neq_ovl[LST][LST] = neqLstLst;
+			neq_ovl[BYT][BYT] = neqBytByt;			
 			FillTable(neq_ovl, neqErrErr);
 
 			gtr_ovl[INT][INT] = gtrIntInt;
@@ -1148,6 +1233,35 @@ namespace Ela.Runtime
 			lte_ovl[CHR][CHR] = lteChrChr;
 			lte_ovl[STR][STR] = lteStrStr;
 			FillTable(lte_ovl, lteErrErr);
+
+			cat_ovl[STR][STR] = catStrStr;
+			cat_ovl[CHR][CHR] = catChrChr;
+			cat_ovl[CHR][STR] = catChrStr;
+			cat_ovl[STR][CHR] = catStrChr;
+			cat_ovl[LAZ][LAZ] = catLazLaz;
+			cat_ovl[LAZ][STR] = catLazLaz;
+			cat_ovl[LAZ][CHR] = catLazLaz;
+			cat_ovl[CHR][LAZ] = catLazLaz;
+			cat_ovl[STR][LAZ] = catLazLaz;			
+			FillTable(cat_ovl, catErrErr);
+
+			neg_ovl[INT] = negInt;
+			neg_ovl[LNG] = negLng;
+			neg_ovl[REA] = negSng;
+			neg_ovl[DBL] = negDbl;
+			neg_ovl[TUP] = negTup;
+			neg_ovl[LAZ] = negLaz;
+			FillTable(neg_ovl, negErr);
+
+			bne_ovl[INT] = bneInt;
+			bne_ovl[LNG] = bneLng;
+			bne_ovl[TUP] = bneTup;
+			bne_ovl[LAZ] = bneLaz;
+			FillTable(bne_ovl, bneErr);
+
+			bne_ovl[REC] = clnRec;
+			cln_ovl[LAZ] = clnLaz;
+			FillTable(cln_ovl, clnErr);
         }
 
 
@@ -1165,8 +1279,14 @@ namespace Ela.Runtime
 			}
 		}
 
-
-		internal readonly DispatchBinaryFun[] neg_ovl = null;
+		private void FillTable(DispatchUnaryFun[] tab, DispatchUnaryFun errOp)
+		{
+			for (var i = 0; i < tab.Length; i++)
+			{
+				if (tab[i] == _)
+					tab[i] = errOp;
+			}
+		}
 
 
         internal static ElaValue BinaryOp(DispatchBinaryFun[][] funs, ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -1175,10 +1295,9 @@ namespace Ela.Runtime
         }
 
 
-        internal static ElaValue UnaryOp(DispatchBinaryFun[] funs, ElaValue left, ExecutionContext ctx)
+        internal static ElaValue UnaryOp(DispatchUnaryFun[] funs, ElaValue left, ExecutionContext ctx)
         {
-            //return funs[left.TypeId].Call(left, ctx));
-            return default(ElaValue);
+            return funs[left.TypeId].Call(left, ctx);
         }
 		#endregion
 
@@ -1314,18 +1433,6 @@ namespace Ela.Runtime
 		#endregion
 
 
-		class Call2 : ElaObject
-		{
-			public Call2() : base((ElaTypeCode)(-1)) { }
-
-			internal override bool Call(EvalStack stack, ExecutionContext ctx)
-			{
-				stack.Replace(stack.Pop().I4 + stack.Peek().I4);
-				return false;
-			}
-		}
-
-
 		#region Execute
 		private ElaValue Execute(WorkerThread thread)
 		{
@@ -1352,26 +1459,6 @@ namespace Ela.Runtime
 
 				switch (op)
 				{
-
-					case Op.Pushadd:
-						evalStack.Push(new ElaValue(new Call2()));
-						break;
-					case Op.Call2:
-						{
-							var obj = evalStack.PopFast().Ref;
-
-							if (obj.Call(evalStack, ctx))
-								goto SWITCH_MEM;
-
-							if (ctx.Failed)
-							{
-								evalStack.Push(new ElaValue(obj));
-								ExecuteThrow(thread, evalStack);
-								goto SWITCH_MEM;
-							}
-						}
-						break;
-
 
 					#region Stack Operations
 					case Op.Tupex:
@@ -1535,14 +1622,8 @@ namespace Ela.Runtime
 						left = evalStack.Pop();
 						right = evalStack.Peek();
 
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 & right.I4);
-							break;
-						}
-
-						evalStack.Replace(left.Ref.BitwiseAnd(left, right, ctx));
-
+						evalStack.Replace(and_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
+						
 						if (ctx.Failed)
 						{
 							evalStack.Replace(right);
@@ -1555,14 +1636,8 @@ namespace Ela.Runtime
 						left = evalStack.Pop();
 						right = evalStack.Peek();
 
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 | right.I4);
-							break;
-						}
-
-						evalStack.Replace(left.Ref.BitwiseOr(left, right, ctx));
-
+						evalStack.Replace(bor_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
+						
 						if (ctx.Failed)
 						{
 							evalStack.Replace(right);
@@ -1575,13 +1650,7 @@ namespace Ela.Runtime
 						left = evalStack.Pop();
 						right = evalStack.Peek();
 
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 ^ right.I4);
-							break;
-						}
-
-						evalStack.Replace(left.Ref.BitwiseXor(left, right, ctx));
+						evalStack.Replace(xor_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -1595,13 +1664,7 @@ namespace Ela.Runtime
 						left = evalStack.Pop();
 						right = evalStack.Peek();
 
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 << right.I4);
-							break;
-						}
-
-						evalStack.Replace(left.Ref.ShiftLeft(left, right, ctx));
+						evalStack.Replace(shl_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -1615,13 +1678,7 @@ namespace Ela.Runtime
 						left = evalStack.Pop();
 						right = evalStack.Peek();
 
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 >> right.I4);
-							break;
-						}
-
-						evalStack.Replace(left.Ref.ShiftRight(left, right, ctx));
+						evalStack.Replace(shr_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -1648,7 +1705,6 @@ namespace Ela.Runtime
                         left = evalStack.Pop();
                         right = evalStack.Peek();
 
-                        //evalStack.Replace(left.Ref.Add(left, right, ctx));
                         evalStack.Replace(add_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
 
                         if (ctx.Failed)
@@ -1658,45 +1714,12 @@ namespace Ela.Runtime
                             ExecuteThrow(thread, evalStack);
                             goto SWITCH_MEM;
                         }
-
-
-
-                        //left = evalStack.Pop();
-                        //right = evalStack.Peek();
-
-                        ////if (left.TypeId == INT && right.TypeId == INT)
-                        ////{
-                        ////    evalStack.Replace(left.I4 + right.I4);
-                        ////    break;
-                        ////}
-
-                        ////if (add_ovl[left.TypeId][right.TypeId])
-                        ////{
-                        ////    InvokeOverride("$add", left, right, evalStack, thread, ctx);
-                        ////    goto SWITCH_MEM;
-                        ////}
-
-                        //evalStack.Replace(left.Ref.Add(left, right, ctx));
-
-                        //if (ctx.Failed)
-                        //{
-                        //    evalStack.Replace(right);
-                        //    evalStack.Push(left);
-                        //    ExecuteThrow(thread, evalStack);
-                        //    goto SWITCH_MEM;
-                        //}
                         break;
 					case Op.Sub:
 						left = evalStack.Pop();
 						right = evalStack.Peek();
 
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 - right.I4);
-							break;
-						}
-
-						evalStack.Replace(left.Ref.Subtract(left, right, ctx));
+						evalStack.Replace(sub_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -1709,7 +1732,7 @@ namespace Ela.Runtime
 					case Op.Div:
 						left = evalStack.Pop();
 						right = evalStack.Peek();
-						evalStack.Replace(left.Divide(left, right, ctx));
+						evalStack.Replace(div_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -1722,14 +1745,7 @@ namespace Ela.Runtime
 					case Op.Mul:
 						left = evalStack.Pop();
 						right = evalStack.Peek();
-
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 * right.I4);
-							break;
-						}
-
-						evalStack.Replace(left.Ref.Multiply(left, right, ctx));
+						evalStack.Replace(mul_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -1742,7 +1758,7 @@ namespace Ela.Runtime
 					case Op.Pow:
 						left = evalStack.Pop();
 						right = evalStack.Peek();
-						evalStack.Replace(left.Ref.Power(left, right, ctx));
+						evalStack.Replace(pow_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -1755,7 +1771,7 @@ namespace Ela.Runtime
 					case Op.Rem:
 						left = evalStack.Pop();
 						right = evalStack.Peek();
-						evalStack.Replace(left.Ref.Remainder(left, right, ctx));
+						evalStack.Replace(rem_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -1783,13 +1799,7 @@ namespace Ela.Runtime
 						left = evalStack.Pop();
 						right = evalStack.Peek();
 
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 > right.I4);
-							break;
-						}
-
-						evalStack.Replace(left.Ref.Greater(left, right, ctx));
+						evalStack.Replace(gtr_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -1803,13 +1813,7 @@ namespace Ela.Runtime
 						left = evalStack.Pop();
 						right = evalStack.Peek();
 
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 < right.I4);
-							break;
-						}
-
-						evalStack.Replace(left.Ref.Lesser(left, right, ctx));
+						evalStack.Replace(ltr_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -1823,13 +1827,7 @@ namespace Ela.Runtime
 						left = evalStack.Pop();
 						right = evalStack.Peek();
 
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 == right.I4);
-							break;
-						}
-
-						evalStack.Replace(left.Ref.Equal(left, right, ctx));
+						evalStack.Replace(eql_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -1843,13 +1841,7 @@ namespace Ela.Runtime
 						left = evalStack.Pop();
 						right = evalStack.Peek();
 
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 != right.I4);
-							break;
-						}
-
-						evalStack.Replace(left.Ref.NotEqual(left, right, ctx));
+						evalStack.Replace(neq_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -1863,13 +1855,7 @@ namespace Ela.Runtime
 						left = evalStack.Pop();
 						right = evalStack.Peek();
 
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 >= right.I4);
-							break;
-						}
-
-						evalStack.Replace(left.Ref.GreaterEqual(left, right, ctx));
+						evalStack.Replace(gte_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -1883,13 +1869,7 @@ namespace Ela.Runtime
 						left = evalStack.Pop();
 						right = evalStack.Peek();
 
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 <= right.I4);
-							break;
-						}
-
-						evalStack.Replace(left.Ref.LesserEqual(left, right, ctx));
+						evalStack.Replace(lte_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -1904,7 +1884,7 @@ namespace Ela.Runtime
 					#region Object Operations
 					case Op.Clone:
 						right = evalStack.Peek();
-						evalStack.Replace(right.Ref.Clone(ctx));
+						evalStack.Replace(cln_ovl[right.TypeId].Call(right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -1915,9 +1895,10 @@ namespace Ela.Runtime
 						break;
 					case Op.Elem:
                         right = evalStack.Peek();
-                        res = right.Ref.GetLength(ctx);
+                        res = right.Ref.GetLength(ctx); //TODO!!!!
 
-                        if (!res.Equal(res, new ElaValue(opd & Byte.MaxValue), ctx).Bool(ctx))
+						if (res.TypeId == INT && res.I4 != (opd & Byte.MaxValue))
+                        //if (!res.Equal(res, new ElaValue(opd & Byte.MaxValue), ctx).Bool(ctx))
                         {
                             ExecuteFail(ElaRuntimeError.MatchFailed, thread, evalStack);
                             goto SWITCH_MEM;
@@ -2102,13 +2083,7 @@ namespace Ela.Runtime
 					case Op.Neg:
 						right = evalStack.Peek();
 
-						if (right.TypeId == INT)
-						{
-							evalStack.Replace(new ElaValue(-right.I4));
-							break;
-						}
-
-						evalStack.Replace(right.Ref.Negate(right, ctx));
+						evalStack.Replace(neg_ovl[right.TypeId].Call(right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -2120,13 +2095,7 @@ namespace Ela.Runtime
 					case Op.NotBw:
 						right = evalStack.Peek();
 
-						if (right.TypeId == INT)
-						{
-							evalStack.Replace(new ElaValue(~right.I4));
-							break;
-						}
-
-						evalStack.Replace(right.Ref.BitwiseNot(right, ctx));
+						evalStack.Replace(bne_ovl[right.TypeId].Call(right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -2314,7 +2283,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Ref.Equal(left, right, ctx);
+						res = eql_ovl[left.TypeId][right.TypeId].Call(left, right, ctx);
 
 						if (res.Ref.Bool(res, ctx) && !ctx.Failed)
 						{
@@ -2342,8 +2311,8 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Ref.NotEqual(left, right, ctx);
-
+						res = neq_ovl[left.TypeId][right.TypeId].Call(left, right, ctx);
+						
 						if (res.Ref.Bool(res, ctx) && !ctx.Failed)
 						{
 							thread.Offset = opd;
@@ -2370,8 +2339,8 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Ref.Lesser(res, right, ctx);
-
+						res = ltr_ovl[left.TypeId][right.TypeId].Call(left, right, ctx);
+						
 						if (res.Ref.Bool(res, ctx) && !ctx.Failed)
 						{
 							thread.Offset = opd;
@@ -2398,8 +2367,8 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Ref.Greater(left, right, ctx);
-
+						res = gtr_ovl[left.TypeId][right.TypeId].Call(left, right, ctx);
+						
 						if (res.Ref.Bool(res, ctx) && !ctx.Failed)
 						{
 							thread.Offset = opd;

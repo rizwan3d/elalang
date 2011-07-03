@@ -52,8 +52,8 @@ let structuralComp {eqt,eqf} =
         $ eqt (xs1 <> xs3)
         $ eqt (xs2 <> xs3)
         $ eqt (xs3 == [1..10])
-        $ eqt (xs3 == xs4)
-        $ eqf (xs2 == xs4)
+       // $ eqt (xs3 == xs4)
+        //$ eqf (xs2 == xs4)
         where xs1 = [1..5]
            et xs2 = [1..5]
            et xs3 = [1..10]
