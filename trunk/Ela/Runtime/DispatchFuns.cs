@@ -18,4 +18,22 @@ namespace Ela.Runtime
             return funs[left.TypeId][right.TypeId].Call(left, right, ctx);
         }
     }
+
+
+	internal abstract class DispatchUnaryFun
+	{
+		private readonly DispatchUnaryFun[] funs;
+
+		protected DispatchUnaryFun(DispatchUnaryFun[] funs)
+		{
+			this.funs = funs;
+		}
+
+		internal protected abstract ElaValue Call(ElaValue left, ExecutionContext ctx);
+
+		protected ElaValue PerformOp(ElaValue left, ExecutionContext ctx)
+		{
+			return funs[left.TypeId].Call(left, ctx);
+		}
+	}
 }
