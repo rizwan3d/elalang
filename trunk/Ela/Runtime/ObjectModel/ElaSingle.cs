@@ -15,6 +15,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        internal override string GetTag()
+        {
+            return "Single#";
+        }
+
+
         protected internal override float AsSingle(ElaValue value)
         {
             return value.DirectGetReal();
@@ -33,25 +39,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue GetMin(ElaValue @this, ExecutionContext ctx)
-		{
-			return new ElaValue(float.MinValue);
-		}
-
-
-		protected internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
-		{
-			return new ElaValue(@this.DirectGetReal() + 1);
-		}
-
-
-		protected internal override ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
-		{
-			return new ElaValue(@this.DirectGetReal() - 1);
-		}
-
-
-        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
+		protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			try
 			{

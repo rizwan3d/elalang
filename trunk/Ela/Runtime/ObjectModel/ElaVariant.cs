@@ -28,7 +28,13 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
-		public override ElaPatterns GetSupportedPatterns()
+        internal override string GetTag()
+        {
+            return Tag;
+        }
+
+
+        public override ElaPatterns GetSupportedPatterns()
 		{
 			return ElaPatterns.Variant;
 		}
@@ -98,13 +104,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-        protected internal override string GetTag(ExecutionContext ctx)
-		{
-			return Tag;
-		}
-
-
-		protected internal override ElaValue Untag(ExecutionContext ctx)
+        protected internal override ElaValue Untag(ExecutionContext ctx)
         {
             return Value;
         }

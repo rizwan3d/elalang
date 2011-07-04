@@ -1,37 +1,78 @@
 ﻿using System;
 using Ela.Runtime.ObjectModel;
+using System.Collections.Generic;
 
 namespace Ela.Runtime
 {
     #region Generic
-	internal sealed class EqlAnyAny : DispatchBinaryFun
+    internal sealed class EqlAnyAny : NoneBinary
 	{
-		internal EqlAnyAny(DispatchBinaryFun[][] funs) : base(funs) { }
-		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		internal EqlAnyAny(string op, Dictionary<String,ElaOverloadedFunction> overloads) : base(op, overloads) { }
+		protected override ElaValue ReturnDefault(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(false);
 		}
 	}
 
-	internal sealed class NeqAnyAny : DispatchBinaryFun
+	internal sealed class NeqAnyAny : NoneBinary
 	{
-		internal NeqAnyAny(DispatchBinaryFun[][] funs) : base(funs) { }
-		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		internal NeqAnyAny(string op, Dictionary<String,ElaOverloadedFunction> overloads) : base(op, overloads) { }
+		protected override ElaValue ReturnDefault(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return new ElaValue(true);
 		}
 	}
 
-    internal sealed class NoneBinary : DispatchBinaryFun
+    internal class NoneBinary : DispatchBinaryFun
     {
-        private string op;
+        private readonly string op;
+        private readonly Dictionary<String,ElaOverloadedFunction> overloads;
 
-        internal NoneBinary(string op) : base(null)
+        internal NoneBinary(string op, Dictionary<String,ElaOverloadedFunction> overloads) : base(null)
         {
             this.op = op;
+            this.overloads = overloads;
         }
 
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            var fun = default(ElaOverloadedFunction);
+
+            if (overloads.TryGetValue(op, out fun))
+            {
+                var f1 = fun.Resolve(left, ctx);
+
+                if (ctx.Failed)
+                    return ElaObject.GetDefault();
+
+                var fo1 = f1 as ElaOverloadedFunction;
+
+                if (fo1 == null)
+                {
+                    ctx.Fail(ElaRuntimeError.OverloadNotFound, left.GetTag() + "->" + right.GetTag(), 
+                        op.Replace("$", String.Empty));
+                    return ElaObject.GetDefault();                    
+                }
+
+                var f2 = fo1.Resolve(right, ctx);
+
+                if (ctx.Failed)
+                    return ElaObject.GetDefault();
+
+                ctx.Failed = true;
+                f2.Parameters[0] = left;
+                f2.LastParameter = right;
+                f2.AppliedParameters = f2.Parameters.Length;
+                ctx.Function = f2;
+                ctx.ToPop = 2;
+                return ElaObject.GetDefault();
+            }
+
+            return ReturnDefault(left, right, ctx);
+        }
+
+
+        protected virtual ElaValue ReturnDefault(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             ctx.NoOperation(left, right, op);
             return ElaObject.GetDefault();
@@ -39,20 +80,44 @@ namespace Ela.Runtime
     }
 
 
-	internal sealed class NoneUnary : DispatchUnaryFun
+	internal class NoneUnary : DispatchUnaryFun
 	{
-		private string op;
+		private readonly string op;
+        private readonly Dictionary<String,ElaOverloadedFunction> overloads;
 
-		internal NoneUnary(string op) : base(null)
-		{
-			this.op = op;
-		}
+        internal NoneUnary(string op, Dictionary<String,ElaOverloadedFunction> overloads) : base(null)
+        {
+            this.op = op;
+            this.overloads = overloads;
+        }
 
 		protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
 		{
-			ctx.NoOperation(left, new ElaValue(ElaUnit.Instance), op);
-			return ElaObject.GetDefault();
-		}
+			var fun = default(ElaOverloadedFunction);
+
+            if (overloads.TryGetValue(op, out fun))
+            {
+                var f1 = fun.Resolve(left, ctx);
+
+                if (ctx.Failed)
+                    return ElaObject.GetDefault();
+
+                f1.LastParameter = left;
+                ctx.Failed = true;
+                ctx.Function = f1;
+                ctx.ToPop = 1;
+                return ElaObject.GetDefault();
+            }
+
+            return ReturnDefault(left, ctx);
+        }
+
+
+        protected virtual ElaValue ReturnDefault(ElaValue left, ExecutionContext ctx)
+        {
+            ctx.NoOperation(left, new ElaValue(ElaUnit.Instance), op);
+            return ElaObject.GetDefault();
+        }
 	}
 
 
@@ -2625,14 +2690,28 @@ namespace Ela.Runtime
 		}
 	}
 
-	internal sealed class ConcatCharString : DispatchBinaryFun
-	{
-		internal ConcatCharString(DispatchBinaryFun[][] funs) : base(funs) { }
-		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return new ElaValue((Char)left.I4 + right.DirectGetString());
-		}
-	}
+    internal sealed class ConcatCharString : DispatchBinaryFun
+    {
+        internal ConcatCharString(DispatchBinaryFun[][] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return new ElaValue((Char)left.I4 + right.DirectGetString());
+        }
+    }
+
+    internal sealed class ConcatTupleTuple : DispatchBinaryFun
+    {
+        internal ConcatTupleTuple(DispatchBinaryFun[][] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            var arr1 = ((ElaTuple)left.Ref).Values;
+            var arr2 = ((ElaTuple)right.Ref).Values;
+            var res = new ElaValue[arr1.Length + arr2.Length];
+            arr1.CopyTo(res, 0);
+            arr2.CopyTo(res, arr1.Length);
+            return new ElaValue(new ElaTuple(res));
+        }
+    }
 
 	internal sealed class ConcatListList : DispatchBinaryFun
 	{
@@ -2786,4 +2865,247 @@ namespace Ela.Runtime
 		}
 	}
 	#endregion
+
+
+    #region Succ
+    internal sealed class SuccInt : DispatchUnaryFun
+    {
+        internal SuccInt(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(left.I4 + 1);
+        }
+    }
+
+    internal sealed class SuccLong : DispatchUnaryFun
+    {
+        internal SuccLong(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(left.GetLong() + 1);
+        }
+    }
+
+    internal sealed class SuccSingle : DispatchUnaryFun
+    {
+        internal SuccSingle(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(left.DirectGetReal() + 1);
+        }
+    }
+
+    internal sealed class SuccDouble : DispatchUnaryFun
+    {
+        internal SuccDouble(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(left.GetDouble() + 1);
+        }
+    }
+
+    internal sealed class SuccChar : DispatchUnaryFun
+    {
+        internal SuccChar(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue((Char)(left.I4 + 1));
+        }
+    }
+
+    internal sealed class SuccPredTuple : DispatchUnaryFun
+    {
+        internal SuccPredTuple(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            var tuple = (ElaTuple)left.Ref;
+            var arr = new ElaValue[tuple.Length];
+
+            for (var i = 0; i < tuple.Length; i++)
+                arr[i] = PerformOp(tuple[i], ctx);
+
+            return new ElaValue(new ElaTuple(arr));
+        }
+    }
+    #endregion
+
+
+    #region Pred
+    internal sealed class PredInt : DispatchUnaryFun
+    {
+        internal PredInt(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(left.I4 - 1);
+        }
+    }
+
+    internal sealed class PredLong : DispatchUnaryFun
+    {
+        internal PredLong(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(left.GetLong() - 1);
+        }
+    }
+
+    internal sealed class PredSingle : DispatchUnaryFun
+    {
+        internal PredSingle(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(left.DirectGetReal() - 1);
+        }
+    }
+
+    internal sealed class PredDouble : DispatchUnaryFun
+    {
+        internal PredDouble(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(left.GetDouble() - 1);
+        }
+    }
+
+    internal sealed class PredChar : DispatchUnaryFun
+    {
+        internal PredChar(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue((Char)(left.I4 - 1));
+        }
+    }
+    #endregion
+
+
+    #region Min
+    internal sealed class MinInt : DispatchUnaryFun
+    {
+        internal MinInt(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(Int32.MinValue);
+        }
+    }
+
+    internal sealed class MinLong : DispatchUnaryFun
+    {
+        internal MinLong(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(Int64.MinValue);
+        }
+    }
+
+    internal sealed class MinSingle : DispatchUnaryFun
+    {
+        internal MinSingle(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(Single.MinValue);
+        }
+    }
+
+    internal sealed class MinDouble : DispatchUnaryFun
+    {
+        internal MinDouble(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(Double.MinValue);
+        }
+    }
+    #endregion
+
+
+    #region Max
+    internal sealed class MaxInt : DispatchUnaryFun
+    {
+        internal MaxInt(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(Int32.MaxValue);
+        }
+    }
+
+    internal sealed class MaxLong : DispatchUnaryFun
+    {
+        internal MaxLong(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(Int64.MaxValue);
+        }
+    }
+
+    internal sealed class MaxSingle : DispatchUnaryFun
+    {
+        internal MaxSingle(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(Single.MaxValue);
+        }
+    }
+
+    internal sealed class MaxDouble : DispatchUnaryFun
+    {
+        internal MaxDouble(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(Double.MaxValue);
+        }
+    }
+    #endregion
+
+
+    #region Length
+    internal sealed class LenList : DispatchUnaryFun
+    {
+        internal LenList(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            var count = 0;
+            var xs = (ElaList)left.Ref;
+
+            while (!xs.IsNil(ctx))
+            {
+                count++;
+                xs = xs.Tail(ctx).Ref as ElaList;
+
+                if (xs == null)
+                {
+                    ctx.Fail(new ElaError("InvalidList", "Invalid list definition."));
+                    return ElaObject.GetDefault();
+                }
+            }
+
+            return new ElaValue(count);
+        }
+    }
+
+    internal sealed class LenTuple : DispatchUnaryFun
+    {
+        internal LenTuple(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(((ElaTuple)left.Ref).Length);
+        }
+    }
+
+    internal sealed class LenRecord : DispatchUnaryFun
+    {
+        internal LenRecord(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(((ElaRecord)left.Ref).Length);
+        }
+    }
+
+    internal sealed class LenString : DispatchUnaryFun
+    {
+        internal LenString(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(((ElaString)left.Ref).Length);
+        }
+    }
+    #endregion
 }

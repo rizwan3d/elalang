@@ -15,6 +15,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        internal override string GetTag()
+        {
+            return "Char#";
+        }
+
+
         protected internal override char AsChar(ElaValue value)
         {
             return (Char)value.I4;
@@ -49,18 +55,6 @@ namespace Ela.Runtime.ObjectModel
 					ctx.ConversionFailed(@this, type);
 					return Default();
 			}
-		}
-
-
-		protected internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
-		{
-			return new ElaValue(@this.I4 + 1, this);
-		}
-
-
-		protected internal override ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
-		{
-			return new ElaValue(@this.I4 - 1, this);
 		}
 		#endregion
 	}

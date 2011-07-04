@@ -130,12 +130,6 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-		protected internal override ElaValue GetLength(ExecutionContext ctx)
-        {
-            return new ElaValue(keys.Count);
-        }
-
-
         private bool CompareInfos(ElaTypeInfo left, ElaTypeInfo right)
         {
             return left.GetTypeName() == right.GetTypeName() &&

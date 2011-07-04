@@ -28,6 +28,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        internal override string GetTag()
+        {
+            return "String#";
+        }
+
+
         public override ElaPatterns GetSupportedPatterns()
         {
             return ElaPatterns.Tuple|ElaPatterns.HeadTail;
@@ -67,13 +73,13 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue GetLength(ExecutionContext ctx)
-		{
-			return new ElaValue(buffer.Length - headIndex);
-		}
+        internal override int GetLength(ExecutionContext ctx)
+        {
+            return Length;
+        }
 
 
-		protected internal override ElaValue GetValue(ElaValue key, ExecutionContext ctx)
+        protected internal override ElaValue GetValue(ElaValue key, ExecutionContext ctx)
 		{
 			if (key.TypeId != ElaMachine.INT)
 			{
@@ -90,23 +96,6 @@ namespace Ela.Runtime.ObjectModel
 			}
 
 			return new ElaValue(val[key.I4]);
-		}
-
-
-		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-            //if (left.TypeId == ElaMachine.STR && right.TypeId == ElaMachine.STR)
-            //    return new ElaValue(new ElaString(left.DirectGetString() + right.DirectGetString()));
-            //else if (left.TypeId == ElaMachine.STR)
-            //    return right.Ref.Concatenate(left, right, ctx);
-
-            if (left.TypeId == ElaMachine.STR)
-                return new ElaValue(left.DirectGetString() + right.Show(ShowInfo.Default, ctx));
-            else
-                return new ElaValue(left.Show(ShowInfo.Default, ctx) + right.DirectGetString());
-			
-			//ctx.InvalidLeftOperand(left, right, "concat");
-			//return Default();
 		}
 
 
@@ -237,5 +226,13 @@ namespace Ela.Runtime.ObjectModel
 			return new ElaValue(ElaString.Empty);
 		}
 		#endregion
-	}
+
+
+        #region Properties
+        public int Length
+        {
+            get { return buffer.Length - headIndex; }
+        }
+        #endregion
+    }
 }

@@ -52,27 +52,6 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue GetLength(ExecutionContext ctx)
-		{
-			var count = 0;
-			ElaList xs = this;
-			
-			while (!xs.IsNil(ctx))
-			{
-				count++;
-				xs = xs.Tail(ctx).Ref as ElaList;
-
-				if (xs == null)
-				{
-					ctx.Fail(new ElaError("InvalidList", "Invalid list definition."));
-					return Default();
-				}
-			}
-
-			return new ElaValue(count);
-		}
-
-
 		protected internal override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
 		{
 			if (index.TypeId != ElaMachine.INT)
@@ -145,25 +124,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			if (left.TypeId == ElaMachine.LST && right.TypeId == ElaMachine.LST)
-			{
-				var list = (ElaList)right.Ref;
-
-				foreach (var e in ((ElaList)left.Ref).Reverse())
-					list = new ElaList(list, e);
-
-				return new ElaValue(list);				
-			}
-			else if (left.TypeId == ElaMachine.LST)
-				return right.Ref.Concatenate(left, right, ctx);
-			
-			ctx.InvalidLeftOperand(left, right, "concat");
-			return Default();
-		}
-
-
 		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
 		{
 			if (type == ElaTypeCode.List)
@@ -194,6 +154,38 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        internal override string GetTag()
+        {
+            return "List#";
+        }
+
+
+        internal override int GetLength(ExecutionContext ctx)
+        {
+            var count = 0;
+            ElaList xs = this;
+
+            while (!xs.IsNil(ctx))
+            {
+                count++;
+                xs = xs.Tail(ctx).Ref as ElaList;
+
+                if (xs == null)
+                {
+                    if (ctx == ElaObject.DummyContext)
+                        throw new ElaRuntimeException("InvalidList", "Invalid list definition.");
+                    else
+                    {
+                        ctx.Fail("InvalidList", "Invalid list definition.");
+                        return 0;
+                    }
+                }
+            }
+
+            return count;
+        }
+        
+        
         public override ElaPatterns GetSupportedPatterns()
         {
             return ElaPatterns.Tuple|ElaPatterns.HeadTail;
@@ -299,7 +291,7 @@ namespace Ela.Runtime.ObjectModel
 
 		public virtual int Length
 		{
-			get { return GetLength(DummyContext).AsInteger(); }
+			get { return GetLength(ElaObject.DummyContext); }
 		}
 		#endregion
 	}

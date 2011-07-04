@@ -78,24 +78,6 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue GetLength(ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
 		protected internal override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
 		{
 			return Default();
@@ -105,18 +87,6 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
 		{
 			
-		}
-
-
-		protected internal override ElaValue GetMax(ElaValue @this, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue GetMin(ElaValue @this, ExecutionContext ctx)
-		{
-			return Default();
 		}
 
 
@@ -207,12 +177,6 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue Force(ElaValue @this, ExecutionContext ctx)
 		{
 			return Default();
-		}
-
-
-		protected internal override string GetTag(ExecutionContext ctx)
-		{
-			return String.Empty;
 		}
 
 

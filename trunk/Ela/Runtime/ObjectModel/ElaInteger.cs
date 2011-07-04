@@ -15,6 +15,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        internal override string GetTag()
+        {
+            return "Int#";
+        }
+
+
         protected internal override int AsInteger(ElaValue value)
         {
             return value.I4;
@@ -33,36 +39,6 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-        protected internal override string GetTag(ExecutionContext ctx)
-        {
-            return "Int";
-        }
-
-
-		protected internal override ElaValue GetMax(ElaValue @this, ExecutionContext ctx)
-		{
-			return new ElaValue(Int32.MaxValue);
-		}
-
-
-		protected internal override ElaValue GetMin(ElaValue @this, ExecutionContext ctx)
-		{
-			return new ElaValue(Int32.MinValue);
-		}
-
-
-		protected internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
-		{
-			return new ElaValue(@this.I4 + 1);
-		}
-
-
-		protected internal override ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
-		{
-			return new ElaValue(@this.I4 - 1);
-		}
-
-
         protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
         {
 			try

@@ -18,6 +18,12 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Methods
+        internal override string GetTag()
+        {
+            return "Unit#";
+        }
+
+
         public override int GetHashCode()
         {
             return 0;

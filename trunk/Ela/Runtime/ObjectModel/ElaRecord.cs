@@ -151,12 +151,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-        protected internal override ElaValue GetLength(ExecutionContext ctx)
-        {
-            return new ElaValue(keys.Length);
-        }
-
-
         internal ElaValue Clone()
         {
             var rec = new ElaRecord(values.Length);
@@ -173,6 +167,18 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Methods
+        internal override string GetTag()
+        {
+            return "Record#";
+        }
+
+
+        internal override int GetLength(ExecutionContext ctx)
+        {
+            return Length;
+        }
+
+
         public override ElaPatterns GetSupportedPatterns()
         {
             return ElaPatterns.Record|ElaPatterns.Tuple;

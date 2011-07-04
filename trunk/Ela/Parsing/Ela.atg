@@ -25,6 +25,7 @@ TOKENS
 			| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ].	
 	
 	variantTok = ucase { letter | digit | "'" }.
+	specVariantTok = ucase { letter | digit | "'" } "#".
 				
 	intTok = ( digit { digit } | digit { digit } CONTEXT ("." notDigit) | 
 			( "0x" | "0X" ) hexDigit { hexDigit } ) [ "L" | "l" ].
@@ -1104,8 +1105,8 @@ PRODUCTIONS
 		
 	OverloadExpr<ElaBinding varExp> = 
 		(
-			"on" variantTok (. varExp.OverloadNames.Add(t.val); .)
-			{ "->" variantTok (. varExp.OverloadNames.Add(t.val); .) }
+			"on" (variantTok|specVariantTok) (. varExp.OverloadNames.Add(t.val); .)
+			{ "->" (variantTok|specVariantTok) (. varExp.OverloadNames.Add(t.val); .) }
 		).
 		
 	FunExpr<ElaBinding varExp> =

@@ -84,7 +84,7 @@ namespace Ela.Runtime
 
 		public override string ToString()
 		{
-			return Ref.Show(this, ShowInfo.Default, ElaObject.DummyContext);
+			return Ref == null ? String.Empty : Ref.Show(this, ShowInfo.Default, ElaObject.DummyContext);
 		}
 
 
@@ -287,7 +287,7 @@ namespace Ela.Runtime
 		{
 			var seq = (IEnumerable<ElaValue>)Ref;
 			var len = Ref.GetLength(ElaObject.DummyContext);
-			var arr = Array.CreateInstance(el, len.AsInteger());
+			var arr = Array.CreateInstance(el, len);
 			var i = 0;
 
 			foreach (var e in seq)
@@ -375,24 +375,6 @@ namespace Ela.Runtime
 
 
         #region Operations
-        public ElaValue GetLength(ExecutionContext ctx)
-        {
-            return Ref.GetLength(ctx);
-        }
-
-
-        public ElaValue Successor(ExecutionContext ctx)
-        {
-            return Ref.Successor(this, ctx);
-        }
-
-
-        public ElaValue Predecessor(ExecutionContext ctx)
-        {
-            return Ref.Predecessor(this, ctx);
-        }
-
-
         public ElaValue GetValue(ElaValue index, ExecutionContext ctx)
         {
             return Ref.GetValue(index, ctx);
@@ -402,24 +384,6 @@ namespace Ela.Runtime
         public void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
         {
             Ref.SetValue(index, value, ctx);
-        }
-
-
-        public ElaValue GetMax(ExecutionContext ctx)
-        {
-			return Ref.GetMax(this, ctx);
-        }
-
-
-        public ElaValue GetMin(ExecutionContext ctx)
-        {
-			return Ref.GetMin(this, ctx);
-        }
-
-
-        public ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.Concatenate(left, right, ctx);
         }
 
 
@@ -512,12 +476,10 @@ namespace Ela.Runtime
             return Ref.Force(this, ctx);
         }
 
-
-        public string GetTag(ExecutionContext ctx)
+        public string GetTag()
         {
-			return Ref.GetTag(ctx);
+            return Ref.GetTag();
         }
-
 
         public ElaValue Untag(ExecutionContext ctx)
         {

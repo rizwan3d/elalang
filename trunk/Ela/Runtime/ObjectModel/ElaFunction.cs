@@ -175,6 +175,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        internal override string GetTag()
+        {
+            return "Function#";
+        }
+
+
         internal virtual ElaFunction Resolve(ElaValue arg, ExecutionContext ctx)
         {
             return this;

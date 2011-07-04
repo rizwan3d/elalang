@@ -11,8 +11,8 @@ namespace Ela.Runtime.ObjectModel
         internal Dictionary<String,ElaFunction> overloads;
         private string fname;
         
-        internal ElaOverloadedFunction(string fname, Dictionary<String,ElaFunction> funs, FastList<ElaValue[]> captures, ElaMachine vm) :
-            base(0, 0, 2, captures, vm)
+        internal ElaOverloadedFunction(string fname, int pars, Dictionary<String,ElaFunction> funs, FastList<ElaValue[]> captures, ElaMachine vm) :
+            base(0, 0, pars, captures, vm)
         {
             this.fname = fname;
             overloads = funs;
@@ -59,7 +59,7 @@ namespace Ela.Runtime.ObjectModel
 
         internal override ElaFunction Resolve(ElaValue arg, ExecutionContext ctx)
         {
-            var tag = arg.GetTag(ctx);
+            var tag = arg.GetTag();
 
             if (ctx.Failed)
                 return null;
@@ -91,7 +91,7 @@ namespace Ela.Runtime.ObjectModel
 
             for (var i = 0; i < AppliedParameters; i++)
             {
-                sb.Append(Parameters[i].GetTag(null));
+                sb.Append(Parameters[i].GetTag());
                 sb.Append("->");
             }
 
@@ -109,7 +109,7 @@ namespace Ela.Runtime.ObjectModel
 
         public override ElaFunction Clone()
         {
-            var newInst = new ElaOverloadedFunction(fname, overloads, Captures, Machine);
+            var newInst = new ElaOverloadedFunction(fname, Parameters.Length + 1, overloads, Captures, Machine);
             return CloneFast(newInst);
         }
         #endregion

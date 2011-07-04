@@ -120,7 +120,7 @@ namespace Ela.Runtime
 		{
 			if (!Failed)
 			{
-				Failed = true;
+                Failed = true;
 				Error = err;
 			}
 		}
@@ -141,9 +141,9 @@ namespace Ela.Runtime
 
 		internal ElaLazy Thunk;
 
-        internal string Tag;
+        internal ElaFunction Function;
 
-        internal string OverloadFunction;
+        internal int ToPop;
 		#endregion
 	}
 }

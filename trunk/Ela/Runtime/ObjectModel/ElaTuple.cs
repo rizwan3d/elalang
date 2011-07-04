@@ -48,41 +48,19 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
-		{
-			var tuple = new ElaTuple(Length);
-			tuple.cons = Length;
-
-			for (var i = 0; i < Length; i++)
-			{
-				var left = Values[i].TypeId == ElaMachine.LAZ ?
-					((ElaLazy)Values[i].Ref).Force() : Values[i];
-				
-				tuple.Values[i] = left.Ref.Successor(left, ctx);
-			}
-			
-			return new ElaValue(tuple);
-		}
+        internal override string GetTag()
+        {
+            return "Tuple#";
+        }
 
 
-		protected internal override ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
-		{
-			var tuple = new ElaTuple(Length);
-			tuple.cons = Length;
-
-			for (var i = 0; i < Length; i++)
-			{
-				var left = Values[i].TypeId == ElaMachine.LAZ ?
-					((ElaLazy)Values[i].Ref).Force() : Values[i];
-				
-				tuple.Values[i] = left.Ref.Predecessor(left, ctx);
-			}
-			
-			return new ElaValue(tuple);
-		}
+        internal override int GetLength(ExecutionContext ctx)
+        {
+            return Length;
+        }
 
 
-		protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
+        protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
 		{
 			var ret = new ElaTuple(Length);
 			ret.cons = Length;
@@ -96,35 +74,6 @@ namespace Ela.Runtime.ObjectModel
 			}
 
 			return true;
-		}
-
-
-		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-            if (left.TypeId != ElaMachine.TUP)
-            {
-                ctx.InvalidType(TypeCodeFormat.GetShortForm(ElaTypeCode.Tuple), left);
-                return Default();
-            }
-
-            if (right.TypeId != ElaMachine.TUP)
-            {
-                ctx.InvalidType(TypeCodeFormat.GetShortForm(ElaTypeCode.Tuple), right);
-                return Default();
-            }
-
-            var arr1 = ((ElaTuple)left.Ref).Values;
-            var arr2 = ((ElaTuple)right.Ref).Values;
-            var res = new ElaValue[arr1.Length + arr2.Length];
-            arr1.CopyTo(res, 0);
-            arr2.CopyTo(res, arr1.Length);
-            return new ElaValue(new ElaTuple(res));
-		}
-
-
-		protected internal override ElaValue GetLength(ExecutionContext ctx)
-		{
-			return new ElaValue(Length);
 		}
 
 

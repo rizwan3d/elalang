@@ -74,7 +74,7 @@ namespace Ela.Compilation
 			0, //Nil
             0, //Clone			
             0, //Gettag            
-            -3, //Ovr
+            -2, //Ovr
 			
             0, //Elem
 			0, //Skiptag

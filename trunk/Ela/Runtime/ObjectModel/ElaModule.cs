@@ -91,6 +91,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        internal override string GetTag()
+        {
+            return "Module#";
+        }
+
+
         public override ElaPatterns GetSupportedPatterns()
         {
             return ElaPatterns.Record;

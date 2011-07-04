@@ -83,29 +83,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			if (left.Ref != this)
-			{
-				var xs = (ElaList)left.Ref;
-				var newLst = this;
-				
-				foreach (var e in xs.Reverse())
-					newLst = new ElaLazyList(newLst, e);
-
-				return new ElaValue(newLst);
-			}
-			else if (right.Ref != this)
-			{
-				var xs = ElaList.FromEnumerable(this).Concatenate((ElaList)right.Ref);
-				return new ElaValue(xs);
-			}
-			
-			ctx.InvalidLeftOperand(left, right, "concat");
-			return Default();
-		}
-
-
 		protected internal override ElaValue Cons(ElaObject next, ElaValue value, ExecutionContext ctx)
 		{
 			var t = next as ElaLazy;

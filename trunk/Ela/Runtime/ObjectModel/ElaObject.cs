@@ -45,9 +45,19 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Methods
+        internal virtual string GetTag()
+        {
+            return null;
+        }
+
         internal virtual bool IsEvaluated()
         {
             return true;
+        }
+
+        internal virtual int GetLength(ExecutionContext ctx)
+        {
+            return 0;
         }
 
 
@@ -175,25 +185,6 @@ namespace Ela.Runtime.ObjectModel
 			return false;
 		}
 
-		protected internal virtual ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			ctx.NoOperation(left, right, "concat");
-			return Default();
-		}
-
-       	protected internal virtual ElaValue Successor(ElaValue @this, ExecutionContext ctx)
-		{
-			ctx.NoOperator(@this, "succ");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
-		{
-			ctx.NoOperator(@this, "pred");
-			return Default();
-		}
-
 
 		protected internal virtual ElaValue GetValue(ElaValue index, ExecutionContext ctx)
 		{
@@ -208,33 +199,12 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal virtual ElaValue GetMax(ElaValue @this, ExecutionContext ctx)
-		{
-			ctx.NoOperator(@this, "max");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue GetMin(ElaValue @this, ExecutionContext ctx)
-		{
-			ctx.NoOperator(@this, "min");
-			return Default();
-		}
-
-
 		protected internal virtual bool Bool(ElaValue @this, ExecutionContext ctx)
 		{
 			ctx.NoOperator(@this, "bool");
 			return false;
 		}
 
-
-		protected internal virtual ElaValue GetLength(ExecutionContext ctx)
-		{
-			ctx.NoOperator(new ElaValue(this), "length");
-			return Default();
-		}
-		
 		
 		protected internal virtual ElaValue Head(ExecutionContext ctx)
 		{
@@ -334,14 +304,6 @@ namespace Ela.Runtime.ObjectModel
 		internal virtual ElaValue InternalForce(ElaValue @this, ExecutionContext ctx)
 		{
 			return @this;
-		}
-
-
-		protected internal virtual string GetTag(ExecutionContext ctx)
-		{
-            return null;
-            //ctx.NoOperator(new ElaValue(this), "gettag");
-            //return String.Empty;
 		}
 
 

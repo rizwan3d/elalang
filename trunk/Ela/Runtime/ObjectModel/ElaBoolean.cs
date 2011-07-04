@@ -15,6 +15,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        internal override string GetTag()
+        {
+            return "Bool#";
+        }
+        
+        
         protected internal override bool AsBoolean(ElaValue value)
         {
             return value.I4 == 1;

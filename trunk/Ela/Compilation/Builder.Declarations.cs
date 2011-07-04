@@ -152,35 +152,25 @@ namespace Ela.Compilation
             var addr = sv.Address;
             var len = s.OverloadNames.Count;
 
-            if (!sv.IsEmpty())
-                cw.Emit(Op.Pushvar, sv.Address);
-            else
-            {
+            if (sv.IsEmpty())
                 addr = AddVariable(s.VariableName, s, s.VariableFlags, -1);
-                cw.Emit(Op.Pushunit);
-            }
+            
+            cw.Emit(Op.Newtup, len);
 
             for (var i = 0; i < len; i++)
             {
-                if (i == len - 1)
-                {
-                    if (s.Where != null)
-                        CompileWhere(s.Where, map, Hints.Left);
-
-                    CompileExpression(s.InitExpression, map, Hints.None);
-                }
-                else
-                    cw.Emit(Op.Pushunit);
-                
-                if (builtin)
-                    cw.Emit(Op.Pushstr, AddString("$" + ((ElaBuiltinKind)sv.Data).ToString().ToLower()));
-                else
-                    cw.Emit(Op.Pushstr, AddString(s.VariableName));
-
                 cw.Emit(Op.Pushstr, AddString(s.OverloadNames[i]));
-                cw.Emit(Op.Ovr);
+                cw.Emit(Op.Gen);
             }
 
+            CompileExpression(s.InitExpression, map, Hints.None);
+
+            if (builtin)
+                cw.Emit(Op.Pushstr, AddString("$" + ((ElaBuiltinKind)sv.Data).ToString().ToLower()));
+            else
+                cw.Emit(Op.Pushstr, AddString(s.VariableName));
+
+            cw.Emit(Op.Ovr);
             cw.Emit(Op.Popvar, addr);
         }
 

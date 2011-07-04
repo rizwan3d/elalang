@@ -9,18 +9,28 @@ namespace Ela.Runtime.ObjectModel
 	{
 		#region Construction
 		private const int SEVAL = -1000;
-		private CodeFrame curMod;
 
-		internal ElaLazy(ElaFunction function, CodeFrame curMod) : base(ElaTypeCode.Lazy)
+		internal ElaLazy(ElaFunction function) : base(ElaTypeCode.Lazy)
 		{
 			Function = function;
 			_value = default(ElaValue);
-			this.curMod = curMod;
 		}
 		#endregion
 
 
 		#region Methods
+        internal override string GetTag()
+        {
+            return "Lazy#";
+        }
+
+
+        internal override bool IsEvaluated()
+        {
+            return Value.Ref != null;
+        }
+
+
 		public override int GetHashCode()
         {
             return Value.Ref != null ? Value.GetHashCode() : 0;
@@ -123,24 +133,6 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue GetLength(ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.GetLength(ctx);
-		}
-
-
-		protected internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.Successor(Value, ctx);
-		}
-
-
-		protected internal override ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.Predecessor(Value, ctx);
-		}
-
-
 		protected internal override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
 		{
 			return Force(ctx).Ref.GetValue(index.Force(ctx), ctx);
@@ -152,51 +144,6 @@ namespace Ela.Runtime.ObjectModel
 			Force(ctx).SetValue(index.Force(ctx), value, ctx);
 		}
 
-
-		protected internal override ElaValue GetMax(ElaValue @this, ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.GetMax(Value, ctx);
-		}
-
-
-		protected internal override ElaValue GetMin(ElaValue @this, ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.GetMin(Value, ctx);
-		}
-
-
-		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			if (left.Ref is ElaLazyList)
-				return ((ElaLazyList)left.Ref).Concatenate(left, right, ctx);
-			else if (right.Ref is ElaLazyList)
-				return ((ElaLazyList)right.Ref).Concatenate(left, right, ctx);
-			else if (left.Ref == this)
-				return Force(ctx).Ref.Concatenate(left, right, ctx);
-			else if (right.Ref == this && left.Ref is ElaList)
-			{
-				var xs = (ElaList)left.Ref;
-				var c = 0;
-				var newLst = default(ElaLazyList);
-
-				foreach (var e in xs.Reverse())
-				{
-					if (c == 0)
-						newLst = new ElaLazyList(this, e);
-					else
-						newLst = new ElaLazyList(newLst, e);
-
-					c++;
-				}
-
-				return new ElaValue(newLst);
-			}
-			else
-			{
-				ctx.Fail("Unable to concatenate two entities.");
-				return Default();
-			}
-		}
 		protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
 		{
 			return Force(ctx).Ref.Bool(Value, ctx);
@@ -263,12 +210,6 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
 		{
 			return Force(ctx).Ref.Call(arg, ctx);
-		}
-
-
-		protected internal override string GetTag(ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.GetTag(ctx);
 		}
 
 
