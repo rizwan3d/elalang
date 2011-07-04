@@ -148,8 +148,6 @@ namespace Ela.Compilation
 
 		Skiptag,
 
-		Conv,
-
 		Newvar,
 
 		Newrec,

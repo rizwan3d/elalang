@@ -93,16 +93,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
-		{
-			if (type == ElaTypeCode.Tuple)
-				return @this;
-
-			ctx.ConversionFailed(@this, type);
-			return Default();
-		}
-
-
         protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			return "(" + FormatHelper.FormatEnumerable((IEnumerable<ElaValue>)this, ctx, info) + 

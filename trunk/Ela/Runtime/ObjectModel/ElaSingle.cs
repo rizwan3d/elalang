@@ -14,7 +14,21 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Methods
+        #region Methods
+        internal override ElaValue Convert(ElaValue @this, ElaTypeCode type)
+        {
+            switch (type)
+            {
+                case ElaTypeCode.Integer: return new ElaValue((Int32)@this.DirectGetReal());
+                case ElaTypeCode.Single: return @this;
+                case ElaTypeCode.Double: return new ElaValue((Double)@this.DirectGetReal());
+                case ElaTypeCode.Long: return new ElaValue((Int64)@this.DirectGetReal());
+                case ElaTypeCode.Char: return new ElaValue((Char)@this.DirectGetReal());
+                default: return base.Convert(@this, type);
+            }
+        }
+
+
         internal override string GetTag()
         {
             return "Single#";
@@ -53,23 +67,6 @@ namespace Ela.Runtime.ObjectModel
 
 				ctx.InvalidFormat(info.Format, @this);
 				return String.Empty;
-			}
-		}
-
-
-		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
-		{
-			switch (type)
-			{
-				case ElaTypeCode.Integer: return new ElaValue((Int32)@this.DirectGetReal());
-				case ElaTypeCode.Single: return @this;
-				case ElaTypeCode.Double: return new ElaValue((Double)@this.DirectGetReal());
-				case ElaTypeCode.Long: return new ElaValue((Int64)@this.DirectGetReal());
-				case ElaTypeCode.Char: return new ElaValue((Char)@this.DirectGetReal());
-				case ElaTypeCode.String: return new ElaValue(Show(@this, ShowInfo.Default, ctx));
-				default:
-					ctx.ConversionFailed(@this, type);
-					return Default();
 			}
 		}
 		#endregion

@@ -493,17 +493,6 @@ namespace Ela.Compilation
 							AddValueNotUsed(v);
 					}
 					break;
-				case ElaNodeType.Cast:
-					{
-						var v = (ElaCast)exp;
-						CompileExpression(v.Expression, map, Hints.None);
-						AddLinePragma(v);
-						AddConv(v.CastAffinity, v);
-
-						if ((hints & Hints.Left) == Hints.Left)
-							AddValueNotUsed(v);
-					}
-					break;
 				case ElaNodeType.Is:
 					{
 						var v = (ElaIs)exp;
@@ -621,26 +610,6 @@ namespace Ela.Compilation
 					break;
 				default:
 					cw.Emit(Op.Pushunit);
-					break;
-			}
-		}
-
-
-		private void AddConv(ElaTypeCode aff, ElaExpression exp)
-		{
-			switch (aff)
-			{
-				case ElaTypeCode.Integer:
-				case ElaTypeCode.Long:
-				case ElaTypeCode.Single:
-				case ElaTypeCode.Double:
-				case ElaTypeCode.Boolean:
-				case ElaTypeCode.String:
-				case ElaTypeCode.Char:
-					cw.Emit(Op.Conv, (Int32)aff);
-					break;
-				default:
-					AddError(ElaCompilerError.CastNotSupported, exp, TypeCodeFormat.GetShortForm(aff));
 					break;
 			}
 		}

@@ -69,7 +69,7 @@ namespace Ela.Compilation
 			0, //Max
 			0, //Min
 			-1, //Show
-			0, //Tagval
+			0, //Untag
 			0, //Skiphtag
 			0, //Nil
             0, //Clone			
@@ -78,7 +78,6 @@ namespace Ela.Compilation
 			
             0, //Elem
 			0, //Skiptag
-			0, //Conv
 			0, //Newvar
 			1, //Newrec
 			1, //Newtup

@@ -191,9 +191,6 @@ namespace Ela.Compilation
                 case ElaBuiltinKind.Gettag:
                     cw.Emit(Op.Gettag);
                     break;
-                case ElaBuiltinKind.Untag:
-                    cw.Emit(Op.Untag);
-                    break;
                 case ElaBuiltinKind.Clone:
                     cw.Emit(Op.Clone);
                     break;

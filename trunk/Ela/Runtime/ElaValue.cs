@@ -221,7 +221,6 @@ namespace Ela.Runtime
 
 		public object Convert(Type ti)
 		{
-			var ctx = new ExecutionContext();
 			var type = default(ElaTypeCode);
 
             if (ti == typeof(Int32))
@@ -274,11 +273,7 @@ namespace Ela.Runtime
             if (type == TypeCode)
                 return AsObject();
 
-			var ret = Ref.Convert(this, type, ctx).AsObject();
-
-			if (ctx.Failed)
-				throw InvalidCast(TypeCode, type);
-
+			var ret = Ref.Convert(this, type).AsObject();
 			return ret;
 		}
 
@@ -459,9 +454,9 @@ namespace Ela.Runtime
         }
 
 
-        public ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
+        public ElaValue Convert(ElaTypeCode type)
         {
-            return Ref.Convert(this, type, ctx);
+            return Ref.Convert(this, type);
         }
 
 
@@ -483,7 +478,7 @@ namespace Ela.Runtime
 
         public ElaValue Untag(ExecutionContext ctx)
         {
-			return Ref.Untag(ctx);
+			return Ref.Untag(this, ctx);
         }
         #endregion
         

@@ -19,6 +19,12 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        internal override ElaValue Convert(ElaValue @this, ElaTypeCode type)
+        {
+            return Force().Convert(type);
+        }
+        
+        
         internal override string GetTag()
         {
             return "Lazy#";
@@ -201,21 +207,15 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.Convert(Value, type, ctx);
-		}
-
-
 		protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
 		{
 			return Force(ctx).Ref.Call(arg, ctx);
 		}
 
 
-		protected internal override ElaValue Untag(ExecutionContext ctx)
+		protected internal override ElaValue Untag(ElaValue arg, ExecutionContext ctx)
 		{
-			return Force(ctx).Ref.Untag(ctx);
+			return Force(ctx).Ref.Untag(arg, ctx);
 		}
 		#endregion
 

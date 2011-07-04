@@ -1,5 +1,6 @@
 ﻿using System;
 using Ela.Linking;
+using Ela.Runtime;
 
 namespace Ela.Library.General
 {
@@ -118,6 +119,12 @@ namespace Ela.Library.General
         {
 			var rnd = new Random(seed);
             return rnd.Next(min, max);
+        }
+
+
+        public int ToInt(object value)
+        {
+            return (Int32)value;
         }
 		#endregion
 	}

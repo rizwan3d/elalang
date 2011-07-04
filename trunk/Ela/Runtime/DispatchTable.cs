@@ -2677,7 +2677,7 @@ namespace Ela.Runtime
 		internal ConcatCharChar(DispatchBinaryFun[][] funs) : base(funs) { }
 		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return new ElaValue((Char)left.I4 + (Char)right.I4);
+			return new ElaValue(((Char)left.I4).ToString() + (Char)right.I4);
 		}
 	}
 

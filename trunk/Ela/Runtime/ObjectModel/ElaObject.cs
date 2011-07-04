@@ -45,6 +45,16 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Methods
+        internal virtual ElaValue Convert(ElaValue @this, ElaTypeCode typeCode)
+        {
+            if (typeCode == @this.TypeCode)
+                return @this;
+            else
+                throw new InvalidCastException(String.Format("Unable to cast from {0} to {1}",
+                    TypeCodeFormat.GetShortForm(@this.TypeCode), TypeCodeFormat.GetShortForm(typeCode)));
+        }
+
+
         internal virtual string GetTag()
         {
             return null;
@@ -281,13 +291,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal virtual ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
-		{
-			ctx.NoOperator(@this, "convert");
-			return Default();
-		}
-
-
 		protected internal virtual ElaValue Call(ElaValue arg, ExecutionContext ctx)
 		{
 			ctx.NoOperator(new ElaValue(this), "call");
@@ -307,10 +310,9 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal virtual ElaValue Untag(ExecutionContext ctx)
+		protected internal virtual ElaValue Untag(ElaValue @this, ExecutionContext ctx)
         {
-			ctx.NoOperator(new ElaValue(this), "untag");
-			return Default();
+            return @this;
         }
 		#endregion
 

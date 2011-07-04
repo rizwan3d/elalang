@@ -1,3 +1,4 @@
+0.9.7.3:Change:Built-in type conversion syntax (e.g. x:int) is decomissioned (op code, AST node, compilation logic, etc.). Now once should use regular Prelude functions like toInt, toTuple, etc.
 0.9.7.2:Fix:Function comparison didn't work correctly (it always evaluated to 'true').
 0.9.7.1:Fix:A function call on a left hand side (when a return value is not used) not only generated a double warning but also caused VM to crash.
 0.9.7.0:Release:Release of Ela 0.9.7

@@ -110,18 +110,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
-		{
-			if (type == ElaTypeCode.Record)
-				return @this;
-			else if (type == ElaTypeCode.Tuple)
-				return new ElaValue(new ElaTuple(values));
-			
-			ctx.ConversionFailed(new ElaValue(this), type);
-               return Default();
-		}
-
-
         protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			var sb = new StringBuilder();
@@ -167,6 +155,15 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Methods
+        internal override ElaValue Convert(ElaValue @this, ElaTypeCode type)
+        {
+            if (type == ElaTypeCode.Tuple)
+                return new ElaValue(new ElaTuple(values));
+
+            return base.Convert(@this, type);
+        }
+
+
         internal override string GetTag()
         {
             return "Record#";

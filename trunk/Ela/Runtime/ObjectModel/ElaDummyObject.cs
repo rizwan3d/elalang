@@ -162,12 +162,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
 		protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
 		{
 			return Default();
@@ -180,9 +174,9 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Untag(ExecutionContext ctx)
+		protected internal override ElaValue Untag(ElaValue @this, ExecutionContext ctx)
 		{
-			return Default();
+			return @this;
 		}
 		#endregion
 	}

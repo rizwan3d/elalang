@@ -2171,7 +2171,7 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Untag:
-						evalStack.Replace((right = evalStack.Peek()).Ref.Untag(ctx));
+						evalStack.Replace((right = evalStack.Peek()).Untag(ctx));
 
                         if (ctx.Failed)
 						{
@@ -2227,17 +2227,6 @@ namespace Ela.Runtime
 						right = evalStack.Peek();
 
 						evalStack.Replace(bne_ovl[right.TypeId].Call(right, ctx));
-
-						if (ctx.Failed)
-						{
-							evalStack.Replace(right);
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
-						break;
-					case Op.Conv:
-						right = evalStack.Peek();
-						evalStack.Replace(right.Ref.Convert(right, (ElaTypeCode)opd, ctx));
 
 						if (ctx.Failed)
 						{

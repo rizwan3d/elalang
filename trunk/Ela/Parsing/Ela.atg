@@ -1594,11 +1594,6 @@ PRODUCTIONS
 		{
 			(
 				(
-					":" ident 
-					(. exp = new ElaCast(t) { CastAffinity = GetType(t.val), Expression = exp };.)
-				)
-				|
-				(
 					(. var pat = default(ElaPattern); .)
 					IS IsOperatorPattern<out pat> 
 					(. exp = new ElaIs(t) { Expression = exp, Pattern = pat }; .)

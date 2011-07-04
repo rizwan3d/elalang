@@ -124,16 +124,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
-		{
-			if (type == ElaTypeCode.List)
-				return new ElaValue(this);
-
-			ctx.ConversionFailed(@this, type);
-            return Default();
-		}
-
-
         protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			return "[" + FormatHelper.FormatEnumerable(this, ctx, info) + "]";
@@ -153,7 +143,7 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Methods
+        #region Methods
         internal override string GetTag()
         {
             return "List#";
