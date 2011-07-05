@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Ela.CodeModel;
 using Ela.Debug;
+using Ela.Runtime;
 
 namespace Ela.Compilation
 {
@@ -48,6 +49,12 @@ namespace Ela.Compilation
 
 
 		#region Methods
+		public virtual void RegisterTypes(TypeRegistrator registrator)
+		{
+
+		}
+
+
 		public CodeFrame Clone()
 		{
 			var copy = new CodeFrame();

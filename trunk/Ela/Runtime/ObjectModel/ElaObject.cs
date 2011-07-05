@@ -13,9 +13,9 @@ namespace Ela.Runtime.ObjectModel
         private const string TYPECODE = "typeCode";
         private const string ISBYREF = "byRef";
 
-		protected ElaObject() : this(ElaTypeCode.Object)
+		protected ElaObject(TypeId typeId)
 		{
-			
+			TypeId = typeId.Id;
 		}
 
 		
@@ -31,7 +31,7 @@ namespace Ela.Runtime.ObjectModel
         {
             internal static readonly ElaInvalidObject Instance = new ElaInvalidObject();
 
-            internal ElaInvalidObject() 
+            internal ElaInvalidObject() : base(ElaTypeCode.Object)
 			{ 
 			
 			}

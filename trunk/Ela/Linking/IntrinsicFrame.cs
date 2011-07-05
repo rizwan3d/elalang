@@ -7,9 +7,21 @@ namespace Ela.Linking
 	public sealed class IntrinsicFrame : CodeFrame
 	{
 		#region Construction
-		internal IntrinsicFrame(ElaValue[] mem)
+		private ForeignModule module;
+
+		internal IntrinsicFrame(ElaValue[] mem, ForeignModule module)
 		{
 			Memory = mem;
+			this.module = module;
+		}
+		#endregion
+
+
+		#region Methods
+		public override void RegisterTypes(TypeRegistrator registrator)
+		{
+			module.RegisterTypes(registrator);
+			module = null;
 		}
 		#endregion
 

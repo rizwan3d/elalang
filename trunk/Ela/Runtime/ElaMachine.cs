@@ -21,7 +21,9 @@ namespace Ela.Runtime
 		private readonly CodeAssembly asm;
         private readonly IntrinsicFrame argMod;
         private readonly int argModHandle;
+		internal int typeCount = (Int32)ElaTypeCode.Variant + 1;
         internal readonly FunMap overloads;
+		internal readonly Dictionary<String,Int32> typeIdMap;
      
 		public ElaMachine(CodeAssembly asm)
 		{
@@ -34,6 +36,7 @@ namespace Ela.Runtime
 			var mem = new ElaValue[lays.Size];
 			modules[0] = mem;
             argModHandle = asm.TryGetModuleHandle("$Args");
+			typeIdMap = new Dictionary<String,Int32>();
 
             if (argModHandle != -1)
             {
@@ -41,6 +44,11 @@ namespace Ela.Runtime
                 modules[argModHandle] = argMod.Memory;
                 ReadPervasives(MainThread, argMod, argModHandle);
             }
+
+			var registrator = new TypeRegistrator(this);
+
+			for (var i = 0; i < asm.ModuleCount; i++)
+				asm.GetModule(i).RegisterTypes(registrator);
 
 			MainThread.CallStack.Push(new CallPoint(0, new EvalStack(lays.StackSize), mem, FastList<ElaValue[]>.Empty));
             InitializeTables();
@@ -71,88 +79,101 @@ namespace Ela.Runtime
         
         private sealed class __table
         {
-            internal readonly DispatchBinaryFun[][] table = 
-            {
-                //                        NON  INT  LNG  SNG  DBL  BYT  CHR  STR  UNI  LST  ___  TUP  REC  FUN  OBJ  MOD  LAZ  VAR
-                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //INT
-                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //NON
-                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //LNG
-                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //SNG
-                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //DBL
-                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //BYT
-                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //CHR
-                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //STR
-                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //UNI
-                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //LST
-                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //___
-                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //TUP
-                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //REC
-                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //FUN
-                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //OBJ
-                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //MOD
-                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //LAZ
-                new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //VAR
-            };
+			internal __table(int count)
+			{
+				table = new DispatchBinaryFun[count][];
+
+				for (var i = 0; i < count; i++)
+					table[i] = new DispatchBinaryFun[count];
+			}
+
+			internal DispatchBinaryFun[][] table;// = 
+			//{
+			//    //                        NON  INT  LNG  SNG  DBL  BYT  CHR  STR  UNI  LST  ___  TUP  REC  FUN  OBJ  MOD  LAZ  VAR
+			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //INT
+			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //NON
+			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //LNG
+			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //SNG
+			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //DBL
+			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //BYT
+			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //CHR
+			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //STR
+			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //UNI
+			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //LST
+			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //___
+			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //TUP
+			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //REC
+			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //FUN
+			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //OBJ
+			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //MOD
+			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //LAZ
+			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //VAR
+			//};
         }
 
 		private sealed class __table2
 		{
-			internal readonly DispatchUnaryFun[] table = 
-            {
-                _, //INT
-                _, //NON
-                _, //LNG
-                _, //SNG
-                _, //DBL
-                _, //BYT
-                _, //CHR
-                _, //STR
-                _, //UNI
-                _, //LST
-                _, //___
-                _, //TUP
-                _, //REC
-                _, //FUN
-                _, //OBJ
-                _, //MOD
-                _, //LAZ
-                _, //VAR
-            };
+			internal __table2(int count)
+			{
+				table = new DispatchUnaryFun[count];
+			}
+
+			internal DispatchUnaryFun[] table;// = 
+			//{
+			//    _, //INT
+			//    _, //NON
+			//    _, //LNG
+			//    _, //SNG
+			//    _, //DBL
+			//    _, //BYT
+			//    _, //CHR
+			//    _, //STR
+			//    _, //UNI
+			//    _, //LST
+			//    _, //___
+			//    _, //TUP
+			//    _, //REC
+			//    _, //FUN
+			//    _, //OBJ
+			//    _, //MOD
+			//    _, //LAZ
+			//    _, //VAR
+			//};
 		}
 
-        private readonly DispatchBinaryFun[][] add_ovl = new __table().table;
-        private readonly DispatchBinaryFun[][] sub_ovl = new __table().table;
-        private readonly DispatchBinaryFun[][] mul_ovl = new __table().table;
-        private readonly DispatchBinaryFun[][] div_ovl = new __table().table;
-        private readonly DispatchBinaryFun[][] rem_ovl = new __table().table;
-        private readonly DispatchBinaryFun[][] pow_ovl = new __table().table;
-        private readonly DispatchBinaryFun[][] and_ovl = new __table().table;
-        private readonly DispatchBinaryFun[][] bor_ovl = new __table().table;
-        private readonly DispatchBinaryFun[][] xor_ovl = new __table().table;
-        private readonly DispatchBinaryFun[][] shl_ovl = new __table().table;
-        private readonly DispatchBinaryFun[][] shr_ovl = new __table().table;
-		private readonly DispatchBinaryFun[][] eql_ovl = new __table().table;
-		private readonly DispatchBinaryFun[][] neq_ovl = new __table().table;
-		private readonly DispatchBinaryFun[][] gtr_ovl = new __table().table;
-		private readonly DispatchBinaryFun[][] gte_ovl = new __table().table;
-		private readonly DispatchBinaryFun[][] ltr_ovl = new __table().table;
-		private readonly DispatchBinaryFun[][] lte_ovl = new __table().table;
-		private readonly DispatchBinaryFun[][] cat_ovl = new __table().table;
-        private readonly DispatchBinaryFun[][] con_ovl = new __table().table;
-        private readonly DispatchBinaryFun[][] get_ovl = new __table().table;
+        private DispatchBinaryFun[][] add_ovl;
+        private DispatchBinaryFun[][] sub_ovl;
+        private DispatchBinaryFun[][] mul_ovl;
+        private DispatchBinaryFun[][] div_ovl;
+        private DispatchBinaryFun[][] rem_ovl;
+        private DispatchBinaryFun[][] pow_ovl;
+        private DispatchBinaryFun[][] and_ovl;
+        private DispatchBinaryFun[][] bor_ovl;
+        private DispatchBinaryFun[][] xor_ovl;
+        private DispatchBinaryFun[][] shl_ovl;
+        private DispatchBinaryFun[][] shr_ovl;
+		private DispatchBinaryFun[][] eql_ovl;
+		private DispatchBinaryFun[][] neq_ovl;
+		private DispatchBinaryFun[][] gtr_ovl;
+		private DispatchBinaryFun[][] gte_ovl;
+		private DispatchBinaryFun[][] ltr_ovl;
+		private DispatchBinaryFun[][] lte_ovl;
+		private DispatchBinaryFun[][] cat_ovl;
+        private DispatchBinaryFun[][] con_ovl;
+        private DispatchBinaryFun[][] get_ovl;
 
-		private readonly DispatchUnaryFun[] neg_ovl = new __table2().table;
-		private readonly DispatchUnaryFun[] bne_ovl = new __table2().table;
-		private readonly DispatchUnaryFun[] cln_ovl = new __table2().table;
-        private readonly DispatchUnaryFun[] suc_ovl = new __table2().table;
-        private readonly DispatchUnaryFun[] prd_ovl = new __table2().table;
-        private readonly DispatchUnaryFun[] min_ovl = new __table2().table;
-        private readonly DispatchUnaryFun[] max_ovl = new __table2().table;
-        private readonly DispatchUnaryFun[] len_ovl = new __table2().table;
-        private readonly DispatchUnaryFun[] nil_ovl = new __table2().table;
-        private readonly DispatchUnaryFun[] hea_ovl = new __table2().table;
-        private readonly DispatchUnaryFun[] tai_ovl = new __table2().table;
-        private readonly DispatchUnaryFun[] isn_ovl = new __table2().table;
+		private DispatchUnaryFun[] neg_ovl;
+		private DispatchUnaryFun[] bne_ovl;
+		private DispatchUnaryFun[] cln_ovl;
+        private DispatchUnaryFun[] suc_ovl;
+        private DispatchUnaryFun[] prd_ovl;
+        private DispatchUnaryFun[] min_ovl;
+        private DispatchUnaryFun[] max_ovl;
+        private DispatchUnaryFun[] len_ovl;
+        private DispatchUnaryFun[] nil_ovl;
+        private DispatchUnaryFun[] hea_ovl;
+        private DispatchUnaryFun[] tai_ovl;
+        private DispatchUnaryFun[] isn_ovl;
 
 
         private DispatchBinaryFun addErrErr;
@@ -564,6 +585,40 @@ namespace Ela.Runtime
 
         private void InitializeTables()
         {
+			add_ovl = new __table(typeCount).table;
+			sub_ovl = new __table(typeCount).table;
+			mul_ovl = new __table(typeCount).table;
+			div_ovl = new __table(typeCount).table;
+			rem_ovl = new __table(typeCount).table;
+			pow_ovl = new __table(typeCount).table;
+			and_ovl = new __table(typeCount).table;
+			bor_ovl = new __table(typeCount).table;
+			xor_ovl = new __table(typeCount).table;
+			shl_ovl = new __table(typeCount).table;
+			shr_ovl = new __table(typeCount).table;
+			eql_ovl = new __table(typeCount).table;
+			neq_ovl = new __table(typeCount).table;
+			gtr_ovl = new __table(typeCount).table;
+			gte_ovl = new __table(typeCount).table;
+			ltr_ovl = new __table(typeCount).table;
+			lte_ovl = new __table(typeCount).table;
+			cat_ovl = new __table(typeCount).table;
+			con_ovl = new __table(typeCount).table;
+			get_ovl = new __table(typeCount).table;
+
+			neg_ovl = new __table2(typeCount).table;
+			bne_ovl = new __table2(typeCount).table;
+			cln_ovl = new __table2(typeCount).table;
+			suc_ovl = new __table2(typeCount).table;
+			prd_ovl = new __table2(typeCount).table;
+			min_ovl = new __table2(typeCount).table;
+			max_ovl = new __table2(typeCount).table;
+			len_ovl = new __table2(typeCount).table;
+			nil_ovl = new __table2(typeCount).table;
+			hea_ovl = new __table2(typeCount).table;
+			tai_ovl = new __table2(typeCount).table;
+			isn_ovl = new __table2(typeCount).table;
+
             addErrErr = new NoneBinary("$add", overloads);
             addIntInt = new AddIntInt(add_ovl);
             addIntLng = new AddIntLong(add_ovl);
@@ -3170,7 +3225,13 @@ namespace Ela.Runtime
                 case "Uni#": return UNI;
                 case "Object#": return OBJ;
                 case "Variant#": return VAR;
-                default: return -1;
+                default:
+					var id = 0;
+
+					if (!typeIdMap.TryGetValue(tag, out id))
+						return -1;
+					
+					return id;
             }
         }
 

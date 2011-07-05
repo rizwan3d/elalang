@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Ela.CodeModel;
 using Ela.Compilation;
 using Ela.Runtime;
@@ -25,6 +24,12 @@ namespace Ela.Linking
 		public abstract void Initialize();
 
 
+		public virtual void RegisterTypes(TypeRegistrator registrator)
+		{
+
+		}
+
+
 		public virtual void Close()
 		{
 
@@ -33,7 +38,7 @@ namespace Ela.Linking
 
 		internal IntrinsicFrame Compile(ExportVars exports)
 		{
-			var frame = new IntrinsicFrame(locals.ToArray());
+			var frame = new IntrinsicFrame(locals.ToArray(), this);
 			frame.Layouts.Add(new MemoryLayout(locals.Count, 0, 0));
 			frame.GlobalScope = scope;
 

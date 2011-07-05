@@ -11,7 +11,7 @@ namespace Ela.Runtime.ObjectModel
         private List<String> keys;
         private List<ElaValue> values;
 
-		internal ElaTypeInfo()
+		internal ElaTypeInfo() : base(ElaTypeCode.Object)
 		{
             keys = new List<String>();
             values = new List<ElaValue>();
