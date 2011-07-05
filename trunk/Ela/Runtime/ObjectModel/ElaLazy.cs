@@ -139,11 +139,6 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
-		{
-			Force(ctx).SetValue(index.Force(ctx), value, ctx);
-		}
-
 		protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
 		{
 			return Force(ctx).Ref.Bool(Value, ctx);

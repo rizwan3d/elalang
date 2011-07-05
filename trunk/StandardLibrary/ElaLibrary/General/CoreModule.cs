@@ -31,6 +31,7 @@ namespace Ela.Library.General
 			Add<Double,Double>("log", Log);
 			Add<Double,Double>("round", Round);
             Add<Int32,Int32,Int32,Int32>("rnd", Rnd);
+
 			Add("pi", Math.PI);
 			Add("e", Math.E);
 		}
@@ -119,12 +120,6 @@ namespace Ela.Library.General
         {
 			var rnd = new Random(seed);
             return rnd.Next(min, max);
-        }
-
-
-        public int ToInt(object value)
-        {
-            return (Int32)value;
         }
 		#endregion
 	}

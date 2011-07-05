@@ -78,12 +78,6 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
-		{
-			
-		}
-
-
 		protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
 		{
 			return false;

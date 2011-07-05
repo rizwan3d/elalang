@@ -10,12 +10,18 @@ namespace Ela.Linking
 	{
 		#region Construction
 		private FastList<ElaValue> locals;
+		private FastList<TernaryOverload> ternaryOverloads;
+		private FastList<BinaryOverload> binaryOverloads;
+		private FastList<UnaryOverload> unaryOverloads;
         private Scope scope;
 
 		protected ForeignModule()
 		{
 			locals = new FastList<ElaValue>();
-			scope = new Scope(false, null);
+			ternaryOverloads = new FastList<TernaryOverload>();
+			binaryOverloads = new FastList<BinaryOverload>();
+			unaryOverloads = new FastList<UnaryOverload>();
+			scope = new Scope(false, null);			
 		}
 		#endregion
 
@@ -38,7 +44,7 @@ namespace Ela.Linking
 
 		internal IntrinsicFrame Compile(ExportVars exports)
 		{
-			var frame = new IntrinsicFrame(locals.ToArray(), this);
+			var frame = new IntrinsicFrame(locals.ToArray(), binaryOverloads, unaryOverloads, ternaryOverloads, this);
 			frame.Layouts.Add(new MemoryLayout(locals.Count, 0, 0));
 			frame.GlobalScope = scope;
 
@@ -130,6 +136,24 @@ namespace Ela.Linking
 		protected void Add<T1,T2,T3,T4,T5>(string name, ElaFun<T1,T2,T3,T4,T5> fun)
 		{
 			Add(name, new ElaValue(new DelegateFunction<T1,T2,T3,T4,T5>(name, fun)));
+		}
+
+
+		protected void AddOverload(ElaTernaryFunction kind, DispatchTernaryFun fun, TypeId arg1, TypeId arg2)
+		{
+			ternaryOverloads.Add(new TernaryOverload(fun, arg1, arg2, kind));
+		}
+
+
+		protected void AddOverload(ElaBinaryFunction kind, DispatchBinaryFun fun, TypeId arg1, TypeId arg2)
+		{
+			binaryOverloads.Add(new BinaryOverload(fun, arg1, arg2, kind));
+		}
+
+
+		protected void AddOverload(ElaUnaryFunction kind, DispatchUnaryFun fun, TypeId arg)
+		{
+			unaryOverloads.Add(new UnaryOverload(fun, arg, kind));
 		}
 
 

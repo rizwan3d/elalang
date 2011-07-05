@@ -1730,8 +1730,10 @@ PRODUCTIONS
 			(
 				Application<out exp>
 				{
+					(. var cexp = default(ElaExpression); .)
 					(operatorTok8|"!") (. op = t.val; .)
-					(. exp = GetOperatorFun(op, exp, null); .)
+					[ Application<out cexp> ]
+					(. exp = GetOperatorFun(op, exp, cexp); .)
 				}
 			)
 			|
@@ -1739,7 +1741,7 @@ PRODUCTIONS
 				(operatorTok8|"!") (. op = t.val; .)
 				[ 
 					Application<out exp>
-					(. exp = GetOperatorFun(op, exp, null); .)
+					(. exp = GetOperatorFun(op, null, exp); .)
 				]
 				(.
 					if (exp == null)

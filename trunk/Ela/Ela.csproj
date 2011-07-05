@@ -160,6 +160,7 @@
     <Compile Include="ElaTranslationException.cs" />
     <Compile Include="Linking\ArgumentModule.cs" />
     <Compile Include="Linking\ModuleEventArgs.cs" />
+    <Compile Include="Linking\Overload.cs" />
     <Compile Include="Loc.cs" />
     <Compile Include="Runtime\CallFlag.cs" />
     <Compile Include="Runtime\DispatchFuns.cs" />
@@ -245,6 +246,7 @@
     <Compile Include="Runtime\ObjectModel\ElaDummyObject.cs" />
     <Compile Include="Runtime\ObjectModel\ElaLazyList.cs" />
     <Compile Include="Runtime\ObjectModel\ElaOverloadedFunction.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaSimpleObject.cs" />
     <Compile Include="Runtime\ObjectModel\ElaUnit.cs" />
     <Compile Include="FormatHelper.cs" />
     <Compile Include="Debug\VarSym.cs" />

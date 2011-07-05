@@ -2,11 +2,39 @@
 
 namespace Ela.Runtime
 {
-    internal abstract class DispatchBinaryFun
+	public abstract class DispatchTernaryFun
+	{
+		private readonly DispatchTernaryFun[][] funs;
+
+		protected DispatchTernaryFun()
+		{
+
+		}
+
+		internal DispatchTernaryFun(DispatchTernaryFun[][] funs)
+		{
+			this.funs = funs;
+		}
+
+		internal protected abstract ElaValue Call(ElaValue first, ElaValue second, ElaValue third, ExecutionContext ctx);
+
+		protected ElaValue PerformOp(ElaValue first, ElaValue second, ElaValue third, ExecutionContext ctx)
+		{
+			return funs[first.TypeId][second.TypeId].Call(first, second, third, ctx);
+		}
+	}
+
+
+    public abstract class DispatchBinaryFun
     {
         private readonly DispatchBinaryFun[][] funs;
 
-        protected DispatchBinaryFun(DispatchBinaryFun[][] funs)
+        protected DispatchBinaryFun()
+		{
+
+		}
+
+		internal DispatchBinaryFun(DispatchBinaryFun[][] funs)
         {
             this.funs = funs;
         }
@@ -20,11 +48,16 @@ namespace Ela.Runtime
     }
 
 
-	internal abstract class DispatchUnaryFun
+	public abstract class DispatchUnaryFun
 	{
 		private readonly DispatchUnaryFun[] funs;
 
-		protected DispatchUnaryFun(DispatchUnaryFun[] funs)
+		protected DispatchUnaryFun()
+		{
+
+		}
+
+		internal DispatchUnaryFun(DispatchUnaryFun[] funs)
 		{
 			this.funs = funs;
 		}

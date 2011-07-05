@@ -370,12 +370,6 @@ namespace Ela.Runtime
 
 
         #region Operations
-        public void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
-        {
-            Ref.SetValue(index, value, ctx);
-        }
-
-
         public bool Bool(ExecutionContext ctx)
         {
             return Ref.Bool(this, ctx);

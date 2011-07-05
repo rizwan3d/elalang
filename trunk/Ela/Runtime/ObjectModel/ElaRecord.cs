@@ -11,7 +11,7 @@ namespace Ela.Runtime.ObjectModel
         private const string FIELDS = "fields";
         internal string[] keys;
         internal ElaValue[] values;
-		private bool[] flags;
+		internal bool[] flags;
         private int cons;
 
 		private enum SetResult
@@ -43,25 +43,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-        protected internal override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
-		{
-			var res = SetResult.None;
-
-			if (index.TypeId == ElaMachine.STR)
-				res = SetValue(index.Ref.ToString(), value);
-			else if (index.TypeId == ElaMachine.INT)
-				res = SetValue(index.I4, value);
-			else
-				ctx.InvalidIndexType(index);
-
-			if (res == SetResult.OutOfRange)
-				ctx.IndexOutOfRange(index, new ElaValue(this));
-			else if (res == SetResult.Immutable)
-				ctx.Fail(ElaRuntimeError.FieldImmutable, index.Ref.ToString(), Show(new ElaValue(this), ShowInfo.Default, ctx));
-		}
-
-
-		protected internal override ElaValue GetField(string field, ExecutionContext ctx)
+        protected internal override ElaValue GetField(string field, ExecutionContext ctx)
 		{
 			var index = GetOrdinal(field);
 

@@ -74,9 +74,6 @@ namespace Ela.Runtime
 		internal const int LAZ = (Int32)ElaTypeCode.Lazy;
 		internal const int VAR = (Int32)ElaTypeCode.Variant;
 
-        private readonly static DispatchBinaryFun ___ = null;
-		private readonly static DispatchUnaryFun _ = null;
-        
         private sealed class __table
         {
 			internal __table(int count)
@@ -87,28 +84,7 @@ namespace Ela.Runtime
 					table[i] = new DispatchBinaryFun[count];
 			}
 
-			internal DispatchBinaryFun[][] table;// = 
-			//{
-			//    //                        NON  INT  LNG  SNG  DBL  BYT  CHR  STR  UNI  LST  ___  TUP  REC  FUN  OBJ  MOD  LAZ  VAR
-			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //INT
-			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //NON
-			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //LNG
-			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //SNG
-			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //DBL
-			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //BYT
-			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //CHR
-			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //STR
-			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //UNI
-			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //LST
-			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //___
-			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //TUP
-			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //REC
-			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //FUN
-			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //OBJ
-			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //MOD
-			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //LAZ
-			//    new DispatchBinaryFun[] { ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___, ___ }, //VAR
-			//};
+			internal DispatchBinaryFun[][] table;
         }
 
 		private sealed class __table2
@@ -118,28 +94,22 @@ namespace Ela.Runtime
 				table = new DispatchUnaryFun[count];
 			}
 
-			internal DispatchUnaryFun[] table;// = 
-			//{
-			//    _, //INT
-			//    _, //NON
-			//    _, //LNG
-			//    _, //SNG
-			//    _, //DBL
-			//    _, //BYT
-			//    _, //CHR
-			//    _, //STR
-			//    _, //UNI
-			//    _, //LST
-			//    _, //___
-			//    _, //TUP
-			//    _, //REC
-			//    _, //FUN
-			//    _, //OBJ
-			//    _, //MOD
-			//    _, //LAZ
-			//    _, //VAR
-			//};
+			internal DispatchUnaryFun[] table;
 		}
+
+		private sealed class __table3
+		{
+			internal __table3(int count)
+			{
+				table = new DispatchTernaryFun[count][];
+
+				for (var i = 0; i < count; i++)
+					table[i] = new DispatchTernaryFun[count];
+			}
+
+			internal DispatchTernaryFun[][] table;
+		}
+
 
         private DispatchBinaryFun[][] add_ovl;
         private DispatchBinaryFun[][] sub_ovl;
@@ -175,6 +145,7 @@ namespace Ela.Runtime
         private DispatchUnaryFun[] tai_ovl;
         private DispatchUnaryFun[] isn_ovl;
 
+		private DispatchTernaryFun[][] set_ovl;
 
         private DispatchBinaryFun addErrErr;
         private DispatchBinaryFun addIntInt;
@@ -500,11 +471,11 @@ namespace Ela.Runtime
         private DispatchBinaryFun conLazLaz;
 
         private DispatchBinaryFun getErrErr;
-        private DispatchBinaryFun getIntTup;
-        private DispatchBinaryFun getIntRec;
-        private DispatchBinaryFun getStrRec;
-        private DispatchBinaryFun getIntLst;
-        private DispatchBinaryFun getIntStr;
+		private DispatchBinaryFun getTupInt;
+		private DispatchBinaryFun getRecInt;
+		private DispatchBinaryFun getRecStr;
+		private DispatchBinaryFun getLstInt;
+		private DispatchBinaryFun getStrInt;
         private DispatchBinaryFun getLazLaz;
 
         private DispatchUnaryFun negErr;
@@ -583,6 +554,12 @@ namespace Ela.Runtime
         private DispatchUnaryFun isnStr;
         private DispatchUnaryFun isnLaz;
 
+		private DispatchTernaryFun setErrErr;
+		private DispatchTernaryFun setRecInt;
+		private DispatchTernaryFun setRecStr;
+		private DispatchTernaryFun setLazLaz;
+
+
         private void InitializeTables()
         {
 			add_ovl = new __table(typeCount).table;
@@ -618,6 +595,8 @@ namespace Ela.Runtime
 			hea_ovl = new __table2(typeCount).table;
 			tai_ovl = new __table2(typeCount).table;
 			isn_ovl = new __table2(typeCount).table;
+
+			set_ovl = new __table3(typeCount).table;
 
             addErrErr = new NoneBinary("$add", overloads);
             addIntInt = new AddIntInt(add_ovl);
@@ -943,11 +922,11 @@ namespace Ela.Runtime
             conChrStr = new ConsCharString(con_ovl);
 
             getErrErr = new NoneBinary("$getvalue", overloads);
-            getIntTup = new GetIntTuple(get_ovl);
-            getIntRec = new GetIntRecord(get_ovl);
-            getStrRec = new GetStringRecord(get_ovl);
-            getIntLst = new GetIntList(get_ovl);
-            getIntStr = new GetIntString(get_ovl);
+            getTupInt = new GetTupleInt(get_ovl);
+            getRecInt = new GetRecordInt(get_ovl);
+            getRecStr = new GetRecordString(get_ovl);
+            getLstInt = new GetListInt(get_ovl);
+            getStrInt = new GetStringInt(get_ovl);
             getLazLaz = new ThunkBinary(get_ovl);
 
             negErr = new NoneUnary("$negate", overloads);
@@ -1025,6 +1004,11 @@ namespace Ela.Runtime
             isnLst = new IsNilList(isn_ovl);
             isnStr = new IsNilString(isn_ovl);
             isnLaz = new ThunkUnary(isn_ovl);
+
+			setErrErr = new NoneTernary("$setvalue", overloads);
+			setRecInt = new SetRecordInt(set_ovl);
+			setRecStr = new SetRecordString(set_ovl);
+			setLazLaz = new ThunkTernary(set_ovl);
 			
 			add_ovl[INT][INT] = addIntInt;
             add_ovl[INT][LNG] = addIntLng;
@@ -1422,11 +1406,11 @@ namespace Ela.Runtime
             FillLazy(con_ovl, conLazLaz);
             FillTable(con_ovl, conErrErr);
 
-            get_ovl[INT][TUP] = getIntTup;
-            get_ovl[INT][REC] = getIntRec;
-            get_ovl[STR][REC] = getStrRec;
-            get_ovl[INT][STR] = getIntStr;
-            get_ovl[INT][LST] = getIntLst;
+            get_ovl[TUP][INT] = getTupInt;
+            get_ovl[REC][INT] = getRecInt;
+            get_ovl[REC][STR] = getRecStr;
+			get_ovl[STR][INT] = getStrInt;
+			get_ovl[LST][INT] = getLstInt;
             FillLazy(get_ovl, getLazLaz);
             FillTable(get_ovl, getErrErr);
 
@@ -1505,6 +1489,11 @@ namespace Ela.Runtime
             isn_ovl[STR] = isnStr;
             isn_ovl[LAZ] = isnLaz;
             FillTable(isn_ovl, isnErr);
+
+			set_ovl[REC][INT] = setRecInt;
+			set_ovl[REC][STR] = setRecStr;
+			FillLazy(set_ovl, setLazLaz);
+			FillTable(set_ovl, setErrErr);
         }
 
 
@@ -1522,6 +1511,20 @@ namespace Ela.Runtime
         }
 
 
+		private void FillLazy(DispatchTernaryFun[][] tab, DispatchTernaryFun lazOp)
+		{
+			var arr = tab[LAZ];
+
+			for (var i = 0; i < arr.Length; i++)
+				if (arr[i] == null)
+					arr[i] = lazOp;
+
+			for (var i = 0; i < tab.Length; i++)
+				if (tab[i][LAZ] == null)
+					tab[i][LAZ] = lazOp;
+		}
+
+
         private void FillTable(DispatchBinaryFun[][] tab, DispatchBinaryFun errOp)
 		{
 			for (var i = 0; i < tab.Length; i++)
@@ -1530,7 +1533,21 @@ namespace Ela.Runtime
 				
 				for (var j = 0; j < ctab.Length; j++)
 				{
-					if (ctab[j] == ___)
+					if (ctab[j] == null)
+						ctab[j] = errOp;
+				}
+			}
+		}
+
+		private void FillTable(DispatchTernaryFun[][] tab, DispatchTernaryFun errOp)
+		{
+			for (var i = 0; i < tab.Length; i++)
+			{
+				var ctab = tab[i];
+
+				for (var j = 0; j < ctab.Length; j++)
+				{
+					if (ctab[j] == null)
 						ctab[j] = errOp;
 				}
 			}
@@ -1540,7 +1557,7 @@ namespace Ela.Runtime
 		{
 			for (var i = 0; i < tab.Length; i++)
 			{
-				if (tab[i] == _)
+				if (tab[i] == null)
 					tab[i] = errOp;
 			}
 		}
@@ -1769,14 +1786,14 @@ namespace Ela.Runtime
 						evalStack.Push(new ElaValue(ElaUnit.Instance));
 						break;
 					case Op.Pushelem:
-						right = evalStack.Pop();
-						left = evalStack.Peek();
-                        evalStack.Replace(get_ovl[right.TypeId][left.TypeId].Call(right, left, ctx));
+						left = evalStack.Pop();
+						right = evalStack.Peek();
+                        evalStack.Replace(get_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
 
 						if (ctx.Failed)
 						{
-							evalStack.Replace(left);
-							evalStack.Push(right);
+							evalStack.Replace(right);
+							evalStack.Push(left);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
@@ -1833,16 +1850,17 @@ namespace Ela.Runtime
 						break;
 					case Op.Popelem:
 						{
-							right = evalStack.Pop();
 							left = evalStack.Pop();
-							var val = evalStack.Pop();
-							left.Ref.SetValue(right.Id(ctx), val, ctx); //Use of ElaValue.Id
+							right = evalStack.Pop();
+							var val = evalStack.Peek();
 
+							evalStack.Replace(set_ovl[left.TypeId][right.TypeId].Call(left, right, val, ctx));
+							
 							if (ctx.Failed)
 							{
 								evalStack.Push(val);
-								evalStack.Push(left);
 								evalStack.Push(right);
+								evalStack.Push(left);
 								ExecuteThrow(thread, evalStack);
 								goto SWITCH_MEM;
 							}
@@ -2963,10 +2981,13 @@ namespace Ela.Runtime
 
 								if (frm is IntrinsicFrame)
 								{
-									modules[hdl] = ((IntrinsicFrame)frm).Memory;
+									var ifrm = (IntrinsicFrame)frm;
+									modules[hdl] = ifrm.Memory;
 
                                     if (!asm.RequireQuailified(hdl))
 									    ReadPervasives(thread, frm, hdl);
+
+									ReadOverloads(ifrm);
 								}
 								else
 								{
@@ -3235,18 +3256,85 @@ namespace Ela.Runtime
             }
         }
 
+
+		private void ReadOverloads(IntrinsicFrame ifrm)
+		{
+			foreach (var o in ifrm.TernaryOverloads)
+			{
+				var tab = GetTable(o.Kind);
+				tab[o.Arg1.Id][o.Arg2.Id] = o.Function;
+			}
+
+			foreach (var o in ifrm.BinaryOverloads)
+			{
+				var tab = GetTable(o.Kind);
+				tab[o.Arg1.Id][o.Arg2.Id] = o.Function;
+			}
+
+			foreach (var o in ifrm.UnaryOverloads)
+			{
+				var tab = GetTable(o.Kind);
+				tab[o.Arg.Id] = o.Function;
+			}
+		}
+
+
+		private DispatchTernaryFun[][] GetTable(ElaTernaryFunction fun)
+		{
+			return set_ovl;
+		}
+
+
+		private DispatchBinaryFun[][] GetTable(ElaBinaryFunction fun)
+		{
+			switch (fun)
+			{
+				case ElaBinaryFunction.Add: return add_ovl;
+				case ElaBinaryFunction.BitwiseAnd: return and_ovl;
+				case ElaBinaryFunction.BitwiseOr: return bor_ovl;
+				case ElaBinaryFunction.BitwiseXor: return xor_ovl;
+				case ElaBinaryFunction.Concat: return cat_ovl;
+				case ElaBinaryFunction.Cons: return con_ovl;
+				case ElaBinaryFunction.Divide: return div_ovl;
+				case ElaBinaryFunction.Equal: return eql_ovl;
+				case ElaBinaryFunction.GetValue: return get_ovl;
+				case ElaBinaryFunction.Greater: return gtr_ovl;
+				case ElaBinaryFunction.GreaterEqual: return gte_ovl;
+				case ElaBinaryFunction.Lesser: return ltr_ovl;
+				case ElaBinaryFunction.LesserEqual: return lte_ovl;
+				case ElaBinaryFunction.Multiply: return mul_ovl;
+				case ElaBinaryFunction.NotEqual: return neq_ovl;
+				case ElaBinaryFunction.Power: return pow_ovl;
+				case ElaBinaryFunction.Remainder: return rem_ovl;
+				case ElaBinaryFunction.ShiftLeft: return shl_ovl;
+				case ElaBinaryFunction.ShiftRight: return shr_ovl;
+				case ElaBinaryFunction.Subtract: return sub_ovl;
+				default: return null;
+			}
+		}
+
+
+		private DispatchUnaryFun[] GetTable(ElaUnaryFunction fun)
+		{
+			switch (fun)
+			{
+				case ElaUnaryFunction.BitwiseNot: return bne_ovl;
+				case ElaUnaryFunction.Clone: return cln_ovl;
+				case ElaUnaryFunction.Head: return hea_ovl;
+				case ElaUnaryFunction.IsNil: return isn_ovl;
+				case ElaUnaryFunction.Length: return len_ovl;
+				case ElaUnaryFunction.Max: return max_ovl;
+				case ElaUnaryFunction.Min: return min_ovl;
+				case ElaUnaryFunction.Negate: return neg_ovl;
+				case ElaUnaryFunction.Nil: return nil_ovl;
+				case ElaUnaryFunction.Pred: return prd_ovl;
+				case ElaUnaryFunction.Succ: return suc_ovl;
+				case ElaUnaryFunction.Tail: return tai_ovl;
+				default: return null;
+			}
+		}
+
         
-        private void InvokeOverride(string fun, ElaValue left, ElaValue right, EvalStack evalStack, WorkerThread thread, ExecutionContext ctx)
-        {
-            evalStack.Pop();
-            var f = overloads[fun].Resolve(left, ctx).Resolve(right, ctx);
-            f.Parameters[0] = left;
-            f.AppliedParameters = 1;
-            f.LastParameter = right;
-            Call(f, thread, evalStack, CallFlag.AllParams);
-        }
-
-
 		private void ReadPervasives(WorkerThread thread, CodeFrame frame, int handle)
 		{
 			var mod = thread.Module;

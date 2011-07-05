@@ -183,6 +183,9 @@ namespace Ela.Compilation
 		{
 			switch (kind)
 			{
+				case ElaBuiltinKind.SetValue:
+					cw.Emit(Op.Popelem);
+					break;
                 case ElaBuiltinKind.Apply:
                     cw.Emit(Op.Pushunit);
                     cw.Emit(Op.Swap);

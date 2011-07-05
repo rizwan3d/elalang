@@ -23,6 +23,65 @@ namespace Ela.Runtime
 		}
 	}
 
+	internal class NoneTernary : DispatchTernaryFun
+	{
+		private readonly string op;
+		private readonly Dictionary<String,ElaOverloadedFunction> overloads;
+
+		internal NoneTernary(string op, Dictionary<String,ElaOverloadedFunction> overloads) : base(null)
+		{
+			this.op = op;
+			this.overloads = overloads;
+		}
+
+		protected internal override ElaValue Call(ElaValue first, ElaValue second, ElaValue third, ExecutionContext ctx)
+		{
+			var fun = default(ElaOverloadedFunction);
+
+			if (overloads.TryGetValue(op, out fun))
+			{
+				var f1 = fun.Resolve(first, ctx);
+
+				if (ctx.Failed)
+					return ElaObject.GetDefault();
+
+				var fo1 = f1 as ElaOverloadedFunction;
+
+				if (fo1 == null)
+				{
+					ctx.Fail(ElaRuntimeError.OverloadNotFound, first.GetTag() + "->" + second.GetTag() + "->*",
+						op.Replace("$", String.Empty));
+					return ElaObject.GetDefault();
+				}
+
+				var f2 = fo1.Resolve(second, ctx);
+
+				if (ctx.Failed)
+					return ElaObject.GetDefault();
+
+				ctx.Failed = true;
+				f2.Parameters[0] = first;
+				f2.Parameters[1] = second;
+				f2.LastParameter = third;
+				f2.AppliedParameters = f2.Parameters.Length;
+				ctx.Function = f2;
+				ctx.ToPop = 3;
+				return ElaObject.GetDefault();
+			}
+
+			return ReturnDefault(first, second, ctx);
+		}
+
+
+		protected virtual ElaValue ReturnDefault(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			ctx.Fail(ElaRuntimeError.OverloadNotFound, left.GetTag() + "->" + right.GetTag() + "->*",
+				op.Replace("$", String.Empty));
+			return ElaObject.GetDefault();
+		}
+	}
+
+
     internal class NoneBinary : DispatchBinaryFun
     {
         private readonly string op;
@@ -380,6 +439,32 @@ namespace Ela.Runtime
             return PerformOp(left.Force(ctx), right.Force(ctx), ctx);
         }
     }
+
+	internal sealed class ThunkTernary : DispatchTernaryFun
+	{
+		internal ThunkTernary(DispatchTernaryFun[][] funs) : base(funs) { }
+
+		protected internal override ElaValue Call(ElaValue first, ElaValue second, ElaValue third, ExecutionContext ctx)
+		{
+			if (!first.Ref.IsEvaluated())
+			{
+				var t = (ElaLazy)first.Ref;
+				ctx.Failed = true;
+				ctx.Thunk = t;
+				return ElaObject.GetDefault();
+			}
+
+			if (!second.Ref.IsEvaluated())
+			{
+				var t = (ElaLazy)second.Ref;
+				ctx.Failed = true;
+				ctx.Thunk = t;
+				return ElaObject.GetDefault();
+			}
+
+			return PerformOp(first.Force(ctx), second.Force(ctx), third.Force(ctx), ctx);
+		}
+	}
 
 	internal sealed class ThunkUnary : DispatchUnaryFun
 	{
@@ -2850,71 +2935,71 @@ namespace Ela.Runtime
 
 
     #region GetValue
-    internal sealed class GetIntTuple : DispatchBinaryFun
+    internal sealed class GetTupleInt : DispatchBinaryFun
     {
-        internal GetIntTuple(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal GetTupleInt(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            var t = (ElaTuple)right.Ref;
+            var t = (ElaTuple)left.Ref;
 
-            if (left.I4 < t.Length && left.I4 > -1)
-                return t.Values[left.I4];
+            if (right.I4 < t.Length && left.I4 > -1)
+                return t.Values[right.I4];
 
-            ctx.IndexOutOfRange(left, right);
+            ctx.IndexOutOfRange(right, left);
             return ElaObject.GetDefault();
         }
     }
 
 
-    internal sealed class GetIntRecord : DispatchBinaryFun
+    internal sealed class GetRecordInt : DispatchBinaryFun
     {
-        internal GetIntRecord(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal GetRecordInt(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            var t = (ElaRecord)right.Ref;
+            var t = (ElaRecord)left.Ref;
 
-            if (left.I4 < t.Length && left.I4 > -1)
-                return t.values[left.I4];
+            if (right.I4 < t.Length && left.I4 > -1)
+                return t.values[right.I4];
 
-            ctx.IndexOutOfRange(left, right);
+            ctx.IndexOutOfRange(right, left);
             return ElaObject.GetDefault();
         }
     }
 
 
-    internal sealed class GetStringRecord : DispatchBinaryFun
+    internal sealed class GetRecordString : DispatchBinaryFun
     {
-        internal GetStringRecord(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal GetRecordString(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            var t = (ElaRecord)right.Ref;
-            var index = t.GetOrdinal(left.DirectGetString());
+            var t = (ElaRecord)left.Ref;
+            var index = t.GetOrdinal(right.DirectGetString());
 
             if (index != -1 && index < t.values.Length)
                 return t.values[index];
 
-            ctx.IndexOutOfRange(left, right);
+            ctx.IndexOutOfRange(right, left);
             return ElaObject.GetDefault();
         }
     }
 
 
-    internal sealed class GetIntList : DispatchBinaryFun
+    internal sealed class GetListInt : DispatchBinaryFun
     {
-        internal GetIntList(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal GetListInt(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            var t = (ElaList)right.Ref;
+            var t = (ElaList)left.Ref;
 
-            if (left.I4 < 0)
+            if (right.I4 < 0)
             {
-                ctx.IndexOutOfRange(left, right);
+                ctx.IndexOutOfRange(right, left);
                 return ElaObject.GetDefault();
             }
 
             var xs = t;
 
-            for (var i = 0; i < left.I4; i++)
+            for (var i = 0; i < right.I4; i++)
             {
                 xs = xs.Tail(ctx).Ref as ElaList;
 
@@ -2926,7 +3011,7 @@ namespace Ela.Runtime
 
                 if (xs == ElaList.Empty || xs == ElaLazyList.Empty)
                 {
-                    ctx.IndexOutOfRange(left, right);
+                    ctx.IndexOutOfRange(right, left);
                     return ElaObject.GetDefault();
                 }
             }
@@ -2936,28 +3021,81 @@ namespace Ela.Runtime
     }
 
 
-    internal sealed class GetIntString : DispatchBinaryFun
+    internal sealed class GetStringInt : DispatchBinaryFun
     {
-        internal GetIntString(DispatchBinaryFun[][] funs) : base(funs) { }
+        internal GetStringInt(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            var t = (ElaString)right.Ref;
+            var t = (ElaString)left.Ref;
             var val = t.GetValue();
 
-            if (left.I4 >= val.Length || left.I4 < 0)
+            if (right.I4 >= val.Length || right.I4 < 0)
             {
-                ctx.IndexOutOfRange(left, right);
+                ctx.IndexOutOfRange(right, left);
                 return ElaObject.GetDefault();
             }
 
-            return new ElaValue(val[left.I4]);
+            return new ElaValue(val[right.I4]);
         }
     }
     #endregion
 
 
-    #region Negate
-    internal sealed class NegInt : DispatchUnaryFun
+	#region SetValue
+	internal sealed class SetRecordInt : DispatchTernaryFun
+    {
+		internal SetRecordInt(DispatchTernaryFun[][] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue first, ElaValue second, ElaValue third, ExecutionContext ctx)
+        {
+            var t = (ElaRecord)first.Ref;
+			var idx = second.I4;
+
+			if (idx > -1 && idx < t.values.Length)
+			{
+				if (!t.flags[idx])
+				{
+					ctx.Fail(ElaRuntimeError.FieldImmutable, idx, first);
+					return ElaObject.GetDefault();
+				}
+
+				t.values[idx] = third;
+				return first;
+			}
+			
+			ctx.IndexOutOfRange(second, first);
+            return ElaObject.GetDefault();
+        }
+    }
+
+	internal sealed class SetRecordString : DispatchTernaryFun
+	{
+		internal SetRecordString(DispatchTernaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue first, ElaValue second, ElaValue third, ExecutionContext ctx)
+		{
+			var t = (ElaRecord)first.Ref;
+			var idx = t.GetOrdinal(second.DirectGetString());
+
+			if (idx < 0)
+			{
+				ctx.IndexOutOfRange(second, first);
+				return ElaObject.GetDefault();
+			}
+
+			if (!t.flags[idx])
+			{
+				ctx.Fail(ElaRuntimeError.FieldImmutable, idx, first);
+				return ElaObject.GetDefault();
+			}
+
+			t.values[idx] = third;
+			return first;
+		}
+	}
+	#endregion
+
+
+	#region Negate
+	internal sealed class NegInt : DispatchUnaryFun
 	{
 		internal NegInt(DispatchUnaryFun[] funs) : base(funs) { }
 		protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)

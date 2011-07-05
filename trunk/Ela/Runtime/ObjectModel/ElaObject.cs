@@ -196,12 +196,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal virtual void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
-		{
-			ctx.NoOperator(new ElaValue(this), "set");						
-		}
-
-
 		protected internal virtual bool Bool(ElaValue @this, ExecutionContext ctx)
 		{
 			ctx.NoOperator(@this, "bool");

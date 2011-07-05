@@ -8,7 +8,7 @@ namespace Ela
 	{
 		internal static int Params(ElaBuiltinKind kind)
 		{
-			return kind >= ElaBuiltinKind.Showf ? 2 : 1;
+			return kind == ElaBuiltinKind.SetValue ? 3 : kind >= ElaBuiltinKind.Showf ? 2 : 1;
 		}
 
 
@@ -65,6 +65,7 @@ namespace Ela
 				case "compforward": return ElaBuiltinKind.CompForward;
 				case "compbackward": return ElaBuiltinKind.CompBackward;
 
+				case "setvalue": return ElaBuiltinKind.SetValue;
 				default: return ElaBuiltinKind.None;
 			}
 		}

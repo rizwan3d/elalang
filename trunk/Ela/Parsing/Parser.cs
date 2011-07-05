@@ -1987,13 +1987,17 @@ internal sealed partial class Parser {
 		if (StartOf(28)) {
 			Application(out exp);
 			while (la.kind == 15 || la.kind == 53) {
+				var cexp = default(ElaExpression); 
 				if (la.kind == 15) {
 					Get();
 				} else {
 					Get();
 				}
 				op = t.val; 
-				exp = GetOperatorFun(op, exp, null); 
+				if (StartOf(28)) {
+					Application(out cexp);
+				}
+				exp = GetOperatorFun(op, exp, cexp); 
 			}
 		} else if (la.kind == 15 || la.kind == 53) {
 			if (la.kind == 15) {
@@ -2004,7 +2008,7 @@ internal sealed partial class Parser {
 			op = t.val; 
 			if (StartOf(28)) {
 				Application(out exp);
-				exp = GetOperatorFun(op, exp, null); 
+				exp = GetOperatorFun(op, null, exp); 
 			}
 			if (exp == null)
 			exp = new ElaVariableReference(ot) { VariableName = t.val };

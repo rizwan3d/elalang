@@ -99,6 +99,9 @@ namespace Ela.CodeModel
 
 		CompForward,
 
-		CompBackward
+		CompBackward,
+
+		
+		SetValue
 	}
 }

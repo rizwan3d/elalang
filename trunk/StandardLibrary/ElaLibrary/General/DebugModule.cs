@@ -15,6 +15,14 @@ namespace Ela.Library.General
 
 		}
 		#endregion
+
+		class Un : DispatchUnaryFun
+		{
+			protected override ElaValue Call(ElaValue left, Ela.Runtime.ExecutionContext ctx)
+			{
+				return left;
+			}
+		}
 		
 		
 		#region Methods
@@ -23,6 +31,7 @@ namespace Ela.Library.General
 			Add<ElaObject>("startClock", StartClock);
             Add<Wrapper<Stopwatch>,String>("stopClock", StopClock);
 			Add<Int32,ElaUnit>("sleep", Sleep);
+			AddOverload(ElaUnaryFunction.Negate, new Un(), TypeId.Char);
 		}
 
 
