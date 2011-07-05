@@ -52,6 +52,9 @@ let uncurry3 f (x, y, z) = f x y z
 let succ = __internal succ
 let pred = __internal pred
 
+/* Seq functions */
+let get = __internal getvalue
+
 /* List functions */
 let (!!) x y = x.[y]
 let nil    = __internal nil

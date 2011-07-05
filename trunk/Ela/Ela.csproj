@@ -185,7 +185,6 @@
     <Compile Include="CodeModel\ElaLiteralPattern.cs" />
     <Compile Include="CodeModel\ElaTuplePattern.cs" />
     <Compile Include="CodeModel\ElaTry.cs" />
-    <Compile Include="CodeModel\ElaIsPattern.cs" />
     <Compile Include="CodeModel\ElaBinary.cs" />
     <Compile Include="CodeModel\ElaOperator.cs" />
     <Compile Include="CodeModel\ElaCondition.cs" />

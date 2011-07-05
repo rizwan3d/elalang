@@ -77,22 +77,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue GetValue(ElaValue key, ExecutionContext ctx)
-		{
-			if (key.TypeId != ElaMachine.INT)
-			{
-				ctx.InvalidIndexType(key);
-				return Default();
-			}
-
-			if (key.I4 < Length && key.I4 > -1)
-				return Values[key.I4];
-			
-			ctx.IndexOutOfRange(key, new ElaValue(this));
-			return Default();
-		}
-
-
         protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			return "(" + FormatHelper.FormatEnumerable((IEnumerable<ElaValue>)this, ctx, info) + 

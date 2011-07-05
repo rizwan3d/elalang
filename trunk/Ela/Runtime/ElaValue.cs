@@ -370,12 +370,6 @@ namespace Ela.Runtime
 
 
         #region Operations
-        public ElaValue GetValue(ElaValue index, ExecutionContext ctx)
-        {
-            return Ref.GetValue(index, ctx);
-        }
-
-
         public void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
         {
             Ref.SetValue(index, value, ctx);
@@ -386,36 +380,6 @@ namespace Ela.Runtime
         {
             return Ref.Bool(this, ctx);
         }
-
-
-        public ElaValue Head(ExecutionContext ctx)
-        {
-			return Ref.Head(ctx);
-        }
-
-
-        public ElaValue Tail(ExecutionContext ctx)
-        {
-			return Ref.Tail(ctx);
-        }
-
-
-        public bool IsNil(ExecutionContext ctx)
-        {
-			return Ref.IsNil(ctx);
-        }
-
-
-        public ElaValue Cons(ElaObject instance, ElaValue value, ExecutionContext ctx)
-        {
-			return Ref.Cons(instance, value, ctx);
-        }
-
-
-		public ElaValue Nil(ExecutionContext ctx)
-		{
-			return Ref.Nil(ctx);
-		}
 
 
         public ElaValue Generate(ElaValue value, ExecutionContext ctx)

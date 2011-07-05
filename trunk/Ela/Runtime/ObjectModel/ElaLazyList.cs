@@ -37,28 +37,23 @@ namespace Ela.Runtime.ObjectModel
 
 			internal ElaNilLazyList() : base((ElaLazy)null, new ElaValue(ElaUnit.Instance)) { }
 
-			protected internal override ElaValue Tail(ExecutionContext ctx)
+			internal override ElaValue Tail(ExecutionContext ctx)
 			{
 				ctx.Fail("NilList", "List is nil.");
 				return Default();
 			}
 
-			protected internal override ElaValue Head(ExecutionContext ctx)
+			internal override ElaValue Head(ExecutionContext ctx)
 			{
 				ctx.Fail("NilList", "List is nil.");
 				return Default();
-			}
-
-			protected internal override bool IsNil(ExecutionContext ctx)
-			{
-				return true;
 			}
 		}
 		#endregion
 
 
 		#region Operations
-		protected internal override ElaValue Tail(ExecutionContext ctx)
+		internal override ElaValue Tail(ExecutionContext ctx)
 		{
 			if (thunk != null)
 			{
@@ -74,29 +69,6 @@ namespace Ela.Runtime.ObjectModel
 			}
 
 			return new ElaValue(InternalNext);
-		}
-
-
-		protected internal override ElaValue Nil(ExecutionContext ctx)
-		{
-			return new ElaValue(ElaLazyList.Empty);
-		}
-
-
-		protected internal override ElaValue Cons(ElaObject next, ElaValue value, ExecutionContext ctx)
-		{
-			var t = next as ElaLazy;
-
-			if (t != null)
-				return new ElaValue(new ElaLazyList(t, value));
-
-			var tl = next as ElaLazyList;
-
-			if (tl != null)
-				return new ElaValue(new ElaLazyList(tl, value));
-
-			ctx.Fail("InvalidLazyList", "Invalid lazy list definition.");
-			return Default();
 		}
 
 

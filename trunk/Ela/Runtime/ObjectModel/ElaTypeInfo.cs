@@ -94,26 +94,26 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-		protected internal override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
-        {
-            if (index.TypeCode == ElaTypeCode.String)
-                return GetField(index.DirectGetString(), ctx);
-            else if (index.TypeCode == ElaTypeCode.Integer)
-            {
-                var idx = index.AsInteger();
+        //protected internal override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
+        //{
+        //    if (index.TypeCode == ElaTypeCode.String)
+        //        return GetField(index.DirectGetString(), ctx);
+        //    else if (index.TypeCode == ElaTypeCode.Integer)
+        //    {
+        //        var idx = index.AsInteger();
 
-                if (idx < 0 || idx >= keys.Count)
-                {
-                    ctx.IndexOutOfRange(index, new ElaValue(this));
-                    return Default();
-                }
+        //        if (idx < 0 || idx >= keys.Count)
+        //        {
+        //            ctx.IndexOutOfRange(index, new ElaValue(this));
+        //            return Default();
+        //        }
 
-                return values[idx];
-            }
+        //        return values[idx];
+        //    }
             
-            ctx.InvalidIndexType(index);
-            return Default();
-        }
+        //    ctx.InvalidIndexType(index);
+        //    return Default();
+        //}
 
 
 		protected internal override ElaValue GetField(string field, ExecutionContext ctx)

@@ -74,7 +74,8 @@ namespace Ela.Runtime
 
         protected virtual ElaValue ReturnDefault(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            ctx.NoOperation(left, right, op);
+            ctx.Fail(ElaRuntimeError.OverloadNotFound, left.GetTag() + "->" + right.GetTag(),
+                op.Replace("$", String.Empty));
             return ElaObject.GetDefault();
         }
     }
@@ -115,7 +116,7 @@ namespace Ela.Runtime
 
         protected virtual ElaValue ReturnDefault(ElaValue left, ExecutionContext ctx)
         {
-            ctx.NoOperation(left, new ElaValue(ElaUnit.Instance), op);
+            ctx.Fail(ElaRuntimeError.OverloadNotFound, left.GetTag(), op.Replace("$", String.Empty));
             return ElaObject.GetDefault();
         }
 	}
@@ -151,9 +152,9 @@ namespace Ela.Runtime
 
 			for (; ; ) 
 			{
-				if (xs1.IsNil(ctx))
+				if (xs1 == ElaList.Empty || xs1 == ElaLazyList.Empty)
 				{
-					if (xs2.IsNil(ctx))
+                    if (xs2 == ElaList.Empty || xs2 == ElaLazyList.Empty)
 						break;
 					else
 						return new ElaValue(flag == OpFlag.Neq);
@@ -2794,8 +2795,169 @@ namespace Ela.Runtime
 	#endregion
 
 
-	#region Negate
-	internal sealed class NegInt : DispatchUnaryFun
+    #region Cons
+    internal sealed class ConsAnyList : DispatchBinaryFun
+    {
+        internal ConsAnyList(DispatchBinaryFun[][] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            var laz = right.Ref as ElaLazyList;
+
+            if (laz != null)
+                return new ElaValue(new ElaLazyList(laz, left));
+            else
+            {
+                var xs = (ElaList)right.Ref;
+                return new ElaValue(new ElaList(xs, left));
+            }
+        }
+    }
+
+
+    internal sealed class ConsStringString : DispatchBinaryFun
+    {
+        internal ConsStringString(DispatchBinaryFun[][] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            var str1 = left.DirectGetString();
+            var str2 = right.DirectGetString();
+            return new ElaValue(new ElaString(str1 + str2));
+        }
+    }
+
+
+    internal sealed class ConsCharString : DispatchBinaryFun
+    {
+        internal ConsCharString(DispatchBinaryFun[][] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            var str1 = ((Char)left.I4).ToString();
+            var str2 = right.DirectGetString();
+            return new ElaValue(new ElaString(str1 + str2));
+        }
+    }
+
+
+    internal sealed class ConsAnyThunk : DispatchBinaryFun
+    {
+        internal ConsAnyThunk(DispatchBinaryFun[][] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return new ElaValue(new ElaLazyList((ElaLazy)right.Ref, left));
+        }
+    }
+    #endregion
+
+
+    #region GetValue
+    internal sealed class GetIntTuple : DispatchBinaryFun
+    {
+        internal GetIntTuple(DispatchBinaryFun[][] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            var t = (ElaTuple)right.Ref;
+
+            if (left.I4 < t.Length && left.I4 > -1)
+                return t.Values[left.I4];
+
+            ctx.IndexOutOfRange(left, right);
+            return ElaObject.GetDefault();
+        }
+    }
+
+
+    internal sealed class GetIntRecord : DispatchBinaryFun
+    {
+        internal GetIntRecord(DispatchBinaryFun[][] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            var t = (ElaRecord)right.Ref;
+
+            if (left.I4 < t.Length && left.I4 > -1)
+                return t.values[left.I4];
+
+            ctx.IndexOutOfRange(left, right);
+            return ElaObject.GetDefault();
+        }
+    }
+
+
+    internal sealed class GetStringRecord : DispatchBinaryFun
+    {
+        internal GetStringRecord(DispatchBinaryFun[][] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            var t = (ElaRecord)right.Ref;
+            var index = t.GetOrdinal(left.DirectGetString());
+
+            if (index != -1 && index < t.values.Length)
+                return t.values[index];
+
+            ctx.IndexOutOfRange(left, right);
+            return ElaObject.GetDefault();
+        }
+    }
+
+
+    internal sealed class GetIntList : DispatchBinaryFun
+    {
+        internal GetIntList(DispatchBinaryFun[][] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            var t = (ElaList)right.Ref;
+
+            if (left.I4 < 0)
+            {
+                ctx.IndexOutOfRange(left, right);
+                return ElaObject.GetDefault();
+            }
+
+            var xs = t;
+
+            for (var i = 0; i < left.I4; i++)
+            {
+                xs = xs.Tail(ctx).Ref as ElaList;
+
+                if (xs == null)
+                {
+                    ctx.Fail(new ElaError("InvalidList", "Invalid list definition."));
+                    return ElaObject.GetDefault();
+                }
+
+                if (xs == ElaList.Empty || xs == ElaLazyList.Empty)
+                {
+                    ctx.IndexOutOfRange(left, right);
+                    return ElaObject.GetDefault();
+                }
+            }
+
+            return xs.Head(ctx);
+        }
+    }
+
+
+    internal sealed class GetIntString : DispatchBinaryFun
+    {
+        internal GetIntString(DispatchBinaryFun[][] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            var t = (ElaString)right.Ref;
+            var val = t.GetValue();
+
+            if (left.I4 >= val.Length || left.I4 < 0)
+            {
+                ctx.IndexOutOfRange(left, right);
+                return ElaObject.GetDefault();
+            }
+
+            return new ElaValue(val[left.I4]);
+        }
+    }
+    #endregion
+
+
+    #region Negate
+    internal sealed class NegInt : DispatchUnaryFun
 	{
 		internal NegInt(DispatchUnaryFun[] funs) : base(funs) { }
 		protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
@@ -3065,7 +3227,7 @@ namespace Ela.Runtime
             var count = 0;
             var xs = (ElaList)left.Ref;
 
-            while (!xs.IsNil(ctx))
+            while (xs != ElaList.Empty)
             {
                 count++;
                 xs = xs.Tail(ctx).Ref as ElaList;
@@ -3105,6 +3267,103 @@ namespace Ela.Runtime
         protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
         {
             return new ElaValue(((ElaString)left.Ref).Length);
+        }
+    }
+    #endregion
+
+
+    #region Nil
+    internal sealed class NilAny : DispatchUnaryFun
+    {
+        internal NilAny(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(ElaList.Empty);
+        }
+    }
+
+
+    internal sealed class NilString : DispatchUnaryFun
+    {
+        internal NilString(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(ElaString.Empty);
+        }
+    }
+
+
+    internal sealed class NilLazy : DispatchUnaryFun
+    {
+        internal NilLazy(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(ElaLazyList.Empty);
+        }
+    }
+    #endregion
+
+
+    #region Head
+    internal sealed class HeadList : DispatchUnaryFun
+    {
+        internal HeadList(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return ((ElaList)left.Ref).Head(ctx);
+        }
+    }
+
+    internal sealed class HeadString : DispatchUnaryFun
+    {
+        internal HeadString(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return ((ElaString)left.Ref).Head();
+        }
+    }
+    #endregion
+
+
+    #region Tail
+    internal sealed class TailList : DispatchUnaryFun
+    {
+        internal TailList(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return ((ElaList)left.Ref).Tail(ctx);
+        }
+    }
+
+
+    internal sealed class TailString : DispatchUnaryFun
+    {
+        internal TailString(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return ((ElaString)left.Ref).Tail();
+        }
+    }
+    #endregion
+
+
+    #region IsNil
+    internal sealed class IsNilList : DispatchUnaryFun
+    {
+        internal IsNilList(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(left.Ref == ElaList.Empty || left.Ref == ElaLazyList.Empty);
+        }
+    }
+
+
+    internal sealed class IsNilString : DispatchUnaryFun
+    {
+        internal IsNilString(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(((ElaString)left.Ref).IsNil());
         }
     }
     #endregion

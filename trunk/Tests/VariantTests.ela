@@ -46,4 +46,4 @@ let untagTest {eq} =
 
 let typeCheck {eqt} =
         let vr  = None in
-        eqt (vr is ?variant)
+        eqt (vr is None)

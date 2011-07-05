@@ -79,26 +79,6 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        protected internal override ElaValue GetValue(ElaValue key, ExecutionContext ctx)
-		{
-			if (key.TypeId != ElaMachine.INT)
-			{
-				ctx.InvalidIndexType(key);
-				return Default();
-			}
-
-			var val = GetValue();
-			
-			if (key.I4 >= val.Length || key.I4 < 0)
-			{
-				ctx.IndexOutOfRange(key, new ElaValue(this));
-				return Default();
-			}
-
-			return new ElaValue(val[key.I4]);
-		}
-
-
 		internal ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
 		{
 			if (type == ElaTypeCode.String)
@@ -183,47 +163,21 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Head(ExecutionContext ctx)
+		internal ElaValue Head()
 		{
 			return new ElaValue(buffer[headIndex]);
 		}
 
 
-		protected internal override ElaValue Tail(ExecutionContext ctx)
+		internal ElaValue Tail()
 		{
 			return new ElaValue(new ElaString(buffer, headIndex + 1));
 		}
 
 
-		protected internal override bool IsNil(ExecutionContext ctx)
+		internal bool IsNil()
 		{
 			return headIndex == buffer.Length;
-		}
-
-
-		protected internal override ElaValue Cons(ElaObject next, ElaValue value, ExecutionContext ctx)
-		{
-			var nextStr = next as ElaString;
-
-			if (nextStr == null)
-			{
-				ctx.InvalidType(GetTypeName(), new ElaValue(next));
-				return Default();
-			}
-
-			if (value.TypeCode != ElaTypeCode.String && value.TypeCode != ElaTypeCode.Char)
-			{
-				ctx.InvalidType(GetTypeName(), value);
-				return Default();
-			}
-
-			return new ElaValue(new ElaString(value.ToString() + nextStr));
-		}
-
-
-		protected internal override ElaValue Nil(ExecutionContext ctx)
-		{
-			return new ElaValue(ElaString.Empty);
 		}
 		#endregion
 

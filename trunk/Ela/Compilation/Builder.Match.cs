@@ -212,11 +212,19 @@ namespace Ela.Compilation
 			switch (patExp.Type)
 			{
 				case ElaNodeType.VariantPattern:
-					if (tuple != null)
+                    var vp = (ElaVariantPattern)patExp;
+						
+					if (tuple != null && vp.Tag != "Tuple#")
 						MatchEntryAlwaysFail(patExp, nextLab);
 					else
 					{
-						var vp = (ElaVariantPattern)patExp;
+                        if (tuple != null)
+                        {
+                            CompileExpression(tuple, map, Hints.None);
+                            pushSys = AddVariable();
+                            cw.Emit(Op.Popvar, pushSys);
+                        }
+
 						cw.Emit(Op.Pushvar, pushSys);
 						
 						if (!String.IsNullOrEmpty(vp.Tag))
@@ -269,27 +277,6 @@ namespace Ela.Compilation
 						cw.Emit(Op.Pushvar, pushSys);
 						PushPrimitive(((ElaLiteralPattern)patExp).Value);
 						cw.Emit(Op.Br_neq, nextLab);
-					}
-					break;
-				case ElaNodeType.IsPattern:
-					{
-						var tp = (ElaIsPattern)patExp;
-
-						if (tuple != null && tp.TypeCode != ElaTypeCode.Tuple)
-							MatchEntryAlwaysFail(patExp, nextLab);
-						else if (tuple == null)
-						{
-							if (tp.TypeCode == ElaTypeCode.None)
-							{
-                                cw.Emit(Op.Pushvar, pushSys);
-                                cw.Emit(Op.Type);
-                                cw.Emit(Op.Pushfld, AddString("typeName"));
-                                cw.Emit(Op.Pushstr, AddString(tp.TypeName));
-                                cw.Emit(Op.Br_neq, nextLab);
-							}
-							else
-								CheckType(pushSys, tp.TypeCode, nextLab);
-						}
 					}
 					break;
 				case ElaNodeType.VariablePattern:

@@ -27,7 +27,7 @@ namespace Ela.Runtime.ObjectModel
         
         internal override string GetTag()
         {
-            return "Lazy#";
+            return Value.Ref == null ? "Lazy#" : Value.GetTag();
         }
 
 
@@ -139,12 +139,6 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.GetValue(index.Force(ctx), ctx);
-		}
-
-
 		protected internal override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
 		{
 			Force(ctx).SetValue(index.Force(ctx), value, ctx);
@@ -153,18 +147,6 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
 		{
 			return Force(ctx).Ref.Bool(Value, ctx);
-		}
-		
-		
-		protected internal override ElaValue Cons(ElaObject instance, ElaValue value, ExecutionContext ctx)
-		{
-			return new ElaValue(new ElaLazyList(this, value));
-		}
-
-
-		protected internal override ElaValue Nil(ExecutionContext ctx)
-		{
-			return new ElaValue(ElaLazyList.Empty);
 		}
 
 

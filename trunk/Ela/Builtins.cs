@@ -39,7 +39,8 @@ namespace Ela
                 case "apply": return ElaBuiltinKind.Apply;
 
 				case "showf": return ElaBuiltinKind.Showf;
-				
+
+                case "getvalue": return ElaBuiltinKind.GetValue;
 				case "equal": return ElaBuiltinKind.Equal;
 				case "notequal": return ElaBuiltinKind.NotEqual;
 				case "greaterequal": return ElaBuiltinKind.GreaterEqual;

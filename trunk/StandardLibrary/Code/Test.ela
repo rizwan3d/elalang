@@ -1,4 +1,5 @@
 open Core
+open Con
 
 let inline ^^ x y = show x ++ show y
 
@@ -21,7 +22,7 @@ let funData fun = (t.module.name ++ "." ++ t.name, fun)
     
 let regFun fun xs = funData fun  :: xs
 
-let regFuns mod xs = xs ++ (vals |> filter (\x -> x is ?fun) |> map funData)
+let regFuns mod xs = xs ++ (vals |> filter (\x -> x is Function#) |> map funData)
                      where vals = [ v.value \\ v <- (type mod).globals ]
 
 let run xs = (res, failed)

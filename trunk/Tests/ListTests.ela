@@ -91,4 +91,4 @@ let takeElems {eqt} =
 
 let typeCheck {eqt} =
         let list = [0, 1] in
-        eqt (list is ?list)
+        eqt (list is List#)

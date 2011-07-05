@@ -10,7 +10,7 @@ namespace Ela.Runtime.ObjectModel
 		#region Construction
         private const string FIELDS = "fields";
         internal string[] keys;
-        private ElaValue[] values;
+        internal ElaValue[] values;
 		private bool[] flags;
         private int cons;
 
@@ -43,27 +43,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-       	protected internal override ElaValue GetValue(ElaValue key, ExecutionContext ctx)
-		{
-			if (key.TypeId == ElaMachine.STR)
-                return GetField(key.DirectGetString(), ctx);
-			else if (key.TypeId == ElaMachine.INT)
-			{
-				if (key.I4 != -1 && key.I4 < values.Length)
-					return values[key.I4];
-				else
-				{
-					ctx.IndexOutOfRange(key, new ElaValue(this));
-					return base.GetValue(key, ctx);
-				}
-			}
-
-			ctx.InvalidIndexType(key);
-			return Default();
-		}
-
-
-		protected internal override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
+        protected internal override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
 		{
 			var res = SetResult.None;
 
@@ -211,7 +191,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		private int GetOrdinal(string key)
+		internal int GetOrdinal(string key)
 		{
 			for (var i = 0; i < keys.Length; i++)
 				if (keys[i] == key)

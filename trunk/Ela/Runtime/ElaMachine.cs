@@ -138,6 +138,8 @@ namespace Ela.Runtime
 		private readonly DispatchBinaryFun[][] ltr_ovl = new __table().table;
 		private readonly DispatchBinaryFun[][] lte_ovl = new __table().table;
 		private readonly DispatchBinaryFun[][] cat_ovl = new __table().table;
+        private readonly DispatchBinaryFun[][] con_ovl = new __table().table;
+        private readonly DispatchBinaryFun[][] get_ovl = new __table().table;
 
 		private readonly DispatchUnaryFun[] neg_ovl = new __table2().table;
 		private readonly DispatchUnaryFun[] bne_ovl = new __table2().table;
@@ -147,6 +149,10 @@ namespace Ela.Runtime
         private readonly DispatchUnaryFun[] min_ovl = new __table2().table;
         private readonly DispatchUnaryFun[] max_ovl = new __table2().table;
         private readonly DispatchUnaryFun[] len_ovl = new __table2().table;
+        private readonly DispatchUnaryFun[] nil_ovl = new __table2().table;
+        private readonly DispatchUnaryFun[] hea_ovl = new __table2().table;
+        private readonly DispatchUnaryFun[] tai_ovl = new __table2().table;
+        private readonly DispatchUnaryFun[] isn_ovl = new __table2().table;
 
 
         private DispatchBinaryFun addErrErr;
@@ -465,6 +471,21 @@ namespace Ela.Runtime
         private DispatchBinaryFun catTupTup;
         private DispatchBinaryFun catLstLst;
 
+        private DispatchBinaryFun conErrErr;
+        private DispatchBinaryFun conAnyLst;
+        private DispatchBinaryFun conAnyLaz;
+        private DispatchBinaryFun conStrStr;
+        private DispatchBinaryFun conChrStr;
+        private DispatchBinaryFun conLazLaz;
+
+        private DispatchBinaryFun getErrErr;
+        private DispatchBinaryFun getIntTup;
+        private DispatchBinaryFun getIntRec;
+        private DispatchBinaryFun getStrRec;
+        private DispatchBinaryFun getIntLst;
+        private DispatchBinaryFun getIntStr;
+        private DispatchBinaryFun getLazLaz;
+
         private DispatchUnaryFun negErr;
 		private DispatchUnaryFun negInt;
 		private DispatchUnaryFun negLng;
@@ -522,7 +543,25 @@ namespace Ela.Runtime
         private DispatchUnaryFun lenStr;
         private DispatchUnaryFun lenLaz;
 
-		
+        private DispatchUnaryFun nilLst;
+        private DispatchUnaryFun nilStr;
+        private DispatchUnaryFun nilLaz;
+
+        private DispatchUnaryFun heaErr;
+        private DispatchUnaryFun heaLst;
+        private DispatchUnaryFun heaStr;
+        private DispatchUnaryFun heaLaz;
+
+        private DispatchUnaryFun taiErr;
+        private DispatchUnaryFun taiLst;
+        private DispatchUnaryFun taiStr;
+        private DispatchUnaryFun taiLaz;
+        
+        private DispatchUnaryFun isnErr;
+        private DispatchUnaryFun isnLst;
+        private DispatchUnaryFun isnStr;
+        private DispatchUnaryFun isnLaz;
+
         private void InitializeTables()
         {
             addErrErr = new NoneBinary("$add", overloads);
@@ -841,6 +880,21 @@ namespace Ela.Runtime
 			catLazLaz = new ThunkBinary(cat_ovl);
             catLazLst = new ConcatThunk(cat_ovl);
 
+            conErrErr = new NoneBinary("$cons", overloads);
+            conLazLaz = new ThunkBinary(con_ovl);
+            conAnyLst = new ConsAnyList(con_ovl);
+            conAnyLaz = new ConsAnyThunk(con_ovl);
+            conStrStr = new ConsStringString(con_ovl);
+            conChrStr = new ConsCharString(con_ovl);
+
+            getErrErr = new NoneBinary("$getvalue", overloads);
+            getIntTup = new GetIntTuple(get_ovl);
+            getIntRec = new GetIntRecord(get_ovl);
+            getStrRec = new GetStringRecord(get_ovl);
+            getIntLst = new GetIntList(get_ovl);
+            getIntStr = new GetIntString(get_ovl);
+            getLazLaz = new ThunkBinary(get_ovl);
+
             negErr = new NoneUnary("$negate", overloads);
             negInt = new NegInt(neg_ovl);
 			negLng = new NegLong(neg_ovl);
@@ -897,6 +951,25 @@ namespace Ela.Runtime
             lenTup = new LenTuple(len_ovl);
             lenStr = new LenString(len_ovl);
             lenLaz = new TupleUnary(len_ovl);
+
+            nilStr = new NilString(nil_ovl);
+            nilLst = new NilAny(nil_ovl);
+            nilLaz = new NilLazy(nil_ovl);
+
+            heaErr = new NoneUnary("$head", overloads);
+            heaLst = new HeadList(hea_ovl);
+            heaStr = new HeadString(hea_ovl);
+            heaLaz = new ThunkUnary(hea_ovl);
+
+            taiErr = new NoneUnary("$tail", overloads);
+            taiLst = new TailList(tai_ovl);
+            taiStr = new TailString(tai_ovl);
+            taiLaz = new ThunkUnary(tai_ovl);
+
+            isnErr = new NoneUnary("$isnil", overloads);
+            isnLst = new IsNilList(isn_ovl);
+            isnStr = new IsNilString(isn_ovl);
+            isnLaz = new ThunkUnary(isn_ovl);
 			
 			add_ovl[INT][INT] = addIntInt;
             add_ovl[INT][LNG] = addIntLng;
@@ -919,12 +992,7 @@ namespace Ela.Runtime
             add_ovl[TUP][REA] = addTupTup;
             add_ovl[TUP][DBL] = addTupTup;
             add_ovl[TUP][TUP] = addTupTup;
-            add_ovl[LAZ][INT] = addLazLaz;
-            add_ovl[LAZ][LNG] = addLazLaz;
-            add_ovl[LAZ][REA] = addLazLaz;
-            add_ovl[LAZ][DBL] = addLazLaz;
-            add_ovl[LAZ][TUP] = addLazLaz;
-            add_ovl[LAZ][LAZ] = addLazLaz;
+            FillLazy(add_ovl, addLazLaz);
 			FillTable(add_ovl, addErrErr);
 
             sub_ovl[INT][INT] = subIntInt;
@@ -948,13 +1016,8 @@ namespace Ela.Runtime
             sub_ovl[TUP][REA] = subTupTup;
             sub_ovl[TUP][DBL] = subTupTup;
             sub_ovl[TUP][TUP] = subTupTup;
-            sub_ovl[LAZ][INT] = subLazLaz;
-            sub_ovl[LAZ][LNG] = subLazLaz;
-            sub_ovl[LAZ][REA] = subLazLaz;
-            sub_ovl[LAZ][DBL] = subLazLaz;
-            sub_ovl[LAZ][TUP] = subLazLaz;
-            sub_ovl[LAZ][LAZ] = subLazLaz;
-			FillTable(sub_ovl, subErrErr);
+            FillLazy(sub_ovl, subLazLaz);
+            FillTable(sub_ovl, subErrErr);
 
             mul_ovl[INT][INT] = mulIntInt;
             mul_ovl[INT][LNG] = mulIntLng;
@@ -977,13 +1040,8 @@ namespace Ela.Runtime
             mul_ovl[TUP][REA] = mulTupTup;
             mul_ovl[TUP][DBL] = mulTupTup;
             mul_ovl[TUP][TUP] = mulTupTup;
-            mul_ovl[LAZ][INT] = mulLazLaz;
-            mul_ovl[LAZ][LNG] = mulLazLaz;
-            mul_ovl[LAZ][REA] = mulLazLaz;
-            mul_ovl[LAZ][DBL] = mulLazLaz;
-            mul_ovl[LAZ][TUP] = mulLazLaz;
-            mul_ovl[LAZ][LAZ] = mulLazLaz;
-			FillTable(mul_ovl, mulErrErr);
+            FillLazy(mul_ovl, mulLazLaz);
+            FillTable(mul_ovl, mulErrErr);
 
             div_ovl[INT][INT] = divIntInt;
             div_ovl[INT][LNG] = divIntLng;
@@ -1006,12 +1064,7 @@ namespace Ela.Runtime
             div_ovl[TUP][REA] = divTupTup;
             div_ovl[TUP][DBL] = divTupTup;
             div_ovl[TUP][TUP] = divTupTup;
-            div_ovl[LAZ][INT] = divLazLaz;
-            div_ovl[LAZ][LNG] = divLazLaz;
-            div_ovl[LAZ][REA] = divLazLaz;
-            div_ovl[LAZ][DBL] = divLazLaz;
-            div_ovl[LAZ][TUP] = divLazLaz;
-            div_ovl[LAZ][LAZ] = divLazLaz;
+            FillLazy(div_ovl, divLazLaz);            
 			FillTable(div_ovl, divErrErr);
 
             rem_ovl[INT][INT] = remIntInt;
@@ -1035,13 +1088,8 @@ namespace Ela.Runtime
             rem_ovl[TUP][REA] = remTupTup;
             rem_ovl[TUP][DBL] = remTupTup;
             rem_ovl[TUP][TUP] = remTupTup;
-            rem_ovl[LAZ][INT] = remLazLaz;
-            rem_ovl[LAZ][LNG] = remLazLaz;
-            rem_ovl[LAZ][REA] = remLazLaz;
-            rem_ovl[LAZ][DBL] = remLazLaz;
-            rem_ovl[LAZ][TUP] = remLazLaz;
-            rem_ovl[LAZ][LAZ] = remLazLaz;
-			FillTable(rem_ovl, remErrErr);
+            FillLazy(rem_ovl, remLazLaz);
+            FillTable(rem_ovl, remErrErr);
 
             pow_ovl[INT][INT] = powIntInt;
             pow_ovl[INT][LNG] = powIntLng;
@@ -1064,13 +1112,8 @@ namespace Ela.Runtime
             pow_ovl[TUP][REA] = powTupTup;
             pow_ovl[TUP][DBL] = powTupTup;
             pow_ovl[TUP][TUP] = powTupTup;
-            pow_ovl[LAZ][INT] = powLazLaz;
-            pow_ovl[LAZ][LNG] = powLazLaz;
-            pow_ovl[LAZ][REA] = powLazLaz;
-            pow_ovl[LAZ][DBL] = powLazLaz;
-            pow_ovl[LAZ][TUP] = powLazLaz;
-            pow_ovl[LAZ][LAZ] = powLazLaz;
-			FillTable(pow_ovl, powErrErr);
+            FillLazy(pow_ovl, powLazLaz);
+            FillTable(pow_ovl, powErrErr);
 
             and_ovl[INT][INT] = andIntInt;
             and_ovl[INT][LNG] = andIntLng;
@@ -1078,12 +1121,8 @@ namespace Ela.Runtime
             and_ovl[LNG][LNG] = andLngLng;
             and_ovl[TUP][INT] = andTupTup;
             and_ovl[TUP][LNG] = andTupTup;
-            and_ovl[TUP][TUP] = andTupTup;
-            and_ovl[LAZ][INT] = andLazLaz;
-            and_ovl[LAZ][LNG] = andLazLaz;
-            and_ovl[LAZ][TUP] = andLazLaz;
-            and_ovl[LAZ][LAZ] = andLazLaz;
-			FillTable(and_ovl, andErrErr);
+            FillLazy(and_ovl, andLazLaz);
+            FillTable(and_ovl, andErrErr);
 
             bor_ovl[INT][INT] = borIntInt;
             bor_ovl[INT][LNG] = borIntLng;
@@ -1092,11 +1131,8 @@ namespace Ela.Runtime
             bor_ovl[TUP][INT] = borTupTup;
             bor_ovl[TUP][LNG] = borTupTup;
             bor_ovl[TUP][TUP] = borTupTup;
-            bor_ovl[LAZ][INT] = borLazLaz;
-            bor_ovl[LAZ][LNG] = borLazLaz;
-            bor_ovl[LAZ][TUP] = borLazLaz;
-            bor_ovl[LAZ][LAZ] = borLazLaz;
-			FillTable(bor_ovl, borErrErr);
+            FillLazy(bor_ovl, borLazLaz);
+            FillTable(bor_ovl, borErrErr);
 
             xor_ovl[INT][INT] = xorIntInt;
             xor_ovl[INT][LNG] = xorIntLng;
@@ -1105,11 +1141,8 @@ namespace Ela.Runtime
             xor_ovl[TUP][INT] = xorTupTup;
             xor_ovl[TUP][LNG] = xorTupTup;
             xor_ovl[TUP][TUP] = xorTupTup;
-            xor_ovl[LAZ][INT] = xorLazLaz;
-            xor_ovl[LAZ][LNG] = xorLazLaz;
-            xor_ovl[LAZ][TUP] = xorLazLaz;
-            xor_ovl[LAZ][LAZ] = xorLazLaz;
-			FillTable(xor_ovl, xorErrErr);
+            FillLazy(xor_ovl, xorLazLaz);
+            FillTable(xor_ovl, xorErrErr);
 
             shl_ovl[INT][INT] = shlIntInt;
             shl_ovl[INT][LNG] = shlIntLng;
@@ -1118,11 +1151,8 @@ namespace Ela.Runtime
             shl_ovl[TUP][INT] = shlTupTup;
             shl_ovl[TUP][LNG] = shlTupTup;
             shl_ovl[TUP][TUP] = shlTupTup;
-            shl_ovl[LAZ][INT] = shlLazLaz;
-            shl_ovl[LAZ][LNG] = shlLazLaz;
-            shl_ovl[LAZ][TUP] = shlLazLaz;
-            shl_ovl[LAZ][LAZ] = shlLazLaz;
-			FillTable(shl_ovl, shlErrErr);
+            FillLazy(shl_ovl, shlLazLaz);
+            FillTable(shl_ovl, shlErrErr);
 
             shr_ovl[INT][INT] = shrIntInt;
             shr_ovl[INT][LNG] = shrIntLng;
@@ -1131,11 +1161,8 @@ namespace Ela.Runtime
             shr_ovl[TUP][INT] = shrTupTup;
             shr_ovl[TUP][LNG] = shrTupTup;
             shr_ovl[TUP][TUP] = shrTupTup;
-            shr_ovl[LAZ][INT] = shrLazLaz;
-            shr_ovl[LAZ][LNG] = shrLazLaz;
-            shr_ovl[LAZ][TUP] = shrLazLaz;
-            shr_ovl[LAZ][LAZ] = shrLazLaz;
-			FillTable(shr_ovl, shrErrErr);
+            FillLazy(shr_ovl, shrLazLaz);
+            FillTable(shr_ovl, shrErrErr);
 
 			eql_ovl[INT][INT] = eqlIntInt;
 			eql_ovl[INT][LNG] = eqlIntLng;
@@ -1158,12 +1185,6 @@ namespace Ela.Runtime
 			eql_ovl[TUP][REA] = eqlTupTup;
 			eql_ovl[TUP][DBL] = eqlTupTup;
 			eql_ovl[TUP][TUP] = eqlTupTup;
-			eql_ovl[LAZ][INT] = eqlLazLaz;
-			eql_ovl[LAZ][LNG] = eqlLazLaz;
-			eql_ovl[LAZ][REA] = eqlLazLaz;
-			eql_ovl[LAZ][DBL] = eqlLazLaz;
-			eql_ovl[LAZ][TUP] = eqlLazLaz;
-			eql_ovl[LAZ][LAZ] = eqlLazLaz;
 			eql_ovl[CHR][CHR] = eqlChrChr;
 			eql_ovl[STR][STR] = eqlStrStr;
 			eql_ovl[UNI][UNI] = eqlUniUni;
@@ -1173,7 +1194,8 @@ namespace Ela.Runtime
 			eql_ovl[REC][REC] = eqlRecRec;
 			eql_ovl[LST][LST] = eqlLstLst;
 			eql_ovl[BYT][BYT] = eqlBytByt;
-			FillTable(eql_ovl, eqlErrErr);
+            FillLazy(eql_ovl, eqlLazLaz);
+            FillTable(eql_ovl, eqlErrErr);
 
 			neq_ovl[INT][INT] = neqIntInt;
 			neq_ovl[INT][LNG] = neqIntLng;
@@ -1196,12 +1218,6 @@ namespace Ela.Runtime
 			neq_ovl[TUP][REA] = neqTupTup;
 			neq_ovl[TUP][DBL] = neqTupTup;
 			neq_ovl[TUP][TUP] = neqTupTup;
-			neq_ovl[LAZ][INT] = neqLazLaz;
-			neq_ovl[LAZ][LNG] = neqLazLaz;
-			neq_ovl[LAZ][REA] = neqLazLaz;
-			neq_ovl[LAZ][DBL] = neqLazLaz;
-			neq_ovl[LAZ][TUP] = neqLazLaz;
-			neq_ovl[LAZ][LAZ] = neqLazLaz;
 			neq_ovl[CHR][CHR] = neqChrChr;
 			neq_ovl[STR][STR] = neqStrStr;
 			neq_ovl[UNI][UNI] = neqUniUni;
@@ -1210,8 +1226,9 @@ namespace Ela.Runtime
 			neq_ovl[VAR][VAR] = neqVarVar;
 			neq_ovl[REC][REC] = neqRecRec;
 			neq_ovl[LST][LST] = neqLstLst;
-			neq_ovl[BYT][BYT] = neqBytByt;			
-			FillTable(neq_ovl, neqErrErr);
+			neq_ovl[BYT][BYT] = neqBytByt;
+            FillLazy(neq_ovl, neqLazLaz);
+            FillTable(neq_ovl, neqErrErr);
 
 			gtr_ovl[INT][INT] = gtrIntInt;
 			gtr_ovl[INT][LNG] = gtrIntLng;
@@ -1230,15 +1247,10 @@ namespace Ela.Runtime
 			gtr_ovl[DBL][REA] = gtrDblSng;
 			gtr_ovl[DBL][DBL] = gtrDblDbl;
 			gtr_ovl[TUP][TUP] = gtrTupTup;
-			gtr_ovl[LAZ][INT] = gtrLazLaz;
-			gtr_ovl[LAZ][LNG] = gtrLazLaz;
-			gtr_ovl[LAZ][REA] = gtrLazLaz;
-			gtr_ovl[LAZ][DBL] = gtrLazLaz;
-			gtr_ovl[LAZ][TUP] = gtrLazLaz;
-			gtr_ovl[LAZ][LAZ] = gtrLazLaz;
 			gtr_ovl[CHR][CHR] = gtrChrChr;
 			gtr_ovl[STR][STR] = gtrStrStr;
-			FillTable(gtr_ovl, gtrErrErr);
+            FillLazy(gtr_ovl, gtrLazLaz);
+            FillTable(gtr_ovl, gtrErrErr);
 
 			gte_ovl[INT][INT] = gteIntInt;
 			gte_ovl[INT][LNG] = gteIntLng;
@@ -1257,15 +1269,10 @@ namespace Ela.Runtime
 			gte_ovl[DBL][REA] = gteDblSng;
 			gte_ovl[DBL][DBL] = gteDblDbl;
 			gte_ovl[TUP][TUP] = gteTupTup;
-			gte_ovl[LAZ][INT] = gteLazLaz;
-			gte_ovl[LAZ][LNG] = gteLazLaz;
-			gte_ovl[LAZ][REA] = gteLazLaz;
-			gte_ovl[LAZ][DBL] = gteLazLaz;
-			gte_ovl[LAZ][TUP] = gteLazLaz;
-			gte_ovl[LAZ][LAZ] = gteLazLaz;
 			gte_ovl[CHR][CHR] = gteChrChr;
 			gte_ovl[STR][STR] = gteStrStr;
-			FillTable(gte_ovl, gteErrErr);
+            FillLazy(gte_ovl, gteLazLaz);
+            FillTable(gte_ovl, gteErrErr);
 
 			ltr_ovl[INT][INT] = ltrIntInt;
 			ltr_ovl[INT][LNG] = ltrIntLng;
@@ -1284,15 +1291,10 @@ namespace Ela.Runtime
 			ltr_ovl[DBL][REA] = ltrDblSng;
 			ltr_ovl[DBL][DBL] = ltrDblDbl;
 			ltr_ovl[TUP][TUP] = ltrTupTup;
-			ltr_ovl[LAZ][INT] = ltrLazLaz;
-			ltr_ovl[LAZ][LNG] = ltrLazLaz;
-			ltr_ovl[LAZ][REA] = ltrLazLaz;
-			ltr_ovl[LAZ][DBL] = ltrLazLaz;
-			ltr_ovl[LAZ][TUP] = ltrLazLaz;
-			ltr_ovl[LAZ][LAZ] = ltrLazLaz;
 			ltr_ovl[CHR][CHR] = ltrChrChr;
 			ltr_ovl[STR][STR] = ltrStrStr;
-			FillTable(ltr_ovl, ltrErrErr);
+            FillLazy(ltr_ovl, ltrLazLaz);
+            FillTable(ltr_ovl, ltrErrErr);
 
 			lte_ovl[INT][INT] = lteIntInt;
 			lte_ovl[INT][LNG] = lteIntLng;
@@ -1311,34 +1313,69 @@ namespace Ela.Runtime
 			lte_ovl[DBL][REA] = lteDblSng;
 			lte_ovl[DBL][DBL] = lteDblDbl;
 			lte_ovl[TUP][TUP] = lteTupTup;
-			lte_ovl[LAZ][INT] = lteLazLaz;
-			lte_ovl[LAZ][LNG] = lteLazLaz;
-			lte_ovl[LAZ][REA] = lteLazLaz;
-			lte_ovl[LAZ][DBL] = lteLazLaz;
-			lte_ovl[LAZ][TUP] = lteLazLaz;
-			lte_ovl[LAZ][LAZ] = lteLazLaz;
 			lte_ovl[CHR][CHR] = lteChrChr;
 			lte_ovl[STR][STR] = lteStrStr;
-			FillTable(lte_ovl, lteErrErr);
+            FillLazy(lte_ovl, lteLazLaz);
+            FillTable(lte_ovl, lteErrErr);
 
 			cat_ovl[STR][STR] = catStrStr;
             cat_ovl[STR][CHR] = catStrChr;
-            cat_ovl[STR][LAZ] = catLazLaz;
+            cat_ovl[LST][LST] = catLstLst;
             cat_ovl[CHR][CHR] = catChrChr;
 			cat_ovl[CHR][STR] = catChrStr;
-            cat_ovl[CHR][LAZ] = catLazLaz;
-            cat_ovl[LST][LST] = catLstLst;
             cat_ovl[LST][LAZ] = catLazLst;
-            cat_ovl[LAZ][LAZ] = catLazLaz;
-			cat_ovl[LAZ][STR] = catLazLaz;
-			cat_ovl[LAZ][CHR] = catLazLaz;
             cat_ovl[LAZ][TUP] = catLazLst;
             cat_ovl[LAZ][LST] = catLazLst;
             cat_ovl[TUP][TUP] = catTupTup;
-            cat_ovl[TUP][LAZ] = catLazLaz;
+            FillLazy(cat_ovl, catLazLaz);
             FillTable(cat_ovl, catErrErr);
 
-			neg_ovl[INT] = negInt;
+            con_ovl[INT][LST] = conAnyLst;
+            con_ovl[LNG][LST] = conAnyLst;
+            con_ovl[REA][LST] = conAnyLst;
+            con_ovl[DBL][LST] = conAnyLst;
+            con_ovl[CHR][LST] = conAnyLst;
+            con_ovl[STR][LST] = conAnyLst;
+            con_ovl[TUP][LST] = conAnyLst;
+            con_ovl[LST][LST] = conAnyLst;
+            con_ovl[MOD][LST] = conAnyLst;
+            con_ovl[FUN][LST] = conAnyLst;
+            con_ovl[VAR][LST] = conAnyLst;
+            con_ovl[REC][LST] = conAnyLst;
+            con_ovl[BYT][LST] = conAnyLst;
+            con_ovl[UNI][LST] = conAnyLst;
+            con_ovl[OBJ][LST] = conAnyLst;
+            con_ovl[LAZ][LST] = conAnyLst;
+            con_ovl[INT][LAZ] = conAnyLaz;
+            con_ovl[LNG][LAZ] = conAnyLaz;
+            con_ovl[REA][LAZ] = conAnyLaz;
+            con_ovl[DBL][LAZ] = conAnyLaz;
+            con_ovl[CHR][LAZ] = conAnyLaz;
+            con_ovl[STR][LAZ] = conAnyLaz;
+            con_ovl[TUP][LAZ] = conAnyLaz;
+            con_ovl[LST][LAZ] = conAnyLaz;
+            con_ovl[MOD][LAZ] = conAnyLaz;
+            con_ovl[FUN][LAZ] = conAnyLaz;
+            con_ovl[VAR][LAZ] = conAnyLaz;
+            con_ovl[REC][LAZ] = conAnyLaz;
+            con_ovl[BYT][LAZ] = conAnyLaz;
+            con_ovl[UNI][LAZ] = conAnyLaz;
+            con_ovl[OBJ][LAZ] = conAnyLaz;
+            con_ovl[LAZ][LAZ] = conAnyLaz;
+            con_ovl[STR][STR] = conStrStr;
+            con_ovl[CHR][STR] = conChrStr;
+            FillLazy(con_ovl, conLazLaz);
+            FillTable(con_ovl, conErrErr);
+
+            get_ovl[INT][TUP] = getIntTup;
+            get_ovl[INT][REC] = getIntRec;
+            get_ovl[STR][REC] = getStrRec;
+            get_ovl[INT][STR] = getIntStr;
+            get_ovl[INT][LST] = getIntLst;
+            FillLazy(get_ovl, getLazLaz);
+            FillTable(get_ovl, getErrErr);
+
+            neg_ovl[INT] = negInt;
 			neg_ovl[LNG] = negLng;
 			neg_ovl[REA] = negSng;
 			neg_ovl[DBL] = negDbl;
@@ -1394,10 +1431,43 @@ namespace Ela.Runtime
             len_ovl[STR] = lenStr;
             len_ovl[LAZ] = lenLaz;
             FillTable(len_ovl, lenErr);
+
+            len_ovl[STR] = nilStr;
+            len_ovl[LAZ] = nilLaz;
+            FillTable(len_ovl, nilLst);
+
+            hea_ovl[LST] = heaLst;
+            hea_ovl[STR] = heaStr;
+            hea_ovl[LAZ] = heaLaz;
+            FillTable(hea_ovl, heaErr);
+
+            tai_ovl[LST] = taiLst;
+            tai_ovl[STR] = taiStr;
+            tai_ovl[LAZ] = taiLaz;
+            FillTable(tai_ovl, taiErr);
+
+            isn_ovl[LST] = isnLst;
+            isn_ovl[STR] = isnStr;
+            isn_ovl[LAZ] = isnLaz;
+            FillTable(isn_ovl, isnErr);
         }
 
 
-		private void FillTable(DispatchBinaryFun[][] tab, DispatchBinaryFun errOp)
+        private void FillLazy(DispatchBinaryFun[][] tab, DispatchBinaryFun lazOp)
+        {
+            var arr = tab[LAZ];
+
+            for (var i = 0; i < arr.Length; i++)
+                if (arr[i] == null)
+                    arr[i] = lazOp;
+
+            for (var i = 0; i < tab.Length; i++)
+                if (tab[i][LAZ] == null)
+                    tab[i][LAZ] = lazOp;
+        }
+
+
+        private void FillTable(DispatchBinaryFun[][] tab, DispatchBinaryFun errOp)
 		{
 			for (var i = 0; i < tab.Length; i++)
 			{
@@ -1646,7 +1716,7 @@ namespace Ela.Runtime
 					case Op.Pushelem:
 						right = evalStack.Pop();
 						left = evalStack.Peek();
-						evalStack.Replace(left.Ref.GetValue(right.Id(ctx), ctx)); //use of ElaValue.Id
+                        evalStack.Replace(get_ovl[right.TypeId][left.TypeId].Call(right, left, ctx));
 
 						if (ctx.Failed)
 						{
@@ -2035,7 +2105,7 @@ namespace Ela.Runtime
                             goto SWITCH_MEM;
                         }
 
-                        evalStack.Replace(right.Ref.GetValue(new ElaValue(opd >> 8), ctx));
+                        evalStack.Replace(get_ovl[INT][right.TypeId].Call(new ElaValue(opd >> 8), right, ctx));
 
                         if (ctx.Failed)
                         {
@@ -2060,10 +2130,11 @@ namespace Ela.Runtime
 							}
 						}
 						break;
-					case Op.Cons:
+                    case Op.Cons:
 						left = evalStack.Pop();
 						right = evalStack.Peek();
-						evalStack.Replace(right.Ref.Cons(right.Ref, left, ctx));
+						//evalStack.Replace(right.Ref.Cons(right.Ref, left, ctx));
+                        evalStack.Replace(con_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -2073,8 +2144,8 @@ namespace Ela.Runtime
 							goto SWITCH_MEM;
 						}
 						break;
-					case Op.Gen:
-						right = evalStack.Pop();
+                    case Op.Gen:
+                        right = evalStack.Pop();
 						left = evalStack.Peek();
 						evalStack.Replace(left.Ref.Generate(right, ctx));
 
@@ -2087,18 +2158,19 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Genfin:
-						right = evalStack.Peek();
-						evalStack.Replace(right.Ref.GenerateFinalize(ctx));
+                        right = evalStack.Peek();
+                        evalStack.Replace(right.Ref.GenerateFinalize(ctx));
 
-						if (ctx.Failed)
-						{
-							evalStack.Replace(right);
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
 						break;
 					case Op.Tail:
-						evalStack.Replace((right = evalStack.Peek()).Ref.Tail(ctx));
+                        right = evalStack.Peek();
+						evalStack.Replace(tai_ovl[right.TypeId].Call(right, ctx));
 						
 						if (ctx.Failed)
 						{
@@ -2108,7 +2180,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Head:
-						evalStack.Replace((right = evalStack.Peek()).Ref.Head(ctx));
+                        right = evalStack.Peek();
+						evalStack.Replace(hea_ovl[right.TypeId].Call(right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -2118,7 +2191,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Nil:
-						evalStack.Replace((right = evalStack.Peek()).Nil(ctx));
+                        right = evalStack.Peek();
+						evalStack.Replace(nil_ovl[right.TypeId].Call(right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -2128,7 +2202,8 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Isnil:
-						evalStack.Replace(new ElaValue((right = evalStack.Peek()).Ref.IsNil(ctx)));
+                        right = evalStack.Peek();
+						evalStack.Replace(isn_ovl[right.TypeId].Call(right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -2241,7 +2316,7 @@ namespace Ela.Runtime
 					case Op.Skiptl:
 						right = evalStack.PopFast();
 
-						if (right.Ref.IsNil(ctx))
+                        if (isn_ovl[right.TypeId].Call(right, ctx).I4 == 1)
 						{
 							if (ctx.Failed)
 							{
@@ -2253,8 +2328,8 @@ namespace Ela.Runtime
 							break;
 						}
 
-						locals[opd] = right.Ref.Head(ctx);
-						locals[opd + 1] = right.Ref.Tail(ctx);
+						locals[opd] = hea_ovl[right.TypeId].Call(right, ctx);
+                        locals[opd + 1] = tai_ovl[right.TypeId].Call(right, ctx);
 						thread.Offset++;
 
 						if (ctx.Failed)
@@ -2269,8 +2344,8 @@ namespace Ela.Runtime
 						{
 							right = evalStack.PopFast();
 
-							if (right.Ref.IsNil(ctx))
-							{
+                            if (isn_ovl[right.TypeId].Call(right, ctx).I4 == 1)
+                            {
 								if (ctx.Failed)
 								{
 									evalStack.Push(right);
@@ -2281,9 +2356,9 @@ namespace Ela.Runtime
 								break;
 							}
 
-							var obj = right.Ref.Tail(ctx);
+                            var obj = tai_ovl[right.TypeId].Call(right, ctx);
 
-							if (!obj.Ref.IsNil(ctx))
+                            if (isn_ovl[obj.TypeId].Call(obj, ctx).I4 != 1)
 							{
 								if (ctx.Failed)
 								{
@@ -2294,7 +2369,7 @@ namespace Ela.Runtime
 								break;
 							}
 
-							locals[opd] = right.Ref.Head(ctx);
+                            locals[opd] = hea_ovl[right.TypeId].Call(right, ctx);
 							thread.Offset++;
 
 							if (ctx.Failed)
@@ -2506,7 +2581,7 @@ namespace Ela.Runtime
 					case Op.Brnil:
 						right = evalStack.PopFast();
 
-						if (right.IsNil(ctx))
+						if (isn_ovl[right.TypeId].Call(right, ctx).I4 == 1)
 							thread.Offset = opd;
 						
 						if (ctx.Failed)

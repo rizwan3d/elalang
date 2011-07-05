@@ -57,7 +57,7 @@ let compOperator {eqt} =
         where lst = [] @@ [x \\ x <- [1..10] | x % 2 == 0]
         
 let triangles {eq,eqt} =
-        eqt ((head triangles) is ?tuple)
+        eqt ((head triangles) is Tuple#)
         $ eq (head triangles).[0] 6
         $ eq (head triangles).[1] 8
         $ eq (head triangles).[2] 10

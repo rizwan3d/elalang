@@ -60,9 +60,9 @@ let concat {eq,eqt} =
         where t1 = (1,2,3)
            et t2 = (4,5,6)
     
-let genTupleTest {eq} =
+/*let genTupleTest {eq} =
         eq t (1,2,4)
-        where t = (1,) @@ [x \\ x <- [2..5] | x % 2 == 0]
+        where t = (1,) @@ [x \\ x <- [2..5] | x % 2 == 0]*/
     
 let changeItem {eqt} =
         try 
@@ -95,4 +95,4 @@ let flatTest2 {eq} =
 
 let typeCheck {eqt} =
         let tup  = (0,) in
-        eqt (tup is ?tuple)
+        eqt (tup is Tuple#)

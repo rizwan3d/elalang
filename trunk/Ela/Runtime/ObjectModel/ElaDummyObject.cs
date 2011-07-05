@@ -78,12 +78,6 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
 		protected internal override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
 		{
 			
@@ -93,36 +87,6 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
 		{
 			return false;
-		}
-
-
-		protected internal override ElaValue Head(ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue Tail(ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override bool IsNil(ExecutionContext ctx)
-		{
-			return false;
-		}
-
-
-		protected internal override ElaValue Cons(ElaObject instance, ElaValue value, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue Nil(ExecutionContext ctx)
-		{
-			return Default();
 		}
 
 

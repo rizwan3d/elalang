@@ -188,6 +188,9 @@ namespace Ela.Compilation
                     cw.Emit(Op.Swap);
                     cw.Emit(Op.Call);
                     break;
+                case ElaBuiltinKind.Untag:
+                    cw.Emit(Op.Untag);
+                    break;
                 case ElaBuiltinKind.Gettag:
                     cw.Emit(Op.Gettag);
                     break;
@@ -261,10 +264,11 @@ namespace Ela.Compilation
 				case ElaBuiltinKind.Concat:					
 					cw.Emit(Op.Concat);
 					break;
-				case ElaBuiltinKind.Add:
+                case ElaBuiltinKind.GetValue:
+                    cw.Emit(Op.Pushelem);
+                    break;
+                case ElaBuiltinKind.Add:
 					cw.Emit(Op.Add);
-					//cw.Emit(Op.Pushadd);
-					//cw.Emit(Op.Call2);
 					break;
 				case ElaBuiltinKind.Divide:
 					cw.Emit(Op.Div);

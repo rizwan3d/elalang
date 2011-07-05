@@ -38,16 +38,16 @@ let fixPoint {eq} =
         eq res 120
 
 let forceTest {eqt} = 
-        let _ = eqt (th is ?lazy) in
+        let _ = eqt (th is Lazy#) in
         let _ = force th
-        in eqt (th is ?int)
+        in eqt (th is Int#)
         where th = (& 2 + 2)
 
 let typeCheck {eqt} =
         let t = (& 2 * 2) in
-        eqt (t is ?lazy)
+        eqt (t is Lazy#)
         $ t + 0
-        $ eqt (t is ?int)
+        $ eqt (t is Int#)
 
 let lazyEquals {eqt} =
         eqt (thunk1 == 4)

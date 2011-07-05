@@ -135,7 +135,15 @@ namespace Ela.Runtime
 
 
 		#region Properties
-		internal bool Failed { get; set; }
+        private bool _failed;
+        internal bool Failed 
+        {
+            get { return _failed; }
+            set
+            {
+                _failed = value;
+            }
+        }
 
 		internal ElaError Error { get; set; }
 

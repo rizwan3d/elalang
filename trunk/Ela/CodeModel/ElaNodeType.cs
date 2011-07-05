@@ -90,8 +90,6 @@ namespace Ela.CodeModel
 
 		FieldPattern,
 
-		IsPattern,
-
 		AsPattern,
 
 		PatternGroup

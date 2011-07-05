@@ -196,13 +196,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal virtual ElaValue GetValue(ElaValue index, ExecutionContext ctx)
-		{
-			ctx.NoOperator(new ElaValue(this), "get");
-			return Default();
-		}
-
-
 		protected internal virtual void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
 		{
 			ctx.NoOperator(new ElaValue(this), "set");						
@@ -213,40 +206,6 @@ namespace Ela.Runtime.ObjectModel
 		{
 			ctx.NoOperator(@this, "bool");
 			return false;
-		}
-
-		
-		protected internal virtual ElaValue Head(ExecutionContext ctx)
-		{
-			ctx.NoOperator(new ElaValue(this), "head");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue Tail(ExecutionContext ctx)
-		{
-			ctx.NoOperator(new ElaValue(this), "tail");
-			return Default();
-		}
-
-
-		protected internal virtual bool IsNil(ExecutionContext ctx)
-		{
-			ctx.NoOperator(new ElaValue(this), "isnil");
-			return false;
-		}
-
-
-		protected internal virtual ElaValue Cons(ElaObject instance, ElaValue value, ExecutionContext ctx)
-		{
-			ctx.NoOperator(new ElaValue(instance), "cons");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue Nil(ExecutionContext ctx)
-		{
-			return new ElaValue(ElaList.Empty);
 		}
 
 

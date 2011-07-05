@@ -48,7 +48,7 @@ namespace Ela.CodeModel
 
         Apply,
 
-
+        
 		Negate,
 
 		BitwiseNot,
@@ -56,8 +56,10 @@ namespace Ela.CodeModel
 
 		Showf,
 
-		
-		Add,
+
+        GetValue,
+
+        Add,
 
 		Subtract,
 

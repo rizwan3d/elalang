@@ -31,96 +31,31 @@ namespace Ela.Runtime.ObjectModel
 
 			internal ElaNilList() : base(null, new ElaValue(ElaUnit.Instance)) { }
 
-			protected internal override ElaValue Tail(ExecutionContext ctx)
+			internal override ElaValue Tail(ExecutionContext ctx)
 			{
 				ctx.Fail("NilList", "List is nil.");
 				return Default();
 			}
 
-			protected internal override ElaValue Head(ExecutionContext ctx)
+			internal override ElaValue Head(ExecutionContext ctx)
 			{
 				ctx.Fail("NilList", "List is nil.");
 				return Default();
-			}
-
-			protected internal override bool IsNil(ExecutionContext ctx)
-			{
-				return true;
 			}
 		}
 		#endregion
 
 
 		#region Operations
-		protected internal override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
-		{
-			if (index.TypeId != ElaMachine.INT)
-			{
-				ctx.InvalidIndexType(index);
-				return Default();
-			}
-			else if (index.I4 < 0)
-			{
-				ctx.IndexOutOfRange(index, new ElaValue(this));
-				return Default();
-			}
-
-			ElaList xs = this;
-
-			for (var i = 0; i < index.I4; i++)
-			{
-				xs = xs.Tail(ctx).Ref as ElaList;
-
-				if (xs == null)
-				{
-					ctx.Fail(new ElaError("InvalidList", "Invalid list definition."));
-					return Default();
-				}
-
-				if (xs.IsNil(ctx))
-				{
-					ctx.IndexOutOfRange(index, new ElaValue(this));
-					return Default();
-				}
-			}
-
-			return xs.Head(ctx);
-		}
-
-
-		protected internal override ElaValue Head(ExecutionContext ctx)
+		internal virtual ElaValue Head(ExecutionContext ctx)
 		{
 			return InternalValue;
 		}
 
 
-		protected internal override ElaValue Tail(ExecutionContext ctx)
+		internal virtual ElaValue Tail(ExecutionContext ctx)
 		{
 			return new ElaValue(InternalNext);
-		}
-
-
-		protected internal override bool IsNil(ExecutionContext ctx)
-		{
-			return false;
-		}
-
-
-		protected internal override ElaValue Cons(ElaObject next, ElaValue value, ExecutionContext ctx)
-		{
-			var xs = next as ElaList;
-
-			if (xs != null)
-				return new ElaValue(new ElaList(xs, value));
-
-			ctx.Fail(ElaRuntimeError.InvalidType, ElaTypeCode.List, (ElaTypeCode)next.TypeId);
-			return Default();
-		}
-
-
-		protected internal override ElaValue Nil(ExecutionContext ctx)
-		{
-			return new ElaValue(Empty);
 		}
 
 
@@ -132,7 +67,22 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
 		{
-			return new ElaValue(new ElaList(this, value));
+            return new ElaValue(new ElaList(this, value));
+
+            //if (this == Empty)
+            //    return new ElaValue(new ElaList(this, value));
+            //else
+            //{
+            //    var tail = new ElaList(Empty, value);
+
+            //    var xs = this;
+
+            //    while (xs.InternalNext != Empty)
+            //        xs = xs.InternalNext;
+
+            //    xs.InternalNext = tail;
+            //    return new ElaValue(this);
+            //}
 		}
 
 
@@ -155,7 +105,7 @@ namespace Ela.Runtime.ObjectModel
             var count = 0;
             ElaList xs = this;
 
-            while (!xs.IsNil(ctx))
+            while (xs != Empty)
             {
                 count++;
                 xs = xs.Tail(ctx).Ref as ElaList;
@@ -235,7 +185,7 @@ namespace Ela.Runtime.ObjectModel
 			ElaList xs = this;
 			var ctx = new ExecutionContext();
 
-			while (!xs.IsNil(ctx))
+			while (xs != Empty)
 			{
 				yield return xs.Head(ctx);
 				xs = xs.Tail(ctx).Ref as ElaList;
@@ -260,8 +210,8 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Properties
-		protected ElaValue InternalValue;
-		protected ElaList InternalNext;
+		protected internal ElaValue InternalValue;
+        protected internal ElaList InternalNext;
 
 		public virtual ElaList Next
 		{

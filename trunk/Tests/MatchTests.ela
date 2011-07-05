@@ -58,9 +58,9 @@ let variantMatch {eqt} =
            et n  = None
     
 let typeCheckMatch {eqt} =
-          eqt (match 1 with ?int = true; _ = false;;)
-        $ eqt (match (1,2) with ?tuple = true; _ = false;;)
-        $ eqt (match [1,2] with ?list = true; _ = false;;)
+          eqt (match 1 with Int# = true; _ = false;;)
+        $ eqt (match (1,2) with Tuple# = true; _ = false;;)
+        $ eqt (match [1,2] with List# = true; _ = false;;)
     
 let asMatch {eqt} =
         eqt (match 4 with 4@n = n == 4; _ = false;;)

@@ -304,7 +304,7 @@ PRODUCTIONS
 		.)
 		(
 			(
-				variantTok  
+				(variantTok|specVariantTok)
 				(. 
 					vp = new ElaVariantPattern(t);
 					vp.Tag = t.val; 
@@ -336,7 +336,6 @@ PRODUCTIONS
 			| ListPattern<out pat>
 			| RecordPattern<out pat>
 			| IdentPattern<out pat>
-			| TypeCheckPattern<out pat>
 		).
 			
 	AsPattern<out ElaPattern pat> =
@@ -388,7 +387,6 @@ PRODUCTIONS
 			| LiteralPattern<out pat> 
 			| ListPattern<out pat>
 			| RecordPattern<out pat>
-			| TypeCheckPattern<out pat>
 		)
 		[
 			"@" 
@@ -418,29 +416,12 @@ PRODUCTIONS
 	IsOperatorPattern<out ElaPattern pat> = 
 		(. pat = null; .)
 		(
-			TypeCheckPattern<out pat>
-			| LiteralPattern<out pat>
+			  LiteralPattern<out pat>
 			| RecordPattern<out pat>
 			| ListPattern<out pat>
 			| UnitPattern<out pat>
 			| VariantPattern<out pat>
 		).
-		
-	TypeCheckPattern<out ElaPattern pat> = 
-		(. 
-			var eis = new ElaIsPattern(t);
-			pat = eis; 			
-		.)
-		"?" 
-		(
-			ident 
-			(. 
-				eis.TypeCode = GetType(t.val); 
-				
-				if (eis.TypeCode == ElaTypeCode.None)
-					eis.TypeName = t.val;
-			.)
-		).		
 						
 	IdentPattern<out ElaPattern pat> =
 		ident (. pat = new ElaVariablePattern(t) { Name = t.val }; .).	
