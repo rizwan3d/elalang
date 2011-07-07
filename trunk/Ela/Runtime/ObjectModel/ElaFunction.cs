@@ -57,7 +57,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue Call(ElaValue value, ExecutionContext ctx)
+		internal ElaValue Call(ElaValue value, ExecutionContext ctx)
 		{
 			try
 			{

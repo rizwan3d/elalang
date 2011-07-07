@@ -18,7 +18,7 @@ namespace Ela.Runtime
 
 		IndexOutOfRange = 805,
 
-        ExpectedFunction = 806,
+        // = 806,
 
 		LeftOperand = 807,
 
@@ -62,7 +62,7 @@ namespace Ela.Runtime
 
 		TableNoInit = 827,
 
-		NotGenericFun = 828,
+		NotFunction = 828,
 
 		TableTooMany = 829,
 

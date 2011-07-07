@@ -440,13 +440,14 @@ namespace Ela.Compilation
 
 					if ((hints & Hints.Silent) == Hints.Silent)
 					{
-						cw.Emit(Op.Pushvar, pushSys);
-						cw.Emit(Op.Hasfld, str);
-						cw.Emit(Op.Brfalse, nextLab);
+						//cw.Emit(Op.Pushvar, pushSys);
+						//cw.Emit(Op.Hasfld, str);
+						//cw.Emit(Op.Brfalse, nextLab);
 					}
 
+					cw.Emit(Op.Pushstr, str);
 					cw.Emit(Op.Pushvar, pushSys);
-					cw.Emit(Op.Pushfld, str);
+					cw.Emit(Op.Pushelem);
 					cw.Emit(Op.Popvar, addr);
 					CompilePattern(addr, null, fld.Value, map, nextLab, flags, hints);
 				}
@@ -539,9 +540,9 @@ namespace Ela.Compilation
 		{
 			if ((hints & Hints.Silent) == Hints.Silent)
 			{
-				cw.Emit(Op.Pushvar, pushSys);
-				cw.Emit(Op.Pat, (Int32)pats);
-				cw.Emit(Op.Brfalse, nextLab);
+				//cw.Emit(Op.Pushvar, pushSys);
+				//cw.Emit(Op.Pat, (Int32)pats);
+				//cw.Emit(Op.Brfalse, nextLab);
 			}
 		}
 

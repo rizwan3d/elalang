@@ -104,12 +104,6 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-        protected internal override ElaValue Untag(ElaValue @this, ExecutionContext ctx)
-        {
-            return Value;
-        }
-
-
         protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			return Tag + (Value.Ref != ElaUnit.Instance ? " " + Value.Ref.Show(Value, info, ctx) : String.Empty);

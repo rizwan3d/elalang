@@ -47,10 +47,8 @@ namespace Ela.Runtime.ObjectModel
 				other.TypeCode == ElaTypeCode.Double ? Value.CompareTo(((ElaDouble)other.Ref).Value) :
 				-1;
 		}
-        #endregion
 
 
-        #region Operations
         protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			try

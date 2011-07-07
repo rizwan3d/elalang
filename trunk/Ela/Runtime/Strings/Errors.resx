@@ -129,9 +129,6 @@
   <data name="DivideByZero" xml:space="preserve">
     <value>Division by zero of value '{0}' of type '{1}'.</value>
   </data>
-  <data name="ExpectedFunction" xml:space="preserve">
-    <value>A function is expected.</value>
-  </data>
   <data name="FieldImmutable" xml:space="preserve">
     <value>Field '{0}' of the record '{1}' is immutable and cannot be changed.</value>
   </data>
@@ -165,8 +162,8 @@
   <data name="NoOverload" xml:space="preserve">
     <value>Function '{0}' is not implemented for '{1}'.</value>
   </data>
-  <data name="NotGenericFun" xml:space="preserve">
-    <value>A function '{0}' is not a generic function and cannot be specialized.</value>
+  <data name="NotFunction" xml:space="preserve">
+    <value>A value '{0}' is not a function and cannot be applied.</value>
   </data>
   <data name="OperationNotSupported" xml:space="preserve">
     <value>This operation is not supported by the object of type '{0}'.</value>

@@ -60,23 +60,6 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
-		{
-			var ret = new ElaTuple(Length);
-			ret.cons = Length;
-
-			for (var i = 0; i < Length; i++)
-			{
-				var left = Values[i];
-
-				if (!left.Ref.Bool(left, ctx))
-					return false;
-			}
-
-			return true;
-		}
-
-
         protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			return "(" + FormatHelper.FormatEnumerable((IEnumerable<ElaValue>)this, ctx, info) + 

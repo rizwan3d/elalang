@@ -226,8 +226,9 @@ namespace Ela.Compilation
 								var a = AddVariable(im.LocalName, im, im.Private ? ElaVariableFlags.Private : ElaVariableFlags.None, -1);
 
 								AddLinePragma(im);
+								cw.Emit(Op.Pushstr, AddString(im.Name));
 								cw.Emit(Op.Pushvar, addr);
-								cw.Emit(Op.Pushfld, AddString(im.Name));
+								cw.Emit(Op.Pushelem);
 								cw.Emit(Op.Popvar, a);
 							}
 						}
@@ -375,6 +376,7 @@ namespace Ela.Compilation
 				case ElaNodeType.FieldReference:
 					{
 						var p = (ElaFieldReference)exp;
+						cw.Emit(Op.Pushstr, AddString(p.FieldName));
 
 						if (p.TargetObject.Type == ElaNodeType.VariantLiteral)
 						{
@@ -388,10 +390,10 @@ namespace Ela.Compilation
 
 						if ((hints & Hints.Left) == Hints.Left &&
 							(hints & Hints.Assign) == Hints.Assign)
-							cw.Emit(Op.Popfld, AddString(p.FieldName));
+							cw.Emit(Op.Popelem);
 						else
 						{
-							cw.Emit(Op.Pushfld, AddString(p.FieldName));
+							cw.Emit(Op.Pushelem);
 
 							if ((hints & Hints.Left) == Hints.Left)
 								AddValueNotUsed(exp);

@@ -154,8 +154,7 @@ namespace Ela.Runtime.ObjectModel
 				return UNDEF;
 			else
                 return Show(new ElaValue(this), ShowInfo.Debug, DummyContext);
-		}
-
+		} 
 
 		internal static ElaValue GetDefault()
 		{
@@ -190,19 +189,6 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		internal virtual bool Call(EvalStack stack, ExecutionContext ctx)
-		{
-			return false;
-		}
-
-
-		protected internal virtual bool Bool(ElaValue @this, ExecutionContext ctx)
-		{
-			ctx.NoOperator(@this, "bool");
-			return false;
-		}
-
-
 		protected internal virtual ElaValue Generate(ElaValue value, ExecutionContext ctx)
 		{
 			ctx.NoOperator(new ElaValue(this), "gen");
@@ -217,56 +203,11 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal virtual ElaValue GetField(string field, ExecutionContext ctx)
-		{
-			ctx.NoOperator(new ElaValue(this), "fieldget");
-			return Default();
-		}
-
-
-		protected internal virtual void SetField(string field, ElaValue value, ExecutionContext ctx)
-		{
-			ctx.NoOperator(new ElaValue(this), "fieldset");						
-		}
-
-
-		protected internal virtual bool HasField(string field, ExecutionContext ctx)
-		{
-			ctx.NoOperator(new ElaValue(this), "fieldhas");
-			return false;
-		}
-
-
 		protected internal virtual string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			ctx.NoOperator(@this, "show");
 			return String.Empty;
 		}
-
-
-		protected internal virtual ElaValue Call(ElaValue arg, ExecutionContext ctx)
-		{
-			ctx.NoOperator(new ElaValue(this), "call");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue Force(ElaValue @this, ExecutionContext ctx)
-		{
-			return @this;
-		}
-
-
-		internal virtual ElaValue InternalForce(ElaValue @this, ExecutionContext ctx)
-		{
-			return @this;
-		}
-
-
-		protected internal virtual ElaValue Untag(ElaValue @this, ExecutionContext ctx)
-        {
-            return @this;
-        }
 		#endregion
 
 

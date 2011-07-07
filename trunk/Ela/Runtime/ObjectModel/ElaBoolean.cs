@@ -51,13 +51,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
-		{
-			return @this.I4 == 1;
-		}
-
-
-        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
+		protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			return @this.I4 == 1 ? Boolean.TrueString : Boolean.FalseString;
 		}

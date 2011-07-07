@@ -78,12 +78,6 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
-		{
-			return false;
-		}
-
-
 		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
 		{
 			return Default();
@@ -96,45 +90,9 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue GetField(string field, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override void SetField(string field, ElaValue value, ExecutionContext ctx)
-		{
-			
-		}
-
-
-		protected internal override bool HasField(string field, ExecutionContext ctx)
-		{
-			return false;
-		}
-
-
 		protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			return String.Empty;
-		}
-
-
-		protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue Force(ElaValue @this, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue Untag(ElaValue @this, ExecutionContext ctx)
-		{
-			return @this;
 		}
 		#endregion
 	}

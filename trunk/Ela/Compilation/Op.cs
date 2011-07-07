@@ -158,8 +158,6 @@ namespace Ela.Compilation
 
 		Skiptl,
 
-		Pat,
-
 		Tupex,
 
 		Failwith,
@@ -176,15 +174,9 @@ namespace Ela.Compilation
 
 		Pushvar,
 
-		Pushfld,
-
 		Popvar,
 
-		Popfld,
-
 		Runmod,
-
-		Hasfld,
 
 		Br,
 

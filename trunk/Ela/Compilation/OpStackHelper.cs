@@ -83,7 +83,6 @@ namespace Ela.Compilation
 			1, //Newtup
 			-1, //Skiptn
 			-1, //Skiptl
-			0, //Pat
 			-1, //Tupex
 			0, //Failwith
 			0, //Start
@@ -92,11 +91,8 @@ namespace Ela.Compilation
 			1, //PushI4
 			1, //PushR4
 			1, //Pushvar
-			0, //Pushfld
 			-1, //Popvar
-			-2, //Popfld
 			0, //Runmod
-			0, //Hasfld
 			0, //Br
 			-1, //Brtrue
 			-1, //Brfalse

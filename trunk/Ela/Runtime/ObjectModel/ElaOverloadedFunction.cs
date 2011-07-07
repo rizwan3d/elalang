@@ -22,12 +22,6 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Methods
-        protected internal override ElaValue Call(ElaValue value, ExecutionContext ctx)
-        {
-            return new ElaValue(Resolve(value, ctx));
-        }
-
-
         public override ElaValue Call(params ElaValue[] args)
         {
             var fun = (ElaFunction)this;

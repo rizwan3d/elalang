@@ -113,12 +113,6 @@ namespace Ela.Runtime
         }
 
 
-		public ElaValue Id(ExecutionContext ctx)
-		{
-			return Ref.TypeId == ElaMachine.LAZ ? Ref.Force(this, ctx) : this;
-		}
-
-
 		public string GetTypeName()
 		{
 			return Ref.GetTypeName();
@@ -314,8 +308,7 @@ namespace Ela.Runtime
 				case ElaTypeCode.Tuple: return (ElaTuple)Ref;
 				case ElaTypeCode.Unit: return null;
 				case ElaTypeCode.Lazy:
-                    var v = Ref.Force(this, ElaObject.DummyContext);
-                    return v.AsObject();
+					return Ref.IsEvaluated() ? ((ElaLazy)Ref).Value.AsObject() : Ref;
 				default:
 					if (Ref == null)
 						throw new InvalidOperationException();
@@ -370,12 +363,6 @@ namespace Ela.Runtime
 
 
         #region Operations
-        public bool Bool(ExecutionContext ctx)
-        {
-            return Ref.Bool(this, ctx);
-        }
-
-
         public ElaValue Generate(ElaValue value, ExecutionContext ctx)
         {
 			return Ref.Generate(value, ctx);
@@ -385,24 +372,6 @@ namespace Ela.Runtime
         public ElaValue GenerateFinalize(ExecutionContext ctx)
         {
 			return Ref.GenerateFinalize(ctx);
-        }
-
-
-        public ElaValue GetField(string field, ExecutionContext ctx)
-        {
-			return Ref.GetField(field, ctx);
-        }
-
-
-        public void SetField(string field, ElaValue value, ExecutionContext ctx)
-        {
-			Ref.SetField(field, value, ctx);
-        }
-
-
-        public bool HasField(string field, ExecutionContext ctx)
-        {
-			return Ref.HasField(field, ctx);
         }
 
 
@@ -418,25 +387,9 @@ namespace Ela.Runtime
         }
 
 
-        public ElaValue Call(ElaValue value, ExecutionContext ctx)
-        {
-            return Ref.Call(value, ctx);
-        }
-
-
-        public ElaValue Force(ExecutionContext ctx)
-        {
-            return Ref.Force(this, ctx);
-        }
-
         public string GetTag()
         {
             return Ref.GetTag();
-        }
-
-        public ElaValue Untag(ExecutionContext ctx)
-        {
-			return Ref.Untag(this, ctx);
         }
         #endregion
         

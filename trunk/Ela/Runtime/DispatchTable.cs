@@ -1,6 +1,9 @@
 ﻿using System;
 using Ela.Runtime.ObjectModel;
 using System.Collections.Generic;
+using System.Text;
+using Ela.Compilation;
+using Ela.CodeModel;
 
 namespace Ela.Runtime
 {
@@ -436,7 +439,7 @@ namespace Ela.Runtime
                 return ElaObject.GetDefault();
             }
 
-            return PerformOp(left.Force(ctx), right.Force(ctx), ctx);
+            return PerformOp(((ElaLazy)left.Ref).Value, ((ElaLazy)right.Ref).Value, ctx);
         }
     }
 
@@ -462,7 +465,7 @@ namespace Ela.Runtime
 				return ElaObject.GetDefault();
 			}
 
-			return PerformOp(first.Force(ctx), second.Force(ctx), third.Force(ctx), ctx);
+			return PerformOp(((ElaLazy)first.Ref).Value, ((ElaLazy)second.Ref).Value, ((ElaLazy)third.Ref).Value, ctx);
 		}
 	}
 
@@ -480,7 +483,7 @@ namespace Ela.Runtime
 				return ElaObject.GetDefault();
 			}
 
-			return PerformOp(left.Force(ctx), ctx);
+			return PerformOp(((ElaLazy)left.Ref).Value, ctx);
 		}
 	}
     #endregion
@@ -2842,13 +2845,27 @@ namespace Ela.Runtime
 
 			if (xs1Lazy) //We have to force both. Right is ElaLazy
 			{
-				right = right.Force(ctx);
+				if (!right.Ref.IsEvaluated())
+				{
+					ctx.Failed = true;
+					ctx.Thunk = (ElaLazy)right.Ref;
+					return ElaObject.GetDefault();
+				}
+
+				right = ((ElaLazy)right.Ref).Value;
 				left.Ref.GetLength(ctx);
 				return PerformOp(left, right, ctx);
 			}
 			else if (xs1Thunk && !xs2Thunk) //We don't have to force list. Left is ElaLazy
 			{
-				left = left.Force(ctx);
+				if (!left.Ref.IsEvaluated())
+				{
+					ctx.Failed = true;
+					ctx.Thunk = (ElaLazy)left.Ref;
+					return ElaObject.GetDefault();
+				}
+
+				left = ((ElaLazy)left.Ref).Value;
 				return PerformOp(left, right, ctx);
 			}			
 			else if (xs2Thunk && left.Ref is ElaList)
@@ -2935,7 +2952,34 @@ namespace Ela.Runtime
 
 
     #region GetValue
-    internal sealed class GetTupleInt : DispatchBinaryFun
+	internal sealed class GetModuleString : DispatchBinaryFun
+	{
+		internal GetModuleString(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			var mod = (ElaModule)left.Ref;
+			var fld = right.DirectGetString();
+			var fr = mod.Machine.Assembly.GetModule(mod.Handle);
+			ScopeVar sc;
+
+			if (!fr.GlobalScope.Locals.TryGetValue(fld, out sc))
+			{
+				ctx.Fail(ElaRuntimeError.UndefinedVariable, fld, mod.Machine.Assembly.GetModuleName(mod.Handle));
+				return ElaObject.GetDefault();
+			}
+
+			if ((sc.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private)
+			{
+				ctx.Fail(ElaRuntimeError.PrivateVariable, fld);
+				return ElaObject.GetDefault();
+			}
+
+			return mod.Machine.modules[mod.Handle][sc.Address];
+		}
+	}
+	
+	
+	internal sealed class GetTupleInt : DispatchBinaryFun
     {
         internal GetTupleInt(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -3505,4 +3549,156 @@ namespace Ela.Runtime
         }
     }
     #endregion
+
+
+	#region Show
+	internal abstract class ShowFun : DispatchBinaryFun
+	{
+		protected ShowFun() : base(null) { }
+		protected ShowFun(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			var str = left.DirectGetString();
+			var info = String.IsNullOrEmpty(str) ? ShowInfo.Default : new ShowInfo(0, 0, str);
+			var ret = Show(info, right, ctx);
+			return ret == null ? ElaObject.GetDefault() : new ElaValue(ret);
+		}
+
+		protected abstract string Show(ShowInfo info, ElaValue value, ExecutionContext ctx);
+	}
+
+	internal sealed class ShowStringString : ShowFun
+	{
+		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
+		{
+			return value.DirectGetString();
+		}
+	}
+
+	internal sealed class ShowInt : ShowFun
+	{
+		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
+		{
+			try
+			{
+				return !String.IsNullOrEmpty(info.Format) ? value.I4.ToString(info.Format, Culture.NumberFormat) :
+					value.I4.ToString(Culture.NumberFormat);
+			}
+			catch (FormatException)
+			{
+				ctx.InvalidFormat(info.Format, value);
+				return null;
+			}
+		}
+	}
+	
+	internal sealed class ShowLong : ShowFun
+	{
+		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
+		{
+			try
+			{
+				return !String.IsNullOrEmpty(info.Format) ? value.GetLong().ToString(info.Format, Culture.NumberFormat) :
+					value.GetLong().ToString(Culture.NumberFormat);
+			}
+			catch (FormatException)
+			{
+				ctx.InvalidFormat(info.Format, value);
+				return null;
+			}
+		}
+	}
+
+	internal sealed class ShowSingle : ShowFun
+	{
+		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
+		{
+			try
+			{
+				return !String.IsNullOrEmpty(info.Format) ? value.DirectGetReal().ToString(info.Format, Culture.NumberFormat) :
+					value.DirectGetReal().ToString(Culture.NumberFormat);
+			}
+			catch (FormatException)
+			{
+				ctx.InvalidFormat(info.Format, value);
+				return null;
+			}
+		}
+	}
+
+	internal sealed class ShowDouble : ShowFun
+	{
+		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
+		{
+			try
+			{
+				return !String.IsNullOrEmpty(info.Format) ? value.GetDouble().ToString(info.Format, Culture.NumberFormat) :
+					value.GetDouble().ToString(Culture.NumberFormat);
+			}
+			catch (FormatException)
+			{
+				ctx.InvalidFormat(info.Format, value);
+				return null;
+			}
+		}
+	}
+
+	internal sealed class ShowChar : ShowFun
+	{
+		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
+		{
+			return ((Char)value.I4).ToString();
+		}
+	}
+
+	internal sealed class ShowBoolean : ShowFun
+	{
+		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
+		{
+			return (value.I4 == 1).ToString();
+		}
+	}
+
+	internal sealed class ShowTuple : ShowFun
+	{
+		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
+		{
+			var t = (ElaTuple)value.Ref;
+			return "(" + FormatHelper.FormatEnumerable(t, ctx, info) +
+				(t.Length < 2 ? ",)" : ")");
+		}
+	}
+
+	internal sealed class ShowRecord : ShowFun
+	{
+		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
+		{
+			var t = (ElaRecord)value.Ref;
+			var sb = new StringBuilder();
+			sb.Append('{');
+
+			var c = 0;
+
+			foreach (var k in t.GetKeys())
+			{
+				if (info.SequenceLength > 0 && c > info.SequenceLength)
+				{
+					sb.Append("...");
+					break;
+				}
+
+				if (c++ > 0)
+					sb.Append(",");
+
+				if (t.flags[c - 1])
+					sb.Append("!");
+
+				sb.AppendFormat("{0}={1}", k, t[k].Ref.Show(t[k], info, ctx));
+			}
+
+			sb.Append('}');
+			return sb.ToString();
+		}
+	}
+	#endregion
 }

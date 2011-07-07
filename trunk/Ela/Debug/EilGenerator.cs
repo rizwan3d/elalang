@@ -61,7 +61,6 @@ namespace Ela.Debug
 				switch (o)
 				{
 					case Op.Pushstr:
-					case Op.Pushfld:
 						val = String.Format(STR, frame.Strings[od]);
 						break;
 					case Op.Pushvar:

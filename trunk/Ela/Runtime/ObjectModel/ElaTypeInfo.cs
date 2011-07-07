@@ -116,18 +116,18 @@ namespace Ela.Runtime.ObjectModel
         //}
 
 
-		protected internal override ElaValue GetField(string field, ExecutionContext ctx)
-        {
-            var idx = GetOrdinal(field);
+		//protected internal override ElaValue GetField(string field, ExecutionContext ctx)
+		//{
+		//    var idx = GetOrdinal(field);
 
-            if (idx == -1)
-            {
-                ctx.UnknownField(field, new ElaValue(this));
-                return Default();
-            }
+		//    if (idx == -1)
+		//    {
+		//        ctx.UnknownField(field, new ElaValue(this));
+		//        return Default();
+		//    }
 
-            return values[idx];
-        }
+		//    return values[idx];
+		//}
 
 
         private bool CompareInfos(ElaTypeInfo left, ElaTypeInfo right)

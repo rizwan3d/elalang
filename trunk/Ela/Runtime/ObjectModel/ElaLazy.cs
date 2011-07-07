@@ -90,61 +90,10 @@ namespace Ela.Runtime.ObjectModel
 
 			return Value;
 		}
-
-
-		protected internal override ElaValue Force(ElaValue @this, ExecutionContext ctx)
-		{
-			if (ctx == ElaObject.DummyContext)
-				return Force();
-
-			return Force(ctx);
-		}
-
-
-		internal override ElaValue InternalForce(ElaValue @this, ExecutionContext ctx)
-		{
-			if (Value.Ref == null)
-			{
-				Value = Function.Call(
-					Function.LastParameter.Ref != null ? Function.LastParameter :
-					new ElaValue(ElaUnit.Instance), ctx);
-			}
-
-			return Value;
-		}
-
-
-		internal ElaValue Force(ExecutionContext ctx)
-		{
-			//if (Value.Ref == null)
-			//{
-			//    Value = Function.Call(
-			//        Function.LastParameter.Ref != null ? Function.LastParameter :
-			//        new ElaValue(ElaUnit.Instance), ctx);
-			//}
-
-			//return Value;
-			var f = Function;
-
-			if (f != null)
-			{
-				ctx.Failed = true;
-				ctx.Thunk = this;
-				return new ElaValue(ElaDummyObject.Instance);
-			}
-
-			return Value;
-		}
 		#endregion
 
 
 		#region Operations
-		protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.Bool(Value, ctx);
-		}
-
-
 		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
 		{
 			return new ElaValue(new ElaLazyList(this, value));
@@ -157,42 +106,12 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue GetField(string field, ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.GetField(field, ctx);
-		}
-
-
-		protected internal override void SetField(string field, ElaValue value, ExecutionContext ctx)
-		{
-			Force(ctx).Ref.SetField(field, value, ctx);
-		}
-
-
-		protected internal override bool HasField(string field, ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.HasField(field, ctx);
-		}
-
-
 		protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			if (Function == null)
 				return Value.Ref.Show(@this, info, ctx);
 			else
 				return "<thunk>";
-		}
-
-
-		protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.Call(arg, ctx);
-		}
-
-
-		protected internal override ElaValue Untag(ElaValue arg, ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.Untag(arg, ctx);
 		}
 		#endregion
 

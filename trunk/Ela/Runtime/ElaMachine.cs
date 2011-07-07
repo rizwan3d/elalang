@@ -476,6 +476,7 @@ namespace Ela.Runtime
 		private DispatchBinaryFun getRecStr;
 		private DispatchBinaryFun getLstInt;
 		private DispatchBinaryFun getStrInt;
+		private DispatchBinaryFun getModStr;
         private DispatchBinaryFun getLazLaz;
 
         private DispatchUnaryFun negErr;
@@ -927,6 +928,7 @@ namespace Ela.Runtime
             getRecStr = new GetRecordString(get_ovl);
             getLstInt = new GetListInt(get_ovl);
             getStrInt = new GetStringInt(get_ovl);
+			getModStr = new GetModuleString(get_ovl);
             getLazLaz = new ThunkBinary(get_ovl);
 
             negErr = new NoneUnary("$negate", overloads);
@@ -1410,6 +1412,7 @@ namespace Ela.Runtime
             get_ovl[REC][INT] = getRecInt;
             get_ovl[REC][STR] = getRecStr;
 			get_ovl[STR][INT] = getStrInt;
+			get_ovl[MOD][STR] = getModStr;
 			get_ovl[LST][INT] = getLstInt;
             FillLazy(get_ovl, getLazLaz);
             FillTable(get_ovl, getErrErr);
@@ -1798,44 +1801,6 @@ namespace Ela.Runtime
 							goto SWITCH_MEM;
 						}
 						break;
-					case Op.Pushfld:
-						{
-							var fld = frame.Strings[opd];
-							right = evalStack.PopFast();
-
-							if (right.TypeId == MOD)
-							{
-								i4 = ((ElaModule)right.Ref).Handle;
-								var fr = asm.GetModule(i4);
-								ScopeVar sc;
-
-								if (!fr.GlobalScope.Locals.TryGetValue(fld, out sc))
-								{
-									ExecuteFail(new ElaError(ElaRuntimeError.UndefinedVariable, fld, asm.GetModuleName(i4)), thread, evalStack);
-									goto SWITCH_MEM;
-								}
-
-								if ((sc.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private)
-								{
-									ExecuteFail(new ElaError(ElaRuntimeError.PrivateVariable, fld), thread, evalStack);
-									goto SWITCH_MEM;
-								}
-
-								evalStack.Push(modules[i4][sc.Address]);
-								break;
-							}
-
-							evalStack.Push(right.Ref.GetField(fld, ctx));
-
-							if (ctx.Failed)
-							{
-								evalStack.Replace(right);
-								ExecuteThrow(thread, evalStack);
-								goto SWITCH_MEM;
-							}
-
-							break;
-						}
 					case Op.Pop:
 						evalStack.PopVoid();
 						break;
@@ -1865,20 +1830,6 @@ namespace Ela.Runtime
 								goto SWITCH_MEM;
 							}
 						}
-						break;
-					case Op.Popfld:
-						right = evalStack.Pop();
-						left = evalStack.Pop();
-						right.Ref.SetField(frame.Strings[opd], left, ctx);
-
-						if (ctx.Failed)
-						{
-							evalStack.Push(left);
-							evalStack.Push(right);
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
-
 						break;
 					case Op.Dup:
 						evalStack.Push(evalStack.Peek());
@@ -2059,18 +2010,7 @@ namespace Ela.Runtime
 					#endregion
 
 					#region Comparison Operations
-                    case Op.Pat:
-						right = evalStack.Peek();
-						evalStack.Replace(new ElaValue(((Int32)right.Id(ctx).Ref.GetSupportedPatterns() & opd) == opd));
-
-						if (ctx.Failed)
-						{
-							evalStack.Replace(right);
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
-						break;
-					case Op.Cgt:
+                    case Op.Cgt:
 						left = evalStack.Pop();
 						right = evalStack.Peek();
 
@@ -2296,37 +2236,26 @@ namespace Ela.Runtime
 							goto SWITCH_MEM;
 						}
 						break;
-					case Op.Hasfld:
-						evalStack.Replace((right = evalStack.Peek()).Ref.HasField(frame.Strings[opd], ctx));
-
-						if (ctx.Failed)
-						{
-							evalStack.Replace(right);
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
-
-						break;
 					case Op.Force:
 						right = evalStack.Peek();
-						evalStack.Replace(right.Ref.InternalForce(right, ctx));
 
-						if (ctx.Failed)
+						if (right.TypeId == LAZ)
 						{
-							evalStack.Replace(right);
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
+							if (!right.Ref.IsEvaluated())
+							{
+								ctx.Failed = true;
+								ctx.Thunk = (ElaLazy)right.Ref;
+								goto SWITCH_MEM;
+							}
+							else
+								evalStack.Replace(((ElaLazy)right.Ref).Value);
 						}
 						break;
 					case Op.Untag:
-						evalStack.Replace((right = evalStack.Peek()).Untag(ctx));
+						right = evalStack.Peek();
 
-                        if (ctx.Failed)
-						{
-							evalStack.Replace(right);
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
+						if (right.TypeId == VAR)
+							evalStack.Replace(((ElaVariant)right.Ref).Value);
 						break;
                     case Op.Gettag:
                         evalStack.Replace(new ElaValue((right = evalStack.Peek()).Ref.GetTag()));
@@ -2350,7 +2279,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						evalStack.Replace(!right.Ref.Bool(right, ctx));
+						evalStack.Replace(right.I4 == 0);
 
 						if (ctx.Failed)
 						{
@@ -2499,7 +2428,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						if (right.Ref.Bool(right, ctx) && !ctx.Failed)
+						if (right.I4 == 1)
 						{
 							thread.Offset = opd;
 							break;
@@ -2523,7 +2452,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						if (!right.Ref.Bool(right, ctx) && !ctx.Failed)
+						if (right.I4 == 0)
 						{
 							thread.Offset = opd;
 							break;
@@ -2553,7 +2482,7 @@ namespace Ela.Runtime
 
 						res = eql_ovl[left.TypeId][right.TypeId].Call(left, right, ctx);
 
-						if (res.Ref.Bool(res, ctx) && !ctx.Failed)
+						if (res.I4 == 1)
 						{
 							thread.Offset = opd;
 							break;
@@ -2581,7 +2510,7 @@ namespace Ela.Runtime
 
 						res = neq_ovl[left.TypeId][right.TypeId].Call(left, right, ctx);
 						
-						if (res.Ref.Bool(res, ctx) && !ctx.Failed)
+						if (res.I4 == 1)
 						{
 							thread.Offset = opd;
 							break;
@@ -2609,7 +2538,7 @@ namespace Ela.Runtime
 
 						res = ltr_ovl[left.TypeId][right.TypeId].Call(left, right, ctx);
 						
-						if (res.Ref.Bool(res, ctx) && !ctx.Failed)
+						if (res.I4 == 1)
 						{
 							thread.Offset = opd;
 							break;
@@ -2637,7 +2566,7 @@ namespace Ela.Runtime
 
 						res = gtr_ovl[left.TypeId][right.TypeId].Call(left, right, ctx);
 						
-						if (res.Ref.Bool(res, ctx) && !ctx.Failed)
+						if (res.I4 == 1)
 						{
 							thread.Offset = opd;
 							break;
@@ -2745,12 +2674,19 @@ namespace Ela.Runtime
 					#region Thunk Operations
 					case Op.Flip:
 						{
-							right = evalStack.Peek().Id(ctx);
+							right = evalStack.Peek();
 
 							if (right.TypeId != FUN)
 							{
+								if (right.TypeId == LAZ)
+								{
+									ctx.Failed = true;
+									ctx.Thunk = (ElaLazy)right.Ref;
+									goto SWITCH_MEM;
+								}
+
 								evalStack.PopVoid();
-								ExecuteFail(new ElaError(ElaRuntimeError.ExpectedFunction, TypeCodeFormat.GetShortForm(right.TypeCode)), thread, evalStack);
+								ExecuteFail(new ElaError(ElaRuntimeError.NotFunction, right), thread, evalStack);
 								goto SWITCH_MEM;
 							}
 
@@ -2758,13 +2694,6 @@ namespace Ela.Runtime
 							fun = fun.Captures != null ? fun.CloneFast() : fun.Clone();
 							fun.Flip = !fun.Flip;
 							evalStack.Replace(new ElaValue(fun));
-
-							if (ctx.Failed)
-							{
-								evalStack.Push(right);
-								ExecuteThrow(thread, evalStack);
-								goto SWITCH_MEM;
-							}
 						}
 						break;
                     case Op.Ovr:
@@ -3421,19 +3350,8 @@ namespace Ela.Runtime
 		{
 			if (fun.TypeId != FUN)
 			{
-				var arg = stack.Peek();
-				var res = fun.Call(arg, thread.Context);
-				stack.Replace(res);
-
-				if (thread.Context.Failed)
-				{
-					stack.Replace(arg);
-					stack.Push(new ElaValue(fun));
-					ExecuteThrow(thread, stack);
-					return true;
-				}
-
-				return false;
+				ExecuteThrow(thread, stack);
+				return true;
 			}
 
 			var natFun = (ElaFunction)fun;
