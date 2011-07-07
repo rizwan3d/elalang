@@ -109,12 +109,6 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        public override ElaPatterns GetSupportedPatterns()
-        {
-            return ElaPatterns.Record|ElaPatterns.Tuple;
-        }
-
-
         public override ElaTypeInfo GetTypeInfo()
 		{
             var info = base.GetTypeInfo();

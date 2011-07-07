@@ -125,12 +125,6 @@ namespace Ela.Runtime.ObjectModel
             return count;
         }
         
-        
-        public override ElaPatterns GetSupportedPatterns()
-        {
-            return ElaPatterns.Tuple|ElaPatterns.HeadTail;
-        }
-
 
 		public static ElaList FromEnumerable(IEnumerable seq)
 		{

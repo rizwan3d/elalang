@@ -119,13 +119,7 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-		public virtual ElaPatterns GetSupportedPatterns()
-		{
-			return ElaPatterns.None;
-		}
-
-
-        public virtual ElaTypeInfo GetTypeInfo()
+		public virtual ElaTypeInfo GetTypeInfo()
 		{
             var info = new ElaTypeInfo();
             info.AddField(TYPENAME, GetTypeName());

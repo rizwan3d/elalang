@@ -82,13 +82,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
-        public override ElaPatterns GetSupportedPatterns()
-        {
-            return ElaPatterns.Tuple;
-        }
-
-
-		internal static ElaTuple FromArray(ElaValue[] array)
+        internal static ElaTuple FromArray(ElaValue[] array)
 		{
 			var tup = new ElaTuple();
 			tup.Values = array;

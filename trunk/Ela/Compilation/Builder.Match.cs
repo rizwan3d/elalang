@@ -319,7 +319,7 @@ namespace Ela.Compilation
 						MatchEntryAlwaysFail(patExp, nextLab);
 					else
 					{
-						Silent(pushSys, nextLab, hints, ElaPatterns.HeadTail);
+						//Silent(pushSys, nextLab, hints, ElaPatterns.HeadTail);
 						cw.Emit(Op.Pushvar, pushSys);
 						cw.Emit(Op.Isnil);
 						cw.Emit(Op.Brfalse, nextLab);
@@ -336,7 +336,7 @@ namespace Ela.Compilation
                 (pexp.Patterns[1].Type == ElaNodeType.VariablePattern || pexp.Patterns[1].Type == ElaNodeType.DefaultPattern ||
                 pexp.Patterns[1].Type == ElaNodeType.NilPattern))
 			{
-				Silent(pushSys, nextLab, hints, ElaPatterns.HeadTail);
+				//Silent(pushSys, nextLab, hints, ElaPatterns.HeadTail);
 				cw.Emit(Op.Pushvar, pushSys);
 
 				var newHints = (hints & Hints.FunBody) == Hints.FunBody ? hints ^ Hints.FunBody : hints;
@@ -365,7 +365,7 @@ namespace Ela.Compilation
 			}
 			else
 			{
-				Silent(pushSys, nextLab, hints, ElaPatterns.HeadTail);
+				//Silent(pushSys, nextLab, hints, ElaPatterns.HeadTail);
 
 				cw.Emit(Op.Pushvar, pushSys);
 				cw.Emit(Op.Brnil, nextLab);
@@ -430,7 +430,7 @@ namespace Ela.Compilation
 				MatchEntryAlwaysFail(rec, nextLab);
 			else
 			{
-				Silent(pushSys, nextLab, hints, ElaPatterns.Record);
+				//Silent(pushSys, nextLab, hints, ElaPatterns.Record);
 
 				for (var i = 0; i < rec.Fields.Count; i++)
 				{
@@ -460,8 +460,8 @@ namespace Ela.Compilation
 		{
 			var len = seq.Patterns.Count;
 
-			if (pushSys != -1 && tuple == null)
-				Silent(pushSys, nextLab, hints, ElaPatterns.Tuple);
+			//if (pushSys != -1 && tuple == null)
+			//	Silent(pushSys, nextLab, hints, ElaPatterns.Tuple);
 			
 			if (tuple != null)
 			{
@@ -536,15 +536,15 @@ namespace Ela.Compilation
 		}
 
 
-		private void Silent(int pushSys, Label nextLab, Hints hints, ElaPatterns pats)
-		{
-			if ((hints & Hints.Silent) == Hints.Silent)
-			{
-				//cw.Emit(Op.Pushvar, pushSys);
-				//cw.Emit(Op.Pat, (Int32)pats);
-				//cw.Emit(Op.Brfalse, nextLab);
-			}
-		}
+		//private void Silent(int pushSys, Label nextLab, Hints hints, ElaPatterns pats)
+		//{
+		//    if ((hints & Hints.Silent) == Hints.Silent)
+		//    {
+		//        //cw.Emit(Op.Pushvar, pushSys);
+		//        //cw.Emit(Op.Pat, (Int32)pats);
+		//        //cw.Emit(Op.Brfalse, nextLab);
+		//    }
+		//}
 
 
 		private void MatchEntryAlwaysFail(ElaExpression exp, Label lab)

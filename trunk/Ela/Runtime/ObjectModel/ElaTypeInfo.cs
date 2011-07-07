@@ -20,12 +20,6 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
-		public override ElaPatterns GetSupportedPatterns()
-		{
-			return ElaPatterns.Record|ElaPatterns.Tuple;
-		}
-
-
 		protected internal override string GetTypeName()
 		{
 			return TYPE_NAME;

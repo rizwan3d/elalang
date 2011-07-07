@@ -34,13 +34,7 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        public override ElaPatterns GetSupportedPatterns()
-		{
-			return ElaPatterns.Variant;
-		}
-
-
-		public override int GetHashCode()
+        public override int GetHashCode()
 		{
 			return Tag.GetHashCode();
 		}

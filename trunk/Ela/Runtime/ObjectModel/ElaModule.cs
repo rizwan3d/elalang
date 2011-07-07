@@ -52,13 +52,7 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        public override ElaPatterns GetSupportedPatterns()
-        {
-            return ElaPatterns.Record;
-        }
-
-
-		public override ElaTypeInfo GetTypeInfo()
+        public override ElaTypeInfo GetTypeInfo()
 		{
             var frame = vm != null ? vm.Assembly.GetModule(Handle) : null;
             var name = vm != null ? vm.Assembly.GetModuleName(Handle) : null;

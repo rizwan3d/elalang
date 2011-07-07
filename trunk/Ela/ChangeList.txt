@@ -1,3 +1,4 @@
+0.9.7.8:Change:Op code Pat is decomissioned.
 0.9.7.7:Change:Op code Hasfld is decomissioned.
 0.9.7.6:Change:Op codes Pushfld and Popfld are now decomissioned. Once should 'indexer' access style instead (op codes Popelem and Pushelem).
 0.9.7.5:Fix:A bug in parsing some of the operator tokens fixed (previously one operator token with the highest priority was parsed only as an unary expression).

@@ -34,13 +34,7 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        public override ElaPatterns GetSupportedPatterns()
-        {
-            return ElaPatterns.Tuple|ElaPatterns.HeadTail;
-        }
-
-
-		public override int GetHashCode()
+        public override int GetHashCode()
 		{
 			return buffer.GetHashCode();
 		}

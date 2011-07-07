@@ -52,12 +52,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		public override ElaPatterns GetSupportedPatterns()
-		{
-			return ElaPatterns.None;
-		}
-
-
 		public override ElaTypeInfo GetTypeInfo()
 		{
 			return null;
