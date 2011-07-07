@@ -131,6 +131,7 @@ namespace Ela.Runtime
 		private DispatchBinaryFun[][] cat_ovl;
         private DispatchBinaryFun[][] con_ovl;
         private DispatchBinaryFun[][] get_ovl;
+		private DispatchBinaryFun[][] shw_ovl;
 
 		private DispatchUnaryFun[] neg_ovl;
 		private DispatchUnaryFun[] bne_ovl;
@@ -479,6 +480,23 @@ namespace Ela.Runtime
 		private DispatchBinaryFun getModStr;
         private DispatchBinaryFun getLazLaz;
 
+		private DispatchBinaryFun shwErrErr;
+		private DispatchBinaryFun shwStrInt;
+		private DispatchBinaryFun shwStrLng;
+		private DispatchBinaryFun shwStrSng;
+		private DispatchBinaryFun shwStrDbl;
+		private DispatchBinaryFun shwStrChr;
+		private DispatchBinaryFun shwStrStr;
+		private DispatchBinaryFun shwStrFun;
+		private DispatchBinaryFun shwStrMod;
+		private DispatchBinaryFun shwStrRec;
+		private DispatchBinaryFun shwStrTup;
+		private DispatchBinaryFun shwStrLst;
+		private DispatchBinaryFun shwStrLaz;
+		private DispatchBinaryFun shwStrByt;
+		private DispatchBinaryFun shwStrUni;
+		private DispatchBinaryFun shwLazLaz;	
+
         private DispatchUnaryFun negErr;
 		private DispatchUnaryFun negInt;
 		private DispatchUnaryFun negLng;
@@ -583,6 +601,7 @@ namespace Ela.Runtime
 			cat_ovl = new __table(typeCount).table;
 			con_ovl = new __table(typeCount).table;
 			get_ovl = new __table(typeCount).table;
+			shw_ovl = new __table(typeCount).table;
 
 			neg_ovl = new __table2(typeCount).table;
 			bne_ovl = new __table2(typeCount).table;
@@ -930,6 +949,23 @@ namespace Ela.Runtime
             getStrInt = new GetStringInt(get_ovl);
 			getModStr = new GetModuleString(get_ovl);
             getLazLaz = new ThunkBinary(get_ovl);
+
+			shwErrErr = new NoneBinary("$showf", overloads);
+			shwStrInt = new ShowInt(shw_ovl);
+			shwStrLng = new ShowLong(shw_ovl) ;
+			shwStrSng = new ShowSingle(shw_ovl);
+			shwStrDbl = new ShowDouble(shw_ovl);
+			shwStrChr = new ShowChar(shw_ovl);
+			shwStrStr = new ShowString(shw_ovl);
+			shwStrFun = new ShowFunction(shw_ovl);
+			shwStrMod = new ShowModule(shw_ovl);
+			shwStrRec = new ShowRecord(shw_ovl);
+			shwStrTup = new ShowTuple(shw_ovl);
+			shwStrLst = new ShowList(shw_ovl);
+			shwStrLaz = new ShowThunk(shw_ovl);
+			shwStrByt = new ShowBoolean(shw_ovl);
+			shwStrUni = new ShowUnit(shw_ovl);
+			shwLazLaz = new ThunkBinary(shw_ovl);
 
             negErr = new NoneUnary("$negate", overloads);
             negInt = new NegInt(neg_ovl);
@@ -1416,6 +1452,23 @@ namespace Ela.Runtime
 			get_ovl[LST][INT] = getLstInt;
             FillLazy(get_ovl, getLazLaz);
             FillTable(get_ovl, getErrErr);
+
+			shw_ovl[STR][INT] = shwStrInt;
+			shw_ovl[STR][LNG] = shwStrLng;
+			shw_ovl[STR][REA] = shwStrSng;
+			shw_ovl[STR][DBL] = shwStrDbl;
+			shw_ovl[STR][CHR] = shwStrChr;
+			shw_ovl[STR][BYT] = shwStrByt;
+			shw_ovl[STR][STR] = shwStrStr;
+			shw_ovl[STR][TUP] = shwStrTup;
+			shw_ovl[STR][FUN] = shwStrFun;
+			shw_ovl[STR][MOD] = shwStrMod;
+			shw_ovl[STR][REC] = shwStrRec;
+			shw_ovl[STR][LST] = shwStrLst;
+			shw_ovl[STR][UNI] = shwStrUni;
+			shw_ovl[STR][LAZ] = shwStrLaz;
+			FillLazy(shw_ovl, shwLazLaz);
+			FillTable(shw_ovl, shwErrErr);
 
             neg_ovl[INT] = negInt;
 			neg_ovl[LNG] = negLng;
@@ -2812,15 +2865,8 @@ namespace Ela.Runtime
 						{
 							left = evalStack.Pop();
 							right = evalStack.Peek();
-
-							if (left.TypeId != STR)
-							{
-                                InvalidType(left, thread, evalStack, TypeCodeFormat.GetShortForm(ElaTypeCode.String));
-								goto SWITCH_MEM;
-							}
-
-                            evalStack.Replace(new ElaValue(right.Ref.Show(right, new ShowInfo(0, 0, left.DirectGetString()), ctx)));
-
+							evalStack.Replace(shw_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
+                            
 							if (ctx.Failed)
 							{
 								evalStack.Replace(right);

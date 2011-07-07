@@ -37,15 +37,14 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Operations
-		protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
+
+		#region Methods
+		public override string ToString()
 		{
 			return String.Format(MODULE, vm != null ? vm.Assembly.GetModuleName(Handle) : String.Empty);
 		}
-		#endregion
 
 
-		#region Methods
         internal override string GetTag()
         {
             return "Module#";

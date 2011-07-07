@@ -3554,7 +3554,6 @@ namespace Ela.Runtime
 	#region Show
 	internal abstract class ShowFun : DispatchBinaryFun
 	{
-		protected ShowFun() : base(null) { }
 		protected ShowFun(DispatchBinaryFun[][] funs) : base(funs) { }
 		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
@@ -3567,8 +3566,9 @@ namespace Ela.Runtime
 		protected abstract string Show(ShowInfo info, ElaValue value, ExecutionContext ctx);
 	}
 
-	internal sealed class ShowStringString : ShowFun
+	internal sealed class ShowString : ShowFun
 	{
+		internal ShowString(DispatchBinaryFun[][] funs) : base(funs) { }
 		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
 		{
 			return value.DirectGetString();
@@ -3577,6 +3577,7 @@ namespace Ela.Runtime
 
 	internal sealed class ShowInt : ShowFun
 	{
+		internal ShowInt(DispatchBinaryFun[][] funs) : base(funs) { }
 		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
 		{
 			try
@@ -3594,6 +3595,7 @@ namespace Ela.Runtime
 	
 	internal sealed class ShowLong : ShowFun
 	{
+		internal ShowLong(DispatchBinaryFun[][] funs) : base(funs) { }
 		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
 		{
 			try
@@ -3611,6 +3613,7 @@ namespace Ela.Runtime
 
 	internal sealed class ShowSingle : ShowFun
 	{
+		internal ShowSingle(DispatchBinaryFun[][] funs) : base(funs) { }
 		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
 		{
 			try
@@ -3628,6 +3631,7 @@ namespace Ela.Runtime
 
 	internal sealed class ShowDouble : ShowFun
 	{
+		internal ShowDouble(DispatchBinaryFun[][] funs) : base(funs) { }
 		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
 		{
 			try
@@ -3645,6 +3649,7 @@ namespace Ela.Runtime
 
 	internal sealed class ShowChar : ShowFun
 	{
+		internal ShowChar(DispatchBinaryFun[][] funs) : base(funs) { }
 		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
 		{
 			return ((Char)value.I4).ToString();
@@ -3653,24 +3658,93 @@ namespace Ela.Runtime
 
 	internal sealed class ShowBoolean : ShowFun
 	{
+		internal ShowBoolean(DispatchBinaryFun[][] funs) : base(funs) { }
 		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
 		{
 			return (value.I4 == 1).ToString();
 		}
 	}
 
+	internal sealed class ShowModule : ShowFun
+	{
+		internal ShowModule(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
+		{
+			return value.ToString();
+		}
+	}
+
+	internal sealed class ShowThunk : ShowFun
+	{
+		internal ShowThunk(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
+		{
+			return value.Ref.IsEvaluated() ? PerformOp(new ElaValue(""), ((ElaLazy)value.Ref).Value, ctx).ToString() : "<thunk>";
+		}
+	}
+
+
+	internal sealed class ShowUnit : ShowFun
+	{
+		internal ShowUnit(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
+		{
+			return "()";
+		}
+	}
+
+
+	internal sealed class ShowFunction : ShowFun
+	{
+		internal ShowFunction(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
+		{
+			return value.ToString();
+		}
+	}
+
+
 	internal sealed class ShowTuple : ShowFun
 	{
+		internal ShowTuple(DispatchBinaryFun[][] funs) : base(funs) { }
 		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
 		{
 			var t = (ElaTuple)value.Ref;
-			return "(" + FormatHelper.FormatEnumerable(t, ctx, info) +
-				(t.Length < 2 ? ",)" : ")");
+			var sb = new StringBuilder();
+			sb.Append('(');
+			var c = 0;
+			var maxLen = info.SequenceLength;
+
+			foreach (var v in t)
+			{
+				if (maxLen > 0 && c > maxLen)
+				{
+					sb.Append("...");
+					break;
+				}
+
+				if (c++ > 0)
+					sb.Append(',');
+
+				if (v.Ref != null)
+				{
+					var s = PerformOp(new ElaValue(String.Empty), v, ctx).ToString();
+					sb.Append(s);
+				}
+			}
+
+			if (t.Length < 2)
+				sb.Append(",");
+			else
+				sb.Append(')');
+
+			return sb.ToString();
 		}
 	}
 
 	internal sealed class ShowRecord : ShowFun
 	{
+		internal ShowRecord(DispatchBinaryFun[][] funs) : base(funs) { }
 		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
 		{
 			var t = (ElaRecord)value.Ref;
@@ -3693,10 +3767,49 @@ namespace Ela.Runtime
 				if (t.flags[c - 1])
 					sb.Append("!");
 
-				sb.AppendFormat("{0}={1}", k, t[k].Ref.Show(t[k], info, ctx));
+				var s = PerformOp(new ElaValue(String.Empty), t[k], ctx).ToString();
+				sb.AppendFormat("{0}={1}", k, s);
 			}
 
 			sb.Append('}');
+			return sb.ToString();
+		}
+	}
+
+	internal sealed class ShowList : ShowFun
+	{
+		internal ShowList(DispatchBinaryFun[][] funs) : base(funs) { }
+		protected override string Show(ShowInfo info, ElaValue value, ExecutionContext ctx)
+		{
+			var xs = (ElaList)value.Ref;
+
+			var sb = new StringBuilder();
+			sb.Append('[');
+			var c = 0;
+			var maxLen = xs is ElaLazyList ? 999 : info.SequenceLength;
+
+			while (xs != ElaList.Empty && xs != ElaLazyList.Empty)
+			{
+				if (maxLen > 0 && c > maxLen)
+				{
+					sb.Append("...");
+					break;
+				}
+
+				if (c++ > 0)
+					sb.Append(',');
+				
+				var v = xs.Head(ctx);
+				var s = PerformOp(new ElaValue(String.Empty), v, ctx).ToString();
+				sb.Append(s);
+				xs = xs.Tail(ctx).Ref as ElaList;
+
+				if (ctx.Failed || xs == null)
+					break;
+			}
+
+			sb.Append(']');
+
 			return sb.ToString();
 		}
 	}

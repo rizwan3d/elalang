@@ -63,6 +63,12 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return headIndex == 0 ? buffer : buffer.Substring(headIndex);
 		}
+
+
+		public override string ToString()
+		{
+			return buffer;
+		}
 		#endregion
 
 
