@@ -163,6 +163,7 @@ namespace Ela.Compilation
                 cw.Emit(Op.Gen);
             }
 
+			cw.Emit(Op.Genfin);
             CompileExpression(s.InitExpression, map, Hints.None);
 
             if (builtin)
@@ -172,6 +173,9 @@ namespace Ela.Compilation
 
             cw.Emit(Op.Ovr);
             cw.Emit(Op.Popvar, addr);
+
+			if ((hints & Hints.Left) != Hints.Left)
+				cw.Emit(Op.Pushvar, addr);
         }
 
 
