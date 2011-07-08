@@ -429,19 +429,20 @@ namespace Ela.Compilation
 				case ElaNodeType.Indexer:
 					{
 						var v = (ElaIndexer)exp;
-						CompileExpression(v.TargetObject, map, Hints.None);
-
+						
 						if ((hints & Hints.Left) == Hints.Left && (hints & Hints.Assign) == Hints.Assign)
 						{
                             CompileExpression(v.Index, map, Hints.None);
                             AddLinePragma(v);
-							cw.Emit(Op.Popelem);
+                            CompileExpression(v.TargetObject, map, Hints.None);
+                            cw.Emit(Op.Popelem);
 						}
 						else
 						{
 							CompileExpression(v.Index, map, Hints.None);
 							AddLinePragma(v);
-							cw.Emit(Op.Pushelem);
+                            CompileExpression(v.TargetObject, map, Hints.None);
+                            cw.Emit(Op.Pushelem);
 
 							if ((hints & Hints.Left) == Hints.Left)
 								AddValueNotUsed(exp);

@@ -509,14 +509,14 @@ namespace Ela.Compilation
 				for (var i = 0; i < len; i++)
 				{
 					var pat = seq.Patterns[i];
-					cw.Emit(Op.Pushvar, pushSys);
-
+					
 					if (i == 0)
 						cw.Emit(Op.PushI4_0);
 					else
 						cw.Emit(Op.PushI4, i);
 
-					cw.Emit(Op.Pushelem);
+                    cw.Emit(Op.Pushvar, pushSys);
+                    cw.Emit(Op.Pushelem);
 					var newSys = AddVariable();
 					cw.Emit(Op.Popvar, newSys);
 					CompilePattern(newSys, null, pat, map, nextLab, flags, hints);

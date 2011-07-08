@@ -1872,10 +1872,11 @@ namespace Ela.Runtime
 							right = evalStack.Pop();
 							var val = evalStack.Pop();
 
-							evalStack.Replace(set_ovl[left.TypeId][right.TypeId].Call(left, right, val, ctx));
+							evalStack.Push(set_ovl[left.TypeId][right.TypeId].Call(left, right, val, ctx));
 							
 							if (ctx.Failed)
 							{
+                                evalStack.PopVoid();
 								evalStack.Push(val);
 								evalStack.Push(right);
 								evalStack.Push(left);
