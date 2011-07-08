@@ -95,10 +95,10 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
-        {
-            return (Format.IsSymbolic(fname) ? "(" + fname + ")" : fname) + ":*->*";
-        }
+        public override string ToString()
+		{
+			return (Format.IsSymbolic(fname) ? "(" + fname + ")" : fname) + ":*->*";
+		}
 
 
         public override ElaFunction Clone()

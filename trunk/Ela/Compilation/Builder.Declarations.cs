@@ -171,6 +171,11 @@ namespace Ela.Compilation
             else
                 cw.Emit(Op.Pushstr, AddString(s.VariableName));
 
+			if (!sv.IsEmpty())
+				cw.Emit(Op.Pushvar, sv.Address);
+			else
+				cw.Emit(Op.Pushunit);
+
             cw.Emit(Op.Ovr);
             cw.Emit(Op.Popvar, addr);
 

@@ -81,13 +81,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
-		{
-			var nin = new ShowInfo(info.StringLength, 50, info.Format);
-			return "[" + FormatHelper.FormatEnumerable(this, ctx, nin) + "]";
-		}
-
-
 		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
 		{
 			if (thunk != null)
@@ -108,6 +101,41 @@ namespace Ela.Runtime.ObjectModel
 		protected override Exception InvalidDefinition()
 		{
 			return new ElaRuntimeException("InvalidLazyList", "Invalid lazy list definition.");
+		}
+
+
+		public override string ToString()
+		{
+			var sb = new StringBuilder();
+			sb.Append('[');
+			sb.Append(InternalValue.ToString());
+
+			var ctx = new ExecutionContext();
+			var cc = 0;
+			var tail = default(ElaList);
+			var xs = (ElaList)this;
+
+			do
+			{
+				tail = xs.Tail(ctx).Ref as ElaList;
+				xs = tail;
+
+				if (tail != null)
+				{
+					sb.Append(',');
+					sb.Append(tail.InternalValue.ToString());
+				}
+				else
+				{
+					sb.Append(",<thunk>...");
+				}
+
+				cc++;
+			}
+			while (!ctx.Failed && cc < 30);
+
+			sb.Append(']');
+			return sb.ToString();
 		}
 		#endregion
 

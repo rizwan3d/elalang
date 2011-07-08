@@ -3205,7 +3205,7 @@ namespace Ela.Runtime
 		protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
 		{
 			var rec = (ElaRecord)left.Ref;
-			return rec.Clone();
+			return new ElaValue(rec.Clone());
 		}
 	}
 	#endregion

@@ -84,7 +84,17 @@ namespace Ela.Runtime
 
 		public override string ToString()
 		{
-			return Ref == null ? String.Empty : Ref.Show(this, ShowInfo.Default, ElaObject.DummyContext);
+			if (Ref == null) 
+				return String.Empty;
+
+			switch (TypeId)
+			{
+				case ElaMachine.INT: return I4.ToString();
+				case ElaMachine.REA: return DirectGetReal().ToString();
+				case ElaMachine.BYT: return (I4 == 1).ToString();
+				case ElaMachine.CHR: return ((Char)I4).ToString();
+				default: return Ref.ToString();
+			}
 		}
 
 
@@ -111,12 +121,6 @@ namespace Ela.Runtime
         {
 			return false;// Equal(this, other, ElaObject.DummyContext).Bool(ElaObject.DummyContext);
         }
-
-
-		public string GetTypeName()
-		{
-			return Ref.GetTypeName();
-		}
 
 
 		internal float GetReal()
@@ -372,12 +376,6 @@ namespace Ela.Runtime
         public ElaValue GenerateFinalize(ExecutionContext ctx)
         {
 			return Ref.GenerateFinalize(ctx);
-        }
-
-
-        public string Show(ShowInfo info, ExecutionContext ctx)
-        {
-            return Ref.Show(this, info, ctx);
         }
 
 

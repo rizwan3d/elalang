@@ -27,7 +27,7 @@ namespace Ela
 					sb.Append(',');
 
 				if (v.Ref != null)
-					sb.Append(v.Ref.Show(v, info, ctx));
+					sb.Append(v.ToString());
 			}
 
 			return sb.ToString();

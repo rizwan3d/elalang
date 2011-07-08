@@ -94,21 +94,6 @@ namespace Ela.Runtime.ObjectModel
 				left.AppliedParameters == 0 && right.AppliedParameters == 0 &&
                 left.LastParameter.Ref == right.LastParameter.Ref && right.LastParameter.Ref == null;
         }
-
-
-        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
-		{
-			var sb = new StringBuilder();
-			sb.Append("*");
-
-			for (var i = 0; i < Parameters.Length + 1 - AppliedParameters; i++)
-			{
-				sb.Append("->");
-				sb.Append("*");
-			}
-
-			return GetFunctionName() + ":" + sb.ToString();
-		}
 		#endregion
 
 
@@ -178,7 +163,22 @@ namespace Ela.Runtime.ObjectModel
         internal override string GetTag()
         {
             return "Function#";
-        }
+		}
+
+
+		public override string ToString()
+		{
+			var sb = new StringBuilder();
+			sb.Append("*");
+
+			for (var i = 0; i < Parameters.Length + 1 - AppliedParameters; i++)
+			{
+				sb.Append("->");
+				sb.Append("*");
+			}
+
+			return GetFunctionName() + ":" + sb.ToString();
+		}
 
 
         internal virtual ElaFunction Resolve(ElaValue arg, ExecutionContext ctx)

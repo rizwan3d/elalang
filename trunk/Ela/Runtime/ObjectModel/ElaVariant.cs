@@ -94,17 +94,15 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return new ElaVariant(RIGHT, ElaValue.FromObject(value));
 		}
-		#endregion
 
 
-		#region Operations
-        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
+		public override string ToString()
 		{
-			return Tag + (Value.Ref != ElaUnit.Instance ? " " + Value.Ref.Show(Value, info, ctx) : String.Empty);
+			return Value.Ref is ElaUnit ? Tag : Tag + " " + Value.ToString();
 		}
 
 
-		private ElaValue InvalidOperand(ElaValue left, ElaValue right, string op, ExecutionContext ctx)
+        private ElaValue InvalidOperand(ElaValue left, ElaValue right, string op, ExecutionContext ctx)
 		{
 			if (left.Ref == null)
 				ctx.InvalidRightOperand(left, right, op);

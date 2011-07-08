@@ -28,11 +28,9 @@ namespace Ela.Runtime.ObjectModel
         {
             return 0;
         }
-        #endregion
 
-
-		#region Operations
-		protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
+	
+		public override string ToString()
 		{
 			return STR;
 		}

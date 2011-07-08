@@ -20,12 +20,6 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
-		protected internal override string GetTypeName()
-		{
-			return TYPE_NAME;
-		}
-
-
 		public void AddField(string field, ElaValue value)
 		{
 			keys.Add(field);
@@ -66,26 +60,26 @@ namespace Ela.Runtime.ObjectModel
 		//}
 
 
-        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
-        {
-            var sb = new StringBuilder();
-            sb.Append(GetTypeName());
-            sb.AppendLine(" {");
-            info = info ?? ShowInfo.Default;
-            var len = info.Format != null ? info.Format.Length : 0;
-            var pad = new String(' ', len);
-            var finPad = len > 2 ? new String(' ', len - 2) : String.Empty;
-            var typeFormat = new ShowInfo(0, 0, pad + "  ");
+		//protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
+		//{
+		//    var sb = new StringBuilder();
+		//    sb.Append(GetTypeName());
+		//    sb.AppendLine(" {");
+		//    info = info ?? ShowInfo.Default;
+		//    var len = info.Format != null ? info.Format.Length : 0;
+		//    var pad = new String(' ', len);
+		//    var finPad = len > 2 ? new String(' ', len - 2) : String.Empty;
+		//    var typeFormat = new ShowInfo(0, 0, pad + "  ");
 
-            for (var i = 0; i < keys.Count; i++)
-            {
-                var f = values[i].Is<ElaTypeInfo>() ? typeFormat : ShowInfo.Default;
-                sb.AppendFormat("{0}{1}={2}\r\n", pad, keys[i], values[i].Show(f, ctx));
-            }
+		//    for (var i = 0; i < keys.Count; i++)
+		//    {
+		//        var f = values[i].Is<ElaTypeInfo>() ? typeFormat : ShowInfo.Default;
+		//        sb.AppendFormat("{0}{1}={2}\r\n", pad, keys[i], values[i].Show(f, ctx));
+		//    }
 
-            sb.Append(finPad + "}");
-            return sb.ToString();
-        }
+		//    sb.Append(finPad + "}");
+		//    return sb.ToString();
+		//}
 
 
         //protected internal override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
@@ -124,12 +118,12 @@ namespace Ela.Runtime.ObjectModel
 		//}
 
 
-        private bool CompareInfos(ElaTypeInfo left, ElaTypeInfo right)
-        {
-            return left.GetTypeName() == right.GetTypeName() &&
-                EqHelper.ListEquals(left.keys, right.keys) &&
-                EqHelper.ListEquals(left.values, right.values);
-        }
+		//private bool CompareInfos(ElaTypeInfo left, ElaTypeInfo right)
+		//{
+		//    return left.Get() == right.GetTypeName() &&
+		//        EqHelper.ListEquals(left.keys, right.keys) &&
+		//        EqHelper.ListEquals(left.values, right.values);
+		//}
 
 
         private bool Cast(ElaValue left, ElaValue right, out ElaTypeInfo li, out ElaTypeInfo ri, string op, ExecutionContext ctx)

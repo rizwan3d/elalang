@@ -50,25 +50,5 @@ namespace Ela.Runtime.ObjectModel
 				-1;
 		}
 		#endregion
-
-
-		#region Operations
-        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
-        {
-			try
-			{
-				return !String.IsNullOrEmpty(info.Format) ? @this.I4.ToString(info.Format, Culture.NumberFormat) :
-					@this.I4.ToString(Culture.NumberFormat);
-			}
-			catch (FormatException)
-			{
-				if (ctx == ElaObject.DummyContext)
-					throw;
-
-				ctx.InvalidFormat(info.Format, @this);
-				return String.Empty;
-			}
-		}
-		#endregion
 	}
 }

@@ -48,13 +48,5 @@ namespace Ela.Runtime.ObjectModel
 			return other.TypeCode == ElaTypeCode.Boolean ? @this.I4 - other.I4 : -1;
 		}
 		#endregion
-
-
-		#region Operations
-		protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
-		{
-			return @this.I4 == 1 ? Boolean.TrueString : Boolean.FalseString;
-		}
-		#endregion
 	}
 }

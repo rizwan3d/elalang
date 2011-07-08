@@ -82,12 +82,6 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return Default();
 		}
-
-
-		protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
-		{
-			return String.Empty;
-		}
 		#endregion
 	}
 }

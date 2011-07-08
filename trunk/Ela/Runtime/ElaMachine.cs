@@ -1527,9 +1527,9 @@ namespace Ela.Runtime
             len_ovl[LAZ] = lenLaz;
             FillTable(len_ovl, lenErr);
 
-            len_ovl[STR] = nilStr;
-            len_ovl[LAZ] = nilLaz;
-            FillTable(len_ovl, nilLst);
+            nil_ovl[STR] = nilStr;
+            nil_ovl[LAZ] = nilLaz;
+            FillTable(nil_ovl, nilLst);
 
             hea_ovl[LST] = heaLst;
             hea_ovl[STR] = heaStr;
@@ -2899,8 +2899,8 @@ namespace Ela.Runtime
 						{
 							left = evalStack.Pop();
 							right = evalStack.Pop();
-							var code = left.Show(ShowInfo.Default, ctx);
-							var msg = right.Show(ShowInfo.Default, ctx);
+							var code = left.ToString();
+							var msg = right.ToString();
 						
 							if (ctx.Failed)
 							{
@@ -3028,6 +3028,7 @@ namespace Ela.Runtime
 		#region Operations
         private void OverloadFunction(EvalStack evalStack, FastList<ElaValue[]> captures, ElaValue[] locals, WorkerThread thread)
         {
+			var old = evalStack.Pop().Ref;
             var fn = evalStack.Pop().DirectGetString();
             var newObj = evalStack.Pop().Ref;
             var tuple = (ElaTuple)evalStack.PopFast().Ref;
@@ -3040,14 +3041,18 @@ namespace Ela.Runtime
             var ovlFun = default(ElaOverloadedFunction);
             var funMap = default(Dictionary<String,ElaFunction>);
 
-            if (!overloads.TryGetValue(fn, out ovlFun))
-            {
-                funMap = new Dictionary<String, ElaFunction>();
-                ovlFun = new ElaOverloadedFunction(fn, tuple.Length, funMap, captures, this);
-                overloads.Add(fn, ovlFun);
-            }
-            else
-                funMap = ovlFun.overloads;
+			if (!(old is ElaOverloadedFunction))
+			//if (!overloads.TryGetValue(fn, out ovlFun))
+			{
+				funMap = new Dictionary<String, ElaFunction>();
+				ovlFun = new ElaOverloadedFunction(fn, tuple.Length, funMap, captures, this);
+				//overloads.Add(fn, ovlFun);
+			}
+			else
+			{
+				ovlFun = (ElaOverloadedFunction)old;
+				funMap = ovlFun.overloads;
+			}
 
             for (var i = 0; i < tuple.Length; i++)
             {
@@ -3086,13 +3091,13 @@ namespace Ela.Runtime
             evalStack.Push(new ElaValue(ovlFun));
 
             if (tuple.Length == 1)
-                PatchBuiltinUnary(fn, tuple[0].DirectGetString());
+                PatchBuiltinUnary(fn, ovlFun, tuple[0].DirectGetString());
             else if (tuple.Length == 2)
-                PatchBuiltinBinary(fn, tuple[0].DirectGetString(), tuple[1].DirectGetString());
+                PatchBuiltinBinary(fn, ovlFun, tuple[0].DirectGetString(), tuple[1].DirectGetString());
         }
 
 
-        private void PatchBuiltinUnary(string fn, string tag)
+        private void PatchBuiltinUnary(string fn, ElaOverloadedFunction ovlFun, string tag)
         {
             var funs = default(DispatchUnaryFun[]);
 
@@ -3126,12 +3131,15 @@ namespace Ela.Runtime
 
             var tid = TagToTypeId(tag);
 
-            if (tid > 0 && !(funs[tid] is NoneUnary))
-                funs[tid] = new NoneUnary(fn, overloads);
+			if (tid > 0 && !(funs[tid] is NoneUnary))
+			{
+				funs[tid] = new NoneUnary(fn, overloads);
+				overloads.Add(fn, ovlFun);
+			}
         }
 
 
-        private void PatchBuiltinBinary(string fn, string tag1, string tag2)
+		private void PatchBuiltinBinary(string fn, ElaOverloadedFunction ovlFun, string tag1, string tag2)
         {
             var funs = default(DispatchBinaryFun[][]);
 
@@ -3196,8 +3204,11 @@ namespace Ela.Runtime
             var tid1 = TagToTypeId(tag1);
             var tid2 = TagToTypeId(tag2);
 
-            if (tid1 > 0 && tid2 > 0 && !(funs[tid1][tid2] is NoneBinary))
-                funs[tid1][tid2] = new NoneBinary(fn, overloads);
+			if (tid1 > 0 && tid2 > 0 && !(funs[tid1][tid2] is NoneBinary))
+			{
+				funs[tid1][tid2] = new NoneBinary(fn, overloads);
+				overloads.Add(fn, ovlFun);
+			}
         }
 
 
@@ -3630,18 +3641,18 @@ namespace Ela.Runtime
 
 		private void NoOperation(string op, ElaValue value, WorkerThread thread, EvalStack evalStack)
 		{
-			var str = value.Ref.Show(value, new ShowInfo(10, 10), thread.Context);
+			var str = value.ToString();
 
 			if (str.Length > 40)
 				str = str.Substring(0, 40) + "...";
 
-			ExecuteFail(new ElaError(ElaRuntimeError.InvalidOp, str, value.GetTypeName(), op), thread, evalStack);
+			ExecuteFail(new ElaError(ElaRuntimeError.InvalidOp, str, value.GetTag(), op), thread, evalStack);
 		}
 
 
 		private void InvalidType(ElaValue val, WorkerThread thread, EvalStack evalStack, string type)
 		{
-			ExecuteFail(new ElaError(ElaRuntimeError.InvalidType, type, val.GetTypeName()), thread, evalStack);
+			ExecuteFail(new ElaError(ElaRuntimeError.InvalidType, type, val.GetTag()), thread, evalStack);
 		}
 
 
@@ -3658,7 +3669,7 @@ namespace Ela.Runtime
 
 		private void ConversionFailed(ElaValue val, int target, string err, WorkerThread thread, EvalStack evalStack)
 		{
-			ExecuteFail(new ElaError(ElaRuntimeError.ConversionFailed, val.GetTypeName(),
+			ExecuteFail(new ElaError(ElaRuntimeError.ConversionFailed, val.GetTag(),
 				TypeCodeFormat.GetShortForm((ElaTypeCode)target), err), thread, evalStack);
 		}
 		#endregion

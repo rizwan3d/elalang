@@ -24,27 +24,27 @@ namespace Ela.Runtime
 
 		public void InvalidFormat(string format, ElaValue value)
 		{
-			Fail(ElaRuntimeError.InvalidFormat, format, value.ToString(), value.GetTypeName());
+			Fail(ElaRuntimeError.InvalidFormat, format, value.ToString(), value.GetTag());
 		}
 
 
 		public void DivideByZero(ElaValue value)
 		{
-			Fail(ElaRuntimeError.DivideByZero, value.ToString(), value.GetTypeName());
+			Fail(ElaRuntimeError.DivideByZero, value.ToString(), value.GetTag());
 		}
 
 
 		public void InvalidRightOperand(ElaValue left, ElaValue right, string op)
 		{
-			Fail(ElaRuntimeError.RightOperand, right.ToString(), right.GetTypeName(),
-				left.ToString(), left.GetTypeName(), op);
+			Fail(ElaRuntimeError.RightOperand, right.ToString(), right.GetTag(),
+				left.ToString(), left.GetTag(), op);
 		}
 
 
 		public void InvalidLeftOperand(ElaValue left, ElaValue right, string op)
 		{
-			Fail(ElaRuntimeError.LeftOperand, left.ToString(), left.GetTypeName(), 
-				right.ToString(), right.GetTypeName(), op);
+			Fail(ElaRuntimeError.LeftOperand, left.ToString(), left.GetTag(), 
+				right.ToString(), right.GetTag(), op);
 		}
 
 
@@ -56,39 +56,39 @@ namespace Ela.Runtime
 
 		public void ConversionFailed(ElaValue source, ElaTypeCode target, string reason)
 		{
-			Fail(ElaRuntimeError.ConversionFailed, source.ToString(), source.GetTypeName(),
+			Fail(ElaRuntimeError.ConversionFailed, source.ToString(), source.GetTag(),
                 TypeCodeFormat.GetShortForm(target), reason);
 		}
 
 
 		public void InvalidIndexType(ElaValue index)
 		{
-			Fail(ElaRuntimeError.InvalidIndexType, index.GetTypeName());
+			Fail(ElaRuntimeError.InvalidIndexType, index.GetTag());
 		}
 
 
 		public void IndexOutOfRange(ElaValue index, ElaValue obj)
 		{
-			Fail(ElaRuntimeError.IndexOutOfRange, index.ToString(), index.GetTypeName(),
-				obj.ToString(), obj.GetTypeName());
+			Fail(ElaRuntimeError.IndexOutOfRange, index.ToString(), index.GetTag(),
+				obj.ToString(), obj.GetTag());
 		}
 
 
 		public void InvalidType(string expected, ElaValue given)
 		{
-			Fail(ElaRuntimeError.InvalidType, expected, given.GetTypeName());
+			Fail(ElaRuntimeError.InvalidType, expected, given.GetTag());
 		}
 
 
 		public void UnknownField(string field, ElaValue val)
 		{
-			Fail(ElaRuntimeError.UnknownField, field, val.ToString(), val.GetTypeName());
+			Fail(ElaRuntimeError.UnknownField, field, val.ToString(), val.GetTag());
 		}
 
 
 		public void NoOperator(ElaValue value, string op)
 		{
-			Fail(ElaRuntimeError.InvalidOp, value, value.GetTypeName(), op);
+			Fail(ElaRuntimeError.InvalidOp, value, value.GetTag(), op);
 		}
 
 

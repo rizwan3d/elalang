@@ -47,27 +47,13 @@ namespace Ela.Runtime.ObjectModel
 				other.TypeCode == ElaTypeCode.Double ? ((Double)Value).CompareTo(other.GetDouble()) :
 				-1;
 		}
-        #endregion
 
 
-		#region Operations
-		protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
-        {
-			try
-			{
-				return !String.IsNullOrEmpty(info.Format) ? Value.ToString(info.Format, Culture.NumberFormat) :
-					Value.ToString(Culture.NumberFormat);
-			}
-			catch (FormatException)
-			{
-				if (ctx == ElaObject.DummyContext)
-					throw;
-
-				ctx.InvalidFormat(info.Format, @this);
-				return String.Empty;
-			}
+		public override string ToString()
+		{
+			return Value.ToString();
 		}
-		#endregion
+        #endregion
 
 
 		#region Properties

@@ -36,7 +36,7 @@ namespace Ela.Runtime.ObjectModel
 			
 			}
 
-            protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
+            public override string ToString()
             {
                 return INVALID;
             }
@@ -85,25 +85,25 @@ namespace Ela.Runtime.ObjectModel
 
         protected internal virtual int AsInteger(ElaValue value)
         {
-            throw InvalidCast(ElaTypeCode.Integer, value.GetTypeName());
+            throw InvalidCast(ElaTypeCode.Integer, value.GetTag());
         }
 
 
         protected internal virtual float AsSingle(ElaValue value)
         {
-            throw InvalidCast(ElaTypeCode.Single, value.GetTypeName());
+			throw InvalidCast(ElaTypeCode.Single, value.GetTag());
         }
 
 
         protected internal virtual bool AsBoolean(ElaValue value)
         {
-            throw InvalidCast(ElaTypeCode.Boolean, value.GetTypeName());
+			throw InvalidCast(ElaTypeCode.Boolean, value.GetTag());
         }
 
 
         protected internal virtual char AsChar(ElaValue value)
         {
-            throw InvalidCast(ElaTypeCode.Char, value.GetTypeName());
+			throw InvalidCast(ElaTypeCode.Char, value.GetTag());
         }
 
 
@@ -122,7 +122,7 @@ namespace Ela.Runtime.ObjectModel
 		public virtual ElaTypeInfo GetTypeInfo()
 		{
             var info = new ElaTypeInfo();
-            info.AddField(TYPENAME, GetTypeName());
+            //info.AddField(TYPENAME, GetTypeName());
             info.AddField(TYPECODE, TypeId);
             info.AddField(ISBYREF, 
                 TypeId == ElaMachine.INT ||
@@ -141,14 +141,9 @@ namespace Ela.Runtime.ObjectModel
 
 		public override string ToString()
 		{
-			if (TypeId == ElaMachine.INT ||
-				TypeId == ElaMachine.REA ||
-				TypeId == ElaMachine.CHR ||
-				TypeId == ElaMachine.BYT)
-				return UNDEF;
-			else
-                return Show(new ElaValue(this), ShowInfo.Debug, DummyContext);
+			return TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId);
 		} 
+
 
 		internal static ElaValue GetDefault()
 		{
@@ -160,25 +155,6 @@ namespace Ela.Runtime.ObjectModel
         {
             return new ElaValue(ElaInvalidObject.Instance);
         }
-
-
-		protected internal virtual string GetTypeName()
-		{
-			return TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId);
-		}
-
-
-		private string ThisToString(ElaValue first, ElaValue second, ExecutionContext ctx)
-		{
-			return first.Ref == this ? first.Ref.Show(first, ShowInfo.Default, ctx) :
-				second.Ref.Show(second, ShowInfo.Default, ctx);
-		}
-
-
-		private ElaValue This(ElaValue first, ElaValue second)
-		{
-			return first.Ref == this ? first : second;
-		}
 		#endregion
 
 
@@ -194,13 +170,6 @@ namespace Ela.Runtime.ObjectModel
 		{
 			ctx.NoOperator(new ElaValue(this), "genfin");
 			return Default();
-		}
-
-
-		protected internal virtual string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
-		{
-			ctx.NoOperator(@this, "show");
-			return String.Empty;
 		}
 		#endregion
 

@@ -59,12 +59,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
-		{
-			return "[" + FormatHelper.FormatEnumerable(this, ctx, info) + "]";
-		}
-
-
 		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
 		{
             return new ElaValue(new ElaList(this, value));
@@ -90,6 +84,7 @@ namespace Ela.Runtime.ObjectModel
 		{
             return new ElaValue(Reverse());
 		}
+
 		#endregion
 
 
@@ -98,6 +93,32 @@ namespace Ela.Runtime.ObjectModel
         {
             return "List#";
         }
+
+
+		public override string ToString()
+		{
+			var sb = new StringBuilder();
+			sb.Append('[');
+			var cc = 0;
+
+			foreach (var e in this)
+			{
+				if (cc > 30)
+				{
+					sb.Append(",...");
+					break;
+				}
+
+				if (cc > 0)
+					sb.Append(',');
+
+				sb.Append(e.ToString());
+				cc++;
+			}
+
+			sb.Append(']');
+			return sb.ToString();
+		}
 
 
         internal override int GetLength(ExecutionContext ctx)

@@ -42,8 +42,31 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-		#region Operations
-        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
+        #region Methods
+        internal override ElaValue Convert(ElaValue @this, ElaTypeCode type)
+        {
+            if (type == ElaTypeCode.Tuple)
+                return new ElaValue(new ElaTuple(values));
+
+            return base.Convert(@this, type);
+        }
+
+
+		public ElaRecord Clone()
+		{
+			var rec = new ElaRecord(values.Length);
+
+			for (var i = 0; i < values.Length; i++)
+			{
+				var v = values[i];
+				rec.AddField(i, keys[i], flags[i], v);
+			}
+
+			return rec;
+		}
+		
+		
+		public override string ToString()
 		{
 			var sb = new StringBuilder();
 			sb.Append('{');
@@ -52,7 +75,7 @@ namespace Ela.Runtime.ObjectModel
 
 			foreach (var k in GetKeys())
 			{
-				if (info.SequenceLength > 0 && c > info.SequenceLength)
+				if (c > 30)
 				{
 					sb.Append("...");
 					break;
@@ -64,37 +87,12 @@ namespace Ela.Runtime.ObjectModel
 				if (flags[c - 1])
 					sb.Append("!");
 
-				sb.AppendFormat("{0}={1}", k, this[k].Ref.Show(this[k], info, ctx));
+				sb.AppendFormat("{0}={1}", k, this[k].ToString());
 			}
 
 			sb.Append('}');
 			return sb.ToString();
 		}
-
-
-        internal ElaValue Clone()
-        {
-            var rec = new ElaRecord(values.Length);
-
-            for (var i = 0; i < values.Length; i++)
-            {
-                var v = values[i];
-                rec.AddField(i, keys[i], flags[i], v);
-            }
-
-            return new ElaValue(rec);
-        }
-        #endregion
-
-
-        #region Methods
-        internal override ElaValue Convert(ElaValue @this, ElaTypeCode type)
-        {
-            if (type == ElaTypeCode.Tuple)
-                return new ElaValue(new ElaTuple(values));
-
-            return base.Convert(@this, type);
-        }
 
 
         internal override string GetTag()

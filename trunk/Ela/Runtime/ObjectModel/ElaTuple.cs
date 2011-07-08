@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Ela.Debug;
+using System.Text;
 
 namespace Ela.Runtime.ObjectModel
 {
@@ -60,13 +61,6 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
-		{
-			return "(" + FormatHelper.FormatEnumerable((IEnumerable<ElaValue>)this, ctx, info) + 
-				(Length < 2 ? ",)" : ")");
-		}
-
-
 		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
 		{
 			InternalSetValue(value);
@@ -88,6 +82,35 @@ namespace Ela.Runtime.ObjectModel
 			tup.Values = array;
 			tup.cons = array.Length;
 			return tup;
+		}
+
+
+		public override string ToString()
+		{
+			var sb = new StringBuilder();
+			sb.Append('(');
+			var cc = 0;
+
+			foreach (var e in this)
+			{
+				if (cc > 30)
+				{
+					sb.Append(",...");
+					break;
+				}
+
+				if (cc > 0)
+					sb.Append(',');
+
+				sb.Append(e.ToString());
+				cc++;
+			}
+
+			if (cc == 1)
+				sb.Append(',');
+
+			sb.Append(')');
+			return sb.ToString();
 		}
 
 
@@ -146,7 +169,7 @@ namespace Ela.Runtime.ObjectModel
 
 			if (t == null)
 			{
-				ctx.InvalidType(GetTypeName(), other);
+				ctx.InvalidType(GetTag(), other);
 				return null;
 			}
 

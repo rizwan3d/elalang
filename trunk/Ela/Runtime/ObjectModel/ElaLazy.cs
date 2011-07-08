@@ -22,7 +22,13 @@ namespace Ela.Runtime.ObjectModel
         internal override ElaValue Convert(ElaValue @this, ElaTypeCode type)
         {
             return Force().Convert(type);
-        }
+		}
+
+
+		public override string ToString()
+		{
+			return Value.Ref == null ? "<thunk>" : Value.ToString();
+		}
         
         
         internal override string GetTag()
@@ -103,15 +109,6 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue GenerateFinalize(ExecutionContext ctx)
 		{
 			return new ElaValue(this);
-		}
-
-
-		protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
-		{
-			if (Function == null)
-				return Value.Ref.Show(@this, info, ctx);
-			else
-				return "<thunk>";
 		}
 		#endregion
 

@@ -154,15 +154,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
-		{
-			var val = GetValue();
-			val = info.StringLength > 0 && val.Length > info.StringLength ? 
-				val.Substring(0, info.StringLength) + "..." : val;
-			return val;
-		}
-
-
 		internal ElaValue Head()
 		{
 			return new ElaValue(buffer[headIndex]);

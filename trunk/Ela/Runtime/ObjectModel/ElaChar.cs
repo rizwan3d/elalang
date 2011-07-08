@@ -48,13 +48,5 @@ namespace Ela.Runtime.ObjectModel
 			return other.TypeCode == ElaTypeCode.Char ? @this.I4 - other.I4 : -1;
 		}
 		#endregion
-
-
-		#region Operations
-		protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
-		{
-			return ((Char)@this.I4).ToString();
-		}
-		#endregion
 	}
 }
