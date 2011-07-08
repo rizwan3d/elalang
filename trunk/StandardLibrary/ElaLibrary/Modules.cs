@@ -11,7 +11,7 @@ using Ela.Library.General;
 //[assembly: ElaModule("Guid", typeof(GuidModule))]
 //[assembly: ElaModule("Real", typeof(RealModule))]
 //[assembly: ElaModule("DateTime", typeof(DateTimeModule))]
-//[assembly: ElaModule("Con", typeof(ConModule))]
+[assembly: ElaModule("Con", typeof(ConModule))]
 //[assembly: ElaModule("Shell", typeof(ShellModule))]
 //[assembly: ElaModule("Async", typeof(AsyncModule))]
 

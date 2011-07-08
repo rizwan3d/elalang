@@ -205,6 +205,8 @@ namespace Ela.Runtime
                 return (ElaValue)value;
             else if (value is IEnumerable)
                 return new ElaValue(ElaList.FromEnumerable((IEnumerable)value));
+            else if (value is ElaTypeInfo)
+                return new ElaValue(((ElaTypeInfo)value).ToRecord());
             else
                 throw new InvalidCastException();
 		}

@@ -9,8 +9,8 @@ namespace Ela.Runtime.ObjectModel
 		internal static readonly ExecutionContext DummyContext = new ExecutionContext();
 		internal const string UNDEF = "<unknown>";
         internal const string INVALID = "<INVALID>";
-        private const string TYPENAME = "typeName";
-        private const string TYPECODE = "typeCode";
+        private const string TAG = "tag";
+        private const string TYPEID = "typeId";
         private const string ISBYREF = "byRef";
 
 		protected ElaObject(TypeId typeId)
@@ -122,8 +122,8 @@ namespace Ela.Runtime.ObjectModel
 		public virtual ElaTypeInfo GetTypeInfo()
 		{
             var info = new ElaTypeInfo();
-            //info.AddField(TYPENAME, GetTypeName());
-            info.AddField(TYPECODE, TypeId);
+            info.AddField(TAG, GetTag());
+            info.AddField(TYPEID, TypeId);
             info.AddField(ISBYREF, 
                 TypeId == ElaMachine.INT ||
                 TypeId == ElaMachine.CHR ||
@@ -131,7 +131,6 @@ namespace Ela.Runtime.ObjectModel
                 TypeId == ElaMachine.BYT);
             return info;
 		}
-
 
 		internal protected virtual int Compare(ElaValue @this, ElaValue other)
 		{

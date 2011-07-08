@@ -67,8 +67,8 @@ namespace Ela.Compilation
 			else
 				CompileExpression(left, map, Hints.Assign | Hints.Left);
 
-			if ((hints & Hints.Left) != Hints.Left)
-				cw.Emit(Op.Pushunit);
+			if ((hints & Hints.Left) == Hints.Left)
+				cw.Emit(Op.Pop);
 		}		
 		#endregion
 	}

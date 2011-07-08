@@ -439,7 +439,10 @@ namespace Ela.Runtime
                 return ElaObject.GetDefault();
             }
 
-            return PerformOp(((ElaLazy)left.Ref).Value, ((ElaLazy)right.Ref).Value, ctx);
+            return PerformOp(
+                left.TypeId == ElaMachine.LAZ ? ((ElaLazy)left.Ref).Value : left,
+                right.TypeId == ElaMachine.LAZ ? ((ElaLazy)right.Ref).Value : right,
+                ctx);
         }
     }
 
@@ -465,7 +468,10 @@ namespace Ela.Runtime
 				return ElaObject.GetDefault();
 			}
 
-			return PerformOp(((ElaLazy)first.Ref).Value, ((ElaLazy)second.Ref).Value, ((ElaLazy)third.Ref).Value, ctx);
+			return PerformOp(
+                first.TypeId == ElaMachine.LAZ ? ((ElaLazy)first.Ref).Value : first, 
+                second.TypeId == ElaMachine.LAZ ? ((ElaLazy)second.Ref).Value : second, 
+                third, ctx);
 		}
 	}
 
@@ -483,7 +489,8 @@ namespace Ela.Runtime
 				return ElaObject.GetDefault();
 			}
 
-			return PerformOp(((ElaLazy)left.Ref).Value, ctx);
+			return PerformOp(
+                left.TypeId == ElaMachine.LAZ ? ((ElaLazy)left.Ref).Value : left, ctx);
 		}
 	}
     #endregion

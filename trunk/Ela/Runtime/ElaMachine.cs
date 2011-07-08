@@ -1870,7 +1870,7 @@ namespace Ela.Runtime
 						{
 							left = evalStack.Pop();
 							right = evalStack.Pop();
-							var val = evalStack.Peek();
+							var val = evalStack.Pop();
 
 							evalStack.Replace(set_ovl[left.TypeId][right.TypeId].Call(left, right, val, ctx));
 							
@@ -2877,7 +2877,7 @@ namespace Ela.Runtime
 						}
 						break;
 					case Op.Type:
-						evalStack.Replace(new ElaValue(evalStack.Peek().Ref.GetTypeInfo()));
+						evalStack.Replace(new ElaValue(evalStack.Peek().Ref.GetTypeInfo().ToRecord()));
 						break;
 					case Op.Typeid:
 						right = evalStack.Peek();
@@ -3407,6 +3407,14 @@ namespace Ela.Runtime
 		{
 			if (fun.TypeId != FUN)
 			{
+                if (fun.TypeId == LAZ)
+                {
+                    thread.Context.Failed = true;
+                    thread.Context.Thunk = (ElaLazy)fun;
+                }
+                else
+                    thread.Context.Fail(ElaRuntimeError.NotFunction, fun);
+                
 				ExecuteThrow(thread, stack);
 				return true;
 			}

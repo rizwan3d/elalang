@@ -1731,14 +1731,14 @@ PRODUCTIONS
 				Application<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
-					(operatorTok8|"!") (. op = t.val; .)
+					(operatorTok8|"!"|":") (. op = t.val; .)
 					[ Application<out cexp> ]
 					(. exp = GetOperatorFun(op, exp, cexp); .)
 				}
 			)
 			|
 			(
-				(operatorTok8|"!") (. op = t.val; .)
+				(operatorTok8|"!"|":") (. op = t.val; .)
 				[ 
 					Application<out exp>
 					(. exp = GetOperatorFun(op, null, exp); .)

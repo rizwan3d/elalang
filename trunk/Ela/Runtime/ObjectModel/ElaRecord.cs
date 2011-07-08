@@ -121,6 +121,12 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
+        internal void InsertField(string key, object value)
+        {
+            
+        }
+
+
 		internal void AddField(string key, bool mutable, ElaValue value)
 		{
             AddField(cons, key, mutable, value);

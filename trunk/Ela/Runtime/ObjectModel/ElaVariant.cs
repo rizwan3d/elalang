@@ -46,14 +46,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		public override ElaTypeInfo GetTypeInfo()
-		{
-			var info = base.GetTypeInfo();
-			info.AddField(TAG, Tag);
-			return info;
-		}
-
-
 		public static ElaVariant Some(ElaValue value)
 		{
 			return new ElaVariant(SOME, value);

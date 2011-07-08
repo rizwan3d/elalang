@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7BDF4A1E-DFFF-4AE5-BD2D-1B1F4BE84B1D}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -246,6 +246,9 @@
     <Compile Include="Runtime\ObjectModel\ElaLazyList.cs" />
     <Compile Include="Runtime\ObjectModel\ElaOverloadedFunction.cs" />
     <Compile Include="Runtime\ObjectModel\ElaSimpleObject.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaTypeInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Runtime\ObjectModel\ElaUnit.cs" />
     <Compile Include="FormatHelper.cs" />
     <Compile Include="Debug\VarSym.cs" />
@@ -306,7 +309,6 @@
     <Compile Include="TypeCodeFormat.cs" />
     <Compile Include="Runtime\ObjectModel\ElaVariant.cs" />
     <Compile Include="Runtime\ElaValue.cs" />
-    <Compile Include="Runtime\ObjectModel\ElaTypeInfo.cs" />
     <Compile Include="Runtime\ShowInfo.cs" />
     <Compile Include="Runtime\Strings.cs" />
     <Compile Include="Runtime\WorkerThread.cs" />
