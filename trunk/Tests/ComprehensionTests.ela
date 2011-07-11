@@ -47,11 +47,12 @@ let listMultiple2 {eq} =
 let listLazy1 {eqt} =
         eqt (li is (2::4::6::xs))
         where li = [& x \\ x <- [1..] | x % 2 == 0]
-    
+
 let listLazy2 {eqt} =
         eqt (li is ((1,499)::(1,498)::(1,497)::xs))
         where li = [& (x,y) \\ x <- [1..], y <- [1000,999..] | y < 500]
-    
+
+/*    
 let compOperator {eqt} =
         eqt (lst is [2,4,6,8,10])
         where lst = [] @@ [x \\ x <- [1..10] | x % 2 == 0]
@@ -71,3 +72,4 @@ let pythTriples {eq} =
 let pythTriplesLazy {eq} =
             eq (pyth 12) [(3,4,5),(5,12,13),(6,8,10)]
             where pyth n = [& (x,y,z) \\ x <- [1..n], y <- [x..n], z <- [y..n] | x**2 + y**2 == z**2]
+*/

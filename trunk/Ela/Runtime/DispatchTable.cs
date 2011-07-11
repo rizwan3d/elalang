@@ -3558,8 +3558,38 @@ namespace Ela.Runtime
     #endregion
 
 
-	#region Show
-	internal abstract class ShowFun : DispatchBinaryFun
+    #region Not
+    internal sealed class NotBool : DispatchUnaryFun
+    {
+        internal NotBool(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(left.I4 != 1);
+        }
+    }
+
+
+    internal sealed class NotTuple : DispatchUnaryFun
+    {
+        internal NotTuple(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            var t = (ElaTuple)left.Ref;
+
+            for (var i = 0; i < t.Length; i++)
+            {
+                if (PerformOp(t.FastGet(i), ctx).I4 == 1)
+                    return new ElaValue(true);
+            }
+
+            return new ElaValue(false);
+        }
+    }
+    #endregion
+
+
+    #region Show
+    internal abstract class ShowFun : DispatchBinaryFun
 	{
 		protected ShowFun(DispatchBinaryFun[][] funs) : base(funs) { }
 		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)

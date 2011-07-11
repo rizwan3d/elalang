@@ -119,8 +119,9 @@ namespace Ela.Compilation
 				var child = CompileRecursiveFor(f, map, hints, funAddr, tail);
 				CompileExpression(f.Target, map, Hints.None);
                 cw.Emit(Op.Pushvar, child);
-				cw.Emit(Op.Callt);
-			}
+				cw.Emit(Op.Call);
+                cw.Emit(Op.Br, exitLab);//
+            }
 			else
 			{
 				cw.Emit(Op.Pushvar, tail);
@@ -134,7 +135,8 @@ namespace Ela.Compilation
 			cw.MarkLabel(iterLab);
 			cw.Emit(Op.Pushvar, tail);
 			cw.Emit(Op.Pushvar, 1 | (funAddr >> 8) << 8);
-			cw.Emit(Op.Callt);
+			cw.Emit(Op.Call);
+            cw.Emit(Op.Br, exitLab);//
 
 			cw.MarkLabel(endLab);
 
@@ -144,7 +146,7 @@ namespace Ela.Compilation
 			{
 				cw.Emit(Op.Pushvar, 1 | (parentTail >> 8) << 8);
 				cw.Emit(Op.Pushvar, 2 | (parent >> 8) << 8);
-				cw.Emit(Op.Callt);
+				cw.Emit(Op.Call);
 			}
 
 			cw.MarkLabel(exitLab);
