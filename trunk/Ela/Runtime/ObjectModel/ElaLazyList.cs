@@ -9,7 +9,7 @@ namespace Ela.Runtime.ObjectModel
 	{
 		#region Construction
 		public static readonly new ElaList Empty = ElaNilLazyList.Instance;
-		private ElaLazy thunk;
+		internal ElaLazy thunk;
 		
 		public ElaLazyList(ElaLazy next, object value) : this(next, ElaValue.FromObject(value))
 		{

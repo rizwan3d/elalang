@@ -401,12 +401,12 @@ internal sealed class Scanner {
 			case "&": t.kind = 55; break;
 			case "inline": t.kind = 56; break;
 			case "__internal": t.kind = 57; break;
-			case "<-": t.kind = 60; break;
-			case "<|": t.kind = 61; break;
-			case "|>": t.kind = 62; break;
-			case "||": t.kind = 63; break;
-			case "&&": t.kind = 64; break;
-			case ":": t.kind = 65; break;
+			case ":": t.kind = 59; break;
+			case "<-": t.kind = 61; break;
+			case "<|": t.kind = 62; break;
+			case "|>": t.kind = 63; break;
+			case "||": t.kind = 64; break;
+			case "&&": t.kind = 65; break;
 			default: break;
 		}
 	}
@@ -787,7 +787,7 @@ internal sealed class Scanner {
 			case 74:
 				{t.kind = 58; break;}
 			case 75:
-				{t.kind = 59; break;}
+				{t.kind = 60; break;}
 			case 76:
 				{t.kind = 66; break;}
 			case 77:

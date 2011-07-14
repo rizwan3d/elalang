@@ -1073,7 +1073,7 @@ PRODUCTIONS
 			.)
 		).
 		
-	Operators = operatorTok1|operatorTok2|operatorTok3|operatorTok4|operatorTok5|operatorTok6|operatorTok7|operatorTok8|"::"|"!".
+	Operators = operatorTok1|operatorTok2|operatorTok3|operatorTok4|operatorTok5|operatorTok6|operatorTok7|operatorTok8|":"|"::"|"!".
 		
 	FunName<ElaFunctionLiteral fun> = 
 		(
@@ -1089,7 +1089,7 @@ PRODUCTIONS
 			"on" (variantTok|specVariantTok) (. varExp.OverloadNames.Add(t.val); .)
 			{ "->" (variantTok|specVariantTok) (. varExp.OverloadNames.Add(t.val); .) }
 		).
-		
+				
 	FunExpr<ElaBinding varExp> =
 		(
 			(. 
@@ -1551,14 +1551,14 @@ PRODUCTIONS
 				CastExpr<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
-					operatorTok5 (. op = t.val; .)
+					(operatorTok5) (. op = t.val; .)
 					[ CastExpr<out cexp> ]
 					(. exp = GetOperatorFun(op, exp, cexp); .)
 				}
 			)
 			|
 			(
-				operatorTok5 (. op = t.val; .)
+				(operatorTok5) (. op = t.val; .)
 				[ 
 					CastExpr<out exp> 
 					(. exp = GetOperatorFun(op, null, exp); .)

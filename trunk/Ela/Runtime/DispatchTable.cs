@@ -2958,8 +2958,20 @@ namespace Ela.Runtime
     #endregion
 
 
+    #region Generate
+    internal sealed class GenAnyList : DispatchBinaryFun
+    {
+        internal GenAnyList(DispatchBinaryFun[][] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return new ElaValue(new ElaList((ElaList)left.Ref, right));
+        }
+    }
+    #endregion
+
+
     #region GetValue
-	internal sealed class GetModuleString : DispatchBinaryFun
+    internal sealed class GetModuleString : DispatchBinaryFun
 	{
 		internal GetModuleString(DispatchBinaryFun[][] funs) : base(funs) { }
 		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
