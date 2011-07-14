@@ -2964,7 +2964,38 @@ namespace Ela.Runtime
         internal GenAnyList(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            return new ElaValue(new ElaList((ElaList)left.Ref, right));
+            return new ElaValue(new ElaList((ElaList)right.Ref, left));
+        }
+    }
+
+
+    internal sealed class GenAnyTuple : DispatchBinaryFun
+    {
+        internal GenAnyTuple(DispatchBinaryFun[][] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            ((ElaTuple)right.Ref).InternalSetValue(left);
+            return right;
+        }
+    }
+
+
+    internal sealed class GenFinList : DispatchUnaryFun
+    {
+        internal GenFinList(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return new ElaValue(((ElaList)left.Ref).Reverse());
+        }
+    }
+
+
+    internal sealed class GenFinIdle : DispatchUnaryFun
+    {
+        internal GenFinIdle(DispatchUnaryFun[] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
+        {
+            return left;
         }
     }
     #endregion
