@@ -1,0 +1,20 @@
+﻿open "$Async"#elalib@a
+    (
+        async,
+        get,
+        hasValue,
+        wait,
+        sync
+    )
+
+let x == y = a.asyncEqual x y
+ on Async#->Async#
+
+let x <> y = not (a.asyncEqual x y)
+ on Async#->Async#
+
+let showf _ _ = "[async]"
+ on String#->Async#
+ 
+let toString _ = "[async]"
+ on Async#
