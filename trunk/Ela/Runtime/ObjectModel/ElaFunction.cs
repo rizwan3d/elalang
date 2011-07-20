@@ -160,7 +160,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
-        internal override string GetTag()
+        public override string GetTag()
         {
             return "Function#";
 		}

@@ -369,18 +369,6 @@ namespace Ela.Runtime
 
 
         #region Operations
-        public ElaValue Generate(ElaValue value, ExecutionContext ctx)
-        {
-			return Ref.Generate(value, ctx);
-        }
-
-
-        public ElaValue GenerateFinalize(ExecutionContext ctx)
-        {
-			return Ref.GenerateFinalize(ctx);
-        }
-
-
         public ElaValue Convert(ElaTypeCode type)
         {
             return Ref.Convert(this, type);

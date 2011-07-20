@@ -49,7 +49,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-        internal override string GetTag()
+		public override string GetTag()
         {
             return "Tuple#";
         }
@@ -59,19 +59,6 @@ namespace Ela.Runtime.ObjectModel
         {
             return Length;
         }
-
-
-		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
-		{
-			InternalSetValue(value);
-			return new ElaValue(this);
-		}
-
-
-		protected internal override ElaValue GenerateFinalize(ExecutionContext ctx)
-		{
-			return new ElaValue(this);
-		}
 		#endregion
 
 

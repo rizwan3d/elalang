@@ -55,7 +55,7 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        internal virtual string GetTag()
+        public virtual string GetTag()
         {
             return null;
         }
@@ -154,22 +154,6 @@ namespace Ela.Runtime.ObjectModel
         {
             return new ElaValue(ElaInvalidObject.Instance);
         }
-		#endregion
-
-
-		#region Operations
-		protected internal virtual ElaValue Generate(ElaValue value, ExecutionContext ctx)
-		{
-			ctx.NoOperator(new ElaValue(this), "gen");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue GenerateFinalize(ExecutionContext ctx)
-		{
-			ctx.NoOperator(new ElaValue(this), "genfin");
-			return Default();
-		}
 		#endregion
 
 

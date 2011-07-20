@@ -69,19 +69,5 @@ namespace Ela.Runtime.ObjectModel
 			return String.Empty;
 		}
 		#endregion
-
-
-		#region Operations
-		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue GenerateFinalize(ExecutionContext ctx)
-		{
-			return Default();
-		}
-		#endregion
 	}
 }

@@ -9,13 +9,10 @@ namespace Ela.Linking
 		#region Construction
 		private ForeignModule module;
 
-		internal IntrinsicFrame(ElaValue[] mem, FastList<BinaryOverload> binaryOverloads, FastList<UnaryOverload> unaryOverloads, FastList<TernaryOverload> ternaryOverloads, ForeignModule module)
+		internal IntrinsicFrame(ElaValue[] mem, ForeignModule module)
 		{
 			Memory = mem;
 			this.module = module;
-			BinaryOverloads = binaryOverloads;
-			UnaryOverloads = unaryOverloads;
-			TernaryOverloads = ternaryOverloads;
 		}
 		#endregion
 
@@ -30,12 +27,6 @@ namespace Ela.Linking
 
 		#region Properties
 		internal ElaValue[] Memory { get; private set; }
-
-		internal FastList<TernaryOverload> TernaryOverloads { get; private set; }
-		
-		internal FastList<BinaryOverload> BinaryOverloads { get; private set; }
-
-		internal FastList<UnaryOverload> UnaryOverloads { get; private set; }
 		#endregion
 	}
 }

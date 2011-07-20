@@ -1,6 +1,8 @@
 ﻿using System;
 using Ela.Linking;
 using Ela.Runtime.ObjectModel;
+using Ela.Runtime;
+using System.Globalization;
 
 namespace Ela.Library.General
 {
@@ -14,38 +16,116 @@ namespace Ela.Library.General
 		#endregion
 
 
+		#region Nested Classes
+		public sealed class ElaDateTime : ElaObject
+		{
+			#region Construction
+			internal const string DEFAULT_FORMAT = "dd/MM/yyyy HH:mm:ss";
+			internal static readonly CultureInfo Culture = CultureInfo.CreateSpecificCulture("en-US");
+
+			public ElaDateTime(DateTime dateTime)
+				: this(dateTime.ToUniversalTime().Ticks)
+			{
+
+			}
+
+
+			internal ElaDateTime(long ticks)
+			{
+				Ticks = ticks;
+			}
+			#endregion
+
+
+			#region Methods
+			public override string GetTag()
+			{
+				return "DateTime#";
+			}
+
+
+			protected override int Compare(ElaValue @this, ElaValue other)
+			{
+				var otherInt = default(Int64);
+
+				if (other.TypeCode == ElaTypeCode.Integer)
+					otherInt = other.AsInteger();
+				else if (other.TypeCode == ElaTypeCode.Long)
+					otherInt = other.As<ElaLong>().Value;
+				else if (other.Is<ElaDateTime>())
+					otherInt = other.As<ElaDateTime>().Ticks;
+				else
+					return -1;
+
+				return (Int32)(Ticks - otherInt);
+			}
+
+
+			public override int GetHashCode()
+			{
+				return Ticks.GetHashCode();
+			}
+
+
+			public override string ToString()
+			{
+				return ToString(DEFAULT_FORMAT);
+			}
+
+
+
+			public string ToString(string format)
+			{
+				return new DateTime(Ticks).ToString(format, Culture.DateTimeFormat);
+			}
+			#endregion
+
+
+			#region Properties
+			internal long Ticks { get; private set; }
+			#endregion
+		}
+		#endregion
+
+
+		
+
 		#region Methods
 		public override void Initialize()
 		{
 			Add<ElaDateTime>("now", Now);
 			Add<ElaDateTime>("today", Today);
-			Add<ElaDateTime,ElaDateTime,ElaDateTime>("add", Add);
-			Add<Int64,ElaDateTime,ElaDateTime>("addTicks", AddTicks);
-			Add<Double,ElaDateTime,ElaDateTime>("addMilliseconds", AddMilliseconds);
-			Add<Double,ElaDateTime,ElaDateTime>("addSeconds", AddSeconds);
-			Add<Double,ElaDateTime,ElaDateTime>("addMinutes", AddMinutes);
-			Add<Double,ElaDateTime,ElaDateTime>("addHours", AddHours);
-			Add<Double,ElaDateTime,ElaDateTime>("addDays", AddDays);
-			Add<Int32,ElaDateTime,ElaDateTime>("addMonths", AddMonths);
-			Add<Int32,ElaDateTime,ElaDateTime>("addYears", AddYears);
-			Add<ElaDateTime,Int32>("years", Years);
-			Add<ElaDateTime,Int32>("months", Months);
-			Add<ElaDateTime,Int32>("days", Days);
-			Add<ElaDateTime,Int32>("hours", Hours);
-			Add<ElaDateTime,Int32>("minutes", Minutes);
-			Add<ElaDateTime,Int32>("seconds", Seconds);
-			Add<ElaDateTime,Int32>("milliseconds", Milliseconds);
-			Add<ElaDateTime,Int64>("ticks", Ticks);
-			Add<ElaDateTime,ElaVariant>("dayOfWeek", GetDayOfWeek);
-			Add<ElaDateTime,Int32>("dayOfYear", GetDayOfYear);
-			Add<ElaDateTime,ElaDateTime>("date", GetDate);
-			Add<String,String,ElaDateTime>("parse", Parse);
-			Add<ElaDateTime,String>("toLocaleString", ToLocaleString);
-			Add<String,ElaDateTime,String>("toLocaleStringFormat", ToLocaleStringFormat);
-			Add<ElaDateTime,ElaDateTime,ElaRecord>("diff", Diff);
-			Add<ElaDateTime,ElaDateTime,Int32>("diffSeconds", DiffSeconds);
-			Add<ElaDateTime,ElaDateTime,Int32>("diffMilliseconds", DiffMilliseconds);
-			Add<ElaDateTime,ElaDateTime,Int64>("diffTicks", DiffTicks);
+			Add<ElaDateTime, ElaDateTime, ElaDateTime>("add", Add);
+			Add<Int64, ElaDateTime, ElaDateTime>("addTicks", AddTicks);
+			Add<Double, ElaDateTime, ElaDateTime>("addMilliseconds", AddMilliseconds);
+			Add<Double, ElaDateTime, ElaDateTime>("addSeconds", AddSeconds);
+			Add<Double, ElaDateTime, ElaDateTime>("addMinutes", AddMinutes);
+			Add<Double, ElaDateTime, ElaDateTime>("addHours", AddHours);
+			Add<Double, ElaDateTime, ElaDateTime>("addDays", AddDays);
+			Add<Int32, ElaDateTime, ElaDateTime>("addMonths", AddMonths);
+			Add<Int32, ElaDateTime, ElaDateTime>("addYears", AddYears);
+			Add<ElaDateTime, Int32>("years", Years);
+			Add<ElaDateTime, Int32>("months", Months);
+			Add<ElaDateTime, Int32>("days", Days);
+			Add<ElaDateTime, Int32>("hours", Hours);
+			Add<ElaDateTime, Int32>("minutes", Minutes);
+			Add<ElaDateTime, Int32>("seconds", Seconds);
+			Add<ElaDateTime, Int32>("milliseconds", Milliseconds);
+			Add<ElaDateTime, Int64>("ticks", Ticks);
+			Add<ElaDateTime, ElaVariant>("dayOfWeek", GetDayOfWeek);
+			Add<ElaDateTime, Int32>("dayOfYear", GetDayOfYear);
+			Add<ElaDateTime, ElaDateTime>("date", GetDate);
+			Add<String, String, ElaDateTime>("parse", Parse);
+			Add<ElaDateTime, String>("toLocaleString", ToLocaleString);
+			Add<String, ElaDateTime, String>("toLocaleStringFormat", ToLocaleStringFormat);
+			Add<ElaDateTime, ElaDateTime, ElaRecord>("diff", Diff);
+			Add<ElaDateTime, ElaDateTime, Int32>("diffSeconds", DiffSeconds);
+			Add<ElaDateTime, ElaDateTime, Int32>("diffMilliseconds", DiffMilliseconds);
+			Add<ElaDateTime, ElaDateTime, Int64>("diffTicks", DiffTicks);
+			Add<ElaDateTime>("dateTimeMax", GetMax);
+			Add<ElaDateTime>("dateTimeMin", GetMin);
+			Add<ElaDateTime,String>("dateTimeToString", dt => dt.ToString());
+			Add<String,ElaDateTime,String>("dateTimeToStringFormat", (f,dt) => dt.ToString(f));
 		}
 
 
@@ -239,6 +319,18 @@ namespace Ela.Library.General
 		public long DiffTicks(ElaDateTime left, ElaDateTime right)
 		{
 			return left.Ticks - right.Ticks;
+		}
+
+
+		public ElaDateTime GetMax()
+		{
+			return new ElaDateTime(DateTime.MaxValue);
+		}
+
+
+		public ElaDateTime GetMin()
+		{
+			return new ElaDateTime(DateTime.MinValue);
 		}
 		#endregion
 	}

@@ -10,12 +10,64 @@ namespace Ela.Library.General
 	public sealed class AsyncModule : ForeignModule
 	{
 		#region Construction
+		private TypeId asyncTypeId;
+
 		public AsyncModule()
 		{
 			Threads = new List<Thread>();
 		}
 		#endregion
 
+
+		#region Nested Classes
+		public sealed class ElaAsync : ElaObject
+		{
+			#region Construction
+			internal readonly object SyncRoot = new Object();
+
+			internal ElaAsync(AsyncModule mod, ElaFunction fun, TypeId typeId)
+				: base(typeId)
+			{
+				Initialize(mod, fun);
+			}
+			#endregion
+
+
+			#region Methods
+			public override string GetTag()
+			{
+				return "Async#";
+			}
+
+
+			public override string ToString()
+			{
+				return "[async]";
+			}
+
+
+			private void Initialize(AsyncModule mod, ElaFunction fun)
+			{
+				Thread = new System.Threading.Thread(() => Return = fun.Call());
+				mod.Threads.Add(Thread);
+			}
+
+
+			internal void Run()
+			{
+				Thread.Start();
+			}
+			#endregion
+
+
+			#region Properties
+			internal System.Threading.Thread Thread { get; set; }
+
+			internal ElaValue Return { get; private set; }
+			#endregion
+		}
+		#endregion
+		
 
 		#region Methods
 		public override void Close()
@@ -34,6 +86,12 @@ namespace Ela.Library.General
 		}
 
 
+		public override void RegisterTypes(TypeRegistrator registrator)
+		{
+			asyncTypeId = registrator.ObtainTypeId("Async#");			
+		}
+
+
 		public override void Initialize()
 		{
 			Add<ElaFunction,ElaAsync>("async", RunAsync);
@@ -41,12 +99,13 @@ namespace Ela.Library.General
 			Add<ElaAsync,Boolean>("hasValue", HasValue);
 			Add<Int32,ElaAsync,ElaUnit>("wait", Wait);
 			Add<ElaObject,ElaFunction,ElaUnit>("sync", Sync);
+			Add<ElaValue,ElaValue,bool>("asyncEqual", (l,r) => l.ReferenceEquals(r));
 		}
 
 
 		public ElaAsync RunAsync(ElaFunction fun)
 		{
-			var ret = new ElaAsync(this, fun);
+			var ret = new ElaAsync(this, fun, asyncTypeId);
 			ret.Run();
 			return ret;
 		}

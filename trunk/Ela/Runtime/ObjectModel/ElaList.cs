@@ -57,39 +57,11 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return new ElaValue(InternalNext);
 		}
-
-
-		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
-		{
-            return new ElaValue(new ElaList(this, value));
-
-            //if (this == Empty)
-            //    return new ElaValue(new ElaList(this, value));
-            //else
-            //{
-            //    var tail = new ElaList(Empty, value);
-
-            //    var xs = this;
-
-            //    while (xs.InternalNext != Empty)
-            //        xs = xs.InternalNext;
-
-            //    xs.InternalNext = tail;
-            //    return new ElaValue(this);
-            //}
-		}
-
-
-		protected internal override ElaValue GenerateFinalize(ExecutionContext ctx)
-		{
-            return new ElaValue(Reverse());
-		}
-
 		#endregion
 
 
         #region Methods
-        internal override string GetTag()
+		public override string GetTag()
         {
             return "List#";
         }

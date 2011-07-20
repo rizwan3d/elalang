@@ -45,7 +45,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-        internal override string GetTag()
+		public override string GetTag()
         {
             return "Module#";
         }

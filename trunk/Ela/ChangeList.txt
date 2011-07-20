@@ -1,3 +1,4 @@
+0.9.7.10:Fix:Fixed a bug in pattern overlapping detection for tuple patterns (e.g. patterns like '(x,y)' and '(x,y,z)' could be considered overlapping when they do not overlap).
 0.9.7.9:Fix:A compilation logic bug fixed for the lazy list comprehensions (could cause situations when a list of incorrect length is generated).
 0.9.7.8:Change:Op code Pat is decomissioned.
 0.9.7.7:Change:Op code Hasfld is decomissioned.

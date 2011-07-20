@@ -2964,7 +2964,26 @@ namespace Ela.Runtime
         internal GenAnyList(DispatchBinaryFun[][] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            return new ElaValue(new ElaList((ElaList)right.Ref, left));
+			var xs = right.Ref as ElaLazyList;
+
+			if (xs != null)
+			{
+				if (xs.thunk != null)
+					return new ElaValue(new ElaLazyList(xs.thunk, left));
+				else
+					return new ElaValue(new ElaLazyList((ElaLazyList)xs.InternalNext, left));
+			}
+			else
+				return new ElaValue(new ElaList((ElaList)right.Ref, left));
+        }
+    }
+
+	internal sealed class GenAnyLazy : DispatchBinaryFun
+    {
+        internal GenAnyLazy(DispatchBinaryFun[][] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+			return new ElaValue(new ElaLazyList((ElaLazy)right.Ref, left));
         }
     }
 
@@ -2985,7 +3004,7 @@ namespace Ela.Runtime
         internal GenFinList(DispatchUnaryFun[] funs) : base(funs) { }
         protected internal override ElaValue Call(ElaValue left, ExecutionContext ctx)
         {
-            return new ElaValue(((ElaList)left.Ref).Reverse());
+            return left.Ref is ElaLazyList ? left : new ElaValue(((ElaList)left.Ref).Reverse());
         }
     }
 

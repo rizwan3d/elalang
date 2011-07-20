@@ -29,9 +29,9 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return Value.Ref == null ? "<thunk>" : Value.ToString();
 		}
-        
-        
-        internal override string GetTag()
+
+
+		public override string GetTag()
         {
             return Value.Ref == null ? "Lazy#" : Value.GetTag();
         }
@@ -95,20 +95,6 @@ namespace Ela.Runtime.ObjectModel
 			}
 
 			return Value;
-		}
-		#endregion
-
-
-		#region Operations
-		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
-		{
-			return new ElaValue(new ElaLazyList(this, value));
-		}
-
-
-		protected internal override ElaValue GenerateFinalize(ExecutionContext ctx)
-		{
-			return new ElaValue(this);
 		}
 		#endregion
 
