@@ -1,0 +1,61 @@
+open "$DateTime"#elalib@dt 
+    (
+        now,
+        today,
+        add,
+        addTicks,
+        addMilliseconds,
+        addSeconds,
+        addMinutes,
+        addHours,
+        addDays,
+        addMonths,
+        addYears,
+        years,
+        months,
+        days,
+        hours,
+        minutes,
+        seconds,
+        milliseconds,
+        ticks,
+        dayOfWeek,
+        dayOfYear,
+        date,
+        parse,
+        toLocaleString,
+        toLocaleStringFormat,
+        diff,
+        diffSeconds,
+        diffMilliseconds,
+        diffTicks
+    )
+    
+let private inline ~~d = dt.ticks d
+
+let x == y = ~~x == ~~y
+ on DateTime#->DateTime#
+
+let x <> y = ~~x <> ~~y
+ on DateTime#->DateTime#
+
+let x > y = ~~x > ~~y
+ on DateTime#->DateTime#
+
+let x < y = ~~x < ~~y
+ on DateTime#->DateTime#
+
+let x >= y = ~~x >= ~~y
+ on DateTime#->DateTime#
+
+let x <= y = ~~x <= ~~y
+ on DateTime#->DateTime#
+
+let showf f v = dt.dateTimeToStringFormat f v
+ on String#->DateTime#
+ 
+let max _ = dt.dateTimeMax
+ on DateTime#
+ 
+let min _ = dt.dateTimeMin
+ on DateTime#

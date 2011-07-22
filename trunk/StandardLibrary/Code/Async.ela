@@ -15,6 +15,3 @@ let x <> y = not (a.asyncEqual x y)
 
 let showf _ _ = "[async]"
  on String#->Async#
- 
-let toString _ = "[async]"
- on Async#

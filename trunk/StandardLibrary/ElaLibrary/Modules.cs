@@ -6,11 +6,11 @@ using Ela.Library.General;
 
 [assembly: ElaModule("Debug", typeof(DebugModule))]
 [assembly: ElaModule("String", typeof(StringModule))]
-//[assembly: ElaModule("StringBuilder", typeof(StringBuilderModule))]
+[assembly: ElaModule("$StringBuilder", typeof(StringBuilderModule))]
 [assembly: ElaModule("Char", typeof(CharModule))]
 [assembly: ElaModule("$Guid", typeof(GuidModule))]
 [assembly: ElaModule("Real", typeof(RealModule))]
-//[assembly: ElaModule("DateTime", typeof(DateTimeModule))]
+[assembly: ElaModule("$DateTime", typeof(DateTimeModule))]
 [assembly: ElaModule("Con", typeof(ConModule))]
 [assembly: ElaModule("Shell", typeof(ShellModule))]
 [assembly: ElaModule("$Async", typeof(AsyncModule))]

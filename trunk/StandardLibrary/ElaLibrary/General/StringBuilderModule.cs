@@ -9,6 +9,8 @@ namespace Ela.Library.General
     public sealed class StringBuilderModule : ForeignModule
     {
         #region Construction
+        private TypeId stringBuilderTypeId;
+
         public StringBuilderModule()
         {
 
@@ -16,7 +18,46 @@ namespace Ela.Library.General
         #endregion
 
 
+        #region Nested Classes
+        public sealed class ElaStringBuilder : ElaObject
+        {
+            #region Construction
+            public ElaStringBuilder(StringBuilder builder, TypeId typeId)
+                : base(typeId)
+            {
+                Builder = builder;
+            }
+            #endregion
+
+
+            #region Methods
+            public override string GetTag()
+            {
+                return "StringBuilder#";
+            }
+
+
+            public override int GetHashCode()
+            {
+                return Builder.GetHashCode();
+            }
+            #endregion
+
+
+            #region Properties
+            internal StringBuilder Builder { get; private set; }
+            #endregion
+        }
+        #endregion
+
+
         #region Methods
+        public override void RegisterTypes(TypeRegistrator registrator)
+        {
+            stringBuilderTypeId = registrator.ObtainTypeId("StringBuilder#");
+        }
+
+
         public override void Initialize()
         {
             Add<ElaValue,ElaObject>("builder", CreateBuilder);
@@ -25,9 +66,12 @@ namespace Ela.Library.General
             Add<String,ElaStringBuilder,ElaStringBuilder>("appendLine", Append);
             Add<Int32,String,ElaStringBuilder,ElaStringBuilder>("insert", Insert);
             Add<Int32,Char,ElaStringBuilder,ElaStringBuilder>("insertChar", InsertChar);
-            Add<String,String,ElaStringBuilder,ElaStringBuilder>("Replace", Replace);
+            Add<String,String,ElaStringBuilder,ElaStringBuilder>("replace", Replace);
             Add<Char,Char,ElaStringBuilder,ElaStringBuilder>("replaceChar", ReplaceChar);
             Add<Int32,Int32,ElaStringBuilder,ElaStringBuilder>("remove", Remove);
+
+            Add<ElaStringBuilder,Int32>("stringBuilderLength", b => b.Builder.Length);
+            Add<ElaStringBuilder,String>("stringBuilderToString", b => b.Builder.ToString());
         }
 
 
@@ -35,7 +79,7 @@ namespace Ela.Library.General
         {
             var init = val.TypeCode != ElaTypeCode.Unit ?
                 val.ToString() : String.Empty;
-            return new ElaStringBuilder(new StringBuilder(init));
+            return new ElaStringBuilder(new StringBuilder(init), stringBuilderTypeId);
         }
 
 

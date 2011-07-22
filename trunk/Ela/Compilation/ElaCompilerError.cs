@@ -21,9 +21,9 @@ namespace Ela.Compilation
 
 		PatternNotAllArgs = 306,
 
-		NameReserved = 307,
+		// = 307,
 
-		CastNotSupported = 308,
+		// = 308,
 
 		InfiniteRangeOnlyList = 309,
 
@@ -40,5 +40,11 @@ namespace Ela.Compilation
         InvalidBuiltinBinding = 315,
 
 		ReferNoInit = 316,
+
+        OverloadOnlyGlobal = 317,
+
+        OverloadNotWithAnd = 318,
+
+        OverloadNoPatterns = 319,
 	}
 }

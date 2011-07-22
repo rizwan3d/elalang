@@ -10,15 +10,15 @@ namespace Ela.Library.General
 	public sealed class StringModule : ForeignModule
 	{
 		#region Construction
-		public StringModule()
+        public StringModule()
 		{
 
 		}
 		#endregion
 
 
-		#region Methods
-		public override void Initialize()
+        #region Methods
+        public override void Initialize()
 		{
 			Add<String,String>("upper", ToUpper);
 			Add<String,String>("lower", ToLower);

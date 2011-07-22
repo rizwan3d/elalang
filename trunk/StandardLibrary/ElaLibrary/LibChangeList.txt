@@ -1,3 +1,9 @@
+0.0.5.6:Change:A function 'StringBuilder.Replace' is renamed to 'StringBuilder.replace'.
+0.0.5.5:Fix:A bug in Guid.parse function is fixed (parsing was not always done correctly).
+0.0.5.4:Change:Guid module now doesn't have 'empty' function.
+0.0.5.3:New:Now Prelude defines overloadable functions 'generate' and 'generateFinalize' that can be used to implement custom comprehensions.
+0.0.5.2:New:Now 'async' module supports 'toString' function that can be used to convert an instance of 'async' to string.
+0.0.5.1:Change:Total redesign of standard library according to the new Ela architecture.
 0.0.5.0:Release:Release of 0.0.5
 0.0.4.2:New:Functions 'acos' and 'asin' added to Core module.
 0.0.4.1:Change:CoreInternal module renamed to $Core.

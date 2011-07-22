@@ -12,11 +12,8 @@ namespace Ela.Compilation
 			if (s.InitExpression == null)
 				AddError(ElaCompilerError.VariableDeclarationInitMissing, s);
 
-            if (s.IsOverloaded)
-            {
-                CompileOverloaded(s, map, hints);
+            if (s.IsOverloaded && CompileOverloaded(s, map, hints))
                 return;
-            }
 
             var data = -1;
 			var flags = s.VariableFlags;
@@ -129,21 +126,24 @@ namespace Ela.Compilation
 		}
 
 
-        private void CompileOverloaded(ElaBinding s, LabelMap map, Hints hints)
+        private bool CompileOverloaded(ElaBinding s, LabelMap map, Hints hints)
         {
             if (CurrentScope != globalScope || s.In != null)
             {
-                //Error
+                AddError(ElaCompilerError.OverloadOnlyGlobal, s);
+                return false;
             }
 
             if (s.And != null)
             {
-                //Error
+                AddError(ElaCompilerError.OverloadNotWithAnd, s);
+                return false;
             }
 
             if (s.Pattern != null)
             {
-                //Error
+                AddError(ElaCompilerError.OverloadNoPatterns, s);
+                return false;
             }
 
             var sv = GetVariable(s.VariableName, CurrentScope, 0, GetFlags.NoError, s.Line, s.Column);
@@ -181,6 +181,8 @@ namespace Ela.Compilation
 
 			if ((hints & Hints.Left) != Hints.Left)
 				cw.Emit(Op.Pushvar, addr);
+
+            return true;
         }
 
 

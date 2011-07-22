@@ -9,7 +9,9 @@ namespace Ela.Library.General
 	public sealed class DateTimeModule : ForeignModule
 	{
 		#region Construction
-		public DateTimeModule()
+        private TypeId dateTimeTypeId;
+        
+        public DateTimeModule()
 		{
 
 		}
@@ -23,14 +25,13 @@ namespace Ela.Library.General
 			internal const string DEFAULT_FORMAT = "dd/MM/yyyy HH:mm:ss";
 			internal static readonly CultureInfo Culture = CultureInfo.CreateSpecificCulture("en-US");
 
-			public ElaDateTime(DateTime dateTime)
-				: this(dateTime.ToUniversalTime().Ticks)
+			public ElaDateTime(DateTime dateTime, TypeId typeId) : this(dateTime.ToUniversalTime().Ticks, typeId)
 			{
 
 			}
 
 
-			internal ElaDateTime(long ticks)
+			internal ElaDateTime(long ticks, TypeId typeId) : base(typeId)
 			{
 				Ticks = ticks;
 			}
@@ -86,11 +87,15 @@ namespace Ela.Library.General
 			#endregion
 		}
 		#endregion
-
-
-		
+        		
 
 		#region Methods
+        public override void RegisterTypes(TypeRegistrator registrator)
+        {
+            dateTimeTypeId = registrator.ObtainTypeId("DateTime#");
+        }
+
+
 		public override void Initialize()
 		{
 			Add<ElaDateTime>("now", Now);
@@ -131,67 +136,67 @@ namespace Ela.Library.General
 
 		public ElaDateTime Now()
 		{
-			return new ElaDateTime(DateTime.Now);
+			return new ElaDateTime(DateTime.Now, dateTimeTypeId);
 		}
 
 
 		public ElaDateTime Today()
 		{
-			return new ElaDateTime(DateTime.Today);
+            return new ElaDateTime(DateTime.Today, dateTimeTypeId);
 		}
 
 
 		public ElaDateTime Add(ElaDateTime toAdd, ElaDateTime val)
 		{
-			return new ElaDateTime(new DateTime(val.Ticks).Add(new TimeSpan(toAdd.Ticks)));
+            return new ElaDateTime(new DateTime(val.Ticks).Add(new TimeSpan(toAdd.Ticks)), dateTimeTypeId);
 		}
 
 
 		public ElaDateTime AddTicks(long ticks, ElaDateTime val)
 		{
-			return new ElaDateTime(new DateTime(val.Ticks).AddTicks(ticks));	
+            return new ElaDateTime(new DateTime(val.Ticks).AddTicks(ticks), dateTimeTypeId);	
 		}
 
 
 		public ElaDateTime AddMilliseconds(double ms, ElaDateTime val)
 		{
-			return new ElaDateTime(new DateTime(val.Ticks).AddMilliseconds(ms));
+            return new ElaDateTime(new DateTime(val.Ticks).AddMilliseconds(ms), dateTimeTypeId);
 		}
 
 
 		public ElaDateTime AddSeconds(double sec, ElaDateTime val)
 		{
-			return new ElaDateTime(new DateTime(val.Ticks).AddSeconds(sec));
+            return new ElaDateTime(new DateTime(val.Ticks).AddSeconds(sec), dateTimeTypeId);
 		}
 
 
 		public ElaDateTime AddMinutes(double mins, ElaDateTime val)
 		{
-			return new ElaDateTime(new DateTime(val.Ticks).AddMinutes(mins));
+            return new ElaDateTime(new DateTime(val.Ticks).AddMinutes(mins), dateTimeTypeId);
 		}
 
 
 		public ElaDateTime AddHours(double hours, ElaDateTime val)
 		{
-			return new ElaDateTime(new DateTime(val.Ticks).AddHours(hours));
+            return new ElaDateTime(new DateTime(val.Ticks).AddHours(hours), dateTimeTypeId);
 		}
 
 
 		public ElaDateTime AddDays(double days, ElaDateTime val)
 		{
-			return new ElaDateTime(new DateTime(val.Ticks).AddDays(days));
+            return new ElaDateTime(new DateTime(val.Ticks).AddDays(days), dateTimeTypeId);
 		}
 
 
 		public ElaDateTime AddMonths(int months, ElaDateTime val)
 		{
-			return new ElaDateTime(new DateTime(val.Ticks).AddMonths(months));
+            return new ElaDateTime(new DateTime(val.Ticks).AddMonths(months), dateTimeTypeId);
 		}
 
 
 		public ElaDateTime AddYears(int years, ElaDateTime val)
 		{
-			return new ElaDateTime(new DateTime(val.Ticks).AddYears(years));
+            return new ElaDateTime(new DateTime(val.Ticks).AddYears(years), dateTimeTypeId);
 		}
 
 
@@ -269,13 +274,13 @@ namespace Ela.Library.General
 
 		public ElaDateTime GetDate(ElaDateTime val)
 		{
-			return new ElaDateTime(new DateTime(val.Ticks).Date.Ticks);
+            return new ElaDateTime(new DateTime(val.Ticks).Date.Ticks, dateTimeTypeId);
 		}
 			
 
 		public ElaDateTime Parse(string format, string value)
 		{
-			return new ElaDateTime(DateTime.ParseExact(value, format, ElaDateTime.Culture)) ;
+            return new ElaDateTime(DateTime.ParseExact(value, format, ElaDateTime.Culture), dateTimeTypeId);
 		}
 
 
@@ -324,13 +329,13 @@ namespace Ela.Library.General
 
 		public ElaDateTime GetMax()
 		{
-			return new ElaDateTime(DateTime.MaxValue);
+            return new ElaDateTime(DateTime.MaxValue, dateTimeTypeId);
 		}
 
 
 		public ElaDateTime GetMin()
 		{
-			return new ElaDateTime(DateTime.MinValue);
+            return new ElaDateTime(DateTime.MinValue, dateTimeTypeId);
 		}
 		#endregion
 	}

@@ -12,6 +12,3 @@ let x <> y = not (g.guidEqual x y)
 
 let showf _ v = g.guidToString v
  on String#->Guid#
-
-let toString x = g.guidToString x
- on Guid#

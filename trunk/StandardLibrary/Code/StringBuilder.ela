@@ -1,0 +1,24 @@
+open "$StringBuilder"#elalib@sb
+    (
+        builder,
+        append,
+        appendChar,
+        appendLine,
+        insert,
+        insertChar,
+        replace,
+        replaceChar,
+        remove
+    )
+
+let x == y = (sb.stringBuilderToString x) == (sb.stringBuilderToString y)
+ on StringBuilder#->StringBuilder#
+
+let x <> y = (sb.stringBuilderToString x) <> (sb.stringBuilderToString y)
+ on StringBuilder#->StringBuilder#
+
+let showf _ x = sb.stringBuilderToString x
+ on String#->StringBuilder#
+
+let length x = sb.stringBuilderLength x
+ on StringBuilder#
