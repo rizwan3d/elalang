@@ -984,7 +984,8 @@ namespace Ela.Compilation
 
             if (CurrentScope.Locals.TryGetValue(name, out sv))
             {
-                if ((sv.Flags & ElaVariableFlags.External) == ElaVariableFlags.External)
+                if ((sv.Flags & ElaVariableFlags.External) == ElaVariableFlags.External ||
+					(sv.Flags & ElaVariableFlags.NoInit) == ElaVariableFlags.NoInit)
                 {
                     CurrentScope.Locals.Remove(name);
                     return false;

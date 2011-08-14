@@ -66,7 +66,7 @@ namespace Ela.Compilation
 
 				while (and != null && (hints & Hints.And) != Hints.And)
 				{
-                    AddVariable(and.VariableName, and, and.VariableFlags | ElaVariableFlags.NoInit, noInitCode);					
+					AddNoInitVariable(and, noInitCode);
                     and = and.And;
 				}
 
@@ -124,6 +124,79 @@ namespace Ela.Compilation
 			if (s.In != null)
 				EndScope();
 		}
+
+
+		private void AddNoInitVariable(ElaBinding exp, int noInitCode)
+		{
+			if (!String.IsNullOrEmpty(exp.VariableName))
+				AddVariable(exp.VariableName, exp, exp.VariableFlags | ElaVariableFlags.NoInit, noInitCode);
+			else
+				AddPatternVariables(exp.Pattern, noInitCode);
+		}
+
+
+		private void AddPatternVariables(ElaPattern pat, int noInitCode)
+		{
+			switch (pat.Type)
+			{
+				case ElaNodeType.VariantPattern:
+					{
+						var vp = (ElaVariantPattern)pat;
+
+						if (vp.Pattern != null)
+							AddPatternVariables(vp.Pattern, noInitCode);
+					}
+					break;
+				case ElaNodeType.UnitPattern: //Idle
+					break;
+				case ElaNodeType.AsPattern:
+					{
+						var asPat = (ElaAsPattern)pat;
+						AddVariable(asPat.Name, asPat, ElaVariableFlags.NoInit, noInitCode);
+						AddPatternVariables(asPat.Pattern, noInitCode);
+					}
+					break;
+				case ElaNodeType.LiteralPattern: //Idle
+					break;
+				case ElaNodeType.VariablePattern:
+					{
+						var vexp = (ElaVariablePattern)pat;
+						AddVariable(vexp.Name, vexp, ElaVariableFlags.NoInit, noInitCode);
+					}
+					break;
+				case ElaNodeType.RecordPattern:
+					{
+						var rexp = (ElaRecordPattern)pat;
+
+						foreach (var e in rexp.Fields)
+							if (e.Value != null)
+								AddPatternVariables(e.Value, noInitCode);
+					}
+					break;
+				case ElaNodeType.PatternGroup:
+				case ElaNodeType.TuplePattern:
+					{
+						var texp = (ElaTuplePattern)pat;
+
+						foreach (var e in texp.Patterns)
+							AddPatternVariables(e, noInitCode);
+					}
+					break;
+				case ElaNodeType.DefaultPattern: //Idle
+					break;
+				case ElaNodeType.HeadTailPattern:
+					{
+						var hexp = (ElaHeadTailPattern)pat;
+
+						foreach (var e in hexp.Patterns)
+							AddPatternVariables(e, noInitCode);
+					}
+					break;
+				case ElaNodeType.NilPattern: //Idle
+					break;
+			}
+		}
+
 
 
         private bool CompileOverloaded(ElaBinding s, LabelMap map, Hints hints)
