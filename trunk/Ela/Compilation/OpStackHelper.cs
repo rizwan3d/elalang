@@ -70,19 +70,14 @@ namespace Ela.Compilation
 			0, //Min
 			-1, //Show
 			0, //Untag
-			0, //Skiphtag
 			0, //Nil
             0, //Clone			
             0, //Gettag            
             -3, //Ovr
 			
-            0, //Elem
-			0, //Skiptag
-			0, //Newvar
+            0, //Newvar
 			1, //Newrec
 			1, //Newtup
-			-1, //Skiptn
-			-1, //Skiptl
 			-1, //Tupex
 			0, //Failwith
 			0, //Start
@@ -96,11 +91,6 @@ namespace Ela.Compilation
 			0, //Br
 			-1, //Brtrue
 			-1, //Brfalse
-			-2, //Br_lt
-			-2, //Br_gt
-			-2, //Br_eq
-			-2, //Br_neq
-			-1, //Brnil
 			0, //Newfun			
 		};
 	}

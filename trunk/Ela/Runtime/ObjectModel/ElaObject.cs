@@ -163,5 +163,5 @@ namespace Ela.Runtime.ObjectModel
 		#region Properties
 		internal int TypeId { get; set; }
 		#endregion
-	}
+    }
 }

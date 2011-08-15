@@ -232,7 +232,12 @@ namespace Ela.Compilation
 
             for (var i = 0; i < len; i++)
             {
-                cw.Emit(Op.Pushstr, AddString(s.OverloadNames[i]));
+                var n = s.OverloadNames[i];
+
+                if (n == "Any")
+                    n = "$Any";
+
+                cw.Emit(Op.Pushstr, AddString(n));
                 cw.Emit(Op.Gen);
             }
 

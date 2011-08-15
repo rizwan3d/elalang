@@ -132,8 +132,6 @@ namespace Ela.Compilation
 
 		Untag,
 
-		Skiphtag,
-
 		Nil,
 
         Clone,
@@ -144,19 +142,11 @@ namespace Ela.Compilation
 				
 
 		
-		Elem,
-
-		Skiptag,
-
 		Newvar,
 
 		Newrec,
 
 		Newtup,
-
-		Skiptn,
-
-		Skiptl,
 
 		Tupex,
 
@@ -184,20 +174,9 @@ namespace Ela.Compilation
 
 		Brfalse,
 
-		Br_lt,
-
-		Br_gt,
-
-		Br_eq,
-
-		Br_neq,
-
-		Brnil,
-
 		Newfun,
 
 
-        //Jump Tags
-        _Add
+        
 	}
 }

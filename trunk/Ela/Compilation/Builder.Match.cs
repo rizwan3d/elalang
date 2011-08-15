@@ -225,14 +225,11 @@ namespace Ela.Compilation
                             cw.Emit(Op.Popvar, pushSys);
                         }
 
-						cw.Emit(Op.Pushvar, pushSys);
-						
-						if (!String.IsNullOrEmpty(vp.Tag))
-							cw.Emit(Op.Skiptag, AddString(vp.Tag));
-						else
-							cw.Emit(Op.Skiphtag);
-
-						cw.Emit(Op.Br, nextLab);
+						cw.Emit(Op.Pushvar, pushSys);						
+						cw.Emit(Op.Gettag);
+                        cw.Emit(Op.Pushstr, AddString(vp.Tag));
+                        cw.Emit(Op.Ceq);
+                        cw.Emit(Op.Brfalse, nextLab);
 
 						if (vp.Pattern != null)
 						{
@@ -276,7 +273,8 @@ namespace Ela.Compilation
 					{
 						cw.Emit(Op.Pushvar, pushSys);
 						PushPrimitive(((ElaLiteralPattern)patExp).Value);
-						cw.Emit(Op.Br_neq, nextLab);
+                        cw.Emit(Op.Cneq);
+						cw.Emit(Op.Brtrue, nextLab);
 					}
 					break;
 				case ElaNodeType.VariablePattern:
@@ -334,7 +332,9 @@ namespace Ela.Compilation
 			//Silent(pushSys, nextLab, hints, ElaPatterns.HeadTail);
 
 			cw.Emit(Op.Pushvar, pushSys);
-			cw.Emit(Op.Brnil, nextLab);
+			cw.Emit(Op.Isnil);
+            cw.Emit(Op.Brtrue, nextLab);
+            
 
 			var els = pexp.Patterns;
 			var len = els.Count;
@@ -358,8 +358,9 @@ namespace Ela.Compilation
 					{
 						cw.Emit(Op.Dup);
 						cw.Emit(Op.Popvar, pushSys);
-						cw.Emit(Op.Brnil, nextLab);
-						cw.Emit(Op.Pushvar, pushSys);
+						cw.Emit(Op.Isnil);
+                        cw.Emit(Op.Brtrue, nextLab);
+            			cw.Emit(Op.Pushvar, pushSys);
 					}
 
 					cw.Emit(Op.Head);
@@ -469,7 +470,8 @@ namespace Ela.Compilation
 				else
 					cw.Emit(Op.PushI4, len);
 
-				cw.Emit(Op.Br_neq, nextLab);
+                cw.Emit(Op.Cneq);
+				cw.Emit(Op.Brtrue, nextLab);
 
 				for (var i = 0; i < len; i++)
 				{
@@ -497,7 +499,8 @@ namespace Ela.Compilation
 			cw.Emit(Op.Pushvar, pushSys);
 			cw.Emit(Op.Typeid);
 			cw.Emit(Op.PushI4, (Int32)type);
-			cw.Emit(Op.Br_neq, nextLab);
+            cw.Emit(Op.Cneq);
+            cw.Emit(Op.Brtrue, nextLab);
 		}
 
 

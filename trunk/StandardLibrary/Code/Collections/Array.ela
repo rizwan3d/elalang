@@ -29,8 +29,8 @@ let set xs n v = a.set n v xs
 let (++) x y = a.arrayConcat x y
  on Array#->Array#
 
-let (::) xs v = a.arrayCons xs v
- on Array#
+let (::) v xs = a.arrayCons xs v
+ on Any->Array#
 
 let nil xs = a.arrayNil xs
  on Array#

@@ -201,16 +201,72 @@ namespace Ela.Compilation
                     cw.Emit(Op.Clone);
                     break;
                 case ElaBuiltinKind.Fst:
-                    cw.Emit(Op.Elem, 2 | 0 << 8);
+                    {
+                        var addr = AddVariable();
+                        var next = cw.DefineLabel();
+                        cw.Emit(Op.Dup);
+                        cw.Emit(Op.Popvar, addr);
+                        cw.Emit(Op.Len);
+                        cw.Emit(Op.PushI4, 2);
+                        cw.Emit(Op.Ceq);
+                        cw.Emit(Op.Brtrue, next);
+                        cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
+                        cw.MarkLabel(next);
+                        cw.Emit(Op.PushI4_0);
+                        cw.Emit(Op.Pushvar, addr);
+                        cw.Emit(Op.Pushelem);
+                    }
                     break;
                 case ElaBuiltinKind.Snd:
-                    cw.Emit(Op.Elem, 2 | 1 << 8);
+                    {
+                        var addr = AddVariable();
+                        var next = cw.DefineLabel();
+                        cw.Emit(Op.Dup);
+                        cw.Emit(Op.Popvar, addr);
+                        cw.Emit(Op.Len);
+                        cw.Emit(Op.PushI4, 2);
+                        cw.Emit(Op.Ceq);
+                        cw.Emit(Op.Brtrue, next);
+                        cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
+                        cw.MarkLabel(next);
+                        cw.Emit(Op.PushI4, 1);
+                        cw.Emit(Op.Pushvar, addr);
+                        cw.Emit(Op.Pushelem);
+                    }
                     break;
                 case ElaBuiltinKind.Fst3:
-                    cw.Emit(Op.Elem, 3 | 0 << 8);
+                    {
+                        var addr = AddVariable();
+                        var next = cw.DefineLabel();
+                        cw.Emit(Op.Dup);
+                        cw.Emit(Op.Popvar, addr);
+                        cw.Emit(Op.Len);
+                        cw.Emit(Op.PushI4, 3);
+                        cw.Emit(Op.Ceq);
+                        cw.Emit(Op.Brtrue, next);
+                        cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
+                        cw.MarkLabel(next);
+                        cw.Emit(Op.PushI4_0);
+                        cw.Emit(Op.Pushvar, addr);
+                        cw.Emit(Op.Pushelem);
+                    }
                     break;
                 case ElaBuiltinKind.Snd3:
-                    cw.Emit(Op.Elem, 3 | 1 << 8);
+                    {
+                        var addr = AddVariable();
+                        var next = cw.DefineLabel();
+                        cw.Emit(Op.Dup);
+                        cw.Emit(Op.Popvar, addr);
+                        cw.Emit(Op.Len);
+                        cw.Emit(Op.PushI4, 3);
+                        cw.Emit(Op.Ceq);
+                        cw.Emit(Op.Brtrue, next);
+                        cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
+                        cw.MarkLabel(next);
+                        cw.Emit(Op.PushI4, 1);
+                        cw.Emit(Op.Pushvar, addr);
+                        cw.Emit(Op.Pushelem);
+                    }
                     break;
                 case ElaBuiltinKind.Head:
                     cw.Emit(Op.Head);

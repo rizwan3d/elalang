@@ -1086,8 +1086,8 @@ PRODUCTIONS
 		
 	OverloadExpr<ElaBinding varExp> = 
 		(
-			"on" (variantTok|specVariantTok) (. varExp.OverloadNames.Add(t.val); .)
-			{ "->" (variantTok|specVariantTok) (. varExp.OverloadNames.Add(t.val); .) }
+			"on" (variantTok|specVariantTok|"Any") (. varExp.OverloadNames.Add(t.val); .)
+			{ "->" (variantTok|specVariantTok|"Any") (. varExp.OverloadNames.Add(t.val); .) }
 		).
 				
 	FunExpr<ElaBinding varExp> =

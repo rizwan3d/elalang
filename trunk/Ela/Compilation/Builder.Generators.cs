@@ -31,11 +31,10 @@ namespace Ela.Compilation
 
 			cw.MarkLabel(iter);
 			cw.Emit(Op.Pushvar, serv);
-			//cw.Emit(Op.Skiptl, addr >> 8);
-			//cw.Emit(Op.Br, breakExit);
 
             //new
-            cw.Emit(Op.Brnil, breakExit);
+            cw.Emit(Op.Isnil);
+            cw.Emit(Op.Brtrue, breakExit);
             cw.Emit(Op.Pushvar, serv);
             cw.Emit(Op.Head);
             cw.Emit(Op.Popvar, addr);
@@ -107,7 +106,8 @@ namespace Ela.Compilation
             var sys = AddVariable();
             cw.Emit(Op.Dup);
             cw.Emit(Op.Popvar, sys);
-            cw.Emit(Op.Brnil, endLab);
+            cw.Emit(Op.Isnil);
+            cw.Emit(Op.Brtrue, endLab);
             cw.Emit(Op.Pushvar, sys);
             cw.Emit(Op.Head);
             cw.Emit(Op.Popvar, head);
