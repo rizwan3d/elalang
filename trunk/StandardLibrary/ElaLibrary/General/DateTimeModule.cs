@@ -22,10 +22,17 @@ namespace Ela.Library.General
 		public sealed class ElaDateTime : ElaObject
 		{
 			#region Construction
-			internal const string DEFAULT_FORMAT = "dd/MM/yyyy HH:mm:ss";
+            private const string TAG = "DateTime#";
+            internal const string DEFAULT_FORMAT = "dd/MM/yyyy HH:mm:ss";
 			internal static readonly CultureInfo Culture = CultureInfo.CreateSpecificCulture("en-US");
 
-			public ElaDateTime(DateTime dateTime, TypeId typeId) : this(dateTime.ToUniversalTime().Ticks, typeId)
+            public ElaDateTime(DateTime dateTime, ElaMachine vm) : this(dateTime, vm.GetTypeId(TAG))
+            {
+
+            }
+
+			
+            internal ElaDateTime(DateTime dateTime, TypeId typeId) : this(dateTime.ToUniversalTime().Ticks, typeId)
 			{
 
 			}
@@ -41,7 +48,7 @@ namespace Ela.Library.General
 			#region Methods
 			public override string GetTag()
 			{
-				return "DateTime#";
+                return TAG;
 			}
 
 

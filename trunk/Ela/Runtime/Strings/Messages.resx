@@ -138,4 +138,7 @@
   <data name="StackCorrupted" xml:space="preserve">
     <value>Stack is corrupted.</value>
   </data>
+  <data name="TypeNodeLoaded" xml:space="preserve">
+    <value>Unable to load type '{0}'. This type is not registered within the current virtual machine instance.</value>
+  </data>
 </root>

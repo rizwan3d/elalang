@@ -137,3 +137,9 @@ let nestedMatch {eqt} =
                et res = match xs with
                               x::xs = match x with [1,2] = true; _     = false
                               []    = false
+
+let tupleMatch2 {eq,err} =
+        match t with
+              (x,y)   = err!
+              (x,y,z) = eq (x+y+z) 6
+        where t = (1,2,3)

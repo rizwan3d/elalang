@@ -15,6 +15,9 @@ namespace Ela.Runtime.ObjectModel
 
 		protected ElaObject(TypeId typeId)
 		{
+            if (typeId == null)
+                throw new ElaTypeException(GetTag());
+				
 			TypeId = typeId.Id;
 		}
 

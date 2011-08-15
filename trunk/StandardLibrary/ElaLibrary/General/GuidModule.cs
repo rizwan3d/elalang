@@ -20,9 +20,17 @@ namespace Ela.Library.General
 		public sealed class ElaGuid : ElaObject
 		{
 			#region Construction
-			public ElaGuid(Guid value, TypeId typeId) : base(typeId)
+            private const string TAG = "Guid#";
+
+            public ElaGuid(Guid value, ElaMachine vm) : this(value, vm.GetTypeId(TAG))
+            {
+
+            }
+
+
+			internal ElaGuid(Guid value, TypeId typeId) : base(typeId)
 			{
-				Value = value;
+                Value = value;
 			}
 			#endregion
 
@@ -92,6 +100,10 @@ namespace Ela.Library.General
             {
                 g = new Guid(str);
                 return ElaVariant.Some(new ElaValue(new ElaGuid(g, guidTypeId)));
+            }
+            catch (ElaTypeException)
+            {
+                throw;
             }
             catch (Exception)
             {

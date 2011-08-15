@@ -83,10 +83,6 @@ let init (x::[]@n) = n
     init (x::xs)   = x :: init xs
     init []        = fail "Core.init: Empty list"
 
-//Seq->Bool
-let isNil (_::_) = false 
-    isNil []     = true
-
 //Call->(Seq,Cons)->(Seq,Cons)
 let takeWhile f (x::xs) | f x  = x :: takeWhile f xs
                         | else = nil xs

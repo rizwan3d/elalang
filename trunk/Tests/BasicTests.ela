@@ -143,3 +143,9 @@ let assign {eq} =
         $ r.val <- r.val * 2
         $ eq r.val 4
         where r = {!val = 0}
+        
+let chainBinding {eq} =
+        eq q 5
+        where x = 2
+           et (y,z) = (1,2)
+           et q = x+y+z

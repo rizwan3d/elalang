@@ -1,6 +1,6 @@
 ﻿using Ela.Linking;
 using Ela.Library.General;
-//using Ela.Library.Collections;
+using Ela.Library.Collections;
 
 [assembly: ElaModule("$Core", typeof(CoreModule))]
 
@@ -18,5 +18,5 @@ using Ela.Library.General;
 //[assembly: ElaModule("MutableMap", typeof(MutableMapModule))]
 //[assembly: ElaModule("Map", typeof(MapModule))]
 //[assembly: ElaModule("Set", typeof(SetModule))]
-//[assembly: ElaModule("Array", typeof(ArrayModule))]
+[assembly: ElaModule("$Array", typeof(ArrayModule))]
 //[assembly: ElaModule("Queue", typeof(QueueModule))]

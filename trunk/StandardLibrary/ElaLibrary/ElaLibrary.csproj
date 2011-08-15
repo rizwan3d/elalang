@@ -79,6 +79,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\ArrayModule.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Collections\ElaArray.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="General\AsyncModule.cs" />
     <Compile Include="General\CharModule.cs" />
     <Compile Include="General\ConModule.cs" />

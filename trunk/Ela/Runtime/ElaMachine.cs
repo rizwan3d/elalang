@@ -1733,6 +1733,17 @@ namespace Ela.Runtime
 		}
 
 
+        public TypeId GetTypeId(string tag)
+        {
+            var tid = default(Int32);
+
+            if (typeIdMap.TryGetValue(tag, out tid))
+                return new TypeId(tid);
+            else
+                return null;
+        }
+
+
 		public ExecutionResult Run()
 		{
 			MainThread.Offset = MainThread.Offset == 0 ? 0 : MainThread.Offset;
@@ -3158,6 +3169,12 @@ namespace Ela.Runtime
 				case "$generateFinalize":
 					funs = fin_ovl;
 					break;
+                case "$isnil":
+                    funs = isn_ovl;
+                    break;
+                case "$nil":
+                    funs = nil_ovl;
+                    break;
             }
 
             var tid = TagToTypeId(tag);

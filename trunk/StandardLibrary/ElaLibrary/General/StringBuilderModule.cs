@@ -22,8 +22,16 @@ namespace Ela.Library.General
         public sealed class ElaStringBuilder : ElaObject
         {
             #region Construction
-            public ElaStringBuilder(StringBuilder builder, TypeId typeId)
-                : base(typeId)
+            private const string TAG = "StringBuilder#";
+
+            public ElaStringBuilder(StringBuilder builder, ElaMachine vm)
+                : this(builder, vm.GetTypeId(TAG))
+            {
+
+            }
+
+
+            internal ElaStringBuilder(StringBuilder builder, TypeId typeId) : base(typeId)
             {
                 Builder = builder;
             }
@@ -33,7 +41,7 @@ namespace Ela.Library.General
             #region Methods
             public override string GetTag()
             {
-                return "StringBuilder#";
+                return TAG;
             }
 
 

@@ -12,7 +12,8 @@ let assert =
         gte = op' "gte" (>=),
         lte = op' "lte" (<=),
         eqt = op' "eqt" (==) true,
-        eqf = op' "eqf" (==) false
+        eqf = op' "eqf" (==) false,
+        err = \() -> raise AssertFailed ("err")
     }
     where op' m op x y | op x y = ()
                        | else   = raise AssertFailed (m)

@@ -31,8 +31,18 @@ namespace Ela.Compilation
 
 			cw.MarkLabel(iter);
 			cw.Emit(Op.Pushvar, serv);
-			cw.Emit(Op.Skiptl, addr >> 8);
-			cw.Emit(Op.Br, breakExit);
+			//cw.Emit(Op.Skiptl, addr >> 8);
+			//cw.Emit(Op.Br, breakExit);
+
+            //new
+            cw.Emit(Op.Brnil, breakExit);
+            cw.Emit(Op.Pushvar, serv);
+            cw.Emit(Op.Head);
+            cw.Emit(Op.Popvar, addr);
+            cw.Emit(Op.Pushvar, serv);
+            cw.Emit(Op.Tail);
+            cw.Emit(Op.Popvar, 0 | ((addr >> 8) + 1) << 8);
+            //end new
 
 			if (s.Pattern.Type != ElaNodeType.VariablePattern)
 				CompilePattern(addr, null, s.Pattern, map, iter, ElaVariableFlags.None, hints);
@@ -90,8 +100,21 @@ namespace Ela.Compilation
 			var iterLab = cw.DefineLabel();
 			var head = AddVariable();
 			var tail = AddVariable();
-			cw.Emit(Op.Skiptl, head >> 8);
-			cw.Emit(Op.Br, endLab);
+			//cw.Emit(Op.Skiptl, head >> 8);
+			//cw.Emit(Op.Br, endLab);
+
+            //new
+            var sys = AddVariable();
+            cw.Emit(Op.Dup);
+            cw.Emit(Op.Popvar, sys);
+            cw.Emit(Op.Brnil, endLab);
+            cw.Emit(Op.Pushvar, sys);
+            cw.Emit(Op.Head);
+            cw.Emit(Op.Popvar, head);
+            cw.Emit(Op.Pushvar, sys);
+            cw.Emit(Op.Tail);
+            cw.Emit(Op.Popvar, tail);
+            //end new
 
 			if (s.Pattern.Type == ElaNodeType.VariablePattern)
 			{

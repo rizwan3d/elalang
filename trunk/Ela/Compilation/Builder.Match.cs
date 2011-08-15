@@ -331,94 +331,59 @@ namespace Ela.Compilation
 
 		private void CompileHeadTailPattern(int pushSys, ElaHeadTailPattern pexp, LabelMap map, Label nextLab, ElaVariableFlags flags, Hints hints)
 		{
-			if (pexp.Patterns.Count == 2 && currentCounter < 250 &&
-				(pexp.Patterns[0].Type == ElaNodeType.VariablePattern || pexp.Patterns[0].Type == ElaNodeType.DefaultPattern) &&
-                (pexp.Patterns[1].Type == ElaNodeType.VariablePattern || pexp.Patterns[1].Type == ElaNodeType.DefaultPattern ||
-                pexp.Patterns[1].Type == ElaNodeType.NilPattern))
+			//Silent(pushSys, nextLab, hints, ElaPatterns.HeadTail);
+
+			cw.Emit(Op.Pushvar, pushSys);
+			cw.Emit(Op.Brnil, nextLab);
+
+			var els = pexp.Patterns;
+			var len = els.Count;
+			cw.Emit(Op.Pushvar, pushSys);
+
+            if (len > 2)
+            {
+                pushSys = AddVariable();
+				cw.Emit(Op.Dup);
+				cw.Emit(Op.Popvar, pushSys);
+            }
+
+			for (var i = 0; i < len; i++)
 			{
-				//Silent(pushSys, nextLab, hints, ElaPatterns.HeadTail);
-				cw.Emit(Op.Pushvar, pushSys);
+				var e = els[i];
+				var isEnd = i == len - 1;
 
-				var newHints = (hints & Hints.FunBody) == Hints.FunBody ? hints ^ Hints.FunBody : hints;
-				var pe1 = pexp.Patterns[0];
-				var pe2 = pexp.Patterns[1];
-				var v1 = 0;
-				
-				if (pe1.Type == ElaNodeType.VariablePattern)
-					v1 = AddMatchVariable(((ElaVariablePattern)pe1).Name, flags, pe1);
-				else
-					v1 = AddVariable();
-
-				if (pe2.Type == ElaNodeType.VariablePattern || pe2.Type == ElaNodeType.DefaultPattern)
+				if (!isEnd)
 				{
-					if (pe2.Type == ElaNodeType.VariablePattern)
-						AddMatchVariable(((ElaVariablePattern)pe2).Name, flags, pe2); //v2
-					else
-						AddVariable(); //v2
-
-					cw.Emit(Op.Skiptl, v1 >> 8);
-				}
-				else if (pe2.Type == ElaNodeType.NilPattern)
-					cw.Emit(Op.Skiptn, v1 >> 8);
-
-				cw.Emit(Op.Br, nextLab);
-			}
-			else
-			{
-				//Silent(pushSys, nextLab, hints, ElaPatterns.HeadTail);
-
-				cw.Emit(Op.Pushvar, pushSys);
-				cw.Emit(Op.Brnil, nextLab);
-
-				var els = pexp.Patterns;
-				var len = els.Count;
-				cw.Emit(Op.Pushvar, pushSys);
-
-                if (len > 2)
-                {
-                    pushSys = AddVariable();
-					cw.Emit(Op.Dup);
-					cw.Emit(Op.Popvar, pushSys);
-                }
-
-				for (var i = 0; i < len; i++)
-				{
-					var e = els[i];
-					var isEnd = i == len - 1;
-
-					if (!isEnd)
+					if (i > 0)
 					{
-						if (i > 0)
-						{
-							cw.Emit(Op.Dup);
-							cw.Emit(Op.Popvar, pushSys);
-							cw.Emit(Op.Brnil, nextLab);
-							cw.Emit(Op.Pushvar, pushSys);
-						}
-
-						cw.Emit(Op.Head);
-					}
-
-					if (e.Type == ElaNodeType.VariablePattern)
-					{
-						var nm = ((ElaVariablePattern)e).Name;
-						var a = AddMatchVariable(nm, flags, e);
-						cw.Emit(Op.Popvar, a);
-					}
-					else if (e.Type == ElaNodeType.DefaultPattern)
-						cw.Emit(Op.Pop);
-					else
-					{
-						var newSys = AddVariable();
-						cw.Emit(Op.Popvar, newSys);
-						CompilePattern(newSys, null, e, map, nextLab, flags, hints);
-					}
-
-					if (!isEnd)
-					{
+						cw.Emit(Op.Dup);
+						cw.Emit(Op.Popvar, pushSys);
+						cw.Emit(Op.Brnil, nextLab);
 						cw.Emit(Op.Pushvar, pushSys);
-						cw.Emit(Op.Tail);
 					}
+
+					cw.Emit(Op.Head);
+				}
+
+				if (e.Type == ElaNodeType.VariablePattern)
+				{
+					var nm = ((ElaVariablePattern)e).Name;
+					var a = AddMatchVariable(nm, flags, e);
+					cw.Emit(Op.Popvar, a);
+				}
+				else if (e.Type == ElaNodeType.DefaultPattern)
+					cw.Emit(Op.Pop);
+				else
+				{
+					var newSys = AddVariable();
+					cw.Emit(Op.Popvar, newSys);
+					CompilePattern(newSys, null, e, map, nextLab, flags, hints);
+				}
+
+				if (!isEnd)
+				{
+					cw.Emit(Op.Pushvar, pushSys);
+					cw.Emit(Op.Tail);
 				}
 			}
 		}

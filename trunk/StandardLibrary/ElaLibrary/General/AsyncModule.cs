@@ -25,8 +25,7 @@ namespace Ela.Library.General
 			#region Construction
 			internal readonly object SyncRoot = new Object();
 
-			internal ElaAsync(AsyncModule mod, ElaFunction fun, TypeId typeId)
-				: base(typeId)
+			internal ElaAsync(AsyncModule mod, ElaFunction fun, TypeId typeId) : base(typeId)
 			{
 				Initialize(mod, fun);
 			}
