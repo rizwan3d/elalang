@@ -19,4 +19,4 @@ using Ela.Library.Collections;
 [assembly: ElaModule("$Map", typeof(MapModule))]
 //[assembly: ElaModule("Set", typeof(SetModule))]
 [assembly: ElaModule("$Array", typeof(ArrayModule))]
-//[assembly: ElaModule("Queue", typeof(QueueModule))]
+[assembly: ElaModule("$Queue", typeof(QueueModule))]

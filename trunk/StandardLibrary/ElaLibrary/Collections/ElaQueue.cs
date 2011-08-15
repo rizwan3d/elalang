@@ -9,19 +9,24 @@ namespace Ela.Library.Collections
     public sealed class ElaQueue : ElaObject, IEnumerable<ElaValue>
     {
         #region Construction
-        public static readonly ElaQueue Empty = new ElaQueue(ElaList.Empty, ElaList.Empty);
-        private const string TYPENAME = "queue";
+        private const string TAG = "Queue#";
         private ElaList forward;
         private ElaList backward;
 
-        internal ElaQueue(ElaList forward, ElaList backward)
+        internal ElaQueue(ElaList forward, ElaList backward, TypeId typeId) : base(typeId)
         {
             this.forward = forward;
             this.backward = backward;
         }
 
 
-        public ElaQueue(IEnumerable<ElaValue> seq) : this(ElaList.FromEnumerable(seq).Reverse(), ElaList.Empty)
+		public ElaQueue(IEnumerable<ElaValue> seq, TypeId typeId) : this(ElaList.FromEnumerable(seq), ElaList.Empty, typeId)
+        {
+
+        }
+
+
+        public ElaQueue(IEnumerable<ElaValue> seq, ElaMachine vm) : this(seq, vm.GetTypeId(TAG))
         {
 
         }
@@ -29,87 +34,39 @@ namespace Ela.Library.Collections
 
 
         #region Methods
-        public override ElaPatterns GetSupportedPatterns()
+        public override string GetTag()
         {
-            return ElaPatterns.HeadTail;
+            return TAG;
         }
 
 
-        protected override string GetTypeName()
+        public override string ToString()
         {
-            return TYPENAME;
+            return "queue" + ToList().ToString();
         }
 
 
-        protected override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return new ElaValue(left.ReferenceEquals(right));
-        }
-
-
-        protected override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return new ElaValue(!left.ReferenceEquals(right));
-        }
-
-
-        protected override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
-        {
-            return "queue" + new ElaValue(ToList()).Show(info, ctx);
-        }
-
-
-        protected override ElaValue Head(ExecutionContext ctx)
+        internal ElaValue Head()
         {
             return Peek();
         }
 
 
-        protected override ElaValue Tail(ExecutionContext ctx)
+        internal ElaQueue Tail()
         {
-            return new ElaValue(Dequeue());
+            return Dequeue();
         }
 
 
-        protected override bool IsNil(ExecutionContext ctx)
+        internal bool IsNil()
         {
-            return this == Empty;
+            return forward == ElaList.Empty && backward == ElaList.Empty;
         }
 
 
-        protected override ElaValue GetLength(ExecutionContext ctx)
-        {
-            return new ElaValue(Length);
-        }
-
-
-        protected override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
-        {
-            if (type == ElaTypeCode.List)
-                return new ElaValue(ToList());
-
-            ctx.ConversionFailed(@this, type);
-            return Default();
-        }
-
-
-		protected override ElaValue Cons(ElaObject instance, ElaValue value, ExecutionContext ctx)
+		internal ElaQueue Cons(ElaQueue instance, ElaValue value)
 		{
-			var q = instance as ElaQueue;
-
-			if (q == null)
-			{
-				ctx.InvalidType(GetTypeName(), new ElaValue(instance));
-				return Default();
-			}
-
-			return new ElaValue(q.Enqueue(value));			
-		}
-
-
-		protected override ElaValue Nil(ExecutionContext ctx)
-		{
-			return new ElaValue(ElaQueue.Empty);
+			return new ElaQueue(new ElaList(forward, value), backward, new TypeId(base.TypeId));
 		}
 
 
@@ -127,7 +84,7 @@ namespace Ela.Library.Collections
 
         public ElaQueue Enqueue(ElaValue value)
         {
-            return new ElaQueue(forward, new ElaList(backward, value));
+            return new ElaQueue(forward, new ElaList(backward, value), new TypeId(base.TypeId));
         }
 
 
@@ -135,12 +92,12 @@ namespace Ela.Library.Collections
         {
             var f = forward.Next;
 
-            if (!new ElaValue(f).IsNil(null))
-                return new ElaQueue(f, backward);
-            else if (new ElaValue(backward).IsNil(null))
-                return ElaQueue.Empty;
+            if (f != ElaList.Empty)
+				return new ElaQueue(f, backward, new TypeId(base.TypeId));
+            else if (backward == ElaList.Empty)
+                return new ElaQueue(ElaList.Empty, ElaList.Empty, new TypeId(base.TypeId));
             else
-                return new ElaQueue(backward.Reverse(), ElaList.Empty);
+                return new ElaQueue(backward.Reverse(), ElaList.Empty, new TypeId(base.TypeId));
         }
 
 
@@ -158,6 +115,18 @@ namespace Ela.Library.Collections
         { 
             return ((IEnumerable<ElaValue>)this).GetEnumerator(); 
         }
+
+
+		internal ElaList GetForwardList()
+		{
+			return forward;
+		}
+
+
+		internal ElaList GetBackwardList()
+		{
+			return backward;
+		}
         #endregion
 
 

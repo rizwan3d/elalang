@@ -143,7 +143,6 @@ namespace Ela.Runtime
                         return false;
                 default:
                     return Ref.Equals(other);
-                    break;
             }
         }
 
