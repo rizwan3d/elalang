@@ -47,6 +47,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Collections", "Collections", "{A526900D-C9FF-4F77-ADAA-9F63ABE211A1}"
 	ProjectSection(SolutionItems) = preProject
 		StandardLibrary\Code\Collections\Array.ela = StandardLibrary\Code\Collections\Array.ela
+		StandardLibrary\Code\Collections\Map.ela = StandardLibrary\Code\Collections\Map.ela
 		StandardLibrary\Code\Collections\MutableMap.ela = StandardLibrary\Code\Collections\MutableMap.ela
 	EndProjectSection
 EndProject
