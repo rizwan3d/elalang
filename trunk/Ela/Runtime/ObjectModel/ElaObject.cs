@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Ela.Runtime.ObjectModel
 {
-	public abstract class ElaObject
+	public abstract class ElaObject : IEquatable<ElaValue>
 	{
 		#region Construction
 		internal static readonly ExecutionContext DummyContext = new ExecutionContext();
@@ -55,6 +55,12 @@ namespace Ela.Runtime.ObjectModel
             else
                 throw new InvalidCastException(String.Format("Unable to cast from {0} to {1}",
                     TypeCodeFormat.GetShortForm(@this.TypeCode), TypeCodeFormat.GetShortForm(typeCode)));
+        }
+
+
+        public virtual bool Equals(ElaValue other)
+        {
+            return this == other.Ref;
         }
 
 
@@ -161,7 +167,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Properties
-		internal int TypeId { get; set; }
+		public int TypeId { get; internal set; }
 		#endregion
     }
 }

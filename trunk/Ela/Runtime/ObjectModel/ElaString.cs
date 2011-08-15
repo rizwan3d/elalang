@@ -34,6 +34,13 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
+        public override bool Equals(ElaValue other)
+        {
+            return other.TypeCode == ElaTypeCode.String ? other.DirectGetString() == buffer :
+                false;
+        }
+
+
         public override int GetHashCode()
 		{
 			return buffer.GetHashCode();

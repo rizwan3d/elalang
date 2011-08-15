@@ -1,0 +1,25 @@
+open "$Map"#elalib@m
+    (
+        map,
+        add,
+        remove,
+        contains,
+        toRecord
+    )
+
+let (==) x y = r1 == r2
+        where r1 = m.toRecord x et r2 = toRecord y
+ on Map#->Map#
+
+let (<>) x y = r1 <> r2
+        where r1 = m.toRecord x et r2 = toRecord y
+ on Map#->Map#
+
+let show f xs = m.toString xs
+ on String#->Map#
+
+let length xs = m.mapLength xs
+ on Map#
+
+let get map n = m.get n map
+ on Map#->Any

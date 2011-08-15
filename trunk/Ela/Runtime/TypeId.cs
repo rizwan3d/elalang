@@ -31,7 +31,7 @@ namespace Ela.Runtime
 			Id = (Int32)typeCode;
 		}
 
-		internal TypeId(int typeId)
+		public TypeId(int typeId)
 		{
 			Id = typeId;
 		}

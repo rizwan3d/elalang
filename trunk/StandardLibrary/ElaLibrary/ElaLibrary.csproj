@@ -82,9 +82,14 @@
     <Compile Include="Collections\ArrayModule.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Collections\AvlTree.cs" />
     <Compile Include="Collections\ElaArray.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Collections\ElaMap.cs" />
+    <Compile Include="Collections\ElaMutableMap.cs" />
+    <Compile Include="Collections\MapModule.cs" />
+    <Compile Include="Collections\MutableMapModule.cs" />
     <Compile Include="General\AsyncModule.cs" />
     <Compile Include="General\CharModule.cs" />
     <Compile Include="General\ConModule.cs" />

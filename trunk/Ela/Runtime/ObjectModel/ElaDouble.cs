@@ -27,6 +27,14 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
+        public override bool Equals(ElaValue other)
+        {
+            return other.TypeCode == ElaTypeCode.Double ? other.GetDouble() == Value :
+                other.TypeCode == ElaTypeCode.Single ? other.DirectGetReal() == Value :
+                false;
+        }
+
+
 		public override string GetTag()
         {
             return "Double#";

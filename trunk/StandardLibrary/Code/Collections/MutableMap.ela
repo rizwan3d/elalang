@@ -1,0 +1,27 @@
+open "$MutableMap"#elalib@m
+    (
+        empty,
+        map,
+        contains,
+        keys,
+        values,
+        toRecord
+    )
+
+let (==) x y = m.mapEqual x y
+ on MutableMap#->MutableMap#
+
+let (<>) x y = not (m.mapEqual x y)
+ on MutableMap#->MutableMap#
+
+let show f xs = m.toString xs
+ on String#->MutableMap#
+
+let length xs = m.mapLength xs
+ on MutableMap#
+
+let get map n = m.get n map
+ on MutableMap#->Any
+
+let set map n v = m.set n v map
+ on MutableMap#->Any

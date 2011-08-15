@@ -8,6 +8,8 @@ namespace Ela.Library.Collections
     public sealed class MutableMapModule : ForeignModule
     {
         #region Construction
+        private TypeId mapTypeId;
+
         public MutableMapModule()
         {
 
@@ -21,21 +23,33 @@ namespace Ela.Library.Collections
             Add<ElaMutableMap>("empty", CreateEmptyMap);
             Add<ElaRecord,ElaMutableMap>("map", CreateMap);
             Add<ElaValue,ElaMutableMap,Boolean>("contains", Contains);
-            Add<ElaValue,ElaMutableMap,ElaVariant>("get", Get);
+            Add<ElaValue,ElaMutableMap,ElaValue>("get", Get);
+            Add<ElaValue,ElaValue,ElaMutableMap,ElaUnit>("set", Set);
             Add<ElaMutableMap,ElaList>("keys", GetKeys);
             Add<ElaMutableMap,ElaList>("values", GetValues);
+            Add<ElaMutableMap,ElaRecord>("toRecord", m => m.ConvertToRecord());
+
+            Add<ElaValue,ElaValue,Boolean>("mapEqual", (l,r) => l.ReferenceEquals(r));
+            Add<ElaMutableMap,String>("toString", m => m.ToString());
+            Add<ElaMutableMap,Int32>("mapLength", m => m.Count);
+        }
+
+
+        public override void RegisterTypes(TypeRegistrator registrator)
+        {
+            mapTypeId = registrator.ObtainTypeId("MutableMap#");
         }
 
 
         public ElaMutableMap CreateEmptyMap()
         {
-            return new ElaMutableMap();
+            return new ElaMutableMap(mapTypeId);
         }
 
 
         public ElaMutableMap CreateMap(ElaRecord rec)
         {
-            var map = new ElaMutableMap();
+            var map = new ElaMutableMap(mapTypeId);
 
             foreach (var k in rec.GetKeys())
                 map.Map.Add(new ElaValue(k), rec[k]);
@@ -50,14 +64,16 @@ namespace Ela.Library.Collections
         }
 
 
-        public ElaVariant Get(ElaValue key, ElaMutableMap map)
+        public ElaValue Get(ElaValue key, ElaMutableMap map)
         {
-            var val = default(ElaValue);
+            return map.GetValue(key);
+        }
 
-            if (!map.Map.TryGetValue(key, out val))
-                return ElaVariant.None();
 
-            return ElaVariant.Some(val);
+        public ElaUnit Set(ElaValue key, ElaValue value, ElaMutableMap map)
+        {
+            map.SetValue(key, value);
+            return ElaUnit.Instance;
         }
 
 

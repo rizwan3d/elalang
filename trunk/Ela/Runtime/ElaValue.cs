@@ -113,13 +113,38 @@ namespace Ela.Runtime
 
         public override bool Equals(object obj)
         {
-			return false; //obj is ElaValue ? Equal(this, (ElaValue)obj, ElaObject.DummyContext).Bool(ElaObject.DummyContext) : false;
+			return obj is ElaValue ? Equals((ElaValue)obj) : false;
         }
 
 
         public bool Equals(ElaValue other)
         {
-			return false;// Equal(this, other, ElaObject.DummyContext).Bool(ElaObject.DummyContext);
+            switch (TypeCode)
+            {
+                case ElaTypeCode.Boolean:
+                    if (other.TypeCode == ElaTypeCode.Boolean)
+                        return I4 == other.I4;
+                    else
+                        return false;
+                case ElaTypeCode.Integer:
+                    if (other.TypeCode == ElaTypeCode.Integer)
+                        return I4 == other.I4;
+                    else
+                        return false;
+                case ElaTypeCode.Char:
+                    if (other.TypeCode == ElaTypeCode.Char)
+                        return I4 == other.I4;
+                    else
+                        return false;
+                case ElaTypeCode.Single:
+                    if (other.TypeCode == ElaTypeCode.Single)
+                        return DirectGetReal() == other.DirectGetReal();
+                    else
+                        return false;
+                default:
+                    return Ref.Equals(other);
+                    break;
+            }
         }
 
 

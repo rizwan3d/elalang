@@ -10,10 +10,9 @@ namespace Ela.Library.Collections
     public sealed class ElaMap : ElaObject, IEnumerable<ElaValue>
     {
         #region Construction
-        public static readonly ElaMap Empty = new ElaMap(AvlTree.Empty);
-		private const string TYPENAME = "map";
-		
-        internal ElaMap(AvlTree tree)
+        private const string TAG = "Map#";
+        
+        internal ElaMap(AvlTree tree, TypeId typeId) : base(typeId)
         {
             Tree = tree;
         }
@@ -21,27 +20,21 @@ namespace Ela.Library.Collections
 
 
         #region Methods
-        public override ElaPatterns GetSupportedPatterns()
-        {
-            return ElaPatterns.None;
-        }
-
-
-        protected override string GetTypeName()
+        public override string GetTag()
 		{
-			return TYPENAME;
+			return TAG;
 		}
 
 
 		public ElaMap Add(ElaValue key, ElaValue value)
         {
-            return new ElaMap(Tree.Add(key, value));
+            return new ElaMap(Tree.Add(key, value), new TypeId(base.TypeId));
         }
 
 
         public ElaMap Remove(ElaValue key)
         {
-            return new ElaMap(Tree.Remove(key));
+            return new ElaMap(Tree.Remove(key), new TypeId(base.TypeId));
         }
 
 
@@ -64,19 +57,7 @@ namespace Ela.Library.Collections
         }
 
 
-        protected override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return new ElaValue(left.ReferenceEquals(right));
-        }
-
-
-        protected override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return new ElaValue(!left.ReferenceEquals(right));
-        }
-
-
-        protected override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
+        public override string ToString()
         {
             var sb = new StringBuilder();
             sb.Append("map");
@@ -88,9 +69,9 @@ namespace Ela.Library.Collections
                 if (c++ > 0)
                     sb.Append(',');
 
-                sb.Append(e.Key.Show(info, ctx));
+                sb.Append(e.Key.ToString());
                 sb.Append('=');
-                sb.Append(e.Value.Show(info, ctx));
+                sb.Append(e.Value.ToString());
             }
 
             sb.Append('}');
@@ -98,37 +79,18 @@ namespace Ela.Library.Collections
         }
 
 
-        protected override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
+        public ElaValue GetValue(ElaValue index)
         {
             var res = Tree.Search(index);
 
             if (res.IsEmpty)
-            {
-                ctx.IndexOutOfRange(index, new ElaValue(this));
-                return Default();
-            }
-
+                throw new ElaRuntimeException(ElaRuntimeError.IndexOutOfRange, index);
+            
             return res.Value;
         }
 
 
-        protected override ElaValue GetLength(ExecutionContext ctx)
-        {
-            return new ElaValue(Length);
-        }
-
-
-        protected override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
-        {
-            if (type == ElaTypeCode.Record)
-                return new ElaValue(ConvertToRecord());
-
-            ctx.ConversionFailed(@this, type);
-            return Default();
-        }
-
-
-        private ElaRecord ConvertToRecord()
+        public ElaRecord ConvertToRecord()
         {
             var fields = new ElaRecordField[Length];
             var c = 0;

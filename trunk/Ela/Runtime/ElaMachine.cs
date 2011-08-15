@@ -1867,7 +1867,6 @@ namespace Ela.Runtime
 			var ctx = thread.Context;
 			var left = default(ElaValue);
 			var right = default(ElaValue);
-			var res = default(ElaValue);
 			var i4 = 0;
 
 		CYCLE:

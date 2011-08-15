@@ -44,6 +44,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElaLibrary", "StandardLibrary\ElaLibrary\ElaLibrary.csproj", "{AFD398CA-09A8-486A-9C65-EDC4954F08C0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Collections", "Collections", "{A526900D-C9FF-4F77-ADAA-9F63ABE211A1}"
+	ProjectSection(SolutionItems) = preProject
+		StandardLibrary\Code\Collections\Array.ela = StandardLibrary\Code\Collections\Array.ela
+		StandardLibrary\Code\Collections\MutableMap.ela = StandardLibrary\Code\Collections\MutableMap.ela
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -118,6 +124,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{AB91D945-BA7B-45C8-9226-E861B0FE175A} = {290E64EC-5C01-490D-8AFF-101E4D1EB716}
 		{AFD398CA-09A8-486A-9C65-EDC4954F08C0} = {290E64EC-5C01-490D-8AFF-101E4D1EB716}
+		{A526900D-C9FF-4F77-ADAA-9F63ABE211A1} = {AB91D945-BA7B-45C8-9226-E861B0FE175A}
 		{850B41D5-8924-49A1-BE4E-6768CD8CABF9} = {6440104F-093D-47F5-8F7C-3E281483F650}
 		{48AE1C4A-B3A0-4669-A0B1-80D1364531BB} = {6440104F-093D-47F5-8F7C-3E281483F650}
 	EndGlobalSection

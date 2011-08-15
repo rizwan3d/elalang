@@ -35,3 +35,16 @@ Add:Int#->Single#
 Add:Int#->Double#
 Add:Int#->Tuple#
 Add:Long#->Int#
+
+
+Remove instructions:
+Elem+
+Skiphtag+
+Skiptag+
+Br_eq+
+Br_neq+
+Br_lt+
+Br_gt+
+Brnil+
+Skiptl+
+Skiptn+

@@ -8,6 +8,8 @@ namespace Ela.Library.Collections
 	public sealed class MapModule : ForeignModule
 	{
 		#region Construction
+        private TypeId mapTypeId;
+
 		public MapModule()
 		{
 
@@ -18,21 +20,30 @@ namespace Ela.Library.Collections
 		#region Methods
 		public override void Initialize()
 		{
-			Add("empty", ElaMap.Empty);
 			Add<ElaRecord,ElaMap>("map", CreateMap);
 			Add<ElaValue,ElaValue,ElaMap,ElaMap>("add", Add);
 			Add<ElaValue,ElaMap,ElaMap>("remove", Remove);
 			Add<ElaValue,ElaMap,Boolean>("contains", Contains);
-			Add<ElaValue,ElaMap,ElaVariant>("get", GetValue);
-		}
+			Add<ElaValue,ElaMap,ElaValue>("get", (i,m) => m.GetValue(i));
+            Add<ElaMap,ElaRecord>("toRecord", m => m.ConvertToRecord());
+	
+            Add<ElaMap,String>("toString", m => m.ToString());
+            Add<ElaMap,Int32>("mapLength", m => m.Length);
+       	}
+
+
+        public override void RegisterTypes(TypeRegistrator registrator)
+        {
+            mapTypeId = registrator.ObtainTypeId("Map#");
+        }
 
 
 		public ElaMap CreateMap(ElaRecord rec)
 		{
-			var map = ElaMap.Empty;
+			var map = new ElaMap(AvlTree.Empty, mapTypeId);
 
 			foreach (var k in rec.GetKeys())
-				map = new ElaMap(map.Tree.Add(new ElaValue(k), rec[k]));
+				map = new ElaMap(map.Tree.Add(new ElaValue(k), rec[k]), mapTypeId);
 
 			return map;
 		}
@@ -53,16 +64,6 @@ namespace Ela.Library.Collections
 		public bool Contains(ElaValue key, ElaMap map)
 		{
 			return map.Contains(key);
-		}
-
-
-		public ElaVariant GetValue(ElaValue key, ElaMap map)
-		{
-			if (map.Tree.IsEmpty)
-				return ElaVariant.None();
-
-			var res = map.Tree.Search(key);
-			return res.IsEmpty ? ElaVariant.None() : ElaVariant.Some(res.Value);
 		}
 		#endregion
 	}

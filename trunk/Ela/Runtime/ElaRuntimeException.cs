@@ -7,8 +7,8 @@ namespace Ela.Runtime
 		#region Construction
 		private const string DEFAULT = "Failure";
         
-        public ElaRuntimeException(ElaRuntimeError error) : this(error.ToString(), 
-            Strings.GetError(error))
+        public ElaRuntimeException(ElaRuntimeError error, params object[] args) : this(error.ToString(), 
+            Strings.GetError(error, args))
         {
 
         }

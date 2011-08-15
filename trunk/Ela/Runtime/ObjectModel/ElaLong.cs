@@ -27,6 +27,14 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
+        public override bool Equals(ElaValue other)
+        {
+            return other.TypeCode == ElaTypeCode.Long ? other.GetLong() == Value :
+                other.TypeCode == ElaTypeCode.Integer ? other.I4 == Value :
+                false;
+        }
+
+
 		public override string GetTag()
         {
             return "Long#";
