@@ -8,8 +8,7 @@ namespace Ela.Library.General
     public sealed class GuidModule : ForeignModule
     {
         #region Construction
-		private TypeId guidTypeId;
-        public GuidModule()
+		public GuidModule()
         {
 
         }
@@ -22,13 +21,7 @@ namespace Ela.Library.General
 			#region Construction
             private const string TAG = "Guid#";
 
-            public ElaGuid(Guid value, ElaMachine vm) : this(value, vm.GetTypeId(TAG))
-            {
-
-            }
-
-
-			internal ElaGuid(Guid value, TypeId typeId) : base(typeId)
+            public ElaGuid(Guid value)
 			{
                 Value = value;
 			}
@@ -71,12 +64,6 @@ namespace Ela.Library.General
 
 
 		#region Methods
-		public override void RegisterTypes(TypeRegistrator registrator)
-		{
-			guidTypeId = registrator.ObtainTypeId("Guid#");
-		}
-
-
 		public override void Initialize()
         {
             Add<ElaGuid>("guid", NewGuid);
@@ -88,7 +75,7 @@ namespace Ela.Library.General
 
         public ElaGuid NewGuid()
         {
-            return new ElaGuid(Guid.NewGuid(), guidTypeId);
+            return new ElaGuid(Guid.NewGuid());
         }
 
 
@@ -99,11 +86,7 @@ namespace Ela.Library.General
             try
             {
                 g = new Guid(str);
-                return ElaVariant.Some(new ElaValue(new ElaGuid(g, guidTypeId)));
-            }
-            catch (ElaTypeException)
-            {
-                throw;
+                return ElaVariant.Some(new ElaValue(new ElaGuid(g)));
             }
             catch (Exception)
             {

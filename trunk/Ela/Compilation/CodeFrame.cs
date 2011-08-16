@@ -49,12 +49,6 @@ namespace Ela.Compilation
 
 
 		#region Methods
-		public virtual void RegisterTypes(TypeRegistrator registrator)
-		{
-
-		}
-
-
 		public CodeFrame Clone()
 		{
 			var copy = new CodeFrame();

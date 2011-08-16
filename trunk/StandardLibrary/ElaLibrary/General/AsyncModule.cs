@@ -10,8 +10,6 @@ namespace Ela.Library.General
 	public sealed class AsyncModule : ForeignModule
 	{
 		#region Construction
-		private TypeId asyncTypeId;
-
 		public AsyncModule()
 		{
 			Threads = new List<Thread>();
@@ -25,7 +23,7 @@ namespace Ela.Library.General
 			#region Construction
 			internal readonly object SyncRoot = new Object();
 
-			internal ElaAsync(AsyncModule mod, ElaFunction fun, TypeId typeId) : base(typeId)
+			public ElaAsync(AsyncModule mod, ElaFunction fun)
 			{
 				Initialize(mod, fun);
 			}
@@ -85,12 +83,6 @@ namespace Ela.Library.General
 		}
 
 
-		public override void RegisterTypes(TypeRegistrator registrator)
-		{
-			asyncTypeId = registrator.ObtainTypeId("Async#");			
-		}
-
-
 		public override void Initialize()
 		{
 			Add<ElaFunction,ElaAsync>("async", RunAsync);
@@ -104,7 +96,7 @@ namespace Ela.Library.General
 
 		public ElaAsync RunAsync(ElaFunction fun)
 		{
-			var ret = new ElaAsync(this, fun, asyncTypeId);
+			var ret = new ElaAsync(this, fun);
 			ret.Run();
 			return ret;
 		}

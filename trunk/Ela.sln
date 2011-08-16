@@ -49,6 +49,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Collections", "Collections"
 		StandardLibrary\Code\Collections\Array.ela = StandardLibrary\Code\Collections\Array.ela
 		StandardLibrary\Code\Collections\Map.ela = StandardLibrary\Code\Collections\Map.ela
 		StandardLibrary\Code\Collections\MutableMap.ela = StandardLibrary\Code\Collections\MutableMap.ela
+		StandardLibrary\Code\Collections\Queue.ela = StandardLibrary\Code\Collections\Queue.ela
 	EndProjectSection
 EndProject
 Global

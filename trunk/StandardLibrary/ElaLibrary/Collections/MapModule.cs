@@ -8,9 +8,7 @@ namespace Ela.Library.Collections
 	public sealed class MapModule : ForeignModule
 	{
 		#region Construction
-        private TypeId mapTypeId;
-
-		public MapModule()
+        public MapModule()
 		{
 
 		}
@@ -20,6 +18,7 @@ namespace Ela.Library.Collections
 		#region Methods
 		public override void Initialize()
 		{
+            Add("empty", ElaMap.Empty);
 			Add<ElaRecord,ElaMap>("map", CreateMap);
 			Add<ElaValue,ElaValue,ElaMap,ElaMap>("add", Add);
 			Add<ElaValue,ElaMap,ElaMap>("remove", Remove);
@@ -32,18 +31,12 @@ namespace Ela.Library.Collections
        	}
 
 
-        public override void RegisterTypes(TypeRegistrator registrator)
-        {
-            mapTypeId = registrator.ObtainTypeId("Map#");
-        }
-
-
 		public ElaMap CreateMap(ElaRecord rec)
 		{
-			var map = new ElaMap(AvlTree.Empty, mapTypeId);
+            var map = ElaMap.Empty;
 
 			foreach (var k in rec.GetKeys())
-				map = new ElaMap(map.Tree.Add(new ElaValue(k), rec[k]), mapTypeId);
+				map = new ElaMap(map.Tree.Add(new ElaValue(k), rec[k]));
 
 			return map;
 		}

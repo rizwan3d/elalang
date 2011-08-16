@@ -17,25 +17,7 @@ namespace Ela.Library.Collections
 		internal int headIndex;
 
 
-        public ElaArray(ElaMachine vm) : this(vm.GetTypeId(TAG))
-        {
-
-        }
-
-
-        public ElaArray(ElaValue[] arr, ElaMachine vm) : this(arr, vm.GetTypeId(TAG))
-        {
-
-        }
-
-
-        public ElaArray(object[] arr, ElaMachine vm) : this(arr, vm.GetTypeId(TAG))
-        {
-
-        }
-
-
-        internal ElaArray(ElaValue[] arr, TypeId typeId) : base(typeId)
+        public ElaArray(ElaValue[] arr)
 		{
 			if (arr == null)
 				throw new ArgumentNullException("arr");
@@ -50,7 +32,7 @@ namespace Ela.Library.Collections
 		}
 
 
-        internal ElaArray(object[] arr, TypeId typeId) : base(typeId)
+        public ElaArray(object[] arr)
 		{
 			if (arr == null)
 				throw new ArgumentNullException("arr");
@@ -65,19 +47,19 @@ namespace Ela.Library.Collections
 		}
 
 
-		internal ElaArray(int size, TypeId typeId) : base(typeId)
+		public ElaArray(int size)
 		{
 			array = new ElaValue[size == 0 ? DEFAULT_SIZE : size];
 		}
 
 
-		internal ElaArray(TypeId typeId) : this(DEFAULT_SIZE, typeId)
+		public ElaArray() : this(DEFAULT_SIZE)
 		{
 
 		}
 
 
-		internal ElaArray(ElaValue[] arr, int size, int headIndex, TypeId typeId) : base(typeId)
+		internal ElaArray(ElaValue[] arr, int size, int headIndex)
 		{
 			array = arr;
 			this.size = size;
@@ -111,9 +93,9 @@ namespace Ela.Library.Collections
 		}
 
 
-		internal ElaArray Tail(TypeId typeId)
+		internal ElaArray Tail()
 		{
-			return new ElaArray(array, size, headIndex + 1, typeId);
+			return new ElaArray(array, size, headIndex + 1);
 		}
 
 

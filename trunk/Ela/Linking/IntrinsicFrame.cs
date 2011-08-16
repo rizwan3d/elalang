@@ -17,14 +17,6 @@ namespace Ela.Linking
 		#endregion
 
 
-		#region Methods
-		public override void RegisterTypes(TypeRegistrator registrator)
-		{
-			module.RegisterTypes(registrator);
-		}
-		#endregion
-
-
 		#region Properties
 		internal ElaValue[] Memory { get; private set; }
 		#endregion

@@ -1,0 +1,42 @@
+open "$Set"#elalib@s
+    (
+        empty,
+        set,
+        add,
+        remove,
+        contains,
+        toList
+    )
+
+let (==) x y = toList x == toList y
+ on Set#->Set#
+
+let (<>) x y = toList x <> toList y
+ on Set#->Set#
+
+let show f xs = s.toString xs
+ on String#->Set#
+
+let length xs = s.setLength xs
+ on Set#
+
+let (::) v xs = s.setCons xs v
+ on Any->Set#
+
+let nil xs = s.setNil xs
+ on Set#
+
+let isNil xs = s.setIsNil xs
+ on Set#
+
+let head xs = s.setHead xs
+ on Set#
+
+let tail xs = s.setTail xs
+ on Set#
+ 
+let generate xs v = s.setGenerate xs v
+ on Set#
+
+let generateFinalize xs = xs
+ on Set#

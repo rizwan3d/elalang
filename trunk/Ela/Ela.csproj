@@ -164,7 +164,6 @@
     <Compile Include="Runtime\DispatchFuns.cs" />
     <Compile Include="Runtime\DispatchTable.cs" />
     <Compile Include="Runtime\ElaRuntimeException.cs" />
-    <Compile Include="Runtime\ElaTypeException.cs" />
     <Compile Include="Runtime\EqHelper.cs" />
     <Compile Include="Runtime\ObjectModel\DelegateFunction.cs" />
     <Compile Include="Linking\ElaLinkerError.cs" />
@@ -304,8 +303,6 @@
     <Compile Include="Runtime\ObjectModel\ElaString.cs" />
     <Compile Include="Runtime\ObjectModel\ElaRecord.cs" />
     <Compile Include="Runtime\ObjectModel\ElaTuple.cs" />
-    <Compile Include="Runtime\TypeId.cs" />
-    <Compile Include="Runtime\TypeRegistrator.cs" />
     <Compile Include="TypeCodeFormat.cs" />
     <Compile Include="Runtime\ObjectModel\ElaVariant.cs" />
     <Compile Include="Runtime\ElaValue.cs" />

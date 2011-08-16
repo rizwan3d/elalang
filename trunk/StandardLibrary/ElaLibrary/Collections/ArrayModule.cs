@@ -9,8 +9,6 @@ namespace Ela.Library.Collections
     public sealed class ArrayModule : ForeignModule
     {
         #region Construction
-        private TypeId arrayTypeId;
-
         public ArrayModule()
         {
 
@@ -36,22 +34,16 @@ namespace Ela.Library.Collections
             Add<ElaArray,String>("toString", a => a.ToString());
             Add<ElaArray,ElaArray,ElaArray>("arrayConcat", Concatenate); 
             Add<ElaArray,ElaValue>("arrayHead", a => a.Head());
-            Add<ElaArray,ElaArray>("arrayTail", a => a.Tail(arrayTypeId));
+            Add<ElaArray,ElaArray>("arrayTail", a => a.Tail());
             Add<ElaArray,Boolean>("arrayIsNil", a => a.IsNil());
             Add<ElaValue,ElaArray,ElaArray>("arrayGenerate", (v,a) => a.Generate(v));
             Add<ElaArray,ElaArray>("arrayNil", _ => CreateEmptyArray());
         }
 
 
-        public override void RegisterTypes(TypeRegistrator registrator)
-        {
-            arrayTypeId = registrator.ObtainTypeId("Array#");
-        }
-
-
 		public ElaArray CreateEmptyArray()
 		{
-			return new ElaArray(arrayTypeId);
+			return new ElaArray();
 		}
 
 
@@ -62,7 +54,7 @@ namespace Ela.Library.Collections
             foreach (var v in seq)
                 lst.Add(v);
 
-            return new ElaArray(lst.ToArray(), arrayTypeId);
+            return new ElaArray(lst.ToArray());
         }
 
 
@@ -110,7 +102,7 @@ namespace Ela.Library.Collections
             var arr = new ElaValue[left.Length + right.Length];
             Array.Copy(left.GetRawArray(), 0, arr, 0, left.Length);
             Array.Copy(right.GetRawArray(), 0, arr, left.Length, right.Length);
-            return new ElaArray(arr, arr.Length, 0, arrayTypeId);
+            return new ElaArray(arr, arr.Length, 0);
         }
 
 
@@ -118,7 +110,7 @@ namespace Ela.Library.Collections
         {
             if (arr.headIndex > 0)
             {
-                var newArr = new ElaArray(arrayTypeId);
+                var newArr = new ElaArray();
                 arr.Copy(arr.headIndex, newArr);
                 arr = newArr;
             }

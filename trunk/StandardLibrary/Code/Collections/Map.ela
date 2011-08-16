@@ -1,5 +1,6 @@
 open "$Map"#elalib@m
     (
+		empty,
         map,
         add,
         remove,

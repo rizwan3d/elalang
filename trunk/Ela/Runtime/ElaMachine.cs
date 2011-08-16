@@ -21,9 +21,7 @@ namespace Ela.Runtime
 		private readonly CodeAssembly asm;
         private readonly IntrinsicFrame argMod;
         private readonly int argModHandle;
-		internal int typeCount = (Int32)ElaTypeCode.Variant + 1;
-        internal readonly FunMap overloads;
-		internal readonly Dictionary<String,Int32> typeIdMap;
+		internal readonly FunMap overloads;
      
 		public ElaMachine(CodeAssembly asm)
 		{
@@ -36,7 +34,6 @@ namespace Ela.Runtime
 			var mem = new ElaValue[lays.Size];
 			modules[0] = mem;
             argModHandle = asm.TryGetModuleHandle("$Args");
-			typeIdMap = new Dictionary<String,Int32>();
 
             if (argModHandle != -1)
             {
@@ -44,11 +41,6 @@ namespace Ela.Runtime
                 modules[argModHandle] = argMod.Memory;
                 ReadPervasives(MainThread, argMod, argModHandle);
             }
-
-			var registrator = new TypeRegistrator(this);
-
-			for (var i = 0; i < asm.ModuleCount; i++)
-				asm.GetModule(i).RegisterTypes(registrator);
 
 			MainThread.CallStack.Push(new CallPoint(0, new EvalStack(lays.StackSize), mem, FastList<ElaValue[]>.Empty));
             InitializeTables();
@@ -73,41 +65,65 @@ namespace Ela.Runtime
 		internal const int MOD = (Int32)ElaTypeCode.Module;
 		internal const int LAZ = (Int32)ElaTypeCode.Lazy;
 		internal const int VAR = (Int32)ElaTypeCode.Variant;
-
+        
         private sealed class __table
         {
-			internal __table(int count)
-			{
-				table = new DispatchBinaryFun[count][];
-
-				for (var i = 0; i < count; i++)
-					table[i] = new DispatchBinaryFun[count];
-			}
-
-			internal DispatchBinaryFun[][] table;
+			internal DispatchBinaryFun[][] table = new DispatchBinaryFun[][]
+            {
+                                        //NON   INT   LNG   REA   DBL   BYT   CHR   STR   UNI   LST   <E>   TUP   REC   FUN   OBJ   MOD   LAZ   VAR
+                new DispatchBinaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //NON
+                new DispatchBinaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //INT
+                new DispatchBinaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //LNG
+                new DispatchBinaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //REA
+                new DispatchBinaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //DBL
+                new DispatchBinaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //BYT
+                new DispatchBinaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //CHR
+                new DispatchBinaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //STR
+                new DispatchBinaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //UNI
+                new DispatchBinaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //LST
+                new DispatchBinaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //<E>
+                new DispatchBinaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //TUP
+                new DispatchBinaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //REC
+                new DispatchBinaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //FUN
+                new DispatchBinaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //OBJ
+                new DispatchBinaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //MOD
+                new DispatchBinaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //LAZ
+                new DispatchBinaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }  //VAR
+            };
         }
 
 		private sealed class __table2
 		{
-			internal __table2(int count)
-			{
-				table = new DispatchUnaryFun[count];
-			}
-
-			internal DispatchUnaryFun[] table;
+			internal DispatchUnaryFun[] table = new DispatchUnaryFun[]
+                //NON   INT   LNG   REA   DBL   BYT   CHR   STR   UNI   LST   <E>   TUP   REC   FUN   OBJ   MOD   LAZ   VAR
+                { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null };
+               
 		}
 
 		private sealed class __table3
 		{
-			internal __table3(int count)
-			{
-				table = new DispatchTernaryFun[count][];
-
-				for (var i = 0; i < count; i++)
-					table[i] = new DispatchTernaryFun[count];
-			}
-
-			internal DispatchTernaryFun[][] table;
+            internal DispatchTernaryFun[][] table = new DispatchTernaryFun[][]
+            {
+                                        //NON   INT   LNG   REA   DBL   BYT   CHR   STR   UNI   LST   <E>   TUP   REC   FUN   OBJ   MOD   LAZ   VAR
+                new DispatchTernaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //NON
+                new DispatchTernaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //INT
+                new DispatchTernaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //LNG
+                new DispatchTernaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //REA
+                new DispatchTernaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //DBL
+                new DispatchTernaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //BYT
+                new DispatchTernaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //CHR
+                new DispatchTernaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //STR
+                new DispatchTernaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //UNI
+                new DispatchTernaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //LST
+                new DispatchTernaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //<E>
+                new DispatchTernaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //TUP
+                new DispatchTernaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //REC
+                new DispatchTernaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //FUN
+                new DispatchTernaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //OBJ
+                new DispatchTernaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //MOD
+                new DispatchTernaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, //LAZ
+                new DispatchTernaryFun[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }  //VAR
+            };
 		}
 
 
@@ -599,45 +615,45 @@ namespace Ela.Runtime
 
         private void InitializeTables()
         {
-			add_ovl = new __table(typeCount).table;
-			sub_ovl = new __table(typeCount).table;
-			mul_ovl = new __table(typeCount).table;
-			div_ovl = new __table(typeCount).table;
-			rem_ovl = new __table(typeCount).table;
-			pow_ovl = new __table(typeCount).table;
-			and_ovl = new __table(typeCount).table;
-			bor_ovl = new __table(typeCount).table;
-			xor_ovl = new __table(typeCount).table;
-			shl_ovl = new __table(typeCount).table;
-			shr_ovl = new __table(typeCount).table;
-			eql_ovl = new __table(typeCount).table;
-			neq_ovl = new __table(typeCount).table;
-			gtr_ovl = new __table(typeCount).table;
-			gte_ovl = new __table(typeCount).table;
-			ltr_ovl = new __table(typeCount).table;
-			lte_ovl = new __table(typeCount).table;
-			cat_ovl = new __table(typeCount).table;
-			con_ovl = new __table(typeCount).table;
-			get_ovl = new __table(typeCount).table;
-			shw_ovl = new __table(typeCount).table;
-			gen_ovl = new __table(typeCount).table;
+			add_ovl = new __table().table;
+			sub_ovl = new __table().table;
+			mul_ovl = new __table().table;
+			div_ovl = new __table().table;
+			rem_ovl = new __table().table;
+			pow_ovl = new __table().table;
+			and_ovl = new __table().table;
+			bor_ovl = new __table().table;
+			xor_ovl = new __table().table;
+			shl_ovl = new __table().table;
+			shr_ovl = new __table().table;
+			eql_ovl = new __table().table;
+			neq_ovl = new __table().table;
+			gtr_ovl = new __table().table;
+			gte_ovl = new __table().table;
+			ltr_ovl = new __table().table;
+			lte_ovl = new __table().table;
+			cat_ovl = new __table().table;
+			con_ovl = new __table().table;
+			get_ovl = new __table().table;
+			shw_ovl = new __table().table;
+			gen_ovl = new __table().table;
 
-			neg_ovl = new __table2(typeCount).table;
-			bne_ovl = new __table2(typeCount).table;
-			cln_ovl = new __table2(typeCount).table;
-			suc_ovl = new __table2(typeCount).table;
-			prd_ovl = new __table2(typeCount).table;
-			min_ovl = new __table2(typeCount).table;
-			max_ovl = new __table2(typeCount).table;
-			len_ovl = new __table2(typeCount).table;
-			nil_ovl = new __table2(typeCount).table;
-			hea_ovl = new __table2(typeCount).table;
-			tai_ovl = new __table2(typeCount).table;
-			isn_ovl = new __table2(typeCount).table;
-            not_ovl = new __table2(typeCount).table;
-			fin_ovl = new __table2(typeCount).table;
+			neg_ovl = new __table2().table;
+			bne_ovl = new __table2().table;
+			cln_ovl = new __table2().table;
+			suc_ovl = new __table2().table;
+			prd_ovl = new __table2().table;
+			min_ovl = new __table2().table;
+			max_ovl = new __table2().table;
+			len_ovl = new __table2().table;
+			nil_ovl = new __table2().table;
+			hea_ovl = new __table2().table;
+			tai_ovl = new __table2().table;
+			isn_ovl = new __table2().table;
+            not_ovl = new __table2().table;
+			fin_ovl = new __table2().table;
 
-			set_ovl = new __table3(typeCount).table;
+			set_ovl = new __table3().table;
 
             addErrErr = new NoneBinary("$add", overloads);
             addIntInt = new AddIntInt(add_ovl);
@@ -1731,17 +1747,6 @@ namespace Ela.Runtime
 			if (ex != null)
 				throw ex;
 		}
-
-
-        public TypeId GetTypeId(string tag)
-        {
-            var tid = default(Int32);
-
-            if (typeIdMap.TryGetValue(tag, out tid))
-                return new TypeId(tid);
-            else
-                return null;
-        }
 
 
 		public ExecutionResult Run()
@@ -3045,12 +3050,7 @@ namespace Ela.Runtime
                 case "Object#": return OBJ;
                 case "Variant#": return VAR;
                 default:
-					var id = 0;
-
-					if (!typeIdMap.TryGetValue(tag, out id))
-						return -1;
-					
-					return id;
+                    return OBJ;
             }
         }
 

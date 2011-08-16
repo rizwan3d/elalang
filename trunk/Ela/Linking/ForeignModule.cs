@@ -24,12 +24,6 @@ namespace Ela.Linking
 		public abstract void Initialize();
 
 
-		public virtual void RegisterTypes(TypeRegistrator registrator)
-		{
-
-		}
-
-
 		public virtual void Close()
 		{
 

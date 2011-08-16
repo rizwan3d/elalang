@@ -9,8 +9,6 @@ namespace Ela.Library.General
     public sealed class StringBuilderModule : ForeignModule
     {
         #region Construction
-        private TypeId stringBuilderTypeId;
-
         public StringBuilderModule()
         {
 
@@ -24,14 +22,7 @@ namespace Ela.Library.General
             #region Construction
             private const string TAG = "StringBuilder#";
 
-            public ElaStringBuilder(StringBuilder builder, ElaMachine vm)
-                : this(builder, vm.GetTypeId(TAG))
-            {
-
-            }
-
-
-            internal ElaStringBuilder(StringBuilder builder, TypeId typeId) : base(typeId)
+            internal ElaStringBuilder(StringBuilder builder)
             {
                 Builder = builder;
             }
@@ -60,12 +51,6 @@ namespace Ela.Library.General
 
 
         #region Methods
-        public override void RegisterTypes(TypeRegistrator registrator)
-        {
-            stringBuilderTypeId = registrator.ObtainTypeId("StringBuilder#");
-        }
-
-
         public override void Initialize()
         {
             Add<ElaValue,ElaObject>("builder", CreateBuilder);
@@ -87,7 +72,7 @@ namespace Ela.Library.General
         {
             var init = val.TypeCode != ElaTypeCode.Unit ?
                 val.ToString() : String.Empty;
-            return new ElaStringBuilder(new StringBuilder(init), stringBuilderTypeId);
+            return new ElaStringBuilder(new StringBuilder(init));
         }
 
 

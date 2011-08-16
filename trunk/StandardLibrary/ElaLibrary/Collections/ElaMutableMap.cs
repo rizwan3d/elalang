@@ -10,15 +10,8 @@ namespace Ela.Library.Collections
         #region Construction
         private const string TAG = "MutableMap#";
         private const string NOKEY = "NoKey";
-
-
-        public ElaMutableMap(ElaMachine vm) : this(vm.GetTypeId(TAG))
-        {
-
-        }
-
-		
-        internal ElaMutableMap(TypeId typeId) : base(typeId)
+        		
+        public ElaMutableMap()
         {
             Map = new Dictionary<ElaValue,ElaValue>();
         }

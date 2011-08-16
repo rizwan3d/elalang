@@ -10,9 +10,10 @@ namespace Ela.Library.Collections
     public sealed class ElaMap : ElaObject, IEnumerable<ElaValue>
     {
         #region Construction
+        public static readonly ElaMap Empty = new ElaMap(AvlTree.Empty);
         private const string TAG = "Map#";
         
-        internal ElaMap(AvlTree tree, TypeId typeId) : base(typeId)
+        internal ElaMap(AvlTree tree)
         {
             Tree = tree;
         }
@@ -28,13 +29,13 @@ namespace Ela.Library.Collections
 
 		public ElaMap Add(ElaValue key, ElaValue value)
         {
-            return new ElaMap(Tree.Add(key, value), new TypeId(base.TypeId));
+            return new ElaMap(Tree.Add(key, value));
         }
 
 
         public ElaMap Remove(ElaValue key)
         {
-            return new ElaMap(Tree.Remove(key), new TypeId(base.TypeId));
+            return new ElaMap(Tree.Remove(key));
         }
 
 

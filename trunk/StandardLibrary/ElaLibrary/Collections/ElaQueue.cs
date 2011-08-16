@@ -9,24 +9,19 @@ namespace Ela.Library.Collections
     public sealed class ElaQueue : ElaObject, IEnumerable<ElaValue>
     {
         #region Construction
+        public static readonly ElaQueue Empty = new ElaQueue(ElaList.Empty, ElaList.Empty);
         private const string TAG = "Queue#";
         private ElaList forward;
         private ElaList backward;
 
-        internal ElaQueue(ElaList forward, ElaList backward, TypeId typeId) : base(typeId)
+        internal ElaQueue(ElaList forward, ElaList backward)
         {
             this.forward = forward;
             this.backward = backward;
         }
 
 
-		public ElaQueue(IEnumerable<ElaValue> seq, TypeId typeId) : this(ElaList.FromEnumerable(seq), ElaList.Empty, typeId)
-        {
-
-        }
-
-
-        public ElaQueue(IEnumerable<ElaValue> seq, ElaMachine vm) : this(seq, vm.GetTypeId(TAG))
+		public ElaQueue(IEnumerable<ElaValue> seq) : this(ElaList.FromEnumerable(seq), ElaList.Empty)
         {
 
         }
@@ -60,13 +55,13 @@ namespace Ela.Library.Collections
 
         internal bool IsNil()
         {
-            return forward == ElaList.Empty && backward == ElaList.Empty;
+            return this == ElaQueue.Empty;
         }
 
 
 		internal ElaQueue Cons(ElaQueue instance, ElaValue value)
 		{
-			return new ElaQueue(new ElaList(forward, value), backward, new TypeId(base.TypeId));
+			return new ElaQueue(new ElaList(forward, value), backward);
 		}
 
 
@@ -84,7 +79,7 @@ namespace Ela.Library.Collections
 
         public ElaQueue Enqueue(ElaValue value)
         {
-            return new ElaQueue(forward, new ElaList(backward, value), new TypeId(base.TypeId));
+            return new ElaQueue(forward, new ElaList(backward, value));
         }
 
 
@@ -93,11 +88,11 @@ namespace Ela.Library.Collections
             var f = forward.Next;
 
             if (f != ElaList.Empty)
-				return new ElaQueue(f, backward, new TypeId(base.TypeId));
+                return new ElaQueue(f, backward);
             else if (backward == ElaList.Empty)
-                return new ElaQueue(ElaList.Empty, ElaList.Empty, new TypeId(base.TypeId));
+                return ElaQueue.Empty;
             else
-                return new ElaQueue(backward.Reverse(), ElaList.Empty, new TypeId(base.TypeId));
+                return new ElaQueue(backward.Reverse(), ElaList.Empty);
         }
 
 

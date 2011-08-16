@@ -9,9 +9,7 @@ namespace Ela.Library.Collections
     public sealed class QueueModule : ForeignModule
     {
         #region Construction
-		private TypeId queueTypeId;
-
-        public QueueModule()
+		public QueueModule()
         {
 
         }
@@ -21,6 +19,7 @@ namespace Ela.Library.Collections
         #region Methods
         public override void Initialize()
         {
+            Add("empty", ElaQueue.Empty);
             Add<IEnumerable<ElaValue>,ElaQueue>("queue", CreateQueue);
             Add<ElaQueue,ElaValue>("peek", Peek);
             Add<ElaQueue,ElaQueue>("dequeue", Dequeue);
@@ -32,22 +31,16 @@ namespace Ela.Library.Collections
 			Add<ElaQueue,String>("toString", q => q.ToString());
 			Add<ElaQueue,ElaValue>("queueHead", q => q.Head());
 			Add<ElaQueue,ElaQueue>("queueTail", q => q.Tail());
-			Add<ElaQueue,ElaQueue>("queueNil", _ => new ElaQueue(ElaList.Empty, ElaList.Empty, queueTypeId));
+			Add<ElaQueue,ElaQueue>("queueNil", _ => ElaQueue.Empty);
 			Add<ElaQueue,Boolean>("queueIsNil", q => q.IsNil());
 			Add<ElaQueue,ElaValue,ElaQueue>("queueCons", (q,v) => q.Cons(q, v));
 			Add<ElaQueue,Int32>("queueLength", q => q.Length);
         }
 
 
-		public override void RegisterTypes(TypeRegistrator registrator)
-		{
-			queueTypeId = registrator.ObtainTypeId("Queue#");
-		}
-
-
         public ElaQueue CreateQueue(IEnumerable<ElaValue> seq)
         {
-            return new ElaQueue(seq, queueTypeId);
+            return new ElaQueue(seq);
         }
 
 

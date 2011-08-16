@@ -8,8 +8,6 @@ namespace Ela.Library.Collections
     public sealed class MutableMapModule : ForeignModule
     {
         #region Construction
-        private TypeId mapTypeId;
-
         public MutableMapModule()
         {
 
@@ -35,21 +33,15 @@ namespace Ela.Library.Collections
         }
 
 
-        public override void RegisterTypes(TypeRegistrator registrator)
-        {
-            mapTypeId = registrator.ObtainTypeId("MutableMap#");
-        }
-
-
         public ElaMutableMap CreateEmptyMap()
         {
-            return new ElaMutableMap(mapTypeId);
+            return new ElaMutableMap();
         }
 
 
         public ElaMutableMap CreateMap(ElaRecord rec)
         {
-            var map = new ElaMutableMap(mapTypeId);
+            var map = new ElaMutableMap();
 
             foreach (var k in rec.GetKeys())
                 map.Map.Add(new ElaValue(k), rec[k]);

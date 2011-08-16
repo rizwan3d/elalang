@@ -13,12 +13,9 @@ namespace Ela.Runtime.ObjectModel
         private const string TYPEID = "typeId";
         private const string ISBYREF = "byRef";
 
-		protected ElaObject(TypeId typeId)
+		protected ElaObject()
 		{
-            if (typeId == null)
-                throw new ElaTypeException(GetTag());
-				
-			TypeId = typeId.Id;
+            TypeId = (Int32)ElaTypeCode.Object;
 		}
 
 		
