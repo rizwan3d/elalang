@@ -1,0 +1,10 @@
+﻿1. Change syntax for comprehension operator (\\) or (:::)
+2. Bug in Core.all (==done)
+3. Names of functions are lost in object files (==done)
+4. Overloading
+5. "Interfaces"
+6. Symbolic equatations
+7. "Expression" pattern
+8. Tree data type and literal
+9. Doc comments
+10. Consider a different implementation of concat on tuples
