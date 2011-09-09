@@ -1,0 +1,26 @@
+!!!Outdated
+
+(The higher index means tighter binding).
+
+01. $ (Sequencing operator)
+02. <- (Assign) <-> (Swap)
+03. Prefix operators, unary operators
+04. <| (Backward Pipe) Right Associative
+05. |> (Forward Pipe)
+06. || (Boolean OR)
+07. && (Boolean AND)
+08. ==, <>, >, <, >=, <= (Comparison)
+09. >>> (Right Shift) <<< (Left Shift)
+10. ++ (Concat)
+11. :: (Cons) Right Associative
+12. + (Add) - (Subtract)
+13. * (Multiply) / (Divide) % (Modulus) ** (Power)
+14. : (Cast) ? (Match) @@ (Comprehension)
+15. Custom Operator / Function in infix form
+16. ||| (Bitwise OR)
+17. ^^^ (Bitwise XOR)
+18. &&& (Bitwise AND)
+19. << (Backward Composition) Right Associative
+20. >> (Forward Composition) 
+21. Function application
+22. (Member Access)

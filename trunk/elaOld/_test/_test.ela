@@ -1,0 +1,23 @@
+open Core
+open Collections.Array
+
+let x = --3
+
+/*
+let res = match x with
+                --3 = true
+                _   = false
+
+res
+*/
+
+let base f = rec f
+        where rec f = { !virtualfun = f, non_overwritable_fun = \x -> rec.virtual_fun x }
+
+let a = base f
+        where f x = "Hello from a!"
+
+let b = base f
+        where f x = "Hello from b!"
+
+a.virtualfun!
