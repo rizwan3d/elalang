@@ -856,6 +856,10 @@ PRODUCTIONS
 						.)						
 						FunExpr<varExp>
 					)
+					|
+					(
+						BindingBodyGuards<varExp>
+					)
 				]
 			)
 			| BindingBodyOperator<varExp>
@@ -888,6 +892,10 @@ PRODUCTIONS
 						if (varExp.InitExpression.Type == ElaNodeType.FunctionLiteral)
 							((ElaFunctionLiteral)varExp.InitExpression).FunctionType = ElaFunctionType.Operator;
 					.)
+				)
+				|
+				(
+					BindingBodyGuards<varExp>
 				)
 			)
 		).
