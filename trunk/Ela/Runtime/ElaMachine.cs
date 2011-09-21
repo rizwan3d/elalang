@@ -2639,7 +2639,6 @@ namespace Ela.Runtime
                                 i4 = left.AsInteger();
 
                             right = evalStack.Pop();
-                            Console.WriteLine(i4);
                             var res = right.Ref.Convert(right, (ElaTypeCode)i4, ctx);
 
                             if (ctx.Failed)
