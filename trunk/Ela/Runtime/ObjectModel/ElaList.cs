@@ -157,7 +157,7 @@ namespace Ela.Runtime.ObjectModel
 			var newLst = ElaList.Empty;
 			var lst = this;
 
-			while (lst != ElaList.Empty)
+			while (lst != ElaList.Empty && lst != ElaLazyList.Empty)
 			{
 				newLst = new ElaList(newLst, lst.Value);
 				lst = lst.Next;
