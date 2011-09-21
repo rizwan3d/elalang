@@ -31,16 +31,15 @@ namespace Ela.Linking
         private static readonly ModuleReference argModuleRef = new ModuleReference("$Args");
 		private Dictionary<String,Dictionary<String,ElaModuleAttribute>> foreignModules;
 		private FastList<DirectoryInfo> dirs;
-		private ExportVars exportVars;
-        private ArgumentModule argModule;
+		private ArgumentModule argModule;
+        private CodeFrame argModuleFrame;
         private bool argModuleAdded;
 		private bool stdLoaded;
 		
 		public ElaLinker(LinkerOptions linkerOptions, CompilerOptions compOptions, FileInfo rootFile)
 		{
 			dirs = new FastList<DirectoryInfo>();
-			exportVars = new ExportVars();
-
+			
 			if (linkerOptions.CodeBase.LookupStartupDirectory && rootFile != null)
 				dirs.Add(rootFile.Directory);
 
@@ -76,54 +75,53 @@ namespace Ela.Linking
 		}
 
 
-		
-		internal CodeFrame ResolveModule(ModuleReference mod)
+
+        internal CodeFrame ResolveModule(ModuleReference mod, ExportVars exportVars)
 		{
-			LoadStdLib();
-			var frame = default(CodeFrame);
+            LoadStdLib();
+            var frame = default(CodeFrame);
 
-			if ((frame = Assembly.GetModule(mod.ToString())) == null)
-			{
-				if (mod.DllName == null && stdLoaded && (frame = TryLoadStandardModule(mod)) != null)
-					return frame;
-				else if (mod.DllName != null)
-					return ResolveDll(mod);
-				else
-				{
-					var ela = String.Concat(mod.ModuleName, EXT);
-					var obj = LinkerOptions.ForceRecompile ? null : String.Concat(mod.ModuleName, OBJEXT);
-					bool bin;
-					var fi = FindModule(mod, ela, obj, out bin);
+            if ((frame = Assembly.GetModule(mod.ToString())) == null)
+            {
+                if (mod.DllName == null && stdLoaded && (frame = TryLoadStandardModule(mod)) != null)
+                {
 
-					if (fi != null)
-					{
-						if (!bin)
-						{
-							frame = Build(mod, fi);
-							RegisterFrame(mod, frame, fi);
-							return frame;
-						}
-						else
-						{
-							frame = ReadObjectFile(mod, fi);
-							RegisterFrame(mod, frame, fi);
-							return frame;
-						}
-					}
-					else
-					{
-						frame = TryResolveModule(mod);
-						RegisterFrame(mod, frame, fi);
-						return frame;
-					}
-				}
-			}
-			else
-				return frame;
+                }
+                else if (mod.DllName != null)
+                    frame = ResolveDll(mod);
+                else
+                {
+                    var ela = String.Concat(mod.ModuleName, EXT);
+                    var obj = LinkerOptions.ForceRecompile ? null : String.Concat(mod.ModuleName, OBJEXT);
+                    bool bin;
+                    var fi = FindModule(mod, ela, obj, out bin);
+
+                    if (fi != null)
+                    {
+                        if (!bin)
+                        {
+                            frame = Build(mod, fi);
+                            RegisterFrame(mod, frame, fi);
+                        }
+                        else
+                        {
+                            frame = ReadObjectFile(mod, fi);
+                            RegisterFrame(mod, frame, fi);
+                        }
+                    }
+                    else
+                    {
+                        frame = TryResolveModule(mod);
+                        RegisterFrame(mod, frame, fi);
+                    }
+                }
+            }
+
+            return FillExports(frame, exportVars);
 		}
 
 
-        private void CheckBinaryConsistency(CodeFrame obj, ModuleReference mod, FileInfo fi)
+        private void CheckBinaryConsistency(CodeFrame obj, ModuleReference mod, FileInfo fi, ExportVars exportVars)
         {
             foreach (var l in obj.LateBounds)
             {
@@ -145,20 +143,37 @@ namespace Ela.Linking
         }
 
 
+        private ExportVars CreateExportVars()
+        {
+            if (argModule != null && !argModuleAdded)
+            {
+                argModuleFrame = argModule.Compile();
+                Assembly.AddModule(argModuleRef.ToString(), argModuleFrame, false);
+                argModuleAdded = true;
+            }
+
+            var ret = new ExportVars();
+
+            if (argModuleFrame != null)
+                FillExports(argModuleFrame, ret);
+
+            return ret;
+        }
+
+
 		private CodeFrame ReadObjectFile(ModuleReference mod, FileInfo fi)
 		{
 			var obj = new ObjectFileReader(fi);
 			
 			try
 			{
-				var frame = obj.Read();
-                CheckBinaryConsistency(frame, mod, fi);
+                var frame = obj.Read();
+                var exportVars = CreateExportVars();
 
-				foreach (var kv in frame.GlobalScope.Locals)
-				{
-					if ((kv.Value.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin)
-						exportVars.AddName(kv.Key, (ElaBuiltinKind)kv.Value.Data);
-				}
+                foreach (var r in frame.References)
+                    ResolveModule(r.Value, exportVars);
+
+                CheckBinaryConsistency(frame, mod, fi, exportVars);
 
 				return frame;
 			}
@@ -202,14 +217,6 @@ namespace Ela.Linking
 			if (frame != null)
 			{
 				frame.File = fi;
-
-                if (argModule != null && !argModuleAdded)
-                {
-                    var f = argModule.Compile(exportVars);
-                    Assembly.AddModule(argModuleRef.ToString(), f, mod.RequireQuailified);
-                    argModuleAdded = true;
-                }
-
 				Assembly.AddModule(mod.ToString(), frame, mod.RequireQuailified);
 			}
 		}
@@ -236,6 +243,21 @@ namespace Ela.Linking
 
 			return null;
 		}
+
+
+        private CodeFrame FillExports(CodeFrame frame, ExportVars exportVars)
+        {
+            foreach (var kv in frame.GlobalScope.EnumerateVars())
+            {
+                var sv = kv.Value;
+
+                if ((sv.Flags & ElaVariableFlags.Private) != ElaVariableFlags.Private)
+                    exportVars.AddName(kv.Key, (sv.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin ?
+                        (ElaBuiltinKind)sv.Data : ElaBuiltinKind.None);
+            }
+
+            return frame;
+        }
 
 
 		private bool LoadAssemblyFile(ModuleReference mod, out FileInfo fi)
@@ -334,7 +356,7 @@ namespace Ela.Linking
 				{
 					obj.Initialize();
 					Assembly.RegisterForeignModule(obj);
-					frame = obj.Compile(exportVars);
+					frame = obj.Compile();
 				}
 				catch (Exception ex)
 				{
@@ -439,11 +461,12 @@ namespace Ela.Linking
 				opts.Prelude = null;
 			}
 
-			elac.ModuleInclude += (o, e) => ResolveModule(e.Module);
-			var res = frame != null ? elac.Compile(expr, CompilerOptions, exportVars, frame, scope) :
-				elac.Compile(expr, opts, exportVars);
-			AddMessages(res.Messages, file);
-			return res;
+            var exportVars = CreateExportVars();
+            elac.ModuleInclude += (o, e) => ResolveModule(e.Module, exportVars);
+            var res = frame != null ? elac.Compile(expr, CompilerOptions, exportVars, frame, scope) :
+                elac.Compile(expr, opts, exportVars);
+            AddMessages(res.Messages, file);
+            return res;
 		}
 
 
@@ -497,7 +520,7 @@ namespace Ela.Linking
 
 		private CodeFrame TryResolveModule(ModuleReference mod)
 		{
-			var e = new ModuleEventArgs(mod, exportVars);
+			var e = new ModuleEventArgs(mod);
 			OnModuleResolve(e);
 
 			if (e.HasModule)

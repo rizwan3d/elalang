@@ -965,9 +965,6 @@ namespace Ela.Compilation
 				AddLinePragma(exp);
 			}
 
-			if (CurrentScope == globalScope)
-				exports.AddName(name, (flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin ? (ElaBuiltinKind)data : ElaBuiltinKind.None);
-			
 			return AddVariable();
 		}
 

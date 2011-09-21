@@ -45,6 +45,15 @@ namespace Ela.Compilation
 		}
 
 
+        public IEnumerable<KeyValuePair<String, ScopeVar>> EnumerateVars()
+        {
+            foreach (var kv in Locals)
+                if ((kv.Value.Flags & ElaVariableFlags.SpecialName) != ElaVariableFlags.SpecialName &&
+                    ((kv.Value.Flags & ElaVariableFlags.External) != ElaVariableFlags.External))
+                    yield return kv;
+        }
+
+
 		internal void ChangeVariable(string name, ScopeVar var)
 		{
 			Locals[name] = var;
