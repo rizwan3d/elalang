@@ -19,9 +19,16 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
-        internal override ElaValue Convert(ElaValue @this, ElaTypeCode type)
+        internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
         {
-            return Force().Convert(type);
+            if (IsEvaluated())
+                return Value.Ref.Convert(Value, type, ctx);
+            else
+            {
+                ctx.Failed = true;
+                ctx.Thunk = this;
+                return Default();
+            }
 		}
 
 

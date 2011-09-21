@@ -297,8 +297,15 @@ namespace Ela.Runtime
             if (type == TypeCode)
                 return AsObject();
 
-			var ret = Ref.Convert(this, type).AsObject();
-			return ret;
+            var ctx = new ExecutionContext();
+			var ret = Ref.Convert(this, type, ctx);
+
+            if (ctx.Failed && ctx.Thunk != null)
+                return ctx.Thunk.Force().Convert(ti);
+            else if (ctx.Failed)
+                throw new InvalidCastException();            
+
+            return ret.AsObject();
 		}
 
 
@@ -393,12 +400,6 @@ namespace Ela.Runtime
 
 
         #region Operations
-        public ElaValue Convert(ElaTypeCode type)
-        {
-            return Ref.Convert(this, type);
-        }
-
-
         public string GetTag()
         {
             return Ref.GetTag();

@@ -40,6 +40,7 @@ namespace Ela
 
 				case "showf": return ElaBuiltinKind.Showf;
 
+                case "convert": return ElaBuiltinKind.Convert;
                 case "getvalue": return ElaBuiltinKind.GetValue;
 				case "equal": return ElaBuiltinKind.Equal;
 				case "notequal": return ElaBuiltinKind.NotEqual;

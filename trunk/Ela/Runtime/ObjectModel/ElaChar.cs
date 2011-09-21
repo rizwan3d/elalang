@@ -15,7 +15,7 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Methods
-        internal override ElaValue Convert(ElaValue @this, ElaTypeCode type)
+        internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
         {
             switch (type)
             {
@@ -26,7 +26,7 @@ namespace Ela.Runtime.ObjectModel
                 case ElaTypeCode.Char: return @this;
                 case ElaTypeCode.String: return new ElaValue(((Char)@this.I4).ToString());
                 default:
-                    return base.Convert(@this, type);
+                    return base.Convert(@this, type, ctx);
             }
         }
 

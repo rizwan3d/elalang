@@ -140,6 +140,8 @@ namespace Ela.Compilation
 
         Ovr,
 				
+        Conv,
+
 
 		
 		Newvar,
@@ -174,9 +176,6 @@ namespace Ela.Compilation
 
 		Brfalse,
 
-		Newfun,
-
-
-        
+		Newfun        
 	}
 }

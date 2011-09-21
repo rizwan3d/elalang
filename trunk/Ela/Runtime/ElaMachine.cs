@@ -2618,6 +2618,41 @@ namespace Ela.Runtime
 					#endregion
 
 					#region Builtins
+                    case Op.Conv:
+                        {
+                            left = evalStack.Pop();
+
+                            if (left.TypeId == LAZ)
+                            {
+                                if (!left.Ref.IsEvaluated())
+                                {
+                                    evalStack.Push(left);
+                                    ctx.Failed = true;
+                                    ctx.Thunk = (ElaLazy)left.Ref;
+                                    ExecuteThrow(thread, evalStack);
+                                    goto SWITCH_MEM;
+                                }
+                                else
+                                    i4 = ((ElaLazy)left.Ref).Value.AsInteger();
+                            }
+                            else
+                                i4 = left.AsInteger();
+
+                            right = evalStack.Pop();
+                            Console.WriteLine(i4);
+                            var res = right.Ref.Convert(right, (ElaTypeCode)i4, ctx);
+
+                            if (ctx.Failed)
+                            {
+                                evalStack.Push(right);
+                                evalStack.Push(left);
+                                ExecuteThrow(thread, evalStack);
+                                goto SWITCH_MEM;
+                            }
+
+                            evalStack.Push(res);
+                        }
+                        break;
                     case Op.Succ:
 						right = evalStack.Peek();
 						evalStack.Replace(suc_ovl[right.TypeId].Call(right, ctx));

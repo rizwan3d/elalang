@@ -56,6 +56,8 @@ namespace Ela.CodeModel
 
 		Showf,
 
+        Convert,
+
 
         GetValue,
 

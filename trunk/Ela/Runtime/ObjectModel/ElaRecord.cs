@@ -43,12 +43,12 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Methods
-        internal override ElaValue Convert(ElaValue @this, ElaTypeCode type)
+        internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
         {
             if (type == ElaTypeCode.Tuple)
                 return new ElaValue(new ElaTuple(values));
 
-            return base.Convert(@this, type);
+            return base.Convert(@this, type, ctx);
         }
 
 

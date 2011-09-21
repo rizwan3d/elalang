@@ -86,7 +86,7 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-		internal ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+		internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
 		{
 			if (type == ElaTypeCode.String)
 				return new ElaValue(this);

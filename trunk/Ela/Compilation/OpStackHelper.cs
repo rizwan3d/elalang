@@ -73,7 +73,8 @@ namespace Ela.Compilation
 			0, //Nil
             0, //Clone			
             0, //Gettag            
-            -3, //Ovr
+            -3, //Ovr            	
+	        -1, //Conv
 			
             0, //Newvar
 			1, //Newrec
@@ -91,7 +92,7 @@ namespace Ela.Compilation
 			0, //Br
 			-1, //Brtrue
 			-1, //Brfalse
-			0, //Newfun			
+			0, //Newfun	
 		};
 	}
 }

@@ -45,13 +45,15 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Methods
-        internal virtual ElaValue Convert(ElaValue @this, ElaTypeCode typeCode)
+        internal virtual ElaValue Convert(ElaValue @this, ElaTypeCode typeCode, ExecutionContext ctx)
         {
             if (typeCode == @this.TypeCode)
                 return @this;
             else
-                throw new InvalidCastException(String.Format("Unable to cast from {0} to {1}",
-                    TypeCodeFormat.GetShortForm(@this.TypeCode), TypeCodeFormat.GetShortForm(typeCode)));
+            {
+                ctx.ConversionFailed(@this, typeCode, "Type conversion not supported.");
+                return Default();
+            }
         }
 
 
@@ -154,6 +156,12 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return new ElaValue(ElaInvalidObject.Instance);
 		}
+
+
+        internal bool IsDefault()
+        {
+            return Object.ReferenceEquals(this, ElaInvalidObject.Instance);
+        }
 
 
         protected ElaValue Default()
