@@ -1,3 +1,9 @@
+0.9.10.18:New:Now it is possible to use 'any tag' denominator in overload expression, e.g. expression in the form 'on Any->Int#' would resolve for the first argument of any type and for the second argument of type Int#.
+0.9.10.17:New:Now Ela supports overloaded functions. Overload can be done by any number of arguments using 'on' keyword, e.g. 'let sum x y = x + y on Int#->Int#'. You can specify either regular tags or implicit tags in overload expressions.
+0.9.10.16:New:Now all built-in types have so called 'implicit tags' that replaces previously used type names. All 'implicit' tags has a hash sign at the end, e.g. Int#, String#, etc.
+0.9.10.15:Change:Ela object model is updated according to the new overload resolution engine.
+0.9.10.14:Change:Foreign modules infrastructure (in Ela linker) is completely rewritten to support new VM overload resolution.
+0.9.10.13:Change:VM internals is completely rewritten to target for a different overload resolution mechanism (that will render a better flexibility).
 0.9.10.12:Change:Conversion logic of built-in types is altered, now all built-in types support conversion to string.
 0.9.10.11:New:A new 'Has' op code is implemented. This op code is a new version of Hasfld op code and is supported by records and modules.
 0.9.10.10:Change:A 'Silent' hint in compiler is no longer used. 
@@ -8,5 +14,5 @@
 0.9.10.5:Change:Op code Pat is decomissioned. Now VM doesn't check if an object supports a particular match pattern. It tries to apply a pattern instead and raises an exception of a pattern is not supported.
 0.9.10.4:Change:Op code Hasfld is decomissioned.
 0.9.10.3:Change:Op codes Pushfld and Popfld are now decomissioned. Once should 'indexer' access style instead (op codes Popelem and Pushelem).
-0.9.10.2:Change:An 'is' pattern is now decomissioned (syntax like 'x is ?int' is not allowed anymore). One should check tag instead (e.g. 'x is Int#' for a primitive).
+0.9.10.2:Change:An 'is' pattern is now decomissioned (syntax like 'x is ?int' is not allowed anymore). One should check tag instead.
 0.9.10.1:Change:Built-in type conversion syntax is decomissioned (op code, AST node, compilation logic, etc.). Now once should use regular Prelude functions like toInt, toTuple, etc.
