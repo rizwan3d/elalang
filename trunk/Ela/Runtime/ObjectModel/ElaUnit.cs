@@ -18,6 +18,17 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Methods
+        internal override ElaValue Convert(ElaValue @this, ElaTypeCode typeCode, ExecutionContext ctx)
+        {
+            switch (typeCode)
+            {
+                case ElaTypeCode.Unit: return @this;
+                case ElaTypeCode.String: return new ElaValue(ToString());
+                default: return base.Convert(@this, typeCode, ctx);
+            }
+        }
+
+
 		public override string GetTag()
         {
             return "Unit#";

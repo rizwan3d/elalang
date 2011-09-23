@@ -54,10 +54,6 @@ namespace Ela.Runtime.ObjectModel
         internal override ElaFunction Resolve(ElaValue arg, ExecutionContext ctx)
         {
             var tag = arg.GetTag();
-
-            if (ctx.Failed)
-                return null;
-
             var fun = default(ElaFunction);
 
             if (!overloads.TryGetValue(tag, out fun))

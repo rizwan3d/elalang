@@ -59,6 +59,17 @@ namespace Ela.Runtime.ObjectModel
         {
             return Length;
         }
+
+
+        internal override ElaValue Convert(ElaValue @this, ElaTypeCode typeCode, ExecutionContext ctx)
+        {
+            switch (typeCode)
+            {
+                case ElaTypeCode.Tuple: return @this;
+                case ElaTypeCode.String: return new ElaValue(ToString());
+                default: return base.Convert(@this, typeCode, ctx);
+            }
+        }
 		#endregion
 
 

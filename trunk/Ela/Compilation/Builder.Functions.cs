@@ -183,6 +183,9 @@ namespace Ela.Compilation
 		{
 			switch (kind)
 			{
+                case ElaBuiltinKind.Has:
+                    cw.Emit(Op.Has);
+                    break;
                 case ElaBuiltinKind.Convert:
                     cw.Emit(Op.Conv);
                     break;

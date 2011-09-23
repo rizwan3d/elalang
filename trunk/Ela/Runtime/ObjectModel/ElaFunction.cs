@@ -166,6 +166,17 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
+        internal override ElaValue Convert(ElaValue @this, ElaTypeCode typeCode, ExecutionContext ctx)
+        {
+            switch (typeCode)
+            {
+                case ElaTypeCode.Function: return @this;
+                case ElaTypeCode.String: return new ElaValue(@this.ToString());
+                default: return base.Convert(@this, typeCode, ctx);
+            }
+        }
+
+
 		public override string ToString()
 		{
 			var sb = new StringBuilder();

@@ -58,6 +58,8 @@ namespace Ela.CodeModel
 
         Convert,
 
+        Has,
+
 
         GetValue,
 

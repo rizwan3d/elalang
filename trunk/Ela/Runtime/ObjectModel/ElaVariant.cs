@@ -34,6 +34,21 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
+        internal override ElaValue Convert(ElaValue @this, ElaTypeCode typeCode, ExecutionContext ctx)
+        {
+            switch (typeCode)
+            {
+                case ElaTypeCode.Variant: return @this;
+                case ElaTypeCode.String: return new ElaValue(ToString());
+                default:
+                    if (typeCode == Value.TypeCode)
+                        return Value;
+                    else
+                        return base.Convert(@this, typeCode, ctx);
+            }
+        }
+
+
         public override int GetHashCode()
 		{
 			return Tag.GetHashCode();

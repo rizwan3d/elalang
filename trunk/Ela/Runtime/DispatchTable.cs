@@ -2758,8 +2758,32 @@ namespace Ela.Runtime
 	#endregion
 
 
-	#region Concat
-	internal sealed class ConcatStringString : DispatchBinaryFun
+    #region HasFld
+    internal sealed class HasRecordString : DispatchBinaryFun
+    {
+        internal HasRecordString(DispatchBinaryFun[][] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            var rec = (ElaRecord)left.Ref;
+            return new ElaValue(rec.HasField(right.DirectGetString()));
+        }
+    }
+
+
+    internal sealed class HasModuleString : DispatchBinaryFun
+    {
+        internal HasModuleString(DispatchBinaryFun[][] funs) : base(funs) { }
+        protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            var rec = (ElaModule)left.Ref;
+            return new ElaValue(rec.HasField(right.DirectGetString()));
+        }
+    }
+    #endregion
+
+
+    #region Concat
+    internal sealed class ConcatStringString : DispatchBinaryFun
 	{
 		internal ConcatStringString(DispatchBinaryFun[][] funs) : base(funs) { }
 		protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)

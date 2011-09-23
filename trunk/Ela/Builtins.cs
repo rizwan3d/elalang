@@ -65,6 +65,7 @@ namespace Ela
 				case "cons": return ElaBuiltinKind.Cons;
 				case "compforward": return ElaBuiltinKind.CompForward;
 				case "compbackward": return ElaBuiltinKind.CompBackward;
+                case "has": return ElaBuiltinKind.Has;
 
 				case "setvalue": return ElaBuiltinKind.SetValue;
 				default: return ElaBuiltinKind.None;

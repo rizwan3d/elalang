@@ -325,7 +325,7 @@ namespace Ela.Compilation
 					cw.Emit(Op.Popvar, addr);
 				}
 
-				CompilePattern(addr, tuple, s.Pattern, map, next, s.VariableFlags, Hints.Silent);
+				CompilePattern(addr, tuple, s.Pattern, map, next, s.VariableFlags, Hints.None);
 				cw.Emit(Op.Br, exit);
 				cw.MarkLabel(next);
 				cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);

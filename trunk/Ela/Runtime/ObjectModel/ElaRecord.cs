@@ -45,10 +45,19 @@ namespace Ela.Runtime.ObjectModel
         #region Methods
         internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
         {
-            if (type == ElaTypeCode.Tuple)
-                return new ElaValue(new ElaTuple(values));
+            switch (type)
+            {
+                case ElaTypeCode.Record: return @this;
+                case ElaTypeCode.Tuple: return new ElaValue(new ElaTuple(values));
+                case ElaTypeCode.String: return new ElaValue(ToString());
+                default: return base.Convert(@this, type, ctx);
+            }
+        }
 
-            return base.Convert(@this, type, ctx);
+
+        public bool HasField(string field)
+        {
+            return GetOrdinal(field) != -1;
         }
 
 

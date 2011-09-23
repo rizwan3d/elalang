@@ -25,6 +25,7 @@ namespace Ela.Runtime.ObjectModel
                 case ElaTypeCode.Double: return new ElaValue((Double)@this.I4);
                 case ElaTypeCode.Long: return new ElaValue((Int64)@this.I4);
                 case ElaTypeCode.Char: return new ElaValue((Char)@this.I4);
+                case ElaTypeCode.String: return new ElaValue(AsBoolean(@this).ToString());
                 default:
                     return base.Convert(@this, typeCode, ctx);
             }

@@ -404,12 +404,10 @@ namespace Ela.Compilation
 					var addr = AddVariable();
 					var str = AddString(fld.Name);
 
-					if ((hints & Hints.Silent) == Hints.Silent)
-					{
-						//cw.Emit(Op.Pushvar, pushSys);
-						//cw.Emit(Op.Hasfld, str);
-						//cw.Emit(Op.Brfalse, nextLab);
-					}
+					cw.Emit(Op.Pushstr, str);
+                    cw.Emit(Op.Pushvar, pushSys);
+                    cw.Emit(Op.Has);
+                    cw.Emit(Op.Brfalse, nextLab);
 
 					cw.Emit(Op.Pushstr, str);
 					cw.Emit(Op.Pushvar, pushSys);

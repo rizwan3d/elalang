@@ -142,8 +142,9 @@ namespace Ela.Compilation
 				
         Conv,
 
+		Has,
 
-		
+
 		Newvar,
 
 		Newrec,

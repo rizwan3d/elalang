@@ -55,6 +55,7 @@ let pred = __internal pred
 /* Seq functions */
 let get = __internal getvalue
 let set = __internal setvalue
+let has = __internal has
 let generate = __internal generate
 let generateFinalize = __internal generateFinalize
 
@@ -93,7 +94,25 @@ let id x = x//I
 let const x _ = x//K
 let sub x y z = x z (y z)//S
 let fix f = f (& fix f)
-//let on cmb f x y = f x `cmb` f y
+
+/* Conversions */
+let private conv = __internal convert
+let toInt      = conv 1
+let toLong     = conv 2
+let toSingle   = conv 3
+let toDouble   = conv 4
+let toBoolean  = conv 5
+let toChar     = conv 6
+let toString   = conv 7
+let toUnit     = conv 8
+let toList     = conv 9
+let toTuple    = conv 11
+let toRecord   = conv 12
+let toFunction = conv 13
+let toObject   = conv 14
+let toModule   = conv 15
+let toLazy     = conv 16
+let toVariant  = conv 17
 
 /* Misc */
 let (!) = __internal apply
@@ -101,4 +120,3 @@ let rec f x = f x $ rec f
 let rec2 f x y = f x y $ rec2 f
 let until p f x | p x  = x  | else = until p f (f x)
 let compare x y | x == y = EQ | x < y = LT | else = GT
-let conv = __internal convert

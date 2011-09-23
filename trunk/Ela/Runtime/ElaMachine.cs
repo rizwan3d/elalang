@@ -145,6 +145,7 @@ namespace Ela.Runtime
 		private DispatchBinaryFun[][] ltr_ovl;
 		private DispatchBinaryFun[][] lte_ovl;
 		private DispatchBinaryFun[][] cat_ovl;
+        private DispatchBinaryFun[][] has_ovl;
         private DispatchBinaryFun[][] con_ovl;
         private DispatchBinaryFun[][] get_ovl;
 		private DispatchBinaryFun[][] shw_ovl;
@@ -483,6 +484,11 @@ namespace Ela.Runtime
         private DispatchBinaryFun catTupTup;
         private DispatchBinaryFun catLstLst;
 
+        private DispatchBinaryFun hasErrErr;
+        private DispatchBinaryFun hasRecStr;
+        private DispatchBinaryFun hasModStr;
+        private DispatchBinaryFun hasLazLaz;
+
         private DispatchBinaryFun conErrErr;
         private DispatchBinaryFun conAnyLst;
         private DispatchBinaryFun conAnyLaz;
@@ -633,6 +639,7 @@ namespace Ela.Runtime
 			ltr_ovl = new __table().table;
 			lte_ovl = new __table().table;
 			cat_ovl = new __table().table;
+            has_ovl = new __table().table;
 			con_ovl = new __table().table;
 			get_ovl = new __table().table;
 			shw_ovl = new __table().table;
@@ -970,6 +977,11 @@ namespace Ela.Runtime
             catTupTup = new ConcatTupleTuple(cat_ovl);
 			catLazLaz = new ThunkBinary(cat_ovl);
             catLazLst = new ConcatThunk(cat_ovl);
+
+            hasErrErr = new NoneBinary("$has", overloads);
+            hasRecStr = new HasRecordString(has_ovl);
+            hasModStr = new HasModuleString(has_ovl);
+            hasLazLaz = new ThunkBinary(has_ovl);
 
             conErrErr = new NoneBinary("$cons", overloads);
             conLazLaz = new ThunkBinary(con_ovl);
@@ -1458,6 +1470,11 @@ namespace Ela.Runtime
             cat_ovl[TUP][TUP] = catTupTup;
             FillLazy(cat_ovl, catLazLaz);
             FillTable(cat_ovl, catErrErr);
+
+            has_ovl[REC][STR] = hasRecStr;
+            has_ovl[MOD][STR] = hasModStr;
+            FillLazy(has_ovl, hasLazLaz);
+            FillTable(has_ovl, hasErrErr);
 
             con_ovl[INT][LST] = conAnyLst;
             con_ovl[LNG][LST] = conAnyLst;
@@ -2618,6 +2635,19 @@ namespace Ela.Runtime
 					#endregion
 
 					#region Builtins
+                    case Op.Has:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+                        evalStack.Replace(has_ovl[left.TypeId][right.TypeId].Call(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
                     case Op.Conv:
                         {
                             left = evalStack.Pop();
@@ -3050,6 +3080,9 @@ namespace Ela.Runtime
 				case "$cons":
 					funs = con_ovl;
 					break;
+                case "$has":
+                    funs = has_ovl;
+                    break;
             }
 
             var tid1 = TagToTypeId(tag1);

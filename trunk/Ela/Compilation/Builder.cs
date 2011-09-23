@@ -510,7 +510,7 @@ namespace Ela.Compilation
 						var exit = cw.DefineLabel();
 
 						AddLinePragma(v);
-						CompilePattern(addr, null, v.Pattern, map, next, ElaVariableFlags.None, hints | Hints.Silent);
+						CompilePattern(addr, null, v.Pattern, map, next, ElaVariableFlags.None, hints);
 						cw.Emit(Op.PushI1_1);
 						cw.Emit(Op.Br, exit);
 						cw.MarkLabel(next);

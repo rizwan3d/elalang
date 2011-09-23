@@ -75,6 +75,7 @@ namespace Ela.Compilation
 		    1, //Gettag            
             1, //Ovr            			
             1, //Conv
+            1, //Has
 
            	5, //Newvar
 			5, //Newrec

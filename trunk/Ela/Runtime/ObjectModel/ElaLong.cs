@@ -22,6 +22,7 @@ namespace Ela.Runtime.ObjectModel
                 case ElaTypeCode.Double: return new ElaValue((Double)Value);
                 case ElaTypeCode.Long: return @this;
                 case ElaTypeCode.Char: return new ElaValue((Char)Value);
+                case ElaTypeCode.String: return new ElaValue(Value.ToString(Culture.NumberFormat));
                 default: return base.Convert(@this, type, ctx);
             }
         }

@@ -35,8 +35,7 @@ namespace Ela.Runtime.ObjectModel
 			this.vm = vm;
 		}
 		#endregion
-
-
+        
 
 		#region Methods
 		public override string ToString()
@@ -45,9 +44,37 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
+        internal override ElaValue Convert(ElaValue @this, ElaTypeCode typeCode, ExecutionContext ctx)
+        {
+            switch (typeCode)
+            {
+                case ElaTypeCode.Module: return @this;
+                case ElaTypeCode.String: return new ElaValue(ToString());
+                default: return base.Convert(@this, typeCode, ctx);
+            }
+        }
+
+
 		public override string GetTag()
         {
             return "Module#";
+        }
+
+
+        public bool HasField(string field)
+        {
+            var frame = vm != null ? vm.Assembly.GetModule(Handle) : null;
+
+            if (frame != null)
+            {
+                foreach (var v in frame.GlobalScope.EnumerateNames())
+                {
+                    if (v == field)
+                        return true;
+                }
+            }
+
+            return false;
         }
 
 
@@ -73,9 +100,10 @@ namespace Ela.Runtime.ObjectModel
         {
             if (frame != null)
             {
-                foreach (var v in frame.GlobalScope.EnumerateNames())
+                foreach (var kv in frame.GlobalScope.EnumerateVars())
                 {
-					var sv = frame.GlobalScope.GetVariable(v);
+                    var v = kv.Key;
+					var sv = kv.Value;
 
 					if ((sv.Flags & ElaVariableFlags.Private) != ElaVariableFlags.Private)
 					{
