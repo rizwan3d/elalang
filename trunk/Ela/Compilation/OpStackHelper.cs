@@ -76,7 +76,11 @@ namespace Ela.Compilation
             -3, //Ovr            	
 	        -1, //Conv
             -1, //Has
+            -1, //Callb1
+            -2, //Callb2
+            -3, //Callb3
 			
+            1, //Makefun
             0, //Newvar
 			1, //Newrec
 			1, //Newtup

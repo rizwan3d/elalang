@@ -99,8 +99,8 @@ namespace Ela.Compilation
 					if (fc)
 						flags |= ElaVariableFlags.Function;
 
-					if (ed.Type == DataKind.Builtin)
-						flags |= ElaVariableFlags.Builtin;
+                    //if (ed.Type == DataKind.Builtin)
+                    //    flags |= ElaVariableFlags.Builtin;
 
 					addr = AddVariable(s.VariableName, s, flags, data != -1 ? data : ed.Data);
 				}

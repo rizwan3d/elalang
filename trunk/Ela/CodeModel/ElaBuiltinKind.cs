@@ -48,6 +48,8 @@ namespace Ela.CodeModel
 
         Apply,
 
+        GenerateFinalize,
+
         
 		Negate,
 
@@ -60,6 +62,8 @@ namespace Ela.CodeModel
 
         Has,
 
+        
+        Generate,
 
         GetValue,
 

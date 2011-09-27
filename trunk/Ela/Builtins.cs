@@ -37,6 +37,7 @@ namespace Ela
                 case "gettag": return ElaBuiltinKind.Gettag;
                 case "untag": return ElaBuiltinKind.Untag;
                 case "apply": return ElaBuiltinKind.Apply;
+                case "generatefinalize": return ElaBuiltinKind.GenerateFinalize;
 
 				case "showf": return ElaBuiltinKind.Showf;
 
@@ -66,6 +67,7 @@ namespace Ela
 				case "compforward": return ElaBuiltinKind.CompForward;
 				case "compbackward": return ElaBuiltinKind.CompBackward;
                 case "has": return ElaBuiltinKind.Has;
+                case "generate": return ElaBuiltinKind.Generate;
 
 				case "setvalue": return ElaBuiltinKind.SetValue;
 				default: return ElaBuiltinKind.None;

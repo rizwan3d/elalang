@@ -57,7 +57,7 @@ let get = __internal getvalue
 let set = __internal setvalue
 let has = __internal has
 let generate = __internal generate
-let generateFinalize = __internal generateFinalize
+let generateFinalize = __internal generatefinalize
 
 /* List functions */
 let (!!) x y = x.[y]

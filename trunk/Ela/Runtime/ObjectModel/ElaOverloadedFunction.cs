@@ -99,7 +99,8 @@ namespace Ela.Runtime.ObjectModel
 
         public override ElaFunction Clone()
         {
-            var newInst = new ElaOverloadedFunction(fname, Parameters.Length + 1, overloads, Captures, Machine);
+            var newInst = new ElaOverloadedFunction(fname, Parameters.Length + 1, 
+                new Dictionary<String,ElaFunction>(overloads), Captures, Machine);
             return CloneFast(newInst);
         }
         #endregion

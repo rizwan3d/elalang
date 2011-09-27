@@ -145,6 +145,14 @@ namespace Ela.Compilation
 		Has,
 
 
+        Callb1,
+
+        Callb2,
+
+        Callb3,
+        
+        Makefun,
+
 		Newvar,
 
 		Newrec,

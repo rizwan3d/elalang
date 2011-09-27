@@ -2635,6 +2635,73 @@ namespace Ela.Runtime
 					#endregion
 
 					#region Builtins
+                    case Op.Makefun:
+                        {
+                            var k = (ElaBuiltinKind)opd;
+                            i4 = Builtins.Params(k);
+
+                            if (i4 == 1)
+                                evalStack.Push(new ElaValue(new FunWrapper(PickUnary(k))));
+                            else if (i4 == 2)
+                                evalStack.Push(new ElaValue(new FunWrapper(PickBinary(k))));
+                            else if (i4 == 3)
+                                evalStack.Push(new ElaValue(new FunWrapper(PickTernary(k))));
+                        }
+                        break;
+                    case Op.Callb1:
+                        {
+                            var fun = (FunWrapper)evalStack.Pop().Ref;
+                            left = evalStack.Pop();
+                            evalStack.Push(fun.Call(left, ctx));
+
+                            if (ctx.Failed)
+                            {
+                                evalStack.Pop();
+                                evalStack.Push(left);
+                                evalStack.Push(new ElaValue(fun));
+                                ExecuteThrow(thread, evalStack);
+                                goto SWITCH_MEM;
+                            }
+                        }
+                        break;
+                    case Op.Callb2:
+                        {
+                            var fun = (FunWrapper)evalStack.Pop().Ref;
+                            left = evalStack.Pop();
+                            right = evalStack.Pop();
+                            evalStack.Push(fun.Call(left, right, ctx));
+
+                            if (ctx.Failed)
+                            {
+                                evalStack.Pop();
+                                evalStack.Push(right);
+                                evalStack.Push(left);
+                                evalStack.Push(new ElaValue(fun));
+                                ExecuteThrow(thread, evalStack);
+                                goto SWITCH_MEM;
+                            }
+                        }
+                        break;
+                    case Op.Callb3:
+                        {
+                            var fun = (FunWrapper)evalStack.Pop().Ref;
+                            left = evalStack.Pop();
+                            right = evalStack.Pop();
+                            var third = evalStack.Pop();
+                            evalStack.Push(fun.Call(left, right, third, ctx));
+
+                            if (ctx.Failed)
+                            {
+                                evalStack.Pop();
+                                evalStack.Push(third);
+                                evalStack.Push(right);
+                                evalStack.Push(left);
+                                evalStack.Push(new ElaValue(fun));
+                                ExecuteThrow(thread, evalStack);
+                                goto SWITCH_MEM;
+                            }
+                        }
+                        break;
                     case Op.Has:
                         left = evalStack.Pop();
                         right = evalStack.Peek();
@@ -2990,14 +3057,14 @@ namespace Ela.Runtime
                 case "$pred":
                     funs = prd_ovl;
                     break;
-				case "$generateFinalize":
-					funs = fin_ovl;
-					break;
-                case "$isnil":
+				case "$isnil":
                     funs = isn_ovl;
                     break;
                 case "$nil":
                     funs = nil_ovl;
+                    break;
+                case "$generatefinalize":
+                    funs = fin_ovl;
                     break;
             }
 
@@ -3339,6 +3406,67 @@ namespace Ela.Runtime
 				ExecuteFail(new ElaError(ElaRuntimeError.CallFailed, ex.Message), thread, stack);
 			}
 		}
+
+
+        private DispatchUnaryFun[] PickUnary(ElaBuiltinKind kind)
+        {
+            switch (kind)
+            {
+                case ElaBuiltinKind.Negate: return neg_ovl;
+                case ElaBuiltinKind.BitwiseNot: return bne_ovl;
+                case ElaBuiltinKind.Clone: return cln_ovl;
+                case ElaBuiltinKind.Succ: return suc_ovl;
+                case ElaBuiltinKind.Pred: return prd_ovl;
+                case ElaBuiltinKind.Min: return min_ovl;
+                case ElaBuiltinKind.Max: return max_ovl;
+                case ElaBuiltinKind.Length: return len_ovl;
+                case ElaBuiltinKind.Head: return hea_ovl;
+                case ElaBuiltinKind.Tail: return tai_ovl;
+                case ElaBuiltinKind.IsNil: return isn_ovl;
+                case ElaBuiltinKind.Not: return not_ovl;
+                case ElaBuiltinKind.Nil: return nil_ovl;
+                case ElaBuiltinKind.GenerateFinalize: return fin_ovl;
+                default: return null;
+            }
+        }
+
+
+        private DispatchBinaryFun[][] PickBinary(ElaBuiltinKind kind)
+        {
+            switch (kind)
+            {
+                case ElaBuiltinKind.Add: return add_ovl;
+                case ElaBuiltinKind.Subtract: return sub_ovl;
+                case ElaBuiltinKind.Multiply: return mul_ovl;
+                case ElaBuiltinKind.Divide: return div_ovl;
+                case ElaBuiltinKind.Remainder: return rem_ovl;
+                case ElaBuiltinKind.Power: return pow_ovl;
+                case ElaBuiltinKind.BitwiseAnd: return and_ovl;
+                case ElaBuiltinKind.BitwiseOr: return bor_ovl;
+                case ElaBuiltinKind.BitwiseXor: return xor_ovl;
+                case ElaBuiltinKind.ShiftLeft: return shl_ovl;
+                case ElaBuiltinKind.ShiftRight: return shr_ovl;
+                case ElaBuiltinKind.Equal: return eql_ovl;
+                case ElaBuiltinKind.NotEqual: return neq_ovl;
+                case ElaBuiltinKind.Greater: return gtr_ovl;
+                case ElaBuiltinKind.GreaterEqual: return gte_ovl;
+                case ElaBuiltinKind.Lesser: return ltr_ovl;
+                case ElaBuiltinKind.LesserEqual: return lte_ovl;
+                case ElaBuiltinKind.Concat: return cat_ovl;
+                case ElaBuiltinKind.Has: return has_ovl;
+                case ElaBuiltinKind.Cons: return con_ovl;
+                case ElaBuiltinKind.GetValue: return get_ovl;
+                case ElaBuiltinKind.Showf: return shw_ovl;
+                case ElaBuiltinKind.Generate: return gen_ovl;
+                default: return null;
+            }
+        }
+
+
+        private DispatchTernaryFun[][] PickTernary(ElaBuiltinKind kind)
+        {
+            return kind == ElaBuiltinKind.SetValue ? set_ovl : null;
+        }
 		#endregion
 
 

@@ -160,14 +160,43 @@ namespace Ela.Compilation
 
 		#region Builtins
         private void CompileBuiltin(ElaBuiltinKind kind, ElaExpression exp, LabelMap map)
-		{
+		{            
+            var a = AddVariable();
+            var spec = kind == ElaBuiltinKind.CompForward 
+                || kind == ElaBuiltinKind.CompBackward 
+                || kind == ElaBuiltinKind.Flip 
+                || kind == ElaBuiltinKind.Apply
+                || kind == ElaBuiltinKind.Fst
+                || kind == ElaBuiltinKind.Fst3
+                || kind == ElaBuiltinKind.Snd
+                || kind == ElaBuiltinKind.Snd3
+                || kind == ElaBuiltinKind.Type
+                || kind == ElaBuiltinKind.Force
+                || kind == ElaBuiltinKind.Gettag
+                || kind == ElaBuiltinKind.Untag
+                || kind == ElaBuiltinKind.Convert;
+
+            if (!spec)
+            {
+                cw.Emit(Op.Makefun, (Int32)kind);
+                cw.Emit(Op.Popvar, a);
+            }
+
 			StartSection();
 			var pars = Builtins.Params(kind);
 			cw.StartFrame(pars);
 			var funSkipLabel = cw.DefineLabel();
 			cw.Emit(Op.Br, funSkipLabel);
 			var address = cw.Offset;
-			CompileBuiltinInline(kind, exp, map, Hints.None);
+
+            if (!spec)
+            {
+                cw.Emit(Op.Pushvar, ReferenceGlobal(a));
+                var p = Builtins.Params(kind);
+                cw.Emit(p == 1 ? Op.Callb1 : p == 2 ? Op.Callb2 : Op.Callb3);
+            }
+            else
+                CompileBuiltinInline(kind, exp, map, Hints.None);
 
 			cw.Emit(Op.Ret);
 			frame.Layouts.Add(new MemoryLayout(currentCounter, cw.FinishFrame(), address));
@@ -183,6 +212,12 @@ namespace Ela.Compilation
 		{
 			switch (kind)
 			{
+                case ElaBuiltinKind.Generate:
+                    cw.Emit(Op.Gen);
+                    break;
+                case ElaBuiltinKind.GenerateFinalize:
+                    cw.Emit(Op.Genfin);
+                    break;
                 case ElaBuiltinKind.Has:
                     cw.Emit(Op.Has);
                     break;

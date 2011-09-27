@@ -1,4 +1,5 @@
 ﻿using System;
+using Ela.Runtime.ObjectModel;
 
 namespace Ela.Runtime
 {
@@ -25,7 +26,7 @@ namespace Ela.Runtime
 	}
 
 
-    public abstract class DispatchBinaryFun
+    public abstract class DispatchBinaryFun 
     {
         private readonly DispatchBinaryFun[][] funs;
 
@@ -48,7 +49,7 @@ namespace Ela.Runtime
     }
 
 
-	public abstract class DispatchUnaryFun
+    public abstract class DispatchUnaryFun 
 	{
 		private readonly DispatchUnaryFun[] funs;
 
@@ -69,4 +70,69 @@ namespace Ela.Runtime
 			return funs[left.TypeId].Call(left, ctx);
 		}
 	}
+
+
+    internal sealed class FunWrapper : ElaObject
+    {
+        private DispatchUnaryFun[] unary;
+        private DispatchBinaryFun[][] binary;
+        private DispatchTernaryFun[][] ternary;
+
+        public FunWrapper(DispatchUnaryFun[] unary)
+        {
+            this.unary = Clone(unary);
+        }
+
+
+        public FunWrapper(DispatchBinaryFun[][] binary)
+        {
+            this.binary = Clone(binary);
+        }
+
+
+        public FunWrapper(DispatchTernaryFun[][] ternary)
+        {
+            this.ternary = Clone(ternary);
+        }
+
+
+        internal ElaValue Call(ElaValue first, ExecutionContext ctx)
+        {
+            return unary[first.TypeId].Call(first, ctx);
+        }
+
+
+        internal ElaValue Call(ElaValue first, ElaValue second, ExecutionContext ctx)
+        {
+            return binary[first.TypeId][second.TypeId].Call(first, second, ctx);
+        }
+
+
+        internal ElaValue Call(ElaValue first, ElaValue second, ElaValue third, ExecutionContext ctx)
+        {
+            return ternary[first.TypeId][second.TypeId].Call(first, second, third, ctx);
+        }
+
+
+        private T[] Clone<T>(T[] funs)
+        {
+            var ret = new T[funs.Length];
+
+            for (var i = 0; i < funs.Length; i++)
+                ret[i] = funs[i];
+
+            return ret;
+        }
+
+
+        private T[][] Clone<T>(T[][] funs)
+        {
+            var ret = new T[funs.Length][];
+
+            for (var i = 0; i < funs.Length; i++)
+                ret[i] = Clone(funs[i]);
+
+            return ret;
+        }
+    }
 }
