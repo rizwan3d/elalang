@@ -2980,7 +2980,7 @@ namespace Ela.Runtime
 			}
 			else
 			{
-				ovlFun = (ElaOverloadedFunction)old;
+                ovlFun = (ElaOverloadedFunction)((ElaOverloadedFunction)old).Clone();
 				funMap = ovlFun.overloads;
 			}
 

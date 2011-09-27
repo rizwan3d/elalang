@@ -227,6 +227,11 @@ namespace Ela.Compilation
 
             if (sv.IsEmpty())
                 addr = AddVariable(s.VariableName, s, s.VariableFlags, -1);
+            else
+            {
+                CurrentScope.Locals.Remove(s.VariableName);
+                addr = AddVariable(s.VariableName, s, s.VariableFlags, -1);
+            }
             
             cw.Emit(Op.Newtup, len);
 
