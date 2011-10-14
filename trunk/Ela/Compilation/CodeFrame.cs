@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using Ela.CodeModel;
 using Ela.Debug;
-using Ela.Runtime;
 
 namespace Ela.Compilation
 {

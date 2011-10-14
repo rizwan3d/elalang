@@ -31,104 +31,224 @@ namespace Ela.Runtime.ObjectModel
 
 			internal ElaNilList() : base(null, new ElaValue(ElaUnit.Instance)) { }
 
-			internal override ElaValue Tail(ExecutionContext ctx)
+			protected internal override ElaValue Tail(ExecutionContext ctx)
 			{
 				ctx.Fail("NilList", "List is nil.");
 				return Default();
 			}
 
-			internal override ElaValue Head(ExecutionContext ctx)
+			protected internal override ElaValue Head(ExecutionContext ctx)
 			{
 				ctx.Fail("NilList", "List is nil.");
 				return Default();
+			}
+
+			protected internal override bool IsNil(ExecutionContext ctx)
+			{
+				return true;
 			}
 		}
 		#endregion
 
 
 		#region Operations
-		internal virtual ElaValue Head(ExecutionContext ctx)
+		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(Equal(left, right, "equal", ctx));
+		}
+
+
+		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(!Equal(left, right, "notequal", ctx));
+		}
+
+
+		private bool Equal(ElaValue left, ElaValue right, string op, ExecutionContext ctx)
+		{
+			if (left.TypeId != ElaMachine.LST)
+			{
+				ctx.InvalidLeftOperand(left, right, op);
+				return false;
+			}
+
+			if (right.TypeId != ElaMachine.LST)
+			{
+				ctx.InvalidRightOperand(left, right, op);
+				return false;
+			}
+
+			ElaList xs1 = (ElaList)left.Ref;
+			ElaList xs2 = (ElaList)right.Ref;
+
+			while (!xs1.IsNil(ctx) && !xs2.IsNil(ctx))
+			{
+				var eq = xs1.Value.Equal(xs1.Value, xs2.Value, ctx);
+
+				if (!eq.Ref.Bool(eq, ctx))
+					return false;
+
+				xs1 = xs1.Tail(ctx).Ref as ElaList;
+				xs2 = xs2.Tail(ctx).Ref as ElaList;
+
+				if (xs1 == null || xs2 == null)
+				{
+					ctx.Fail(new ElaError("InvalidList", "Invalid list definition."));
+					return false;
+				}
+			}
+
+			return xs1.IsNil(ctx) && xs2.IsNil(ctx);
+		}
+
+
+		protected internal override ElaValue GetLength(ExecutionContext ctx)
+		{
+			var count = 0;
+			ElaList xs = this;
+			
+			while (!xs.IsNil(ctx))
+			{
+				count++;
+				xs = xs.Tail(ctx).Ref as ElaList;
+
+				if (xs == null)
+				{
+					ctx.Fail(new ElaError("InvalidList", "Invalid list definition."));
+					return Default();
+				}
+			}
+
+			return new ElaValue(count);
+		}
+
+
+		protected internal override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
+		{
+			if (index.TypeId != ElaMachine.INT)
+			{
+				ctx.InvalidIndexType(index);
+				return Default();
+			}
+			else if (index.I4 < 0)
+			{
+				ctx.IndexOutOfRange(index, new ElaValue(this));
+				return Default();
+			}
+
+			ElaList xs = this;
+
+			for (var i = 0; i < index.I4; i++)
+			{
+				xs = xs.Tail(ctx).Ref as ElaList;
+
+				if (xs == null)
+				{
+					ctx.Fail(new ElaError("InvalidList", "Invalid list definition."));
+					return Default();
+				}
+
+				if (xs.IsNil(ctx))
+				{
+					ctx.IndexOutOfRange(index, new ElaValue(this));
+					return Default();
+				}
+			}
+
+			return xs.Head(ctx);
+		}
+
+
+		protected internal override ElaValue Head(ExecutionContext ctx)
 		{
 			return InternalValue;
 		}
 
 
-		internal virtual ElaValue Tail(ExecutionContext ctx)
+		protected internal override ElaValue Tail(ExecutionContext ctx)
 		{
 			return new ElaValue(InternalNext);
+		}
+
+
+		protected internal override bool IsNil(ExecutionContext ctx)
+		{
+			return false;
+		}
+
+
+		protected internal override ElaValue Cons(ElaObject next, ElaValue value, ExecutionContext ctx)
+		{
+			var xs = next as ElaList;
+
+			if (xs != null)
+				return new ElaValue(new ElaList(xs, value));
+
+			ctx.Fail(ElaRuntimeError.InvalidType, ElaTypeCode.List, (ElaTypeCode)next.TypeId);
+			return Default();
+		}
+
+
+		protected internal override ElaValue Nil(ExecutionContext ctx)
+		{
+			return new ElaValue(Empty);
+		}
+
+
+		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			if (left.TypeId == ElaMachine.LST && right.TypeId == ElaMachine.LST)
+			{
+				var list = (ElaList)right.Ref;
+
+				foreach (var e in ((ElaList)left.Ref).Reverse())
+					list = new ElaList(list, e);
+
+				return new ElaValue(list);				
+			}
+			else if (left.TypeId == ElaMachine.LST)
+				return right.Ref.Concatenate(left, right, ctx);
+			
+			ctx.InvalidLeftOperand(left, right, "concat");
+			return Default();
+		}
+
+
+		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+		{
+			if (type == ElaTypeCode.List)
+				return new ElaValue(this);
+
+			ctx.ConversionFailed(@this, type);
+            return Default();
+		}
+
+
+        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
+		{
+			return "[" + FormatHelper.FormatEnumerable(this, ctx, info) + "]";
+		}
+
+
+		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
+		{
+			return new ElaValue(new ElaList(this, value));
+		}
+
+
+		protected internal override ElaValue GenerateFinalize(ExecutionContext ctx)
+		{
+            return new ElaValue(Reverse());
 		}
 		#endregion
 
 
-        #region Methods
-		public override string GetTag()
+		#region Methods
+        public override ElaPatterns GetSupportedPatterns()
         {
-            return "List#";
+            return ElaPatterns.Tuple|ElaPatterns.HeadTail;
         }
 
-
-        internal override ElaValue Convert(ElaValue @this, ElaTypeCode typeCode, ExecutionContext ctx)
-        {
-            switch (typeCode)
-            {
-                case ElaTypeCode.List: return @this;
-                case ElaTypeCode.String: return new ElaValue(ToString());
-                default: return base.Convert(@this, typeCode, ctx);
-            }
-        }
-
-
-		public override string ToString()
-		{
-			var sb = new StringBuilder();
-			sb.Append('[');
-			var cc = 0;
-
-			foreach (var e in this)
-			{
-				if (cc > 30)
-				{
-					sb.Append(",...");
-					break;
-				}
-
-				if (cc > 0)
-					sb.Append(',');
-
-				sb.Append(e.ToString());
-				cc++;
-			}
-
-			sb.Append(']');
-			return sb.ToString();
-		}
-
-
-        internal override int GetLength(ExecutionContext ctx)
-        {
-            var count = 0;
-            ElaList xs = this;
-
-            while (xs != Empty)
-            {
-                count++;
-                xs = xs.Tail(ctx).Ref as ElaList;
-
-                if (xs == null)
-                {
-                    if (ctx == ElaObject.DummyContext)
-                        throw new ElaRuntimeException("InvalidList", "Invalid list definition.");
-                    else
-                    {
-                        ctx.Fail("InvalidList", "Invalid list definition.");
-                        return 0;
-                    }
-                }
-            }
-
-            return count;
-        }
-        
 
 		public static ElaList FromEnumerable(IEnumerable seq)
 		{
@@ -165,11 +285,12 @@ namespace Ela.Runtime.ObjectModel
 
 		public virtual ElaList Reverse()
 		{
-			var newLst = ElaList.Empty;
+            var ctx = new ExecutionContext();
+            var newLst = ElaList.Empty;
 			var lst = this;
 
-			while (lst != ElaList.Empty && lst != ElaLazyList.Empty)
-			{
+            while (!lst.IsNil(ctx))
+            {
 				newLst = new ElaList(newLst, lst.Value);
 				lst = lst.Next;
 			}
@@ -183,7 +304,7 @@ namespace Ela.Runtime.ObjectModel
 			ElaList xs = this;
 			var ctx = new ExecutionContext();
 
-			while (xs != Empty)
+			while (!xs.IsNil(ctx))
 			{
 				yield return xs.Head(ctx);
 				xs = xs.Tail(ctx).Ref as ElaList;
@@ -208,8 +329,8 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Properties
-		protected internal ElaValue InternalValue;
-        protected internal ElaList InternalNext;
+		protected ElaValue InternalValue;
+		protected ElaList InternalNext;
 
 		public virtual ElaList Next
 		{
@@ -229,7 +350,7 @@ namespace Ela.Runtime.ObjectModel
 
 		public virtual int Length
 		{
-			get { return GetLength(ElaObject.DummyContext); }
+			get { return GetLength(DummyContext).AsInteger(); }
 		}
 		#endregion
 	}

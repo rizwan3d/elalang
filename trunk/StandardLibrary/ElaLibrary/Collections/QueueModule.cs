@@ -9,7 +9,7 @@ namespace Ela.Library.Collections
     public sealed class QueueModule : ForeignModule
     {
         #region Construction
-		public QueueModule()
+        public QueueModule()
         {
 
         }
@@ -25,16 +25,6 @@ namespace Ela.Library.Collections
             Add<ElaQueue,ElaQueue>("dequeue", Dequeue);
             Add<ElaValue,ElaQueue,ElaQueue>("enqueue",Enqueue);
             Add<ElaQueue,ElaList>("toList", ToList);
-
-			Add<ElaQueue,ElaList>("queueForwardList", q => q.GetForwardList());
-			Add<ElaQueue,ElaList>("queueBackwardList", q => q.GetBackwardList());
-			Add<ElaQueue,String>("toString", q => q.ToString());
-			Add<ElaQueue,ElaValue>("queueHead", q => q.Head());
-			Add<ElaQueue,ElaQueue>("queueTail", q => q.Tail());
-			Add<ElaQueue,ElaQueue>("queueNil", _ => ElaQueue.Empty);
-			Add<ElaQueue,Boolean>("queueIsNil", q => q.IsNil());
-			Add<ElaQueue,ElaValue,ElaQueue>("queueCons", (q,v) => q.Cons(q, v));
-			Add<ElaQueue,Int32>("queueLength", q => q.Length);
         }
 
 

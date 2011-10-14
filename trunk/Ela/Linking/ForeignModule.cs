@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Ela.CodeModel;
 using Ela.Compilation;
 using Ela.Runtime;
@@ -10,12 +11,12 @@ namespace Ela.Linking
 	{
 		#region Construction
 		private FastList<ElaValue> locals;
-		private Scope scope;
+        private Scope scope;
 
 		protected ForeignModule()
 		{
 			locals = new FastList<ElaValue>();
-			scope = new Scope(false, null);			
+			scope = new Scope(false, null);
 		}
 		#endregion
 
@@ -32,7 +33,7 @@ namespace Ela.Linking
 
 		internal IntrinsicFrame Compile()
 		{
-			var frame = new IntrinsicFrame(locals.ToArray(), this);
+			var frame = new IntrinsicFrame(locals.ToArray());
 			frame.Layouts.Add(new MemoryLayout(locals.Count, 0, 0));
 			frame.GlobalScope = scope;
 			return frame;

@@ -25,7 +25,6 @@ TOKENS
 			| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ].	
 	
 	variantTok = ucase { letter | digit | "'" }.
-	specVariantTok = ucase { letter | digit | "'" } "#".
 				
 	intTok = ( digit { digit } | digit { digit } CONTEXT ("." notDigit) | 
 			( "0x" | "0X" ) hexDigit { hexDigit } ) [ "L" | "l" ].
@@ -98,7 +97,6 @@ TOKENS
 	QUALIFIED = "qualified".
 	
 	ET = "et".
-	ON = "on".
 	
 	EBLOCK = ";".
 	
@@ -304,7 +302,7 @@ PRODUCTIONS
 		.)
 		(
 			(
-				(variantTok|specVariantTok)
+				variantTok  
 				(. 
 					vp = new ElaVariantPattern(t);
 					vp.Tag = t.val; 
@@ -336,6 +334,7 @@ PRODUCTIONS
 			| ListPattern<out pat>
 			| RecordPattern<out pat>
 			| IdentPattern<out pat>
+			| TypeCheckPattern<out pat>
 		).
 			
 	AsPattern<out ElaPattern pat> =
@@ -387,6 +386,7 @@ PRODUCTIONS
 			| LiteralPattern<out pat> 
 			| ListPattern<out pat>
 			| RecordPattern<out pat>
+			| TypeCheckPattern<out pat>
 		)
 		[
 			"@" 
@@ -416,12 +416,29 @@ PRODUCTIONS
 	IsOperatorPattern<out ElaPattern pat> = 
 		(. pat = null; .)
 		(
-			  LiteralPattern<out pat>
+			TypeCheckPattern<out pat>
+			| LiteralPattern<out pat>
 			| RecordPattern<out pat>
 			| ListPattern<out pat>
 			| UnitPattern<out pat>
 			| VariantPattern<out pat>
 		).
+		
+	TypeCheckPattern<out ElaPattern pat> = 
+		(. 
+			var eis = new ElaIsPattern(t);
+			pat = eis; 			
+		.)
+		"?" 
+		(
+			ident 
+			(. 
+				eis.TypeCode = GetType(t.val); 
+				
+				if (eis.TypeCode == ElaTypeCode.None)
+					eis.TypeName = t.val;
+			.)
+		).		
 						
 	IdentPattern<out ElaPattern pat> =
 		ident (. pat = new ElaVariablePattern(t) { Name = t.val }; .).	
@@ -526,7 +543,7 @@ PRODUCTIONS
 				| realTok (. lit = ParseReal(t.val); .)
 				/*|
 				(
-					"--"
+					operatorTok8
 					(
 						intTok (. lit = ParseInt(t.val).MakeNegative(); .)
 						| realTok (. lit = ParseReal(t.val).MakeNegative(); .)
@@ -856,10 +873,10 @@ PRODUCTIONS
 						.)						
 						FunExpr<varExp>
 					)
-					|
+					| 
 					(
 						BindingBodyGuards<varExp>
-					)
+					)	
 				]
 			)
 			| BindingBodyOperator<varExp>
@@ -893,10 +910,10 @@ PRODUCTIONS
 							((ElaFunctionLiteral)varExp.InitExpression).FunctionType = ElaFunctionType.Operator;
 					.)
 				)
-				|
+				| 
 				(
 					BindingBodyGuards<varExp>
-				)
+				)					
 			)
 		).
 		
@@ -949,8 +966,7 @@ PRODUCTIONS
 				varExp.VariableName = mi.Name;
 				ProcessFunctionParameters(mi, ot); 
 			.)			
-		)		
-		[ OverloadExpr<varExp> ].
+		).
     
 	InfixFunBodyExprFirst<ElaPattern pat, ElaFunctionLiteral fun> =
 		(.
@@ -1081,7 +1097,7 @@ PRODUCTIONS
 			.)
 		).
 		
-	Operators = operatorTok1|operatorTok2|operatorTok3|operatorTok4|operatorTok5|operatorTok6|operatorTok7|operatorTok8|":"|"::"|"!".
+	Operators = operatorTok1|operatorTok2|operatorTok3|operatorTok4|operatorTok5|operatorTok6|operatorTok7|operatorTok8|"::"|"!".
 		
 	FunName<ElaFunctionLiteral fun> = 
 		(
@@ -1092,12 +1108,6 @@ PRODUCTIONS
 			.)
 		).
 		
-	OverloadExpr<ElaBinding varExp> = 
-		(
-			"on" (variantTok|specVariantTok|"Any") (. varExp.OverloadNames.Add(t.val); .)
-			{ "->" (variantTok|specVariantTok|"Any") (. varExp.OverloadNames.Add(t.val); .) }
-		).
-				
 	FunExpr<ElaBinding varExp> =
 		(
 			(. 
@@ -1110,8 +1120,7 @@ PRODUCTIONS
 			.)	
 			FunBodyExpr<mi>
 			(. ProcessFunctionParameters(mi, ot); .)			
-		)
-		[ OverloadExpr<varExp> ].
+		).
 		
 	FunBodyExpr<ElaFunctionLiteral fun> =
 		(.
@@ -1559,14 +1568,14 @@ PRODUCTIONS
 				CastExpr<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
-					(operatorTok5) (. op = t.val; .)
+					operatorTok5 (. op = t.val; .)
 					[ CastExpr<out cexp> ]
 					(. exp = GetOperatorFun(op, exp, cexp); .)
 				}
 			)
 			|
 			(
-				(operatorTok5) (. op = t.val; .)
+				operatorTok5 (. op = t.val; .)
 				[ 
 					CastExpr<out exp> 
 					(. exp = GetOperatorFun(op, null, exp); .)
@@ -1582,6 +1591,11 @@ PRODUCTIONS
 		InfixExpr<out exp>
 		{
 			(
+				(
+					":" ident 
+					(. exp = new ElaCast(t) { CastAffinity = GetType(t.val), Expression = exp };.)
+				)
+				|
 				(
 					(. var pat = default(ElaPattern); .)
 					IS IsOperatorPattern<out pat> 
@@ -1739,14 +1753,14 @@ PRODUCTIONS
 				Application<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
-					(operatorTok8|"!"|":") (. op = t.val; .)
+					(operatorTok8|"!") (. op = t.val; .)
 					[ Application<out cexp> ]
 					(. exp = GetOperatorFun(op, exp, cexp); .)
 				}
 			)
 			|
 			(
-				(operatorTok8|"!"|":") (. op = t.val; .)
+				(operatorTok8|"!") (. op = t.val; .)
 				[ 
 					Application<out exp>
 					(. exp = GetOperatorFun(op, null, exp); .)

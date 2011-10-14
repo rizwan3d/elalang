@@ -8,13 +8,13 @@ let lazyList {eqt} =
         eqt (lst is (0::1::xs))
         where make n = n :: (& make (n + 1))
            et lst = make 0
-
+           
 let lazyList2 {eqt} =
           eqt <| xs is (1::2::3::_)
         $ eqt <| xs is (1::2::3::1::2::3::_)
         where cycle xs = xs ++ (& cycle xs)
            et xs = cycle [1,2,3]
-
+              
 let memoization {eq} =
         let x = {!x=0} in
         let fun () = x.x <- x.x + 1 $ x in
@@ -38,17 +38,17 @@ let fixPoint {eq} =
         eq res 120
 
 let forceTest {eqt} = 
-        let _ = eqt (th is Lazy#) in
+        let _ = eqt (th is ?lazy) in
         let _ = force th
-        in eqt (th is Int#)
+        in eqt (th is ?int)
         where th = (& 2 + 2)
 
 let typeCheck {eqt} =
         let t = (& 2 * 2) in
-        eqt (t is Lazy#)
+        eqt (t is ?lazy)
         $ t + 0
-        $ eqt (t is Int#)
-
+        $ eqt (t is ?int)
+        
 let lazyEquals {eqt} =
         eqt (thunk1 == 4)
         $ eqt (thunk1 <> 5)

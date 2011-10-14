@@ -7,12 +7,9 @@ namespace Ela.Linking
 	public sealed class IntrinsicFrame : CodeFrame
 	{
 		#region Construction
-		private ForeignModule module;
-
-		internal IntrinsicFrame(ElaValue[] mem, ForeignModule module)
+		internal IntrinsicFrame(ElaValue[] mem)
 		{
 			Memory = mem;
-			this.module = module;
 		}
 		#endregion
 

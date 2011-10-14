@@ -66,9 +66,9 @@ let e = cm.e
 
 
 /* Basic */
-//let chr (?int)@x = x:char
+let chr (?int)@x = x:char
 
-//let ord (?char)@x = x:int
+let ord (?char)@x = x:int
 
 
 /* LIST FUNCTIONS */
@@ -82,6 +82,10 @@ let last (x::[]) = x
 let init (x::[]@n) = n
     init (x::xs)   = x :: init xs
     init []        = fail "Core.init: Empty list"
+
+//Seq->Bool
+let isNil (_::_) = false 
+    isNil []     = true
 
 //Call->(Seq,Cons)->(Seq,Cons)
 let takeWhile f (x::xs) | f x  = x :: takeWhile f xs

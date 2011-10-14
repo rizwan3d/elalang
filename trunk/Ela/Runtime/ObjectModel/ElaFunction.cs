@@ -20,7 +20,8 @@ namespace Ela.Runtime.ObjectModel
         private const string ISNATIVE = "isNative";
         private const string ISGLOBAL = "isGlobal";
         private const string ISPARTIAL = "isPartial";
-        
+
+
 		protected ElaFunction() : this(1)
 		{
 
@@ -57,7 +58,7 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		internal ElaValue Call(ElaValue value, ExecutionContext ctx)
+		protected internal override ElaValue Call(ElaValue value, ExecutionContext ctx)
 		{
 			try
 			{
@@ -77,10 +78,22 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		internal static bool IsEqual(ElaObject leftObj, ElaObject rightObj)
+		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(IsEqual(left.Ref, right.Ref, ctx));
+		}
+
+
+		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+            return new ElaValue(!IsEqual(left.Ref, right.Ref, ctx));
+		}
+
+
+        private bool IsEqual(ElaObject leftObj, ElaObject rightObj, ExecutionContext ctx)
         {
             var left = leftObj as ElaFunction;
-			var right = rightObj as ElaFunction;
+            var right = rightObj as ElaFunction;
 
             if (left == null || right == null)
                 return false;
@@ -90,10 +103,26 @@ namespace Ela.Runtime.ObjectModel
                 left.ModuleHandle == right.ModuleHandle &&
                 left.AppliedParameters == right.AppliedParameters &&
                 left.Flip == right.Flip &&
-                left.Parameters.Length == right.Parameters.Length && 
-				left.AppliedParameters == 0 && right.AppliedParameters == 0 &&
-                left.LastParameter.Ref == right.LastParameter.Ref && right.LastParameter.Ref == null;
+                EqHelper.ListEquals(left.Parameters, right.Parameters, ctx) &&
+                (Object.ReferenceEquals(left.LastParameter.Ref, right.LastParameter.Ref) ||
+                    left.LastParameter.Equals(right.LastParameter));
+
         }
+
+
+        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
+		{
+			var sb = new StringBuilder();
+			sb.Append("*");
+
+			for (var i = 0; i < Parameters.Length + 1 - AppliedParameters; i++)
+			{
+				sb.Append("->");
+				sb.Append("*");
+			}
+
+			return GetFunctionName() + ":" + sb.ToString();
+		}
 		#endregion
 
 
@@ -160,49 +189,8 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
-        public override string GetTag()
-        {
-            return "Function#";
-		}
-
-
-        internal override ElaValue Convert(ElaValue @this, ElaTypeCode typeCode, ExecutionContext ctx)
-        {
-            switch (typeCode)
-            {
-                case ElaTypeCode.Function: return @this;
-                case ElaTypeCode.String: return new ElaValue(@this.ToString());
-                default: return base.Convert(@this, typeCode, ctx);
-            }
-        }
-
-
-		public override string ToString()
-		{
-			var sb = new StringBuilder();
-			sb.Append("*");
-
-			for (var i = 0; i < Parameters.Length + 1 - AppliedParameters; i++)
-			{
-				sb.Append("->");
-				sb.Append("*");
-			}
-
-			return GetFunctionName() + ":" + sb.ToString();
-		}
-
-
-        internal virtual ElaFunction Resolve(ElaValue arg, ExecutionContext ctx)
-        {
-            return this;
-        }
-
-
         internal ElaFunction CloneFast()
 		{
-            if (Overloaded)
-                return Clone();
-
 			var pars = new ElaValue[Parameters.Length];
 
 			if (AppliedParameters > 0) //This is faster than Array.Copy
@@ -216,6 +204,7 @@ namespace Ela.Runtime.ObjectModel
 			ret.vm = vm;
 			ret.Captures = Captures;
 			ret.Flip = Flip;
+            ret.OverloadName = OverloadName;
 			return ret;
 		}
 
@@ -235,6 +224,7 @@ namespace Ela.Runtime.ObjectModel
 			newInstance.vm = vm;
 			newInstance.Captures = Captures;
 			newInstance.Flip = Flip;
+            newInstance.OverloadName = OverloadName;
 			return newInstance;
 		}
 
@@ -331,7 +321,7 @@ namespace Ela.Runtime.ObjectModel
 
 		internal ElaValue LastParameter { get; set; }
 
-        internal bool Overloaded { get; set; }
+        internal string OverloadName { get; set; }
 
 		private bool _flip;
 		internal bool Flip 

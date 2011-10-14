@@ -368,12 +368,7 @@ namespace ElaConsole
 				}
 				catch (ElaCodeException ex)
 				{
-					helper.PrintError("Error: {0}", ex);
-					return R_ERR;
-				}
-				catch (ElaRuntimeException ex)
-				{
-					helper.PrintError("Error: {0}", ex);
+					helper.PrintError(ex.ToString());
 					return R_ERR;
 				}
 			}

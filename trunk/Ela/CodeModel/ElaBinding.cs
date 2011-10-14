@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using Ela.Parsing;
 
@@ -67,22 +66,6 @@ namespace Ela.CodeModel
 				Where.ToString(sb, new Fmt(indent), "where");
 			}
 
-            if (IsOverloaded)
-            {
-                sb.AppendLine();
-                sb.Append(' ', indent);
-                var cc = 0;
-                sb.Append("on ");
-
-                foreach (var n in OverloadNames)
-                {
-                    if (cc++ > 0)
-                        sb.Append("->");
-
-                    sb.Append(n);
-                }
-            }
-
 			if (And != null)
 			{
 				sb.AppendLine();
@@ -116,23 +99,6 @@ namespace Ela.CodeModel
 		public ElaBinding And { get; set; }
 
 		public ElaExpression In { get; set; }
-
-        public bool IsOverloaded
-        {
-            get { return _overloadNames != null; }
-        }
-
-        private List<String> _overloadNames;
-        public List<String> OverloadNames
-        {
-            get 
-            {
-                if (_overloadNames == null)
-                    _overloadNames = new List<String>();
-
-                return _overloadNames; 
-            }
-        }		
 		#endregion
 	}
 }

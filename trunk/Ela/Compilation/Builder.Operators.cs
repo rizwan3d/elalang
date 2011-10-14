@@ -9,6 +9,10 @@ namespace Ela.Compilation
 		private ExprData CompileBinary(ElaBinary bin, LabelMap map, Hints hints)
 		{
 			CompileBinaryMain(bin.Operator, bin, map, hints);
+
+			if ((hints & Hints.Left) == Hints.Left && bin.Operator != ElaOperator.Assign)
+				AddValueNotUsed(bin);
+
 			return ExprData.Empty;
 		}
 
@@ -67,8 +71,8 @@ namespace Ela.Compilation
 			else
 				CompileExpression(left, map, Hints.Assign | Hints.Left);
 
-			if ((hints & Hints.Left) == Hints.Left)
-				cw.Emit(Op.Pop);
+			if ((hints & Hints.Left) != Hints.Left)
+				cw.Emit(Op.Pushunit);
 		}		
 		#endregion
 	}

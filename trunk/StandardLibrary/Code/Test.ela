@@ -1,7 +1,6 @@
 open Core
-open Con
 
-let inline ^^ x y = show x ++ show y
+let inline ^^ x y = x:string ++ y:string
 
 let assert =
     {
@@ -12,8 +11,7 @@ let assert =
         gte = op' "gte" (>=),
         lte = op' "lte" (<=),
         eqt = op' "eqt" (==) true,
-        eqf = op' "eqf" (==) false,
-        err = \() -> raise AssertFailed ("err")
+        eqf = op' "eqf" (==) false
     }
     where op' m op x y | op x y = ()
                        | else   = raise AssertFailed (m)
@@ -23,7 +21,7 @@ let funData fun = (t.module.name ++ "." ++ t.name, fun)
     
 let regFun fun xs = funData fun  :: xs
 
-let regFuns mod xs = xs ++ (vals |> filter (\x -> x is Function#) |> map funData)
+let regFuns mod xs = xs ++ (vals |> filter (\x -> x is ?fun) |> map funData)
                      where vals = [ v.value \\ v <- (type mod).globals ]
 
 let run xs = (res, failed)

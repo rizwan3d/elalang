@@ -1,6 +1,5 @@
 ﻿using System;
 using Ela.Linking;
-using Ela.Runtime;
 
 namespace Ela.Library.General
 {
@@ -31,7 +30,6 @@ namespace Ela.Library.General
 			Add<Double,Double>("log", Log);
 			Add<Double,Double>("round", Round);
             Add<Int32,Int32,Int32,Int32>("rnd", Rnd);
-
 			Add("pi", Math.PI);
 			Add("e", Math.E);
 		}

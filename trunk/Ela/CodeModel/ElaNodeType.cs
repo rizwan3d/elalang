@@ -43,6 +43,8 @@ namespace Ela.CodeModel
 		
 		Placeholder,
 
+		Cast,
+
 		Is,
 
 		Condition,
@@ -89,6 +91,8 @@ namespace Ela.CodeModel
 		RecordPattern,
 
 		FieldPattern,
+
+		IsPattern,
 
 		AsPattern,
 

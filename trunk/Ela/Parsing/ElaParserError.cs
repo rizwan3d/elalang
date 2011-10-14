@@ -50,7 +50,7 @@ namespace Ela.Parsing
 
 		ExpectedOperatorToken = 107,
 
-		ExpectedOn = 108,
+		// = 108,
 
 		ExpectedBooleanToken = 109,
 
@@ -174,7 +174,7 @@ namespace Ela.Parsing
 
 		InvalidRoot = 210,
 
-		InvalidOverload = 211,
+		// = 211,
 
 		InvalidAssignment = 212,
 

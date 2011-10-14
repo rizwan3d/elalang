@@ -89,6 +89,13 @@ let takeElems {eqt} =
         let res = take [0, 1, 2, 3, 4] 3 in
         eqt <| res is Some [0,1,2]
 
+let lazyList {eq} =
+        eq [3,4,5] (filter' (>2) xs)
+        where xs = (& [1..5])
+           et filter' p [] = []
+              filter' p (x::xs) | p x  = x :: filter' p xs
+                                | else = filter' p xs
+
 let typeCheck {eqt} =
         let list = [0, 1] in
-        eqt (list is List#)
+        eqt (list is ?list)

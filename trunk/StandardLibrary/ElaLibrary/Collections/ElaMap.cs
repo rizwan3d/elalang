@@ -11,8 +11,8 @@ namespace Ela.Library.Collections
     {
         #region Construction
         public static readonly ElaMap Empty = new ElaMap(AvlTree.Empty);
-        private const string TAG = "Map#";
-        
+		private const string TYPENAME = "map";
+		
         internal ElaMap(AvlTree tree)
         {
             Tree = tree;
@@ -21,9 +21,15 @@ namespace Ela.Library.Collections
 
 
         #region Methods
-        public override string GetTag()
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.None;
+        }
+
+
+        protected override string GetTypeName()
 		{
-			return TAG;
+			return TYPENAME;
 		}
 
 
@@ -58,7 +64,19 @@ namespace Ela.Library.Collections
         }
 
 
-        public override string ToString()
+        protected override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return new ElaValue(left.ReferenceEquals(right));
+        }
+
+
+        protected override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return new ElaValue(!left.ReferenceEquals(right));
+        }
+
+
+        protected override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
         {
             var sb = new StringBuilder();
             sb.Append("map");
@@ -70,9 +88,9 @@ namespace Ela.Library.Collections
                 if (c++ > 0)
                     sb.Append(',');
 
-                sb.Append(e.Key.ToString());
+                sb.Append(e.Key.Show(info, ctx));
                 sb.Append('=');
-                sb.Append(e.Value.ToString());
+                sb.Append(e.Value.Show(info, ctx));
             }
 
             sb.Append('}');
@@ -80,18 +98,37 @@ namespace Ela.Library.Collections
         }
 
 
-        public ElaValue GetValue(ElaValue index)
+        protected override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
         {
             var res = Tree.Search(index);
 
             if (res.IsEmpty)
-                throw new ElaRuntimeException(ElaRuntimeError.IndexOutOfRange, index);
-            
+            {
+                ctx.IndexOutOfRange(index, new ElaValue(this));
+                return Default();
+            }
+
             return res.Value;
         }
 
 
-        public ElaRecord ConvertToRecord()
+        protected override ElaValue GetLength(ExecutionContext ctx)
+        {
+            return new ElaValue(Length);
+        }
+
+
+        protected override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+        {
+            if (type == ElaTypeCode.Record)
+                return new ElaValue(ConvertToRecord());
+
+            ctx.ConversionFailed(@this, type);
+            return Default();
+        }
+
+
+        private ElaRecord ConvertToRecord()
         {
             var fields = new ElaRecordField[Length];
             var c = 0;

@@ -24,16 +24,7 @@ namespace Ela.Library.Collections
             Add<ElaValue,ElaSet,ElaSet>("add", Add);
             Add<ElaValue,ElaSet,ElaSet>("remove", Remove);
             Add<ElaValue,ElaSet,Boolean>("contains", Contains);
-            Add<ElaSet,ElaList>("toList", s => s.ConvertToList());
-
-            Add<ElaSet,String>("toString", s => s.ToString());
-            Add<ElaSet,ElaValue>("setHead", s => s.Head());
-            Add<ElaSet,ElaSet>("setTail", s => s.Tail());
-            Add<ElaSet,ElaSet>("setNil", _ => ElaSet.Empty);
-            Add<ElaSet,Boolean>("setIsNil", s => s.IsNil());
-            Add<ElaSet,ElaValue,ElaSet>("setCons", (s,v) => s.Cons(s, v));
-            Add<ElaSet,Int32>("setLength", s => s.Length);
-            Add<ElaSet,ElaValue,ElaSet>("setGenerate", (s,v) => s.Generate(v));
+            Add<ElaSet,ElaList>("toList", ToList);
         }
 
 
@@ -58,6 +49,12 @@ namespace Ela.Library.Collections
         public bool Contains(ElaValue value, ElaSet set)
         {
 			return set.Contains(value);
+        }
+
+
+        public ElaList ToList(ElaSet set)
+        {
+            return ElaList.FromEnumerable(set);
         }
         #endregion
     }

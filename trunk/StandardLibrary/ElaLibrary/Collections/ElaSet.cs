@@ -10,7 +10,7 @@ namespace Ela.Library.Collections
 	{
 		#region Construction
 		public static readonly ElaSet Empty = new ElaSet(AvlTree.Empty);
-		private const string TAG = "set";
+		private const string TYPENAME = "set";
 		
 		internal ElaSet(AvlTree tree)
 		{
@@ -20,9 +20,15 @@ namespace Ela.Library.Collections
 
 
 		#region Methods
-        public override string GetTag()
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.HeadTail;
+        }
+
+
+        protected override string GetTypeName()
 		{
-			return TAG;
+			return TYPENAME;
 		}
 
 
@@ -95,49 +101,91 @@ namespace Ela.Library.Collections
 
 
 		#region Operations
-		public override string ToString()
+		protected override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return "set[" + ConvertToList().ToString() + "]";
+			return new ElaValue(left.ReferenceEquals(right));
 		}
 
 
-		internal ElaValue Head()
+		protected override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(!left.ReferenceEquals(right));
+		}
+
+
+        protected override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
+		{
+			return "set[" + FormatHelper.FormatEnumerable(this, ctx, info) + "]";
+		}
+
+
+		protected override ElaValue GetLength(ExecutionContext ctx)
+		{
+			return new ElaValue(Length);
+		}
+
+
+		protected override ElaValue Head(ExecutionContext ctx)
 		{
 			return Tree.Key;
 		}
 
 
-		internal ElaSet Tail()
+		protected override ElaValue Tail(ExecutionContext ctx)
 		{
-			return new ElaSet(Tree.Remove(Tree.Key));
+			return new ElaValue(new ElaSet(Tree.Remove(Tree.Key)));
 		}
 
 
-		internal bool IsNil()
+		protected override bool IsNil(ExecutionContext ctx)
 		{
 			return Tree.IsEmpty;
 		}
 
 
-		internal ElaSet Generate(ElaValue value)
+		protected override ElaValue Generate(ElaValue value, ExecutionContext ctx)
 		{
 			if (!Tree.Search(value).IsEmpty)
-				return this;
+				return new ElaValue(this);
 			else
-				return new ElaSet(Tree.Add(value, default(ElaValue)));
+				return new ElaValue(new ElaSet(Tree.Add(value, default(ElaValue))));
 		}
 
 
-		internal ElaSet Cons(ElaSet next, ElaValue value)
+		protected override ElaValue GenerateFinalize(ExecutionContext ctx)
 		{
-			return next.Add(value);
+			return new ElaValue(this);
 		}
 
 
-        public ElaList ConvertToList()
-        {
-            return ElaList.FromEnumerable(this);
-        }
+		protected override ElaValue Cons(ElaObject instance, ElaValue value, ExecutionContext ctx)
+		{
+			var next = instance as ElaSet;
+
+			if (next == null)
+			{
+				ctx.InvalidType(GetTypeName(), new ElaValue(instance));
+				return Default();
+			}
+
+			return new ElaValue(next.Add(value));
+		}
+
+
+		protected override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+		{
+			if (type == ElaTypeCode.List)
+				return new ElaValue(ElaList.FromEnumerable(this));
+
+			ctx.ConversionFailed(@this, type);
+			return Default();
+		}
+
+
+		protected override ElaValue Nil(ExecutionContext ctx)
+		{
+			return new ElaValue(Empty);
+		}
 		#endregion
 
 

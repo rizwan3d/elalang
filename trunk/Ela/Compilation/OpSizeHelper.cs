@@ -69,21 +69,21 @@ namespace Ela.Compilation
 			1, //Max
 			1, //Min
 			1, //Show
-			1, //Untag
+			1, //Tagval
+			1, //Skiphtag
 			1, //Nil
         	1, //Clone	
-		    1, //Gettag            
-            1, //Ovr            			
-            1, //Conv
-            1, //Has
-            1, //Callb1
-            1, //Callb2
-            1, //Callb3
-
-            5, //Makefun
-           	5, //Newvar
+		    1, //Gettag
+			
+            5, //Elem
+			5, //Skiptag
+			5, //Conv
+			5, //Newvar
 			5, //Newrec
 			5, //Newtup
+			5, //Skiptn
+			5, //Skiptl
+			5, //Pat
 			5, //Tupex
 			5, //Failwith
 			5, //Start
@@ -92,12 +92,20 @@ namespace Ela.Compilation
 			5, //PushI4
 			5, //PushR4
 			5, //Pushvar
+			5, //Pushfld
 			5, //Popvar
+			5, //Popfld
 			5, //Runmod
+			5, //Hasfld
 			5, //Br
 			5, //Brtrue
 			5, //Brfalse
-			5, //Newfun
+			5, //Br_lt
+			5, //Br_gt
+			5, //Br_eq
+			5, //Br_neq
+			5, //Brnil
+			5, //Newfun			
 		};
 	}
 }

@@ -35,50 +35,83 @@ namespace Ela.Runtime.ObjectModel
 			this.vm = vm;
 		}
 		#endregion
-        
 
-		#region Methods
-		public override string ToString()
+
+		#region Operations
+		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.TypeCode == right.TypeCode &&
+				((ElaModule)left.Ref).Handle == ((ElaModule)right.Ref).Handle);
+		}
+
+
+		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			return new ElaValue(left.TypeCode != right.TypeCode ||
+				((ElaModule)left.Ref).Handle != ((ElaModule)right.Ref).Handle);
+		}
+
+
+        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			return String.Format(MODULE, vm != null ? vm.Assembly.GetModuleName(Handle) : String.Empty);
 		}
 
 
-        internal override ElaValue Convert(ElaValue @this, ElaTypeCode typeCode, ExecutionContext ctx)
+		protected internal override ElaValue GetField(string field, ExecutionContext ctx)
+		{
+			if (vm != null)
+			{
+				var frame = vm.Assembly.GetModule(Handle);
+				ScopeVar sc;
+
+				if (!frame.GlobalScope.Locals.TryGetValue(field, out sc))
+				{
+					ctx.UnknownField(field, new ElaValue(this));
+					return Default();
+				}
+
+				if ((sc.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private)
+				{
+					ctx.Fail(new ElaError(ElaRuntimeError.PrivateVariable, field));
+					return Default();
+				}
+
+				return vm.modules[Handle][sc.Address];
+			}
+
+			ctx.UnknownField(field, new ElaValue(this));
+			return Default();
+		}
+
+
+		protected internal override bool HasField(string field, ExecutionContext ctx)
+		{
+			if (vm != null)
+			{
+				var frame = vm.Assembly.GetModule(Handle);
+				ScopeVar sc;
+
+				if (!frame.GlobalScope.Locals.TryGetValue(field, out sc) || 
+					(sc.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private)
+					return false;
+
+				return true;
+			}
+
+			return false;
+		}
+		#endregion
+
+
+		#region Methods
+        public override ElaPatterns GetSupportedPatterns()
         {
-            switch (typeCode)
-            {
-                case ElaTypeCode.Module: return @this;
-                case ElaTypeCode.String: return new ElaValue(ToString());
-                default: return base.Convert(@this, typeCode, ctx);
-            }
+            return ElaPatterns.Record;
         }
 
 
-		public override string GetTag()
-        {
-            return "Module#";
-        }
-
-
-        public bool HasField(string field)
-        {
-            var frame = vm != null ? vm.Assembly.GetModule(Handle) : null;
-
-            if (frame != null)
-            {
-                foreach (var v in frame.GlobalScope.EnumerateNames())
-                {
-                    if (v == field)
-                        return true;
-                }
-            }
-
-            return false;
-        }
-
-
-        public override ElaTypeInfo GetTypeInfo()
+		public override ElaTypeInfo GetTypeInfo()
 		{
             var frame = vm != null ? vm.Assembly.GetModule(Handle) : null;
             var name = vm != null ? vm.Assembly.GetModuleName(Handle) : null;
@@ -100,10 +133,9 @@ namespace Ela.Runtime.ObjectModel
         {
             if (frame != null)
             {
-                foreach (var kv in frame.GlobalScope.EnumerateVars())
+                foreach (var v in frame.GlobalScope.EnumerateNames())
                 {
-                    var v = kv.Key;
-					var sv = kv.Value;
+					var sv = frame.GlobalScope.GetVariable(v);
 
 					if ((sv.Flags & ElaVariableFlags.Private) != ElaVariableFlags.Private)
 					{
@@ -148,11 +180,6 @@ namespace Ela.Runtime.ObjectModel
 
 		#region Properties
 		public int Handle { get; private set; }
-
-		internal ElaMachine Machine
-		{
-			get { return vm; }
-		}
 		#endregion
 	}
 }

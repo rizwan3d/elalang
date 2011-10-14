@@ -24,27 +24,27 @@ namespace Ela.Runtime
 
 		public void InvalidFormat(string format, ElaValue value)
 		{
-			Fail(ElaRuntimeError.InvalidFormat, format, value.ToString(), value.GetTag());
+			Fail(ElaRuntimeError.InvalidFormat, format, value.ToString(), value.GetTypeName());
 		}
 
 
 		public void DivideByZero(ElaValue value)
 		{
-			Fail(ElaRuntimeError.DivideByZero, value.ToString(), value.GetTag());
+			Fail(ElaRuntimeError.DivideByZero, value.ToString(), value.GetTypeName());
 		}
 
 
 		public void InvalidRightOperand(ElaValue left, ElaValue right, string op)
 		{
-			Fail(ElaRuntimeError.RightOperand, right.ToString(), right.GetTag(),
-				left.ToString(), left.GetTag(), op);
+			Fail(ElaRuntimeError.RightOperand, right.ToString(), right.GetTypeName(),
+				left.ToString(), left.GetTypeName(), op);
 		}
 
 
 		public void InvalidLeftOperand(ElaValue left, ElaValue right, string op)
 		{
-			Fail(ElaRuntimeError.LeftOperand, left.ToString(), left.GetTag(), 
-				right.ToString(), right.GetTag(), op);
+			Fail(ElaRuntimeError.LeftOperand, left.ToString(), left.GetTypeName(), 
+				right.ToString(), right.GetTypeName(), op);
 		}
 
 
@@ -56,46 +56,40 @@ namespace Ela.Runtime
 
 		public void ConversionFailed(ElaValue source, ElaTypeCode target, string reason)
 		{
-			Fail(ElaRuntimeError.ConversionFailed, source.ToString(), source.GetTag(),
+			Fail(ElaRuntimeError.ConversionFailed, source.ToString(), source.GetTypeName(),
                 TypeCodeFormat.GetShortForm(target), reason);
 		}
 
 
 		public void InvalidIndexType(ElaValue index)
 		{
-			Fail(ElaRuntimeError.InvalidIndexType, index.GetTag());
+			Fail(ElaRuntimeError.InvalidIndexType, index.GetTypeName());
 		}
 
 
 		public void IndexOutOfRange(ElaValue index, ElaValue obj)
 		{
-			Fail(ElaRuntimeError.IndexOutOfRange, index.ToString(), index.GetTag(),
-				obj.ToString(), obj.GetTag());
+			Fail(ElaRuntimeError.IndexOutOfRange, index.ToString(), index.GetTypeName(),
+				obj.ToString(), obj.GetTypeName());
 		}
 
 
 		public void InvalidType(string expected, ElaValue given)
 		{
-			Fail(ElaRuntimeError.InvalidType, expected, given.GetTag());
+			Fail(ElaRuntimeError.InvalidType, expected, given.GetTypeName());
 		}
 
 
 		public void UnknownField(string field, ElaValue val)
 		{
-			Fail(ElaRuntimeError.UnknownField, field, val.ToString(), val.GetTag());
+			Fail(ElaRuntimeError.UnknownField, field, val.ToString(), val.GetTypeName());
 		}
 
 
 		public void NoOperator(ElaValue value, string op)
 		{
-			Fail(ElaRuntimeError.InvalidOp, value, value.GetTag(), op);
+			Fail(ElaRuntimeError.InvalidOp, value, value.GetTypeName(), op);
 		}
-
-
-        public void NoOperation(ElaValue left, ElaValue right, string op)
-        {
-            Fail(ElaRuntimeError.NoOperation, op, left, right);
-        }
 
 
 		public void Fail(ElaRuntimeError error, params object[] args)
@@ -120,7 +114,7 @@ namespace Ela.Runtime
 		{
 			if (!Failed)
 			{
-                Failed = true;
+				Failed = true;
 				Error = err;
 			}
 		}
@@ -135,23 +129,15 @@ namespace Ela.Runtime
 
 
 		#region Properties
-        private bool _failed;
-        internal bool Failed 
-        {
-            get { return _failed; }
-            set
-            {
-                _failed = value;
-            }
-        }
+		internal bool Failed { get; set; }
 
 		internal ElaError Error { get; set; }
 
 		internal ElaLazy Thunk;
 
-        internal ElaFunction Function;
+        internal string Tag;
 
-        internal int ToPop;
+        internal string OverloadFunction;
 		#endregion
 	}
 }

@@ -9,9 +9,9 @@ namespace Ela.Runtime.ObjectModel
 	{
 		#region Construction
         private const string FIELDS = "fields";
-        internal string[] keys;
-        internal ElaValue[] values;
-		internal bool[] flags;
+        private string[] keys;
+        private ElaValue[] values;
+		private bool[] flags;
         private int cons;
 
 		private enum SetResult
@@ -42,40 +42,116 @@ namespace Ela.Runtime.ObjectModel
 		#endregion
 
 
-        #region Methods
-        internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+		#region Operations
+        protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            switch (type)
-            {
-                case ElaTypeCode.Record: return @this;
-                case ElaTypeCode.Tuple: return new ElaValue(new ElaTuple(values));
-                case ElaTypeCode.String: return new ElaValue(ToString());
-                default: return base.Convert(@this, type, ctx);
-            }
+            return new ElaValue(Eq(left, right, ctx));
         }
 
 
-        public bool HasField(string field)
+        protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            return GetOrdinal(field) != -1;
+            return new ElaValue(!Eq(left, right, ctx));
         }
 
 
-		public ElaRecord Clone()
+        private bool Eq(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            if (left.Ref == right.Ref)
+                return true;
+
+            var lt = left.Ref as ElaRecord;
+            var rt = right.Ref as ElaRecord;
+
+            if (lt == null || rt == null || rt.Length != lt.Length || 
+                !(EqHelper.ListEquals(rt.keys, lt.keys)) ||
+                !(EqHelper.ListEquals(rt.values, lt.values, ctx)))
+                return false;
+
+            return true;
+        }
+
+
+		protected internal override ElaValue GetValue(ElaValue key, ExecutionContext ctx)
 		{
-			var rec = new ElaRecord(values.Length);
-
-			for (var i = 0; i < values.Length; i++)
+			if (key.TypeId == ElaMachine.STR)
+                return GetField(key.DirectGetString(), ctx);
+			else if (key.TypeId == ElaMachine.INT)
 			{
-				var v = values[i];
-				rec.AddField(i, keys[i], flags[i], v);
+				if (key.I4 != -1 && key.I4 < values.Length)
+					return values[key.I4];
+				else
+				{
+					ctx.IndexOutOfRange(key, new ElaValue(this));
+					return base.GetValue(key, ctx);
+				}
 			}
 
-			return rec;
+			ctx.InvalidIndexType(key);
+			return Default();
 		}
-		
-		
-		public override string ToString()
+
+
+		protected internal override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
+		{
+			var res = SetResult.None;
+
+			if (index.TypeId == ElaMachine.STR)
+				res = SetValue(index.Ref.ToString(), value);
+			else if (index.TypeId == ElaMachine.INT)
+				res = SetValue(index.I4, value);
+			else
+				ctx.InvalidIndexType(index);
+
+			if (res == SetResult.OutOfRange)
+				ctx.IndexOutOfRange(index, new ElaValue(this));
+			else if (res == SetResult.Immutable)
+				ctx.Fail(ElaRuntimeError.FieldImmutable, index.Ref.ToString(), Show(new ElaValue(this), ShowInfo.Default, ctx));
+		}
+
+
+		protected internal override ElaValue GetField(string field, ExecutionContext ctx)
+		{
+			var index = GetOrdinal(field);
+
+			if (index != -1 && index < values.Length)
+				return values[index];
+
+			ctx.UnknownField(field, new ElaValue(this));
+			return Default();
+		}
+
+
+		protected internal override void SetField(string field, ElaValue value, ExecutionContext ctx)
+		{
+			var res = SetValue(field, value);
+
+			if (res == SetResult.Immutable)
+				ctx.Fail(ElaRuntimeError.FieldImmutable, field, Show(new ElaValue(this), ShowInfo.Default, ctx));
+			else if (res == SetResult.OutOfRange)
+				ctx.UnknownField(field, new ElaValue(this));
+		}
+
+
+		protected internal override bool HasField(string field, ExecutionContext ctx)
+		{
+			return GetOrdinal(field) != -1;
+		}
+
+
+		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+		{
+			if (type == ElaTypeCode.Record)
+				return @this;
+			else if (type == ElaTypeCode.Tuple)
+				return new ElaValue(new ElaTuple(values));
+			
+			ctx.ConversionFailed(new ElaValue(this), type);
+               return Default();
+		}
+
+
+        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			var sb = new StringBuilder();
 			sb.Append('{');
@@ -84,7 +160,7 @@ namespace Ela.Runtime.ObjectModel
 
 			foreach (var k in GetKeys())
 			{
-				if (c > 30)
+				if (info.SequenceLength > 0 && c > info.SequenceLength)
 				{
 					sb.Append("...");
 					break;
@@ -96,7 +172,7 @@ namespace Ela.Runtime.ObjectModel
 				if (flags[c - 1])
 					sb.Append("!");
 
-				sb.AppendFormat("{0}={1}", k, this[k].ToString());
+				sb.AppendFormat("{0}={1}", k, this[k].Ref.Show(this[k], info, ctx));
 			}
 
 			sb.Append('}');
@@ -104,15 +180,31 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		public override string GetTag()
+        protected internal override ElaValue GetLength(ExecutionContext ctx)
         {
-            return "Record#";
+            return new ElaValue(keys.Length);
         }
 
 
-        internal override int GetLength(ExecutionContext ctx)
+        protected internal override ElaValue Clone(ExecutionContext ctx)
         {
-            return Length;
+            var rec = new ElaRecord(values.Length);
+
+            for (var i = 0; i < values.Length; i++)
+            {
+                var v = values[i];
+                rec.AddField(i, keys[i], flags[i], v);
+            }
+
+            return new ElaValue(rec);
+        }
+        #endregion
+
+
+        #region Methods
+        public override ElaPatterns GetSupportedPatterns()
+        {
+            return ElaPatterns.Record|ElaPatterns.Tuple;
         }
 
 
@@ -130,12 +222,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-        internal void InsertField(string key, object value)
-        {
-            
-        }
-
-
 		internal void AddField(string key, bool mutable, ElaValue value)
 		{
             AddField(cons, key, mutable, value);
@@ -151,7 +237,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		internal int GetOrdinal(string key)
+		private int GetOrdinal(string key)
 		{
 			for (var i = 0; i < keys.Length; i++)
 				if (keys[i] == key)

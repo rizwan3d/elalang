@@ -58,9 +58,9 @@ let variantMatch {eqt} =
            et n  = None
     
 let typeCheckMatch {eqt} =
-          eqt (match 1 with Int# = true; _ = false;;)
-        $ eqt (match (1,2) with Tuple# = true; _ = false;;)
-        $ eqt (match [1,2] with List# = true; _ = false;;)
+          eqt (match 1 with ?int = true; _ = false;;)
+        $ eqt (match (1,2) with ?tuple = true; _ = false;;)
+        $ eqt (match [1,2] with ?list = true; _ = false;;)
     
 let asMatch {eqt} =
         eqt (match 4 with 4@n = n == 4; _ = false;;)
@@ -138,8 +138,8 @@ let nestedMatch {eqt} =
                               x::xs = match x with [1,2] = true; _     = false
                               []    = false
 
-let tupleMatch2 {eq,err} =
+let tupleMatch2 {eq,eqt} =
         match t with
-              (x,y)   = err!
+              (x,y)   = eqt false
               (x,y,z) = eq (x+y+z) 6
         where t = (1,2,3)

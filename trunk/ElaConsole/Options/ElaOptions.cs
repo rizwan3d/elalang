@@ -70,7 +70,7 @@ namespace ElaConsole.Options
 		[CommandLineOption("debug", "d")]
 		public bool Debug { get; set; }
 
-		[CommandLineOption("disOpt")]
+		[CommandLineOption("noOpt")]
 		public bool DisableOptimization { get; set; }
 
 		[CommandLineOption("prelude")]

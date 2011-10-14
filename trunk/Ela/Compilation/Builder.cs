@@ -226,9 +226,8 @@ namespace Ela.Compilation
 								var a = AddVariable(im.LocalName, im, im.Private ? ElaVariableFlags.Private : ElaVariableFlags.None, -1);
 
 								AddLinePragma(im);
-								cw.Emit(Op.Pushstr, AddString(im.Name));
 								cw.Emit(Op.Pushvar, addr);
-								cw.Emit(Op.Pushelem);
+								cw.Emit(Op.Pushfld, AddString(im.Name));
 								cw.Emit(Op.Popvar, a);
 							}
 						}
@@ -376,7 +375,6 @@ namespace Ela.Compilation
 				case ElaNodeType.FieldReference:
 					{
 						var p = (ElaFieldReference)exp;
-						cw.Emit(Op.Pushstr, AddString(p.FieldName));
 
 						if (p.TargetObject.Type == ElaNodeType.VariantLiteral)
 						{
@@ -390,10 +388,10 @@ namespace Ela.Compilation
 
 						if ((hints & Hints.Left) == Hints.Left &&
 							(hints & Hints.Assign) == Hints.Assign)
-							cw.Emit(Op.Popelem);
+							cw.Emit(Op.Popfld, AddString(p.FieldName));
 						else
 						{
-							cw.Emit(Op.Pushelem);
+							cw.Emit(Op.Pushfld, AddString(p.FieldName));
 
 							if ((hints & Hints.Left) == Hints.Left)
 								AddValueNotUsed(exp);
@@ -429,20 +427,19 @@ namespace Ela.Compilation
 				case ElaNodeType.Indexer:
 					{
 						var v = (ElaIndexer)exp;
-						
+						CompileExpression(v.TargetObject, map, Hints.None);
+
 						if ((hints & Hints.Left) == Hints.Left && (hints & Hints.Assign) == Hints.Assign)
 						{
                             CompileExpression(v.Index, map, Hints.None);
                             AddLinePragma(v);
-                            CompileExpression(v.TargetObject, map, Hints.None);
-                            cw.Emit(Op.Popelem);
+							cw.Emit(Op.Popelem);
 						}
 						else
 						{
 							CompileExpression(v.Index, map, Hints.None);
 							AddLinePragma(v);
-                            CompileExpression(v.TargetObject, map, Hints.None);
-                            cw.Emit(Op.Pushelem);
+							cw.Emit(Op.Pushelem);
 
 							if ((hints & Hints.Left) == Hints.Left)
 								AddValueNotUsed(exp);
@@ -496,6 +493,17 @@ namespace Ela.Compilation
 							AddValueNotUsed(v);
 					}
 					break;
+				case ElaNodeType.Cast:
+					{
+						var v = (ElaCast)exp;
+						CompileExpression(v.Expression, map, Hints.None);
+						AddLinePragma(v);
+						AddConv(v.CastAffinity, v);
+
+						if ((hints & Hints.Left) == Hints.Left)
+							AddValueNotUsed(v);
+					}
+					break;
 				case ElaNodeType.Is:
 					{
 						var v = (ElaIs)exp;
@@ -510,7 +518,7 @@ namespace Ela.Compilation
 						var exit = cw.DefineLabel();
 
 						AddLinePragma(v);
-						CompilePattern(addr, null, v.Pattern, map, next, ElaVariableFlags.None, hints);
+						CompilePattern(addr, null, v.Pattern, map, next, ElaVariableFlags.None, hints | Hints.Silent);
 						cw.Emit(Op.PushI1_1);
 						cw.Emit(Op.Br, exit);
 						cw.MarkLabel(next);
@@ -613,6 +621,26 @@ namespace Ela.Compilation
 					break;
 				default:
 					cw.Emit(Op.Pushunit);
+					break;
+			}
+		}
+
+
+		private void AddConv(ElaTypeCode aff, ElaExpression exp)
+		{
+			switch (aff)
+			{
+				case ElaTypeCode.Integer:
+				case ElaTypeCode.Long:
+				case ElaTypeCode.Single:
+				case ElaTypeCode.Double:
+				case ElaTypeCode.Boolean:
+				case ElaTypeCode.String:
+				case ElaTypeCode.Char:
+					cw.Emit(Op.Conv, (Int32)aff);
+					break;
+				default:
+					AddError(ElaCompilerError.CastNotSupported, exp, TypeCodeFormat.GetShortForm(aff));
 					break;
 			}
 		}
@@ -965,6 +993,9 @@ namespace Ela.Compilation
 				AddLinePragma(exp);
 			}
 
+			//if (CurrentScope == globalScope && (flags & ElaVariableFlags.Private) != ElaVariableFlags.Private)
+			//	exports.AddName(name, (flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin ? (ElaBuiltinKind)data : ElaBuiltinKind.None);
+			
 			return AddVariable();
 		}
 
@@ -982,7 +1013,7 @@ namespace Ela.Compilation
             if (CurrentScope.Locals.TryGetValue(name, out sv))
             {
                 if ((sv.Flags & ElaVariableFlags.External) == ElaVariableFlags.External ||
-					(sv.Flags & ElaVariableFlags.NoInit) == ElaVariableFlags.NoInit)
+                    (sv.Flags & ElaVariableFlags.NoInit) == ElaVariableFlags.NoInit)
                 {
                     CurrentScope.Locals.Remove(name);
                     return false;

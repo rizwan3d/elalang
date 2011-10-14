@@ -18,7 +18,7 @@ namespace Ela.Runtime
 
 		IndexOutOfRange = 805,
 
-        // = 806,
+        ExpectedFunction = 806,
 
 		LeftOperand = 807,
 
@@ -40,7 +40,7 @@ namespace Ela.Runtime
 
 		FieldImmutable = 816,
 
-		NoOperation = 817,
+		// = 817,
 
 		UndefinedVariable = 818,
 
@@ -62,15 +62,9 @@ namespace Ela.Runtime
 
 		TableNoInit = 827,
 
-		NotFunction = 828,
+		NotGenericFun = 828,
 
 		TableTooMany = 829,
-
-        OverloadDuplicate = 830,
-
-        OverloadInvalid = 831,
-
-        OverloadNotFound = 832,
 
 
 		UserCode = 999

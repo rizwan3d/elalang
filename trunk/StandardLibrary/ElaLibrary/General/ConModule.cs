@@ -67,7 +67,7 @@ namespace Ela.Library.General
             Console.CancelKeyPress += (o, e) => {
                 var vr = e.SpecialKey == ConsoleSpecialKey.ControlBreak ?
                     new ElaVariant("CtrlBreak") : new ElaVariant("CtrlC");
-                e.Cancel = fun.Call(new ElaValue(vr)).AsBoolean();
+                e.Cancel = fun.Call(new ElaValue(vr)).Bool(ctx);
             };
             return ElaUnit.Instance;
         }

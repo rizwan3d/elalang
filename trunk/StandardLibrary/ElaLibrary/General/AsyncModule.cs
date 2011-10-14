@@ -17,55 +17,6 @@ namespace Ela.Library.General
 		#endregion
 
 
-		#region Nested Classes
-		public sealed class ElaAsync : ElaObject
-		{
-			#region Construction
-			internal readonly object SyncRoot = new Object();
-
-			public ElaAsync(AsyncModule mod, ElaFunction fun)
-			{
-				Initialize(mod, fun);
-			}
-			#endregion
-
-
-			#region Methods
-			public override string GetTag()
-			{
-				return "Async#";
-			}
-
-
-			public override string ToString()
-			{
-				return "[async]";
-			}
-
-
-			private void Initialize(AsyncModule mod, ElaFunction fun)
-			{
-				Thread = new System.Threading.Thread(() => Return = fun.Call());
-				mod.Threads.Add(Thread);
-			}
-
-
-			internal void Run()
-			{
-				Thread.Start();
-			}
-			#endregion
-
-
-			#region Properties
-			internal System.Threading.Thread Thread { get; set; }
-
-			internal ElaValue Return { get; private set; }
-			#endregion
-		}
-		#endregion
-		
-
 		#region Methods
 		public override void Close()
 		{
@@ -90,7 +41,6 @@ namespace Ela.Library.General
 			Add<ElaAsync,Boolean>("hasValue", HasValue);
 			Add<Int32,ElaAsync,ElaUnit>("wait", Wait);
 			Add<ElaObject,ElaFunction,ElaUnit>("sync", Sync);
-			Add<ElaValue,ElaValue,bool>("asyncEqual", (l,r) => l.ReferenceEquals(r));
 		}
 
 

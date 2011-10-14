@@ -28,28 +28,13 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
-		public override string GetTag()
-        {
-            return Tag;
-        }
+		public override ElaPatterns GetSupportedPatterns()
+		{
+			return ElaPatterns.Variant;
+		}
 
 
-        internal override ElaValue Convert(ElaValue @this, ElaTypeCode typeCode, ExecutionContext ctx)
-        {
-            switch (typeCode)
-            {
-                case ElaTypeCode.Variant: return @this;
-                case ElaTypeCode.String: return new ElaValue(ToString());
-                default:
-                    if (typeCode == Value.TypeCode)
-                        return Value;
-                    else
-                        return base.Convert(@this, typeCode, ctx);
-            }
-        }
-
-
-        public override int GetHashCode()
+		public override int GetHashCode()
 		{
 			return Tag.GetHashCode();
 		}
@@ -58,6 +43,14 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override int Compare(ElaValue @this, ElaValue other)
 		{
 			return @this.TypeId == other.TypeId ? ((ElaVariant)@this.Ref).Tag.CompareTo(((ElaVariant)other.Ref).Tag) : -1;
+		}
+
+
+		public override ElaTypeInfo GetTypeInfo()
+		{
+			var info = base.GetTypeInfo();
+			info.AddField(TAG, Tag);
+			return info;
 		}
 
 
@@ -101,15 +94,70 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return new ElaVariant(RIGHT, ElaValue.FromObject(value));
 		}
+		#endregion
 
 
-		public override string ToString()
+		#region Operations
+        protected internal override ElaValue Add(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            ctx.OverloadFunction = "$add";
+            ctx.Tag = Tag;
+            ctx.Failed = true;
+            return Default();
+        }
+
+
+		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return Value.Ref is ElaUnit ? Tag : Tag + " " + Value.ToString();
+			if (left.TypeId != right.TypeId || left.TypeId != ElaMachine.VAR)
+				return InvalidOperand(left, right, "equal", ctx);
+
+			var v1 = (ElaVariant)left.Ref;
+			var v2 = (ElaVariant)right.Ref;
+			return new ElaValue(v1.Tag == v2.Tag && v1.Value.Equals(v2.Value));
 		}
 
 
-        private ElaValue InvalidOperand(ElaValue left, ElaValue right, string op, ExecutionContext ctx)
+		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			if (left.TypeId != right.TypeId || left.TypeId != ElaMachine.VAR)
+				return InvalidOperand(left, right, "notequal", ctx);
+
+			var v1 = (ElaVariant)left.Ref;
+			var v2 = (ElaVariant)right.Ref;
+			return new ElaValue(v1.Tag != v2.Tag || !v1.Value.Equals(v2.Value));
+		}
+
+
+		protected internal override string GetTag(ExecutionContext ctx)
+		{
+			return Tag;
+		}
+
+
+		protected internal override ElaValue Untag(ExecutionContext ctx)
+        {
+            return Value;
+        }
+
+
+        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
+		{
+			return Tag + (Value.Ref != ElaUnit.Instance ? " " + Value.Ref.Show(Value, info, ctx) : String.Empty);
+		}
+
+
+		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+		{
+			if (type == ElaTypeCode.Variant)
+				return @this;
+            
+			ctx.ConversionFailed(@this, type);
+			return Default();
+		}
+
+
+		private ElaValue InvalidOperand(ElaValue left, ElaValue right, string op, ExecutionContext ctx)
 		{
 			if (left.Ref == null)
 				ctx.InvalidRightOperand(left, right, op);

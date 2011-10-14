@@ -132,32 +132,32 @@ namespace Ela.Compilation
 
 		Untag,
 
+		Skiphtag,
+
 		Nil,
 
         Clone,
 		
         Gettag,
 
-        Ovr,
-				
-        Conv,
 
-		Has,
+		Elem,
 
+		Skiptag,
 
-        Callb1,
-
-        Callb2,
-
-        Callb3,
-        
-        Makefun,
+		Conv,
 
 		Newvar,
 
 		Newrec,
 
 		Newtup,
+
+		Skiptn,
+
+		Skiptl,
+
+		Pat,
 
 		Tupex,
 
@@ -175,9 +175,15 @@ namespace Ela.Compilation
 
 		Pushvar,
 
+		Pushfld,
+
 		Popvar,
 
+		Popfld,
+
 		Runmod,
+
+		Hasfld,
 
 		Br,
 
@@ -185,6 +191,16 @@ namespace Ela.Compilation
 
 		Brfalse,
 
-		Newfun        
+		Br_lt,
+
+		Br_gt,
+
+		Br_eq,
+
+		Br_neq,
+
+		Brnil,
+
+		Newfun
 	}
 }

@@ -84,17 +84,7 @@ namespace Ela.Runtime
 
 		public override string ToString()
 		{
-			if (Ref == null) 
-				return String.Empty;
-
-			switch (TypeId)
-			{
-				case ElaMachine.INT: return I4.ToString();
-				case ElaMachine.REA: return DirectGetReal().ToString();
-				case ElaMachine.BYT: return (I4 == 1).ToString();
-				case ElaMachine.CHR: return ((Char)I4).ToString();
-				default: return Ref.ToString();
-			}
+			return Ref.Show(this, ShowInfo.Default, ElaObject.DummyContext);
 		}
 
 
@@ -113,38 +103,26 @@ namespace Ela.Runtime
 
         public override bool Equals(object obj)
         {
-			return obj is ElaValue ? Equals((ElaValue)obj) : false;
+            return obj is ElaValue ? Equal(this, (ElaValue)obj, ElaObject.DummyContext).Bool(ElaObject.DummyContext) : false;
         }
 
 
         public bool Equals(ElaValue other)
         {
-            switch (TypeCode)
-            {
-                case ElaTypeCode.Boolean:
-                    if (other.TypeCode == ElaTypeCode.Boolean)
-                        return I4 == other.I4;
-                    else
-                        return false;
-                case ElaTypeCode.Integer:
-                    if (other.TypeCode == ElaTypeCode.Integer)
-                        return I4 == other.I4;
-                    else
-                        return false;
-                case ElaTypeCode.Char:
-                    if (other.TypeCode == ElaTypeCode.Char)
-                        return I4 == other.I4;
-                    else
-                        return false;
-                case ElaTypeCode.Single:
-                    if (other.TypeCode == ElaTypeCode.Single)
-                        return DirectGetReal() == other.DirectGetReal();
-                    else
-                        return false;
-                default:
-                    return Ref.Equals(other);
-            }
+            return Equal(this, other, ElaObject.DummyContext).Bool(ElaObject.DummyContext);
         }
+
+
+		public ElaValue Id(ExecutionContext ctx)
+		{
+			return Ref.TypeId == ElaMachine.LAZ ? Ref.Force(this, ctx) : this;
+		}
+
+
+		public string GetTypeName()
+		{
+			return Ref.GetTypeName();
+		}
 
 
 		internal float GetReal()
@@ -229,8 +207,6 @@ namespace Ela.Runtime
                 return (ElaValue)value;
             else if (value is IEnumerable)
                 return new ElaValue(ElaList.FromEnumerable((IEnumerable)value));
-            else if (value is ElaTypeInfo)
-                return new ElaValue(((ElaTypeInfo)value).ToRecord());
             else
                 throw new InvalidCastException();
 		}
@@ -245,6 +221,7 @@ namespace Ela.Runtime
 
 		public object Convert(Type ti)
 		{
+			var ctx = new ExecutionContext();
 			var type = default(ElaTypeCode);
 
             if (ti == typeof(Int32))
@@ -297,15 +274,12 @@ namespace Ela.Runtime
             if (type == TypeCode)
                 return AsObject();
 
-            var ctx = new ExecutionContext();
-			var ret = Ref.Convert(this, type, ctx);
+			var ret = Ref.Convert(this, type, ctx).AsObject();
 
-            if (ctx.Failed && ctx.Thunk != null)
-                return ctx.Thunk.Force().Convert(ti);
-            else if (ctx.Failed)
-                throw new InvalidCastException();            
+			if (ctx.Failed)
+				throw InvalidCast(TypeCode, type);
 
-            return ret.AsObject();
+			return ret;
 		}
 
 
@@ -313,7 +287,7 @@ namespace Ela.Runtime
 		{
 			var seq = (IEnumerable<ElaValue>)Ref;
 			var len = Ref.GetLength(ElaObject.DummyContext);
-			var arr = Array.CreateInstance(el, len);
+			var arr = Array.CreateInstance(el, len.AsInteger());
 			var i = 0;
 
 			foreach (var e in seq)
@@ -345,7 +319,8 @@ namespace Ela.Runtime
 				case ElaTypeCode.Tuple: return (ElaTuple)Ref;
 				case ElaTypeCode.Unit: return null;
 				case ElaTypeCode.Lazy:
-					return Ref.IsEvaluated() ? ((ElaLazy)Ref).Value.AsObject() : Ref;
+                    var v = Ref.Force(this, ElaObject.DummyContext);
+                    return v.AsObject();
 				default:
 					if (Ref == null)
 						throw new InvalidOperationException();
@@ -400,9 +375,273 @@ namespace Ela.Runtime
 
 
         #region Operations
-        public string GetTag()
+        public ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            return Ref.GetTag();
+            return Ref.Equal(left, right, ctx);
+        }
+
+
+        public ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return Ref.NotEqual(left, right, ctx);
+        }
+
+
+        public ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return Ref.Greater(left, right, ctx);
+        }
+
+
+        public ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return Ref.Lesser(left, right, ctx);
+        }
+
+
+        public ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return Ref.GreaterEqual(left, right, ctx);
+        }
+
+
+        public ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return Ref.LesserEqual(left, right, ctx);
+        }
+
+
+        public ElaValue GetLength(ExecutionContext ctx)
+        {
+            return Ref.GetLength(ctx);
+        }
+
+
+        public ElaValue Successor(ExecutionContext ctx)
+        {
+            return Ref.Successor(this, ctx);
+        }
+
+
+        public ElaValue Predecessor(ExecutionContext ctx)
+        {
+            return Ref.Predecessor(this, ctx);
+        }
+
+
+        public ElaValue GetValue(ElaValue index, ExecutionContext ctx)
+        {
+            return Ref.GetValue(index, ctx);
+        }
+
+
+        public void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
+        {
+            Ref.SetValue(index, value, ctx);
+        }
+
+
+        public ElaValue GetMax(ExecutionContext ctx)
+        {
+			return Ref.GetMax(this, ctx);
+        }
+
+
+        public ElaValue GetMin(ExecutionContext ctx)
+        {
+			return Ref.GetMin(this, ctx);
+        }
+
+
+        public ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return Ref.Concatenate(left, right, ctx);
+        }
+
+
+        public ElaValue Add(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return Ref.Add(left, right, ctx);
+        }
+
+
+        public ElaValue Subtract(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return Ref.Subtract(left, right, ctx);
+        }
+
+
+        public ElaValue Multiply(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return Ref.Multiply(left, right, ctx);
+        }
+
+
+        public ElaValue Divide(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return Ref.Divide(left, right, ctx);
+        }
+
+
+        public ElaValue Remainder(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return Ref.Remainder(left, right, ctx);
+        }
+
+
+        public ElaValue Power(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return Ref.Power(left, right, ctx);
+        }
+
+
+        public ElaValue BitwiseOr(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return Ref.BitwiseOr(left, right, ctx);
+        }
+
+
+        public ElaValue BitwiseAnd(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return Ref.BitwiseAnd(left, right, ctx);
+        }
+
+
+        public ElaValue BitwiseXor(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return Ref.BitwiseXor(left, right, ctx);
+        }
+
+
+        public ElaValue BitwiseNot(ExecutionContext ctx)
+        {
+            return Ref.BitwiseNot(this, ctx);
+        }
+
+
+        public ElaValue ShiftRight(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return Ref.ShiftRight(left, right, ctx);
+        }
+
+
+        public ElaValue ShiftLeft(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            return Ref.ShiftLeft(left, right, ctx);
+        }
+
+
+        public ElaValue Negate(ExecutionContext ctx)
+        {
+            return Ref.Negate(this, ctx);
+        }
+
+
+        public bool Bool(ExecutionContext ctx)
+        {
+            return Ref.Bool(this, ctx);
+        }
+
+
+        public ElaValue Head(ExecutionContext ctx)
+        {
+			return Ref.Head(ctx);
+        }
+
+
+        public ElaValue Tail(ExecutionContext ctx)
+        {
+			return Ref.Tail(ctx);
+        }
+
+
+        public bool IsNil(ExecutionContext ctx)
+        {
+			return Ref.IsNil(ctx);
+        }
+
+
+        public ElaValue Cons(ElaObject instance, ElaValue value, ExecutionContext ctx)
+        {
+			return Ref.Cons(instance, value, ctx);
+        }
+
+
+		public ElaValue Nil(ExecutionContext ctx)
+		{
+			return Ref.Nil(ctx);
+		}
+
+
+        public ElaValue Generate(ElaValue value, ExecutionContext ctx)
+        {
+			return Ref.Generate(value, ctx);
+        }
+
+
+        public ElaValue GenerateFinalize(ExecutionContext ctx)
+        {
+			return Ref.GenerateFinalize(ctx);
+        }
+
+
+        public ElaValue GetField(string field, ExecutionContext ctx)
+        {
+			return Ref.GetField(field, ctx);
+        }
+
+
+        public void SetField(string field, ElaValue value, ExecutionContext ctx)
+        {
+			Ref.SetField(field, value, ctx);
+        }
+
+
+        public bool HasField(string field, ExecutionContext ctx)
+        {
+			return Ref.HasField(field, ctx);
+        }
+
+
+        public string Show(ShowInfo info, ExecutionContext ctx)
+        {
+            return Ref.Show(this, info, ctx);
+        }
+
+
+        public ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
+        {
+            return Ref.Convert(this, type, ctx);
+        }
+
+
+        public ElaValue Call(ElaValue value, ExecutionContext ctx)
+        {
+            return Ref.Call(value, ctx);
+        }
+
+
+        public ElaValue Force(ExecutionContext ctx)
+        {
+            return Ref.Force(this, ctx);
+        }
+
+
+        public string GetTag(ExecutionContext ctx)
+        {
+			return Ref.GetTag(ctx);
+        }
+
+
+        public ElaValue Untag(ExecutionContext ctx)
+        {
+			return Ref.Untag(ctx);
+        }
+
+
+        public ElaValue Clone(ExecutionContext ctx)
+        {
+            return Ref.Clone(ctx);
         }
         #endregion
         

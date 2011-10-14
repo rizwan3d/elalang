@@ -95,4 +95,4 @@ let flatTest2 {eq} =
 
 let typeCheck {eqt} =
         let tup  = (0,) in
-        eqt (tup is Tuple#)
+        eqt (tup is ?tuple)

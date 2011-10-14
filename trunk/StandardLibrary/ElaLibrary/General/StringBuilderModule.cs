@@ -16,40 +16,6 @@ namespace Ela.Library.General
         #endregion
 
 
-        #region Nested Classes
-        public sealed class ElaStringBuilder : ElaObject
-        {
-            #region Construction
-            private const string TAG = "StringBuilder#";
-
-            internal ElaStringBuilder(StringBuilder builder)
-            {
-                Builder = builder;
-            }
-            #endregion
-
-
-            #region Methods
-            public override string GetTag()
-            {
-                return TAG;
-            }
-
-
-            public override int GetHashCode()
-            {
-                return Builder.GetHashCode();
-            }
-            #endregion
-
-
-            #region Properties
-            internal StringBuilder Builder { get; private set; }
-            #endregion
-        }
-        #endregion
-
-
         #region Methods
         public override void Initialize()
         {
@@ -59,12 +25,9 @@ namespace Ela.Library.General
             Add<String,ElaStringBuilder,ElaStringBuilder>("appendLine", Append);
             Add<Int32,String,ElaStringBuilder,ElaStringBuilder>("insert", Insert);
             Add<Int32,Char,ElaStringBuilder,ElaStringBuilder>("insertChar", InsertChar);
-            Add<String,String,ElaStringBuilder,ElaStringBuilder>("replace", Replace);
+            Add<String,String,ElaStringBuilder,ElaStringBuilder>("Replace", Replace);
             Add<Char,Char,ElaStringBuilder,ElaStringBuilder>("replaceChar", ReplaceChar);
             Add<Int32,Int32,ElaStringBuilder,ElaStringBuilder>("remove", Remove);
-
-            Add<ElaStringBuilder,Int32>("stringBuilderLength", b => b.Builder.Length);
-            Add<ElaStringBuilder,String>("stringBuilderToString", b => b.Builder.ToString());
         }
 
 

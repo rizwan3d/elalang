@@ -129,6 +129,9 @@
   <data name="DivideByZero" xml:space="preserve">
     <value>Division by zero of value '{0}' of type '{1}'.</value>
   </data>
+  <data name="ExpectedFunction" xml:space="preserve">
+    <value>A function is expected.</value>
+  </data>
   <data name="FieldImmutable" xml:space="preserve">
     <value>Field '{0}' of the record '{1}' is immutable and cannot be changed.</value>
   </data>
@@ -156,26 +159,14 @@
   <data name="MatchFailed" xml:space="preserve">
     <value>Match failed. None of the patterns were successful.</value>
   </data>
-  <data name="NoOperation" xml:space="preserve">
-    <value>Operation '{0}' is not supported for '{1}' and '{2}'.</value>
-  </data>
   <data name="NoOverload" xml:space="preserve">
     <value>Function '{0}' is not implemented for '{1}'.</value>
   </data>
-  <data name="NotFunction" xml:space="preserve">
-    <value>A value '{0}' is not a function and cannot be applied.</value>
+  <data name="NotGenericFun" xml:space="preserve">
+    <value>A function '{0}' is not a generic function and cannot be specialized.</value>
   </data>
   <data name="OperationNotSupported" xml:space="preserve">
     <value>This operation is not supported by the object of type '{0}'.</value>
-  </data>
-  <data name="OverloadDuplicate" xml:space="preserve">
-    <value>Duplicate overload for a function '{0}' is not allowed.</value>
-  </data>
-  <data name="OverloadInvalid" xml:space="preserve">
-    <value>Unable to overload a function '{0}'. Overload by a number of arguments is not supported.</value>
-  </data>
-  <data name="OverloadNotFound" xml:space="preserve">
-    <value>Unable to find an overload '{0}' for a function '{1}'.</value>
   </data>
   <data name="PrivateVariable" xml:space="preserve">
     <value>The name '{0}' is declared as private and cannot be referenced.</value>

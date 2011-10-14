@@ -8,7 +8,7 @@ namespace Ela
 	{
 		internal static int Params(ElaBuiltinKind kind)
 		{
-			return kind == ElaBuiltinKind.SetValue ? 3 : kind >= ElaBuiltinKind.Showf ? 2 : 1;
+			return kind >= ElaBuiltinKind.Showf ? 2 : 1;
 		}
 
 
@@ -37,12 +37,9 @@ namespace Ela
                 case "gettag": return ElaBuiltinKind.Gettag;
                 case "untag": return ElaBuiltinKind.Untag;
                 case "apply": return ElaBuiltinKind.Apply;
-                case "generatefinalize": return ElaBuiltinKind.GenerateFinalize;
 
 				case "showf": return ElaBuiltinKind.Showf;
-
-                case "convert": return ElaBuiltinKind.Convert;
-                case "getvalue": return ElaBuiltinKind.GetValue;
+				
 				case "equal": return ElaBuiltinKind.Equal;
 				case "notequal": return ElaBuiltinKind.NotEqual;
 				case "greaterequal": return ElaBuiltinKind.GreaterEqual;
@@ -66,10 +63,7 @@ namespace Ela
 				case "cons": return ElaBuiltinKind.Cons;
 				case "compforward": return ElaBuiltinKind.CompForward;
 				case "compbackward": return ElaBuiltinKind.CompBackward;
-                case "has": return ElaBuiltinKind.Has;
-                case "generate": return ElaBuiltinKind.Generate;
 
-				case "setvalue": return ElaBuiltinKind.SetValue;
 				default: return ElaBuiltinKind.None;
 			}
 		}

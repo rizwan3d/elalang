@@ -120,6 +120,9 @@
   <data name="AssignImmutableVariable" xml:space="preserve">
     <value>Unable to change a value bound to the name '{0}'.</value>
   </data>
+  <data name="CastNotSupported" xml:space="preserve">
+    <value>Casting to the type '{0}' is not supported.</value>
+  </data>
   <data name="ElseGuardNotValid" xml:space="preserve">
     <value>An 'else' guard is not valid in this context.</value>
   </data>
@@ -137,15 +140,6 @@
   </data>
   <data name="MatchNotSupportedInFor" xml:space="preserve">
     <value>An expression: {0} is invalid. Pattern matching is not allowed in for/to and for/downto cycles.</value>
-  </data>
-  <data name="OverloadNoPatterns" xml:space="preserve">
-    <value>Pattern matching in overloads is not supported.</value>
-  </data>
-  <data name="OverloadNotWithAnd" xml:space="preserve">
-    <value>Overloads cannot be declared as mutually recursive using 'et' keyword.</value>
-  </data>
-  <data name="OverloadOnlyGlobal" xml:space="preserve">
-    <value>Overloads are supported only in global scope.</value>
   </data>
   <data name="PatternNotAllArgs" xml:space="preserve">
     <value>Not all of the function arguments are specified in the pattern {0}.</value>

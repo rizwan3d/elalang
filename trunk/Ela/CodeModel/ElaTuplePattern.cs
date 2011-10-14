@@ -63,9 +63,9 @@ namespace Ela.CodeModel
 			if (pat.Type == ElaNodeType.TuplePattern || pat.Type == ElaNodeType.PatternGroup) //validated
 			{
 				var tuple = (ElaTuplePattern)pat;
-
-				if (tuple.Patterns.Count != Patterns.Count)
-					return true;
+                
+                if (tuple.Patterns.Count != Patterns.Count)
+                    return true;
 
 				return CanFollow(tuple.Patterns, Patterns);
 			}

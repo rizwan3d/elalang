@@ -14,7 +14,7 @@ namespace Ela.Compilation
 			1, //PushI1_0
 			1, //PushI1_1
 			-1, //Pop
-			-2, //Popelem
+			-3, //Popelem
 			1, //Pushstr_0
 			-3, //Reccons
 			0, //Genfin
@@ -69,21 +69,21 @@ namespace Ela.Compilation
 			0, //Max
 			0, //Min
 			-1, //Show
-			0, //Untag
+			0, //Tagval
+			0, //Skiphtag
 			0, //Nil
             0, //Clone			
-            0, //Gettag            
-            -3, //Ovr            	
-	        -1, //Conv
-            -1, //Has
-            -1, //Callb1
-            -2, //Callb2
-            -3, //Callb3
+            0, //Gettag
 			
-            1, //Makefun
-            0, //Newvar
+            0, //Elem
+			0, //Skiptag
+			0, //Conv
+			0, //Newvar
 			1, //Newrec
 			1, //Newtup
+			-1, //Skiptn
+			-1, //Skiptl
+			0, //Pat
 			-1, //Tupex
 			0, //Failwith
 			0, //Start
@@ -92,12 +92,20 @@ namespace Ela.Compilation
 			1, //PushI4
 			1, //PushR4
 			1, //Pushvar
+			0, //Pushfld
 			-1, //Popvar
+			-2, //Popfld
 			0, //Runmod
+			0, //Hasfld
 			0, //Br
 			-1, //Brtrue
 			-1, //Brfalse
-			0, //Newfun	
+			-2, //Br_lt
+			-2, //Br_gt
+			-2, //Br_eq
+			-2, //Br_neq
+			-1, //Brnil
+			0, //Newfun			
 		};
 	}
 }

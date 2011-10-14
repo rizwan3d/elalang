@@ -48,9 +48,7 @@ namespace Ela.CodeModel
 
         Apply,
 
-        GenerateFinalize,
 
-        
 		Negate,
 
 		BitwiseNot,
@@ -58,16 +56,8 @@ namespace Ela.CodeModel
 
 		Showf,
 
-        Convert,
-
-        Has,
-
-        
-        Generate,
-
-        GetValue,
-
-        Add,
+		
+		Add,
 
 		Subtract,
 
@@ -107,9 +97,6 @@ namespace Ela.CodeModel
 
 		CompForward,
 
-		CompBackward,
-
-		
-		SetValue
+		CompBackward
 	}
 }

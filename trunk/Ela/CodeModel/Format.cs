@@ -100,7 +100,8 @@ namespace Ela.CodeModel
 		{
 			var complex = e.Type == ElaNodeType.HeadTailPattern ||
 				e.Type == ElaNodeType.VariantPattern ||
-				e.Type == ElaNodeType.AsPattern;
+				e.Type == ElaNodeType.AsPattern ||
+				e.Type == ElaNodeType.IsPattern;
 
 			if (complex)
 			{

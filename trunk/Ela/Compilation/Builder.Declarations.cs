@@ -12,9 +12,6 @@ namespace Ela.Compilation
 			if (s.InitExpression == null)
 				AddError(ElaCompilerError.VariableDeclarationInitMissing, s);
 
-            if (s.IsOverloaded && CompileOverloaded(s, map, hints))
-                return;
-
             var data = -1;
 			var flags = s.VariableFlags;
 
@@ -66,7 +63,7 @@ namespace Ela.Compilation
 
 				while (and != null && (hints & Hints.And) != Hints.And)
 				{
-					AddNoInitVariable(and, noInitCode);
+                    AddNoInitVariable(and, noInitCode);
                     and = and.And;
 				}
 
@@ -99,8 +96,8 @@ namespace Ela.Compilation
 					if (fc)
 						flags |= ElaVariableFlags.Function;
 
-                    //if (ed.Type == DataKind.Builtin)
-                    //    flags |= ElaVariableFlags.Builtin;
+					if (ed.Type == DataKind.Builtin)
+						flags |= ElaVariableFlags.Builtin;
 
 					addr = AddVariable(s.VariableName, s, flags, data != -1 ? data : ed.Data);
 				}
@@ -126,148 +123,77 @@ namespace Ela.Compilation
 		}
 
 
-		private void AddNoInitVariable(ElaBinding exp, int noInitCode)
-		{
-			if (!String.IsNullOrEmpty(exp.VariableName))
-				AddVariable(exp.VariableName, exp, exp.VariableFlags | ElaVariableFlags.NoInit, noInitCode);
-			else
-				AddPatternVariables(exp.Pattern, noInitCode);
-		}
-
-
-		private void AddPatternVariables(ElaPattern pat, int noInitCode)
-		{
-			switch (pat.Type)
-			{
-				case ElaNodeType.VariantPattern:
-					{
-						var vp = (ElaVariantPattern)pat;
-
-						if (vp.Pattern != null)
-							AddPatternVariables(vp.Pattern, noInitCode);
-					}
-					break;
-				case ElaNodeType.UnitPattern: //Idle
-					break;
-				case ElaNodeType.AsPattern:
-					{
-						var asPat = (ElaAsPattern)pat;
-						AddVariable(asPat.Name, asPat, ElaVariableFlags.NoInit, noInitCode);
-						AddPatternVariables(asPat.Pattern, noInitCode);
-					}
-					break;
-				case ElaNodeType.LiteralPattern: //Idle
-					break;
-				case ElaNodeType.VariablePattern:
-					{
-						var vexp = (ElaVariablePattern)pat;
-						AddVariable(vexp.Name, vexp, ElaVariableFlags.NoInit, noInitCode);
-					}
-					break;
-				case ElaNodeType.RecordPattern:
-					{
-						var rexp = (ElaRecordPattern)pat;
-
-						foreach (var e in rexp.Fields)
-							if (e.Value != null)
-								AddPatternVariables(e.Value, noInitCode);
-					}
-					break;
-				case ElaNodeType.PatternGroup:
-				case ElaNodeType.TuplePattern:
-					{
-						var texp = (ElaTuplePattern)pat;
-
-						foreach (var e in texp.Patterns)
-							AddPatternVariables(e, noInitCode);
-					}
-					break;
-				case ElaNodeType.DefaultPattern: //Idle
-					break;
-				case ElaNodeType.HeadTailPattern:
-					{
-						var hexp = (ElaHeadTailPattern)pat;
-
-						foreach (var e in hexp.Patterns)
-							AddPatternVariables(e, noInitCode);
-					}
-					break;
-				case ElaNodeType.NilPattern: //Idle
-					break;
-			}
-		}
-
-
-
-        private bool CompileOverloaded(ElaBinding s, LabelMap map, Hints hints)
+        private void AddNoInitVariable(ElaBinding exp, int noInitCode)
         {
-            if (CurrentScope != globalScope || s.In != null)
-            {
-                AddError(ElaCompilerError.OverloadOnlyGlobal, s);
-                return false;
-            }
-
-            if (s.And != null)
-            {
-                AddError(ElaCompilerError.OverloadNotWithAnd, s);
-                return false;
-            }
-
-            if (s.Pattern != null)
-            {
-                AddError(ElaCompilerError.OverloadNoPatterns, s);
-                return false;
-            }
-
-            var sv = GetVariable(s.VariableName, CurrentScope, 0, GetFlags.NoError, s.Line, s.Column);
-            var builtin = !sv.IsEmpty() && (sv.VariableFlags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin;
-
-            var addr = sv.Address;
-            var len = s.OverloadNames.Count;
-
-            if (sv.IsEmpty())
-                addr = AddVariable(s.VariableName, s, s.VariableFlags, -1);
+            if (!String.IsNullOrEmpty(exp.VariableName))
+                AddVariable(exp.VariableName, exp, exp.VariableFlags | ElaVariableFlags.NoInit, noInitCode);
             else
-            {
-                CurrentScope.Locals.Remove(s.VariableName);
-                addr = AddVariable(s.VariableName, s, s.VariableFlags, -1);
-            }
-            
-            cw.Emit(Op.Newtup, len);
-
-            for (var i = 0; i < len; i++)
-            {
-                var n = s.OverloadNames[i];
-
-                if (n == "Any")
-                    n = "$Any";
-
-                cw.Emit(Op.Pushstr, AddString(n));
-                cw.Emit(Op.Gen);
-            }
-
-			cw.Emit(Op.Genfin);
-            CompileExpression(s.InitExpression, map, Hints.None);
-
-            if (builtin)
-                cw.Emit(Op.Pushstr, AddString("$" + ((ElaBuiltinKind)sv.Data).ToString().ToLower()));
-            else
-                cw.Emit(Op.Pushstr, AddString(s.VariableName));
-
-			if (!sv.IsEmpty())
-				cw.Emit(Op.Pushvar, sv.Address);
-			else
-				cw.Emit(Op.Pushunit);
-
-            cw.Emit(Op.Ovr);
-            cw.Emit(Op.Popvar, addr);
-
-			if ((hints & Hints.Left) != Hints.Left)
-				cw.Emit(Op.Pushvar, addr);
-
-            return true;
+                AddPatternVariables(exp.Pattern, noInitCode);
         }
 
+
+        private void AddPatternVariables(ElaPattern pat, int noInitCode)
+        {
+            switch (pat.Type)
+            {
+                case ElaNodeType.VariantPattern:
+                    {
+                        var vp = (ElaVariantPattern)pat;
+
+                        if (vp.Pattern != null)
+                            AddPatternVariables(vp.Pattern, noInitCode);
+                    }
+                    break;
+                case ElaNodeType.IsPattern:
+                case ElaNodeType.UnitPattern: //Idle
+                    break;
+                case ElaNodeType.AsPattern:
+                    {
+                        var asPat = (ElaAsPattern)pat;
+                        AddVariable(asPat.Name, asPat, ElaVariableFlags.NoInit, noInitCode);
+                        AddPatternVariables(asPat.Pattern, noInitCode);
+                    }
+                    break;
+                case ElaNodeType.LiteralPattern: //Idle
+                    break;
+                case ElaNodeType.VariablePattern:
+                    {
+                        var vexp = (ElaVariablePattern)pat;
+                        AddVariable(vexp.Name, vexp, ElaVariableFlags.NoInit, noInitCode);
+                    }
+                    break;
+                case ElaNodeType.RecordPattern:
+                    {
+                        var rexp = (ElaRecordPattern)pat;
+
+                        foreach (var e in rexp.Fields)
+                            if (e.Value != null)
+                                AddPatternVariables(e.Value, noInitCode);
+                    }
+                    break;
+                case ElaNodeType.PatternGroup:
+                case ElaNodeType.TuplePattern:
+                    {
+                        var texp = (ElaTuplePattern)pat;
+
+                        foreach (var e in texp.Patterns)
+                            AddPatternVariables(e, noInitCode);
+                    }
+                    break;
+                case ElaNodeType.DefaultPattern: //Idle
+                    break;
+                case ElaNodeType.HeadTailPattern:
+                    {
+                        var hexp = (ElaHeadTailPattern)pat;
+
+                        foreach (var e in hexp.Patterns)
+                            AddPatternVariables(e, noInitCode);
+                    }
+                    break;
+                case ElaNodeType.NilPattern: //Idle
+                    break;
+            }
+        }
 
 		private void CompileWhere(ElaBinding s, LabelMap map, Hints hints)
 		{
@@ -330,7 +256,7 @@ namespace Ela.Compilation
 					cw.Emit(Op.Popvar, addr);
 				}
 
-				CompilePattern(addr, tuple, s.Pattern, map, next, s.VariableFlags, Hints.None);
+				CompilePattern(addr, tuple, s.Pattern, map, next, s.VariableFlags, Hints.Silent);
 				cw.Emit(Op.Br, exit);
 				cw.MarkLabel(next);
 				cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);

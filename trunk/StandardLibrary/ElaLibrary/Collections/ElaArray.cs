@@ -3,21 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using Ela.Runtime;
 using Ela.Runtime.ObjectModel;
-using System.Text;
 
 namespace Ela.Library.Collections
 {
 	public sealed class ElaArray : ElaObject, IEnumerable<ElaValue>
 	{
 		#region Construction
-        private const string TAG = "Array#";
 		private const int DEFAULT_SIZE = 4;
+		private const string TYPENAME = "array";
 		private int size;
 		private ElaValue[] array;
-		internal int headIndex;
+		private int headIndex;
 
-
-        public ElaArray(ElaValue[] arr)
+		public ElaArray(ElaValue[] arr)
 		{
 			if (arr == null)
 				throw new ArgumentNullException("arr");
@@ -32,7 +30,7 @@ namespace Ela.Library.Collections
 		}
 
 
-        public ElaArray(object[] arr)
+		public ElaArray(object[] arr)
 		{
 			if (arr == null)
 				throw new ArgumentNullException("arr");
@@ -59,7 +57,7 @@ namespace Ela.Library.Collections
 		}
 
 
-		internal ElaArray(ElaValue[] arr, int size, int headIndex)
+		private ElaArray(ElaValue[] arr, int size, int headIndex)
 		{
 			array = arr;
 			this.size = size;
@@ -69,55 +67,164 @@ namespace Ela.Library.Collections
 		
 
 		#region Operations
-        internal ElaValue GetValue(int index)
+		protected override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            if (index >= Length || index < 0)
-                throw new ElaRuntimeException(ElaRuntimeError.IndexOutOfRange);
-
-            return array[index];
+			return new ElaValue(left.ReferenceEquals(right));
 		}
 
 
-		internal void SetValue(int index, ElaValue value)
+		protected override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (index < 0 || index >= Length)
-                throw new ElaRuntimeException(ElaRuntimeError.IndexOutOfRange);
-
-			array[index] = value;
+			return new ElaValue(left.ReferenceEquals(right));
 		}
 
 
-		internal ElaValue Head()
+		protected override ElaValue GetLength(ExecutionContext ctx)
+		{
+			return new ElaValue(size - headIndex);
+		}
+
+
+		protected override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
+		{
+			if (index.TypeCode != ElaTypeCode.Integer)
+			{
+				ctx.InvalidIndexType(index);
+				return Default();
+			}
+
+            var idx = index.AsInteger();
+
+            if (idx >= Length || idx < 0)
+			{
+				ctx.IndexOutOfRange(index, new ElaValue(this));
+				return Default();
+			}
+
+            return array[idx];
+		}
+
+
+		protected override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
+		{
+			if (index.TypeCode != ElaTypeCode.Integer)
+			{
+				ctx.InvalidIndexType(index);
+				return;
+			}
+
+            var idx = index.AsInteger();
+
+			if (idx < 0 || idx >= Length)
+			{
+				ctx.IndexOutOfRange(index, new ElaValue(this));
+				return;
+			}
+
+			array[idx] = value;
+		}
+
+
+		protected override ElaValue Head(ExecutionContext ctx)
 		{
 			return array[headIndex];
 		}
 
 
-		internal ElaArray Tail()
+		protected override ElaValue Tail(ExecutionContext ctx)
 		{
-			return new ElaArray(array, size, headIndex + 1);
+			return new ElaValue(new ElaArray(array, size, headIndex + 1));
 		}
 
 
-		internal bool IsNil()
+		protected override bool IsNil(ExecutionContext ctx)
 		{
 			return headIndex == size;
 		}
 
 
-		internal ElaArray Generate(ElaValue value)
+		protected override ElaValue Generate(ElaValue value, ExecutionContext ctx)
 		{
 			Add(value);
-			return this;			
+			return new ElaValue(this);			
+		}
+
+
+		protected override ElaValue GenerateFinalize(ExecutionContext ctx)
+		{
+			return new ElaValue(this);
+		}
+
+
+		protected override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+			if (left.Is<ElaArray>() && right.Is<ElaArray>())
+			{
+				var thisArr = left.As<ElaArray>();
+				var otherArr = right.As<ElaArray>();
+				var arr = new ElaValue[thisArr.Length + otherArr.Length];
+				Array.Copy(thisArr.array, 0, arr, 0, thisArr.Length);
+				Array.Copy(otherArr.array, 0, arr, thisArr.Length, otherArr.Length);
+				return new ElaValue(new ElaArray(arr, arr.Length, 0));
+			}
+			else if (left.Is<ElaArray>())
+				return right.Concatenate(left, right, ctx);
+			
+			ctx.InvalidLeftOperand(left, right, "concat");
+			return Default();
+		}
+
+
+        protected override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
+		{
+			return "array[" + FormatHelper.FormatEnumerable((IEnumerable<ElaValue>)this, ctx, info) + "]";
+		}
+
+
+		protected override ElaValue Cons(ElaObject instance, ElaValue value, ExecutionContext ctx)
+		{
+			var arr = (ElaArray)instance;
+
+			if (arr == null)
+			{
+				ctx.InvalidType(GetTypeName(), new ElaValue(instance));
+				return Default();
+			}
+
+			if (arr.headIndex > 0)
+			{
+				var newArr = new ElaArray();
+				arr.Copy(arr.headIndex, newArr);
+				arr = newArr;
+			}
+
+			if (arr.Length == 0)
+				arr.Add(value);
+			else
+				arr.Insert(0, value);
+
+			return new ElaValue(arr);
+		}
+
+
+		protected override ElaValue Nil(ExecutionContext ctx)
+		{
+			return new ElaValue(new ElaArray());
 		}
 		#endregion
 
 
 		#region Methods
-        public override string GetTag()
+        public override ElaPatterns GetSupportedPatterns()
         {
-            return TAG;
+            return ElaPatterns.Tuple|ElaPatterns.HeadTail;
         }
+
+
+		protected override string GetTypeName()
+		{
+			return TYPENAME;
+		}
 
 
 		public IEnumerator<ElaValue> GetEnumerator()
@@ -220,30 +327,6 @@ namespace Ela.Library.Collections
 				array = newArr;
 			}
 		}
-
-
-        internal ElaValue[] GetRawArray()
-        {
-            return array;
-        }
-
-
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            sb.Append("array[");
-
-            for (var i = headIndex; i < size; i++)
-            {
-                if (i > headIndex)
-                    sb.Append(',');
-
-                sb.Append(array[i].ToString());
-            }
-
-            sb.Append(']');
-            return sb.ToString();
-        }
 		#endregion
 
 

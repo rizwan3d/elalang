@@ -44,8 +44,8 @@ namespace Ela.Compilation
 					yield return kv.Key;
 		}
 
-
-        public IEnumerable<KeyValuePair<String, ScopeVar>> EnumerateVars()
+        
+        public IEnumerable<KeyValuePair<String,ScopeVar>> EnumerateVars()
         {
             foreach (var kv in Locals)
                 if ((kv.Value.Flags & ElaVariableFlags.SpecialName) != ElaVariableFlags.SpecialName &&

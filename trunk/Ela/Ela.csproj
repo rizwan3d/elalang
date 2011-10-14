@@ -154,6 +154,7 @@
     <Compile Include="Debug\CallStack.cs" />
     <Compile Include="Debug\ElaDebugException.cs" />
     <Compile Include="Debug\StackPoint.cs" />
+    <Compile Include="ElaPatterns.cs" />
     <Compile Include="IReadOnlyMap.cs" />
     <Compile Include="Compilation\OpSizeHelper.cs" />
     <Compile Include="ElaTranslationException.cs" />
@@ -161,8 +162,6 @@
     <Compile Include="Linking\ModuleEventArgs.cs" />
     <Compile Include="Loc.cs" />
     <Compile Include="Runtime\CallFlag.cs" />
-    <Compile Include="Runtime\DispatchFuns.cs" />
-    <Compile Include="Runtime\DispatchTable.cs" />
     <Compile Include="Runtime\ElaRuntimeException.cs" />
     <Compile Include="Runtime\EqHelper.cs" />
     <Compile Include="Runtime\ObjectModel\DelegateFunction.cs" />
@@ -184,8 +183,10 @@
     <Compile Include="CodeModel\ElaLiteralPattern.cs" />
     <Compile Include="CodeModel\ElaTuplePattern.cs" />
     <Compile Include="CodeModel\ElaTry.cs" />
+    <Compile Include="CodeModel\ElaIsPattern.cs" />
     <Compile Include="CodeModel\ElaBinary.cs" />
     <Compile Include="CodeModel\ElaOperator.cs" />
+    <Compile Include="CodeModel\ElaCast.cs" />
     <Compile Include="CodeModel\ElaCondition.cs" />
     <Compile Include="CodeModel\ElaExpression.cs" />
     <Compile Include="CodeModel\ElaExpressionFlags.cs" />
@@ -243,11 +244,7 @@
     <Compile Include="Runtime\ObjectModel\ElaChar.cs" />
     <Compile Include="Runtime\ObjectModel\ElaDummyObject.cs" />
     <Compile Include="Runtime\ObjectModel\ElaLazyList.cs" />
-    <Compile Include="Runtime\ObjectModel\ElaOverloadedFunction.cs" />
-    <Compile Include="Runtime\ObjectModel\ElaSimpleObject.cs" />
-    <Compile Include="Runtime\ObjectModel\ElaTypeInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Runtime\ObjectModel\ElaProxy.cs" />
     <Compile Include="Runtime\ObjectModel\ElaUnit.cs" />
     <Compile Include="FormatHelper.cs" />
     <Compile Include="Debug\VarSym.cs" />
@@ -306,6 +303,7 @@
     <Compile Include="TypeCodeFormat.cs" />
     <Compile Include="Runtime\ObjectModel\ElaVariant.cs" />
     <Compile Include="Runtime\ElaValue.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaTypeInfo.cs" />
     <Compile Include="Runtime\ShowInfo.cs" />
     <Compile Include="Runtime\Strings.cs" />
     <Compile Include="Runtime\WorkerThread.cs" />
