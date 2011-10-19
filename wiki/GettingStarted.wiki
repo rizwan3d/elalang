@@ -103,19 +103,19 @@ var r = Eval("fun x y", new {
 You can also create Ela modules in C# (or any other .NET language). This is an example of a simple module:
 
 {{{
-    public class MathModule : Ela.Linking.ForeignModule
-	{
-		public override void Initialize()
-		{  
-			base.Add<Int32,Int32,Int32>("rnd", Randomize);  
-		}
-	    
-		public int Randomize(int seed, int max)
-		{
-			var rnd = new Random(seed);
-			return rnd.next(max);
-		}
+public class MathModule : Ela.Linking.ForeignModule
+{
+	public override void Initialize()
+	{  
+		base.Add<Int32,Int32,Int32>("rnd", Randomize);  
 	}
+	    
+	public int Randomize(int seed, int max)
+	{
+		var rnd = new Random(seed);
+		return rnd.next(max);
+	}
+}
 }}}
 
 And this is what you need to do to make this module available in Ela:
