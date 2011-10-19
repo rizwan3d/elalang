@@ -1,4 +1,6 @@
-0.9.11.9:Release:Release of Ela 0.9.11
+0.9.11.2:Change:Ela compiler error processing is improved.
+0.9.11.1:Change:Ela machine error processing is improved.
+0.9.11.0:Release:Release of Ela 0.9.11
 0.9.10.2:Fix:Head/tail operations didn't always worked correctly on thunks (even if a thunk calculates into a linked list).
 0.9.10.1:Fix:A compiler could crash (raise ICE) on certain syntax errors instead of generating a regular error message (e.g. error ELA11, followed by linker error ELA609).
 0.9.10.0:Release:Release of Ela 0.9.10
