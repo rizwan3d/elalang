@@ -110,7 +110,7 @@ let x `negate` = --x
 
 ===Unary negation===
 
-Haskell uses a common notation for unary negation, e.g. `-x`, when Ela has a different operator for unary negation.
+Haskell uses a common notation for unary negation, e.g. `-x`, while Ela has a different operator for unary negation.
 
 Haskell:
 
