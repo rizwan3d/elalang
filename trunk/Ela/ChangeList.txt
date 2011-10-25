@@ -1,3 +1,4 @@
+0.9.11.3:New:Now it is possible to convert delegates to Ela functions (and vice versa) with up to 8 parameters (was 5).
 0.9.11.2:Change:Ela compiler error processing is improved.
 0.9.11.1:Change:Ela machine error processing is improved.
 0.9.11.0:Release:Release of Ela 0.9.11

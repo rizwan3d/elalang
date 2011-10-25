@@ -157,6 +157,30 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
+		public static ElaFunction Create<T1,T2,T3,T4,T5,T6>(ElaFun<T1,T2,T3,T4,T5,T6> fun)
+		{
+			return new DelegateFunction<T1,T2,T3,T4,T5,T6>(DEF_NAME, fun);
+		}
+
+
+		public static ElaFunction Create<T1,T2,T3,T4,T5,T6,T7>(ElaFun<T1,T2,T3,T4,T5,T6,T7> fun)
+		{
+			return new DelegateFunction<T1,T2,T3,T4,T5,T6,T7>(DEF_NAME, fun);
+		}
+
+
+		public static ElaFunction Create<T1,T2,T3,T4,T5,T6,T7,T8>(ElaFun<T1,T2,T3,T4,T5,T6,T7,T8> fun)
+		{
+			return new DelegateFunction<T1,T2,T3,T4,T5,T6,T7,T8>(DEF_NAME, fun);
+		}
+
+
+		public static ElaFunction Create<T1,T2,T3,T4,T5,T6,T7,T8,T9>(ElaFun<T1,T2,T3,T4,T5,T6,T7,T8,T9> fun)
+		{
+			return new DelegateFunction<T1,T2,T3,T4,T5,T6,T7,T8,T9>(DEF_NAME, fun);
+		}
+
+
 		public static ElaFunction Create<T1>(string name, ElaFun<T1> fun)
 		{
 			return new DelegateFunction<T1>(name, fun);

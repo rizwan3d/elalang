@@ -123,6 +123,25 @@ namespace Ela.Linking
 			Add(name, new ElaValue(new DelegateFunction<T1,T2,T3,T4,T5>(name, fun)));
 		}
 
+        protected void Add<T1,T2,T3,T4,T5,T6>(string name, ElaFun<T1,T2,T3,T4,T5,T6> fun)
+		{
+			Add(name, new ElaValue(new DelegateFunction<T1,T2,T3,T4,T5,T6>(name, fun)));
+		}
+
+        protected void Add<T1,T2,T3,T4,T5,T6,T7>(string name, ElaFun<T1,T2,T3,T4,T5,T6,T7> fun)
+		{
+			Add(name, new ElaValue(new DelegateFunction<T1,T2,T3,T4,T5,T6,T7>(name, fun)));
+		}
+
+        protected void Add<T1,T2,T3,T4,T5,T6,T7,T8>(string name, ElaFun<T1,T2,T3,T4,T5,T6,T7,T8> fun)
+		{
+			Add(name, new ElaValue(new DelegateFunction<T1,T2,T3,T4,T5,T6,T7,T8>(name, fun)));
+		}
+
+        protected void Add<T1,T2,T3,T4,T5,T6,T7,T8,T9>(string name, ElaFun<T1,T2,T3,T4,T5,T6,T7,T8,T9> fun)
+		{
+			Add(name, new ElaValue(new DelegateFunction<T1,T2,T3,T4,T5,T6,T7,T8,T9>(name, fun)));
+		}
 
 		protected void Add(string name, ElaValue value)
 		{
