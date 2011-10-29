@@ -60,10 +60,8 @@ namespace Ela.Compilation
 		internal void CompileOpList()
 		{
 			foreach (var i in fixups)
-			{
 				opData[i] = labels[opData[i]];
-			}
-
+			
 			fixups.Clear();
 			labels.Clear();
 		}
@@ -118,6 +116,7 @@ namespace Ela.Compilation
 			else
 				Emit(op, 0);
 		}
+
 
 		internal void Emit(Op op, int data)
 		{

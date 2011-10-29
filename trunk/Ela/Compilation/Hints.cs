@@ -13,9 +13,9 @@ namespace Ela.Compilation
 
 		Scope = 0x04,
 
-		// = 0x08,
+		__Reserved1 = 0x08,
 
-		// = 0x10,
+		__Reserved2 = 0x10,
 
 		Tail = 0x20,
 

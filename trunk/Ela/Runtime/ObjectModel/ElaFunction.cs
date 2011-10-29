@@ -209,6 +209,30 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return new DelegateFunction<T1,T2,T3,T4,T5>(name, fun);
 		}
+
+
+		public static ElaFunction Create<T1,T2,T3,T4,T5,T6>(string name, ElaFun<T1,T2,T3,T4,T5,T6> fun)
+		{
+			return new DelegateFunction<T1,T2,T3,T4,T5,T6>(name, fun);
+		}
+
+
+		public static ElaFunction Create<T1,T2,T3,T4,T5,T6,T7>(string name, ElaFun<T1,T2,T3,T4,T5,T6,T7> fun)
+		{
+			return new DelegateFunction<T1,T2,T3,T4,T5,T6,T7>(name, fun);
+		}
+
+
+		public static ElaFunction Create<T1,T2,T3,T4,T5,T6,T7,T8>(string name, ElaFun<T1,T2,T3,T4,T5,T6,T7,T8> fun)
+		{
+			return new DelegateFunction<T1,T2,T3,T4,T5,T6,T7,T8>(name, fun);
+		}
+
+
+		public static ElaFunction Create<T1,T2,T3,T4,T5,T6,T7,T8,T9>(string name, ElaFun<T1,T2,T3,T4,T5,T6,T7,T8,T9> fun)
+		{
+			return new DelegateFunction<T1,T2,T3,T4,T5,T6,T7,T8,T9>(name, fun);
+		}
 		#endregion
 
 
