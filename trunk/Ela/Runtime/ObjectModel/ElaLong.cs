@@ -5,7 +5,10 @@ namespace Ela.Runtime.ObjectModel
 	public sealed class ElaLong : ElaObject
 	{
 		#region Construction
-		public ElaLong(long value) : base(ElaTypeCode.Long)
+        internal static readonly ElaTypeInfo TypeInfo = new ElaTypeInfo(TypeCodeFormat.GetShortForm(ElaTypeCode.Long), (Int32)ElaTypeCode.Long, true, typeof(ElaLong));
+        
+        public ElaLong(long value)
+            : base(ElaTypeCode.Long)
 		{
 			Value = value;
 		}
@@ -163,9 +166,9 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+        protected internal override ElaValue Convert(ElaValue @this, ElaTypeInfo type, ExecutionContext ctx)
 		{
-			switch (type)
+            switch (type.ReflectedTypeCode)
 			{
 				case ElaTypeCode.Integer: return new ElaValue((Int32)Value);
 				case ElaTypeCode.Single: return new ElaValue((Single)Value);
@@ -174,7 +177,7 @@ namespace Ela.Runtime.ObjectModel
 				case ElaTypeCode.Char: return new ElaValue((Char)Value);
 				case ElaTypeCode.String: return new ElaValue(Show(@this, ShowInfo.Default, ctx));
 				default:
-					ctx.ConversionFailed(@this, type);
+                    ctx.ConversionFailed(@this, type.ReflectedTypeName);
 					return Default();
 			}
 		}

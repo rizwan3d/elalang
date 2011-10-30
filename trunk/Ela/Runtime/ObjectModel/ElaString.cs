@@ -8,6 +8,8 @@ namespace Ela.Runtime.ObjectModel
 	public sealed class ElaString : ElaObject, IEnumerable<ElaValue>
 	{
 		#region Construction
+        internal static readonly ElaTypeInfo TypeInfo = new ElaTypeInfo(TypeCodeFormat.GetShortForm(ElaTypeCode.String), (Int32)ElaTypeCode.String, true, typeof(ElaString));
+
 		public static readonly ElaString Empty = new ElaString(String.Empty);
 		private string buffer;
 		private int headIndex;
@@ -166,16 +168,16 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+        protected internal override ElaValue Convert(ElaValue @this, ElaTypeInfo type, ExecutionContext ctx)
 		{
-			if (type == ElaTypeCode.String)
+            if (type.ReflectedTypeCode == ElaTypeCode.String)
 				return new ElaValue(this);
-			else if (type == ElaTypeCode.Char)
+            else if (type.ReflectedTypeCode == ElaTypeCode.Char)
 			{
 				var val = GetValue();
 				return val.Length > 0 ? new ElaValue(val[0]) : new ElaValue('\0');
 			}
-			else if (type == ElaTypeCode.Integer)
+            else if (type.ReflectedTypeCode == ElaTypeCode.Integer)
 			{
 				try
 				{
@@ -183,11 +185,11 @@ namespace Ela.Runtime.ObjectModel
 				}
 				catch (Exception ex)
 				{
-					ctx.ConversionFailed(@this, type, ex.Message);
+                    ctx.ConversionFailed(@this, type.ReflectedTypeName, ex.Message);
 					return Default();
 				}
 			}
-			else if (type == ElaTypeCode.Long)
+            else if (type.ReflectedTypeCode == ElaTypeCode.Long)
 			{
 				try
 				{
@@ -195,11 +197,11 @@ namespace Ela.Runtime.ObjectModel
 				}
 				catch (Exception ex)
 				{
-					ctx.ConversionFailed(@this, type, ex.Message);
+                    ctx.ConversionFailed(@this, type.ReflectedTypeName, ex.Message);
 					return Default();
 				}
 			}
-			else if (type == ElaTypeCode.Single)
+            else if (type.ReflectedTypeCode == ElaTypeCode.Single)
 			{
 				try
 				{
@@ -207,11 +209,11 @@ namespace Ela.Runtime.ObjectModel
 				}
 				catch (Exception ex)
 				{
-					ctx.ConversionFailed(@this, type, ex.Message);
+                    ctx.ConversionFailed(@this, type.ReflectedTypeName, ex.Message);
 					return Default();
 				}
 			}
-			else if (type == ElaTypeCode.Double)
+            else if (type.ReflectedTypeCode == ElaTypeCode.Double)
 			{
 				try
 				{
@@ -219,11 +221,11 @@ namespace Ela.Runtime.ObjectModel
 				}
 				catch (Exception ex)
 				{
-					ctx.ConversionFailed(@this, type, ex.Message);
+                    ctx.ConversionFailed(@this, type.ReflectedTypeName, ex.Message);
 					return Default();
 				}
 			}
-			else if (type == ElaTypeCode.Boolean)
+            else if (type.ReflectedTypeCode == ElaTypeCode.Boolean)
 			{
 				try
 				{
@@ -231,12 +233,12 @@ namespace Ela.Runtime.ObjectModel
 				}
 				catch (Exception ex)
 				{
-					ctx.ConversionFailed(@this, type, ex.Message);
+                    ctx.ConversionFailed(@this, type.ReflectedTypeName, ex.Message);
 					return Default();
 				}
 			}
-			
-			ctx.ConversionFailed(@this, type);
+
+            ctx.ConversionFailed(@this, type.ReflectedTypeName);
 			return Default();
 		}
 

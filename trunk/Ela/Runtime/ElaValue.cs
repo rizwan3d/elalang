@@ -222,34 +222,34 @@ namespace Ela.Runtime
 		public object Convert(Type ti)
 		{
 			var ctx = new ExecutionContext();
-			var type = default(ElaTypeCode);
+			var type = default(ElaTypeInfo);
 
             if (ti == typeof(Int32))
-                type = ElaTypeCode.Integer;
+                type = ElaInteger.TypeInfo;
             else if (ti == typeof(Single))
-                type = ElaTypeCode.Single;
+                type = ElaSingle.TypeInfo;
             else if (ti == typeof(Int64))
-                type = ElaTypeCode.Long;
+                type = ElaLong.TypeInfo;
             else if (ti == typeof(Double))
-                type = ElaTypeCode.Double;
+                type = ElaDouble.TypeInfo;
             else if (ti == typeof(Boolean))
-                type = ElaTypeCode.Boolean;
+                type = ElaBoolean.TypeInfo;
             else if (ti == typeof(String))
-                type = ElaTypeCode.String;
+                type = ElaString.TypeInfo;
             else if (ti == typeof(Char))
-                type = ElaTypeCode.Char;
+                type = ElaChar.TypeInfo;
             else if (ti == typeof(ElaList))
-                type = ElaTypeCode.List;
+                type = ElaList.TypeInfo;
             else if (ti == typeof(ElaRecord))
-                type = ElaTypeCode.Record;
+                type = ElaRecord.TypeInfo;
             else if (ti == typeof(ElaTuple))
-                type = ElaTypeCode.Tuple;
+                type = ElaTuple.TypeInfo;
             else if (ti == typeof(ElaVariant))
-                type = ElaTypeCode.Variant;
+                type = ElaVariant.TypeInfo;
             else if (ti == typeof(ElaFunction))
-                type = ElaTypeCode.Function;
+                type = ElaFunction.TypeInfo;
             else if (ti == typeof(ElaModule))
-                type = ElaTypeCode.Module;
+                type = ElaModule.TypeInfo;
             else if (ti == typeof(ElaValue))
                 return this;
             else
@@ -259,7 +259,7 @@ namespace Ela.Runtime
                     if (TypeCode == ElaTypeCode.Unit)
                         return ElaUnit.Instance;
                     else
-                        throw InvalidCast(TypeCode, type);
+                        throw InvalidCast(TypeCode, type.ReflectedTypeCode);
                 }
                 else if (ti == typeof(ElaObject))
                     return Ref;
@@ -271,13 +271,13 @@ namespace Ela.Runtime
                     return System.Convert.ChangeType(Ref, ti);
             }
 
-            if (type == TypeCode)
+            if (type.ReflectedTypeCode == TypeCode)
                 return AsObject();
 
 			var ret = Ref.Convert(this, type, ctx).AsObject();
 
 			if (ctx.Failed)
-				throw InvalidCast(TypeCode, type);
+				throw InvalidCast(TypeCode, type.ReflectedTypeCode);
 
 			return ret;
 		}
@@ -609,7 +609,7 @@ namespace Ela.Runtime
         }
 
 
-        public ElaValue Convert(ElaTypeCode type, ExecutionContext ctx)
+        public ElaValue Convert(ElaTypeInfo type, ExecutionContext ctx)
         {
             return Ref.Convert(this, type, ctx);
         }

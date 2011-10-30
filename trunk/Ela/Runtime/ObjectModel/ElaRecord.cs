@@ -8,6 +8,8 @@ namespace Ela.Runtime.ObjectModel
 	public sealed class ElaRecord : ElaObject
 	{
 		#region Construction
+        internal static readonly ElaTypeInfo TypeInfo = new ElaTypeInfo(TypeCodeFormat.GetShortForm(ElaTypeCode.Record), (Int32)ElaTypeCode.Record, true, typeof(ElaRecord));
+
         private const string FIELDS = "fields";
         private string[] keys;
         private ElaValue[] values;
@@ -139,15 +141,15 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+        protected internal override ElaValue Convert(ElaValue @this, ElaTypeInfo type, ExecutionContext ctx)
 		{
-			if (type == ElaTypeCode.Record)
+			if (type.ReflectedTypeCode == ElaTypeCode.Record)
 				return @this;
-			else if (type == ElaTypeCode.Tuple)
+			else if (type.ReflectedTypeCode == ElaTypeCode.Tuple)
 				return new ElaValue(new ElaTuple(values));
-			
-			ctx.ConversionFailed(new ElaValue(this), type);
-               return Default();
+
+            ctx.ConversionFailed(new ElaValue(this), type.ReflectedTypeName);
+            return Default();
 		}
 
 
@@ -210,9 +212,7 @@ namespace Ela.Runtime.ObjectModel
 
         public override ElaTypeInfo GetTypeInfo()
 		{
-            var info = base.GetTypeInfo();
-            info.AddField(FIELDS, keys);
-            return info;
+            return CreateTypeInfo(new ElaRecordField(FIELDS, keys));
 		}
 
 

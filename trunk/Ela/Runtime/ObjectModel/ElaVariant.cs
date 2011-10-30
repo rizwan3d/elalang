@@ -11,6 +11,7 @@ namespace Ela.Runtime.ObjectModel
 		private const string LEFT = "Left";
 		private const string RIGHT = "Right";
         private const string TAG = "tag";
+        internal static readonly ElaTypeInfo TypeInfo = new ElaTypeInfo(TypeCodeFormat.GetShortForm(ElaTypeCode.Variant), (Int32)ElaTypeCode.Variant, true, typeof(ElaVariant));
 		private static readonly ElaVariant noneVariant = new ElaVariant(NONE, new ElaValue(ElaUnit.Instance));
 
         public ElaVariant(string tag) : this(tag, new ElaValue(ElaUnit.Instance))
@@ -48,9 +49,7 @@ namespace Ela.Runtime.ObjectModel
 
 		public override ElaTypeInfo GetTypeInfo()
 		{
-			var info = base.GetTypeInfo();
-			info.AddField(TAG, Tag);
-			return info;
+			return CreateTypeInfo(new ElaRecordField(TAG, Tag));
 		}
 
 
@@ -147,12 +146,12 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+        protected internal override ElaValue Convert(ElaValue @this, ElaTypeInfo type, ExecutionContext ctx)
 		{
-			if (type == ElaTypeCode.Variant)
+            if (type.ReflectedTypeCode == ElaTypeCode.Variant)
 				return @this;
-            
-			ctx.ConversionFailed(@this, type);
+
+            ctx.ConversionFailed(@this, type.ReflectedTypeName);
 			return Default();
 		}
 

@@ -8,6 +8,8 @@ namespace Ela.Runtime.ObjectModel
 	public sealed class ElaTuple : ElaObject, IEnumerable<ElaValue>
 	{
 		#region Construction
+        internal static readonly ElaTypeInfo TypeInfo = new ElaTypeInfo(TypeCodeFormat.GetShortForm(ElaTypeCode.Tuple), (Int32)ElaTypeCode.Tuple, true, typeof(ElaTuple));
+
 		private int cons;
 		
 		public ElaTuple(params object[] args) : base(ElaTypeCode.Tuple)
@@ -563,12 +565,12 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+        protected internal override ElaValue Convert(ElaValue @this, ElaTypeInfo type, ExecutionContext ctx)
 		{
-			if (type == ElaTypeCode.Tuple)
+			if (type.ReflectedTypeCode == ElaTypeCode.Tuple)
 				return @this;
 
-			ctx.ConversionFailed(@this, type);
+			ctx.ConversionFailed(@this, type.ReflectedTypeName);
 			return Default();
 		}
 

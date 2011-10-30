@@ -9,6 +9,8 @@ namespace Ela.Runtime.ObjectModel
 	public sealed class ElaModule : ElaObject
 	{
 		#region Construction
+        internal static readonly ElaTypeInfo TypeInfo = new ElaTypeInfo(TypeCodeFormat.GetShortForm(ElaTypeCode.Module), (Int32)ElaTypeCode.Module, true, typeof(ElaModule));
+        
         private const string GLOBALS = "globals";
         private const string REFERENCES = "references";
         private const string ASSEMBLY = "assembly";
@@ -116,16 +118,16 @@ namespace Ela.Runtime.ObjectModel
             var frame = vm != null ? vm.Assembly.GetModule(Handle) : null;
             var name = vm != null ? vm.Assembly.GetModuleName(Handle) : null;
 
-            var info = base.GetTypeInfo();
-            info.AddField(GLOBALS, GetVariables(frame));
-            info.AddField(REFERENCES, GetReferences(frame));
-            info.AddField(ASSEMBLY, GetAssemblyInfo());
-            info.AddField(HANDLE, Handle);
-            info.AddField(NAME, name);
-            info.AddField(CODEBASE, frame != null && frame.File != null ? frame.File.FullName : null);
-            info.AddField(ISNATIVE, frame != null ? new ElaValue(!(frame is IntrinsicFrame)) : new ElaValue(ElaUnit.Instance));
-            info.AddField(ISMAINMODULE, Handle == 0);
-            return info;
+            return CreateTypeInfo(
+                new ElaRecordField(GLOBALS, GetVariables(frame)),
+                new ElaRecordField(REFERENCES, GetReferences(frame)),
+                new ElaRecordField(ASSEMBLY, GetAssemblyInfo()),
+                new ElaRecordField(HANDLE, Handle),
+                new ElaRecordField(NAME, name),
+                new ElaRecordField(CODEBASE, frame != null && frame.File != null ? frame.File.FullName : null),
+                new ElaRecordField(ISNATIVE, frame != null ? new ElaValue(!(frame is IntrinsicFrame)) : new ElaValue(ElaUnit.Instance)),
+                new ElaRecordField(ISMAINMODULE, Handle == 0)
+            );
 		}
 
 

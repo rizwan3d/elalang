@@ -266,7 +266,7 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+        protected internal override ElaValue Convert(ElaValue @this, ElaTypeInfo type, ExecutionContext ctx)
         {
             return Value.Ref.Convert(Value, type, ctx);
         }

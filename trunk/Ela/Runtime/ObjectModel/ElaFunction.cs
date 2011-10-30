@@ -9,7 +9,9 @@ namespace Ela.Runtime.ObjectModel
 	public class ElaFunction : ElaObject
 	{
 		#region Construction
-		private ElaMachine vm;
+        internal static readonly ElaTypeInfo TypeInfo = new ElaTypeInfo(TypeCodeFormat.GetShortForm(ElaTypeCode.Function), (Int32)ElaTypeCode.Function, true, typeof(ElaFunction));
+        
+        private ElaMachine vm;
 		private static readonly ElaValue[] defaultParams = new ElaValue[] { new ElaValue(ElaUnit.Instance) };
 		private static readonly ElaValue[] emptyParams = new ElaValue[0];
 		private const string DEF_NAME = "<f>";
@@ -302,15 +304,15 @@ namespace Ela.Runtime.ObjectModel
 
 		public override ElaTypeInfo GetTypeInfo()
 		{
-			var info = base.GetTypeInfo();
-            info.AddField(MODULE, new ElaModule(ModuleHandle, vm).GetTypeInfo());
-            info.AddField(HANDLE, Handle);
-            info.AddField(NAME, GetFunctionName());
-            info.AddField(PARAMS, Parameters.Length + 1 - AppliedParameters);
-            info.AddField(ISNATIVE, vm != null);
-            info.AddField(ISGLOBAL, vm == null || Captures.Count == 1);
-            info.AddField(ISPARTIAL, AppliedParameters > 0);
-            return info;
+			return CreateTypeInfo(
+                new ElaRecordField(MODULE, new ElaModule(ModuleHandle, vm).GetTypeInfo()),
+                new ElaRecordField(HANDLE, Handle),
+                new ElaRecordField(NAME, GetFunctionName()),
+                new ElaRecordField(PARAMS, Parameters.Length + 1 - AppliedParameters),
+                new ElaRecordField(ISNATIVE, vm != null),
+                new ElaRecordField(ISGLOBAL, vm == null || Captures.Count == 1),
+                new ElaRecordField(ISPARTIAL, AppliedParameters > 0)
+            );
 		}
 
 

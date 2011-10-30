@@ -8,13 +8,31 @@ namespace Ela.Runtime.ObjectModel
 	{
 		#region Construction
         private const string TYPE_NAME = "typeInfo";
+        private const string TYPENAME = "typeName";
+        private const string TYPECODE = "typeCode";
+        private const string ISBYREF = "byRef";
+        
         private List<String> keys;
         private List<ElaValue> values;
 
-		internal ElaTypeInfo()
+		internal ElaTypeInfo(string typeName, int typeCode, bool isByRef, Type type, params ElaRecordField[] fields)
 		{
             keys = new List<String>();
             values = new List<ElaValue>();
+
+            AddField(TYPENAME, ReflectedTypeName = typeName);
+            AddField(TYPECODE, ReflectedTypeId = typeCode);
+            AddField(ISBYREF, ReflectedIsByRef = isByRef);
+            ReflectedSystemType = type;
+
+            if (fields != null)
+            {
+                foreach (var f in fields)
+                {
+                    keys.Add(f.Field);
+                    values.Add(f.Value);
+                }
+            }
 		}
 		#endregion
 
@@ -32,14 +50,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		public void AddField(string field, ElaValue value)
-		{
-			keys.Add(field);
-			values.Add(value);
-		}
-
-
-		public void AddField<T>(string field, T value)
+		private void AddField<T>(string field, T value)
 		{
 			keys.Add(field);
 			values.Add(ElaValue.FromObject(value));
@@ -173,6 +184,22 @@ namespace Ela.Runtime.ObjectModel
 
             return -1;
         }
+        #endregion
+
+
+        #region Properties
+        public string ReflectedTypeName { get; private set; }
+
+        public int ReflectedTypeId { get; private set; }
+
+        public ElaTypeCode ReflectedTypeCode
+        {
+            get { return (ElaTypeCode)TypeId; }
+        }
+
+        public bool ReflectedIsByRef { get; private set; }
+
+        public Type ReflectedSystemType { get; private set; }
         #endregion
     }
 }

@@ -5,6 +5,7 @@ namespace Ela.Runtime.ObjectModel
 	internal sealed class ElaSingle : ElaObject
 	{
 		#region Construction
+        internal static readonly ElaTypeInfo TypeInfo = new ElaTypeInfo(TypeCodeFormat.GetShortForm(ElaTypeCode.Single), (Int32)ElaTypeCode.Single, false, typeof(ElaSingle));
 		internal static readonly ElaSingle Instance = new ElaSingle();
 		
 		private ElaSingle() : base(ElaTypeCode.Single)
@@ -141,9 +142,9 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+		protected internal override ElaValue Convert(ElaValue @this, ElaTypeInfo type, ExecutionContext ctx)
 		{
-			switch (type)
+            switch (type.ReflectedTypeCode)
 			{
 				case ElaTypeCode.Integer: return new ElaValue((Int32)@this.DirectGetReal());
 				case ElaTypeCode.Single: return @this;
@@ -152,7 +153,7 @@ namespace Ela.Runtime.ObjectModel
 				case ElaTypeCode.Char: return new ElaValue((Char)@this.DirectGetReal());
 				case ElaTypeCode.String: return new ElaValue(Show(@this, ShowInfo.Default, ctx));
 				default:
-					ctx.ConversionFailed(@this, type);
+                    ctx.ConversionFailed(@this, type.ReflectedTypeName);
 					return Default();
 			}
 		}

@@ -8,7 +8,8 @@ namespace Ela.Runtime.ObjectModel
 	public class ElaList : ElaObject, IEnumerable<ElaValue>
 	{
 		#region Construction
-		public static readonly ElaList Empty = ElaNilList.Instance;
+        internal static readonly ElaTypeInfo TypeInfo = new ElaTypeInfo(TypeCodeFormat.GetShortForm(ElaTypeCode.List), (Int32)ElaTypeCode.List, true, typeof(ElaList));
+        public static readonly ElaList Empty = ElaNilList.Instance;
 
 		public ElaList(ElaList next, object value) : this(next, ElaValue.FromObject(value))
 		{
@@ -214,12 +215,12 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+        protected internal override ElaValue Convert(ElaValue @this, ElaTypeInfo type, ExecutionContext ctx)
 		{
-			if (type == ElaTypeCode.List)
+			if (type.ReflectedTypeCode == ElaTypeCode.List)
 				return new ElaValue(this);
 
-			ctx.ConversionFailed(@this, type);
+            ctx.ConversionFailed(@this, type.ReflectedTypeName);
             return Default();
 		}
 

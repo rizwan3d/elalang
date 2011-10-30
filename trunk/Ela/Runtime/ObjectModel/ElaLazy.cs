@@ -8,6 +8,8 @@ namespace Ela.Runtime.ObjectModel
 	public sealed class ElaLazy : ElaObject
 	{
 		#region Construction
+        internal static readonly ElaTypeInfo TypeInfo = new ElaTypeInfo(TypeCodeFormat.GetShortForm(ElaTypeCode.Lazy), (Int32)ElaTypeCode.Lazy, true, typeof(ElaLazy));
+
 		private const int SEVAL = -1000;
 		private CodeFrame curMod;
 
@@ -349,7 +351,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+        protected internal override ElaValue Convert(ElaValue @this, ElaTypeInfo type, ExecutionContext ctx)
 		{
 			return Force(ctx).Ref.Convert(Value, type, ctx);
 		}

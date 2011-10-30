@@ -48,16 +48,16 @@ namespace Ela.Runtime
 		}
 
 
-		public void ConversionFailed(ElaValue source, ElaTypeCode target)
+		public void ConversionFailed(ElaValue source, string targetType)
 		{
-			ConversionFailed(source, target, Strings.GetMessage("NotSupported"));
+			ConversionFailed(source, targetType, Strings.GetMessage("NotSupported"));
 		}
 
 
-		public void ConversionFailed(ElaValue source, ElaTypeCode target, string reason)
+		public void ConversionFailed(ElaValue source, string targetType, string reason)
 		{
 			Fail(ElaRuntimeError.ConversionFailed, source.ToString(), source.GetTypeName(),
-                TypeCodeFormat.GetShortForm(target), reason);
+                targetType, reason);
 		}
 
 

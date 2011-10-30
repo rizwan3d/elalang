@@ -7,6 +7,8 @@ namespace Ela.Runtime.ObjectModel
 	public sealed class ElaUnit : ElaObject
 	{
 		#region Construction
+        internal static readonly ElaTypeInfo TypeInfo = new ElaTypeInfo(TypeCodeFormat.GetShortForm(ElaTypeCode.Unit), (Int32)ElaTypeCode.Unit, true, typeof(ElaUnit));
+
 		private const string STR = "()";
 		public static readonly ElaUnit Instance = new ElaUnit();
 

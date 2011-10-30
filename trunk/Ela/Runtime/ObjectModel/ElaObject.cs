@@ -9,10 +9,7 @@ namespace Ela.Runtime.ObjectModel
 		internal static readonly ExecutionContext DummyContext = new ExecutionContext();
 		internal const string UNDEF = "<unknown>";
         internal const string INVALID = "<INVALID>";
-        private const string TYPENAME = "typeName";
-        private const string TYPECODE = "typeCode";
-        private const string ISBYREF = "byRef";
-
+        
 		protected ElaObject() : this(ElaTypeCode.Object)
 		{
 			
@@ -100,17 +97,20 @@ namespace Ela.Runtime.ObjectModel
 
 
         public virtual ElaTypeInfo GetTypeInfo()
-		{
-            var info = new ElaTypeInfo();
-            info.AddField(TYPENAME, GetTypeName());
-            info.AddField(TYPECODE, TypeId);
-            info.AddField(ISBYREF, 
+        {
+            return CreateTypeInfo();
+        }
+
+
+        protected ElaTypeInfo CreateTypeInfo(params ElaRecordField[] fields)
+        {
+            return new ElaTypeInfo(GetTypeName(), TypeId,
                 TypeId == ElaMachine.INT ||
                 TypeId == ElaMachine.CHR ||
                 TypeId == ElaMachine.REA ||
-                TypeId == ElaMachine.BYT);
-            return info;
-		}
+                TypeId == ElaMachine.BYT,
+                GetType());		
+        }
 
 
 		internal protected virtual int Compare(ElaValue @this, ElaValue other)
@@ -428,7 +428,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal virtual ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+		protected internal virtual ElaValue Convert(ElaValue @this, ElaTypeInfo type, ExecutionContext ctx)
 		{
 			ctx.NoOperator(@this, "convert");
 			return Default();
