@@ -959,7 +959,7 @@ namespace Ela.Runtime
 						break;
 					case Op.Conv:
 						right = evalStack.Peek();
-						evalStack.Replace(right.Ref.Convert(right, (ElaTypeCode)opd, ctx));
+						evalStack.Replace(Convert(right, (ElaTypeCode)opd, ctx));
 
 						if (ctx.Failed)
 						{
@@ -1638,6 +1638,62 @@ namespace Ela.Runtime
 
 
 		#region Operations
+        private ElaValue Convert(ElaValue value, ElaTypeCode typeCode, ExecutionContext ctx)
+        {
+            var typeInfo = default(ElaTypeInfo);
+
+            switch (typeCode)
+            {
+                case ElaTypeCode.Boolean: 
+                    typeInfo = ElaBoolean.TypeInfo;
+                    break;
+                case ElaTypeCode.Char:
+                    typeInfo = ElaChar.TypeInfo;
+                    break;
+                case ElaTypeCode.Double:
+                    typeInfo = ElaDouble.TypeInfo;
+                    break;
+                case ElaTypeCode.Function:
+                    typeInfo = ElaFunction.TypeInfo;
+                    break;
+                case ElaTypeCode.Integer:
+                    typeInfo = ElaInteger.TypeInfo;
+                    break;
+                case ElaTypeCode.Lazy:
+                    typeInfo = ElaLazy.TypeInfo;
+                    break;
+                case ElaTypeCode.List:
+                    typeInfo = ElaList.TypeInfo;
+                    break;
+                case ElaTypeCode.Long:
+                    typeInfo = ElaLong.TypeInfo;
+                    break;
+                case ElaTypeCode.Module:
+                    typeInfo = ElaModule.TypeInfo;
+                    break;
+                case ElaTypeCode.Record:
+                    typeInfo = ElaRecord.TypeInfo;
+                    break;
+                case ElaTypeCode.Single:
+                    typeInfo = ElaSingle.TypeInfo;
+                    break;
+                case ElaTypeCode.String:
+                    typeInfo = ElaString.TypeInfo;
+                    break;
+                case ElaTypeCode.Tuple:
+                    typeInfo = ElaTuple.TypeInfo;
+                    break;
+                case ElaTypeCode.Unit:
+                    typeInfo = ElaUnit.TypeInfo;
+                    break;
+                case ElaTypeCode.Variant:
+                    typeInfo = ElaVariant.TypeInfo;
+                    break;
+            }
+
+            return value.Ref.Convert(value, typeInfo, ctx);
+        }
+
 		private void ReadPervasives(WorkerThread thread, CodeFrame frame, int handle)
 		{
 			var mod = thread.Module;
