@@ -140,12 +140,12 @@ namespace Ela.Compilation
 		
         Gettag,
 
+        Conv,
 
+		
 		Elem,
 
 		Skiptag,
-
-		Conv,
 
 		Newvar,
 

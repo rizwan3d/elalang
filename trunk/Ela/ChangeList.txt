@@ -1,3 +1,4 @@
+0.9.11.6:Change:Conv op code (type conversion) is redesigned to support future extensibility.
 0.9.11.5:Change:ElaTypeInfo structure is redesigned;also a new SystemType property added (that contains System.Type instance). This property can be queried from .NET code.
 0.9.11.4:Change:Now ElaTypeInfo object has a public constructor; it is possible to implement your own reflection logic when creating custom types.
 0.9.11.3:New:Now it is possible to convert delegates to Ela functions (and vice versa) with up to 8 parameters (was 5).

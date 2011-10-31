@@ -111,12 +111,12 @@ namespace Ela.Library.General
         }
 
 
-        protected override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+        protected override ElaValue Convert(ElaValue @this, ElaTypeInfo type, ExecutionContext ctx)
         {
-            if (type == ElaTypeCode.Long)
+            if (type.ReflectedTypeCode == ElaTypeCode.Long)
                 return new ElaValue(Ticks);
 
-            ctx.ConversionFailed(@this, type);
+            ctx.ConversionFailed(@this, type.ReflectedTypeName);
             return Default();
         }
 

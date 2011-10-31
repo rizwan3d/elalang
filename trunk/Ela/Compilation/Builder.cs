@@ -637,7 +637,8 @@ namespace Ela.Compilation
 				case ElaTypeCode.Boolean:
 				case ElaTypeCode.String:
 				case ElaTypeCode.Char:
-					cw.Emit(Op.Conv, (Int32)aff);
+                    cw.Emit(Op.PushI4, (Int32)aff);
+					cw.Emit(Op.Conv);
 					break;
 				default:
 					AddError(ElaCompilerError.CastNotSupported, exp, TypeCodeFormat.GetShortForm(aff));

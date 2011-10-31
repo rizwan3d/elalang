@@ -172,12 +172,12 @@ namespace Ela.Library.Collections
 		}
 
 
-		protected override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+		protected override ElaValue Convert(ElaValue @this, ElaTypeInfo type, ExecutionContext ctx)
 		{
-			if (type == ElaTypeCode.List)
+			if (type.ReflectedTypeCode == ElaTypeCode.List)
 				return new ElaValue(ElaList.FromEnumerable(this));
 
-			ctx.ConversionFailed(@this, type);
+			ctx.ConversionFailed(@this, type.ReflectedTypeName);
 			return Default();
 		}
 

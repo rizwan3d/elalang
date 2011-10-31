@@ -74,10 +74,10 @@ namespace Ela.Compilation
 			0, //Nil
             0, //Clone			
             0, //Gettag
+			-1, //Conv
 			
             0, //Elem
 			0, //Skiptag
-			0, //Conv
 			0, //Newvar
 			1, //Newrec
 			1, //Newtup

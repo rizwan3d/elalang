@@ -74,12 +74,12 @@ namespace Ela.Library.General
 		}
 
 
-		protected override ElaValue Convert(ElaValue @this, ElaTypeCode type, ExecutionContext ctx)
+		protected override ElaValue Convert(ElaValue @this, ElaTypeInfo type, ExecutionContext ctx)
 		{
-			if (type == ElaTypeCode.String)
+			if (type.ReflectedTypeCode == ElaTypeCode.String)
 				return new ElaValue(Value.ToString());
 			
-			ctx.ConversionFailed(@this, type);
+			ctx.ConversionFailed(@this, type.ReflectedTypeName);
 			return Default();
 		}
 		#endregion

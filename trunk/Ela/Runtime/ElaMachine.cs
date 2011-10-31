@@ -957,17 +957,40 @@ namespace Ela.Runtime
 							goto SWITCH_MEM;
 						}
 						break;
-					case Op.Conv:
-						right = evalStack.Peek();
-						evalStack.Replace(Convert(right, (ElaTypeCode)opd, ctx));
+                    case Op.Conv:
+                        {
+                            left = evalStack.Pop();
+                            right = evalStack.Pop();
 
-						if (ctx.Failed)
-						{
-							evalStack.Replace(right);
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
-						break;
+                            if (left.TypeId == INT)
+                            {
+                                evalStack.Push(Convert(right, (ElaTypeCode)left.I4, ctx));
+
+                                if (ctx.Failed)
+                                    evalStack.PopVoid();
+                            }
+                            else
+                            {
+                                var fv = left.Force(ctx);
+
+                                if (!ctx.Failed)
+                                {
+                                    evalStack.Push(right.Ref.Convert(right, (ElaTypeInfo)fv.Ref, ctx));
+
+                                    if (ctx.Failed)
+                                        evalStack.PopVoid();
+                                }
+                            }
+
+                            if (ctx.Failed)
+                            {
+                                evalStack.Push(right);
+                                evalStack.Push(left);
+                                ExecuteThrow(thread, evalStack);
+                                goto SWITCH_MEM;
+                            }
+                        }
+                        break;
 					#endregion
 
 					#region Goto Operations

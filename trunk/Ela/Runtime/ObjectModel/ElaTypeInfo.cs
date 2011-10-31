@@ -194,7 +194,7 @@ namespace Ela.Runtime.ObjectModel
 
         public ElaTypeCode ReflectedTypeCode
         {
-            get { return (ElaTypeCode)TypeId; }
+            get { return (ElaTypeCode)ReflectedTypeId; }
         }
 
         public bool ReflectedIsByRef { get; private set; }
