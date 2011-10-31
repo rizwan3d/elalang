@@ -220,7 +220,17 @@ namespace Ela.Runtime
 					#region Stack Operations
 					case Op.Tupex:
 						{
-							var tup = evalStack.Pop().Ref as ElaTuple;
+                            right = evalStack.Pop();
+                            var fv = right.Force(ctx);
+
+                            if (ctx.Failed)
+                            {
+                                evalStack.Push(right);
+                                ExecuteThrow(thread, evalStack);
+                                goto SWITCH_MEM;
+                            }
+
+							var tup = fv.Ref as ElaTuple;
 
 							if (tup == null || tup.Length != opd)
 							{
