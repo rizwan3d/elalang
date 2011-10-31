@@ -690,21 +690,30 @@ namespace Ela.Runtime
                         right = evalStack.Peek();
                         res = right.Ref.GetLength(ctx);
 
-                        if (!res.Equal(res, new ElaValue(opd & Byte.MaxValue), ctx).Bool(ctx))
+                        if (!ctx.Failed)
                         {
-                            ExecuteFail(ElaRuntimeError.MatchFailed, thread, evalStack);
-                            goto SWITCH_MEM;
-                        }
+                            if (!res.Equal(res, new ElaValue(opd & Byte.MaxValue), ctx).Bool(ctx))
+                            {
+                                if (ctx.Failed)
+                                {
+                                    evalStack.Replace(right);
+                                    ExecuteThrow(thread, evalStack);
+                                }
+                                else
+                                    ExecuteFail(ElaRuntimeError.MatchFailed, thread, evalStack);
+                                
+                                goto SWITCH_MEM;
+                            }
 
-                        evalStack.Replace(right.Ref.GetValue(new ElaValue(opd >> 8), ctx));
+                            evalStack.Replace(right.Ref.GetValue(new ElaValue(opd >> 8), ctx));
 
-                        if (ctx.Failed)
-                        {
-							evalStack.Replace(right);
-							ExecuteThrow(thread, evalStack);
-                            goto SWITCH_MEM;
+                            if (!ctx.Failed)
+                                break;
                         }
-                        break;
+                        
+                        evalStack.Replace(right);
+						ExecuteThrow(thread, evalStack);
+                        goto SWITCH_MEM;
 					case Op.Reccons:
 						{
 							right = evalStack.Pop();

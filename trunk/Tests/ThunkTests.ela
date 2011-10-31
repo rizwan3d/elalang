@@ -93,6 +93,12 @@ let lazyBits {eq} =
         $ eq ( (& (& 128) <<< (& 8)) ||| (& 4) ) 32772
         $ eq (& (& 32772) >>> (& 8)) 128 
 
+let lazyElem {eq} =
+          eq ( fst (& (1,2)) ) 1
+        $ eq ( fst (& ((&12),2)) ) 12
+        $ eq ( snd (& (2,3)) ) 3
+        $ eq ( snd (& ((&2),(&3))) ) 3
+
 let lazyConcat {eq} =
         eq ((show <| force thunk1) ++ "str") "4str"
         $ eq ((show <| force thunk2) ++ "str") "5str"

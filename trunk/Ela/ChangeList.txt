@@ -1,3 +1,4 @@
+0.9.11.10:Fix:Implementation of Elem op code (function fst, snd, etc.) is fixed to correctly work in all situations (calculation errors, thunks, etc.).
 0.9.11.9:Change:Minor optimizations in Ela virtual machine.
 0.9.11.8:Change:Pushfld op code (obtain a value of an object's field) implementation is simplified and optimized.
 0.9.11.7:Fix:Passing thunk to a tupled function could cause an incorrect pattern match failure.
