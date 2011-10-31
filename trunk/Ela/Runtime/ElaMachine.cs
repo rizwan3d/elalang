@@ -296,29 +296,6 @@ namespace Ela.Runtime
 						{
 							var fld = frame.Strings[opd];
 							right = evalStack.PopFast();
-
-							if (right.TypeId == MOD)
-							{
-								i4 = ((ElaModule)right.Ref).Handle;
-								var fr = asm.GetModule(i4);
-								ScopeVar sc;
-
-								if (!fr.GlobalScope.Locals.TryGetValue(fld, out sc))
-								{
-									ExecuteFail(new ElaError(ElaRuntimeError.UndefinedVariable, fld, asm.GetModuleName(i4)), thread, evalStack);
-									goto SWITCH_MEM;
-								}
-
-								if ((sc.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private)
-								{
-									ExecuteFail(new ElaError(ElaRuntimeError.PrivateVariable, fld), thread, evalStack);
-									goto SWITCH_MEM;
-								}
-
-								evalStack.Push(modules[i4][sc.Address]);
-								break;
-							}
-
 							evalStack.Push(right.Ref.GetField(fld, ctx));
 
 							if (ctx.Failed)
@@ -371,7 +348,6 @@ namespace Ela.Runtime
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
-
 						break;
 					case Op.Dup:
 						evalStack.Push(evalStack.Peek());

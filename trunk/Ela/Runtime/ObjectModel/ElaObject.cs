@@ -109,7 +109,8 @@ namespace Ela.Runtime.ObjectModel
                 TypeId == ElaMachine.CHR ||
                 TypeId == ElaMachine.REA ||
                 TypeId == ElaMachine.BYT,
-                GetType());		
+                GetType(),
+                fields);		
         }
 
 

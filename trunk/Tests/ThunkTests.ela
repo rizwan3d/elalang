@@ -116,7 +116,12 @@ let lazyIndexer {eq} =
            et ix1 = (& 0)
            et ix2 = (& 1)
            et ix3 = (& 1)
-           
+
+let lazyRecord {eq} =
+        obj.x <- 11
+        $ eq obj.x 11
+        where obj = (& {!x=1,y=2})
+
 let lazySuccPred {eq} = 
         eq (succ thunk1) 5
         $ eq (pred thunk2) 4
@@ -148,3 +153,8 @@ let lazyTailCall {eq} =
 let lazyEq {eq} =
         eq x 1
         where x = if (& 2 == 2) then 1 else 0 
+
+let tupex {eq} = 
+        eq (fun val) 3
+        where fun (x,y) = x+y
+           et val = (& (1,2))
