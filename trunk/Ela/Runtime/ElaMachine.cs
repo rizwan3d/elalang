@@ -364,13 +364,6 @@ namespace Ela.Runtime
 					case Op.AndBw:
 						left = evalStack.Pop();
 						right = evalStack.Peek();
-
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 & right.I4);
-							break;
-						}
-
 						evalStack.Replace(left.Ref.BitwiseAnd(left, right, ctx));
 
 						if (ctx.Failed)
@@ -384,13 +377,6 @@ namespace Ela.Runtime
 					case Op.OrBw:
 						left = evalStack.Pop();
 						right = evalStack.Peek();
-
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 | right.I4);
-							break;
-						}
-
 						evalStack.Replace(left.Ref.BitwiseOr(left, right, ctx));
 
 						if (ctx.Failed)
@@ -404,13 +390,6 @@ namespace Ela.Runtime
 					case Op.Xor:
 						left = evalStack.Pop();
 						right = evalStack.Peek();
-
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 ^ right.I4);
-							break;
-						}
-
 						evalStack.Replace(left.Ref.BitwiseXor(left, right, ctx));
 
 						if (ctx.Failed)
@@ -424,13 +403,6 @@ namespace Ela.Runtime
 					case Op.Shl:
 						left = evalStack.Pop();
 						right = evalStack.Peek();
-
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 << right.I4);
-							break;
-						}
-
 						evalStack.Replace(left.Ref.ShiftLeft(left, right, ctx));
 
 						if (ctx.Failed)
@@ -444,13 +416,6 @@ namespace Ela.Runtime
 					case Op.Shr:
 						left = evalStack.Pop();
 						right = evalStack.Peek();
-
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 >> right.I4);
-							break;
-						}
-
 						evalStack.Replace(left.Ref.ShiftRight(left, right, ctx));
 
 						if (ctx.Failed)
