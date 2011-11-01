@@ -171,3 +171,9 @@ let tupex {eq} =
         eq (fun val) 3
         where fun (x,y) = x+y
            et val = (& (1,2))
+
+let lazyVariant {eqt} =
+        match v with
+              Foo 12 = eqt true
+              _      = eqt false
+        where v = (& Foo 12)

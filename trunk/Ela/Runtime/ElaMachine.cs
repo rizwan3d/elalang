@@ -883,13 +883,6 @@ namespace Ela.Runtime
 						break;
 					case Op.Neg:
 						right = evalStack.Peek();
-
-						if (right.TypeId == INT)
-						{
-							evalStack.Replace(new ElaValue(-right.I4));
-							break;
-						}
-
 						evalStack.Replace(right.Ref.Negate(right, ctx));
 
 						if (ctx.Failed)
@@ -901,13 +894,6 @@ namespace Ela.Runtime
 						break;
 					case Op.NotBw:
 						right = evalStack.Peek();
-
-						if (right.TypeId == INT)
-						{
-							evalStack.Replace(new ElaValue(~right.I4));
-							break;
-						}
-
 						evalStack.Replace(right.Ref.BitwiseNot(right, ctx));
 
 						if (ctx.Failed)
@@ -1038,6 +1024,12 @@ namespace Ela.Runtime
 							break;
 						}
 
+                        if (ctx.Failed)
+                        {
+                            evalStack.Push(right);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
 						break;
 					case Op.Skiptag:
 						right = evalStack.Pop();
@@ -1055,6 +1047,12 @@ namespace Ela.Runtime
 							break;
 						}
 
+                        if (ctx.Failed)
+                        {
+                            evalStack.Push(right);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
 						break;
 					case Op.Brtrue:
 						right = evalStack.Pop();
