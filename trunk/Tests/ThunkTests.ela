@@ -177,3 +177,11 @@ let lazyVariant {eqt} =
               Foo 12 = eqt true
               _      = eqt false
         where v = (& Foo 12)
+        
+let lazyPartial {eqt,eqf} = 
+        eqt (sum1 == sum11)
+        $ eqf (sum1 == sum2)
+        where sum x y = x + y
+           et sum1 = sum (& 1)
+           et sum2 = sum (& 2)
+           et sum11 = sum (& 1)
