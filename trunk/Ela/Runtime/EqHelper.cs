@@ -20,7 +20,9 @@ namespace Ela.Runtime
                 else if (l.Ref == null || r.Ref == null)
                     return false;
 
-                if (!l.Equal(l, r, ctx).AsBoolean())
+                var res = l.Equal(l, r, ctx);
+
+                if (ctx.Failed || !res.AsBoolean())
                     return false;
             }
 

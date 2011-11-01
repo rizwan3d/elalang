@@ -1,3 +1,4 @@
+0.9.11.12:Fix:Comparing partially applicated functions which were applicated by thunks could cause a VM crush.
 0.9.11.11:Fix:A variant pattern match against a thunk that has a correct variant in it could fail when it should be a success.
 0.9.11.10:Fix:Implementation of Elem op code (function fst, snd, etc.) is fixed to correctly work in all situations (calculation errors, thunks, etc.).
 0.9.11.9:Change:Minor optimizations in Ela virtual machine.

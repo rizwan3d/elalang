@@ -108,7 +108,6 @@ namespace Ela.Runtime.ObjectModel
                 EqHelper.ListEquals(left.Parameters, right.Parameters, ctx) &&
                 (Object.ReferenceEquals(left.LastParameter.Ref, right.LastParameter.Ref) ||
                     left.LastParameter.Equals(right.LastParameter));
-
         }
 
 
