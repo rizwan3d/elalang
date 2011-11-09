@@ -43,8 +43,6 @@ namespace Ela.CodeModel
 		
 		Placeholder,
 
-		Cast,
-
 		Is,
 
 		Condition,

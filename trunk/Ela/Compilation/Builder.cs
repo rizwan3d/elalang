@@ -493,17 +493,6 @@ namespace Ela.Compilation
 							AddValueNotUsed(v);
 					}
 					break;
-				case ElaNodeType.Cast:
-					{
-						var v = (ElaCast)exp;
-						CompileExpression(v.Expression, map, Hints.None);
-						AddLinePragma(v);
-						AddConv(v.CastAffinity, v);
-
-						if ((hints & Hints.Left) == Hints.Left)
-							AddValueNotUsed(v);
-					}
-					break;
 				case ElaNodeType.Is:
 					{
 						var v = (ElaIs)exp;
