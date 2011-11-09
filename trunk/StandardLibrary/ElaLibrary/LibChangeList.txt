@@ -1,3 +1,4 @@
+0.0.6.0:Release:Release of 0.0.6
 0.0.5.1:New:Functions: convert, toInt, toLong, toSingle, toDouble, toBool, toChar, toString, toList, toTuple, toRecord, toLazy, toVariant are added to Prelude. These functions should be preferred for conversion over old style syntax.
 0.0.5.0:Release:Release of 0.0.5
 0.0.4.2:New:Functions 'acos' and 'asin' added to Core module.
