@@ -1,3 +1,5 @@
+0.9.11.14:Change:Now it is recommended to use specific type conversion functions defined in Prelude (e.g. toInt, toList) instead of old style conversion syntax.
+0.9.11.13:New:New built-in extensible conversion function 'convert' is implemented. This function accept a target type and a value to convert.
 0.9.11.12:Fix:Comparing partially applicated functions which were applicated by thunks could cause a VM crush.
 0.9.11.11:Fix:A variant pattern match against a thunk that has a correct variant in it could fail when it should be a success.
 0.9.11.10:Fix:Implementation of Elem op code (function fst, snd, etc.) is fixed to correctly work in all situations (calculation errors, thunks, etc.).

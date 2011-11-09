@@ -89,6 +89,21 @@ let sub x y z = x z (y z)//S
 let fix f = f (& fix f)
 let on cmb f x y = f x `cmb` f y
 
+/* Conversion */
+let convert = __internal convert
+let toInt x     = convert 1 x
+let toLong x    = convert 2 x 
+let toSingle x  = convert 3 x
+let toDouble x  = convert 4 x
+let toBool x    = convert 5 x
+let toChar x    = convert 6 x
+let toString x  = convert 7 x
+let toList x    = convert 9 x
+let toTuple x   = convert 11 x
+let toRecord x  = convert 12 x
+let toLazy x    = convert 16 x
+let toVariant x = convert 17 x   
+
 /* Misc */
 let (!) = __internal apply
 let rec f x = f x $ rec f
