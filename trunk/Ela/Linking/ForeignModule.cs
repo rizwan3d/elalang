@@ -145,6 +145,7 @@ namespace Ela.Linking
 
 		protected void Add(string name, ElaValue value)
 		{
+			scope.Locals.Remove(name);
 			scope.Locals.Add(name, new ScopeVar(ElaVariableFlags.None, locals.Count, -1));
 			locals.Add(value);
 		}

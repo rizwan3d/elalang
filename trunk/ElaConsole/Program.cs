@@ -256,8 +256,8 @@ namespace ElaConsole
 			{
 				linker = new ElaIncrementalLinker(CreateLinkerOptions(), CreateCompilerOptions(),
 					new FileInfo(opt.FileName));
-                
-                if (opt.Arguments.Count > 0)
+				
+				if (opt.Arguments.Count > 0)
                 {
                     var tup = CompileArguments();
                     linker.AddArgument("args", tup);
@@ -292,7 +292,7 @@ namespace ElaConsole
             if (linker == null)
             {
                 linker = new ElaIncrementalLinker(CreateLinkerOptions(), CreateCompilerOptions());
-
+				
                 if (opt.Arguments.Count > 0)
                 {
                     var tup = CompileArguments();

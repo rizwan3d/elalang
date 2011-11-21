@@ -2,6 +2,7 @@
 using System.IO;
 using Ela.Compilation;
 using Ela.Parsing;
+using System.Collections.Generic;
 
 namespace Ela.Linking
 {
@@ -27,7 +28,9 @@ namespace Ela.Linking
 		where P : IElaParser, new() where C : IElaCompiler, new()
 	{
 		#region Construction
+		private static readonly string memoryFile = "$memory";
 		private string source;
+		private Dictionary<String,ExportVars> exportMap = new Dictionary<String,ExportVars>();
 		
 		public ElaIncrementalLinker(LinkerOptions linkerOptions, CompilerOptions compOptions, FileInfo file) :
 			base(linkerOptions, compOptions, file)
@@ -70,6 +73,21 @@ namespace Ela.Linking
 				Assembly = new CodeAssembly();
 			
 			return new LinkerResult(Assembly, Success, Messages);
+		}
+
+
+		protected override ExportVars CreateExportVars(FileInfo fi)
+		{
+			var vars = default(ExportVars);
+			var key = fi == null ? memoryFile : fi.ToString();
+
+			if (!exportMap.TryGetValue(key, out vars))
+			{
+				vars = base.CreateExportVars(fi);
+				exportMap.Add(key, vars);
+			}
+
+			return vars;
 		}
 
 

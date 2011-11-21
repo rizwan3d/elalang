@@ -61,7 +61,7 @@ namespace Ela.Linking
             if (argModule == null)
                 argModule = new ArgumentModule();
 
-            argModule.AddArgument(name, value);
+			argModule.AddArgument(name, value);
         }
 
 
@@ -165,7 +165,7 @@ namespace Ela.Linking
 			try
 			{
 				var frame = obj.Read();
-                var exportVars = CreateExportVars();
+                var exportVars = CreateExportVars(fi);
 
                 foreach (var r in frame.References)
                     ResolveModule(r.Value, exportVars);
@@ -225,7 +225,7 @@ namespace Ela.Linking
 		}
 
 
-        private ExportVars CreateExportVars()
+        protected virtual ExportVars CreateExportVars(FileInfo fi)
         {
             if (argModule != null && !argModuleAdded)
             {
@@ -467,7 +467,7 @@ namespace Ela.Linking
 				opts.Prelude = null;
 			}
 
-            var exportVars = CreateExportVars();
+            var exportVars = CreateExportVars(file);
 			elac.ModuleInclude += (o, e) => ResolveModule(e.Module, exportVars);
 			var res = frame != null ? elac.Compile(expr, CompilerOptions, exportVars, frame, scope) :
 				elac.Compile(expr, opts, exportVars);
