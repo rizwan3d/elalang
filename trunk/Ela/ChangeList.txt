@@ -1,3 +1,4 @@
+0.9.13.0:Release:Release of Ela 0.9.13
 0.9.12.2:Fix:Ela linker didn't work correctly in interactive environment (didn't correctly resolve names from other modules).
 0.9.12.1:Change:Cast expression is now decomissioned. One should use conversion functions from Prelude (e.g. toInt, toList, etc.).
 0.9.12.0:Release:Release of Ela 0.9.12
