@@ -1100,10 +1100,15 @@ PRODUCTIONS
 	Operators = operatorTok1|operatorTok2|operatorTok3|operatorTok4|operatorTok5|operatorTok6|operatorTok7|operatorTok8|"::"|"!".
 		
 	FunName<ElaFunctionLiteral fun> = 
+		(. string val = ""; .)
 		(
-			(ident|Operators)
+			(
+				ident (. val = t.val; .)
+				| Operators (. val = t.val; .)
+				| "(" Operators (. val = t.val; .) ")"
+			)
 			(.
-				if (t.val != fun.Name)
+				if (val != fun.Name)
 					AddError(ElaParserError.InvalidFunctionDeclaration, t.val);
 			.)
 		).

@@ -1358,12 +1358,20 @@ internal sealed partial class Parser {
 	}
 
 	void FunName(ElaFunctionLiteral fun) {
+		string val = ""; 
 		if (la.kind == 1) {
 			Get();
+			val = t.val; 
 		} else if (StartOf(14)) {
 			Operators();
+			val = t.val; 
+		} else if (la.kind == 46) {
+			Get();
+			Operators();
+			val = t.val; 
+			Expect(47);
 		} else SynErr(94);
-		if (t.val != fun.Name)
+		if (val != fun.Name)
 		AddError(ElaParserError.InvalidFunctionDeclaration, t.val);
 		
 	}
@@ -2206,8 +2214,8 @@ internal sealed partial class Parser {
 		{x,x,x,x, x,x,x,T, T,T,T,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
 		{T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,x,x, x,T,x,x, x,x,T,x, x,T,x,T, x,x,x,x, x,x,T,T, x,T,x,x, x,T,T,x, x,x,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
 		{x,T,x,T, T,T,T,x, x,x,x,x, x,x,x,T, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
-		{x,T,x,x, x,x,x,T, T,T,T,T, T,T,T,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
-		{x,T,x,x, x,x,x,T, T,T,T,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,T,x,x, x,x,x,T, T,T,T,T, T,T,T,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,T,x,x, x,x,x,T, T,T,T,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
 		{x,T,T,T, T,T,T,x, T,T,T,T, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x},
 		{x,T,T,T, T,T,T,x, x,T,T,T, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,x,T, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x},
 		{x,T,T,T, T,T,T,x, x,x,T,T, T,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,T,T,x, x,x,x,x, T,x,x,x, x,T,x,x, x,x,x,x, x,x,x},

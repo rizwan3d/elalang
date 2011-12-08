@@ -66,9 +66,9 @@ let e = cm.e
 
 
 /* Basic */
-let chr (?int)@x = x:char
+let chr (?int)@x = toChar x
 
-let ord (?char)@x = x:int
+let ord (?char)@x = toInt x
 
 
 /* LIST FUNCTIONS */
