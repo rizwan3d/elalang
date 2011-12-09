@@ -44,6 +44,13 @@ let untagTest {eq} =
            et v2 = Foo (1,2,3)
            et v3 = Bar
 
+let identityVariant {eq} =
+        eq (toFoo(Foo 12)) (toFoo(Foo 12))
+        $ eq (toFoo 12) (toFoo(Foo 12))
+        where toFoo (Foo)@x = x
+              toFoo x = Foo x
+
 let typeCheck {eqt} =
         let vr  = None in
         eqt (vr is ?variant)
+

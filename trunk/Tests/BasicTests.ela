@@ -67,7 +67,7 @@ let simpleMath {eq,gt,lt} =
     
 let concat {eq} =
           eq ("1" ++ "&" ++ "2") "1&2"
-        $ eq ('A':string ++ 'B':string ++ 'C':string) "ABC"
+        $ eq (toString 'A' ++ toString 'B' ++ toString 'C') "ABC"
     
 let priorities {eq} =
           eq (2 + 2 * 3) 8 
@@ -114,10 +114,10 @@ let bitwiseOperators2 {eq} =
         $ eq (v ^^^ 0x04) 2
     
 let cast {eq} = 
-          eq ("123":int) 123
-        $ eq ("12.2":single) 12.2
-        $ eq (124:string) "124"
-        $ eq ("True":bool) true
+          eq (toInt "123") 123
+        $ eq (toSingle "12.2") 12.2
+        $ eq (toString 124) "124"
+        $ eq (toBool "True") true
     
 let bitNot {eq} =
           eq (~~~2) (--3)

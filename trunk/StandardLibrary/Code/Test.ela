@@ -1,6 +1,6 @@
 open Core
 
-let inline ^^ x y = x:string ++ y:string
+let inline ^^ x y = toString x ++ toString y
 
 let assert =
     {

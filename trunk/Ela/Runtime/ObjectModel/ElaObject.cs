@@ -451,7 +451,6 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal virtual string GetTag(ExecutionContext ctx)
 		{
-			ctx.NoOperator(new ElaValue(this), "gettag");
 			return String.Empty;
 		}
 
