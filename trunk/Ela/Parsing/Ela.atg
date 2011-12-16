@@ -314,16 +314,32 @@ PRODUCTIONS
 			]
 			(. pat = vp; .)
 		).
+	
+	SimpleVariantPattern<out ElaPattern pat> = 
+		(. pat = null; .)
+		(
+			variantTok  
+			(. 
+				pat = new ElaVariantPattern(t) { Tag = t.val };
+			.)
+		).
 			
 	OrPattern<out ElaPattern pat> =	
 		(. pat = null; .)
 		(VariantPattern<out pat> | AsPattern<out pat>).
 		
 	FuncPattern<out ElaPattern pat> =
-		AsPattern<out pat>.
+		(. pat = null; .)
+		(
+			AsPattern<out pat> 
+			| SimpleVariantPattern<out pat>
+		).
 					
 	FuncPattern2<out ElaPattern pat> =
-		AsPattern<out pat> [ ConsPattern<pat, out pat> ].
+		(. pat = null; .)
+		(
+			(AsPattern<out pat>|SimpleVariantPattern<out pat>) [ ConsPattern<pat, out pat> ]
+		).
 
 	SinglePattern<out ElaPattern pat> =			
 		(. pat = null; .)
@@ -387,6 +403,7 @@ PRODUCTIONS
 			| ListPattern<out pat>
 			| RecordPattern<out pat>
 			| TypeCheckPattern<out pat>
+			| SimpleVariantPattern<out pat>
 		)
 		[
 			"@" 
@@ -411,6 +428,7 @@ PRODUCTIONS
 			| RecordPattern<out pat>
 			| ListPattern<out pat>
 			| UnitPattern<out pat>
+			| SimpleVariantPattern<out pat>
 		).
 		
 	IsOperatorPattern<out ElaPattern pat> = 
