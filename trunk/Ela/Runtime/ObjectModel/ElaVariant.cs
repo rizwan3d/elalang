@@ -113,7 +113,7 @@ namespace Ela.Runtime.ObjectModel
 
 			var v1 = (ElaVariant)left.Ref;
 			var v2 = (ElaVariant)right.Ref;
-			return new ElaValue(v1.Tag == v2.Tag && v1.Value.Equals(v2.Value));
+			return new ElaValue(v1.Tag == v2.Tag && v1.Value.Equal(v1.Value, v2.Value, ctx).AsBoolean());
 		}
 
 
@@ -124,7 +124,7 @@ namespace Ela.Runtime.ObjectModel
 
 			var v1 = (ElaVariant)left.Ref;
 			var v2 = (ElaVariant)right.Ref;
-			return new ElaValue(v1.Tag != v2.Tag || !v1.Value.Equals(v2.Value));
+			return new ElaValue(v1.Tag != v2.Tag || !v1.Value.Equal(v1.Value, v2.Value, ctx).AsBoolean());
 		}
 
 
