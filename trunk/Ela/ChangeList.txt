@@ -1,3 +1,4 @@
+0.9.14.4:Change:Comparison logic for tagged values is changed. Now exception is not raised even if tagged values are of incompatible types.
 0.9.14.3:Change:Now Variant pattern can be used when declaring function by pattern matching without braces if it consists of only a tag name (e.g. let foo Int = true is now a valid declaration).
 0.9.14.2:Fix:A bug in comparison logic of variants is fixed. This bug could cause VM to ill-behave when two tagged values of different types are compared.
 0.9.14.1:Fix:A builting gettag function is fixed (not this function doesn't raise an exception when called for non tagged values and simply returns empty string).

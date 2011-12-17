@@ -50,6 +50,18 @@ let identityVariant {eq} =
         where toFoo (Foo)@x = x
               toFoo x = Foo x
 
+let compare {eq,neq} =
+        eq v1 v3
+        $ neq v1 v2
+        $ eq v4 v5
+        $ neq v4 v6
+        where v1 = Foo 12
+           et v2 = Foo true
+           et v3 = Foo 12
+           et v4 = Foo (& 12)
+           et v5 = Foo (& 12)
+           et v6 = Foo (& true)
+
 let typeCheck {eqt} =
         let vr  = None in
         eqt (vr is ?variant)
