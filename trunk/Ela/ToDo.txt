@@ -8,3 +8,11 @@
 8. Tree data type and literal
 9. Doc comments (?)
 10. Consider a different implementation of concat on tuples (==done)
+
+
+Ela 0.9.15 is a stabilization release. It contains the following changes:
+
+* (Change) Comparison logic for tagged values is changed. Now exception is not raised even if tagged values are of incompatible types.
+* (Change) Now Variant pattern can be used when declaring function by pattern matching without braces if it consists of only a tag name (e.g. let foo Int = true is now a valid declaration).
+* (Fix) A bug in comparison logic of variants is fixed. This bug could cause VM to ill-behave when two tagged values of different types are compared.
+* (Fix) A builting gettag function is fixed (not this function doesn't raise an exception when called for non tagged values and simply returns empty string).
