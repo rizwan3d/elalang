@@ -63,7 +63,8 @@ TOKENS
 	operatorTok5 = ("*"|"/"|"%") { op }.		
 	operatorTok6 = "<<" { op }.
 	operatorTok7 = ">>" { op }.
-	operatorTok8 = ("~"|"--"|"!") { op }.
+	operatorTok8 = ("~"|"--"|"!"|"?") { op }.
+	typeNameTok = "?" lcase { letter }.
 	
 	LBRA = "{".
 	RBRA = "}".
@@ -447,9 +448,8 @@ PRODUCTIONS
 			var eis = new ElaIsPattern(t);
 			pat = eis; 			
 		.)
-		"?" 
 		(
-			ident 
+			typeNameTok
 			(. 
 				eis.TypeCode = GetType(t.val); 
 				
@@ -1828,6 +1828,15 @@ PRODUCTIONS
 						Expr<out cexp>
 						(. indExp.Index = cexp;	.)
 					"]"
+				)
+				|
+				(
+					stringTok
+					(. 
+						var indExp = new ElaIndexer(t) { TargetObject = exp };
+						indExp.Index = new ElaPrimitive(t) { Value = ParseString(t.val) };
+						exp = indExp;
+					.)	
 				)
 				|
 				(

@@ -1,3 +1,4 @@
+0.9.15.1:Change:Ela grammar is fixed and now it is possible to use "?" in custom operators. When an operators starts with "?" it has the higher priority.
 0.9.15.0.Release:Release of Ela 0.9.15
 0.9.14.4:Change:Comparison logic for tagged values is changed. Now exception is not raised even if tagged values are of incompatible types.
 0.9.14.3:Change:Now Variant pattern can be used when declaring function by pattern matching without braces if it consists of only a tag name (e.g. let foo Int = true is now a valid declaration).
