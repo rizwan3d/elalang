@@ -324,6 +324,10 @@ namespace Ela.Compilation
 				case ElaBuiltinKind.BitwiseNot:
 					cw.Emit(Op.NotBw);
 					break;
+				case ElaBuiltinKind.Get:
+					cw.Emit(Op.Swap);
+					cw.Emit(Op.Pushelem);
+					break;
 
 			}
 		}
