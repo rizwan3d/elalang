@@ -72,8 +72,7 @@ namespace Ela.Compilation
 			1, //Tagval
 			1, //Skiphtag
 			1, //Nil
-        	1, //Clone	
-		    1, //Gettag
+        	1, //Gettag
 			1, //Conv
 			
             5, //Elem

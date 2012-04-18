@@ -141,6 +141,8 @@ namespace Ela.Parsing
 
 		private ElaTypeCode GetType(string val)
 		{
+            val = val.Substring(1);
+
 			return
 				val == "int" ? ElaTypeCode.Integer :
 				val == "single" ? ElaTypeCode.Single :

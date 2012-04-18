@@ -72,7 +72,6 @@ namespace Ela.Compilation
 			0, //Tagval
 			0, //Skiphtag
 			0, //Nil
-            0, //Clone			
             0, //Gettag
 			-1, //Conv
 			

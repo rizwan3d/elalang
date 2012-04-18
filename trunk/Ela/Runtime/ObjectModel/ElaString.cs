@@ -155,16 +155,8 @@ namespace Ela.Runtime.ObjectModel
 		{
             if (left.TypeId == ElaMachine.STR && right.TypeId == ElaMachine.STR)
                 return new ElaValue(new ElaString(left.DirectGetString() + right.DirectGetString()));
-            else if (left.TypeId == ElaMachine.STR)
-                return right.Ref.Concatenate(left, right, ctx);
-
-            //if (left.TypeId == ElaMachine.STR)
-            //    return new ElaValue(left.DirectGetString() + right.Show(ShowInfo.Default, ctx));
-            //else
-            //    return new ElaValue(left.Show(ShowInfo.Default, ctx) + right.DirectGetString());
-			
-			ctx.InvalidLeftOperand(left, right, "concat");
-			return Default();
+            else
+                return left.Force(ctx).Ref.Concatenate(left.Force(ctx), right.Force(ctx), ctx);
 		}
 
 

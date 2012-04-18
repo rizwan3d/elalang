@@ -209,10 +209,7 @@ namespace Ela.Runtime.ObjectModel
 				return new ElaValue(newLst);
 			}
 			else
-			{
-				ctx.Fail("Unable to concatenate two entities.");
-				return Default();
-			}
+				return left.Force(ctx).Concatenate(left.Force(ctx), right.Force(ctx), ctx);
 		}
 
 
@@ -372,12 +369,6 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue Untag(ExecutionContext ctx)
 		{
 			return Force(ctx).Ref.Untag(ctx);
-		}
-
-
-		protected internal override ElaValue Clone(ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.Clone(ctx);
 		}
 
 

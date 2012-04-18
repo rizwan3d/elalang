@@ -5,7 +5,7 @@ using Ela.Debug;
 
 namespace Ela.Runtime.ObjectModel
 {
-	public sealed class ElaRecord : ElaObject
+	public sealed class ElaRecord : ElaObject, IEnumerable<ElaRecordField>
 	{
 		#region Construction
         internal static readonly ElaTypeInfo TypeInfo = new ElaTypeInfo(TypeCodeFormat.GetShortForm(ElaTypeCode.Record), (Int32)ElaTypeCode.Record, true, typeof(ElaRecord));
@@ -188,22 +188,45 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        protected internal override ElaValue Clone(ExecutionContext ctx)
+        protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            var rec = new ElaRecord(values.Length);
+            if (left.TypeId == ElaMachine.REC && right.TypeId == ElaMachine.REC)
+                return new ElaValue(Concat((ElaRecord)left.Ref, (ElaRecord)right.Ref));
+            else
+                return left.Force(ctx).Ref.Concatenate(left.Force(ctx), right.Force(ctx), ctx);
+        }
 
-            for (var i = 0; i < values.Length; i++)
-            {
-                var v = values[i];
-                rec.AddField(i, keys[i], flags[i], v);
-            }
 
-            return new ElaValue(rec);
+        private ElaRecord Concat(ElaRecord left, ElaRecord right)
+        {
+            var list = new List<ElaRecordField>();
+            list.AddRange(left);
+            list.AddRange(right);
+            return new ElaRecord(list.ToArray());
         }
         #endregion
 
 
         #region Methods
+        public IEnumerator<ElaRecordField> GetEnumerator()
+        {
+            for (var i = 0; i < keys.Length; i++)
+                yield return new ElaRecordField(keys[i], values[i], flags[i]);
+        }
+
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+
+        public bool HasField(string field)
+        {
+            return Array.IndexOf<String>(keys, field) != -1;
+        }
+
+
         public override ElaPatterns GetSupportedPatterns()
         {
             return ElaPatterns.Record|ElaPatterns.Tuple;
@@ -320,5 +343,5 @@ namespace Ela.Runtime.ObjectModel
 			}
 		}
 		#endregion
-	}
+    }
 }

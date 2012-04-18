@@ -188,3 +188,8 @@ let comparision {eq} =
         where getFun () = \x y -> x + y
            et fun1 = getFun ()
            et fun2 = getFun ()
+
+let operator1 {eq} =
+      eq (rec ? "foo") "foo"
+      where  x ? y = x.[y]
+         et rec = { foo = "foo" }

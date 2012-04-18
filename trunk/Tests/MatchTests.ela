@@ -59,7 +59,7 @@ let variantMatch {eqt} =
     
 let typeCheckMatch {eqt} =
           eqt (match 1 with ?int = true; _ = false;;)
-        $ eqt (match (1,2) with ?tuple = true; _ = false;;)
+        $ eqt (match "123" with ?string = true; _ = false;;)
         $ eqt (match [1,2] with ?list = true; _ = false;;)
     
 let asMatch {eqt} =

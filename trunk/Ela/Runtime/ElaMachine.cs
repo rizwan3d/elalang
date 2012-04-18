@@ -675,17 +675,6 @@ namespace Ela.Runtime
 					#endregion
 
 					#region Object Operations
-					case Op.Clone:
-						right = evalStack.Peek();
-						evalStack.Replace(right.Ref.Clone(ctx));
-
-						if (ctx.Failed)
-						{
-							evalStack.Replace(right);
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
-						break;
 					case Op.Elem:
                         right = evalStack.Peek();
                         res = right.Ref.GetLength(ctx);

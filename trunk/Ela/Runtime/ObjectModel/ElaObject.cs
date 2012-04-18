@@ -105,10 +105,10 @@ namespace Ela.Runtime.ObjectModel
         protected ElaTypeInfo CreateTypeInfo(params ElaRecordField[] fields)
         {
             return new ElaTypeInfo(GetTypeName(), TypeId,
-                TypeId == ElaMachine.INT ||
-                TypeId == ElaMachine.CHR ||
-                TypeId == ElaMachine.REA ||
-                TypeId == ElaMachine.BYT,
+                TypeId != ElaMachine.INT ||
+                TypeId != ElaMachine.CHR ||
+                TypeId != ElaMachine.REA ||
+                TypeId != ElaMachine.BYT,
                 GetType(),
                 fields);		
         }
@@ -460,13 +460,6 @@ namespace Ela.Runtime.ObjectModel
 			ctx.NoOperator(new ElaValue(this), "untag");
 			return Default();
         }
-
-
-		protected internal virtual ElaValue Clone(ExecutionContext ctx)
-		{
-			ctx.NoOperator(new ElaValue(this), "clone");
-			return Default();
-		}
 		#endregion
 
 

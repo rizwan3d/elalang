@@ -750,7 +750,7 @@ internal sealed partial class Parser {
 		eis.TypeCode = GetType(t.val); 
 		
 		if (eis.TypeCode == ElaTypeCode.None)
-			eis.TypeName = t.val;
+			eis.TypeName = t.val.Substring(1);
 		
 	}
 

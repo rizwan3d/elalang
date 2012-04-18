@@ -32,9 +32,9 @@ let run xs = (res, failed)
            et res = map exec xs
            et failed = count (\(_,y,_) -> not y) res
               
-let fmt prf (tests, failed) =
+let fmt f prf (tests, failed) =
         out "Test session started" 
-            (all' tests 1 "")
+            (all' f tests 1 "")
             "Test session finished"
             ("Executed tests: " ^^ (length tests))
             ("Successful tests: " ^^ (length tests - failed))
@@ -43,5 +43,7 @@ let fmt prf (tests, failed) =
            et tag' true  = "Success "
               tag' false = "FAILED "
            et fmt' i (n, r, m) = i ^^ ". " ^^ n ^^ ": " ^^ (tag' r) ^^ " " ^^ m ^^ "\r\n"
-           et all' x::xs i s = (s ++ fmt' i x) |> all' xs (i + 1)
-              all' []    _ s = s
+           et all' _ [] _ s = s
+              all' f x::xs i s | f x  = (s ++ fmt' i x) |> all' f xs (i + 1)
+                               | else = all' f xs (i + 1) s
+              

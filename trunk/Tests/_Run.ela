@@ -25,4 +25,4 @@ let _ = []
     |> regFuns MatchTests
 
     |> run
-    |> fmt writen
+    |> fmt (\(_,x,_) -> not x) writen

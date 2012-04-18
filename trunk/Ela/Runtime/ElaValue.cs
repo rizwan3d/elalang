@@ -637,12 +637,6 @@ namespace Ela.Runtime
         {
 			return Ref.Untag(ctx);
         }
-
-
-        public ElaValue Clone(ExecutionContext ctx)
-        {
-            return Ref.Clone(ctx);
-        }
         #endregion
         
 

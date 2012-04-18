@@ -284,12 +284,6 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-		protected internal override ElaValue Clone(ExecutionContext ctx)
-		{
-			return base.Clone(ctx);
-		}
-
-
         private ElaValue Self(ElaValue val)
         {
             return val.Ref == this ? Value : val;

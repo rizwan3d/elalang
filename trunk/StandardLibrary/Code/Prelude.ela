@@ -74,7 +74,6 @@ let showf = __internal showf
 let show  = showf ""
 
 /* Complex behaviors */
-let clone = __internal clone
 let type  = __internal type
 let force = __internal force
 

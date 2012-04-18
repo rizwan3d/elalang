@@ -340,12 +340,6 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return Default();
 		}
-
-
-		protected internal override ElaValue Clone(ExecutionContext ctx)
-		{
-			return Default();
-		}
 		#endregion
 	}
 }

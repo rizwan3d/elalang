@@ -1,9 +1,12 @@
+0.0.9.0:Release:Release of 0.0.9
+0.0.8.2:Change:Function 'clone' is removed from Prelude module.
+0.0.8.1:New:A new Record module implemented. This module currently supports one function - hasField (string->record->bool, test if a given field is present).
 0.0.8.0:Release:Release of 0.0.8
 0.0.7.1:Fix:Test module is fixed according to the language changes.
 0.0.7.0:Release:Release of 0.0.7
 0.0.6.1:Fix:Implementation of functions chr and ord from Core module is updated according to the language changes.
 0.0.6.0:Release:Release of 0.0.6
-0.0.5.1:New:Functions: convert, toInt, toLong, toSingle, toDouble, toBool, toChar, toString, toList, toTuple, toRecord, toLazy, toVariant are added to Prelude. These functions should be preferred for conversion over old style syntax.
+0.0.5.1:New:Functions convert, toInt, toLong, toSingle, toDouble, toBool, toChar, toString, toList, toTuple, toRecord, toLazy, toVariant are added to Prelude. These functions should be preferred for conversion over old style syntax.
 0.0.5.0:Release:Release of 0.0.5
 0.0.4.2:New:Functions 'acos' and 'asin' added to Core module.
 0.0.4.1:Change:CoreInternal module renamed to $Core.
@@ -32,8 +35,8 @@
 0.0.1.17:New:A new 'concatMap' function added to Core module.
 0.0.1.16:Change:All Core functions that work with lists are rewritten to be more generic (now they return not lists but containers of the same type as the passed container).
 0.0.1.15:Change:Implementation of Core.concat function optimized.
-0.0.1.14:Change:Function 'nil' in Core module renamed to 'isNil'.
 0.0.1.14:New:A new 'fold' function added to Core module (simplified version of foldr).
+0.0.1.14:Change:Function 'nil' in Core module renamed to 'isNil'.
 0.0.1.13:New:An initial version of Queue module is implemented (including ElaQueue type).
 0.0.1.12:New:New 'swap' and 'swap3' functions (swapping elements of tuples) added to Core module.
 0.0.1.11:New:New 'on' function (that replicates Haskell's Data.Function.on) added to Core module.

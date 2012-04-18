@@ -136,8 +136,6 @@ namespace Ela.Compilation
 
 		Nil,
 
-        Clone,
-		
         Gettag,
 
         Conv,

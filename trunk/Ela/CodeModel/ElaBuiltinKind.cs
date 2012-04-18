@@ -40,9 +40,7 @@ namespace Ela.CodeModel
 
         Snd3,
 
-		Clone,
-
-        Gettag,
+		Gettag,
 
         Untag,
 

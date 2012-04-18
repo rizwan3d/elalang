@@ -185,3 +185,73 @@ let lazyPartial {eqt,eqf} =
            et sum1 = sum (& 1)
            et sum2 = sum (& 2)
            et sum11 = sum (& 1)
+           
+let tupleEq1 {eqt,eqf} = 
+        eqt (tup1 <> tup2)
+        $ eqf (tup3 <> tup4)
+        $ eqt (tup5 <> tup3)
+        where tup1 = (& (1,2,3) )
+           et tup2 = (& (3,4,5) )
+           et tup3 = (1,2,3)
+           et tup4 = (& (1,2,3) )
+           et tup5 = (& (3,4,5) )
+
+let tupleEq2 {eqt,eqf} = 
+        eqf (tup1 == tup2)
+        $ eqt (tup3 == tup4)
+        $ eqf (tup5 == tup3)
+        where tup1 = (& (1,2,3) )
+           et tup2 = (& (3,4,5) )
+           et tup3 = (1,2,3)
+           et tup4 = (& (1,2,3) )
+           et tup5 = (& (3,4,5) )
+           
+let tupleAdd {eq} = 
+        eq (tup1 + tup2) (4,6,8)
+        $ eq (tup3 + tup4) (2,4,6)
+        $ eq (tup5 + tup3) (4,6,8)
+        where tup1 = (& (1,2,3) )
+           et tup2 = (& (3,4,5) )
+           et tup3 = (1,2,3)
+           et tup4 = (& (1,2,3) )
+           et tup5 = (& (3,4,5) )
+           
+let tupleSub {eq} = 
+        eq (tup1 - tup2) (--2,--2,--2)
+        $ eq (tup3 - tup4) (0,0,0)
+        $ eq (tup5 - tup3) (2,2,2)
+        where tup1 = (& (1,2,3) )
+           et tup2 = (& (3,4,5) )
+           et tup3 = (1,2,3)
+           et tup4 = (& (1,2,3) )
+           et tup5 = (& (3,4,5) )
+           
+let tupleGt {eqt,eqf} = 
+        eqf (tup1 > tup2)
+        $ eqf (tup3 > tup4)
+        $ eqt (tup5 > tup3)
+        where tup1 = (& (1,2,3) )
+           et tup2 = (& (3,4,5) )
+           et tup3 = (1,2,3)
+           et tup4 = (& (1,2,3) )
+           et tup5 = (& (3,4,5) )
+           
+let tupleLt {eqt,eqf} = 
+        eqt (tup1 < tup2)
+        $ eqf (tup3 < tup4)
+        $ eqf (tup5 < tup3)
+        where tup1 = (& (1,2,3) )
+           et tup2 = (& (3,4,5) )
+           et tup3 = (1,2,3)
+           et tup4 = (& (1,2,3) )
+           et tup5 = (& (3,4,5) )
+
+let tupleConcat {eq} = 
+        eq (tup1 ++ tup2) (1,2,3,3,4,5)
+        $ eq (tup3 ++ tup4) (1,2,3,1,2,3)
+        $ eq (tup5 ++ tup3) (3,4,5,1,2,3)
+        where tup1 = (& (1,2,3) )
+           et tup2 = (& (3,4,5) )
+           et tup3 = (1,2,3)
+           et tup4 = (& (1,2,3) )
+           et tup5 = (& (3,4,5) )
