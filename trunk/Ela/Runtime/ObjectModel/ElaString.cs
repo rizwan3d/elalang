@@ -153,10 +153,17 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            if (left.TypeId == ElaMachine.STR && right.TypeId == ElaMachine.STR)
-                return new ElaValue(new ElaString(left.DirectGetString() + right.DirectGetString()));
-            else
-                return left.Force(ctx).Ref.Concatenate(left.Force(ctx), right.Force(ctx), ctx);
+            //if (left.TypeId == ElaMachine.STR && right.TypeId == ElaMachine.STR)
+            //    return new ElaValue(new ElaString(left.DirectGetString() + right.DirectGetString()));
+            //else
+            //    return left.Force(ctx).Ref.Concatenate(left.Force(ctx), right.Force(ctx), ctx);
+
+            if (left.TypeId == ElaMachine.STR)
+                return right.TypeId == ElaMachine.STR ? new ElaValue(left.DirectGetString() + right.DirectGetString()) :
+                    right.Ref.Concatenate(left, right, ctx);
+
+            ctx.InvalidLeftOperand(left, right, "concat");
+            return Default();
 		}
 
 

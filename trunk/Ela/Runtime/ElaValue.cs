@@ -355,7 +355,15 @@ namespace Ela.Runtime
             else
                 return Ref.AsSingle(this);
         }
+        
 
+        public string AsString()
+        {
+            if (TypeCode == ElaTypeCode.String)
+                return DirectGetString();
+            else
+                return ((Char)I4).ToString();
+        }
 
         public bool AsBoolean()
         {

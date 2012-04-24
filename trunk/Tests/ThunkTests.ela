@@ -105,6 +105,11 @@ let lazyConcat {eq} =
         where thunk1 = (& 2 + 2)
            et thunk2 = (& add 2 3)
                    where add x y = x + y
+
+let lazyConcat2 {eq} =
+        eq ( (& 'c') ++ (& 'a') ) "ca"
+        $ eq ('c' ++ (& 'a') ) "ca"
+        $ eq ( (&'c') ++ 'a' ) "ca"
         
 let lazyBool {eqt} =
         eqt <| not (thunk1 == 5)

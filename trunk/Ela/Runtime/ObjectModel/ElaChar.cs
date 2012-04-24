@@ -129,6 +129,18 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return new ElaValue(@this.I4 - 1, this);
 		}
+
+
+        protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            if (left.TypeId == ElaMachine.CHR || left.TypeId == ElaMachine.STR)
+                return right.TypeId == ElaMachine.CHR || right.TypeId == ElaMachine.STR ? 
+                    new ElaValue(left.AsString() + right.AsString()) :
+                    right.Ref.Concatenate(left, right, ctx);
+
+            ctx.InvalidLeftOperand(left, right, "concat");
+            return Default();
+        }
 		#endregion
 	}
 }

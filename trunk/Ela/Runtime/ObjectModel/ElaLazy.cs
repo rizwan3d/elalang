@@ -188,8 +188,6 @@ namespace Ela.Runtime.ObjectModel
 				return ((ElaLazyList)left.Ref).Concatenate(left, right, ctx);
 			else if (right.Ref is ElaLazyList)
 				return ((ElaLazyList)right.Ref).Concatenate(left, right, ctx);
-			else if (left.Ref == this)
-				return Force(ctx).Ref.Concatenate(left, right, ctx);
 			else if (right.Ref == this && left.Ref is ElaList)
 			{
 				var xs = (ElaList)left.Ref;

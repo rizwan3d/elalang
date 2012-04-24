@@ -25,6 +25,16 @@ namespace Ela.Linking
 		private void Write(CodeFrame frame, BinaryWriter bw)
 		{
 			bw.Write(Version);
+            
+            var v = new Version(Const.Version);
+            bw.Write(v.Major);
+            bw.Write(v.Minor);
+            bw.Write(v.Build);
+            bw.Write(v.Revision);
+
+            var d = DateTime.Now.ToUniversalTime().Ticks;
+            bw.Write(d);
+
             bw.Write(frame.References.Count);
 
 			foreach (var kv in frame.References)

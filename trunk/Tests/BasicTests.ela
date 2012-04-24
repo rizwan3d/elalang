@@ -68,6 +68,12 @@ let simpleMath {eq,gt,lt} =
 let concat {eq} =
           eq ("1" ++ "&" ++ "2") "1&2"
         $ eq (toString 'A' ++ toString 'B' ++ toString 'C') "ABC"
+        
+let charConcat {eq} =
+          eq ('1' ++ '2') "12"
+        $ eq ('a' ++ 'b') "ab"
+        $ eq ("abc" ++ 'd') "abcd"
+        $ eq ('0' ++ "123") "0123"
     
 let priorities {eq} =
           eq (2 + 2 * 3) 8 
