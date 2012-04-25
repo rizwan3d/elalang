@@ -34,6 +34,12 @@ namespace Ela.Linking
 			if (v != Version)
 				throw new ElaLinkerException(Strings.GetMessage("InvalidObjectFile", Version), null);
 
+            bw.ReadInt32(); //Version: Major
+            bw.ReadInt32(); //Version: Minor
+            bw.ReadInt32(); //Version: Build
+            bw.ReadInt32(); //Version: Revision
+            bw.ReadInt64(); //Version: Date stamp
+
             var c = bw.ReadInt32();
 
 			for (var i = 0; i < c; i++)

@@ -47,3 +47,4 @@ let fmt f prf (tests, failed) =
               all' f x::xs i s | f x  = (s ++ fmt' i x) |> all' f xs (i + 1)
                                | else = all' f xs (i + 1) s
               
+
