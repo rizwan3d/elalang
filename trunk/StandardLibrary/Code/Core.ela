@@ -1,4 +1,4 @@
-﻿/* 
+/* 
     Ela Core module
     Created in 2011 by Basil Voronkov
 */
@@ -186,7 +186,7 @@ let all f (x::xs) | f x  = all f xs
 let splitAt 0 xs              = (nil xs,xs)
     splitAt _ []@n            = (n,n)
     splitAt n (x::xs) | n > 0 = (x::xs',xs2')
-                                where (xs',xs2') = splitAt (n-1) xs                              
+                                where (xs',xs2') = splitAt (n-1) xs
     splitAt _ _               = fail "Core.splitAt: negative argument"
 
 //Call->(Seq,Cons)->tuple[(Seq,Cons)]

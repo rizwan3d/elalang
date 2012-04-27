@@ -75,6 +75,15 @@ namespace Ela.Linking
 		}
 
 
+        public virtual LinkerResult Build(string source)
+		{
+			var mod = new ModuleReference(Path.GetFileNameWithoutExtension(RootFile != null ? RootFile.Name : MemoryFile));
+            var frame = Build(mod, null, source, null, null);
+			RegisterFrame(new ModuleReference(
+				Path.GetFileNameWithoutExtension(RootFile.Name)), frame, RootFile);
+			return new LinkerResult(Assembly, Success, Messages);
+		}
+
 		
 		internal CodeFrame ResolveModule(ModuleReference mod, ExportVars exportVars)
 		{
@@ -149,7 +158,7 @@ namespace Ela.Linking
                         mod != null ? mod.Column : 0,
                         l.Name);
 
-                if (found && (Int32)vk != l.Data)
+                if (found && (Int32)vk != l.Data && l.Data != -1)
                     AddError(ElaLinkerError.ExportedNameChanged, fi,
                         mod != null ? mod.Line : 0,
                         mod != null ? mod.Column : 0,
@@ -168,7 +177,10 @@ namespace Ela.Linking
                 var exportVars = CreateExportVars(fi);
 
                 foreach (var r in frame.References)
-                    ResolveModule(r.Value, exportVars);
+                {
+                    if (!mod.NoPrelude || CompilerOptions.Prelude != r.Value.ModuleName)
+                        ResolveModule(r.Value, exportVars);
+                }
 
                 CheckBinaryConsistency(frame, mod, fi, exportVars);
 
@@ -385,7 +397,6 @@ namespace Ela.Linking
 		internal CodeFrame Build(ModuleReference mod, FileInfo file, string source, 
 			CodeFrame frame, Scope scope)
 		{
-
 			if (Assembly.ModuleCount == 0)
 				Assembly.AddModule(mod.ToString(), frame, mod.RequireQuailified);
 			

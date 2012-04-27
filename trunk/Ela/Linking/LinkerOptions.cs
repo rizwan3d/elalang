@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace Ela.Linking
 {
@@ -14,8 +15,23 @@ namespace Ela.Linking
 		#endregion
 
 
-		#region Properties
-		public CodeBase CodeBase { get; private set; }
+        #region Methods
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+
+            foreach (var pi in typeof(LinkerOptions).GetProperties())
+                if (pi.Name != "CodeBase")
+                    sb.AppendFormat("{0}={1};", pi.Name, pi.GetValue(this, null));
+
+            sb.AppendFormat("LookupStartupDirectory={0}", CodeBase.LookupStartupDirectory);
+            return sb.ToString();
+        }
+        #endregion
+
+
+        #region Properties
+        public CodeBase CodeBase { get; private set; }
 
 		public string StandardLibrary { get; set; }
 

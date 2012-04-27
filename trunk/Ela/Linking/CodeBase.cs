@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace Ela.Linking
 {
@@ -12,7 +13,7 @@ namespace Ela.Linking
 			Directories = new List<DirectoryInfo>();
 			LookupStartupDirectory = true;
 		}
-		#endregion
+        #endregion
 
 
 		#region Properties

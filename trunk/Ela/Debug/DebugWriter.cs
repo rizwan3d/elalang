@@ -40,7 +40,8 @@ namespace Ela.Debug
 
 		internal void StartScope(int offset)
 		{
-			scopes.Push(new ScopeSym(Symbols.Scopes.Count + 1, scopes.Peek().Index, offset));
+            var index = Symbols.Scopes.Count + 1;
+			scopes.Push(new ScopeSym(index, scopes.Peek().Index, offset));
 		}
 
 

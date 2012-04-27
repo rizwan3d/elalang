@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace Ela.Compilation
 {
@@ -32,6 +33,16 @@ namespace Ela.Compilation
 				Prelude = this.Prelude
 			};
 		}
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+
+            foreach (var pi in typeof(CompilerOptions).GetProperties())
+                sb.AppendFormat("{0}={1};", pi.Name, pi.GetValue(this, null));
+
+            return sb.ToString();
+        }
 		#endregion
 
 

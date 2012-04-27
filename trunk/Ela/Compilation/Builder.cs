@@ -68,8 +68,7 @@ namespace Ela.Compilation
 			frame.Layouts[0].StackSize = cw.FinishFrame();
 		}
 
-
-
+        
 		private void IncludePrelude()
 		{
 			var modRef = new ModuleReference(options.Prelude) { NoPrelude = true };

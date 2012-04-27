@@ -175,6 +175,7 @@
     <Compile Include="Debug\ElaDebugException.cs" />
     <Compile Include="Debug\StackPoint.cs" />
     <Compile Include="ElaPatterns.cs" />
+    <Compile Include="ElaVersionInfo.cs" />
     <Compile Include="IReadOnlyMap.cs" />
     <Compile Include="Compilation\OpSizeHelper.cs" />
     <Compile Include="ElaTranslationException.cs" />

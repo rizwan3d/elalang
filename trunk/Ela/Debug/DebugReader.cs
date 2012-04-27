@@ -16,7 +16,10 @@ namespace Ela.Debug
 		#region Methods
 		public FunSym GetFunSymByHandle(int handle)
 		{
-			for (var i = 0; i < Symbols.Functions.Count; i++)
+            if (Symbols == null)
+                return null;
+
+            for (var i = 0; i < Symbols.Functions.Count; i++)
                 if (Symbols.Functions[i].Handle == handle)
                     return Symbols.Functions[i];
 
@@ -26,7 +29,10 @@ namespace Ela.Debug
 
         public FunSym FindFunSym(int offset)
 		{
-			var fun = default(FunSym);
+            if (Symbols == null)
+                return null;
+
+            var fun = default(FunSym);
 
 			for (var i = 0; i < Symbols.Functions.Count; i++)
 			{
@@ -42,6 +48,9 @@ namespace Ela.Debug
 
 		public LineSym FindLineSym(int offset)
 		{
+            if (Symbols == null)
+                return null;
+
 			for (var i = 0; i < Symbols.Lines.Count; i++)
 			{
 				var l = Symbols.Lines[i];
@@ -56,7 +65,10 @@ namespace Ela.Debug
 
 		public ScopeSym FindScopeSym(int offset)
 		{
-			var scope = default(ScopeSym);
+            if (Symbols == null)
+                return null;
+
+            var scope = default(ScopeSym);
 
 			for (var i = 0; i < Symbols.Scopes.Count; i++)
 			{
@@ -72,7 +84,10 @@ namespace Ela.Debug
 
 		public VarSym FindVarSym(int address, int scopeIndex)
 		{
-			for (var i = 0; i < Symbols.Vars.Count; i++)
+            if (Symbols == null)
+                return null;
+
+            for (var i = 0; i < Symbols.Vars.Count; i++)
 			{
 				var v = Symbols.Vars[i];
 
@@ -86,7 +101,10 @@ namespace Ela.Debug
 
 		public IEnumerable<VarSym> FindVarSyms(int offset, ScopeSym scope)
 		{
-			for (var i = 0; i < Symbols.Vars.Count; i++)
+            if (Symbols == null)
+                yield break;
+
+            for (var i = 0; i < Symbols.Vars.Count; i++)
 			{
 				var v = Symbols.Vars[i];
 
@@ -95,6 +113,12 @@ namespace Ela.Debug
 					yield return v;
 			}
 		}
+
+
+        public IEnumerable<VarSym> EnumerateVarSyms()
+        {
+            return Symbols.Vars.ToArray();
+        }
 
 
 		public string PrintSymTables(SymTables tables)

@@ -32,14 +32,18 @@ namespace Ela.Compilation
 				frame.Symbols = frame.Symbols == null ? helper.Symbols :
 					helper.Symbols != null ? frame.Symbols.Merge(helper.Symbols) : frame.Symbols;
 				frame.GlobalScope = globalScope;
-				return new CompilerResult(helper.Success ? frame : null, 
-					helper.Success, helper.Errors.ToArray());
+				return new CompilerResult(frame, helper.Success, helper.Errors.ToArray());
 			}
 			catch (Exception ex)
 			{
 			    throw new ElaCompilerException(Strings.GetMessage("Ice", ex.Message), ex);
 			}
 		}
+
+        public static int GetOpCodeSize(Op op)
+        {
+            return OpSizeHelper.OpSize[(Int32)op];
+        }
 		#endregion
 
 
