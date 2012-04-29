@@ -1,6 +1,8 @@
+0.9.16.5:Fix:A bug fixed in linker - foreign modules added dynamically using ModuleResolve event weren't processed correctly.
+0.9.16.4:New:Additional methods for operating with symbols are added to DebuggerReader.
 0.9.16.3:Fix:A critical bug fixed in Ela linker that could cause linker to crash when dealing with multiple pre-compiled object files.
 0.9.16.2:Fix:A bug fixed in binary consistency validation in linker. Valid object files could be considered out of date.
-0.9.16.1:New:Now 'char' data type supports concat operation (++). The results of this operation is always a string.
+0.9.16.1:New:Now 'char' data type supports concat operation (++). The result of this operation is always a string.
 0.9.16.0:Release:Release of Ela 0.9.16
 0.9.15.13:Fix:'Clone' op code and 'clone' built-in function are decomissioned.
 0.9.15.12:Fix:Inequality operator '<>' didn't work correctly on tuples.

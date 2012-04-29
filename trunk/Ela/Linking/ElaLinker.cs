@@ -482,7 +482,7 @@ namespace Ela.Linking
 			elac.ModuleInclude += (o, e) => ResolveModule(e.Module, exportVars);
 			var res = frame != null ? elac.Compile(expr, CompilerOptions, exportVars, frame, scope) :
 				elac.Compile(expr, opts, exportVars);
-			AddMessages(res.Messages, file);
+			AddMessages(res.Messages, file == null ? RootFile : null);
 			return res;
 		}
 
@@ -491,7 +491,7 @@ namespace Ela.Linking
 		{
 			var elap = new ElaParser();
 			var res = source != null ? elap.Parse(source) : elap.Parse(file);
-			AddMessages(res.Messages, file);
+			AddMessages(res.Messages, file == null ? RootFile : null);
 			return res;
 		}
 

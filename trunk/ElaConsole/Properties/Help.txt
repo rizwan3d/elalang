@@ -99,6 +99,8 @@ the elac.config file.
 									
 #clear			Clears the console window.
 
+#reset			Resets the state of interactive console.
+
 #exit			Exit Ela Console.
 			
 #help			Print this help from interactive mode.

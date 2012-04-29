@@ -49,6 +49,9 @@ namespace ElaConsole.Options
 		[CommandLineOption("ml")]
 		public bool Multiline { get; set; }
 
+        [CommandLineOption("nlprompt")]
+        public bool NewLinePrompt { get; set; }
+
 		[CommandLineOption("out")]
 		public string OutputFile { get; set; }
 

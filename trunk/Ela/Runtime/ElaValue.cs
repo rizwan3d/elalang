@@ -165,13 +165,13 @@ namespace Ela.Runtime
 		}
 
 
-        public bool Is<T>() where T : ElaObject
+        public bool Is<T>()
         {
 			return Ref is T;
         }
 
 
-        public T As<T>() where T : ElaObject
+        public T As<T>() where T : class
         {
 			return Ref as T;
         }

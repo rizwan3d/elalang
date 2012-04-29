@@ -8,6 +8,13 @@ using ElaConsole.Options;
 
 namespace ElaConsole
 {
+    internal enum InteractiveAction
+    {
+        None,
+        Reset,
+        EvalFile
+    }
+
 	internal sealed class InteractiveCommands
 	{
 		private ElaMachine machine;
@@ -22,8 +29,9 @@ namespace ElaConsole
 		}
 
 
-		internal void ProcessCommand(string command)
+        internal InteractiveAction ProcessCommand(string command)
 		{
+            Data = null;
 			var idx = command.IndexOf(' ');
 			var arg = default(String);
 			var cmd = default(String);
@@ -47,6 +55,11 @@ namespace ElaConsole
 				case "exit":
 					Environment.Exit(0);
 					break;
+                case "reset":
+                    return InteractiveAction.Reset;
+                case "eval":
+                    Data = arg;
+                    return InteractiveAction.EvalFile;
                 case "ml":
                     opts.Multiline = !opts.Multiline;
 					Console.WriteLine();
@@ -57,8 +70,11 @@ namespace ElaConsole
 					Console.WriteLine("Unrecognized interactive command '{0}'.", cmd);
 					break;
 			}
+
+            return InteractiveAction.None;
 		}
 
+        internal string Data { get; private set; }
 
 		internal void PrintHelp()
 		{

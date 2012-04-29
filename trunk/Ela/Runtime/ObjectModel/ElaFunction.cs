@@ -60,7 +60,14 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue Call(ElaValue value, ExecutionContext ctx)
+        public IEnumerable<ElaValue> GetAppliedParameters()
+        {
+            for (var i = 0; i < AppliedParameters; i++)
+                yield return Parameters[i];
+        }
+
+
+        protected internal override ElaValue Call(ElaValue value, ExecutionContext ctx)
 		{
 			try
 			{

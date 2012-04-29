@@ -11,6 +11,7 @@ using Ela.Runtime;
 using Ela.Runtime.ObjectModel;
 using ElaConsole.Options;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace ElaConsole
 {
@@ -32,7 +33,7 @@ namespace ElaConsole
 		#region Methods
 		private static int Main(string[] args) 
 		{
-			if (!ReadOptions(args))
+            if (!ReadOptions(args))
 				return R_ERR;
 
 			helper = new MessageHelper(opt);
@@ -67,7 +68,7 @@ namespace ElaConsole
 					return Compile();
 				}
 				else
-					return InterpretFile();
+                    return InterpretFile(opt.FileName);
 			}
 			finally
 			{
@@ -205,8 +206,20 @@ namespace ElaConsole
 						if (source[0] == '#')
 						{
 							var cmd = new InteractiveCommands(vm, helper, opt);
-							cmd.ProcessCommand(source);
-							helper.PrintPrompt();
+
+                            var res = cmd.ProcessCommand(source);
+
+                            if (res == InteractiveAction.Reset || res == InteractiveAction.EvalFile)
+                            {
+                                lastOffset = 0;
+                                linker = null;
+                                vm = null;
+                            }
+
+                            if (res == InteractiveAction.EvalFile)
+                                InterpretFile(cmd.Data);
+							
+                            helper.PrintPrompt();
                             app = String.Empty;
 						}
 						else
@@ -248,14 +261,14 @@ namespace ElaConsole
 		}
 
 
-		private static int InterpretFile()
+		private static int InterpretFile(string fileName)
 		{
 			var res = default(LinkerResult);			
 			
 			try 
 			{
 				linker = new ElaIncrementalLinker(CreateLinkerOptions(), CreateCompilerOptions(),
-					new FileInfo(opt.FileName));
+					new FileInfo(fileName));
 				
 				if (opt.Arguments.Count > 0)
                 {

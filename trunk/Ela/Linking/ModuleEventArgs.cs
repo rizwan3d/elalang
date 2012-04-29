@@ -31,7 +31,13 @@ namespace Ela.Linking
 
         internal CodeFrame GetFrame()
         {
-            return frame ?? foreign.Compile();
+            if (frame != null)
+                return frame;
+            else
+            {
+                foreign.Initialize();
+                return foreign.Compile();
+            }
         }
         #endregion
 

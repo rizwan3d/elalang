@@ -123,7 +123,7 @@ namespace ElaConsole
 			{
 				Console.WriteLine();
 				var prompt = String.IsNullOrEmpty(opt.Prompt) ? "ela" : opt.Prompt;
-				Console.Write(prompt + ">");
+				Console.Write(prompt + ">" + (opt.NewLinePrompt?Environment.NewLine:""));
 			}
 		}
 
@@ -133,7 +133,7 @@ namespace ElaConsole
 			if (!opt.Silent)
 			{
 				var promptLength = String.IsNullOrEmpty(opt.Prompt) ? 3 : opt.Prompt.Length;
-				Console.Write(new String('-', promptLength) + ">");
+                Console.Write(new String('-', promptLength) + ">" + (opt.NewLinePrompt ? Environment.NewLine : ""));
 			}
 		}
 
