@@ -172,6 +172,13 @@ let reverse xs = foldl (flip (::)) (nil xs) xs
 let zipWith z (x::xs) (y::ys) = z x y :: zipWith z xs ys
     zipWith _ _       ys      = nil ys
 
+let zip =  zipWith (\x y -> (x,y))
+
+let zipWith3 z (a::as) (b::bs) (c::cs) =  z a b c :: zipWith3 z as bs cs
+    zipWith3 _ _ _ _ = []
+
+let zip3 =  zipWith3 (\x y z -> (x,y,z))
+
 //Call->Seq->bool
 let any f (x::xs) | f x  = true
                   | else = any f xs
@@ -227,8 +234,8 @@ let elemBy _  _ [] = false
 let notElem x = all (<>x)
 
 //Call->a->(Seq,Cons)->(Seq,Cons)
-let scanl f q (x::xs) = scanl f (f q x) xs
-    scanl _ _ []@n    = n
+let scanl f q (x::xs) = q :: scanl f (f q x) xs
+    scanl _ q []@n    = q :: n
 
 //Call->a->(Seq,Cons)->(Seq,Cons)
 let scanr f q0 []@n    = q0::n
