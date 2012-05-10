@@ -6,13 +6,6 @@ namespace Ela.Compilation
 	public sealed class CompilerOptions
 	{
 		#region Construction
-		public static readonly CompilerOptions Default = new CompilerOptions
-		{
-			WarningsAsErrors = false,
-			ShowHints = true,
-			Optimize = true
-		};
-
 		public CompilerOptions()
 		{
 
@@ -21,6 +14,16 @@ namespace Ela.Compilation
 
 
 		#region Methods
+        public static CompilerOptions Default()
+        {
+            return new CompilerOptions
+            {
+                WarningsAsErrors = false,
+                ShowHints = true,
+                Optimize = true
+            };
+        }
+
 		internal CompilerOptions Clone()
 		{
 			return new CompilerOptions
@@ -58,6 +61,8 @@ namespace Ela.Compilation
 		public bool Optimize { get; set; }
 
 		public string Prelude { get; set; }
+
+        public bool IgnoreUndefined { get; set; }
 		#endregion
 	}
 }

@@ -90,11 +90,11 @@ namespace Ela.Compilation
 
 		public FileInfo File { get; set; }
 
-		internal FastList<MemoryLayout> Layouts { get; private set; }
+        public FastList<LateBoundSymbol> LateBounds { get; private set; }
+        
+        internal FastList<MemoryLayout> Layouts { get; private set; }
 
 		internal FastList<String> Strings { get; private set; }
-
-		internal FastList<LateBoundSymbol> LateBounds { get; private set; }
-		#endregion
+        #endregion
 	}
 }

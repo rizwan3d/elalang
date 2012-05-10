@@ -9,13 +9,14 @@ namespace Ela.Debug
 		#region Construction
 		private FastStack<ScopeSym> scopes;
 		private FastStack<FunSym> funs;
+        private int scopeCount;
 		
 		internal DebugWriter()
 		{
 			Symbols = new DebugInfo();
 			scopes = new FastStack<ScopeSym>();
 			funs = new FastStack<FunSym>();
-			var glob = new ScopeSym(0, 0, 0) { EndOffset = Int32.MaxValue };
+			var glob = new ScopeSym(0, 0, 0, 0, 0) { EndOffset = Int32.MaxValue };
 			scopes.Push(glob);
 			Symbols.Scopes.Add(glob);
 		}
@@ -38,25 +39,33 @@ namespace Ela.Debug
 		}
 
 
-		internal void StartScope(int offset)
+		internal void StartScope(int offset, int line, int col)
 		{
-            var index = Symbols.Scopes.Count + 1;
-			scopes.Push(new ScopeSym(index, scopes.Peek().Index, offset));
+            var index = ++scopeCount;
+			scopes.Push(new ScopeSym(index, scopes.Peek().Index, offset, line, col));
 		}
 
 
-		internal void EndScope(int offset)
+		internal void EndScope(int offset, int line, int col)
 		{
 			var s = scopes.Pop();
 			s.EndOffset = offset;
+            s.EndLine = line;
+            s.EndColumn = col;
 			Symbols.Scopes.Add(s);
 		}
 
 
-		internal void AddVarSym(string name, int address, int offset)
+		internal void AddVarSym(string name, int address, int offset, int flags, int data)
 		{
-			Symbols.Vars.Add(new VarSym(name, address, offset, scopes.Peek().Index));
+			Symbols.Vars.Add(LastVarSym = new VarSym(name, address, offset, scopes.Peek().Index, flags, data));
 		}
+
+
+        internal void AddGlobalVarSym(string name, int address, int offset, int flags, int data)
+        {
+            Symbols.Vars.Add(LastVarSym = new VarSym(name, address, offset, 0, flags, data));
+        }
 
 
 		internal void AddLineSym(int offset, int line, int col)
@@ -67,7 +76,9 @@ namespace Ela.Debug
 
 
 		#region Properties
-		internal DebugInfo Symbols { get; private set; }		
+		internal DebugInfo Symbols { get; private set; }
+
+        internal VarSym LastVarSym { get; private set; }
 		#endregion
 	}
 }

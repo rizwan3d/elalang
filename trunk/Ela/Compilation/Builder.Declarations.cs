@@ -1,6 +1,7 @@
 ﻿using System;
 using Ela.CodeModel;
 using Ela.Runtime;
+using Ela.Debug;
 
 namespace Ela.Compilation
 {
@@ -25,7 +26,7 @@ namespace Ela.Compilation
 			}
 			
 			if (s.In != null)
-				StartScope(false);
+				StartScope(false, s.In.Line, s.In.Column);
 
             if ((s.VariableFlags & ElaVariableFlags.Private) == ElaVariableFlags.Private &&
                 CurrentScope != globalScope)
@@ -37,6 +38,7 @@ namespace Ela.Compilation
 			{
 				var addr = -1;
 				var addSym = false;
+                var lastSym = default(VarSym);
 				
 				if (s.InitExpression != null && s.InitExpression.Type == ElaNodeType.FunctionLiteral)
 				{
@@ -44,6 +46,7 @@ namespace Ela.Compilation
 					addr = (hints & Hints.And) == Hints.And ?
 						GetVariable(s.VariableName, CurrentScope, 0, GetFlags.SkipValidation|GetFlags.OnlyGet, s.Line, s.Column).Address :
 						AddVariable(s.VariableName, s, flags, data);
+                    lastSym = pdb != null ? pdb.LastVarSym : null;
 
 					if (inline)
 					{
@@ -86,10 +89,26 @@ namespace Ela.Compilation
 
 				if (addr != -1)
 				{
-					if (fc)
-						CurrentScope.ChangeVariable(s.VariableName, new ScopeVar(s.VariableFlags | ElaVariableFlags.Function, addr >> 8, ed.Data));
-					else
-						CurrentScope.ChangeVariable(s.VariableName, new ScopeVar(s.VariableFlags | flags, addr >> 8, data));
+                    if (fc)
+                    {
+                        CurrentScope.ChangeVariable(s.VariableName, new ScopeVar(s.VariableFlags | ElaVariableFlags.Function, addr >> 8, ed.Data));
+
+                        if (lastSym != null)
+                        {
+                            lastSym.Flags = (Int32)(s.VariableFlags | ElaVariableFlags.Function);
+                            lastSym.Data = ed.Data;
+                        }
+                    }
+                    else
+                    {
+                        CurrentScope.ChangeVariable(s.VariableName, new ScopeVar(s.VariableFlags | flags, addr >> 8, data));
+
+                        if (lastSym != null)
+                        {
+                            lastSym.Flags = (Int32)(s.VariableFlags | flags);
+                            lastSym.Data = data;
+                        }
+                    }
 				}
 				else if (addr == -1)
 				{
@@ -197,7 +216,7 @@ namespace Ela.Compilation
 
 		private void CompileWhere(ElaBinding s, LabelMap map, Hints hints)
 		{
-			StartScope(false);
+			StartScope(false, s.Line, s.Column);
 			CompileExpression(s, map, hints);
 		}
 
@@ -207,7 +226,7 @@ namespace Ela.Compilation
 			if (s.In != null)
 			{
 				if ((hints & Hints.Scope) != Hints.Scope)
-					StartScope(false);
+					StartScope(false, s.Line, s.Column);
 
 				var newHints = (hints & Hints.And) == Hints.And ?
 					hints ^ Hints.And : hints;

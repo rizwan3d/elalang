@@ -1,3 +1,4 @@
+0.9.16.6:Change:EIL generator now accepts settings - it can ignore debug info and omit offsets for op codes. Output format is also slightly altered.
 0.9.16.5:Fix:A bug fixed in linker - foreign modules added dynamically using ModuleResolve event weren't processed correctly.
 0.9.16.4:New:Additional methods for operating with symbols are added to DebuggerReader.
 0.9.16.3:Fix:A critical bug fixed in Ela linker that could cause linker to crash when dealing with multiple pre-compiled object files.

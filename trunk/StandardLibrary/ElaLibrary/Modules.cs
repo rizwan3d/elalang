@@ -20,4 +20,4 @@ using Ela.Library.Collections;
 [assembly: ElaModule("Set", typeof(SetModule))]
 [assembly: ElaModule("Array", typeof(ArrayModule))]
 [assembly: ElaModule("Queue", typeof(QueueModule))]
-//[assembly: ElaModule("Record", typeof(RecordModule))]
+[assembly: ElaModule("Record", typeof(RecordModule))]

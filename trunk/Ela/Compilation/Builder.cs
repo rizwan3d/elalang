@@ -161,7 +161,7 @@ namespace Ela.Compilation
 						AddLinePragma(s);
 						cw.Emit(Op.Start, catchLab);
 						
-						StartScope(false);
+						StartScope(false, s.Expression.Line, s.Expression.Column);
 						var untail = (hints & Hints.Tail) == Hints.Tail ? hints ^ Hints.Tail : hints;
 						CompileExpression(s.Expression, map, untail | Hints.Scope);
 						EndScope();
@@ -171,10 +171,10 @@ namespace Ela.Compilation
 						cw.MarkLabel(catchLab);
 						cw.Emit(Op.Leave);
 
-						StartScope(false);
+                        StartScope(false, s.Entries[0].Line, s.Entries[0].Column);
 
 						CompileMatch(s, null, map, Hints.Throw);
-						EndScope();
+                        EndScope();
 
 						cw.MarkLabel(exitLab);
 						cw.Emit(Op.Nop);
@@ -261,7 +261,7 @@ namespace Ela.Compilation
 						var scope = s.StartScope && (hints & Hints.Scope) != Hints.Scope;
 
 						if (scope)
-							StartScope(false);
+							StartScope(false, s.Line, s.Column);
 
 						if (s.Expressions.Count > 0)
 						{
@@ -290,7 +290,7 @@ namespace Ela.Compilation
 						CheckEmbeddedWarning(s.False);
 
 						AddLinePragma(exp);
-						StartScope(false);
+						StartScope(false, s.Condition.Line, s.Condition.Column);
 						CompileExpression(s.Condition, map, Hints.None | Hints.Scope);
 
 						var falseLab = cw.DefineLabel();
@@ -306,7 +306,7 @@ namespace Ela.Compilation
 
 						if (s.False != null)
 						{
-							StartScope(false);
+							StartScope(false, s.False.Line, s.False.Column);
 							var skipLabel = cw.DefineLabel();
 							cw.Emit(Op.Br, skipLabel);
 							cw.MarkLabel(falseLab);
@@ -497,7 +497,7 @@ namespace Ela.Compilation
 						var v = (ElaIs)exp;
 
 						if ((hints & Hints.Scope) != Hints.Scope)
-							StartScope(false);
+							StartScope(false, v.Line, v.Column);
 
 						CompileExpression(v.Expression, map, Hints.None | Hints.Scope);
 						var addr = AddVariable();
@@ -818,9 +818,12 @@ namespace Ela.Compilation
 
         private void AddError(ElaCompilerError error, int line, int col, params object[] args)
         {
-            Errors.Add(new ElaMessage(Strings.GetError(error, args), MessageType.Error,
-                (Int32)error, line, col));
-            Success = false;
+            if (Errors.Count < 101)
+            {
+                Errors.Add(new ElaMessage(Strings.GetError(error, args), MessageType.Error,
+                    (Int32)error, line, col));
+                Success = false;
+            }
         }
 
 
@@ -890,12 +893,12 @@ namespace Ela.Compilation
 		}
 
 
-		private void StartScope(bool fun)
+		private void StartScope(bool fun, int line, int col)
 		{
 			CurrentScope = new Scope(fun, CurrentScope);
 
 			if (debug)
-				pdb.StartScope(cw.Offset);
+				pdb.StartScope(cw.Offset, line, col);
 		}
 
 
@@ -904,7 +907,7 @@ namespace Ela.Compilation
 			CurrentScope = CurrentScope.Parent != null ? CurrentScope.Parent : null;
 
 			if (debug)
-				pdb.EndScope(cw.Offset);
+				pdb.EndScope(cw.Offset, lastLine, lastColumn);
 		}
 
 
@@ -921,16 +924,20 @@ namespace Ela.Compilation
 		}
 
 
+        private int lastLine;
+        private int lastColumn;
 		private void AddLinePragma(ElaExpression exp)
 		{
+            lastLine = exp.Line;
+            lastColumn = exp.Column;
 			pdb.AddLineSym(cw.Offset, exp.Line, exp.Column);
 		}
 
 
-		private void AddVarPragma(string name, int address, int offset)
+		private void AddVarPragma(string name, int address, int offset, ElaVariableFlags flags, int data)
 		{
 			if (debug)
-				pdb.AddVarSym(name, address, offset);
+				pdb.AddVarSym(name, address, offset, (Int32)flags, data);
 		}
 		#endregion
 
@@ -978,13 +985,10 @@ namespace Ela.Compilation
 			if (debug && exp != null)
 			{
 				cw.Emit(Op.Nop);
-				AddVarPragma(name, currentCounter, cw.Offset);
+				AddVarPragma(name, currentCounter, cw.Offset, flags, data);
 				AddLinePragma(exp);
 			}
 
-			//if (CurrentScope == globalScope && (flags & ElaVariableFlags.Private) != ElaVariableFlags.Private)
-			//	exports.AddName(name, (flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin ? (ElaBuiltinKind)data : ElaBuiltinKind.None);
-			
 			return AddVariable();
 		}
 
@@ -1081,7 +1085,7 @@ namespace Ela.Compilation
 			}
 			else
 			{
-                if ((getFlags & GetFlags.NoError) != GetFlags.NoError)
+                if (!options.IgnoreUndefined && (getFlags & GetFlags.NoError) != GetFlags.NoError)
 				    AddError(ElaCompilerError.UndefinedName, line, col, name);
 
 				return ScopeVar.Empty;
@@ -1106,6 +1110,10 @@ namespace Ela.Compilation
 
             frame.LateBounds.Add(new LateBoundSymbol(name, addr, data, line, col));
             globalScope.Locals.Add(name, new ScopeVar(ElaVariableFlags.External | flags, addr, data));
+
+            if (debug)
+                pdb.AddGlobalVarSym(name, addr, cw.Offset, (Int32)(ElaVariableFlags.External | flags), data);
+
             return new ScopeVar(flags, counters.Count | addr << 8, data);
         }
 

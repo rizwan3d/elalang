@@ -128,7 +128,7 @@ namespace Ela.Compilation
 						cw.Emit(Op.Nop);
 					}
 
-					StartScope(false);
+					StartScope(false, e.Pattern.Line, e.Pattern.Column);
 					next = cw.DefineLabel();
 
 					var mc = Errors.Count;

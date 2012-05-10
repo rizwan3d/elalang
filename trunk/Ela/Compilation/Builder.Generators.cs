@@ -10,7 +10,7 @@ namespace Ela.Compilation
 		{
 			CheckEmbeddedWarning(s.Body);
 			
-			StartScope(false);
+			StartScope(false, s.Line, s.Column);
 			var iter = cw.DefineLabel();
 			var breakExit = cw.DefineLabel();
 			var newMap = new LabelMap(map);
@@ -79,7 +79,7 @@ namespace Ela.Compilation
 		{
 			var funAddr = AddVariable();
 			StartSection();
-			StartScope(true);
+			StartScope(true, s.Line, s.Column);
 			cw.StartFrame(1);
 			var funSkipLabel = cw.DefineLabel();
 			cw.Emit(Op.Br, funSkipLabel);

@@ -60,10 +60,71 @@ namespace Ela.Debug
 			}
 
 			return offset == 0 ? null : FindLineSym(offset - 1);
-		}
+        }
 
 
-		public ScopeSym FindScopeSym(int offset)
+        public LineSym FindClosestLineSym(int line, int column)
+        {
+            if (Symbols == null)
+                return null;
+
+            var ln = default(LineSym);
+            var minDiffCol = Int32.MaxValue;
+            var minDiffLine = Int32.MaxValue;
+
+            for (var i = 0; i < Symbols.Lines.Count; i++)
+            {
+                var l = Symbols.Lines[i];
+
+                if (l.Line == line && l.Column == column)
+                {
+                    ln = l;
+                    break;
+                }
+                else if (Math.Abs(l.Line - line) < minDiffLine)
+                {
+                    minDiffLine = Math.Abs(l.Line - line);
+                    minDiffCol = Math.Abs(l.Column - column);
+                    ln = l;
+                }
+                else if (Math.Abs(l.Line - line) == minDiffLine && Math.Abs(l.Column - column) < minDiffCol)
+                {
+                    minDiffCol = Math.Abs(l.Column - column);
+                    ln = l;
+                }
+            }
+
+            if (ln != null)
+            {
+                var maxOff = ln.Offset;
+
+                for (var i = 0; i < Symbols.Lines.Count; i++)
+                {
+                    var l = Symbols.Lines[i];
+
+                    if (l.Line == ln.Line && l.Column == ln.Column && l.Offset > ln.Offset)
+                    {
+                        ln = l;
+                        maxOff = ln.Offset;
+                    }
+                }
+            }
+
+            return ln;
+        }
+
+
+        public ScopeSym GetScopeSymByIndex(int scopeIndex)
+        {
+            for (var i = 0; i < Symbols.Scopes.Count; i++)
+                if (Symbols.Scopes[i].Index == scopeIndex)
+                    return Symbols.Scopes[i];
+
+            return null;
+        }
+
+
+        public ScopeSym FindScopeSym(int offset)
 		{
             if (Symbols == null)
                 return null;
@@ -74,12 +135,31 @@ namespace Ela.Debug
 			{
 				var s = Symbols.Scopes[i];
 
-				if (offset > s.StartOffset && offset < s.EndOffset)
+				if (offset >= s.StartOffset && offset <= s.EndOffset)
 					scope = s;
 			}
 
 			return scope;
-		}
+        }
+
+
+        public ScopeSym FindScopeSym(int line, int column)
+        {
+            if (Symbols == null)
+                return null;
+
+            for (var i = 0; i < Symbols.Scopes.Count; i++)
+            {
+                var s = Symbols.Scopes[i];
+
+                if ((line == s.StartLine && column >= s.StartColumn || line > s.StartLine)
+                     && line <= s.EndLine
+                    )
+                    return s;
+            }
+
+            return null;
+        }
 
 
 		public VarSym FindVarSym(int address, int scopeIndex)

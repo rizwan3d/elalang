@@ -36,6 +36,9 @@ namespace Ela.Compilation
 			}
 			catch (Exception ex)
 			{
+                if (ex is ElaCompilerException)
+                    throw;
+
 			    throw new ElaCompilerException(Strings.GetMessage("Ice", ex.Message), ex);
 			}
 		}

@@ -8,8 +8,9 @@ namespace Ela.Debug
 	{
 		#region Construction
 		private const string STR = "\"{0}\"";
-		private const string VAR = "[{0}]";
-		private const string OP_FORMAT = "{0}: {1} {2}\r\n";
+		private const string VAR = "#{0}";
+		private const string OP_FORMAT = "[{0}] {1} {2}\r\n";
+        private const string OP_FORMAT2 = "{0} {1}\r\n";
 
 		private CodeFrame frame;
 
@@ -44,7 +45,7 @@ namespace Ela.Debug
 			if (offset > frame.Ops.Count - 1 || length > frame.Ops.Count)
 				throw new ElaDebugException(Ela.Runtime.Strings.GetMessage("InvalidEilRange"));
 
-			var dr = frame.Symbols != null ? new DebugReader(frame.Symbols) : null;
+			var dr = frame.Symbols != null && !IgnoreDebugInfo ? new DebugReader(frame.Symbols) : null;
 			var sb = new StringBuilder();
 			var numLen = (frame.Ops.Count).ToString().Length + 1;
 			var mask = new string[numLen];
@@ -89,11 +90,19 @@ namespace Ela.Debug
 
 				var num = i.ToString();
 				num = mask[numLen - num.Length] + num;
-				sb.AppendFormat(OP_FORMAT, num, o.ToString(), val);
+				
+                if (OmitOffsets)
+                    sb.AppendFormat(OP_FORMAT2, o.ToString(), val);
+                else
+                    sb.AppendFormat(OP_FORMAT, num, o.ToString(), val);
 			}
 
 			return sb.ToString();
 		}
+
+        public bool IgnoreDebugInfo { get; set; }
+
+        public bool OmitOffsets { get; set; }
 		#endregion
 	}
 }

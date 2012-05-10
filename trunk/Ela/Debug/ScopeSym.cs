@@ -5,11 +5,13 @@ namespace Ela.Debug
 	public sealed class ScopeSym
 	{
 		#region Construction
-		internal ScopeSym(int index, int parentIndex, int startOffset)
+		internal ScopeSym(int index, int parentIndex, int startOffset, int startLine, int startColumn)
 		{
 			Index = index;
 			ParentIndex = parentIndex;
 			StartOffset = startOffset;
+            StartLine = startLine;
+            StartColumn = startColumn;
 		}
 		#endregion
 
@@ -22,6 +24,14 @@ namespace Ela.Debug
 		public int StartOffset { get; private set; }
 
 		public int EndOffset { get; internal set; }
+
+        public int StartLine { get; private set; }
+
+        public int StartColumn { get; private set; }
+
+        public int EndLine { get; internal set; }
+
+        public int EndColumn { get; internal set; }
 		#endregion
 	}
 }

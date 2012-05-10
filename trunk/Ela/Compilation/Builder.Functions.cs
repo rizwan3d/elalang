@@ -34,7 +34,7 @@ namespace Ela.Compilation
 			if (flag != FunFlag.Inline)
 				cw.MarkLabel(startLabel);
 
-			StartScope(flag != FunFlag.Inline);
+			StartScope(flag != FunFlag.Inline, dec.Body.Line, dec.Body.Column);
 
 			if (flag != FunFlag.Inline)
 				StartSection();
