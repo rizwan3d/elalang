@@ -921,8 +921,7 @@ namespace Ela.Compilation
 		{
 			None = 0x00,
 			OnlyGet = 0x02,
-			SkipValidation = 0x04,
-            NoError = 0x08
+			NoError = 0x04
 		}
 
 
@@ -947,11 +946,13 @@ namespace Ela.Compilation
 
 		private int AddVariable(string name, ElaExpression exp, ElaVariableFlags flags, int data)
 		{
-			if (IsRegistered(name))
-			{
-                AddError(ElaCompilerError.VariableAlreadyDeclared, exp != null ? exp.Line : 0, exp != null ? exp.Column : 0, name);
-				return 0;
-			}
+            //if (IsRegistered(name))
+            //{
+            //    AddError(ElaCompilerError.VariableAlreadyDeclared, exp != null ? exp.Line : 0, exp != null ? exp.Column : 0, name);
+            //    return 0;
+            //}
+
+            CurrentScope.Locals.Remove(name); //Hides an already declared variable
 
 			CurrentScope.Locals.Add(name, new ScopeVar(flags, currentCounter, data));
 
@@ -964,32 +965,26 @@ namespace Ela.Compilation
 
 			return AddVariable();
 		}
+        
+        //Outdated since Ela (0.9.16+) supports hiding in global scope
+        //private bool IsRegistered(string name)
+        //{
+        //    ScopeVar sv;
 
+        //    if (CurrentScope.Locals.TryGetValue(name, out sv))
+        //    {
+        //        if ((sv.Flags & ElaVariableFlags.External) == ElaVariableFlags.External ||
+        //            (sv.Flags & ElaVariableFlags.NoInit) == ElaVariableFlags.NoInit)
+        //        {
+        //            CurrentScope.Locals.Remove(name);
+        //            return false;
+        //        }
+        //        else
+        //            return true;
+        //    }
 
-		private int ReferenceGlobal(int addr)
-		{
-			return counters.Count | (addr >> 8) << 8;
-		}
-
-
-		private bool IsRegistered(string name)
-		{
-            ScopeVar sv;
-
-            if (CurrentScope.Locals.TryGetValue(name, out sv))
-            {
-                if ((sv.Flags & ElaVariableFlags.External) == ElaVariableFlags.External ||
-                    (sv.Flags & ElaVariableFlags.NoInit) == ElaVariableFlags.NoInit)
-                {
-                    CurrentScope.Locals.Remove(name);
-                    return false;
-                }
-                else
-                    return true;
-            }
-
-            return false;
-		}
+        //    return false;
+        //}
 
 
 		private bool Validate(ScopeVar var)
@@ -1032,7 +1027,7 @@ namespace Ela.Compilation
 				{
                     var.Address = shift | var.Address << 8;
 
-                    if ((getFlags & GetFlags.SkipValidation) != GetFlags.SkipValidation && !Validate(var))
+                    if (!Validate(var))
                         AddError(ElaCompilerError.ReferNoInit, line, col, name);
 
 					return var;
@@ -1099,32 +1094,6 @@ namespace Ela.Compilation
             if (debug)
                 pdb.AddGlobalVarSym(name, addr, cw.Offset, (Int32)(ElaVariableFlags.External | flags), data);
 
-            return new ScopeVar(flags, counters.Count | addr << 8, data);
-        }
-
-
-        private ScopeVar AddGlobal(string name, ElaExpression exp, ElaVariableFlags flags, int data)
-        {
-            var addr = 0;
-
-            if (counters.Count == 0)
-            {
-                addr = currentCounter;
-                currentCounter++;
-            }
-            else
-            {
-                addr = counters[0];
-                counters[0] = counters[0] + 1;
-            }
-
-            if (globalScope.Locals.ContainsKey(name))
-            {
-                AddError(ElaCompilerError.VariableAlreadyDeclared, exp, name);
-                return ScopeVar.Empty;
-            }
-
-            globalScope.Locals.Add(name, new ScopeVar(flags, addr, data));
             return new ScopeVar(flags, counters.Count | addr << 8, data);
         }
 

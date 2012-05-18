@@ -153,9 +153,6 @@
   <data name="PrivateOnlyGlobal" xml:space="preserve">
     <value>A 'private' modifier is valid only on global bindings.</value>
   </data>
-  <data name="RedefinitionNotAllowed" xml:space="preserve">
-    <value>Redefinition of name '{0}' is not allowed.</value>
-  </data>
   <data name="ReferNoInit" xml:space="preserve">
     <value>Unable to reference a variable '{0}' before it is declared.</value>
   </data>
@@ -164,9 +161,6 @@
   </data>
   <data name="UndefinedName" xml:space="preserve">
     <value>A name '{0}' is not defined in a module or externally.</value>
-  </data>
-  <data name="VariableAlreadyDeclared" xml:space="preserve">
-    <value>Name '{0}' is already declared.</value>
   </data>
   <data name="VariableDeclarationInitMissing" xml:space="preserve">
     <value>Names cannot be declared without initialization.</value>

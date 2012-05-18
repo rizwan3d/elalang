@@ -1,3 +1,4 @@
+0.9.16.23:Change:Now Ela allows hiding of names in a global scope.
 0.9.16.22:Fix:A bug fixed in implementation of Callt op code. Sometimes when calling external function it could cause internal VM state corruption.
 0.9.16.21:Change:Now concatenation operation (++) works for all data types. The default implementation is equivalent to 'show x ++ show y'. Concat for tuples, lists, etc. works differently, as it used to.
 0.9.16.20:Change:Parser and compiler behavior and error messages are improved when compiling conditional structures (if/else and guards). Now compiler generates a new ElseMissing error and an AddElse hint.

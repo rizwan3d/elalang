@@ -43,9 +43,7 @@ namespace Ela.Compilation
 				if (s.InitExpression != null && s.InitExpression.Type == ElaNodeType.FunctionLiteral)
 				{
 					var fun = (ElaFunctionLiteral)s.InitExpression;
-					addr = (hints & Hints.And) == Hints.And ?
-						GetVariable(s.VariableName, CurrentScope, 0, GetFlags.SkipValidation|GetFlags.OnlyGet, s.Line, s.Column).Address :
-						AddVariable(s.VariableName, s, flags, data);
+					addr = (hints & Hints.And) == Hints.And ? GetNoInitVariable(s.VariableName) : AddVariable(s.VariableName, s, flags, data);
                     lastSym = pdb != null ? pdb.LastVarSym : null;
 
 					if (inline)
@@ -56,7 +54,7 @@ namespace Ela.Compilation
 				}
 				else
 				{
-					addr = GetVariable(s.VariableName, CurrentScope, 0, GetFlags.SkipValidation | GetFlags.OnlyGet, s.Line, s.Column).Address;
+                    addr = GetNoInitVariable(s.VariableName);
                     addSym = true;
 				}
 
@@ -143,6 +141,21 @@ namespace Ela.Compilation
 			if (s.In != null)
 				EndScope();
 		}
+
+        private int GetNoInitVariable(string name)
+        {
+            ScopeVar var;
+
+            if (CurrentScope.Locals.TryGetValue(name, out var))
+            {
+                if ((var.Flags & ElaVariableFlags.NoInit) != ElaVariableFlags.NoInit)
+                    return -1;
+                else
+                    return 0 | var.Address << 8;
+            }
+
+            return -1;
+        }
 
         private void AddNoInitVariable(ElaBinding exp, int noInitCode)
         {

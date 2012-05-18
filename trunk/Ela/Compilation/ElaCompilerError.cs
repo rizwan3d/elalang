@@ -7,9 +7,9 @@ namespace Ela.Compilation
 		None = 0,
 
 
-		VariableAlreadyDeclared = 300,
+		// = 300,
 
-		RedefinitionNotAllowed = 301,
+		// = 301,
 
 		UndefinedName = 302,
 

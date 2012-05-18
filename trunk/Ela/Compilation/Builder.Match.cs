@@ -573,12 +573,6 @@ namespace Ela.Compilation
             if (res != -1)
                 return 0 | res << 8;
 
-			if (IsRegistered(varName))
-			{
-				AddError(ElaCompilerError.RedefinitionNotAllowed, exp, varName);
-				return -1;
-			}
-
 			return AddVariable(varName, exp, flags, -1);
 		}
 		#endregion
