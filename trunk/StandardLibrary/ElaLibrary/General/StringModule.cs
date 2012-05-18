@@ -9,15 +9,11 @@ namespace Ela.Library.General
 {
 	public sealed class StringModule : ForeignModule
 	{
-		#region Construction
 		public StringModule()
 		{
 
 		}
-		#endregion
 
-
-		#region Methods
 		public override void Initialize()
 		{
 			Add<String,String>("upper", ToUpper);
@@ -39,120 +35,99 @@ namespace Ela.Library.General
 			Add<Int32,Int32,String,String>("remove", Remove);
 			Add<String[],String,ElaList>("split", Split);
 			Add<Int32,Int32,String,String>("substr", Substring);
-			Add<Int32,String,String>("insert", Insert);
-			Add<Char,Int32,String,String>("padRight", PadRight);
-			Add<Char,Int32,String,String>("padLeft", PadLeft);
+			Add<Int32,String,String,String>("insert", Insert);
             Add<IEnumerable<ElaValue>,String>("fromSeq", FromSeq);
 		}
-
-
+        
 		public string ToUpper(string val)
 		{
 			return val.ToUpper();
 		}
 
-
 		public string ToLower(string val)
 		{
 			return val.ToLower();
 		}
-
-
+        
 		public string Trim(string val)
 		{
 			return val.Trim();
 		}
-
-
+        
 		public string TrimChars(char[] cz, string val)
 		{
 			return val.Trim(cz);
 		}
-
-
+        
 		public string TrimStart(string str)
 		{
 			return str.TrimStart();
 		}
 
-
 		public string TrimEnd(string str)
 		{
 			return str.TrimEnd();
 		}
-
-
+        
 		public string TrimStartChars(char[] cz, string val)
 		{
 			return val.TrimStart(cz);
 		}
 
-
 		public string TrimEndChars(char[] cz, string val)
 		{
 			return val.TrimStart(cz);
 		}
-
-
+        
 		public int IndexOf(string search, string str)
 		{
 			return str.IndexOf(search);
 		}
-
-
+        
 		public int IndexOfFrom(string search, int index, string str)
 		{
 			return str.IndexOf(search, index);
 		}
-
 
 		public int LastIndexOf(string search, string str)
 		{
 			return str.LastIndexOf(search);
 		}
 
-
 		public int IndexOfAny(char[] cz, string str)
 		{
 			return str.IndexOfAny(cz);
 		}
 
-
 		public int IndexOfAnyFrom(char[] cz, int index, string str)
 		{
 			return str.IndexOfAny(cz, index);
 		}
-
-		
+        		
 		public bool StartsWith(string search, string str)
 		{
 			return str.StartsWith(search);
 		}
-
-
+        
 		public bool EndsWith(string search, string str)
 		{
 			return str.EndsWith(search);
 		}
-
-
+        
 		public string Replace(string search, string replace, string str)
 		{
 			return str.Replace(search, replace);
 		}
-
 
 		public string Remove(int start, int count, string str)
 		{
 			return str.Remove(start, count);
 		}
 
-
 		public string Substring(int start, int length, string str)
 		{
 			return str.Substring(start, length);
 		}
-
 
 		public ElaList Split(string[] seps, string str)
 		{
@@ -165,24 +140,10 @@ namespace Ela.Library.General
 			return list;
 		}
 
-
-		public string Insert(int index, string str)
+		public string Insert(int index, string toInsert, string str)
 		{
-			return str.Insert(index, str);
+            return str.Insert(index, toInsert);
 		}
-
-
-		public string PadRight(char c, int totalWidth, string str)
-		{
-			return str.PadRight(totalWidth, c);
-		}
-
-
-		public string PadLeft(char c, int totalWidth, string str)
-		{
-			return str.PadLeft(totalWidth, c);
-		}
-
 
         public string FromSeq(IEnumerable<ElaValue> list)
         {
@@ -193,6 +154,5 @@ namespace Ela.Library.General
 
             return sb.ToString();
         }
-		#endregion
 	}
 }

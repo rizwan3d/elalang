@@ -12,7 +12,7 @@ let assert =
         lte = op' "lte" (<=),
         eqt = op' "eqt" (==) true,
         eqf = op' "eqf" (==) false
-    }
+    } 
     where op' m op x y | op x y = ()
                        | else   = raise AssertFailed (m)
 

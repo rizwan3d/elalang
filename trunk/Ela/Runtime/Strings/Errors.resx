@@ -132,8 +132,8 @@
   <data name="ExpectedFunction" xml:space="preserve">
     <value>A function is expected.</value>
   </data>
-  <data name="FieldImmutable" xml:space="preserve">
-    <value>Field '{0}' of the record '{1}' is immutable and cannot be changed.</value>
+  <data name="ImmutableStructure" xml:space="preserve">
+    <value>An element at index '{0}' of the record '{1}' is immutable and cannot be changed.</value>
   </data>
   <data name="IndexOutOfRange" xml:space="preserve">
     <value>Index '{0}' of type '{1}' was out of range on object '{2}' of type '{3}'.</value>
@@ -162,26 +162,14 @@
   <data name="NoOverload" xml:space="preserve">
     <value>Function '{0}' is not implemented for '{1}'.</value>
   </data>
-  <data name="NotGenericFun" xml:space="preserve">
-    <value>A function '{0}' is not a generic function and cannot be specialized.</value>
-  </data>
   <data name="OperationNotSupported" xml:space="preserve">
     <value>This operation is not supported by the object of type '{0}'.</value>
   </data>
   <data name="PrivateVariable" xml:space="preserve">
     <value>The name '{0}' is declared as private and cannot be referenced.</value>
   </data>
-  <data name="RefEqualsNotSupported" xml:space="preserve">
-    <value>Testing for reference equality is not supported for built-in types int, single, boolean and char.</value>
-  </data>
   <data name="RightOperand" xml:space="preserve">
     <value>The value '{0}' of type '{1}' is not a valid right operand for the value '{2}' of type '{3}' in an operation '{4}'.</value>
-  </data>
-  <data name="TableNoInit" xml:space="preserve">
-    <value>Template parameter not initialized.</value>
-  </data>
-  <data name="TableTooMany" xml:space="preserve">
-    <value>Too many generic parameters for a function.</value>
   </data>
   <data name="TooFewParams" xml:space="preserve">
     <value>Partial application of a function is not supported. Function is called from external context (e.g. Ela function from .NET code).</value>
@@ -197,9 +185,6 @@
   </data>
   <data name="Unknown" xml:space="preserve">
     <value>An unknown runtime error has occured. Error details: {0}.</value>
-  </data>
-  <data name="UnknownField" xml:space="preserve">
-    <value>There is no such field as '{0}' in the object '{1}' of type '{2}'.</value>
   </data>
   <data name="UnknownParameterType" xml:space="preserve">
     <value>Invalid type for the function parameter: '{0}'.</value>

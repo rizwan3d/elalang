@@ -25,7 +25,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>Full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\bin\Debug\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -156,10 +156,12 @@
     <Compile Include="Compilation\Builder.Operators.cs" />
     <Compile Include="Compilation\Builder.Ranges.cs" />
     <Compile Include="Compilation\Builder.Functions.cs" />
+    <Compile Include="Compilation\CallConv.cs" />
     <Compile Include="Compilation\DataKind.cs" />
     <Compile Include="Compilation\ElaCompilerError.cs" />
     <Compile Include="Compilation\ElaCompilerHint.cs" />
     <Compile Include="Compilation\ElaCompilerWarning.cs" />
+    <Compile Include="Compilation\ExportVarData.cs" />
     <Compile Include="Compilation\ExprData.cs" />
     <Compile Include="Compilation\FunFlag.cs" />
     <Compile Include="Compilation\IElaCompiler.cs" />
@@ -180,6 +182,7 @@
     <Compile Include="Compilation\OpSizeHelper.cs" />
     <Compile Include="ElaTranslationException.cs" />
     <Compile Include="Linking\ArgumentModule.cs" />
+    <Compile Include="Linking\LangModule.cs" />
     <Compile Include="Linking\ModuleEventArgs.cs" />
     <Compile Include="Loc.cs" />
     <Compile Include="Runtime\CallFlag.cs" />
@@ -264,7 +267,6 @@
     <Compile Include="Runtime\ObjectModel\ElaChar.cs" />
     <Compile Include="Runtime\ObjectModel\ElaDummyObject.cs" />
     <Compile Include="Runtime\ObjectModel\ElaLazyList.cs" />
-    <Compile Include="Runtime\ObjectModel\ElaProxy.cs" />
     <Compile Include="Runtime\ObjectModel\ElaUnit.cs" />
     <Compile Include="FormatHelper.cs" />
     <Compile Include="Debug\VarSym.cs" />

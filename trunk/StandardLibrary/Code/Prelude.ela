@@ -1,85 +1,87 @@
 /* 
     Ela standard Prelude module
-    Created in 2011 by Basil Voronkov
+    Created in 2011-2012 by Basil Voronkov
 */
+open lang
 
 /* Arithmetic operators */
-let (+)  = __internal add
-let (-)  = __internal subtract
-let (*)  = __internal multiply
-let (/)  = __internal divide
-let (%)  = __internal remainder
-let (**) = __internal power
-let (--) = __internal negate
+let (+)  = add
+let (-)  = sub
+let (*)  = mul
+let (/)  = div
+let (%)  = rem
+let (**) = pow
+let (--) = neg
 
 /* Bounds */
-let min = __internal min
-let max = __internal max
+let min = min
+let max = max
 
 /* Bitwise operators */
-let (&&&) = __internal bitwiseand
-let (|||) = __internal bitwiseor
-let (^^^) = __internal bitwisexor
-let (~~~) = __internal bitwisenot
-let (>>>) = __internal shiftright
-let (<<<) = __internal shiftleft
+let (&&&) = bitand
+let (|||) = bitor
+let (^^^) = bitxor
+let (~~~) = bitnot
+let (>>>) = shr 
+let (<<<) = shl
 
 /* Equality and comparison */
-let (==) = __internal equal
-let (<>) = __internal notequal
-let (>=) = __internal greaterequal
-let (<=) = __internal lesserequal
-let (<)  = __internal lesser
-let (>)  = __internal greater
+let (==) = eq
+let (<>) = neq
+let (>=) = gteq
+let (<=) = lteq
+let (<)  = lt
+let (>)  = gt
 
 /* Boolean operators */
-let not = __internal not
+let not = _not
 
 /* Construction and concatenation */
-let (::) = __internal cons
-let (++) = __internal concat
+let (::) = cons
+let (++) = cat
 
 /* Function related operators and functions */
 let (>>) = __internal compforward
 let (<<) = __internal compbackward
-let flip = __internal flip
+let flip = _flip
+
 let curry f x y = f (x, y)
 let uncurry f (x, y) = f x y
 let curry3 f x y z = f (x, y, z)
 let uncurry3 f (x, y, z) = f x y z
 
 /* Enumerable */
-let succ = __internal succ
-let pred = __internal pred
+let succ = succ
+let pred = pred
 
 /* List functions */
 let (!!) x y = x.[y]
-let nil    = __internal nil
-let isNil  = __internal isnil
-let head   = __internal head
-let tail   = __internal tail
-let length = __internal length
+let nil    = _nil
+let isNil  = isnil
+let head   = _head
+let tail   = _tail
+let length = len
 
 /* Tuple functions */
 let (=>) x y = (x, y)
 let swap (x, y) = (y, x)
 let swap3 (x, y, z) = (y, x, z)
-let fst = __internal fst
-let snd = __internal snd
-let fst3 = __internal fst3
-let snd3 = __internal snd3
+let fst = elem1of2
+let snd = elem2of2
+let fst3 = elem1of3
+let snd3 = elem2of3
 
 /* Show */
-let showf = __internal showf
+let showf = _showf
 let show  = showf ""
 
 /* Complex behaviors */
-let type  = __internal type
-let force = __internal force
+let type  = _type
+let force = _force
 
 /* Variants */
-let tag   = __internal gettag
-let untag = __internal untag
+let tag   = gettag
+let untag = _untag
 
 /* Combinators */
 let id x = x//I
@@ -89,23 +91,21 @@ let fix f = f (& fix f)
 let on cmb f x y = f x `cmb` f y
 
 /* Conversion */
-let convert = __internal convert
-let toInt x     = convert 1 x
-let toLong x    = convert 2 x 
-let toSingle x  = convert 3 x
-let toDouble x  = convert 4 x
-let toBool x    = convert 5 x
-let toChar x    = convert 6 x
-let toString x  = convert 7 x
-let toList x    = convert 9 x
-let toTuple x   = convert 11 x
-let toRecord x  = convert 12 x
-let toLazy x    = convert 16 x
-let toVariant x = convert 17 x   
+let convert = conv
+let toInt x     = conv 1 x
+let toLong x    = conv 2 x
+let toSingle x  = conv 3 x
+let toDouble x  = conv 4 x
+let toBool x    = conv 5 x
+let toChar x    = conv 6 x
+let toString x  = conv 7 x
+let toList x    = conv 9 x
+let toTuple x   = conv 11 x
+let toRecord x  = conv 12 x
+let toLazy x    = conv 16 x
+let toVariant x = conv 17 x
 
 /* Misc */
 let (!) = __internal apply
-let rec f x = f x $ rec f
-let rec2 f x y = f x y $ rec2 f
-let until p f x | p x  = x  | else = until p f (f x)
+let until p f x | p x  = x | else = until p f (f x)
 let compare x y | x == y = EQ | x < y = LT | else = GT

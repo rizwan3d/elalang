@@ -12,5 +12,7 @@ namespace Ela.Compilation
 		UseIgnoreToPop = 501,
 
 		MatchEntryNotReachable = 502,
+
+        AddElse = 503,
 	}
 }

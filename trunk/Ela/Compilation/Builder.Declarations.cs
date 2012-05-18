@@ -118,6 +118,9 @@ namespace Ela.Compilation
 					if (ed.Type == DataKind.Builtin)
 						flags |= ElaVariableFlags.Builtin;
 
+                    if (ed.Type == DataKind.FastCall)
+                        flags |= ElaVariableFlags.FastCall;
+
 					addr = AddVariable(s.VariableName, s, flags, data != -1 ? data : ed.Data);
 				}
 
@@ -125,7 +128,7 @@ namespace Ela.Compilation
 				cw.Emit(Op.Popvar, addr);
 			}
 			else
-				CompileBindingPattern(s, map);
+				CompileBindingPattern(s, map, hints);
 
 			var newHints = hints | (s.In != null ? Hints.Scope : Hints.None) | Hints.And;
 
@@ -141,7 +144,6 @@ namespace Ela.Compilation
 				EndScope();
 		}
 
-
         private void AddNoInitVariable(ElaBinding exp, int noInitCode)
         {
             if (!String.IsNullOrEmpty(exp.VariableName))
@@ -149,7 +151,6 @@ namespace Ela.Compilation
             else
                 AddPatternVariables(exp.Pattern, noInitCode);
         }
-
 
         private void AddPatternVariables(ElaPattern pat, int noInitCode)
         {
@@ -219,8 +220,7 @@ namespace Ela.Compilation
 			StartScope(false, s.Line, s.Column);
 			CompileExpression(s, map, hints);
 		}
-
-
+        
 		private void CompileIn(ElaBinding s, LabelMap map, Hints hints)
 		{
 			if (s.In != null)
@@ -236,23 +236,22 @@ namespace Ela.Compilation
 					EndScope();
 			}
 		}
-
-
-		private void CompileBindingPattern(ElaBinding s, LabelMap map)
+        
+		private void CompileBindingPattern(ElaBinding s, LabelMap map, Hints hints)
 		{
-			if (s.Pattern.Type == ElaNodeType.DefaultPattern)
-			{
-				if (s.Where != null)
-					CompileWhere(s.Where, map, Hints.Left);
+            //if (s.Pattern.Type == ElaNodeType.DefaultPattern)
+            //{
+            //    if (s.Where != null)
+            //        CompileWhere(s.Where, map, Hints.Left);
 
-				CompileExpression(s.InitExpression, map, Hints.Nested);
+            //    CompileExpression(s.InitExpression, map, Hints.Nested);
 
-				if (s.Where != null)
-					EndScope();
+            //    if (s.Where != null)
+            //        EndScope();
 
-				cw.Emit(Op.Pop);
-			}
-			else
+            //    cw.Emit(Op.Pop);
+            //}
+            //else
 			{
 				var next = cw.DefineLabel();
 				var exit = cw.DefineLabel();
@@ -263,16 +262,43 @@ namespace Ela.Compilation
 					tuple = (ElaTupleLiteral)s.InitExpression;
 				else
 				{
-					if (s.Where != null)
-						CompileWhere(s.Where, map, Hints.Left);
+                    //if (s.Where != null)
+                    //    CompileWhere(s.Where, map, Hints.Left);
 
-					CompileExpression(s.InitExpression, map, Hints.None);
+                    //CompileExpression(s.InitExpression, map, Hints.None);
 
-					if (s.Where != null)
-						EndScope();
+                    //if (s.Where != null)
+                    //    EndScope();
 
-					addr = AddVariable();
-					cw.Emit(Op.Popvar, addr);
+                    //addr = AddVariable();
+                    //cw.Emit(Op.Popvar, addr);
+
+                    var po = cw.Offset;
+                    var and = s.And;
+                    var noInitCode = allowNoInits.Count;
+                    var allow = s.InitExpression != null && s.InitExpression.Type == ElaNodeType.FunctionLiteral;
+
+                    while (and != null && (hints & Hints.And) != Hints.And)
+                    {
+                        AddNoInitVariable(and, noInitCode);
+                        and = and.And;
+                    }
+
+                    if (s.Where != null)
+                        CompileWhere(s.Where, map, Hints.Left);
+
+                    allowNoInits.Push(new NoInit(noInitCode, allow));
+                    
+                    if (s.InitExpression != null) 
+                        CompileExpression(s.InitExpression, map, Hints.None);
+                    
+                    allowNoInits.Pop();
+
+                    if (s.Where != null)
+                        EndScope();
+
+                    addr = AddVariable();
+                    cw.Emit(Op.Popvar, addr);
 				}
 
 				CompilePattern(addr, tuple, s.Pattern, map, next, s.VariableFlags, Hints.Silent);

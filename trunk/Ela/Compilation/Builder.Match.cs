@@ -454,7 +454,7 @@ namespace Ela.Compilation
 					if ((hints & Hints.Silent) == Hints.Silent)
 					{
 						cw.Emit(Op.Pushvar, pushSys);
-						cw.Emit(Op.Hasfld, str);
+						cw.Emit(Op.Has, str);
 						cw.Emit(Op.Brfalse, nextLab);
 					}
 
@@ -568,6 +568,11 @@ namespace Ela.Compilation
 
 		private int AddMatchVariable(string varName, ElaVariableFlags flags, ElaExpression exp)
 		{
+            var res = CurrentScope.TryChangeVariable(varName, flags);
+
+            if (res != -1)
+                return 0 | res << 8;
+
 			if (IsRegistered(varName))
 			{
 				AddError(ElaCompilerError.RedefinitionNotAllowed, exp, varName);

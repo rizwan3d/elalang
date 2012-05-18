@@ -155,6 +155,13 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return first.Ref == this ? first : second;
 		}
+
+
+        //Returns true for external function and FastCall functions
+        internal virtual bool IsExternFun()
+        {
+            return false;
+        }
 		#endregion
 
 
@@ -251,8 +258,17 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal virtual ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            ctx.NoOperator(This(left, right), "concat");
-            return Default();
+            var str1 = left.Force(ctx).Show(ShowInfo.Default, ctx);
+
+            if (ctx.Failed)
+                return Default();
+
+            var str2 = right.Force(ctx).Show(ShowInfo.Default, ctx);
+
+            if (ctx.Failed)
+                return Default();
+
+            return new ElaValue(str1 + str2);
 		}
 
 
@@ -402,20 +418,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal virtual ElaValue GetField(string field, ExecutionContext ctx)
-		{
-			ctx.NoOperator(new ElaValue(this), "fieldget");
-			return Default();
-		}
-
-
-		protected internal virtual void SetField(string field, ElaValue value, ExecutionContext ctx)
-		{
-			ctx.NoOperator(new ElaValue(this), "fieldset");						
-		}
-
-
-		protected internal virtual bool HasField(string field, ExecutionContext ctx)
+		protected internal virtual bool Has(string field, ExecutionContext ctx)
 		{
 			ctx.NoOperator(new ElaValue(this), "fieldhas");
 			return false;
@@ -440,7 +443,13 @@ namespace Ela.Runtime.ObjectModel
 		{
 			ctx.NoOperator(new ElaValue(this), "call");
 			return Default();
-		}
+        }
+
+        protected internal virtual ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
+        {
+            ctx.NoOperator(new ElaValue(this), "call");
+            return Default();
+        }
 
 
 		protected internal virtual ElaValue Force(ElaValue @this, ExecutionContext ctx)

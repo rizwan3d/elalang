@@ -593,21 +593,9 @@ namespace Ela.Runtime
         }
 
 
-        public ElaValue GetField(string field, ExecutionContext ctx)
-        {
-			return Ref.GetField(field, ctx);
-        }
-
-
-        public void SetField(string field, ElaValue value, ExecutionContext ctx)
-        {
-			Ref.SetField(field, value, ctx);
-        }
-
-
         public bool HasField(string field, ExecutionContext ctx)
         {
-			return Ref.HasField(field, ctx);
+			return Ref.Has(field, ctx);
         }
 
 

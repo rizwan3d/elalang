@@ -7,11 +7,11 @@ namespace Ela.Compilation
     public sealed class ExportVars
     {
         #region Construction
-        private Dictionary<String,ElaBuiltinKind> map;
+        private Dictionary<String,ExportVarData> map;
 
         public ExportVars()
         {
-            map = new Dictionary<String,ElaBuiltinKind>();
+            map = new Dictionary<String,ExportVarData>();
         }
         #endregion
 
@@ -19,24 +19,29 @@ namespace Ela.Compilation
 		#region Methods
         public void AddName(string name)
         {
-            AddName(name, ElaBuiltinKind.None);
+            AddName(name, ElaBuiltinKind.None, CallConv.Standard);
         }
 
 
 		public void AddName(string name, ElaBuiltinKind kind)
         {
             map.Remove(name);
-            map.Add(name, kind);
+            map.Add(name, new ExportVarData(kind, CallConv.Standard));
         }
-
-
-        public bool FindName(string name, out ElaBuiltinKind kind)
+        
+        public void AddName(string name, ElaBuiltinKind kind, CallConv conv)
         {
-            return map.TryGetValue(name, out kind);
+            map.Remove(name);
+            map.Add(name, new ExportVarData(kind, conv));
+        }
+
+        public bool FindName(string name, out ExportVarData data)
+        {
+            return map.TryGetValue(name, out data);
         }
 
 
-		internal Dictionary<String,ElaBuiltinKind> GetMap()
+		internal Dictionary<String,ExportVarData> GetMap()
 		{
 			return map;
 		}

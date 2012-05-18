@@ -13,5 +13,7 @@ namespace Ela.Compilation
 		VarType = 3,
 
 		Builtin = 4,
+
+        FastCall = 5,
 	}
 }

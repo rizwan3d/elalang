@@ -38,13 +38,13 @@ namespace Ela.Runtime
 
 		InvalidFormat = 815,
 
-		FieldImmutable = 816,
+		ImmutableStructure = 816,
 
 		// = 817,
 
 		UndefinedVariable = 818,
 
-		UnknownField = 819,
+		// = 819,
 
 		NoOverload = 820,
 
@@ -56,15 +56,9 @@ namespace Ela.Runtime
 
 		InvalidIndexType = 824,
 
-		RefEqualsNotSupported = 825,
+		// = 825,
 
 		InvalidOp = 826,
-
-		TableNoInit = 827,
-
-		NotGenericFun = 828,
-
-		TableTooMany = 829,
 
 
 		UserCode = 999

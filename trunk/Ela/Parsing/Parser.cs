@@ -1210,7 +1210,9 @@ internal sealed partial class Parser {
 		Expect(50);
 		Expr(out cexp3);
 		cond.True = cexp3; 
-		BindingGuardList(ref cond);
+		if (la.kind == 20) {
+			BindingGuardList(ref cond);
+		}
 	}
 
 	void BindingBodyInit(ElaBinding varExp) {

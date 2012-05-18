@@ -80,12 +80,6 @@ namespace Ela.Runtime
 		}
 
 
-		public void UnknownField(string field, ElaValue val)
-		{
-			Fail(ElaRuntimeError.UnknownField, field, val.ToString(), val.GetTypeName());
-		}
-
-
 		public void NoOperator(ElaValue value, string op)
 		{
 			Fail(ElaRuntimeError.InvalidOp, value, value.GetTypeName(), op);

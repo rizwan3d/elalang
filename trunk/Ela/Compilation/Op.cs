@@ -38,47 +38,13 @@ namespace Ela.Compilation
 
 		Ret,
 
-		Concat,
-
 		Add,
 
 		Mul,
 
 		Div,
-
-		Rem,
-
-		Pow,
-
+        		
 		Sub,
-
-		Shr,
-
-		Shl,
-
-		Ceq,
-
-		Cneq,
-
-		Clt,
-
-		Cgt,
-
-		Cgteq,
-
-		Clteq,
-
-		AndBw,
-
-		OrBw,
-
-		Xor,
-
-		Not,
-
-		Neg,
-
-		NotBw,
 
 		Dup,
 
@@ -120,16 +86,6 @@ namespace Ela.Compilation
 
 		Isnil,
 
-		Succ,
-
-		Pred,
-
-		Max,
-
-		Min,
-
-		Show,
-
 		Untag,
 
 		Skiphtag,
@@ -138,10 +94,10 @@ namespace Ela.Compilation
 
         Gettag,
 
-        Conv,
-
 		
-		Elem,
+        Callf1,
+
+        Callf2,
 
 		Skiptag,
 
@@ -181,7 +137,7 @@ namespace Ela.Compilation
 
 		Runmod,
 
-		Hasfld,
+		Has,
 
 		Br,
 

@@ -108,34 +108,34 @@ namespace Ela.Runtime.ObjectModel
 			if (res == SetResult.OutOfRange)
 				ctx.IndexOutOfRange(index, new ElaValue(this));
 			else if (res == SetResult.Immutable)
-				ctx.Fail(ElaRuntimeError.FieldImmutable, index.Ref.ToString(), Show(new ElaValue(this), ShowInfo.Default, ctx));
+				ctx.Fail(ElaRuntimeError.ImmutableStructure, index.Ref.ToString(), Show(new ElaValue(this), ShowInfo.Default, ctx));
 		}
 
 
-		protected internal override ElaValue GetField(string field, ExecutionContext ctx)
+		private ElaValue GetField(string field, ExecutionContext ctx)
 		{
 			var index = GetOrdinal(field);
 
 			if (index != -1 && index < values.Length)
 				return values[index];
 
-			ctx.UnknownField(field, new ElaValue(this));
+            ctx.IndexOutOfRange(new ElaValue(field), new ElaValue(this));
 			return Default();
 		}
 
 
-		protected internal override void SetField(string field, ElaValue value, ExecutionContext ctx)
+        private void SetField(string field, ElaValue value, ExecutionContext ctx)
 		{
 			var res = SetValue(field, value);
 
 			if (res == SetResult.Immutable)
-				ctx.Fail(ElaRuntimeError.FieldImmutable, field, Show(new ElaValue(this), ShowInfo.Default, ctx));
+				ctx.Fail(ElaRuntimeError.ImmutableStructure, field, Show(new ElaValue(this), ShowInfo.Default, ctx));
 			else if (res == SetResult.OutOfRange)
-				ctx.UnknownField(field, new ElaValue(this));
+                ctx.IndexOutOfRange(new ElaValue(field), new ElaValue(this));
 		}
 
 
-		protected internal override bool HasField(string field, ExecutionContext ctx)
+		protected internal override bool Has(string field, ExecutionContext ctx)
 		{
 			return GetOrdinal(field) != -1;
 		}

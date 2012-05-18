@@ -126,6 +126,9 @@
   <data name="ElseGuardNotValid" xml:space="preserve">
     <value>An 'else' guard is not valid in this context.</value>
   </data>
+  <data name="ElseMissing" xml:space="preserve">
+    <value>A mandatory 'else' clause is missing. A conditional expression should be always terminated with an 'else' clause.</value>
+  </data>
   <data name="InfiniteRangeOnlyList" xml:space="preserve">
     <value>Range: {0} is invalid. Only lists can be generated using infinite ranges.</value>
   </data>

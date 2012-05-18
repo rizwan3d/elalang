@@ -23,27 +23,10 @@ namespace Ela.Compilation
 			0, //Tail
 			0, //Head
 			0, //Ret
-			-1, //Concat
 			-1, //Add
 			-1, //Mul
 			-1, //Div
-			-1, //Rem
-			-1, //Pow
 			-1, //Sub
-			-1, //Shr
-			-1, //Shl
-			-1, //Ceq
-			-1, //Cneq
-			-1, //Clt
-			-1, //Cgt
-			-1, //Cgteq
-			-1, //Clteq
-			-1, //AndBw
-			-1, //OrBw
-			-1, //Xor
-			0, //Not
-			0, //Neg
-			0, //NotBw
 			1, //Dup
 			0, //Swap
 			1, //Newlazy
@@ -64,18 +47,13 @@ namespace Ela.Compilation
 			0, //Force
 			0, //TypeId
 			0, //Isnil
-			0, //Succ
-			0, //Pred
-			0, //Max
-			0, //Min
-			-1, //Show
 			0, //Tagval
 			0, //Skiphtag
 			0, //Nil
             0, //Gettag
-			-1, //Conv
 			
-            0, //Elem
+            0, //Callf1
+            -1,//Callf2
 			0, //Skiptag
 			0, //Newvar
 			1, //Newrec
@@ -95,7 +73,7 @@ namespace Ela.Compilation
 			-1, //Popvar
 			-2, //Popfld
 			0, //Runmod
-			0, //Hasfld
+			0, //Has
 			0, //Br
 			-1, //Brtrue
 			-1, //Brfalse

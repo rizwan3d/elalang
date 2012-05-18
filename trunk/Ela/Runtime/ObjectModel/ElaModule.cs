@@ -60,16 +60,23 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue GetField(string field, ExecutionContext ctx)
+        protected internal override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
 		{
 			if (vm != null)
 			{
+                if (index.TypeId != ElaMachine.STR)
+                {
+                    ctx.InvalidIndexType(index);
+                    return Default();
+                }
+
+                var field = index.DirectGetString();
 				var frame = vm.Assembly.GetModule(Handle);
 				ScopeVar sc;
 
 				if (!frame.GlobalScope.Locals.TryGetValue(field, out sc))
 				{
-					ctx.UnknownField(field, new ElaValue(this));
+					ctx.IndexOutOfRange(index, new ElaValue(this));
 					return Default();
 				}
 
@@ -82,12 +89,12 @@ namespace Ela.Runtime.ObjectModel
 				return vm.modules[Handle][sc.Address];
 			}
 
-			ctx.UnknownField(field, new ElaValue(this));
+            ctx.Fail(ElaRuntimeError.Unknown, "VM is non present");
 			return Default();
 		}
 
 
-		protected internal override bool HasField(string field, ExecutionContext ctx)
+		protected internal override bool Has(string field, ExecutionContext ctx)
 		{
 			if (vm != null)
 			{

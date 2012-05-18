@@ -967,7 +967,7 @@ PRODUCTIONS
 		(
 			"|" BindingGuard<out gexp> (. cond.Condition = gexp; .) 
 			"=" Expr<out cexp3> (. cond.True = cexp3; .)
-			BindingGuardList<ref cond>
+			[ BindingGuardList<ref cond> ]
 		).
 		
 	InfixFunExpr<ElaPattern pat, ElaBinding varExp> =

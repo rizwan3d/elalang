@@ -183,77 +183,11 @@ namespace Ela.Compilation
 		{
 			switch (kind)
 			{
-                case ElaBuiltinKind.Convert:
-                    cw.Emit(Op.Conv);
-                    break;
                 case ElaBuiltinKind.Apply:
                     cw.Emit(Op.Pushunit);
                     cw.Emit(Op.Swap);
                     cw.Emit(Op.Call);
-                    break;
-                case ElaBuiltinKind.Gettag:
-                    cw.Emit(Op.Gettag);
-                    break;
-                case ElaBuiltinKind.Untag:
-                    cw.Emit(Op.Untag);
-                    break;
-                case ElaBuiltinKind.Fst:
-                    cw.Emit(Op.Elem, 2 | 0 << 8);
-                    break;
-                case ElaBuiltinKind.Snd:
-                    cw.Emit(Op.Elem, 2 | 1 << 8);
-                    break;
-                case ElaBuiltinKind.Fst3:
-                    cw.Emit(Op.Elem, 3 | 0 << 8);
-                    break;
-                case ElaBuiltinKind.Snd3:
-                    cw.Emit(Op.Elem, 3 | 1 << 8);
-                    break;
-                case ElaBuiltinKind.Head:
-                    cw.Emit(Op.Head);
-                    break;
-                case ElaBuiltinKind.Tail:
-                    cw.Emit(Op.Tail);
-                    break;
-                case ElaBuiltinKind.IsNil:
-                    cw.Emit(Op.Isnil);
-                    break;
-				case ElaBuiltinKind.Negate:
-					cw.Emit(Op.Neg);
-					break;
-				case ElaBuiltinKind.Succ:
-					cw.Emit(Op.Succ);
-					break;
-				case ElaBuiltinKind.Pred:
-					cw.Emit(Op.Pred);
-					break;
-				case ElaBuiltinKind.Max:
-					cw.Emit(Op.Max);
-					break;
-				case ElaBuiltinKind.Min:
-					cw.Emit(Op.Min);
-					break;
-				case ElaBuiltinKind.Type:
-					cw.Emit(Op.Type);
-					break;
-				case ElaBuiltinKind.Length:
-					cw.Emit(Op.Len);
-					break;
-				case ElaBuiltinKind.Force:
-					cw.Emit(Op.Force);
-					break;
-				case ElaBuiltinKind.Not:
-					cw.Emit(Op.Not);
-					break;
-				case ElaBuiltinKind.Flip:
-					cw.Emit(Op.Flip);
-					break;
-				case ElaBuiltinKind.Nil:
-					cw.Emit(Op.Nil);
-					break;
-				case ElaBuiltinKind.Showf:
-					cw.Emit(Op.Show);
-					break;
+                    break;              
                 case ElaBuiltinKind.CompBackward:
 					cw.Emit(Op.Swap);
 					CompileComposition(null, map, hints);
@@ -261,71 +195,6 @@ namespace Ela.Compilation
 				case ElaBuiltinKind.CompForward:
 					CompileComposition(null, map, hints);
 					break;
-				case ElaBuiltinKind.Concat:					
-					cw.Emit(Op.Concat);
-					break;
-				case ElaBuiltinKind.Add:
-					cw.Emit(Op.Add);
-					break;
-				case ElaBuiltinKind.Divide:
-					cw.Emit(Op.Div);
-					break;
-				case ElaBuiltinKind.Multiply:
-					cw.Emit(Op.Mul);
-					break;
-				case ElaBuiltinKind.Power:
-					cw.Emit(Op.Pow);
-					break;
-				case ElaBuiltinKind.Remainder:
-					cw.Emit(Op.Rem);
-					break;
-				case ElaBuiltinKind.Subtract:
-					cw.Emit(Op.Sub);
-					break;
-				case ElaBuiltinKind.ShiftRight:
-					cw.Emit(Op.Shr);
-					break;
-				case ElaBuiltinKind.ShiftLeft:
-					cw.Emit(Op.Shl);
-					break;
-				case ElaBuiltinKind.Greater:
-					cw.Emit(Op.Cgt);
-					break;
-				case ElaBuiltinKind.Lesser:
-					cw.Emit(Op.Clt);
-					break;
-				case ElaBuiltinKind.Equal:
-					cw.Emit(Op.Ceq);
-					break;
-				case ElaBuiltinKind.NotEqual:
-					cw.Emit(Op.Cneq);
-					break;
-				case ElaBuiltinKind.GreaterEqual:
-					cw.Emit(Op.Cgteq);
-					break;
-				case ElaBuiltinKind.LesserEqual:
-					cw.Emit(Op.Clteq);
-					break;
-				case ElaBuiltinKind.BitwiseAnd:
-					cw.Emit(Op.AndBw);
-					break;
-				case ElaBuiltinKind.BitwiseOr:
-					cw.Emit(Op.OrBw);
-					break;
-				case ElaBuiltinKind.BitwiseXor:
-					cw.Emit(Op.Xor);
-					break;
-				case ElaBuiltinKind.Cons:
-					cw.Emit(Op.Cons);
-					break;
-				case ElaBuiltinKind.BitwiseNot:
-					cw.Emit(Op.NotBw);
-					break;
-				case ElaBuiltinKind.Get:
-					cw.Emit(Op.Swap);
-					cw.Emit(Op.Pushelem);
-					break;
-
 			}
 		}
 		#endregion

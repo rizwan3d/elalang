@@ -9,15 +9,11 @@ namespace Ela.Library.General
 {
     public sealed class RecordModule : ForeignModule
     {
-        #region Construction
         public RecordModule()
         {
 
         }
-        #endregion
 
-
-        #region Methods
         public override void Initialize()
         {
             Add<String,ElaRecord,Boolean>("hasField", HasField);
@@ -27,6 +23,5 @@ namespace Ela.Library.General
         {
             return rec.HasField(field);
         }
-        #endregion
     }
 }

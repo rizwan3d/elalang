@@ -173,7 +173,9 @@ namespace Ela.Runtime.ObjectModel
         protected internal override ElaValue Convert(ElaValue @this, ElaTypeInfo type, ExecutionContext ctx)
 		{
             if (type.ReflectedTypeCode == ElaTypeCode.Variant)
-				return @this;
+                return @this;
+            else if (type.ReflectedTypeCode == ElaTypeCode.String)
+                return new ElaValue(Tag + (Value.Ref != ElaUnit.Instance ? " " + Value.Convert(type, ctx) : String.Empty));
 
             ctx.ConversionFailed(@this, type.ReflectedTypeName);
 			return Default();

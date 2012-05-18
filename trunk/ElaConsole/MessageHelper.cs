@@ -90,7 +90,7 @@ namespace ElaConsole
 					vr = Environment.Version.ToString();
 
                 var bit = IntPtr.Size == 4 ? "32" : "64";
-				Console.WriteLine("Ela Interpreter version {0}", typeof(ElaParser).Assembly.GetName().Version);
+				Console.WriteLine("Ela version {0}", typeof(ElaParser).Assembly.GetName().Version);
 				Console.WriteLine("Running {0} {1} {2}-bit ({3})", rt, vr, bit, Environment.OSVersion);
 				Console.WriteLine();
 			}

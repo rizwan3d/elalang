@@ -1,5 +1,7 @@
 ﻿using System;
 using Ela.Linking;
+using Ela.Runtime.ObjectModel;
+using Ela.Runtime;
 
 namespace Ela.Library.General
 {
@@ -33,7 +35,6 @@ namespace Ela.Library.General
 			Add("pi", Math.PI);
 			Add("e", Math.E);
 		}
-
 
 		public double Exp(double val)
 		{

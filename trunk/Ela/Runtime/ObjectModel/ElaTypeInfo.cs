@@ -127,13 +127,13 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-		protected internal override ElaValue GetField(string field, ExecutionContext ctx)
+		private ElaValue GetField(string field, ExecutionContext ctx)
         {
             var idx = GetOrdinal(field);
 
             if (idx == -1)
             {
-                ctx.UnknownField(field, new ElaValue(this));
+                ctx.IndexOutOfRange(new ElaValue(field), new ElaValue(this));
                 return Default();
             }
 

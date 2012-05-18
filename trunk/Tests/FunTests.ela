@@ -67,7 +67,7 @@ let flipped3 {eq} =
            et f = flip fold' (*10)
         
 let partialOperators {eq} =
-        eq (add' 7 2) 9
+          eq (add' 7 2) 9
         $ eq (add2 3) 5
         $ eq (sub 5 4) 1
         $ eq (sub2 9) 7

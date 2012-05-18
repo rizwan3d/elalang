@@ -12,8 +12,8 @@ namespace Ela.Runtime.ObjectModel
         internal static readonly ElaTypeInfo TypeInfo = new ElaTypeInfo(TypeCodeFormat.GetShortForm(ElaTypeCode.Function), (Int32)ElaTypeCode.Function, true, typeof(ElaFunction));
         
         private ElaMachine vm;
-		private static readonly ElaValue[] defaultParams = new ElaValue[] { new ElaValue(ElaUnit.Instance) };
-		private static readonly ElaValue[] emptyParams = new ElaValue[0];
+		internal static readonly ElaValue[] defaultParams = new ElaValue[] { new ElaValue(ElaUnit.Instance) };
+		internal static readonly ElaValue[] emptyParams = new ElaValue[0];
 		private const string DEF_NAME = "<f>";
         private const string MODULE = "module";
         private const string HANDLE = "handle";
@@ -22,7 +22,7 @@ namespace Ela.Runtime.ObjectModel
         private const string ISNATIVE = "isNative";
         private const string ISGLOBAL = "isGlobal";
         private const string ISPARTIAL = "isPartial";
-
+        internal int Spec;
 
 		protected ElaFunction() : this(1)
 		{
@@ -79,6 +79,17 @@ namespace Ela.Runtime.ObjectModel
 				return Default();
 			}
 		}
+
+
+        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
+        {
+            var ret = Call(arg1, ctx);
+
+            if (!ctx.Failed)
+                return ret.Call(arg2, ctx);
+
+            return ret;
+        }
 
 
 		internal ElaValue CallWithThrow(ElaValue value)
@@ -359,6 +370,11 @@ namespace Ela.Runtime.ObjectModel
 
 			return funName;
 		}
+
+        internal override bool IsExternFun()
+        {
+            return Captures == null || Spec != 0;
+        }
 		#endregion
 
 

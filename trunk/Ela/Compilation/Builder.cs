@@ -161,20 +161,15 @@ namespace Ela.Compilation
 						AddLinePragma(s);
 						cw.Emit(Op.Start, catchLab);
 						
-						StartScope(false, s.Expression.Line, s.Expression.Column);
 						var untail = (hints & Hints.Tail) == Hints.Tail ? hints ^ Hints.Tail : hints;
 						CompileExpression(s.Expression, map, untail | Hints.Scope);
-						EndScope();
-
+						
 						cw.Emit(Op.Leave);
 						cw.Emit(Op.Br, exitLab);
 						cw.MarkLabel(catchLab);
 						cw.Emit(Op.Leave);
 
-                        StartScope(false, s.Entries[0].Line, s.Entries[0].Column);
-
-						CompileMatch(s, null, map, Hints.Throw);
-                        EndScope();
+                        CompileMatch(s, null, map, Hints.Throw);
 
 						cw.MarkLabel(exitLab);
 						cw.Emit(Op.Nop);
@@ -285,47 +280,34 @@ namespace Ela.Compilation
 				case ElaNodeType.Condition:
 					{
 						var s = (ElaCondition)exp;
-
 						CheckEmbeddedWarning(s.True);						
 						CheckEmbeddedWarning(s.False);
 
 						AddLinePragma(exp);
-						StartScope(false, s.Condition.Line, s.Condition.Column);
 						CompileExpression(s.Condition, map, Hints.None | Hints.Scope);
 
 						var falseLab = cw.DefineLabel();
 						cw.Emit(Op.Brfalse, falseLab);
 						var left = (hints & Hints.Left) == Hints.Left;
 						var tailHints = (hints & Hints.Tail) == Hints.Tail ? Hints.Tail : (left ? Hints.Left : Hints.None);
-						var newHints = ((s.False == null || left) ? Hints.Left : Hints.None) | tailHints;
-
+						
 						if (s.True != null)
-							CompileExpression(s.True, map, newHints | Hints.Scope);
-
-						EndScope();
+                            CompileExpression(s.True, map, tailHints | Hints.Scope);
 
 						if (s.False != null)
 						{
-							StartScope(false, s.False.Line, s.False.Column);
 							var skipLabel = cw.DefineLabel();
 							cw.Emit(Op.Br, skipLabel);
 							cw.MarkLabel(falseLab);
 							CompileExpression(s.False, map, tailHints | Hints.Scope);
 							cw.MarkLabel(skipLabel);
-							EndScope();
 							cw.Emit(Op.Nop);
 						}
 						else
 						{
-							cw.MarkLabel(falseLab);
-							
-							if ((hints & Hints.Left) != Hints.Left)
-								cw.Emit(Op.Pushunit);
-							else
-								cw.Emit(Op.Nop);
+                            AddError(ElaCompilerError.ElseMissing, s.True);
+                            AddHint(ElaCompilerHint.AddElse, s.True);
 						}
-
-						
 					}
 					break;
 				case ElaNodeType.Raise:
@@ -470,6 +452,8 @@ namespace Ela.Compilation
 							exprData = new ExprData(DataKind.VarType, (Int32)ElaVariableFlags.ObjectLiteral);
 						else if ((scopeVar.VariableFlags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin)
 							exprData = new ExprData(DataKind.Builtin, scopeVar.Data);
+                        else if ((scopeVar.VariableFlags & ElaVariableFlags.FastCall) == ElaVariableFlags.FastCall)
+                            exprData = new ExprData(DataKind.FastCall, scopeVar.Data);
 					}
 					break;
 				case ElaNodeType.Placeholder:
@@ -612,27 +596,6 @@ namespace Ela.Compilation
 					break;
 			}
 		}
-
-
-		private void AddConv(ElaTypeCode aff, ElaExpression exp)
-		{
-			switch (aff)
-			{
-				case ElaTypeCode.Integer:
-				case ElaTypeCode.Long:
-				case ElaTypeCode.Single:
-				case ElaTypeCode.Double:
-				case ElaTypeCode.Boolean:
-				case ElaTypeCode.String:
-				case ElaTypeCode.Char:
-                    cw.Emit(Op.PushI4, (Int32)aff);
-					cw.Emit(Op.Conv);
-					break;
-				default:
-					AddError(ElaCompilerError.CastNotSupported, exp, TypeCodeFormat.GetShortForm(aff));
-					break;
-			}
-		}
 		
 
 		private void CompileTupleParameters(ElaExpression exp, List<ElaExpression> pars, LabelMap map, Hints hints)
@@ -752,7 +715,17 @@ namespace Ela.Compilation
 				var bf = (ElaVariableReference)v.Target;
 				var sv = GetVariable(bf.VariableName, bf.Line, bf.Column);
 
-				if ((sv.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin)
+                if ((sv.Flags & ElaVariableFlags.FastCall) == ElaVariableFlags.FastCall && sv.Data == 2 && len == 2)
+                {
+                    cw.Emit(Op.Callf2, sv.Address);
+                    return ed;
+                }
+                if ((sv.Flags & ElaVariableFlags.FastCall) == ElaVariableFlags.FastCall && sv.Data == 1 && len == 1)
+                {
+                    cw.Emit(Op.Callf1, sv.Address);
+                    return ed;
+                }
+                else if ((sv.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin)
 				{
 					var kind = (ElaBuiltinKind)sv.Data;
 					var pars = Builtins.Params(kind);
@@ -1059,8 +1032,8 @@ namespace Ela.Compilation
 				{
                     var.Address = shift | var.Address << 8;
 
-					if ((getFlags & GetFlags.SkipValidation) != GetFlags.SkipValidation && !Validate(var))
-						AddError(ElaCompilerError.ReferNoInit, line, col, name);
+                    if ((getFlags & GetFlags.SkipValidation) != GetFlags.SkipValidation && !Validate(var))
+                        AddError(ElaCompilerError.ReferNoInit, line, col, name);
 
 					return var;
 				}
@@ -1075,12 +1048,24 @@ namespace Ela.Compilation
 			if ((getFlags & GetFlags.OnlyGet) == GetFlags.OnlyGet)
                 return ScopeVar.Empty;
 
-			var vk = ElaBuiltinKind.None;
+			var vk = default(ExportVarData);
 
 			if (exports.FindName(name, out vk))
 			{
-				var flags = vk != ElaBuiltinKind.None ? ElaVariableFlags.Builtin : ElaVariableFlags.None;
-				var data = vk != ElaBuiltinKind.None ? (Int32)vk : -1;
+                var flags = ElaVariableFlags.None;
+                var data = -1;
+
+                if (vk.Kind != ElaBuiltinKind.None)
+                {
+                    flags = ElaVariableFlags.Builtin;
+                    data = (Int32)vk.Kind;
+                }
+                else if (vk.CallConv != CallConv.Standard)
+                {
+                    flags = ElaVariableFlags.FastCall;
+                    data = vk.CallConv == CallConv.FastCall1 ? 1 : 2;
+                }
+
 				return GetExternal(name, flags, data, line, col);
 			}
 			else

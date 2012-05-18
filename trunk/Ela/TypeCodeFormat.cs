@@ -27,6 +27,30 @@ namespace Ela
 
 
 		#region Methods
+        public static ElaTypeCode GetTypeCode(string type)
+        {
+            switch (type)
+            {
+                case CHAR: return ElaTypeCode.Char;
+                case INT: return ElaTypeCode.Integer;
+                case LONG: return ElaTypeCode.Long;
+                case SINGLE: return ElaTypeCode.Single;
+                case DOUBLE: return ElaTypeCode.Double;
+                case BOOL: return ElaTypeCode.Boolean;
+                case STRING: return ElaTypeCode.String;
+                case LIST: return ElaTypeCode.List;
+                case TUPLE: return ElaTypeCode.Tuple;
+                case RECORD: return ElaTypeCode.Record;
+                case FUN: return ElaTypeCode.Function;
+                case UNIT: return ElaTypeCode.Unit;
+                case MOD: return ElaTypeCode.Module;
+                case OBJ: return ElaTypeCode.Object;
+                case LAZ: return ElaTypeCode.Lazy;
+                case VAR: return ElaTypeCode.Variant;
+                default: return ElaTypeCode.None;
+            }
+        }
+
 		public static string GetShortForm(ElaTypeCode @this)
 		{
 			switch (@this)

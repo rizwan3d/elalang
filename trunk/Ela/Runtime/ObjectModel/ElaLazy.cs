@@ -319,21 +319,9 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue GetField(string field, ExecutionContext ctx)
+		protected internal override bool Has(string field, ExecutionContext ctx)
 		{
-			return Force(ctx).Ref.GetField(field, ctx);
-		}
-
-
-		protected internal override void SetField(string field, ElaValue value, ExecutionContext ctx)
-		{
-			Force(ctx).Ref.SetField(field, value, ctx);
-		}
-
-
-		protected internal override bool HasField(string field, ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.HasField(field, ctx);
+			return Force(ctx).Ref.Has(field, ctx);
 		}
 
 

@@ -58,6 +58,20 @@ namespace Ela.Compilation
 		{
 			Locals[name] = var;
 		}
+
+        internal int TryChangeVariable(string name, ElaVariableFlags flags)
+        {
+            var v = default(ScopeVar);
+
+            if (Locals.TryGetValue(name, out v))
+            {
+                v = new ScopeVar(flags, v.Address, -1);
+                Locals[name] = v;
+                return v.Address;
+            }
+
+            return -1;
+        }
 		#endregion
 
 

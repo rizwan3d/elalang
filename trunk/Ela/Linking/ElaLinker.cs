@@ -51,6 +51,10 @@ namespace Ela.Linking
 			Assembly = new CodeAssembly();
 			Success = true;
 			foreignModules = new Dictionary<String,Dictionary<String,ElaModuleAttribute>>();
+
+            var dict = new Dictionary<String,ElaModuleAttribute>();
+            dict.Add("lang", new ElaModuleAttribute("lang", typeof(LangModule)));
+            foreignModules.Add("$", dict);
 		}
 		#endregion
 
@@ -137,8 +141,9 @@ namespace Ela.Linking
                 var sv = kv.Value;
 
                 if ((sv.Flags & ElaVariableFlags.Private) != ElaVariableFlags.Private)
-                    exportVars.AddName(kv.Key, (sv.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin ? 
-                        (ElaBuiltinKind)sv.Data : ElaBuiltinKind.None);
+                    exportVars.AddName(kv.Key, 
+                        (sv.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin ? (ElaBuiltinKind)sv.Data : ElaBuiltinKind.None,
+                        (sv.Flags & ElaVariableFlags.FastCall) == ElaVariableFlags.FastCall ? (CallConv)sv.Data : CallConv.Standard);
             }
 
             return frame;
@@ -149,7 +154,7 @@ namespace Ela.Linking
         {
             foreach (var l in obj.LateBounds)
             {
-                var vk = ElaBuiltinKind.None;
+                var vk = default(ExportVarData);
                 var found = exportVars.FindName(l.Name, out vk);
 
                 if (!found)
@@ -158,7 +163,13 @@ namespace Ela.Linking
                         mod != null ? mod.Column : 0,
                         l.Name);
 
-                if (found && (Int32)vk != l.Data && l.Data != -1)
+                if (found && 
+                        (
+                        (vk.Kind != ElaBuiltinKind.None && (Int32)vk.Kind != l.Data && l.Data != -1)
+                        || (vk.CallConv == CallConv.FastCall1 && l.Data != -1 && l.Data != 1)
+                        || (vk.CallConv == CallConv.FastCall2 && l.Data != -1 && l.Data != 2)
+                        )
+                    )
                     AddError(ElaLinkerError.ExportedNameChanged, fi,
                         mod != null ? mod.Line : 0,
                         mod != null ? mod.Column : 0,
@@ -326,7 +337,7 @@ namespace Ela.Linking
 			}
 			else
 			{
-				var dict = new Dictionary<String,ElaModuleAttribute>();
+                var dict = mod.IsStandardLibrary ? foreignModules["$"] : new Dictionary<String,ElaModuleAttribute>();
 
 				foreach (ElaModuleAttribute a in attrs)
 				{
@@ -340,7 +351,8 @@ namespace Ela.Linking
 						dict.Add(a.ModuleName, a);
 				}
 
-				foreignModules.Add(mod.IsStandardLibrary ? "$" : mod.DllName, dict);
+                if (!mod.IsStandardLibrary)
+				    foreignModules.Add(mod.DllName, dict);
 			}
 
 			return true;

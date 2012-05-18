@@ -21,7 +21,7 @@ namespace Ela.Compilation
 
 		PatternNotAllArgs = 306,
 
-		// = 307,
+        ElseMissing = 307,
 
 		CastNotSupported = 308,
 
