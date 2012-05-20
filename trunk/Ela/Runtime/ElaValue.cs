@@ -207,6 +207,8 @@ namespace Ela.Runtime
                 return (ElaValue)value;
             else if (value is IEnumerable)
                 return new ElaValue(ElaList.FromEnumerable((IEnumerable)value));
+            else if (value is Delegate)
+                return new ElaValue(new DynamicDelegateFunction("<f>", (Delegate)value));
             else
                 throw new InvalidCastException();
 		}
@@ -252,6 +254,8 @@ namespace Ela.Runtime
                 type = ElaModule.TypeInfo;
             else if (ti == typeof(ElaValue))
                 return this;
+            else if (ti == typeof(Object))
+                return AsObject();
             else
             {
                 if (ti == typeof(ElaUnit))

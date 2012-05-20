@@ -360,7 +360,7 @@ namespace Ela.Runtime
 						break;
 					#endregion
 
-					#region Arithmetic Operations					
+					#region Arithmetic Operations
 					case Op.Add:
 						left = evalStack.Pop();
 						right = evalStack.Peek();
@@ -1005,12 +1005,12 @@ namespace Ela.Runtime
 						{
                             var funObj = evalStack.Peek().Ref;
 
-                            if (callStack.Peek().Thunk != null || funObj.TypeId == LAZ || funObj.IsExternFun())
-							{
+                            if (callStack.Peek().Thunk != null || funObj.TypeId == LAZ)// || funObj.IsExternFun())
+                            {
                                 if (Call(evalStack.Pop().Ref, thread, evalStack, CallFlag.None))
-									goto SWITCH_MEM;
-								break;
-							}
+                                    goto SWITCH_MEM;
+                                break;
+                            }
 
                             var cp = callStack.Pop();
                             evalStack.PopVoid();
@@ -1416,9 +1416,10 @@ namespace Ela.Runtime
                     stack.Replace(p);
                     stack.Push(new ElaValue(funObj));
                     ExecuteThrow(thread, stack);
+                    return true;
                 }
 
-                return true;
+                return false;
             }
             else if (funObj.Spec == 1)
             {
@@ -1430,9 +1431,10 @@ namespace Ela.Runtime
                     stack.Replace(p);
                     stack.Push(new ElaValue(funObj));
                     ExecuteThrow(thread, stack);
+                    return true;
                 }
 
-                return true;
+                return false;
             }
 
 			try

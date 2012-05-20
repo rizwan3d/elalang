@@ -77,7 +77,7 @@ namespace Ela.Compilation
 			var modIndex = AddString(modRef.ToString());
 			cw.Emit(Op.Runmod, modIndex);
 			cw.Emit(Op.Newmod, modIndex);
-			var addr = AddVariable(alias, null, ElaVariableFlags.Module, modIndex);
+			var addr = AddVariable(alias, null, ElaVariableFlags.Module|ElaVariableFlags.Private, modIndex);
 			comp.OnModuleInclude(new ModuleEventArgs(modRef));
 
 			if (addr != -1)
@@ -204,7 +204,7 @@ namespace Ela.Compilation
 						var modIndex = AddString(modRef.ToString());
 						cw.Emit(Op.Runmod, modIndex);
 						cw.Emit(Op.Newmod, modIndex);
-						var addr = AddVariable(s.Alias, s, ElaVariableFlags.Module, modIndex);
+						var addr = AddVariable(s.Alias, s, ElaVariableFlags.Module|ElaVariableFlags.Private, modIndex);
 						comp.OnModuleInclude(new ModuleEventArgs(modRef));
 
 						if (addr != -1)

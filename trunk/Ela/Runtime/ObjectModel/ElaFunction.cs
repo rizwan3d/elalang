@@ -256,6 +256,117 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
+        public Delegate ToDelegate()
+        {
+            var len = Parameters.Length;
+
+            if (len == 0)
+                return ToDelegate<Object>();
+            else if (len == 1)
+                return ToDelegate<Object,Object>();
+            else if (len == 2)
+                return ToDelegate<Object,Object,Object>();
+            else if (len == 3)
+                return ToDelegate<Object,Object,Object,Object>();
+            else if (len == 4)
+                return ToDelegate<Object,Object,Object,Object,Object>();
+            else if (len == 5)
+                return ToDelegate<Object,Object,Object,Object,Object,Object>();
+            else if (len == 6)
+                return ToDelegate<Object,Object,Object,Object,Object,Object,Object>();
+            else if (len == 7)
+                return ToDelegate<Object,Object,Object,Object,Object,Object,Object,Object>();
+            else if (len == 8)
+                return ToDelegate<Object,Object,Object,Object,Object,Object,Object,Object,Object>();
+            else
+                throw new InvalidCastException();
+        }
+
+        public ElaFun<R> ToDelegate<R>()
+        {
+            return () =>
+            {
+                var ret = Call(new ElaValue(ElaUnit.Instance));
+                return ret.Convert<R>();
+            };
+        }
+
+        public ElaFun<T,R> ToDelegate<T,R>()
+        {
+            return t =>
+            {
+                var ret = Call(ElaValue.FromObject(t));
+                return ret.Convert<R>();
+            };
+        }
+
+        public ElaFun<T1,T2,R> ToDelegate<T1,T2,R>()
+        {
+            return (t1,t2) =>
+            {
+                var ret = Call(ElaValue.FromObject(t1), ElaValue.FromObject(t2));
+                return ret.Convert<R>();
+            };
+        }
+
+        public ElaFun<T1,T2,T3,R> ToDelegate<T1,T2,T3,R>()
+        {
+            return (t1,t2,t3) =>
+            {
+                var ret = Call(ElaValue.FromObject(t1), ElaValue.FromObject(t2), ElaValue.FromObject(t3));
+                return ret.Convert<R>();
+            };
+        }
+
+        public ElaFun<T1,T2,T3,T4,R> ToDelegate<T1,T2,T3,T4,R>()
+        {
+            return (t1,t2,t3,t4) =>
+            {
+                var ret = Call(ElaValue.FromObject(t1), ElaValue.FromObject(t2), ElaValue.FromObject(t3), ElaValue.FromObject(t4));
+                return ret.Convert<R>();
+            };
+        }
+
+        public ElaFun<T1,T2,T3,T4,T5,R> ToDelegate<T1,T2,T3,T4,T5,R>()
+        {
+            return (t1,t2,t3,t4,t5) =>
+            {
+                var ret = Call(ElaValue.FromObject(t1), ElaValue.FromObject(t2), ElaValue.FromObject(t3), ElaValue.FromObject(t4),
+                    ElaValue.FromObject(t5));
+                return ret.Convert<R>();
+            };
+        }
+
+        public ElaFun<T1,T2,T3,T4,T5,T6,R> ToDelegate<T1,T2,T3,T4,T5,T6,R>()
+        {
+            return (t1,t2,t3,t4,t5,t6) =>
+            {
+                var ret = Call(ElaValue.FromObject(t1), ElaValue.FromObject(t2), ElaValue.FromObject(t3), ElaValue.FromObject(t4),
+                    ElaValue.FromObject(t5), ElaValue.FromObject(t6));
+                return ret.Convert<R>();
+            };
+        }
+
+        public ElaFun<T1,T2,T3,T4,T5,T6,T7,R> ToDelegate<T1,T2,T3,T4,T5,T6,T7,R>()
+        {
+            return (t1,t2,t3,t4,t5,t6,t7) =>
+            {
+                var ret = Call(ElaValue.FromObject(t1), ElaValue.FromObject(t2), ElaValue.FromObject(t3), ElaValue.FromObject(t4),
+                    ElaValue.FromObject(t5), ElaValue.FromObject(t6), ElaValue.FromObject(t7));
+                return ret.Convert<R>();
+            };
+        }
+
+        public ElaFun<T1,T2,T3,T4,T5,T6,T7,T8,R> ToDelegate<T1,T2,T3,T4,T5,T6,T7,T8,R>()
+        {
+            return (t1,t2,t3,t4,t5,t6,t7,t8) =>
+            {
+                var ret = Call(ElaValue.FromObject(t1), ElaValue.FromObject(t2), ElaValue.FromObject(t3), ElaValue.FromObject(t4),
+                    ElaValue.FromObject(t5), ElaValue.FromObject(t6), ElaValue.FromObject(t7), ElaValue.FromObject(t8));
+                return ret.Convert<R>();
+            };
+        }
+
         internal ElaFunction CloneFast()
 		{
 			var pars = new ElaValue[Parameters.Length];

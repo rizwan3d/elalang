@@ -376,7 +376,7 @@ namespace ElaConsole
 					if (opt.ShowTime && !interactive)
 						Console.WriteLine("Execution time: {0}", sw.Elapsed);
 
-					if (exer.ReturnValue.TypeCode != ElaTypeCode.None && exer.ReturnValue.TypeCode != ElaTypeCode.Unit)
+                    if (exer.ReturnValue.TypeCode != ElaTypeCode.None && exer.ReturnValue.TypeCode != ElaTypeCode.Unit)
 						Console.WriteLine(exer.ReturnValue.ToString());
 				}
 				catch (ElaCodeException ex)

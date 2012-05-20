@@ -28,6 +28,32 @@ namespace Ela.Runtime.ObjectModel
 	}
 
 
+    internal sealed class DynamicDelegateFunction : DelegateFunction
+    {
+        private Delegate func;
+
+        internal DynamicDelegateFunction(string name, Delegate func) : base(1, name)
+        {
+            this.func = func;
+        }
+
+        public override ElaValue Call(params ElaValue[] args)
+        {
+            var data = new object[args.Length];
+
+            for (var i = 0; i < args.Length; i++)
+                data[i] = args[i].AsObject();
+
+            return ElaValue.FromObject(func.DynamicInvoke(data));
+        }
+
+        public override ElaFunction Clone()
+        {
+            return CloneFast(new DynamicDelegateFunction(Name, func));
+        }
+    }
+
+
 	internal sealed class DelegateFunction<T1> : DelegateFunction
 	{
 		private ElaFun<T1> func;
