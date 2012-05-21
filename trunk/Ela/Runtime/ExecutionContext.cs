@@ -119,6 +119,13 @@ namespace Ela.Runtime
 			Failed = false;
 			Error = null;
 		}
+
+
+        public void SetDeffered(ElaFunction fun)
+        {
+            Failed = true;
+            Thunk = new ElaLazy(fun);
+        }
 		#endregion
 
 

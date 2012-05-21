@@ -895,7 +895,7 @@ namespace Ela.Runtime
 						evalStack.Replace(new ElaValue(new ElaVariant(frame.Strings[opd], right)));
 						break;
 					case Op.Newlazy:
-						evalStack.Push(new ElaValue(new ElaLazy((ElaFunction)evalStack.Pop().Ref, thread.Module)));
+						evalStack.Push(new ElaValue(new ElaLazy((ElaFunction)evalStack.Pop().Ref)));
 						break;
 					case Op.Newfun:
 						{
@@ -998,7 +998,7 @@ namespace Ela.Runtime
 						{
 							var fun = ((ElaFunction)evalStack.Pop().Ref).CloneFast();
 							fun.LastParameter = evalStack.Pop();
-							evalStack.Push(new  ElaValue(new ElaLazy(fun, thread.Module)));
+							evalStack.Push(new ElaValue(new ElaLazy(fun)));
 						}
 						break;
 					case Op.Callt:
@@ -1384,16 +1384,16 @@ namespace Ela.Runtime
 				return true;
 			}
 
-			if (natFun.AppliedParameters == natFun.Parameters.Length)
-				return CallExternal(thread, stack, natFun);
-			else if (natFun.AppliedParameters < natFun.Parameters.Length)
-			{
-				var newFun = natFun.Clone();
-				newFun.Parameters[newFun.AppliedParameters] = stack.Peek();
-				newFun.AppliedParameters++;
-				stack.Replace(new ElaValue(newFun));
-				return true;
-			}
+            if (natFun.AppliedParameters == natFun.Parameters.Length)
+                return CallExternal(thread, stack, natFun);
+            else if (natFun.AppliedParameters < natFun.Parameters.Length)
+            {
+                var newFun = natFun.Clone();
+                newFun.Parameters[newFun.AppliedParameters] = stack.Peek();
+                newFun.AppliedParameters++;
+                stack.Replace(new ElaValue(newFun));
+                return true;
+            }
 			
 			InvalidParameterNumber(natFun.Parameters.Length + 1, natFun.Parameters.Length + 2, thread, stack);		
 			return true;

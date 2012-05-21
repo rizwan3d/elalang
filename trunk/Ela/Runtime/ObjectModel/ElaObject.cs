@@ -9,7 +9,8 @@ namespace Ela.Runtime.ObjectModel
 		internal static readonly ExecutionContext DummyContext = new ExecutionContext();
 		internal const string UNDEF = "<unknown>";
         internal const string INVALID = "<INVALID>";
-        
+        internal int Spec;
+
 		protected ElaObject() : this(ElaTypeCode.Object)
 		{
 			
@@ -427,7 +428,7 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal virtual string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
-			ctx.NoOperator(@this, "show");
+			//ctx.NoOperator(@this, "show");
 			return String.Empty;
 		}
 

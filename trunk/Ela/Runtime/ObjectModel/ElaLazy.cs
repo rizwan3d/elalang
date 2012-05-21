@@ -11,13 +11,12 @@ namespace Ela.Runtime.ObjectModel
         internal static readonly ElaTypeInfo TypeInfo = new ElaTypeInfo(TypeCodeFormat.GetShortForm(ElaTypeCode.Lazy), (Int32)ElaTypeCode.Lazy, true, typeof(ElaLazy));
 
 		private const int SEVAL = -1000;
-		private CodeFrame curMod;
 
-		internal ElaLazy(ElaFunction function, CodeFrame curMod) : base(ElaTypeCode.Lazy)
+		internal ElaLazy(ElaFunction function) : base(ElaTypeCode.Lazy)
 		{
 			Function = function;
 			_value = default(ElaValue);
-			this.curMod = curMod;
+            base.Spec = -1;
 		}
 		#endregion
 

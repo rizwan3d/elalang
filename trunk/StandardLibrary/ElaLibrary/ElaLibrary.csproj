@@ -101,6 +101,7 @@
     <Compile Include="General\ElaDateTime.cs" />
     <Compile Include="General\ElaGuid.cs" />
     <Compile Include="General\ElaStringBuilder.cs" />
+    <Compile Include="General\Experimental.cs" />
     <Compile Include="General\GuidModule.cs" />
     <Compile Include="General\IO.cs" />
     <Compile Include="General\RecordModule.cs" />
