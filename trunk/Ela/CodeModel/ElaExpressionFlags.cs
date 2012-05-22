@@ -7,8 +7,6 @@ namespace Ela.CodeModel
 	{
 		None,
 
-		Assignable = 0x02,
-
-		ReturnsUnit = 0x04
+		ReturnsUnit = 0x02
 	}
 }

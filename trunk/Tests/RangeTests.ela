@@ -1,4 +1,4 @@
-﻿let simple {eq,eqt} =
+let simple {eq,eqt} =
         let rng = [1..3] in
           eq (length rng) 3
         $ eqt <| rng is (1::2::3::[])
@@ -18,7 +18,7 @@ let lazySimple {eqt,eqf} =
         let rng = [1..] in
           eqt <| rng is (1::2::3::xs)
         $ eqf <| rng is (1::2::3::4::[])
-    
+
 let lazyStep {eqt,eqf} = 
         let rng = [5,10..] in
           eqt <| rng is (5::10::15::xs)

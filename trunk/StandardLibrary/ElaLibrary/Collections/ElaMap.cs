@@ -121,7 +121,7 @@ namespace Ela.Library.Collections
             var c = 0;
 
             foreach (var kv in Tree.Enumerate())
-                fields[c++] = new ElaRecordField(kv.Key.ToString(), kv.Value, false);
+                fields[c++] = new ElaRecordField(kv.Key.ToString(), kv.Value);
 
             return new ElaRecord(fields);
         }

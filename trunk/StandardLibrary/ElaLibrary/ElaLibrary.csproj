@@ -91,6 +91,7 @@
     <Compile Include="Collections\QueueModule.cs" />
     <Compile Include="Collections\SetModule.cs" />
     <Compile Include="General\AsyncModule.cs" />
+    <Compile Include="General\CellModule.cs" />
     <Compile Include="General\CharModule.cs" />
     <Compile Include="General\ConModule.cs" />
     <Compile Include="General\CoreModule.cs" />

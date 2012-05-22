@@ -234,12 +234,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal virtual void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
-		{
-			ctx.NoOperator(new ElaValue(this), "set");						
-		}
-
-
 		protected internal virtual ElaValue GetMax(ElaValue @this, ExecutionContext ctx)
 		{
 			ctx.NoOperator(@this, "max");

@@ -1,4 +1,4 @@
-﻿let equals {eq,eqt,eqf} =
+let equals {eq,eqt,eqf} =
           eqt (2 == 2)
         $ eqt (12L == 12)
         $ eqt true
@@ -124,7 +124,7 @@ let cast {eq} =
         $ eq (toSingle "12.2") 12.2
         $ eq (toString 124) "124"
         $ eq (toBool "True") true
-    
+
 let bitNot {eq} =
           eq (~~~2) (--3)
         $ eq (~~~124) (--125)
@@ -149,13 +149,6 @@ let succPred {eq} =
         $ eq (pred 'B') 'A'
         $ eq (pred (1,)) (0,)
 
-let assign {eq} =
-          r.val <- 2
-        $ eq r.val 2
-        $ r.val <- r.val * 2
-        $ eq r.val 4
-        where r = {!val = 0}
-        
 let chainBinding {eq} =
         eq q 5
         where x = 2

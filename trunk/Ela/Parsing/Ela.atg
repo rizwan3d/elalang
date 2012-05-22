@@ -615,14 +615,12 @@ PRODUCTIONS
 		(. 
 			fld = null; 
 			var cexp = default(ElaExpression);
-			var mutable = false;
 		.)
 		(
-			[ "!" (. mutable = true; .) ]
 			(
 				(
 					(ident|variantTok)
-					(. fld = new ElaFieldDeclaration(t) { FieldName = t.val, Mutable = mutable }; .) 
+					(. fld = new ElaFieldDeclaration(t) { FieldName = t.val }; .) 
 					[						
 						"=" Expr<out cexp> 
 						(. fld.FieldValue = cexp; .)
@@ -635,7 +633,7 @@ PRODUCTIONS
 				|
 				(
 					stringTok
-					(. fld = new ElaFieldDeclaration(t) { FieldName = ReadString(t.val), Mutable = mutable }; .) 
+					(. fld = new ElaFieldDeclaration(t) { FieldName = ReadString(t.val) }; .) 
 					"=" 
 					Expr<out cexp> 
 					(. fld.FieldValue = cexp; .)
@@ -1378,20 +1376,6 @@ PRODUCTIONS
 			
 	/* Expr */
 		
-	AssignExpr<out ElaExpression exp> = 
-		BackwardPipeExpr<out exp>
-		{
-			(. 
-				var cexp = default(ElaExpression); 
-				var op = default(ElaOperator);
-			.)
-			(
-				"<-" (. op = ElaOperator.Assign; .)
-			)			
-			BackwardPipeExpr<out cexp>			
-			(. exp = new ElaBinary(t) { Operator = op, Left = exp, Right = cexp }; .)
-		}.
-		
 	BackwardPipeExpr<out ElaExpression exp> =
 		ForwardPipeExpr<out exp>
 		{
@@ -1854,11 +1838,11 @@ PRODUCTIONS
 		.)				
 		(
 			(
-				AssignExpr<out exp>
+				BackwardPipeExpr<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
 					"$"
-					AssignExpr<out cexp>
+					BackwardPipeExpr<out cexp>
 					(. 
 						exp = new ElaBinary(t) { Operator = ElaOperator.Sequence, Left = exp, Right = cexp };
 					.)

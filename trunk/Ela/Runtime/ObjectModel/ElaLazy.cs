@@ -152,12 +152,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
-		{
-			Force(ctx).SetValue(index.Force(ctx), value, ctx);
-		}
-
-
 		protected internal override ElaValue GetMax(ElaValue @this, ExecutionContext ctx)
 		{
 			return Force(ctx).Ref.GetMax(Value, ctx);

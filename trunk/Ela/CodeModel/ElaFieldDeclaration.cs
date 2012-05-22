@@ -23,9 +23,6 @@ namespace Ela.CodeModel
 		#region Methods
 		internal override void ToString(StringBuilder sb, Fmt fmt)		
 		{
-			if (Mutable)
-				sb.Append('!');
-
 			sb.Append(FieldName);
 			sb.Append('=');
 			FieldValue.ToString(sb, fmt);
@@ -35,8 +32,6 @@ namespace Ela.CodeModel
 
 		#region Properties
 		public string FieldName { get; set; }
-
-		public bool Mutable { get; set; }
 
 		public ElaExpression FieldValue { get; set; }
 		#endregion

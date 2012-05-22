@@ -447,12 +447,6 @@ namespace Ela.Runtime
         }
 
 
-        public void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
-        {
-            Ref.SetValue(index, value, ctx);
-        }
-
-
         public ElaValue GetMax(ExecutionContext ctx)
         {
 			return Ref.GetMax(this, ctx);

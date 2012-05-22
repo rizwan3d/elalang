@@ -152,10 +152,10 @@ namespace Ela.Runtime.ObjectModel
 
 						if (val.Ref != null)
 							yield return new ElaRecord(
-								new ElaRecordField(ADDRESS, sv.Address, false),
-								new ElaRecordField(VARNAME, v, false),
-								new ElaRecordField(VALUE, val, false),
-								new ElaRecordField(ISPRIVATE, (sv.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private, false));
+								new ElaRecordField(ADDRESS, sv.Address),
+								new ElaRecordField(VARNAME, v),
+								new ElaRecordField(VALUE, val),
+								new ElaRecordField(ISPRIVATE, (sv.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private));
 					}
                 }
             }
@@ -168,10 +168,10 @@ namespace Ela.Runtime.ObjectModel
             {
                 foreach (var kv in frame.References)
                     yield return new ElaRecord(
-                        new ElaRecordField(MODULENAME, kv.Value.ModuleName, false),
-                        new ElaRecordField(DLLNAME, kv.Value.DllName, false),
-                        new ElaRecordField(ALIAS, kv.Key, false),
-                        new ElaRecordField(PATH, String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), kv.Value.Path), false));
+                        new ElaRecordField(MODULENAME, kv.Value.ModuleName),
+                        new ElaRecordField(DLLNAME, kv.Value.DllName),
+                        new ElaRecordField(ALIAS, kv.Key),
+                        new ElaRecordField(PATH, String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), kv.Value.Path)));
             }
         }
 
@@ -180,7 +180,7 @@ namespace Ela.Runtime.ObjectModel
         {
             if (vm != null)
                 return new ElaRecord(
-                    new ElaRecordField(MODULECOUNT, vm.Assembly.ModuleCount, false));
+                    new ElaRecordField(MODULECOUNT, vm.Assembly.ModuleCount));
             else
                 return ElaUnit.Instance;
         }

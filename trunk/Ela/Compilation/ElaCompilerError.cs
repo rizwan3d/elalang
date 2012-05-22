@@ -13,11 +13,11 @@ namespace Ela.Compilation
 
 		UndefinedName = 302,
 
-		AssignImmutableVariable = 303,
+		// = 303,
 
 		PlaceholderNotValid = 304,
 
-		UnableAssignExpression = 305,
+		// = 305,
 
 		PatternNotAllArgs = 306,
 

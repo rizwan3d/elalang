@@ -50,7 +50,6 @@ namespace Ela.CodeModel
 		{
 			switch (op)
 			{
-				case ElaOperator.Assign: return "<-";
 				case ElaOperator.BooleanAnd: return "&&";
 				case ElaOperator.BooleanOr: return "||";
 				case ElaOperator.Sequence: return "$";

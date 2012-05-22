@@ -502,7 +502,7 @@ namespace Ela.Linking
 		{
 			var elap = new ElaParser();
 			var res = source != null ? elap.Parse(source) : elap.Parse(file);
-			AddMessages(res.Messages, file == null ? RootFile : null);
+			AddMessages(res.Messages, file == null ? RootFile : file);
 			return res;
 		}
 

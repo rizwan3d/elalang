@@ -14,9 +14,8 @@ namespace Ela.Compilation
 			1, //PushI1_0
 			1, //PushI1_1
 			-1, //Pop
-			-3, //Popelem
 			1, //Pushstr_0
-			-3, //Reccons
+			-2, //Reccons
 			0, //Genfin
 			-1, //Cons
 			-1, //Gen
@@ -94,7 +93,6 @@ namespace Ela.Compilation
 			1, //Pushvar
 			0, //Pushfld
 			-1, //Popvar
-			-2, //Popfld
 			0, //Runmod
 			0, //Has
 			0, //Br

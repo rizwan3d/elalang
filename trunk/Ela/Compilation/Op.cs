@@ -20,8 +20,6 @@ namespace Ela.Compilation
 
         Pop,
 
-        Popelem,
-
         Pushstr_0,
 
         Reccons,
@@ -178,8 +176,6 @@ namespace Ela.Compilation
         Pushfld,
 
         Popvar,
-
-        Popfld,
 
         Runmod,
 

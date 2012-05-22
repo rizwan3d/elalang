@@ -1,4 +1,4 @@
-﻿let fromLiteral {eq} =
+let fromLiteral {eq} =
         let rec' = {lang="Ela", dev="Basil"} in
         eq (length rec') 2
         $ eq rec'.[0] "Ela" 
@@ -13,21 +13,30 @@ let fromLiteral2 {eq} =
         $ eq rec'.["text-decoration"] "none"
         where rec' = {"font-color"="red","text-decoration"="none"}
 
+let lightRec {eq} = 
+        eq {x,y} {x=1,y=2}
+        where x = 1
+           et y = 2
+
+let concat {eq} =
+        eq r3 {x=1,y=2,z=3}
+        where r1 = {x=1,y=2}
+           et r2 = {z=3}
+           et r3 = r1++r2
+
+let recordAsTuple {eq} =
+        eq x 1
+        $ eq y 2
+        $ eq z 3
+        where r = {x=1,y=2,z=3}
+           et (x,y,z) = r
+
 let equals {eq,neq} =
         eq r1 r2
         $ neq r1 r3
         where r1 = {x=1,y="word",z='c'}
            et r2 = {x=1,y="word",z='c'}
            et r3 = {x=1,y="WORD",z='C'}
-
-let changeItem {eq} =
-        let rec' = {!x=1} in
-        rec'.x <- 2
-        $ eq rec'.x 2
-        $ rec'.[0] <- 22
-        $ eq rec'.x 22
-        $ rec'.["x"] <- 222
-        $ eq rec'.x 222
 
 let typeCheck {eqt} =
         let rec' = {x=0} in

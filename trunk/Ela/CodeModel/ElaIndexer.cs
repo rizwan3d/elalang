@@ -9,7 +9,7 @@ namespace Ela.CodeModel
 		#region Construction
 		internal ElaIndexer(Token tok) : base(tok, ElaNodeType.Indexer)
 		{
-			Flags = ElaExpressionFlags.Assignable;
+			
 		}
 
 

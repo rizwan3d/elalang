@@ -1,3 +1,4 @@
+0.0.9.8:New:A Cell module is added (this module implements reference cells in ML style).
 0.0.9.7:New:An IO module is added.
 0.0.9.6:New:A new function loop is added to Imperative module.
 0.0.9.5:Change:Function each is moved from Core to a new Imperative module.

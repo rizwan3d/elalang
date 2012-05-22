@@ -1,6 +1,5 @@
-﻿open Test
-open Con 
-
+open Test
+open Con
 open BasicTests
 open FunTests
 open RangeTests
@@ -23,6 +22,5 @@ let _ = []
     |> regFuns ComprehensionTests
     |> regFuns ThunkTests
     |> regFuns MatchTests
-
     |> run
     |> fmt (\(_,x,_) -> not x) writen

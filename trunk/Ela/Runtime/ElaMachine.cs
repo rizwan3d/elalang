@@ -83,13 +83,13 @@ namespace Ela.Runtime
 			{
 				throw;
 			}
-            //catch (Exception ex)
-            //{
-            //    var op = MainThread.Module != null && MainThread.Offset > 0 &&
-            //        MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
-            //        MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
-            //    throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
-            //}
+            catch (Exception ex)
+            {
+                var op = MainThread.Module != null && MainThread.Offset > 0 &&
+                    MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
+                    MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
+                throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
+            }
 			
 			var evalStack = MainThread.CallStack[0].Stack;
 
@@ -306,36 +306,6 @@ namespace Ela.Runtime
 						else
 							captures[captures.Count - i4][opd >> 8] = right;
 						break;
-					case Op.Popelem:
-						{
-							right = evalStack.Pop();
-							left = evalStack.Pop();
-							var val = evalStack.Pop();
-							left.Ref.SetValue(right.Id(ctx), val, ctx); //Use of ElaValue.Id
-
-							if (ctx.Failed)
-							{
-								evalStack.Push(val);
-								evalStack.Push(left);
-								evalStack.Push(right);
-								ExecuteThrow(thread, evalStack);
-								goto SWITCH_MEM;
-							}
-						}
-						break;
-					case Op.Popfld:
-						right = evalStack.Pop();
-						left = evalStack.Pop();
-						right.Ref.SetValue(new ElaValue(frame.Strings[opd]), left, ctx);
-
-						if (ctx.Failed)
-						{
-							evalStack.Push(left);
-							evalStack.Push(right);
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
-						break;
 					case Op.Dup:
 						evalStack.Push(evalStack.Peek());
 						break;
@@ -385,11 +355,10 @@ namespace Ela.Runtime
 						{
 							right = evalStack.Pop();
 							left = evalStack.Pop();
-							var mut = evalStack.Pop();
 							var rec = evalStack.Peek();
 
 							if (rec.TypeId == REC)
-								((ElaRecord)rec.Ref).AddField(right.DirectGetString(), mut.I4 == 1, left);
+								((ElaRecord)rec.Ref).AddField(right.DirectGetString(), left);
 							else
 							{
 								InvalidType(left, thread, evalStack, TypeCodeFormat.GetShortForm(ElaTypeCode.Record));

@@ -397,16 +397,16 @@ internal sealed class Scanner {
 			case "et": t.kind = 44; break;
 			case "=": t.kind = 50; break;
 			case "::": t.kind = 51; break;
-			case "!": t.kind = 52; break;
-			case "&": t.kind = 54; break;
-			case "inline": t.kind = 55; break;
-			case "extends": t.kind = 56; break;
-			case "__internal": t.kind = 57; break;
-			case "<-": t.kind = 60; break;
-			case "<|": t.kind = 61; break;
-			case "|>": t.kind = 62; break;
-			case "||": t.kind = 63; break;
-			case "&&": t.kind = 64; break;
+			case "&": t.kind = 53; break;
+			case "inline": t.kind = 54; break;
+			case "extends": t.kind = 55; break;
+			case "__internal": t.kind = 56; break;
+			case "!": t.kind = 58; break;
+			case "<|": t.kind = 60; break;
+			case "|>": t.kind = 61; break;
+			case "||": t.kind = 62; break;
+			case "&&": t.kind = 63; break;
+			case "<-": t.kind = 65; break;
 			default: break;
 		}
 	}
@@ -789,13 +789,13 @@ internal sealed class Scanner {
 			case 73:
 				{t.kind = 49; break;}
 			case 74:
-				{t.kind = 53; break;}
+				{t.kind = 52; break;}
 			case 75:
-				{t.kind = 58; break;}
+				{t.kind = 57; break;}
 			case 76:
 				{t.kind = 59; break;}
 			case 77:
-				{t.kind = 65; break;}
+				{t.kind = 64; break;}
 			case 78:
 				recEnd = pos; recKind = 46;
 				if (ch == 39 || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 2;}

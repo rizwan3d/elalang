@@ -9,7 +9,7 @@ namespace Ela.CodeModel
 		#region Construction
 		internal ElaVariableReference(Token tok) : base(tok, ElaNodeType.VariableReference)
 		{
-			Flags = ElaExpressionFlags.Assignable;
+			
 		}
 
 

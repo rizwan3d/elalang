@@ -10,7 +10,7 @@ namespace Ela.Compilation
 		{
 			CompileBinaryMain(bin.Operator, bin, map, hints);
 
-			if ((hints & Hints.Left) == Hints.Left && bin.Operator != ElaOperator.Assign)
+			if ((hints & Hints.Left) == Hints.Left)
 				AddValueNotUsed(bin);
 
 			return ExprData.Empty;
@@ -49,9 +49,6 @@ namespace Ela.Compilation
 					cw.MarkLabel(exitLab);
 					cw.Emit(Op.Nop);
 					break;
-				case ElaOperator.Assign:
-					CompileAssign(bin, bin.Left, bin.Right, ut, map);
-					break;
 				case ElaOperator.Sequence:
 					CompileExpression(bin.Left, map, Hints.None);
 					cw.Emit(Op.Force);
@@ -60,20 +57,6 @@ namespace Ela.Compilation
 					break;
 			}
 		}
-
-
-		private void CompileAssign(ElaExpression exp, ElaExpression left, ElaExpression right, Hints hints, LabelMap map)
-		{
-			CompileExpression(right, map, Hints.None);
-
-			if ((left.Flags & ElaExpressionFlags.Assignable) != ElaExpressionFlags.Assignable)
-				AddError(ElaCompilerError.UnableAssignExpression, left, FormatNode(left));
-			else
-				CompileExpression(left, map, Hints.Assign | Hints.Left);
-
-			if ((hints & Hints.Left) != Hints.Left)
-				cw.Emit(Op.Pushunit);
-		}		
 		#endregion
 	}
 }

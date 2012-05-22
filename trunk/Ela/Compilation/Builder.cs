@@ -380,16 +380,10 @@ namespace Ela.Compilation
 
 						AddLinePragma(p);
 
-						if ((hints & Hints.Left) == Hints.Left &&
-							(hints & Hints.Assign) == Hints.Assign)
-							cw.Emit(Op.Popfld, AddString(p.FieldName));
-						else
-						{
-							cw.Emit(Op.Pushfld, AddString(p.FieldName));
+						cw.Emit(Op.Pushfld, AddString(p.FieldName));
 
-							if ((hints & Hints.Left) == Hints.Left)
-								AddValueNotUsed(exp);
-						}
+						if ((hints & Hints.Left) == Hints.Left)
+						    AddValueNotUsed(exp);
 					}
 					break;
 				case ElaNodeType.ListLiteral:
@@ -423,21 +417,12 @@ namespace Ela.Compilation
 						var v = (ElaIndexer)exp;
 						CompileExpression(v.TargetObject, map, Hints.None);
 
-						if ((hints & Hints.Left) == Hints.Left && (hints & Hints.Assign) == Hints.Assign)
-						{
-                            CompileExpression(v.Index, map, Hints.None);
-                            AddLinePragma(v);
-							cw.Emit(Op.Popelem);
-						}
-						else
-						{
-							CompileExpression(v.Index, map, Hints.None);
-							AddLinePragma(v);
-							cw.Emit(Op.Pushelem);
+						CompileExpression(v.Index, map, Hints.None);
+						AddLinePragma(v);
+						cw.Emit(Op.Pushelem);
 
-							if ((hints & Hints.Left) == Hints.Left)
-								AddValueNotUsed(exp);
-						}
+						if ((hints & Hints.Left) == Hints.Left)
+						    AddValueNotUsed(exp);
 					}
 					break;
 				case ElaNodeType.VariableReference:
@@ -446,18 +431,10 @@ namespace Ela.Compilation
 						AddLinePragma(v);
 						var scopeVar = GetVariable(v.VariableName, v.Line, v.Column);
 
-						if ((hints & Hints.Left) == Hints.Left && (hints & Hints.Assign) == Hints.Assign)
-						{
-							AddError(ElaCompilerError.AssignImmutableVariable, exp, v.VariableName);
-							AddHint(ElaCompilerHint.UseReferenceCell, exp);
-						}
-						else
-						{
-							EmitVar(scopeVar);
+						EmitVar(scopeVar);
 
-							if ((hints & Hints.Left) == Hints.Left)
-								AddValueNotUsed(v);
-						}
+						if ((hints & Hints.Left) == Hints.Left)
+						    AddValueNotUsed(v);
 
 						if ((scopeVar.VariableFlags & ElaVariableFlags.Function) == ElaVariableFlags.Function)
 							exprData = new ExprData(DataKind.FunParams, scopeVar.Data);
@@ -519,37 +496,11 @@ namespace Ela.Compilation
 				case ElaNodeType.UnitLiteral:
 					if ((hints & Hints.Left) != Hints.Left)
 						cw.Emit(Op.Pushunit);
-					else if ((hints & Hints.Assign) == Hints.Assign)
-						AddError(ElaCompilerError.UnableAssignExpression, exp, FormatNode(exp));
 					break;
 				case ElaNodeType.TupleLiteral:
 					{
 						var v = (ElaTupleLiteral)exp;
-
-						if ((hints & Hints.Assign) == Hints.Assign)
-						{
-							for (var i = 0; i < v.Parameters.Count; i++)
-							{
-								var p = v.Parameters[i];
-								cw.Emit(Op.Dup);
-
-								if (i == 0)
-									cw.Emit(Op.PushI4_0);
-								else
-									cw.Emit(Op.PushI4, i);
-
-								cw.Emit(Op.Pushelem);
-
-								if ((p.Flags & ElaExpressionFlags.Assignable) != ElaExpressionFlags.Assignable)
-									AddError(ElaCompilerError.UnableAssignExpression, p, FormatNode(exp));
-								else
-									CompileExpression(p, map, Hints.None);
-							}
-
-							cw.Emit(Op.Pop);
-						}
-						else
-							CompileTupleParameters(v, v.Parameters, map, hints);
+						CompileTupleParameters(v, v.Parameters, map, hints);
 					}
 					break;
 			}
@@ -639,12 +590,6 @@ namespace Ela.Compilation
 			for (var i = 0; i < fields.Count; i++)
 			{
 				var f = fields[i];
-
-				if (f.Mutable)
-					cw.Emit(Op.PushI4, 1);
-				else
-					cw.Emit(Op.PushI4_0); 
-				
 				CompileExpression(f.FieldValue, map, Hints.None);
 				cw.Emit(Op.Pushstr, AddString(f.FieldName));
 				cw.Emit(Op.Reccons);

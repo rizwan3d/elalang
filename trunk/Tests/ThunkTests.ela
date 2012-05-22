@@ -14,21 +14,6 @@ let lazyList2 {eqt} =
         $ eqt <| xs is (1::2::3::1::2::3::_)
         where cycle xs = xs ++ (& cycle xs)
            et xs = cycle [1,2,3]
-              
-let memoization {eq} =
-        let x = {!x=0} in
-        let fun () = x.x <- x.x + 1 $ x in
-        let t = (& (fun ()).x ) in
-          t + 0
-        $ t + 1
-        $ eq x.x 1
-
-let sequencing {eq} = 
-          (& t.val <- 2)
-        $ eq t.val 2
-        $ (& t.val <- t.val + t.val)
-        $ eq t.val 4
-        where t = {!val=0}
 
 let fixPoint {eq} =
         let fix' f = f (& fix' f) in
@@ -124,21 +109,9 @@ let lazyFunc {eq} =
         where lf = (& \x y -> x + y)
            et lf2 = (& \x -> --x)
 
-let lazyIndexer {eq} =
-        eq rec.[ix1] 0
-        $ rec2.[ix2] <- 3
-        $ eq rec2.[ix3] 3
-        $ eq rec2.[ix3] 3
-        where rec = (& { !x = 0, !y = 1 })
-           et rec2 = (& { !x = 0, !y = 1 })
-           et ix1 = (& 0)
-           et ix2 = (& 1)
-           et ix3 = (& 1)
-
 let lazyRecord {eq} =
-        obj.x <- 11
-        $ eq obj.x 11
-        where obj = (& {!x=1,y=2})
+        eq obj.x 1
+        where obj = (& {x=1,y=2})
 
 let lazySuccPred {eq} = 
         eq (succ thunk1) 5
@@ -146,11 +119,6 @@ let lazySuccPred {eq} =
         where thunk1 = (& 2 + 2)
            et thunk2 = (& add 2 3)
                    where add x y = x + y
-
-let lazyAssign {eq} = 
-        thunk1.x <- 1
-        $ eq thunk1.x 1
-        where thunk1 = (& {!x=0})
 
 let lazyUnary {eq} = 
         eq (~~~thunk1) (--3)

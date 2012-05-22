@@ -9,13 +9,13 @@ namespace Ela.Compilation
 
 		Left = 0x01,
 
-		Assign = 0x02,
+		__Reserved1 = 0x02,
 
 		Scope = 0x04,
 
-		__Reserved1 = 0x08,
+		__Reserved2 = 0x08,
 
-		__Reserved2 = 0x10,
+		__Reserved3 = 0x10,
 
 		Tail = 0x20,
 

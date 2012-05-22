@@ -93,24 +93,24 @@ namespace Ela.Library.Collections
 		}
 
 
-		protected override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
-		{
-			if (index.TypeCode != ElaTypeCode.Integer)
-			{
-				ctx.InvalidIndexType(index);
-				return;
-			}
+        //protected override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
+        //{
+        //    if (index.TypeCode != ElaTypeCode.Integer)
+        //    {
+        //        ctx.InvalidIndexType(index);
+        //        return;
+        //    }
 
-            var idx = index.AsInteger();
+        //    var idx = index.AsInteger();
 
-			if (idx < 0 || idx >= Length)
-			{
-				ctx.IndexOutOfRange(index, new ElaValue(this));
-				return;
-			}
+        //    if (idx < 0 || idx >= Length)
+        //    {
+        //        ctx.IndexOutOfRange(index, new ElaValue(this));
+        //        return;
+        //    }
 
-			array[idx] = value;
-		}
+        //    array[idx] = value;
+        //}
 
 
 		protected override ElaValue Head(ExecutionContext ctx)

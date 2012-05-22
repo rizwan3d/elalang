@@ -1,10 +1,16 @@
-﻿let private inline
+let private inline
     sum x y = x + y
  et even x = x % 2 == 0
  et odd x = x % 2 <> 0
  et calc x y = (x / y) * (x + y) 
  et compare x y = if x > y then Gt else NotGt
- 
+
+let private double (Foo x) = x+x
+
+let extendFuns {eq} =
+        eq (double 2) 4
+        where extends double x = x+x
+
 let partial1 {eq} =
           eq (sum 2 3) 5
         $ eq (sum2 3) 5
@@ -37,15 +43,6 @@ let closure1 {eq} =
         let x = 2 in
         let fun () = eq x 2 in
         fun ()
-    
-let closure2 {eq} = 
-        let x = {!x=0} in
-        let fun () = x in
-        eq (fun ()).x 0
-        $ x.x <- x.x + 1
-        $ eq (fun ()).x 1
-        $ x.x <- x.x + 2
-        $ eq (fun ()).x 3
     
 let flipped1 {eq} = 
         eq (sub 3 2) 1

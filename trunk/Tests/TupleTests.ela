@@ -56,12 +56,6 @@ let concat {eq,eqt} =
 let genTupleTest {eq} =
         eq t (1,2,4)
         where t = (1,) @@ [x \\ x <- [2..5] | x % 2 == 0]
-    
-let changeItem {eqt} =
-        try 
-            (let tup = [0] in tup.[0] <- 1)
-            $ eqt false with 
-            _ = eqt true
 
 let lengthTest {eq} = 
           eq (length t1) 3

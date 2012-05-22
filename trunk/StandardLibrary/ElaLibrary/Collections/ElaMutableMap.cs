@@ -85,13 +85,13 @@ namespace Ela.Library.Collections
         }
 
 
-        protected override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
-        {
-            if (Map.ContainsKey(index))
-                Map.Add(index, value);
-            else
-                Map[index] = value;
-        }
+        //protected override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
+        //{
+        //    if (Map.ContainsKey(index))
+        //        Map.Add(index, value);
+        //    else
+        //        Map[index] = value;
+        //}
 
 
         protected override ElaValue GetLength(ExecutionContext ctx)
@@ -106,7 +106,7 @@ namespace Ela.Library.Collections
             var c = 0;
 
             foreach (var kv in Map)
-                fields[c++] = new ElaRecordField(kv.Key.ToString(), kv.Value, true);
+                fields[c++] = new ElaRecordField(kv.Key.ToString(), kv.Value);
 
             return new ElaRecord(fields);
         }

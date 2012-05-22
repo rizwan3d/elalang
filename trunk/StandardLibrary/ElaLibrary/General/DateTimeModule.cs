@@ -215,12 +215,12 @@ namespace Ela.Library.General
 		{
 			var ts = new DateTime(left.Ticks) - new DateTime(right.Ticks);
 			return new ElaRecord(
-				new ElaRecordField("ticks", ts.Ticks, false),
-				new ElaRecordField("milliseconds", (Int32)ts.TotalMilliseconds, false),
-				new ElaRecordField("seconds", (Int32)ts.TotalSeconds, false),
-				new ElaRecordField("minutes", (Int32)ts.TotalMinutes, false),
-				new ElaRecordField("hours", (Int32)ts.TotalHours, false),
-				new ElaRecordField("days", (Int32)ts.TotalDays, false));
+				new ElaRecordField("ticks", ts.Ticks),
+				new ElaRecordField("milliseconds", (Int32)ts.TotalMilliseconds),
+				new ElaRecordField("seconds", (Int32)ts.TotalSeconds),
+				new ElaRecordField("minutes", (Int32)ts.TotalMinutes),
+				new ElaRecordField("hours", (Int32)ts.TotalHours),
+				new ElaRecordField("days", (Int32)ts.TotalDays));
 		}
 
 

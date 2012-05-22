@@ -13,33 +13,22 @@ namespace Ela.Runtime.ObjectModel
         private const string FIELDS = "fields";
         private string[] keys;
         private ElaValue[] values;
-		private bool[] flags;
         private int cons;
-
-		private enum SetResult
-		{
-			None,
-			Done,
-			OutOfRange,
-			Immutable
-		}
 
 		public ElaRecord(params ElaRecordField[] fields) : base(ElaTypeCode.Record)
 		{
 			keys = new string[fields.Length];
             values = new ElaValue[fields.Length];
-			flags = new bool[fields.Length];
 
 			for (var i = 0; i < fields.Length; i++)
-				AddField(i, fields[i].Field, fields[i].Mutable, fields[i].Value);
+				AddField(i, fields[i].Field, fields[i].Value);
 		}
 
 
 		internal ElaRecord(int size) : base(ElaTypeCode.Record)
 		{
 			keys = new string[size];
-			flags = new bool[size];
-            values = new ElaValue[size];
+			values = new ElaValue[size];
 		}
 		#endregion
 
@@ -93,25 +82,6 @@ namespace Ela.Runtime.ObjectModel
 			return Default();
 		}
 
-
-		protected internal override void SetValue(ElaValue index, ElaValue value, ExecutionContext ctx)
-		{
-			var res = SetResult.None;
-
-			if (index.TypeId == ElaMachine.STR)
-				res = SetValue(index.Ref.ToString(), value);
-			else if (index.TypeId == ElaMachine.INT)
-				res = SetValue(index.I4, value);
-			else
-				ctx.InvalidIndexType(index);
-
-			if (res == SetResult.OutOfRange)
-				ctx.IndexOutOfRange(index, new ElaValue(this));
-			else if (res == SetResult.Immutable)
-				ctx.Fail(ElaRuntimeError.ImmutableStructure, index.Ref.ToString(), Show(new ElaValue(this), ShowInfo.Default, ctx));
-		}
-
-
 		private ElaValue GetField(string field, ExecutionContext ctx)
 		{
 			var index = GetOrdinal(field);
@@ -121,17 +91,6 @@ namespace Ela.Runtime.ObjectModel
 
             ctx.IndexOutOfRange(new ElaValue(field), new ElaValue(this));
 			return Default();
-		}
-
-
-        private void SetField(string field, ElaValue value, ExecutionContext ctx)
-		{
-			var res = SetValue(field, value);
-
-			if (res == SetResult.Immutable)
-				ctx.Fail(ElaRuntimeError.ImmutableStructure, field, Show(new ElaValue(this), ShowInfo.Default, ctx));
-			else if (res == SetResult.OutOfRange)
-                ctx.IndexOutOfRange(new ElaValue(field), new ElaValue(this));
 		}
 
 
@@ -171,9 +130,6 @@ namespace Ela.Runtime.ObjectModel
 				if (c++ > 0)
 					sb.Append(",");
 
-				if (flags[c - 1])
-					sb.Append("!");
-
 				sb.AppendFormat("{0}={1}", k, this[k].Ref.Show(this[k], info, ctx));
 			}
 
@@ -211,7 +167,7 @@ namespace Ela.Runtime.ObjectModel
         public IEnumerator<ElaRecordField> GetEnumerator()
         {
             for (var i = 0; i < keys.Length; i++)
-                yield return new ElaRecordField(keys[i], values[i], flags[i]);
+                yield return new ElaRecordField(keys[i], values[i]);
         }
 
 
@@ -245,18 +201,17 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		internal void AddField(string key, bool mutable, ElaValue value)
+		internal void AddField(string key, ElaValue value)
 		{
-            AddField(cons, key, mutable, value);
+            AddField(cons, key, value);
             cons++;
 		}
 
 
-		internal void AddField(int index, string key, bool mutable, ElaValue value)
+		internal void AddField(int index, string key, ElaValue value)
 		 {
 			keys[index] = key;
 			values[index] = value;
-			flags[index] = mutable;
 		}
 
 
@@ -267,28 +222,6 @@ namespace Ela.Runtime.ObjectModel
 					return i;
 
 			return -1;
-		}
-
-
-		private SetResult SetValue(string key, ElaValue value)
-		{
-			var idx = GetOrdinal(key);
-			return SetValue(idx, value);
-		}
-
-
-		private SetResult SetValue(int index, ElaValue value)
-		{
-			if (index > -1 && index < values.Length)
-			{
-				if (!flags[index])
-					return SetResult.Immutable;
-
-				values[index] = value;
-				return SetResult.Done;
-			}
-			else
-				return SetResult.OutOfRange;
 		}
 		#endregion
 
@@ -311,15 +244,6 @@ namespace Ela.Runtime.ObjectModel
 				else
 					throw new IndexOutOfRangeException();
 			}
-			set
-			{
-				var res = SetValue(key, value);
-
-				if (res == SetResult.OutOfRange)
-					throw new IndexOutOfRangeException();
-				else if (res == SetResult.Immutable)
-					throw new InvalidOperationException();
-			}
 		}
 
 
@@ -331,15 +255,6 @@ namespace Ela.Runtime.ObjectModel
 					return values[index];
 				else
 					throw new IndexOutOfRangeException();
-			}
-			set
-			{
-				var res = SetValue(index, value);
-
-				if (res == SetResult.OutOfRange)
-					throw new IndexOutOfRangeException();
-				else if (res == SetResult.Immutable)
-					throw new InvalidOperationException();
 			}
 		}
 		#endregion

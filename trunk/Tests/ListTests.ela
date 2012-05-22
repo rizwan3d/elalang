@@ -27,11 +27,6 @@ let headTail2 {eqt} = eqt res
                           [1,2] = false
                           x::xs = (xs is [2,3])
 
-let changeItem {eqt=eqt} =
-        try 
-            (let list = [0] in list.[0] <- 1)
-            $ eqt false with _ = eqt true
-            
 let zips {eqt} =
         let zip x::xs y::ys = (x, y) :: zip xs ys
             zip _ _         = [] in
