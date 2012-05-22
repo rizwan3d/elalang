@@ -65,7 +65,7 @@ let flipped3 {eq} =
         where fold' [] f = []
               fold' x::xs f = f x :: fold' xs f
            et f = flip fold' (*10)
-        
+
 let partialOperators {eq} =
           eq (add' 7 2) 9
         $ eq (add2 3) 5

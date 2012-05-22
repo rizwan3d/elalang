@@ -207,7 +207,7 @@ namespace Ela.Linking
     {
         protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
         {
-            return arg1.Equal(arg1, arg2, ctx);
+            return new ElaValue(arg1.Equal(arg1, arg2, ctx));
         }
     }
 
@@ -215,7 +215,7 @@ namespace Ela.Linking
     {
         protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
         {
-            return arg1.NotEqual(arg1, arg2, ctx);
+            return new ElaValue(arg1.NotEqual(arg1, arg2, ctx));
         }
     }
 
@@ -223,7 +223,7 @@ namespace Ela.Linking
     {
         protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
         {
-            return arg1.GreaterEqual(arg1, arg2, ctx);
+            return new ElaValue(arg1.GreaterEqual(arg1, arg2, ctx));
         }
     }
 
@@ -231,7 +231,7 @@ namespace Ela.Linking
     {
         protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
         {
-            return arg1.LesserEqual(arg1, arg2, ctx);
+            return new ElaValue(arg1.LesserEqual(arg1, arg2, ctx));
         }
     }
 
@@ -239,7 +239,7 @@ namespace Ela.Linking
     {
         protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
         {
-            return arg1.Lesser(arg1, arg2, ctx);
+            return new ElaValue(arg1.Lesser(arg1, arg2, ctx));
         }
     }
 
@@ -247,7 +247,7 @@ namespace Ela.Linking
     {
         protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
         {
-            return arg1.Greater(arg1, arg2, ctx);
+            return new ElaValue(arg1.Greater(arg1, arg2, ctx));
         }
     }
 
@@ -255,7 +255,13 @@ namespace Ela.Linking
     {
         protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
         {
-            return new ElaValue(!arg.Ref.Bool(arg, ctx));
+            if (arg.TypeId != ElaMachine.BYT)
+            {
+                ctx.InvalidType("bool", arg);
+                return Default();
+            }
+
+            return new ElaValue(arg.I4 != 1);
         }
     }
 
@@ -380,7 +386,7 @@ namespace Ela.Linking
 
             if (!ctx.Failed)
             {
-                if (!res.Equal(res, new ElaValue(len), ctx).Bool(ctx))
+                if (!res.Equal(res, new ElaValue(len), ctx))
                 {
                     if (!ctx.Failed)
                         ctx.Fail(ElaRuntimeError.MatchFailed);

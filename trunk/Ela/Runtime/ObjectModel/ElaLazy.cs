@@ -77,7 +77,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Force(ElaValue @this, ExecutionContext ctx)
+		internal override ElaValue Force(ElaValue @this, ExecutionContext ctx)
 		{
 			if (ctx == ElaObject.DummyContext)
 				return Force();
@@ -103,37 +103,37 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return left.Force(ctx).Equal(left.Force(ctx), right.Force(ctx), ctx);
 		}
 
 
-		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return left.Force(ctx).NotEqual(left.Force(ctx), right.Force(ctx), ctx);
 		}
 
 
-		protected internal override ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return left.Force(ctx).Greater(left.Force(ctx), right.Force(ctx), ctx);
 		}
 
 
-		protected internal override ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return left.Force(ctx).Lesser(left.Force(ctx), right.Force(ctx), ctx);
 		}
 
 
-		protected internal override ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return left.Force(ctx).GreaterEqual(left.Force(ctx), right.Force(ctx), ctx);
 		}
 
 
-		protected internal override ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return left.Force(ctx).LesserEqual(left.Force(ctx), right.Force(ctx), ctx);
 		}
@@ -142,18 +142,6 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue GetLength(ExecutionContext ctx)
 		{
 			return Force(ctx).Ref.GetLength(ctx);
-		}
-
-
-		protected internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.Successor(Value, ctx);
-		}
-
-
-		protected internal override ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.Predecessor(Value, ctx);
 		}
 
 
@@ -180,6 +168,17 @@ namespace Ela.Runtime.ObjectModel
 			return Force(ctx).Ref.GetMin(Value, ctx);
 		}
 
+
+        protected internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
+        {
+            return Force(ctx).Ref.Successor(Value, ctx);
+        }
+
+
+        protected internal override ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
+        {
+            return Force(ctx).Ref.Predecessor(Value, ctx);
+        }
 
 		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
@@ -285,12 +284,6 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue Negate(ElaValue @this, ExecutionContext ctx)
 		{
 			return Force(ctx).Ref.Negate(Value, ctx);
-		}
-
-
-		protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.Bool(Value, ctx);
 		}
 		
 		

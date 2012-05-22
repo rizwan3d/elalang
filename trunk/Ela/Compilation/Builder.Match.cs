@@ -8,7 +8,7 @@ namespace Ela.Compilation
 	internal sealed partial class Builder
 	{
 		#region Main
-		private void CompileMatch(ElaMatch exp, ElaExpression matchExp, LabelMap map, Hints hints)
+		private void CompileMatch(ElaMatch exp, ElaExpression matchExp, LabelMap map, Hints hints, ScopeVar oldAddr)
 		{
 			var serv = -1;
 			var tuple = default(ElaTupleLiteral);
@@ -175,8 +175,34 @@ namespace Ela.Compilation
 				cw.Emit(Op.Pushvar, serv);
 				cw.Emit(Op.Rethrow);
 			}
-			else
-				cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
+            else if ((hints & Hints.Extends) == Hints.Extends)
+            {
+                if (serv != -1)
+                {
+                    cw.Emit(Op.Pushvar, serv);
+                    EmitVar(oldAddr);
+                    cw.Emit(Op.Callt);
+                }
+                else
+                {
+                    var tlen = tuple.Parameters.Count;
+
+                    for (var i = 0; i < tlen; i++)
+                        CompileExpression(tuple.Parameters[tlen - i - 1], map, Hints.None);
+
+                    EmitVar(oldAddr);
+                    
+                    for (var i = 0; i < tlen; i++)
+                    {
+                        if (i == tuple.Parameters.Count - 1 && opt)
+                            cw.Emit(Op.Callt);
+                        else
+                            cw.Emit(Op.Call);
+                    }
+                }
+            }
+            else
+                cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
 
 			cw.MarkLabel(end);
 			cw.Emit(Op.Nop);

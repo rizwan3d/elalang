@@ -95,13 +95,13 @@ namespace Ela.Runtime
 			{
 				throw;
 			}
-            catch (Exception ex)
-            {
-                var op = MainThread.Module != null && MainThread.Offset > 0 &&
-                    MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
-                    MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
-                throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
-            }
+            //catch (Exception ex)
+            //{
+            //    var op = MainThread.Module != null && MainThread.Offset > 0 &&
+            //        MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
+            //        MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
+            //    throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
+            //}
 			
 			var evalStack = MainThread.CallStack[0].Stack;
 
@@ -213,7 +213,6 @@ namespace Ela.Runtime
 				var op = ops[thread.Offset];
 				var opd = opData[thread.Offset];
 				thread.Offset++;
-                System.Diagnostics.Debug.WriteLine(op + ": " + opd);
 
 				switch (op)
 				{
@@ -244,6 +243,9 @@ namespace Ela.Runtime
 							}
 						}
 						break;
+                    case Op.Pushext:
+                        evalStack.Push(modules[frame.HandleMap[opd & Byte.MaxValue]][opd >> 8]);
+                        break;
 					case Op.Pushvar:
 						i4 = opd & Byte.MaxValue;
 
@@ -712,53 +714,45 @@ namespace Ela.Runtime
                         }
 						break;
 					case Op.Brtrue:
-						right = evalStack.Pop();
+						right = evalStack.Peek().Id(ctx);
 
 						if (right.TypeId == BYT)
 						{
 							if (right.I4 == 1)
 								thread.Offset = opd;
 
-							break;
+                            evalStack.PopVoid();
+                            break;
 						}
 
-						if (right.Ref.Bool(right, ctx) && !ctx.Failed)
+                        if (ctx.Failed)
 						{
-							thread.Offset = opd;
-							break;
-						}
-
-						if (ctx.Failed)
-						{
-							evalStack.Push(right);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}
-						break;
+
+                        InvalidType(right, thread, evalStack, "bool");
+                        break;
 					case Op.Brfalse:
-						right = evalStack.Pop();
+						right = evalStack.Peek().Id(ctx);
 
 						if (right.TypeId == BYT)
 						{
 							if (right.I4 != 1)
 								thread.Offset = opd;
 
+                            evalStack.PopVoid();
 							break;
 						}
 
-						if (!right.Ref.Bool(right, ctx) && !ctx.Failed)
-						{
-							thread.Offset = opd;
-							break;
-						}
+                        if (ctx.Failed)
+                        {
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
 
-						if (ctx.Failed)
-						{
-							evalStack.Push(right);
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
-						break;
+                        InvalidType(right, thread, evalStack, "bool");
+                        break;
 					case Op.Br:
 						thread.Offset = opd;
 						break;
@@ -774,9 +768,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Ref.Equal(left, right, ctx);
-
-						if (res.Ref.Bool(res, ctx) && !ctx.Failed)
+						if (left.Ref.Equal(left, right, ctx) && !ctx.Failed)
 						{
 							thread.Offset = opd;
 							break;
@@ -801,10 +793,8 @@ namespace Ela.Runtime
 
 							break;
 						}
-
-						res = left.Ref.NotEqual(left, right, ctx);
-
-						if (res.Ref.Bool(res, ctx) && !ctx.Failed)
+                        						
+                        if (left.Ref.NotEqual(left, right, ctx) && !ctx.Failed)
 						{
 							thread.Offset = opd;
 							break;
@@ -830,9 +820,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Ref.Lesser(res, right, ctx);
-
-						if (res.Ref.Bool(res, ctx) && !ctx.Failed)
+                        if (left.Ref.Lesser(res, right, ctx) && !ctx.Failed)
 						{
 							thread.Offset = opd;
 							break;
@@ -858,9 +846,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						res = left.Ref.Greater(left, right, ctx);
-
-						if (res.Ref.Bool(res, ctx) && !ctx.Failed)
+						if (left.Ref.Greater(left, right, ctx) && !ctx.Failed)
 						{
 							thread.Offset = opd;
 							break;
@@ -1053,12 +1039,7 @@ namespace Ela.Runtime
 					#region Builtins
                     case Op.Callf1:
                         right = evalStack.Peek();
-                        i4 = opd & Byte.MaxValue;
-
-                        if (i4 == 0)
-                            evalStack.Replace(locals[opd >> 8].Ref.Call(right, ctx));
-                        else
-                            evalStack.Replace(captures[captures.Count - i4][opd >> 8].Ref.Call(right, ctx));
+                        evalStack.Replace(modules[frame.HandleMap[opd & Byte.MaxValue]][opd >> 8].Ref.Call(right, ctx));
 
                         if (ctx.Failed)
                         {
@@ -1070,12 +1051,7 @@ namespace Ela.Runtime
                     case Op.Callf2:
                         left = evalStack.Pop();
 						right = evalStack.Peek();
-                        i4 = opd & Byte.MaxValue;
-
-                        if (i4 == 0)
-                            evalStack.Replace(locals[opd >> 8].Ref.Call(left, right, ctx));
-                        else
-                            evalStack.Replace(captures[captures.Count - i4][opd >> 8].Ref.Call(left, right, ctx));
+                        evalStack.Replace(modules[frame.HandleMap[opd & Byte.MaxValue]][opd >> 8].Ref.Call(left, right, ctx));
 
 						if (ctx.Failed)
 						{
@@ -1233,17 +1209,17 @@ namespace Ela.Runtime
 		#region Operations
         private void ReadPervasives(WorkerThread thread, CodeFrame frame, int handle)
 		{
-			var mod = thread.Module;
-			var locals = modules[thread.ModuleHandle];
-			var externs = frame.GlobalScope.Locals;
-			var extMem = modules[handle];
-			ScopeVar sv;
+            //var mod = thread.Module;
+            //var locals = modules[thread.ModuleHandle];
+            //var externs = frame.GlobalScope.Locals;
+            //var extMem = modules[handle];
+            //ScopeVar sv;
 
-			foreach (var s in mod.LateBounds)
-			{
-				if (externs.TryGetValue(s.Name, out sv))
-					locals[s.Address] = extMem[sv.Address];
-			}
+            //foreach (var s in mod.LateBounds)
+            //{
+            //    if (externs.TryGetValue(s.Name, out sv))
+            //        locals[s.Address] = extMem[sv.Address];
+            //}
 		}
 
 

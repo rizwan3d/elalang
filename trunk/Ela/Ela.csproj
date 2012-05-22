@@ -167,11 +167,11 @@
     <Compile Include="Compilation\IElaCompiler.cs" />
     <Compile Include="Compilation\ExportVars.cs" />
     <Compile Include="Compilation\InlineFun.cs" />
+    <Compile Include="Compilation\LateBoundSymbol.cs" />
     <Compile Include="Compilation\ModuleEventArgs.cs" />
     <Compile Include="Compilation\NoInit.cs" />
     <Compile Include="Compilation\OpStackHelper.cs" />
     <Compile Include="Compilation\Strings.cs" />
-    <Compile Include="Compilation\LateBoundSymbol.cs" />
     <Compile Include="Culture.cs" />
     <Compile Include="Debug\CallStack.cs" />
     <Compile Include="Debug\ElaDebugException.cs" />
@@ -267,7 +267,6 @@
     <Compile Include="Runtime\ObjectModel\ElaChar.cs" />
     <Compile Include="Runtime\ObjectModel\ElaDummyObject.cs" />
     <Compile Include="Runtime\ObjectModel\ElaLazyList.cs" />
-    <Compile Include="Runtime\ObjectModel\ElaProxy.cs" />
     <Compile Include="Runtime\ObjectModel\ElaUnit.cs" />
     <Compile Include="FormatHelper.cs" />
     <Compile Include="Debug\VarSym.cs" />

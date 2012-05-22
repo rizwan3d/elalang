@@ -129,6 +129,12 @@
   <data name="ElseMissing" xml:space="preserve">
     <value>A mandatory 'else' clause is missing. A conditional expression should be always terminated with an 'else' clause.</value>
   </data>
+  <data name="ExtendsNameMissing" xml:space="preserve">
+    <value>Unable to extend an existing binding. Name of the binding cannot be inferred from: '{0}'.</value>
+  </data>
+  <data name="ExtendsOnlyFunctions" xml:space="preserve">
+    <value>Unable to use attribute 'extends' on binding '{0}'. Only functions can be extended.</value>
+  </data>
   <data name="InfiniteRangeOnlyList" xml:space="preserve">
     <value>Range: {0} is invalid. Only lists can be generated using infinite ranges.</value>
   </data>

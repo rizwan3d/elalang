@@ -30,69 +30,67 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId == ElaMachine.CHR)
-				return right.TypeId == ElaMachine.CHR ? new ElaValue(left.I4 == right.I4) :
+				return right.TypeId == ElaMachine.CHR ? left.I4 == right.I4 :
 					right.Ref.Equal(left, right, ctx);
 			
-			ctx.InvalidLeftOperand(left, right, "equal");
-			return Default();
+			return false;
 		}
 
 
-		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId == ElaMachine.CHR)
-				return right.TypeId == ElaMachine.CHR ? new ElaValue(left.I4 != right.I4) :
+				return right.TypeId == ElaMachine.CHR ? left.I4 != right.I4 :
 					right.Ref.NotEqual(left, right, ctx);
 			
-			ctx.InvalidLeftOperand(left, right, "notequal");
-			return Default();
+			return true;
 		}
 
 
-		protected internal override ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId == ElaMachine.CHR)
-				return right.TypeId == ElaMachine.CHR ? new ElaValue(left.I4 > right.I4) :
+				return right.TypeId == ElaMachine.CHR ? left.I4 > right.I4 :
 					right.Ref.Greater(left, right, ctx);
 			
 			ctx.InvalidLeftOperand(left, right, "greater");
-			return Default();
+            return false;
 		}
 
 
-		protected internal override ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId == ElaMachine.CHR)
-				return right.TypeId == ElaMachine.CHR ? new ElaValue(left.I4 < right.I4) :
+				return right.TypeId == ElaMachine.CHR ? left.I4 < right.I4 :
 					right.Ref.Lesser(left, right, ctx);
 			
 			ctx.InvalidLeftOperand(left, right, "lesser");
-			return Default();
+            return false;
 		}
 
 
-		protected internal override ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId == ElaMachine.CHR)
-				return right.TypeId == ElaMachine.CHR ? new ElaValue(left.I4 >= right.I4) :
+				return right.TypeId == ElaMachine.CHR ? left.I4 >= right.I4 :
 					right.Ref.GreaterEqual(left, right, ctx);
 			
 			ctx.InvalidLeftOperand(left, right, "greaterequal");
-			return Default();
+            return false;
 		}
 
 
-		protected internal override ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId == ElaMachine.CHR)
-				return right.TypeId == ElaMachine.CHR ? new ElaValue(left.I4 <= right.I4) :
+				return right.TypeId == ElaMachine.CHR ? left.I4 <= right.I4 :
 					right.Ref.LesserEqual(left, right, ctx);
 			
 			ctx.InvalidLeftOperand(left, right, "lesserequal");
-			return Default();
+            return false;
 		}
 
 

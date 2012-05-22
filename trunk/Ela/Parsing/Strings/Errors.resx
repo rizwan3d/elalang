@@ -420,7 +420,4 @@
   <data name="InvalidOperator" xml:space="preserve">
     <value>Invalid operator.</value>
   </data>
-  <data name="InvalidAttribute" xml:space="preserve">
-    <value>Invalid attribute declaration.</value>
-  </data>
 </root>

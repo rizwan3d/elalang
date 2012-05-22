@@ -50,10 +50,10 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.Ref == right.Ref)
-				return new ElaValue(true);
+				return true;
 
             left = left.Force(ctx);
             right = right.Force(ctx);
@@ -62,7 +62,7 @@ namespace Ela.Runtime.ObjectModel
 			var rt = right.Ref as ElaTuple;
 
 			if (lt == null || rt == null || rt.Length != lt.Length)
-				return new ElaValue(false);
+				return false;
 
 			for (var i = 0; i < lt.Length; i++)
 			{
@@ -70,18 +70,18 @@ namespace Ela.Runtime.ObjectModel
 				var snd = rt.Values[i].Id(ctx);
 				var eq = fst.Ref.Equal(fst, snd, ctx);
 
-				if (!eq.Ref.Bool(eq, ctx))
-					return new ElaValue(false);
+				if (!eq)
+					return false;
 			}
 			
-			return new ElaValue(true);
+			return true;
 		}
 
 
-		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.Ref == right.Ref)
-				return new ElaValue(false);
+				return false;
 
             left = left.Force(ctx);
             right = right.Force(ctx);
@@ -90,7 +90,7 @@ namespace Ela.Runtime.ObjectModel
 			var rt = right.Ref as ElaTuple;
 
 			if (lt == null || rt == null || rt.Length != lt.Length)
-				return new ElaValue(true);
+				return true;
 
 			for (var i = 0; i < lt.Length; i++)
 			{
@@ -98,21 +98,21 @@ namespace Ela.Runtime.ObjectModel
 				var snd = rt.Values[i].Id(ctx);
 				var eq = fst.Ref.NotEqual(fst, snd, ctx);
 
-				if (eq.Ref.Bool(eq, ctx))
-					return new ElaValue(true);
+				if (eq)
+					return true;
 			}
 
-			return new ElaValue(false);
+			return false;
 		}
 
 
-		protected internal override ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			var lt = GetOther(null, left, ctx);
 			var rt = GetOther(lt, right, ctx);
 
 			if (lt == null || rt == null || rt.Length != lt.Length)
-				return Default();
+				return false;
 
 			for (var i = 0; i < Length; i++)
 			{
@@ -120,21 +120,21 @@ namespace Ela.Runtime.ObjectModel
 				var snd = rt.Values[i].Id(ctx);
 				var gt = fst.Ref.Greater(fst, snd, ctx);
 
-				if (gt.Ref.Bool(gt, ctx))
-					return new ElaValue(true);
+				if (gt)
+					return true;
 			}
 
-			return new ElaValue(false);
+			return false;
 		}
 
 
-		protected internal override ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			var lt = GetOther(null, left, ctx);
 			var rt = GetOther(lt, right, ctx);
 
 			if (lt == null || rt == null || rt.Length != lt.Length)
-				return Default();
+				return false;
 
 			for (var i = 0; i < Length; i++)
 			{
@@ -142,21 +142,21 @@ namespace Ela.Runtime.ObjectModel
 				var snd = rt.Values[i].Id(ctx);
 				var clt = fst.Ref.Lesser(fst, snd, ctx);
 
-				if (clt.Ref.Bool(clt, ctx))
-					return new ElaValue(true);
+				if (clt)
+					return true;
 			}
 
-			return new ElaValue(false);
+			return false;
 		}
 
 
-		protected internal override ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			var lt = GetOther(null, left, ctx);
 			var rt = GetOther(lt, right, ctx);
 
 			if (lt == null || rt == null || rt.Length != lt.Length)
-				return Default();
+				return false;
 
 			for (var i = 0; i < Length; i++)
 			{
@@ -164,21 +164,21 @@ namespace Ela.Runtime.ObjectModel
 				var snd = rt.Values[i].Id(ctx);
 				var gt = fst.Ref.GreaterEqual(fst, snd, ctx);
 
-				if (gt.Ref.Bool(gt, ctx))
-					return new ElaValue(true);
+				if (gt)
+					return true;
 			}
 
-			return new ElaValue(false);
+			return false;
 		}
 
 
-		protected internal override ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			var lt = GetOther(null, left, ctx);
 			var rt = GetOther(lt, right, ctx);
 
 			if (lt == null || rt == null || rt.Length != lt.Length)
-				return Default();
+				return false;
 
 			for (var i = 0; i < Length; i++)
 			{
@@ -186,11 +186,11 @@ namespace Ela.Runtime.ObjectModel
 				var snd = rt.Values[i].Id(ctx);
 				var lteq = fst.Ref.LesserEqual(fst, snd, ctx);
 
-				if (lteq.Ref.Bool(lteq, ctx))
-					return new ElaValue(true);
+				if (lteq)
+					return true;
 			}
 
-			return new ElaValue(false);
+			return false;
 		}
 
 
@@ -489,23 +489,6 @@ namespace Ela.Runtime.ObjectModel
 
 				return new ElaValue(ret);
 			}
-		}
-
-
-		protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
-		{
-			var ret = new ElaTuple(Length);
-			ret.cons = Length;
-
-			for (var i = 0; i < Length; i++)
-			{
-				var left = Values[i];
-
-				if (!left.Ref.Bool(left, ctx))
-					return false;
-			}
-
-			return true;
 		}
 
 

@@ -27,6 +27,8 @@ namespace Ela.CodeModel
 
 		NoInit = 0x200,
         
-        FastCall = 0x400
+        FastCall = 0x400,
+
+        Extends = 0x800
 	}
 }

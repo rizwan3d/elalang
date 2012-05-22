@@ -67,18 +67,6 @@ namespace Ela.Library.Collections
 		
 
 		#region Operations
-		protected override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return new ElaValue(left.ReferenceEquals(right));
-		}
-
-
-		protected override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return new ElaValue(left.ReferenceEquals(right));
-		}
-
-
 		protected override ElaValue GetLength(ExecutionContext ctx)
 		{
 			return new ElaValue(size - headIndex);

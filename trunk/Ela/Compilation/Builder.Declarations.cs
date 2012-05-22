@@ -24,6 +24,16 @@ namespace Ela.Compilation
                 if (String.IsNullOrEmpty(s.VariableName))
                     AddError(ElaCompilerError.InvalidBuiltinBinding, s);
 			}
+
+            if ((s.VariableFlags & ElaVariableFlags.Extends) == ElaVariableFlags.Extends && s.InitExpression != null
+                && s.InitExpression.Type != ElaNodeType.FunctionLiteral)
+                AddError(ElaCompilerError.ExtendsOnlyFunctions, s, s);
+
+            if ((s.VariableFlags & ElaVariableFlags.Extends) == ElaVariableFlags.Extends &&
+                (hints & Hints.And) != Hints.And)
+            {
+                AddOldNames(s);
+            }
 			
 			if (s.In != null)
 				StartScope(false, s.In.Line, s.In.Column);
@@ -72,7 +82,8 @@ namespace Ela.Compilation
 					CompileWhere(s.Where, map, Hints.Left);
 
                 allowNoInits.Push(new NoInit(noInitCode, !addSym));
-				var ed = s.InitExpression != null ? CompileExpression(s.InitExpression, map, Hints.None) : default(ExprData);
+				var ed = s.InitExpression != null ? CompileExpression(s.InitExpression, map,
+                    (s.VariableFlags & ElaVariableFlags.Extends) == ElaVariableFlags.Extends ? Hints.Extends : Hints.None) : default(ExprData);
 				var fc = ed.Type == DataKind.FunCurry || ed.Type == DataKind.FunParams;
 				allowNoInits.Pop();
 
@@ -116,8 +127,8 @@ namespace Ela.Compilation
 					if (ed.Type == DataKind.Builtin)
 						flags |= ElaVariableFlags.Builtin;
 
-                    if (ed.Type == DataKind.FastCall)
-                        flags |= ElaVariableFlags.FastCall;
+                    //if (ed.Type == DataKind.FastCall)
+                    //    flags |= ElaVariableFlags.FastCall; //TODO probably return FastCall here
 
 					addr = AddVariable(s.VariableName, s, flags, data != -1 ? data : ed.Data);
 				}
@@ -141,6 +152,26 @@ namespace Ela.Compilation
 			if (s.In != null)
 				EndScope();
 		}
+
+        private void AddOldNames(ElaBinding s)
+        {
+            var and = s;
+            
+            while (and != null)
+            {
+                var sa = default(ScopeVar);
+
+                if (and.Pattern != null)
+                    AddError(ElaCompilerError.ExtendsNameMissing, and, and.Pattern);
+                else
+                    sa = GetVariable(and.VariableName, and.Line, and.Column);
+
+                EmitVar(sa);
+                var a = AddVariable("$" + and.VariableName, and, ElaVariableFlags.SpecialName | ElaVariableFlags.Private, -1);
+                cw.Emit(Op.Popvar, a);
+                and = and.And;
+            }            
+        }
 
         private int GetNoInitVariable(string name)
         {

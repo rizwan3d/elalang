@@ -8,6 +8,8 @@ namespace Ela.Compilation
 
 		Lazy,
 
-		Inline
+		Inline,
+
+        Extends
 	}
 }

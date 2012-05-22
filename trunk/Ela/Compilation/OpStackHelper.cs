@@ -8,7 +8,7 @@ namespace Ela.Compilation
 		{
 			0, //Nop
 			0, //Len
-			1, //Pushunit
+            1, //Pushunit
 			-1, //Pushelem
 			1, //PushI4_0
 			1, //PushI1_0
@@ -51,8 +51,9 @@ namespace Ela.Compilation
 			0, //Skiphtag
 			0, //Nil
             0, //Gettag
-			
-            0, //Callf1
+            
+            1, //Pushext
+			0, //Callf1
             -1,//Callf2
 			0, //Skiptag
 			0, //Newvar

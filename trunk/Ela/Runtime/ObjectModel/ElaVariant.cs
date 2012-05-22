@@ -97,49 +97,33 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-        protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId != right.TypeId || left.TypeId != ElaMachine.VAR)
-				return InvalidOperand(left, right, "equal", ctx);
+				return false;
 
 			var v1 = (ElaVariant)left.Ref;
 			var v2 = (ElaVariant)right.Ref;
 
 			if (v1.Tag != v2.Tag)
-				return new ElaValue(false);
+				return false;
 			
-			var res = v1.Value.Equal(v1.Value, v2.Value, ctx);
-
-			if (ctx.Failed && ctx.Thunk == null)
-			{
-				ctx.Reset();
-				return new ElaValue(false);
-			}
-
-			return res;
+			return v1.Value.Equal(v1.Value, v2.Value, ctx);
 		}
 
 
-		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			if (left.TypeId != right.TypeId || left.TypeId != ElaMachine.VAR)
-				return InvalidOperand(left, right, "notequal", ctx);
+				return true;
 
 			var v1 = (ElaVariant)left.Ref;
 			var v2 = (ElaVariant)right.Ref;
 
 			if (v1.Tag != v2.Tag)
-				return new ElaValue(true);
+				return true;
 
-			var res = v1.Value.NotEqual(v1.Value, v2.Value, ctx);
-
-			if (ctx.Failed && ctx.Thunk == null)
-			{
-				ctx.Reset();
-				return new ElaValue(true);
-			}
-
-			return res;
+			return v1.Value.NotEqual(v1.Value, v2.Value, ctx);
 		}
 
 

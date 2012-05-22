@@ -41,13 +41,6 @@ let unary {eq} =
         eq (--(2,1)) (--2,--1)
         $ eq (--(21,4.2)) (--21,--4.2)
 
-let boolTests {eqt,eqf} =
-          eqf <| not (true,)
-        $ eqf <| not (true,true)
-        $ eqt <| not (false,)
-        $ eqt <| not (false,false)
-        $ eqt <| not (true,false)
-
 let succPred {eq} =
         eq (succ (1,2)) (2,3)
         $ eq (succ (42.42, 'b')) (43.42, 'c')

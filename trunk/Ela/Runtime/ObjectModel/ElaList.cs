@@ -53,15 +53,15 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return new ElaValue(Equal(left, right, "equal", ctx));
+			return Equal(left, right, "equal", ctx);
 		}
 
 
-		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return new ElaValue(!Equal(left, right, "notequal", ctx));
+			return !Equal(left, right, "notequal", ctx);
 		}
 
 
@@ -86,7 +86,7 @@ namespace Ela.Runtime.ObjectModel
 			{
 				var eq = xs1.Value.Equal(xs1.Value, xs2.Value, ctx);
 
-				if (!eq.Ref.Bool(eq, ctx))
+				if (!eq)
 					return false;
 
 				xs1 = xs1.Tail(ctx).Ref as ElaList;

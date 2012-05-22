@@ -40,17 +40,17 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return new ElaValue(left.TypeCode == right.TypeCode &&
-				((ElaModule)left.Ref).Handle == ((ElaModule)right.Ref).Handle);
+			return left.TypeCode == right.TypeCode &&
+				((ElaModule)left.Ref).Handle == ((ElaModule)right.Ref).Handle;
 		}
 
 
-		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return new ElaValue(left.TypeCode != right.TypeCode ||
-				((ElaModule)left.Ref).Handle != ((ElaModule)right.Ref).Handle);
+			return left.TypeCode != right.TypeCode ||
+				((ElaModule)left.Ref).Handle != ((ElaModule)right.Ref).Handle;
 		}
 
 

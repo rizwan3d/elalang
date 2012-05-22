@@ -31,7 +31,6 @@ namespace Ela.Parsing
 			return true;
 		}
 
-
 		private void SetObjectMetadata(ElaBinding varExp, ElaExpression cexp)
 		{
 			if (cexp != null)
@@ -61,9 +60,9 @@ namespace Ela.Parsing
         }
 
 
-        private void ProcessFunctionParameters(ElaFunctionLiteral mi, Token ot)
+        private void ProcessFunctionParameters(ElaFunctionLiteral mi, Token ot, ElaBinding varExp)
         {
-            if (mi.Body.Entries.Count > 1)
+            if (mi.Body.Entries.Count > 1 || (varExp.VariableFlags & ElaVariableFlags.Extends) == ElaVariableFlags.Extends)
             {
                 var patterns = default(List<ElaPattern>);
                 var pars = 0;
@@ -79,18 +78,39 @@ namespace Ela.Parsing
                 var tp = new ElaTupleLiteral(ot);
 
                 for (var i = 0; i < pars; i++)
-                {
-					//if (patterns != null && patterns[i].Type == ElaNodeType.VariablePattern)
-					//{
-					//    tp.Parameters.Add(new ElaVariableReference(ot) {
-					//        VariableName = ((ElaVariablePattern)patterns[i]).Name
-					//    });
-					//}
-					//else
-                        tp.Parameters.Add(new ElaVariableReference(ot) { VariableName = "$" + i });
-                }
-
+                	tp.Parameters.Add(new ElaVariableReference(ot) { VariableName = "$" + i });
+                
                 mi.Body.Expression = tp;
+                
+                //if ((varExp.VariableFlags & ElaVariableFlags.Extends) == ElaVariableFlags.Extends)
+                //{
+                //    if (mi.ParameterCount > 1)
+                //    {
+                //        var group = new ElaPatternGroup();
+
+                //        for (var i = 0; i < mi.ParameterCount; i++)
+                //            group.Patterns.Add(new ElaVariablePattern { Name = "$" + i });
+
+                //        var call = new ElaFunctionCall { Target = new ElaVariableReference { VariableName = "$" + mi.Name } };
+
+                //        for (var i = 0; i < mi.ParameterCount; i++)
+                //            call.Parameters.Add(new ElaVariableReference { VariableName = "$" + i });
+
+                //        mi.Body.Entries.Add(new ElaMatchEntry { Pattern = group, Expression = call });
+                //    }
+                //    else
+                //    {
+                //        var fc = new ElaFunctionCall { Target = new ElaVariableReference { VariableName = "$" + mi.Name } };
+                //        fc.Parameters.Add(new ElaVariableReference { VariableName = "$1" });
+
+                //        mi.Body.Entries.Add(new ElaMatchEntry {
+                //            Pattern = new ElaVariablePattern { Name = "$1" },
+                //            Expression = fc
+                //        });
+
+                //    }
+                    
+                //}
             }
         }
 

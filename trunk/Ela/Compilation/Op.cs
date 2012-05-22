@@ -8,7 +8,7 @@ namespace Ela.Compilation
 
 		Len,
 
-		Pushunit,
+        Pushunit,
 
 		Pushelem,
 
@@ -94,7 +94,9 @@ namespace Ela.Compilation
 
         Gettag,
 
-		
+
+        Pushext,
+
         Callf1,
 
         Callf2,

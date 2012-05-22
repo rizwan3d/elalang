@@ -47,6 +47,8 @@ namespace Ela.Linking
                 
 				foreach (var p in kv.Value.Path)
 					bw.Write(p);
+
+                bw.Write(kv.Value.LogicalHandle);
 			}
 
 			bw.Write(frame.GlobalScope.Locals.Count);
@@ -59,16 +61,16 @@ namespace Ela.Linking
 				bw.Write(kv.Value.Data);
 			}
 
-			bw.Write(frame.LateBounds.Count);
+            bw.Write(frame.LateBounds.Count);
 
-			foreach (var u in frame.LateBounds)
-			{
-				bw.Write(u.Name);
-				bw.Write(u.Address);
-				bw.Write(u.Data);
-				bw.Write(u.Line);
-				bw.Write(u.Column);
-			}
+            foreach (var u in frame.LateBounds)
+            {
+                bw.Write(u.Name);
+                bw.Write(u.Address);
+                bw.Write(u.Data);
+                bw.Write(u.Line);
+                bw.Write(u.Column);
+            }
 
 			bw.Write(frame.Layouts.Count);
 

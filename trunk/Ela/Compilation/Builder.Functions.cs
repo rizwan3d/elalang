@@ -41,16 +41,21 @@ namespace Ela.Compilation
 			
 			AddLinePragma(dec);
 
-			var address = cw.Offset;
+            var address = cw.Offset;
+            var oldAddr = ScopeVar.Empty;
+
+            if (flag == FunFlag.Extends)
+                oldAddr = GetVariable("$" + dec.Name, 0, 0);
 						
 			if (flag != FunFlag.Lazy)
-				CompileParameters(dec, map);
+				CompileParameters(dec, map, flag);            
 
-			if (dec.Body.Entries.Count > 1)
+			if (dec.Body.Entries.Count > 1 || flag == FunFlag.Extends)
 			{
-				var t = (ElaTupleLiteral)dec.Body.Expression;
+                var t = (ElaTupleLiteral)dec.Body.Expression;
 				var ex = t.Parameters.Count == 1 ? t.Parameters[0] : t;
-				CompileMatch(dec.Body, ex, map, Hints.Tail | Hints.Scope | Hints.FunBody);
+				CompileMatch(dec.Body, ex, map, Hints.Tail | Hints.Scope | Hints.FunBody
+                    | (flag == FunFlag.Extends ? Hints.Extends : Hints.None), oldAddr);
 			}
 			else
 			{
@@ -79,9 +84,9 @@ namespace Ela.Compilation
 		}
 
 
-		private void CompileParameters(ElaFunctionLiteral fun, LabelMap map)
+		private void CompileParameters(ElaFunctionLiteral fun, LabelMap map, FunFlag flag)
 		{
-			if (fun.Body.Entries.Count == 1)
+            if (fun.Body.Entries.Count == 1 && flag != FunFlag.Extends)
 			{
 				var fe = fun.Body.Entries[0];
 				var seq = fe.Pattern.Type == ElaNodeType.PatternGroup ? (ElaPatternGroup)fe.Pattern : null;
@@ -141,19 +146,19 @@ namespace Ela.Compilation
 					}
 				}
 			}
-			else
-			{
-				var t = (ElaTupleLiteral)fun.Body.Expression;
+            else
+            {
+                var t = (ElaTupleLiteral)fun.Body.Expression;
 
-				for (var i = 0; i < t.Parameters.Count; i++)
-				{
-					var v = (ElaVariableReference)t.Parameters[i];
-					var addr = AddVariable(v.VariableName, v,
-						v.VariableName[0] == '$' ?
-						(ElaVariableFlags.SpecialName | ElaVariableFlags.Parameter) : ElaVariableFlags.Parameter, -1);
-					cw.Emit(Op.Popvar, addr);
-				}
-			}
+                for (var i = 0; i < t.Parameters.Count; i++)
+                {
+                    var v = (ElaVariableReference)t.Parameters[i];
+                    var addr = AddVariable(v.VariableName, v,
+                        v.VariableName[0] == '$' ?
+                        (ElaVariableFlags.SpecialName | ElaVariableFlags.Parameter) : ElaVariableFlags.Parameter, -1);
+                    cw.Emit(Op.Popvar, addr);
+                }
+            }
 		}
 		#endregion
 
@@ -227,7 +232,7 @@ namespace Ela.Compilation
 
 			var sl = len - 1;
 			AddLinePragma(varRef);
-			cw.Emit(Op.Pushvar, scopeVar.Address);
+			EmitVar(scopeVar);
 
 			for (var i = 0; i < sl; i++)
 				cw.Emit(Op.Call);

@@ -9,13 +9,18 @@ namespace Ela.Compilation
 		#region Construction
 		private const string FORMAT = "{0}[{1}]";
 
-		internal ModuleReference(string moduleName) : this(moduleName, null, null, 0, 0, false)
+        internal ModuleReference(CodeFrame parent, string moduleName) : this(parent, moduleName, null, null, 0, 0, false, 0)
+		{
+
+		}
+
+		internal ModuleReference(string moduleName) : this(null, moduleName, null, null, 0, 0, false, 0)
 		{
 
 		}
 
 
-		internal ModuleReference(string moduleName, string dllName, string[] path, int line, int column, bool requireQualified)
+		internal ModuleReference(CodeFrame parent, string moduleName, string dllName, string[] path, int line, int column, bool requireQualified, int logicalHandle)
 		{
 			ModuleName = moduleName;
 			DllName = dllName;
@@ -23,6 +28,8 @@ namespace Ela.Compilation
 			Line = line;
 			Column = column;
             RequireQuailified = requireQualified;
+            LogicalHandle = logicalHandle;
+            Parent = parent;
 		}
 		#endregion
 
@@ -68,6 +75,10 @@ namespace Ela.Compilation
 		internal bool IsStandardLibrary { get; set; }
 
 		internal bool NoPrelude { get; set; }
+
+        internal int LogicalHandle { get; set; }
+
+        internal CodeFrame Parent { get; private set; }
 		#endregion
 	}
 }

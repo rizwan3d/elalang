@@ -62,12 +62,6 @@ namespace Ela.Debug
 		}
 
 
-        internal void AddGlobalVarSym(string name, int address, int offset, int flags, int data)
-        {
-            Symbols.Vars.Add(LastVarSym = new VarSym(name, address, offset, 0, flags, data));
-        }
-
-
 		internal void AddLineSym(int offset, int line, int col)
 		{
 			Symbols.Lines.Add(new LineSym(offset, line, col));

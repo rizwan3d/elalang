@@ -45,15 +45,15 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-        protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            return new ElaValue(Eq(left, right, ctx));
+            return Eq(left, right, ctx);
         }
 
 
-        protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected internal override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            return new ElaValue(!Eq(left, right, ctx));
+            return !Eq(left, right, ctx);
         }
 
 

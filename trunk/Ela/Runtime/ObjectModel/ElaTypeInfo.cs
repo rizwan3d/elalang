@@ -59,27 +59,27 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Operations
-        protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             var li = default(ElaTypeInfo);
             var ri = default(ElaTypeInfo);
 
-            if (!Cast(left, right, out li, out ri, "equal", ctx))
-                return Default();
+            if (!Cast(left, right, out li, out ri))
+                return false;
 
-            return new ElaValue(CompareInfos(li, ri, ctx));
+            return CompareInfos(li, ri, ctx);
         }
 
 
-        protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected internal override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             var li = default(ElaTypeInfo);
             var ri = default(ElaTypeInfo);
 
-            if (!Cast(left, right, out li, out ri, "notequal", ctx))
-                return Default();
+            if (!Cast(left, right, out li, out ri))
+                return true;
 
-            return new ElaValue(!CompareInfos(li, ri, ctx));
+            return !CompareInfos(li, ri, ctx);
         }
 
 
@@ -155,23 +155,17 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-        private bool Cast(ElaValue left, ElaValue right, out ElaTypeInfo li, out ElaTypeInfo ri, string op, ExecutionContext ctx)
+        private bool Cast(ElaValue left, ElaValue right, out ElaTypeInfo li, out ElaTypeInfo ri)
         {
             li = left.As<ElaTypeInfo>();
             ri = right.As<ElaTypeInfo>();
 
             if (li == null)
-            {
-                ctx.InvalidLeftOperand(left, right, op);
                 return false;
-            }
-
+            
             if (ri == null)
-            {
-                ctx.InvalidRightOperand(left, right, op);
                 return false;
-            }
-
+            
             return true;
         }
 

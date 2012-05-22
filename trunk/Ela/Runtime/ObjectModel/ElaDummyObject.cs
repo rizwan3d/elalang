@@ -78,39 +78,39 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return Default();
+            return false;
 		}
 
 
-		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return Default();
+            return false;
 		}
 
 
-		protected internal override ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return Default();
+            return false;
 		}
 
 
-		protected internal override ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return Default();
+            return false;
 		}
 
 
-		protected internal override ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return Default();
+            return false;
 		}
 
 
-		protected internal override ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return Default();
+            return false;
 		}
 
 
@@ -240,12 +240,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
-		{
-			return false;
-		}
-
-
 		protected internal override ElaValue Head(ExecutionContext ctx)
 		{
 			return Default();
@@ -312,7 +306,7 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Force(ElaValue @this, ExecutionContext ctx)
+		internal override ElaValue Force(ElaValue @this, ExecutionContext ctx)
 		{
 			return Default();
 		}

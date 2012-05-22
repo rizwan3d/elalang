@@ -17,22 +17,10 @@ namespace Ela.Compilation
 
 
 		#region Methods
-        public void AddName(string name)
-        {
-            AddName(name, ElaBuiltinKind.None, CallConv.Standard);
-        }
-
-
-		public void AddName(string name, ElaBuiltinKind kind)
+        public void AddName(string name, ElaBuiltinKind kind, CallConv conv, int moduleHandle, int address)
         {
             map.Remove(name);
-            map.Add(name, new ExportVarData(kind, CallConv.Standard));
-        }
-        
-        public void AddName(string name, ElaBuiltinKind kind, CallConv conv)
-        {
-            map.Remove(name);
-            map.Add(name, new ExportVarData(kind, conv));
+            map.Add(name, new ExportVarData(kind, conv, moduleHandle, address));
         }
 
         public bool FindName(string name, out ExportVarData data)

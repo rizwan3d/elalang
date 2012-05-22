@@ -7,9 +7,9 @@ namespace Ela.Compilation
 		None = 0,
 
 
-		// = 300,
+		ExtendsOnlyFunctions = 300,
 
-		// = 301,
+		ExtendsNameMissing = 301,
 
 		UndefinedName = 302,
 

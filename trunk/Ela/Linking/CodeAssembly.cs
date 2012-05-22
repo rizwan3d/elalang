@@ -42,13 +42,13 @@ namespace Ela.Linking
 		}
 
 
-		internal void AddModule(string name, CodeFrame module, bool qual)
+		internal int AddModule(string name, CodeFrame module, bool qual, int logicHandle)
 		{
 			var hdl = 0;
 
 			if (!moduleMap.TryGetValue(name, out hdl))
 			{
-				moduleMap.Add(name, modules.Count);
+				moduleMap.Add(name, hdl = modules.Count);                
 				modules.Add(module);
 				quals.Add(qual);
 			}
@@ -57,6 +57,8 @@ namespace Ela.Linking
 				modules[hdl] = module;
 				quals[hdl] = qual;
 			}
+
+            return hdl;
 		}
 
 
@@ -81,6 +83,17 @@ namespace Ela.Linking
 			else
 				return null;
 		}
+        
+
+        internal CodeFrame GetModule(string name, out int hdl)
+        {
+            hdl = 0;
+
+            if (moduleMap.TryGetValue(name, out hdl))
+                return GetModule(hdl);
+            else
+                return null;
+        }
 
 
 		public CodeFrame GetModule(int handle)

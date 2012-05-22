@@ -28,5 +28,7 @@ namespace Ela.Compilation
 		FunBody = 0x200,
 
 		Silent = 0x400,
+
+        Extends = 0x800
 	}
 }

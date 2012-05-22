@@ -22,7 +22,7 @@ namespace Ela.Runtime
 
                 var res = l.Equal(l, r, ctx);
 
-                if (ctx.Failed || !res.AsBoolean())
+                if (ctx.Failed || !res)
                     return false;
             }
 

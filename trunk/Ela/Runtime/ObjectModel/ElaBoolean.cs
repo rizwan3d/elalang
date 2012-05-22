@@ -30,31 +30,15 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override bool Bool(ElaValue @this, ExecutionContext ctx)
+		protected internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return @this.I4 == 1;
+			return left.TypeId == right.TypeId && left.I4 == right.I4;
 		}
 
 
-		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.TypeId == ElaMachine.BYT)
-				return right.TypeId == ElaMachine.BYT ? new ElaValue(left.I4 == right.I4) :
-					right.Ref.Equal(left, right, ctx);
-			
-			ctx.InvalidLeftOperand(left, right, "equal");
-			return Default();
-		}
-
-
-		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			if (left.TypeId == ElaMachine.BYT)
-				return right.TypeId == ElaMachine.BYT ? new ElaValue(left.I4 != right.I4) :
-					right.Ref.NotEqual(left, right, ctx);
-			
-			ctx.InvalidLeftOperand(left, right, "notequal");
-			return Default();
+            return left.TypeId != right.TypeId || left.I4 != right.I4;
 		}
 
 

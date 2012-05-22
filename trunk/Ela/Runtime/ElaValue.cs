@@ -103,13 +103,13 @@ namespace Ela.Runtime
 
         public override bool Equals(object obj)
         {
-            return obj is ElaValue ? Equal(this, (ElaValue)obj, ElaObject.DummyContext).Bool(ElaObject.DummyContext) : false;
+            return obj is ElaValue ? Equal(this, (ElaValue)obj, ElaObject.DummyContext) : false;
         }
 
 
         public bool Equals(ElaValue other)
         {
-            return Equal(this, other, ElaObject.DummyContext).Bool(ElaObject.DummyContext);
+            return Equal(this, other, ElaObject.DummyContext);
         }
 
 
@@ -387,37 +387,37 @@ namespace Ela.Runtime
 
 
         #region Operations
-        public ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+        public bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return Ref.Equal(left, right, ctx);
         }
 
 
-        public ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+        public bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return Ref.NotEqual(left, right, ctx);
         }
 
 
-        public ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
+        public bool Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return Ref.Greater(left, right, ctx);
         }
 
 
-        public ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
+        public bool Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return Ref.Lesser(left, right, ctx);
         }
 
 
-        public ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+        public bool GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return Ref.GreaterEqual(left, right, ctx);
         }
 
 
-        public ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+        public bool LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return Ref.LesserEqual(left, right, ctx);
         }
@@ -546,12 +546,6 @@ namespace Ela.Runtime
         public ElaValue Negate(ExecutionContext ctx)
         {
             return Ref.Negate(this, ctx);
-        }
-
-
-        public bool Bool(ExecutionContext ctx)
-        {
-            return Ref.Bool(this, ctx);
         }
 
 

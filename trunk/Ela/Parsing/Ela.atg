@@ -559,14 +559,6 @@ PRODUCTIONS
 				| charTok (. lit = ParseChar(t.val); .)
 				| intTok (. lit = ParseInt(t.val); .)
 				| realTok (. lit = ParseReal(t.val); .)
-				/*|
-				(
-					operatorTok8
-					(
-						intTok (. lit = ParseInt(t.val).MakeNegative(); .)
-						| realTok (. lit = ParseReal(t.val).MakeNegative(); .)
-					)
-				)*/
 				| "true" (. lit = new ElaLiteralValue(true); .)
 				| "false" (. lit = new ElaLiteralValue(false); .)
 			)
@@ -758,7 +750,7 @@ PRODUCTIONS
 			var inExp = default(ElaExpression);
 			var flags = default(ElaVariableFlags);
 		.)
-		SYNC LET [VariableAttributes<out flags>] 
+		SYNC LET [VariableAttributes<ref flags>] 
 		BindingBody<flags, out exp>
 		WEAK IN Expr<out inExp>
 		(. ((ElaBinding)exp).In = inExp; .).
@@ -772,7 +764,7 @@ PRODUCTIONS
 		(
 			(. scanner.InjectBlock(); .) 
 			SYNC LET 
-			[VariableAttributes<out flags>] 
+			[VariableAttributes<ref flags>] 
 			BindingBody<flags, out exp>
 			(
 				(
@@ -786,19 +778,21 @@ PRODUCTIONS
 		).
 		
 		
-	VariableAttributes<out ElaVariableFlags flags> =
-		(. flags = ElaVariableFlags.None; .)
+	VariableAttributes<ref ElaVariableFlags flags> =
 		(
 			(
 				"private" (. flags |= ElaVariableFlags.Private; .)
-				[ "inline" (. flags |= ElaVariableFlags.Inline; .) ]
 			)
 			|
 			(
 				"inline" (. flags |= ElaVariableFlags.Inline; .)					
-				[ "private" (. flags |= ElaVariableFlags.Private; .) ]
 			)
-		).			
+			|
+			(
+				"extends" (. flags |= ElaVariableFlags.Extends; .)					
+			)
+		)
+		[VariableAttributes<ref flags>].			
 		
 	WhereBinding<out ElaExpression exp> = 
 		(.
@@ -806,7 +800,7 @@ PRODUCTIONS
 			scanner.InjectBlock(); 
 		.) 
 		SYNC WHERE 
-		[VariableAttributes<out flags>] 			
+		[VariableAttributes<ref flags>] 			
 		BindingBody<flags, out exp> 
 		EndBlock.
 		
@@ -982,7 +976,7 @@ PRODUCTIONS
 			InfixFunBodyExprFirst<pat,mi>
 			(. 
 				varExp.VariableName = mi.Name;
-				ProcessFunctionParameters(mi, ot); 
+				ProcessFunctionParameters(mi, ot, varExp); 
 			.)			
 		).
     
@@ -1142,7 +1136,7 @@ PRODUCTIONS
 				scanner.InjectBlock(t.col);				
 			.)	
 			FunBodyExpr<mi>
-			(. ProcessFunctionParameters(mi, ot); .)			
+			(. ProcessFunctionParameters(mi, ot, varExp); .)			
 		).
 		
 	FunBodyExpr<ElaFunctionLiteral fun> =

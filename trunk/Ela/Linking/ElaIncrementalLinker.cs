@@ -65,7 +65,7 @@ namespace Ela.Linking
 			}
 
 			frame = Build(mod, RootFile, source, frame, scope);			
-			RegisterFrame(mod, frame, RootFile);
+			RegisterFrame(mod, frame, RootFile, -1);
 
 			if (Success)
 				Assembly.RefreshRootModule(frame);
@@ -76,19 +76,19 @@ namespace Ela.Linking
 		}
 
 
-		protected override ExportVars CreateExportVars(FileInfo fi)
-		{
-			var vars = default(ExportVars);
-			var key = fi == null ? memoryFile : fi.ToString();
+        protected override ExportVars CreateExportVars(FileInfo fi)
+        {
+            var vars = default(ExportVars);
+            var key = fi == null ? memoryFile : fi.ToString();
 
-			if (!exportMap.TryGetValue(key, out vars))
-			{
-				vars = base.CreateExportVars(fi);
-				exportMap.Add(key, vars);
-			}
+            if (!exportMap.TryGetValue(key, out vars))
+            {
+                vars = base.CreateExportVars(fi);
+                exportMap.Add(key, vars);
+            }
 
-			return vars;
-		}
+            return vars;
+        }
 
 
 		public void SetSource(string source)

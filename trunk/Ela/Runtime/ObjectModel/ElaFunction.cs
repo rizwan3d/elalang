@@ -97,26 +97,32 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return new ElaValue(IsEqual(left.Ref, right.Ref, ctx));
-		}
+            var leftFun = left.Ref as ElaFunction;
+            var rightFun = right.Ref as ElaFunction;
 
-
-		protected internal override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-            return new ElaValue(!IsEqual(left.Ref, right.Ref, ctx));
-		}
-
-
-        private bool IsEqual(ElaObject leftObj, ElaObject rightObj, ExecutionContext ctx)
-        {
-            var left = leftObj as ElaFunction;
-            var right = rightObj as ElaFunction;
-
-            if (left == null || right == null)
+            if (leftFun == null || rightFun == null)
                 return false;
 
+			return IsEqual(leftFun, rightFun, ctx);
+		}
+
+
+		protected internal override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		{
+            var leftFun = left.Ref as ElaFunction;
+            var rightFun = right.Ref as ElaFunction;
+
+            if (leftFun == null || rightFun == null)
+                return true;
+
+            return !IsEqual(leftFun, rightFun, ctx);
+		}
+
+
+        private bool IsEqual(ElaFunction left, ElaFunction right, ExecutionContext ctx)
+        {
             return Object.ReferenceEquals(left, right) ||
                 left.Handle == right.Handle &&
                 left.ModuleHandle == right.ModuleHandle &&

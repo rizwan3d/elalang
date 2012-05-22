@@ -24,7 +24,7 @@ namespace Ela.Compilation
 
 		public CompilerResult Compile(ElaExpression expr, CompilerOptions options, ExportVars builtins, CodeFrame frame, Scope globalScope)
 		{
-            try
+            //try
             {
 				Options = options;
 				var helper = new Builder(frame, this, builtins, globalScope);
@@ -34,13 +34,13 @@ namespace Ela.Compilation
 				frame.GlobalScope = globalScope;
 				return new CompilerResult(frame, helper.Success, helper.Errors.ToArray());
             }
-            catch (Exception ex)
-            {
-                if (ex is ElaCompilerException)
-                    throw;
+            //catch (Exception ex)
+            //{
+            //    if (ex is ElaCompilerException)
+            //        throw;
 
-                throw new ElaCompilerException(Strings.GetMessage("Ice", ex.Message), ex);
-            }
+            //    throw new ElaCompilerException(Strings.GetMessage("Ice", ex.Message), ex);
+            //}
 		}
 
         public static int GetOpCodeSize(Op op)

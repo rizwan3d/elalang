@@ -55,18 +55,6 @@ namespace Ela.Library.Collections
         }
 
 
-        protected override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return new ElaValue(left.ReferenceEquals(right));
-        }
-
-
-        protected override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return new ElaValue(!left.ReferenceEquals(right));
-        }
-
-
         protected override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
         {
             return new ElaValue(ConvertToRecord()).Show(info, ctx);

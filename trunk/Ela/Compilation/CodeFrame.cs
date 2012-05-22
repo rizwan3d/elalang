@@ -10,9 +10,9 @@ namespace Ela.Compilation
 	{
 		#region Construction
 		public static readonly CodeFrame Empty = new CodeFrame(Op.Stop);
-
-		private CodeFrame(Op op)
-			: this()
+        internal FastList<Int32> HandleMap;
+		
+		private CodeFrame(Op op) : this()
 		{
 			Ops.Add(op);
 			OpData.Add(0);
@@ -27,7 +27,8 @@ namespace Ela.Compilation
 			OpData = new FastList<Int32>();
 			Strings = new FastList<String>();
 			_references = new ReferenceMap();
-			LateBounds = new FastList<LateBoundSymbol>();
+            HandleMap = new FastList<Int32>();
+            LateBounds = new FastList<LateBoundSymbol>();
        	}
 		#endregion
 
@@ -58,7 +59,8 @@ namespace Ela.Compilation
 			copy.OpData = OpData.Clone();
 			copy._references = new ReferenceMap(_references);
 			copy.Symbols = Symbols != null ? Symbols.Clone() : null;
-			copy.LateBounds = new FastList<LateBoundSymbol>();
+            copy.HandleMap = HandleMap.Clone();
+            copy.LateBounds = LateBounds.Clone();
          	return copy;
 		}
 
@@ -89,12 +91,12 @@ namespace Ela.Compilation
 		public Scope GlobalScope { get; internal set; }
 
 		public FileInfo File { get; set; }
-
-        public FastList<LateBoundSymbol> LateBounds { get; private set; }
         
         internal FastList<MemoryLayout> Layouts { get; private set; }
 
-		internal FastList<String> Strings { get; private set; }
+        internal FastList<String> Strings { get; private set; }
+
+        public FastList<LateBoundSymbol> LateBounds { get; private set; }
         #endregion
 	}
 }

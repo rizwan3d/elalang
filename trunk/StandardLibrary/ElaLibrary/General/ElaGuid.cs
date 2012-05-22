@@ -37,33 +37,31 @@ namespace Ela.Library.General
 		}
 
 
-		protected override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			var lg = left.As<ElaGuid>();
 			var rg = right.As<ElaGuid>();
 
 			if (lg != null && rg != null)
-				return new ElaValue(lg.Value == rg.Value);
+				return lg.Value == rg.Value;
 			else if (lg != null)
 				return right.Equal(left, right, ctx);
 			
-			ctx.InvalidLeftOperand(left, right, "equal");
-			return Default();
+			return false;
 		}
 
 
-		protected override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			var lg = left.As<ElaGuid>();
 			var rg = right.As<ElaGuid>();
 
 			if (lg != null && rg != null)
-				return new ElaValue(lg.Value != rg.Value);
+				return lg.Value != rg.Value;
 			else if (lg != null)
 				return right.NotEqual(left, right, ctx);
 			
-			ctx.InvalidLeftOperand(left, right, "notequal");
-			return Default();
+			return true;
 		}
 
 

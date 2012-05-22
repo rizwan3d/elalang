@@ -68,37 +68,37 @@ namespace Ela.Library.General
         }
 
 
-        protected override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return Compare(left, right, Comparison.Eq, ctx);   
         }
 
 
-        protected override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return Compare(left, right, Comparison.Neq, ctx);
         }
 
 
-        protected override ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected override bool Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return Compare(left, right, Comparison.Gt, ctx);
         }
 
 
-        protected override ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected override bool Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return Compare(left, right, Comparison.Lt, ctx);
         }
 
 
-        protected override ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected override bool GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return Compare(left, right, Comparison.GtEq, ctx);
         }
 
 
-        protected override ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected override bool LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return Compare(left, right, Comparison.LtEq, ctx);
         }
@@ -133,32 +133,26 @@ namespace Ela.Library.General
         }
 
 
-        private ElaValue Compare(ElaValue left, ElaValue right, Comparison comp, ExecutionContext ctx)
+        private bool Compare(ElaValue left, ElaValue right, Comparison comp, ExecutionContext ctx)
         {
             var ld = left.As<ElaDateTime>();
             var rd = right.As<ElaDateTime>();
 
             if (ld == null)
-            {
-                ctx.InvalidLeftOperand(left, right, Op(comp));
-                return Default();
-            }
+                return comp == Comparison.Neq;
 
             if (rd == null)
-            {
-                ctx.InvalidRightOperand(left, right, Op(comp));
-                return Default();
-            }
+                return comp == Comparison.Neq;
 
             switch (comp)
             {
-                case Comparison.Eq: return new ElaValue(ld.Ticks == rd.Ticks);
-                case Comparison.Neq: return new ElaValue(ld.Ticks != rd.Ticks);
-                case Comparison.Gt: return new ElaValue(ld.Ticks > rd.Ticks);
-                case Comparison.Lt: return new ElaValue(ld.Ticks < rd.Ticks);
-                case Comparison.GtEq: return new ElaValue(ld.Ticks >= rd.Ticks);
-                case Comparison.LtEq: return new ElaValue(ld.Ticks <= rd.Ticks);
-                default: return Default();
+                case Comparison.Eq: return ld.Ticks == rd.Ticks;
+                case Comparison.Neq: return ld.Ticks != rd.Ticks;
+                case Comparison.Gt: return ld.Ticks > rd.Ticks;
+                case Comparison.Lt: return ld.Ticks < rd.Ticks;
+                case Comparison.GtEq: return ld.Ticks >= rd.Ticks;
+                case Comparison.LtEq: return ld.Ticks <= rd.Ticks;
+                default: return false;
             }
         }
 

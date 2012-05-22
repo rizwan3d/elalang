@@ -135,7 +135,7 @@ namespace Ela.Runtime.ObjectModel
                 if (cc++ > 0)
                     sb.Append(',');
 
-                if (cc > 1000)
+                if (cc > 100)
                 {
                     sb.Append("...");
                     break;

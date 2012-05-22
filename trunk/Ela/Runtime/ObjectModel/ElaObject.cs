@@ -167,45 +167,43 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-        protected internal virtual ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
+        protected internal virtual bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.NoOperator(This(left, right), "equal");
-			return Default();
+            return left.Ref == right.Ref;
 		}
 
 
-		protected internal virtual ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal virtual bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.NoOperator(This(left, right), "notequal");
-			return Default();
+            return left.Ref != right.Ref;
 		}
 
 
-		protected internal virtual ElaValue Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal virtual bool Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.NoOperator(This(left, right), "greater");
-			return Default();
+            ctx.NoOperator(This(left, right), "greater"); 
+            return false;
 		}
 
 
-		protected internal virtual ElaValue Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal virtual bool Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.NoOperator(This(left, right), "lesser");			
-			return Default();
+			ctx.NoOperator(This(left, right), "lesser");
+            return false;
 		}
 
 
-		protected internal virtual ElaValue GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal virtual bool GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.NoOperator(This(left, right), "greaterequal");
-			return Default();
+            ctx.NoOperator(This(left, right), "greaterequal");
+            return false;
 		}
 
 
-		protected internal virtual ElaValue LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
+		protected internal virtual bool LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			ctx.NoOperator(This(left, right), "lesserequal");
-			return Default();
+            ctx.NoOperator(This(left, right), "lesserequal");
+            return false;
 		}
 
 
@@ -364,13 +362,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal virtual bool Bool(ElaValue @this, ExecutionContext ctx)
-		{
-			ctx.NoOperator(@this, "bool");
-			return false;
-		}
-
-
 		protected internal virtual ElaValue Head(ExecutionContext ctx)
 		{
 			ctx.NoOperator(new ElaValue(this), "head");
@@ -421,7 +412,7 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal virtual bool Has(string field, ExecutionContext ctx)
 		{
-			ctx.NoOperator(new ElaValue(this), "fieldhas");
+			ctx.NoOperator(new ElaValue(this), "has");
 			return false;
 		}
 
@@ -446,6 +437,7 @@ namespace Ela.Runtime.ObjectModel
 			return Default();
         }
 
+
         protected internal virtual ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
         {
             ctx.NoOperator(new ElaValue(this), "call");
@@ -453,7 +445,7 @@ namespace Ela.Runtime.ObjectModel
         }
 
 
-		protected internal virtual ElaValue Force(ElaValue @this, ExecutionContext ctx)
+		internal virtual ElaValue Force(ElaValue @this, ExecutionContext ctx)
 		{
 			return @this;
 		}

@@ -54,8 +54,9 @@ namespace Ela.Linking
 
 				for (var j = 0; j < pl; j++)
 					list[j] = bw.ReadString();
-				
-				frame.AddReference(alias, new ModuleReference(modName, dllName, list, 0, 0, qual));
+
+                var lh = bw.ReadInt32();
+				frame.AddReference(alias, new ModuleReference(frame, modName, dllName, list, 0, 0, qual, lh));
 			}
 
 			c = bw.ReadInt32();
@@ -64,12 +65,12 @@ namespace Ela.Linking
 				frame.GlobalScope.Locals.Add(bw.ReadString(),
 					new ScopeVar((ElaVariableFlags)bw.ReadInt32(), bw.ReadInt32(), bw.ReadInt32()));
 
-			c = bw.ReadInt32();
+            c = bw.ReadInt32();
 
-			for (var i = 0; i < c; i++)
-				frame.LateBounds.Add(new LateBoundSymbol(
-					bw.ReadString(), bw.ReadInt32(), bw.ReadInt32(), bw.ReadInt32(),
-					bw.ReadInt32()));
+            for (var i = 0; i < c; i++)
+                frame.LateBounds.Add(new LateBoundSymbol(
+                    bw.ReadString(), bw.ReadInt32(), bw.ReadInt32(), bw.ReadInt32(),
+                    bw.ReadInt32()));
 
 			c = bw.ReadInt32();
 

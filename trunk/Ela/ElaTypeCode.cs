@@ -14,12 +14,12 @@ namespace Ela
 
 		Double = 4,
 
-		
-		Boolean = 5,
 
-		Char = 6,
-		
-		String = 7,
+        Boolean = 5,
+
+        Char = 6,
+
+        String = 7,
 
 		Unit = 8,		
 		

@@ -5,13 +5,13 @@ using Ela.Runtime.ObjectModel;
 
 namespace Ela.Library.General
 {
-	public sealed class ElaAsync : ElaRefObject
+	public sealed class ElaAsync : ElaObject
 	{
 		#region Construction
 		private const string TYPENAME = "async";
 		internal readonly object SyncRoot = new Object();
 
-		internal ElaAsync(AsyncModule mod, ElaFunction fun) : base(TYPENAME)
+		internal ElaAsync(AsyncModule mod, ElaFunction fun)
 		{
 			Initialize(mod, fun);
 		}
@@ -40,18 +40,6 @@ namespace Ela.Library.General
 
 
 		#region Operations
-		protected override ElaValue Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return new ElaValue(left.ReferenceEquals(right));
-		}
-
-
-		protected override ElaValue NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return new ElaValue(!left.ReferenceEquals(right));
-		}
-
-
 		protected override string Show(ElaValue @this, ShowInfo info, Ela.Runtime.ExecutionContext ctx)
 		{
 			return "[" + TYPENAME + "]";

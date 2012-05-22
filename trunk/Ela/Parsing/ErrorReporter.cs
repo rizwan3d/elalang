@@ -49,8 +49,7 @@ namespace Ela.Parsing
 		{
 			switch (prod)
 			{
-                case "Attribute": return ElaParserError.InvalidAttribute;
-                case "Literal": return ElaParserError.InvalidLiteral;
+               case "Literal": return ElaParserError.InvalidLiteral;
                 case "Operators": return ElaParserError.InvalidOperator;
 				case "SimpleExpr": return ElaParserError.InvalidSimpleExpression;
 				case "VariantLiteral": return ElaParserError.InvalidVariant;
