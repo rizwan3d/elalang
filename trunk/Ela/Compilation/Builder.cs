@@ -373,7 +373,7 @@ namespace Ela.Compilation
 						if (p.TargetObject.Type == ElaNodeType.VariantLiteral)
 						{
 							AddLinePragma(p.TargetObject);
-							EmitVar(GetVariable(p.TargetObject.GetName(), p.Line, p.Column));
+                            EmitVar(GetVariable(p.TargetObject.GetName(), p.Line, p.Column));
 						}
 						else
 							CompileExpression(p.TargetObject, map, Hints.None);

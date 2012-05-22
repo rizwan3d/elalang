@@ -149,7 +149,7 @@ namespace Ela.Linking
             if (mod.Parent != null)
                 mod.Parent.HandleMap[mod.LogicalHandle] = hdl;
 
-            return frame != null ? FillExports(frame, exportVars, mod.LogicalHandle) : frame;
+            return frame != null && !mod.RequireQuailified ? FillExports(frame, exportVars, mod.LogicalHandle) : frame;
 		}
 
 

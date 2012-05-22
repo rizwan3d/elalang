@@ -13,8 +13,6 @@ namespace Ela.Runtime
 		#region Construction
 		internal ElaValue[][] modules;
 		private readonly CodeAssembly asm;
-        private readonly IntrinsicFrame argMod;
-        private readonly int argModHandle;
       	
 		public ElaMachine(CodeAssembly asm)
 		{
@@ -25,16 +23,6 @@ namespace Ela.Runtime
 			modules = new ElaValue[asm.ModuleCount][];
 			var mem = new ElaValue[lays.Size];
 			modules[0] = mem;
-
-            argModHandle = asm.TryGetModuleHandle("$Args");
-
-            if (argModHandle != -1)
-            {
-                argMod = (IntrinsicFrame)asm.GetModule(argModHandle);
-                modules[argModHandle] = argMod.Memory;
-                ReadPervasives(MainThread, argMod, argModHandle);
-            }
-
 			MainThread.CallStack.Push(new CallPoint(0, new EvalStack(lays.StackSize), mem, FastList<ElaValue[]>.Empty));
 		}
 		#endregion
@@ -159,9 +147,6 @@ namespace Ela.Runtime
 				MainThread.CallStack.Clear();
 				var cp = new CallPoint(0, new EvalStack(frame.Layouts[0].StackSize), arr, FastList<ElaValue[]>.Empty);
 				MainThread.CallStack.Push(cp);
-
-				for (var i = 0; i < asm.ModuleCount; i++)
-					ReadPervasives(MainThread, asm.GetModule(i), i);
 			}
 		}
 
@@ -1123,10 +1108,6 @@ namespace Ela.Runtime
 							var om = thread.Module;
 							var omh = thread.ModuleHandle;
 							thread.SwitchModule(modMem.ModuleHandle);
-
-                            if (!asm.RequireQuailified(omh))
-							    ReadPervasives(thread, om, omh);
-							
                             right = evalStack.Pop();
 
 							if (modMem.BreakAddress == 0)
@@ -1145,12 +1126,7 @@ namespace Ela.Runtime
 								var frm = asm.GetModule(hdl);
 
 								if (frm is IntrinsicFrame)
-								{
 									modules[hdl] = ((IntrinsicFrame)frm).Memory;
-
-                                    if (!asm.RequireQuailified(hdl))
-									    ReadPervasives(thread, frm, hdl);
-								}
 								else
 								{
 									i4 = frm.Layouts[0].Size;
@@ -1160,19 +1136,8 @@ namespace Ela.Runtime
 									callStack.Push(new CallPoint(hdl, new EvalStack(frm.Layouts[0].StackSize), loc, FastList<ElaValue[]>.Empty));
 									thread.SwitchModule(hdl);
 									thread.Offset = 0;
-                                    
-                                    if (argMod != null)
-                                        ReadPervasives(thread, argMod, argModHandle);
-
 									goto SWITCH_MEM;
 								}
-							}
-							else
-							{
-								var frm = asm.GetModule(hdl);
-
-                                if (!asm.RequireQuailified(hdl))
-                                    ReadPervasives(thread, frm, hdl);
 							}
 						}
 						break;
@@ -1207,23 +1172,7 @@ namespace Ela.Runtime
 
 
 		#region Operations
-        private void ReadPervasives(WorkerThread thread, CodeFrame frame, int handle)
-		{
-            //var mod = thread.Module;
-            //var locals = modules[thread.ModuleHandle];
-            //var externs = frame.GlobalScope.Locals;
-            //var extMem = modules[handle];
-            //ScopeVar sv;
-
-            //foreach (var s in mod.LateBounds)
-            //{
-            //    if (externs.TryGetValue(s.Name, out sv))
-            //        locals[s.Address] = extMem[sv.Address];
-            //}
-		}
-
-
-		internal ElaValue CallPartial(ElaFunction fun, ElaValue arg)
+        internal ElaValue CallPartial(ElaFunction fun, ElaValue arg)
 		{
 			if (fun.AppliedParameters < fun.Parameters.Length)
 			{
