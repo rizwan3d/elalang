@@ -8,7 +8,8 @@ namespace Ela.Linking
     #region Functions
     internal abstract class LangBinaryFun : ElaFunction
     {
-        protected LangBinaryFun() : base(2)
+        protected LangBinaryFun()
+            : base(2)
         {
             Spec = 2;
         }
@@ -41,7 +42,7 @@ namespace Ela.Linking
                 return Call(Parameters[0], value, ctx);
             else
             {
-                var fun = CloneFast();
+                var fun = Clone();
                 fun.AppliedParameters = 1;
                 fun.Parameters[0] = value;
                 return new ElaValue(fun);
@@ -56,7 +57,8 @@ namespace Ela.Linking
 
     internal abstract class LangUnaryFun : ElaFunction
     {
-        protected LangUnaryFun() : base(1)
+        protected LangUnaryFun()
+            : base(1)
         {
             Spec = 1;
         }
@@ -83,204 +85,6 @@ namespace Ela.Linking
         }
     }
 
-    internal sealed class AddFun : LangBinaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
-        {
-            return arg1.Add(arg1, arg2, ctx);
-        }
-    }
-
-    internal sealed class SubFun : LangBinaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
-        {
-            return arg1.Subtract(arg1, arg2, ctx);
-        }
-    }
-
-    internal sealed class MulFun : LangBinaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
-        {
-            return arg1.Multiply(arg1, arg2, ctx);
-        }
-    }
-
-    internal sealed class DivFun : LangBinaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
-        {
-            return arg1.Divide(arg1, arg2, ctx);
-        }
-    }
-
-    internal sealed class RemFun : LangBinaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
-        {
-            return arg1.Remainder(arg1, arg2, ctx);
-        }
-    }
-
-    internal sealed class PowFun : LangBinaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
-        {
-            return arg1.Power(arg1, arg2, ctx);
-        }
-    }
-
-    internal sealed class NegFun : LangUnaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
-        {
-            return arg.Negate(ctx);
-        }
-    }
-
-    internal sealed class MinFun : LangUnaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
-        {
-            return arg.GetMin(ctx);
-        }
-    }
-
-    internal sealed class MaxFun : LangUnaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
-        {
-            return arg.GetMax(ctx);
-        }
-    }
-
-    internal sealed class BitAndFun : LangBinaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
-        {
-            return arg1.BitwiseAnd(arg1, arg2, ctx);
-        }
-    }
-
-    internal sealed class BitOrFun : LangBinaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
-        {
-            return arg1.BitwiseOr(arg1, arg2, ctx);
-        }
-    }
-
-    internal sealed class BitXorFun : LangBinaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
-        {
-            return arg1.BitwiseXor(arg1, arg2, ctx);
-        }
-    }
-
-    internal sealed class BitNotFun : LangUnaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
-        {
-            return arg.BitwiseNot(ctx);
-        }
-    }
-
-    internal sealed class ShlFun : LangBinaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
-        {
-            return arg1.ShiftLeft(arg1, arg2, ctx);
-        }
-    }
-
-    internal sealed class ShrFun : LangBinaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
-        {
-            return arg1.ShiftRight(arg1, arg2, ctx);
-        }
-    }
-
-    internal sealed class EqFun : LangBinaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
-        {
-            return new ElaValue(arg1.Equal(arg1, arg2, ctx));
-        }
-    }
-
-    internal sealed class NeqFun : LangBinaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
-        {
-            return new ElaValue(arg1.NotEqual(arg1, arg2, ctx));
-        }
-    }
-
-    internal sealed class GteqFun : LangBinaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
-        {
-            return new ElaValue(arg1.GreaterEqual(arg1, arg2, ctx));
-        }
-    }
-
-    internal sealed class LteqFun : LangBinaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
-        {
-            return new ElaValue(arg1.LesserEqual(arg1, arg2, ctx));
-        }
-    }
-
-    internal sealed class LtFun : LangBinaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
-        {
-            return new ElaValue(arg1.Lesser(arg1, arg2, ctx));
-        }
-    }
-
-    internal sealed class GtFun : LangBinaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
-        {
-            return new ElaValue(arg1.Greater(arg1, arg2, ctx));
-        }
-    }
-
-    internal sealed class NotFun : LangUnaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
-        {
-            if (arg.TypeId != ElaMachine.BYT)
-            {
-                ctx.InvalidType("bool", arg);
-                return Default();
-            }
-
-            return new ElaValue(arg.I4 != 1);
-        }
-    }
-
-    internal sealed class ConsFun : LangBinaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
-        {
-            return arg2.Cons(arg2.Ref, arg1, ctx);
-        }
-    }
-
-    internal sealed class CatFun : LangBinaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
-        {
-            return arg1.Concatenate(arg1, arg2, ctx);
-        }
-    }
-
     internal sealed class SuccFun : LangUnaryFun
     {
         protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
@@ -288,52 +92,12 @@ namespace Ela.Linking
             return arg.Ref.Successor(arg, ctx);
         }
     }
-    
+
     internal sealed class PredFun : LangUnaryFun
     {
         protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
         {
             return arg.Ref.Predecessor(arg, ctx);
-        }
-    }
-
-    internal sealed class NilFun : LangUnaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
-        {
-            return arg.Ref.Nil(ctx);
-        }
-    }
-
-    internal sealed class IsNilFun : LangUnaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
-        {
-            return new ElaValue(arg.Ref.IsNil(ctx));
-        }
-    }
-
-    internal sealed class HeadFun : LangUnaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
-        {
-            return arg.Ref.Head(ctx);
-        }
-    }
-
-    internal sealed class TailFun : LangUnaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
-        {
-            return arg.Ref.Tail(ctx);
-        }
-    }
-
-    internal sealed class LenFun : LangUnaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
-        {
-            return arg.Ref.GetLength(ctx);
         }
     }
 
@@ -347,25 +111,6 @@ namespace Ela.Linking
                 return new ElaValue(arg2.Show(new ShowInfo(0, 0, str.ToString()), ctx));
             else
                 return Default();
-        }
-    }
-
-    internal sealed class FlipFun : LangUnaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
-        {
-            arg = arg.Force(ctx);
-
-            if (arg.TypeId != ElaMachine.FUN)
-            {
-                ctx.Fail(new ElaError(ElaRuntimeError.ExpectedFunction, TypeCodeFormat.GetShortForm(arg.TypeCode)));
-                return Default();
-            }
-
-            var fun = (ElaFunction)arg.Ref;
-            fun = fun.Captures != null ? fun.CloneFast() : fun.Clone();
-            fun.Flip = !fun.Flip;
-            return new ElaValue(fun);
         }
     }
 
@@ -399,40 +144,13 @@ namespace Ela.Linking
 
             return Default();
         }
-    }
 
-    internal sealed class ForceFun : LangUnaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
+        public override ElaFunction Clone()
         {
-            return arg.Ref.Force(arg, ctx);
+            return CloneFast(new ElemFun(elem, len));
         }
     }
 
-    internal sealed class TypeFun : LangUnaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
-        {
-            return new ElaValue(arg.Ref.GetTypeInfo());
-        }
-    }
-
-    internal sealed class GettagFun : LangUnaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
-        {
-            return new ElaValue(arg.Ref.GetTag(ctx));
-        }
-    }
-
-    internal sealed class UntagFun : LangUnaryFun
-    {
-        protected internal override ElaValue Call(ElaValue arg, ExecutionContext ctx)
-        {
-            return arg.Ref.Untag(ctx);
-        }
-    }
-    
     internal sealed class ConvertFun : LangBinaryFun
     {
         protected internal override ElaValue Call(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -513,51 +231,14 @@ namespace Ela.Linking
     {
         public override void Initialize()
         {
-            AddFastCall2("add", new AddFun());
-            AddFastCall2("sub", new SubFun());
-            AddFastCall2("mul", new MulFun());
-            AddFastCall2("div", new DivFun());
-            AddFastCall2("rem", new RemFun());
-            AddFastCall2("pow", new PowFun());
-            AddFastCall1("neg", new NegFun());
-            AddFastCall1("min", new MinFun());
-            AddFastCall1("max", new MaxFun());
-            AddFastCall2("bitand", new BitAndFun());
-            AddFastCall2("bitor", new BitOrFun());
-            AddFastCall2("bitxor", new BitXorFun());
-            AddFastCall2("bitnot", new BitNotFun());
-            AddFastCall2("shl", new ShlFun());
-            AddFastCall2("shr", new ShrFun());
-            AddFastCall2("eq", new EqFun());
-            AddFastCall2("neq", new NeqFun());
-            AddFastCall2("gteq", new GteqFun());
-            AddFastCall2("lteq", new LteqFun());
-            AddFastCall2("lt", new LtFun());
-            AddFastCall2("gt", new GtFun());
-            AddFastCall1("_not", new NotFun());
-            AddFastCall2("cons", new ConsFun());
-            AddFastCall2("cat", new CatFun());
-            AddFastCall1("succ", new SuccFun());
-            AddFastCall1("pred", new PredFun());
-            AddFastCall1("_nil", new NilFun());
-            AddFastCall1("isnil", new IsNilFun());
-            AddFastCall1("_head", new HeadFun());
-            AddFastCall1("_tail", new TailFun());
-            AddFastCall1("len", new LenFun());
-            AddFastCall2("_showf", new ShowfFun());
-            AddFastCall1("_flip", new FlipFun());
-            AddFastCall1("elem1of2", new ElemFun(0, 2));
-            AddFastCall1("elem2of2", new ElemFun(1, 2));
-            AddFastCall1("elem1of3", new ElemFun(0, 3));
-            AddFastCall1("elem2of3", new ElemFun(1, 3));
-            AddFastCall1("_force", new ForceFun());
-            AddFastCall1("_type", new TypeFun());
-            AddFastCall1("gettag", new GettagFun());
-            AddFastCall1("_untag", new UntagFun());
-            AddFastCall2("conv", new ConvertFun());
+            Add("_succ", new SuccFun());
+            Add("_pred", new PredFun());
+            Add("_showf", new ShowfFun());
+            Add("_elem1of2", new ElemFun(0, 2));
+            Add("_elem2of2", new ElemFun(1, 2));
+            Add("_elem1of3", new ElemFun(0, 3));
+            Add("_elem2of3", new ElemFun(1, 3));
+            Add("_convert", new ConvertFun());
         }
-
-
-        
     }
 }

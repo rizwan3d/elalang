@@ -149,20 +149,6 @@ namespace Ela.Linking
 			scope.Locals.Add(name, new ScopeVar(ElaVariableFlags.None, locals.Count, -1));
 			locals.Add(value);
         }
-
-        internal void AddFastCall2(string name, ElaObject value)
-        {
-            scope.Locals.Remove(name);
-            scope.Locals.Add(name, new ScopeVar(ElaVariableFlags.FastCall, locals.Count, 2));
-            locals.Add(new ElaValue(value));
-        }
-
-        internal void AddFastCall1(string name, ElaObject value)
-        {
-            scope.Locals.Remove(name);
-            scope.Locals.Add(name, new ScopeVar(ElaVariableFlags.FastCall, locals.Count, 1));
-            locals.Add(new ElaValue(value));
-        }
 		#endregion
     }
 }

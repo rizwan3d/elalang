@@ -26,7 +26,24 @@ namespace Ela.Compilation
 			-1, //Add
 			-1, //Mul
 			-1, //Div
-			-1, //Sub
+			-1, //Sub            
+            -1, //Concat
+            -1, //Rem
+            -1, //Pow
+            -1, //Shr
+            -1, //Shl
+            -1, //Ceq
+            -1, //Cneq
+            -1, //Clt
+            -1, //Cgt
+            -1, //Cgteq
+            -1, //Clteq
+            -1, //AndBw
+            -1, //OrBw
+            -1, //Xor
+            0, //Not
+            0, //Neg
+            0, //NotBw
 			1, //Dup
 			0, //Swap
 			1, //Newlazy
@@ -53,8 +70,6 @@ namespace Ela.Compilation
             0, //Gettag
             
             1, //Pushext
-			0, //Callf1
-            -1,//Callf2
 			0, //Skiptag
 			0, //Newvar
 			1, //Newrec

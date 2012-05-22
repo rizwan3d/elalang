@@ -465,8 +465,6 @@ namespace Ela.Compilation
 							exprData = new ExprData(DataKind.VarType, (Int32)ElaVariableFlags.ObjectLiteral);
 						else if ((scopeVar.VariableFlags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin)
 							exprData = new ExprData(DataKind.Builtin, scopeVar.Data);
-                        else if ((scopeVar.VariableFlags & ElaVariableFlags.FastCall) == ElaVariableFlags.FastCall)
-                            exprData = new ExprData(DataKind.FastCall, scopeVar.Data);
 					}
 					break;
 				case ElaNodeType.Placeholder:
@@ -728,17 +726,7 @@ namespace Ela.Compilation
 				var bf = (ElaVariableReference)v.Target;
 				var sv = GetVariable(bf.VariableName, bf.Line, bf.Column);
 
-                if ((sv.Flags & ElaVariableFlags.FastCall) == ElaVariableFlags.FastCall && sv.Data == 2 && len == 2)
-                {
-                    cw.Emit(Op.Callf2, sv.Address);
-                    return ed;
-                }
-                if ((sv.Flags & ElaVariableFlags.FastCall) == ElaVariableFlags.FastCall && sv.Data == 1 && len == 1)
-                {
-                    cw.Emit(Op.Callf1, sv.Address);
-                    return ed;
-                }
-                else if ((sv.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin)
+                if ((sv.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin)
 				{
 					var kind = (ElaBuiltinKind)sv.Data;
 					var pars = Builtins.Params(kind);
@@ -1036,11 +1024,6 @@ namespace Ela.Compilation
                 {
                     flags = ElaVariableFlags.Builtin;
                     data = (Int32)vk.Kind;
-                }
-                else if (vk.CallConv != CallConv.Standard)
-                {
-                    flags = ElaVariableFlags.FastCall;
-                    data = vk.CallConv == CallConv.FastCall1 ? 1 : 2;
                 }
 
                 frame.LateBounds.Add(new LateBoundSymbol(name, vk.ModuleHandle | vk.Address << 8, data, line, col));

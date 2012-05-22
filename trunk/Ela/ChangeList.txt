@@ -1,8 +1,9 @@
-0.9.16.29:New:A new 'extends' attribute is introduced. Using this attribute one can write functions that extend already existing functions by additional pattern matchings clauses.
+0.9.16.30:Change:Variable resolving and referencing have been rewritten in compiler and linker. Binary format has changed as is now incompatible with old format.
+0.9.16.29:New:(experimental) A new 'extends' attribute is introduced. Using this attribute one can write functions that extend already existing functions by additional pattern matchings clauses.
 0.9.16.28:Change:Minor internal virtual machine optimizations.
 0.9.16.27:Fix:A bug fixed in a linker - in some cases it didn't provide a file name for compiler errors.
-0.9.16.26:New:Now ElaFunction expose a set of instance ToDelegate methods that convers an Ela function to a .NET delegate.
-0.9.16.25:Change:Now when opening a module an Ela code this module binds to a private (not exported) name.
+0.9.16.26:New:Now ElaFunction expose a set of instance ToDelegate methods that converts an Ela function to a .NET delegate.
+0.9.16.25:Change:Now when opening a module in Ela code this module binds to a private (not exported) name.
 0.9.16.24:Change:Now Ela allows hiding of names in a global scope.
 0.9.16.23:Fix:A bug fixed in mutually recursive binding (et-bindings) - the names weren't always resolved correctly which could cause a VM crush.
 0.9.16.22:Fix:A bug fixed in implementation of Callt op code. Sometimes when calling external function it could cause internal VM state corruption.

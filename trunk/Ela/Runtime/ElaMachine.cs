@@ -347,82 +347,6 @@ namespace Ela.Runtime
 						break;
 					#endregion
 
-					#region Arithmetic Operations
-					case Op.Add:
-						left = evalStack.Pop();
-						right = evalStack.Peek();
-
-                        if (left.TypeId == INT && right.TypeId == INT)
-                        {
-                            evalStack.Replace(left.I4 + right.I4);
-                            break;
-                        }
-
-                        evalStack.Replace(left.Ref.Add(left, right, ctx));
-                        
-                        if (ctx.Failed)
-                        {
-							evalStack.Replace(right);
-							evalStack.Push(left);
-							ExecuteThrow(thread, evalStack);
-                            goto SWITCH_MEM;
-                        }
-						break;
-					case Op.Sub:
-						left = evalStack.Pop();
-						right = evalStack.Peek();
-
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 - right.I4);
-							break;
-						}
-
-						evalStack.Replace(left.Ref.Subtract(left, right, ctx));
-
-						if (ctx.Failed)
-						{
-							evalStack.Replace(right);
-							evalStack.Push(left);
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
-						break;
-					case Op.Div:
-						left = evalStack.Pop();
-						right = evalStack.Peek();
-						evalStack.Replace(left.Divide(left, right, ctx));
-
-						if (ctx.Failed)
-						{
-							evalStack.Replace(right);
-							evalStack.Push(left);
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
-						break;
-					case Op.Mul:
-						left = evalStack.Pop();
-						right = evalStack.Peek();
-
-						if (left.TypeId == INT && right.TypeId == INT)
-						{
-							evalStack.Replace(left.I4 * right.I4);
-							break;
-						}
-
-						evalStack.Replace(left.Ref.Multiply(left, right, ctx));
-
-						if (ctx.Failed)
-						{
-							evalStack.Replace(right);
-							evalStack.Push(left);
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
-						break;				
-					#endregion
-
 					#region Object Operations
                     case Op.Pat:
 						right = evalStack.Peek();
@@ -860,7 +784,307 @@ namespace Ela.Runtime
 						break;
 					#endregion
 
-					#region CreateNew Operations
+                    #region Binary Operations
+                    case Op.AndBw:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+                        evalStack.Replace(left.Ref.BitwiseAnd(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.OrBw:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+                        evalStack.Replace(left.Ref.BitwiseOr(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.Xor:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+                        evalStack.Replace(left.Ref.BitwiseXor(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.Shl:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+                        evalStack.Replace(left.Ref.ShiftLeft(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.Shr:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+                        evalStack.Replace(left.Ref.ShiftRight(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.Concat:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+                        evalStack.Replace(left.Concatenate(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.Add:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+
+                        if (left.TypeId == INT && right.TypeId == INT)
+                        {
+                            evalStack.Replace(left.I4 + right.I4);
+                            break;
+                        }
+
+                        evalStack.Replace(left.Ref.Add(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.Sub:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+
+                        if (left.TypeId == INT && right.TypeId == INT)
+                        {
+                            evalStack.Replace(left.I4 - right.I4);
+                            break;
+                        }
+
+                        evalStack.Replace(left.Ref.Subtract(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.Div:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+                        evalStack.Replace(left.Divide(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.Mul:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+
+                        if (left.TypeId == INT && right.TypeId == INT)
+                        {
+                            evalStack.Replace(left.I4 * right.I4);
+                            break;
+                        }
+
+                        evalStack.Replace(left.Ref.Multiply(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.Pow:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+                        evalStack.Replace(left.Ref.Power(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.Rem:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+                        evalStack.Replace(left.Ref.Remainder(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.Cgt:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+
+                        if (left.TypeId == INT && right.TypeId == INT)
+                        {
+                            evalStack.Replace(left.I4 > right.I4);
+                            break;
+                        }
+
+                        evalStack.Replace(left.Ref.Greater(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.Clt:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+
+                        if (left.TypeId == INT && right.TypeId == INT)
+                        {
+                            evalStack.Replace(left.I4 < right.I4);
+                            break;
+                        }
+
+                        evalStack.Replace(left.Ref.Lesser(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.Ceq:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+
+                        if (left.TypeId == INT && right.TypeId == INT)
+                        {
+                            evalStack.Replace(left.I4 == right.I4);
+                            break;
+                        }
+
+                        evalStack.Replace(left.Ref.Equal(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.Cneq:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+
+                        if (left.TypeId == INT && right.TypeId == INT)
+                        {
+                            evalStack.Replace(left.I4 != right.I4);
+                            break;
+                        }
+
+                        evalStack.Replace(left.Ref.NotEqual(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.Cgteq:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+
+                        if (left.TypeId == INT && right.TypeId == INT)
+                        {
+                            evalStack.Replace(left.I4 >= right.I4);
+                            break;
+                        }
+
+                        evalStack.Replace(left.Ref.GreaterEqual(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.Clteq:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+
+                        if (left.TypeId == INT && right.TypeId == INT)
+                        {
+                            evalStack.Replace(left.I4 <= right.I4);
+                            break;
+                        }
+
+                        evalStack.Replace(left.Ref.LesserEqual(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    #endregion
+
+                    #region CreateNew Operations
                     case Op.Newvar:
 						right = evalStack.Peek();
 						evalStack.Replace(new ElaValue(new ElaVariant(frame.Strings[opd], right)));
@@ -1020,33 +1244,6 @@ namespace Ela.Runtime
 								return evalStack.PopFast();
 						}
 					#endregion
-
-					#region Builtins
-                    case Op.Callf1:
-                        right = evalStack.Peek();
-                        evalStack.Replace(modules[frame.HandleMap[opd & Byte.MaxValue]][opd >> 8].Ref.Call(right, ctx));
-
-                        if (ctx.Failed)
-                        {
-                            evalStack.Replace(right);
-                            ExecuteThrow(thread, evalStack);
-                            goto SWITCH_MEM;
-                        }
-                        break;
-                    case Op.Callf2:
-                        left = evalStack.Pop();
-						right = evalStack.Peek();
-                        evalStack.Replace(modules[frame.HandleMap[opd & Byte.MaxValue]][opd >> 8].Ref.Call(left, right, ctx));
-
-						if (ctx.Failed)
-						{
-							evalStack.Replace(right);
-							evalStack.Push(left);
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
-                        break;
-                    #endregion
 
 					#region Misc
 					case Op.Nop:
@@ -1242,6 +1439,14 @@ namespace Ela.Runtime
 		{
 			if (fun.TypeId != FUN)
 			{
+                var rf = fun.Force(new ElaValue(fun), thread.Context).Ref;
+
+                if (rf.TypeId == FUN)
+                {
+                    fun = rf;
+                    goto goon;
+                }
+
 				var arg = stack.Peek();
 				var res = fun.Call(arg, thread.Context);
 				stack.Replace(res);
@@ -1256,6 +1461,8 @@ namespace Ela.Runtime
 
 				return false;
 			}
+
+            goon:
 
 			var natFun = (ElaFunction)fun;
 
@@ -1330,7 +1537,7 @@ namespace Ela.Runtime
             if (funObj.Spec == 2)
             {
                 var p = stack.Pop();
-
+                
                 if (funObj.Flip)
                     stack.Push(funObj.Call(p, funObj.Parameters[0], thread.Context));
                 else
@@ -1338,7 +1545,7 @@ namespace Ela.Runtime
                 
                 if (thread.Context.Failed)
                 {
-                    stack.Replace(p);
+                    stack.Replace(p); 
                     stack.Push(new ElaValue(funObj));
                     ExecuteThrow(thread, stack);
                     return true;

@@ -156,7 +156,6 @@
     <Compile Include="Compilation\Builder.Operators.cs" />
     <Compile Include="Compilation\Builder.Ranges.cs" />
     <Compile Include="Compilation\Builder.Functions.cs" />
-    <Compile Include="Compilation\CallConv.cs" />
     <Compile Include="Compilation\DataKind.cs" />
     <Compile Include="Compilation\ElaCompilerError.cs" />
     <Compile Include="Compilation\ElaCompilerHint.cs" />

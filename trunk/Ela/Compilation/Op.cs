@@ -46,6 +46,43 @@ namespace Ela.Compilation
         		
 		Sub,
 
+
+        Concat,
+
+        Rem,
+
+        Pow,
+
+        Shr,
+
+        Shl,
+
+        Ceq,
+
+        Cneq,
+
+        Clt,
+
+        Cgt,
+
+        Cgteq,
+
+        Clteq,
+
+        AndBw,
+
+        OrBw,
+
+        Xor,
+
+        Not,
+
+        Neg,
+
+        NotBw,
+
+
+
 		Dup,
 
 		Swap,
@@ -97,11 +134,7 @@ namespace Ela.Compilation
 
         Pushext,
 
-        Callf1,
-
-        Callf2,
-
-		Skiptag,
+        Skiptag,
 
 		Newvar,
 

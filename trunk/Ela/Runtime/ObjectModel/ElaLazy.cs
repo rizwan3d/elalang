@@ -92,9 +92,11 @@ namespace Ela.Runtime.ObjectModel
 
 			if (f != null)
 			{
-				ctx.Failed = true;
-				ctx.Thunk = this;
-				return new ElaValue(ElaDummyObject.Instance);
+                ctx.Failed = true;
+                ctx.Thunk = this;
+                return new ElaValue(ElaDummyObject.Instance);
+                //Value = f.Call(new ElaValue(ElaUnit.Instance), ctx);
+                //Function = null;
 			}
 
 			return Value;

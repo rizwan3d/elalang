@@ -162,7 +162,6 @@ namespace Ela.Linking
                 if ((sv.Flags & ElaVariableFlags.Private) != ElaVariableFlags.Private)
                     exportVars.AddName(kv.Key, 
                         (sv.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin ? (ElaBuiltinKind)sv.Data : ElaBuiltinKind.None,
-                        (sv.Flags & ElaVariableFlags.FastCall) == ElaVariableFlags.FastCall ? (CallConv)sv.Data : CallConv.Standard,
                         logicHandle, sv.Address);
             }
 
@@ -186,8 +185,6 @@ namespace Ela.Linking
                 if (found &&
                         (
                         (vk.Kind != ElaBuiltinKind.None && (Int32)vk.Kind != l.Data && l.Data != -1)
-                        || (vk.CallConv == CallConv.FastCall1 && l.Data != -1 && l.Data != 1)
-                        || (vk.CallConv == CallConv.FastCall2 && l.Data != -1 && l.Data != 2)
                         )
                     )
                     AddError(ElaLinkerError.ExportedNameChanged, fi,
