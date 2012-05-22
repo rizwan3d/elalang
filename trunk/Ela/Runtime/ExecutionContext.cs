@@ -121,10 +121,11 @@ namespace Ela.Runtime
 		}
 
 
-        public void SetDeffered(ElaFunction fun)
+        public void SetDeffered(ElaFunction fun, int args)
         {
             Failed = true;
-            Thunk = new ElaLazy(fun);
+            Fun = fun;
+            DefferedArgs = args;
         }
 		#endregion
 
@@ -134,7 +135,11 @@ namespace Ela.Runtime
 
 		internal ElaError Error { get; set; }
 
+        internal int DefferedArgs;
+
 		internal ElaLazy Thunk;
+
+        internal ElaFunction Fun;
 
         internal string Tag;
 

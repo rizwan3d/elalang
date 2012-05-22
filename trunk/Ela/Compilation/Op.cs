@@ -2,56 +2,55 @@
 
 namespace Ela.Compilation
 {
-	public enum Op
-	{
-		Nop,
+    public enum Op
+    {
+        Nop,
 
-		Len,
+        Len,
 
         Pushunit,
 
-		Pushelem,
+        Pushelem,
 
-		PushI4_0,
+        PushI4_0,
 
-		PushI1_0,
+        PushI1_0,
 
-		PushI1_1,
+        PushI1_1,
 
-		Pop,
+        Pop,
 
-		Popelem,
+        Popelem,
 
-		Pushstr_0,
+        Pushstr_0,
 
-		Reccons,
+        Reccons,
 
-		Genfin,
+        Genfin,
 
-		Cons,
+        Cons,
 
-		Gen,
+        Gen,
 
-		Tail,
+        Tail,
 
-		Head,
+        Head,
 
-		Ret,
-
-		Add,
-
-		Mul,
-
-		Div,
-        		
-		Sub,
-
+        Ret,
 
         Concat,
+
+        Add,
+
+        Mul,
+
+        Div,
 
         Rem,
 
         Pow,
+
+        Sub,
 
         Shr,
 
@@ -81,115 +80,127 @@ namespace Ela.Compilation
 
         NotBw,
 
+        Dup,
 
+        Swap,
 
-		Dup,
+        Newlazy,
 
-		Swap,
+        Newlist,
 
-		Newlazy,
+        Newmod,
 
-		Newlist,
+        Newtup_2,
 
-		Newmod,
+        Typeid,
 
-		Newtup_2,
+        Stop,
 
-		Typeid,
+        NewI8,
 
-		Stop,
+        NewR8,
 
-		NewI8,
+        Leave,
 
-		NewR8,
+        Flip,
 
-		Leave,
+        LazyCall,
 
-		Flip,
+        Call,
 
-		LazyCall,
+        Callt,
 
-		Call,
+        Throw,
 
-		Callt,
+        Rethrow,
 
-		Throw,
+        Force,
 
-		Rethrow,
+        Type,
 
-		Force,
+        Isnil,
 
-		Type,
+        Succ,
 
-		Isnil,
+        Pred,
 
-		Untag,
+        Max,
 
-		Skiphtag,
+        Min,
 
-		Nil,
+        Show,
+
+        Untag,
+
+        Skiphtag,
+
+        Nil,
 
         Gettag,
+
+        Conv,
 
 
         Pushext,
 
+        Elem,
+
         Skiptag,
 
-		Newvar,
+        Newvar,
 
-		Newrec,
+        Newrec,
 
-		Newtup,
+        Newtup,
 
-		Skiptn,
+        Skiptn,
 
-		Skiptl,
+        Skiptl,
 
-		Pat,
+        Pat,
 
-		Tupex,
+        Tupex,
 
-		Failwith,
+        Failwith,
 
-		Start,
+        Start,
 
-		Pushstr,
+        Pushstr,
 
-		PushCh,
+        PushCh,
 
-		PushI4,
+        PushI4,
 
-		PushR4,
+        PushR4,
 
-		Pushvar,
+        Pushvar,
 
-		Pushfld,
+        Pushfld,
 
-		Popvar,
+        Popvar,
 
-		Popfld,
+        Popfld,
 
-		Runmod,
+        Runmod,
 
-		Has,
+        Has,
 
-		Br,
+        Br,
 
-		Brtrue,
+        Brtrue,
 
-		Brfalse,
+        Brfalse,
 
-		Br_lt,
+        Br_lt,
 
-		Br_gt,
+        Br_gt,
 
-		Br_eq,
+        Br_eq,
 
-		Br_neq,
+        Br_neq,
 
-		Brnil,
+        Brnil,
 
-		Newfun
-	}
+        Newfun
+    }
 }

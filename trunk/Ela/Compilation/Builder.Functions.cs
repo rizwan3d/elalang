@@ -188,6 +188,9 @@ namespace Ela.Compilation
         {
             switch (kind)
             {
+                case ElaBuiltinKind.Convert:
+                    cw.Emit(Op.Conv);
+                    break;
                 case ElaBuiltinKind.Apply:
                     cw.Emit(Op.Pushunit);
                     cw.Emit(Op.Swap);
@@ -199,18 +202,18 @@ namespace Ela.Compilation
                 case ElaBuiltinKind.Untag:
                     cw.Emit(Op.Untag);
                     break;
-                //case ElaBuiltinKind.Fst:
-                //    cw.Emit(Op.Elem, 2 | 0 << 8);
-                //    break;
-                //case ElaBuiltinKind.Snd:
-                //    cw.Emit(Op.Elem, 2 | 1 << 8);
-                //    break;
-                //case ElaBuiltinKind.Fst3:
-                //    cw.Emit(Op.Elem, 3 | 0 << 8);
-                //    break;
-                //case ElaBuiltinKind.Snd3:
-                //    cw.Emit(Op.Elem, 3 | 1 << 8);
-                //    break;
+                case ElaBuiltinKind.Fst:
+                    cw.Emit(Op.Elem, 2 | 0 << 8);
+                    break;
+                case ElaBuiltinKind.Snd:
+                    cw.Emit(Op.Elem, 2 | 1 << 8);
+                    break;
+                case ElaBuiltinKind.Fst3:
+                    cw.Emit(Op.Elem, 3 | 0 << 8);
+                    break;
+                case ElaBuiltinKind.Snd3:
+                    cw.Emit(Op.Elem, 3 | 1 << 8);
+                    break;
                 case ElaBuiltinKind.Head:
                     cw.Emit(Op.Head);
                     break;
@@ -222,6 +225,18 @@ namespace Ela.Compilation
                     break;
                 case ElaBuiltinKind.Negate:
                     cw.Emit(Op.Neg);
+                    break;
+                case ElaBuiltinKind.Succ:
+                    cw.Emit(Op.Succ);
+                    break;
+                case ElaBuiltinKind.Pred:
+                    cw.Emit(Op.Pred);
+                    break;
+                case ElaBuiltinKind.Max:
+                    cw.Emit(Op.Max);
+                    break;
+                case ElaBuiltinKind.Min:
+                    cw.Emit(Op.Min);
                     break;
                 case ElaBuiltinKind.Type:
                     cw.Emit(Op.Type);
@@ -240,6 +255,9 @@ namespace Ela.Compilation
                     break;
                 case ElaBuiltinKind.Nil:
                     cw.Emit(Op.Nil);
+                    break;
+                case ElaBuiltinKind.Showf:
+                    cw.Emit(Op.Show);
                     break;
                 case ElaBuiltinKind.CompBackward:
                     cw.Emit(Op.Swap);

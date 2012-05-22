@@ -9,7 +9,6 @@ namespace Ela.Runtime.ObjectModel
 		internal static readonly ExecutionContext DummyContext = new ExecutionContext();
 		internal const string UNDEF = "<unknown>";
         internal const string INVALID = "<INVALID>";
-        internal int Spec;
 
 		protected ElaObject() : this(ElaTypeCode.Object)
 		{

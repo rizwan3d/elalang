@@ -16,7 +16,6 @@ namespace Ela.Runtime.ObjectModel
 		{
 			Function = function;
 			_value = default(ElaValue);
-            base.Spec = -1;
 		}
 		#endregion
 

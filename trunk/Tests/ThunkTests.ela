@@ -260,3 +260,8 @@ let tupleConcat {eq} =
            et tup3 = (1,2,3)
            et tup4 = (& (1,2,3) )
            et tup5 = (& (3,4,5) )
+
+let thunkFun {eq} = 
+        eq ((& +) 2 2) 4
+        $ eq ((& add) 2 2) 4
+        where add x y = x + y

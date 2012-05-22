@@ -51,10 +51,6 @@ namespace Ela.Linking
 			Assembly = new CodeAssembly();
 			Success = true;
 			foreignModules = new Dictionary<String,Dictionary<String,ElaModuleAttribute>>();
-
-            var dict = new Dictionary<String,ElaModuleAttribute>();
-            dict.Add("lang", new ElaModuleAttribute("lang", typeof(LangModule)));
-            foreignModules.Add("$", dict);
 		}
 		#endregion
 
@@ -340,7 +336,7 @@ namespace Ela.Linking
 			}
 			else
 			{
-                var dict = mod.IsStandardLibrary ? foreignModules["$"] : new Dictionary<String,ElaModuleAttribute>();
+                var dict = new Dictionary<String,ElaModuleAttribute>();
 
 				foreach (ElaModuleAttribute a in attrs)
 				{
@@ -354,8 +350,7 @@ namespace Ela.Linking
 						dict.Add(a.ModuleName, a);
 				}
 
-                if (!mod.IsStandardLibrary)
-				    foreignModules.Add(mod.DllName, dict);
+                foreignModules.Add(mod.IsStandardLibrary ? "$" : mod.DllName, dict);
 			}
 
 			return true;

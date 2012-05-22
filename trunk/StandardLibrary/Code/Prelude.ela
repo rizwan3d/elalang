@@ -2,7 +2,6 @@
     Ela standard Prelude module
     Created in 2011 by Basil Voronkov
 */
-open lang
 
 /* Arithmetic operators */
 let (+)  = __internal add
@@ -50,8 +49,8 @@ let curry3 f x y z = f (x, y, z)
 let uncurry3 f (x, y, z) = f x y z
 
 /* Enumerable */
-let succ = _succ
-let pred = _pred
+let succ = __internal succ
+let pred = __internal pred
 
 /* List functions */
 let (!!) x y = x.[y]
@@ -65,13 +64,13 @@ let length = __internal length
 let (=>) x y = (x, y)
 let swap (x, y) = (y, x)
 let swap3 (x, y, z) = (y, x, z)
-let fst = _elem1of2
-let snd = _elem2of2
-let fst3 = _elem1of3
-let snd3 = _elem2of3
+let fst = __internal fst
+let snd = __internal snd
+let fst3 = __internal fst3
+let snd3 = __internal snd3
 
 /* Show */
-let showf = _showf
+let showf = __internal showf
 let show  = showf ""
 
 /* Complex behaviors */
@@ -90,7 +89,7 @@ let fix f = f (& fix f)
 let on cmb f x y = f x `cmb` f y
 
 /* Conversion */
-let convert = _convert
+let convert = __internal convert
 let toInt x     = convert 1 x
 let toLong x    = convert 2 x 
 let toSingle x  = convert 3 x

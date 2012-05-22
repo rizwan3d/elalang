@@ -16,6 +16,10 @@ namespace Ela.CodeModel
 
         Type,
 
+        Succ,
+
+        Pred,
+
         Max,
 
         Min,
@@ -28,6 +32,14 @@ namespace Ela.CodeModel
 
         IsNil,
 
+        Fst,
+
+        Snd,
+
+        Fst3,
+
+        Snd3,
+
         Gettag,
 
         Untag,
@@ -38,6 +50,11 @@ namespace Ela.CodeModel
         Negate,
 
         BitwiseNot,
+
+
+        Showf,
+
+        Convert,
 
 
         Add,

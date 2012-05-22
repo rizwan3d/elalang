@@ -2,13 +2,13 @@
 
 namespace Ela.Compilation
 {
-	internal static class OpSizeHelper
-	{
-		internal static int[] OpSize = 
+    internal static class OpSizeHelper
+    {
+        internal static int[] OpSize = 
 		{
 			1, //Nop
 			1, //Len
-            1, //Pushunit
+			1, //Pushunit
 			1, //Pushelem
 			1, //PushI4_0
 			1, //PushI1_0
@@ -23,29 +23,27 @@ namespace Ela.Compilation
 			1, //Tail
 			1, //Head
 			1, //Ret
+			1, //Concat
 			1, //Add
 			1, //Mul
 			1, //Div
+			1, //Rem
+			1, //Pow
 			1, //Sub
-
-            1, //Concat
-            1, //Rem
-            1, //Pow
-            1, //Shr
-            1, //Shl
-            1, //Ceq
-            1, //Cneq
-            1, //Clt
-            1, //Cgt
-            1, //Cgteq
-            1, //Clteq
-            1, //AndBw
-            1, //OrBw
-            1, //Xor
-            1, //Not
-            1, //Neg
-            1, //NotBw
-
+			1, //Shr
+			1, //Shl
+			1, //Ceq
+			1, //Cneq
+			1, //Clt
+			1, //Cgt
+			1, //Cgteq
+			1, //Clteq
+			1, //AndBw
+			1, //OrBw
+			1, //Xor
+			1, //Not
+			1, //Neg
+			1, //NotBw
 			1, //Dup
 			1, //Swap
 			1, //Newlazy
@@ -66,12 +64,19 @@ namespace Ela.Compilation
 			1, //Force
 			1, //TypeId
 			1, //Isnil
+			1, //Succ
+			1, //Pred
+			1, //Max
+			1, //Min
+			1, //Show
 			1, //Tagval
 			1, //Skiphtag
 			1, //Nil
         	1, //Gettag
-            
+			1, //Conv
+			
             5, //Pushext
+            5, //Elem
 			5, //Skiptag
 			5, //Newvar
 			5, //Newrec
@@ -102,5 +107,5 @@ namespace Ela.Compilation
 			5, //Brnil
 			5, //Newfun			
 		};
-	}
+    }
 }

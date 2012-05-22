@@ -8,7 +8,7 @@ namespace Ela
     {
         internal static int Params(ElaBuiltinKind kind)
         {
-            return kind >= ElaBuiltinKind.Add ? 2 : 1;
+            return kind >= ElaBuiltinKind.Showf ? 2 : 1;
         }
 
 
@@ -21,16 +21,25 @@ namespace Ela
                 case "force": return ElaBuiltinKind.Force;
                 case "length": return ElaBuiltinKind.Length;
                 case "type": return ElaBuiltinKind.Type;
+                case "succ": return ElaBuiltinKind.Succ;
+                case "pred": return ElaBuiltinKind.Pred;
                 case "max": return ElaBuiltinKind.Max;
                 case "min": return ElaBuiltinKind.Min;
                 case "nil": return ElaBuiltinKind.Nil;
                 case "head": return ElaBuiltinKind.Head;
                 case "tail": return ElaBuiltinKind.Tail;
                 case "isnil": return ElaBuiltinKind.IsNil;
+                case "fst": return ElaBuiltinKind.Fst;
+                case "fst3": return ElaBuiltinKind.Fst3;
+                case "snd": return ElaBuiltinKind.Snd;
+                case "snd3": return ElaBuiltinKind.Snd3;
                 case "gettag": return ElaBuiltinKind.Gettag;
                 case "untag": return ElaBuiltinKind.Untag;
                 case "apply": return ElaBuiltinKind.Apply;
-                                    
+
+                case "showf": return ElaBuiltinKind.Showf;
+                case "convert": return ElaBuiltinKind.Convert;
+
                 case "equal": return ElaBuiltinKind.Equal;
                 case "notequal": return ElaBuiltinKind.NotEqual;
                 case "greaterequal": return ElaBuiltinKind.GreaterEqual;

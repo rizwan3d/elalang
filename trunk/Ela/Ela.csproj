@@ -181,7 +181,6 @@
     <Compile Include="Compilation\OpSizeHelper.cs" />
     <Compile Include="ElaTranslationException.cs" />
     <Compile Include="Linking\ArgumentModule.cs" />
-    <Compile Include="Linking\LangModule.cs" />
     <Compile Include="Linking\ModuleEventArgs.cs" />
     <Compile Include="Loc.cs" />
     <Compile Include="Runtime\CallFlag.cs" />

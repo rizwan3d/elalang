@@ -486,11 +486,6 @@ namespace Ela.Runtime.ObjectModel
 
 			return funName;
 		}
-
-        internal override bool IsExternFun()
-        {
-            return Captures == null || Spec != 0;
-        }
 		#endregion
 
 
