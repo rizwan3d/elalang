@@ -10,6 +10,8 @@ namespace Ela.Library.General
 	public sealed class AsyncModule : ForeignModule
 	{
 		#region Construction
+        private readonly object syncRoot = new Object();
+
 		public AsyncModule()
 		{
 			Threads = new List<Thread>();
@@ -40,7 +42,7 @@ namespace Ela.Library.General
 			Add<ElaAsync,ElaValue>("get", GetValue);
 			Add<ElaAsync,Boolean>("hasValue", HasValue);
 			Add<Int32,ElaAsync,ElaUnit>("wait", Wait);
-			Add<ElaObject,ElaFunction,ElaUnit>("sync", Sync);
+			Add<ElaFunction,ElaUnit>("sync", Sync);
 		}
 
 
@@ -83,8 +85,11 @@ namespace Ela.Library.General
 			{
 				if (th.Join(timeout))
 				{
-					Threads.Remove(th);
-					obj.Thread = null;
+                    lock (syncRoot)
+                    {
+                        Threads.Remove(th);
+                        obj.Thread = null;
+                    }
 				}
 			}
 
@@ -92,9 +97,9 @@ namespace Ela.Library.General
 		}
 
 
-		public ElaUnit Sync(ElaObject obj, ElaFunction fun)
+		public ElaUnit Sync(ElaFunction fun)
 		{
-			lock (obj)
+            lock (syncRoot)
 				fun.Call();
 
 			return ElaUnit.Instance;

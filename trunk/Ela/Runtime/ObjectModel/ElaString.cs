@@ -160,66 +160,68 @@ namespace Ela.Runtime.ObjectModel
 				var val = GetValue();
 				return val.Length > 0 ? new ElaValue(val[0]) : new ElaValue('\0');
 			}
+            else if (type.ReflectedTypeCode == ElaTypeCode.List)
+                return new ElaValue(ElaList.FromEnumerable(this));
             else if (type.ReflectedTypeCode == ElaTypeCode.Integer)
-			{
-				try
-				{
-					return new ElaValue(Int32.Parse(GetValue()));
-				}
-				catch (Exception ex)
-				{
+            {
+                try
+                {
+                    return new ElaValue(Int32.Parse(GetValue()));
+                }
+                catch (Exception ex)
+                {
                     ctx.ConversionFailed(@this, type.ReflectedTypeName, ex.Message);
-					return Default();
-				}
-			}
+                    return Default();
+                }
+            }
             else if (type.ReflectedTypeCode == ElaTypeCode.Long)
-			{
-				try
-				{
-					return new ElaValue(Int64.Parse(GetValue()));
-				}
-				catch (Exception ex)
-				{
+            {
+                try
+                {
+                    return new ElaValue(Int64.Parse(GetValue()));
+                }
+                catch (Exception ex)
+                {
                     ctx.ConversionFailed(@this, type.ReflectedTypeName, ex.Message);
-					return Default();
-				}
-			}
+                    return Default();
+                }
+            }
             else if (type.ReflectedTypeCode == ElaTypeCode.Single)
-			{
-				try
-				{
-					return new ElaValue(Single.Parse(GetValue(), Culture.NumberFormat));
-				}
-				catch (Exception ex)
-				{
+            {
+                try
+                {
+                    return new ElaValue(Single.Parse(GetValue(), Culture.NumberFormat));
+                }
+                catch (Exception ex)
+                {
                     ctx.ConversionFailed(@this, type.ReflectedTypeName, ex.Message);
-					return Default();
-				}
-			}
+                    return Default();
+                }
+            }
             else if (type.ReflectedTypeCode == ElaTypeCode.Double)
-			{
-				try
-				{
-					return new ElaValue(Double.Parse(GetValue(), Culture.NumberFormat));
-				}
-				catch (Exception ex)
-				{
+            {
+                try
+                {
+                    return new ElaValue(Double.Parse(GetValue(), Culture.NumberFormat));
+                }
+                catch (Exception ex)
+                {
                     ctx.ConversionFailed(@this, type.ReflectedTypeName, ex.Message);
-					return Default();
-				}
-			}
+                    return Default();
+                }
+            }
             else if (type.ReflectedTypeCode == ElaTypeCode.Boolean)
-			{
-				try
-				{
-					return new ElaValue(Boolean.Parse(GetValue()));
-				}
-				catch (Exception ex)
-				{
+            {
+                try
+                {
+                    return new ElaValue(Boolean.Parse(GetValue()));
+                }
+                catch (Exception ex)
+                {
                     ctx.ConversionFailed(@this, type.ReflectedTypeName, ex.Message);
-					return Default();
-				}
-			}
+                    return Default();
+                }
+            }
 
             ctx.ConversionFailed(@this, type.ReflectedTypeName);
 			return Default();

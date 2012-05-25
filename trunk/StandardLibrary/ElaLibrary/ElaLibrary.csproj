@@ -103,7 +103,7 @@
     <Compile Include="General\ElaStringBuilder.cs" />
     <Compile Include="General\Experimental.cs" />
     <Compile Include="General\GuidModule.cs" />
-    <Compile Include="General\IO.cs" />
+    <Compile Include="General\IOModule.cs" />
     <Compile Include="General\RecordModule.cs" />
     <Compile Include="General\ShellModule.cs" />
     <Compile Include="Modules.cs" />
