@@ -29,8 +29,6 @@ namespace Ela.CodeModel
 
 		FunctionCall,
 
-		Indexer,
-		
 		FieldDeclaration,
 
 		Primitive,

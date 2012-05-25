@@ -19,26 +19,26 @@ let listMatch {eqt} =
         $ eqt (match lst with 1::2::3::xs = true; _ = false;;)
         $ eqt (match lst with 1::y::3::xs = y == 2; _ = false;;)
         $ eqt (match lst with 1::2::3::[] = false; _ = true;;)
-        $ eqt (match lst with x::y::z::xs = x == 1 && y == 2 && z == 3; _ = true;;)
+        $ eqt (match lst with x::y::z::xs = x == 1 and y == 2 and z == 3; _ = true;;)
         where lst = [1,2,3,4,5]
     
 let listMatch2 {eqt} =
           eqt (match lst with [1,2,3] = false; _ = true;;)
         $ eqt (match lst with [1,2,3,4,5] = true; _ = false;;)
-        $ eqt (match lst with [x,y,z,4,5] = x == 1 && y == 2 && z == 3; _ = false;;)
+        $ eqt (match lst with [x,y,z,4,5] = x == 1 and y == 2 and z == 3; _ = false;;)
         where lst = [1,2,3,4,5]
     
 let tupleMatch {eqt} =
           eqt (match tup with (1,2,3) = true; _ = false;;)
         $ eqt (match tup with (1,2) = false; _ = true;;)
-        $ eqt (match tup with (x,y,z) = x == 1 && y == 2 && z == 3; _ = false;;)
+        $ eqt (match tup with (x,y,z) = x == 1 and y == 2 and z == 3; _ = false;;)
         where tup = (1,2,3)
 
 let recordMatch {eqt} =
           eqt (match rec with (1,2,3) = true; _ = false;;)
         $ eqt (match rec with {x=1,z=3,y=2} = true; _ = false;;)
         $ eqt (match rec with {x=1,y=2} = true; _ = false;;)
-        $ eqt (match rec with {x,y,z} = x == 1 && y == 2 && z == 3; _ = false;;)
+        $ eqt (match rec with {x,y,z} = x == 1 and y == 2 and z == 3; _ = false;;)
         where rec = {x=1,y=2,z=3}
     
 let unitMatch {eqt} =
@@ -70,7 +70,7 @@ let guards {eqt} =
             eqt v
             where v = match (1,4,3) with
                             (x,y,z) | x > z = false
-                                    | z > x && x + z == y = true
+                                    | z > x and x + z == y = true
     
 let guards2 {eqt} =
         eqt v

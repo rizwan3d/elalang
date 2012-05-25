@@ -189,7 +189,7 @@ let elem x = any (==x)
 let notElem x = all (<>x)
 
 let elemBy _  _ [] = false
-    elemBy eq y (x::xs) = y `eq` x || elemBy eq y xs
+    elemBy eq y (x::xs) = y `eq` x or elemBy eq y xs
 
 let scanl f q (x::xs) = q :: scanl f (f q x) xs
     scanl _ q []@n    = q :: n

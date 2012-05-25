@@ -88,10 +88,10 @@ let boolOperators {eqt,eqf} =
         $ eqt <| not ('A' == 'a')
 
 let boolOperators2 {eq,neq} =
-          neq (2 == 2 && 3 <> 3) 
-        $ eq (2 <> 2 || 44 == 44) 
-        $ eq (124 > 123 || 3 == 3 && true) 
-        $ eq (1 > 2 && 2 < 1 || 1 == 1)
+          neq (2 == 2 and 3 <> 3) 
+        $ eq (2 <> 2 or 44 == 44) 
+        $ eq (124 > 123 and 3 == 3 and true) 
+        $ eq (1 > 2 and 2 < 1 or 1 == 1)
     
 let pipeOperators {eq} =
         let fun1 x y = x + y

@@ -1,13 +1,13 @@
 ﻿let fromLiteral {eq} = 
         let tup = ('E', 'l', 'a') in
         eq (length tup) 3 
-        $ eq tup.[0] 'E' 
-        $ eq tup.[1] 'l'
-        $ eq tup.[2] 'a'
+        $ eq (tup:0) 'E' 
+        $ eq (tup:1) 'l'
+        $ eq (tup:2) 'a'
 
 let fromLiteral2 {eq} =
         let tup = ("Ela",) in
-        eq (length tup) 1 $ eq tup.[0] "Ela"
+        eq (length tup) 1 $ eq (tup:0) "Ela"
     
 let equals {eqt} =
         eqt (t1 == t2)

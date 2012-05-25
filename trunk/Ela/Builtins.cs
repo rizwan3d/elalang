@@ -16,6 +16,8 @@ namespace Ela
         {
             switch (func)
             {
+                case "fpipe": return ElaBuiltinKind.ForwardPipe;
+                case "bpipe": return ElaBuiltinKind.BackwardPipe;
                 case "not": return ElaBuiltinKind.Not;
                 case "flip": return ElaBuiltinKind.Flip;
                 case "force": return ElaBuiltinKind.Force;

@@ -12,7 +12,7 @@ let withStep2 {eq,eqt} =
         let rng = [5,4.. 0] in
           eq (length rng) 6
         $ eqt <| rng is (5::4::3::xs)
-        $ eq rng.[5] 0
+        $ eq (rng:5) 0
 
 let lazySimple {eqt,eqf} = 
         let rng = [1..] in
@@ -28,7 +28,7 @@ let lazyStep2 {eq,eqt,eqf} =
         let rng = [10,5..] in
           eqt <| rng is (10::5::0::xs)
         $ eqf <| rng is (10::5::0::_::[])
-        $ eqt (rng.[3] < 0)
+        $ eqt ((rng:3) < 0)
     
 let wrong1 {eq,eqt} =
         let rng = [2,1..10] in
@@ -42,12 +42,12 @@ let wrong2 {eq,eqt} =
     
 let tuples1 {eq} =
         eq (length lst) 10
-        $ eq lst.[0] (1,10)
-        $ eq lst.[9] (10,19)
+        $ eq (lst:0) (1,10)
+        $ eq (lst:9) (10,19)
         where lst = [(1,10)..(10,20)]
     
 let tuples2 {eq} =
         eq (length lst) 7
-        $ eq lst.[0] (10,20)
-        $ eq lst.[6] (190,1100)
+        $ eq (lst:0) (10,20)
+        $ eq (lst:6) (190,1100)
         where lst = [(10,20),(40, 200)..(200,1100)]

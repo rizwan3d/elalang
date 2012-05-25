@@ -267,14 +267,14 @@ namespace Ela.Runtime
 						evalStack.Push(new ElaValue(ElaUnit.Instance));
 						break;
 					case Op.Pushelem:
-						right = evalStack.Pop();
-						left = evalStack.Peek();
+						left = evalStack.Pop();
+						right = evalStack.Peek();
 						evalStack.Replace(left.Ref.GetValue(right.Id(ctx), ctx)); //use of ElaValue.Id
 
 						if (ctx.Failed)
 						{
-							evalStack.Replace(left);
-							evalStack.Push(right);
+							evalStack.Replace(right);
+							evalStack.Push(left);
 							ExecuteThrow(thread, evalStack);
 							goto SWITCH_MEM;
 						}

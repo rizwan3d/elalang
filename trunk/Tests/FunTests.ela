@@ -56,9 +56,9 @@ let flipped2 {eq} =
 
 let flipped3 {eq} =  
         let xs = [1, 2, 3] et res = f xs 
-        in eq res.[0] 10
-        $ eq res.[1] 20
-        $ eq res.[2] 30
+        in eq (res:0) 10
+        $ eq (res:1) 20
+        $ eq (res:2) 30
         where fold' [] f = []
               fold' x::xs f = f x :: fold' xs f
            et f = flip fold' (*10)
@@ -177,7 +177,7 @@ let mutualRecur {eq} =
         let mtake x::xs = x::(mskip xs); mtake [] = [] et
             mskip _::xs = mtake xs; mskip [] = [] in
         let res = mtake [1, 2, 3, 4] in
-        eq res.[0] 1 $ eq res.[1] 3
+        eq (res:0) 1 $ eq (res:1) 3
 
 let comparision {eq} =
         eq fun1 fun2
@@ -188,5 +188,5 @@ let comparision {eq} =
 
 let operator1 {eq} =
       eq (rec ? "foo") "foo"
-      where  x ? y = x.[y]
+      where  x ? y = x:y
          et rec = { foo = "foo" }

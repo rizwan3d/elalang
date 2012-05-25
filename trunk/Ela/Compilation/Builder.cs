@@ -412,19 +412,6 @@ namespace Ela.Compilation
 							AddValueNotUsed(p);
 					}
 					break;
-				case ElaNodeType.Indexer:
-					{
-						var v = (ElaIndexer)exp;
-						CompileExpression(v.TargetObject, map, Hints.None);
-
-						CompileExpression(v.Index, map, Hints.None);
-						AddLinePragma(v);
-						cw.Emit(Op.Pushelem);
-
-						if ((hints & Hints.Left) == Hints.Left)
-						    AddValueNotUsed(exp);
-					}
-					break;
 				case ElaNodeType.VariableReference:
 					{
 						var v = (ElaVariableReference)exp;
@@ -639,7 +626,9 @@ namespace Ela.Compilation
 		private ExprData CompileFunctionCall(ElaFunctionCall v, LabelMap map, Hints hints)
 		{
 			var ed = ExprData.Empty;
-						
+            var bf = default(ElaVariableReference);
+            var sv = default(ScopeVar);
+		
 			if (v.Target.Type == ElaNodeType.VariantLiteral)
 			{
 				if (v.Parameters.Count != 1)
@@ -648,6 +637,31 @@ namespace Ela.Compilation
 				CompileVariant((ElaVariantLiteral)v.Target, v.Parameters[0], map);
 				return ed;
 			}
+            else if (v.Target.Type == ElaNodeType.VariableReference)
+            {
+                bf = (ElaVariableReference)v.Target;
+                sv = GetVariable(bf.VariableName, bf.Line, bf.Column);
+
+                if ((sv.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin)
+                {
+                    var k = (ElaBuiltinKind)sv.Data;
+
+                    if (k == ElaBuiltinKind.BackwardPipe && v.Parameters.Count == 2)
+                    {
+                        var fc = new ElaFunctionCall { Target = v.Parameters[0] };
+                        fc.SetLinePragma(v.Line, v.Column);
+                        fc.Parameters.Add(v.Parameters[1]);
+                        return CompileFunctionCall(fc, map, hints);
+                    }
+                    else if (k == ElaBuiltinKind.ForwardPipe && v.Parameters.Count == 2)
+                    {
+                        var fc = new ElaFunctionCall { Target = v.Parameters[1] };
+                        fc.SetLinePragma(v.Line, v.Column);
+                        fc.Parameters.Add(v.Parameters[0]);
+                        return CompileFunctionCall(fc, map, hints);
+                    }                    
+                }
+            }
 
 			var tail = (hints & Hints.Tail) == Hints.Tail;
 			var len = v.Parameters.Count;
@@ -666,11 +680,8 @@ namespace Ela.Compilation
 			if (opt && CompileInlineCall(v, map, hints))
 				return ed;			
 
-			if (v.Target.Type == ElaNodeType.VariableReference)
-			{
-				var bf = (ElaVariableReference)v.Target;
-				var sv = GetVariable(bf.VariableName, bf.Line, bf.Column);
-
+			if (bf != null)
+			{				
                 if ((sv.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin)
 				{
 					var kind = (ElaBuiltinKind)sv.Data;

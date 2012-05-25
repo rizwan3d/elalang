@@ -56,6 +56,7 @@ namespace ElaConsole
 					Environment.Exit(0);
 					break;
                 case "reset":
+                    Console.WriteLine("Session reseted.");
                     return InteractiveAction.Reset;
                 case "eval":
                     Data = arg;

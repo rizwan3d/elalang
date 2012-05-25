@@ -1,20 +1,25 @@
-0.9.16.26:Change:Assignment operator (<-) is decomissioned. Now base Ela implementation is completely pure. Support for mutation state however can be added through libraries.
-0.9.16.25:Change:Records no longer support mutable fields, all record fields are always immutable.
-0.9.16.24:Change:Variable resolving and referencing have been rewritten in compiler and linker. Binary format has changed as is now incompatible with old format.
-0.9.16.23:New:(experimental) A new 'extends' attribute is introduced. Using this attribute one can write functions that extend already existing functions by additional pattern matchings clauses.
-0.9.16.22:Change:Minor internal virtual machine optimizations.
-0.9.16.21:Fix:A bug fixed in a linker - in some cases it didn't provide a file name for compiler errors.
-0.9.16.20:New:Now ElaFunction expose a set of instance ToDelegate methods that converts an Ela function to a .NET delegate.
-0.9.16.19:Change:Now when opening a module in Ela code this module binds to a private (not exported) name.
-0.9.16.18:Change:Now Ela allows hiding of names in a global scope.
-0.9.16.17:Fix:A bug fixed in mutually recursive binding (et-bindings) - the names weren't always resolved correctly which could cause a VM crush.
-0.9.16.16:Fix:A bug fixed in implementation of Callt op code. Sometimes when calling external function it could cause internal VM state corruption.
-0.9.16.15:Change:Now concatenation operation (++) works for all data types. The default implementation is equivalent to 'show x ++ show y'. Concat for tuples, lists, etc. works differently, as it used to.
-0.9.16.14:Change:Parser and compiler behavior and error messages are improved when compiling conditional structures (if/else and guards). Now compiler generates a new ElseMissing error and an AddElse hint.
-0.9.16.13:Change:Now there is no separate implementation for GetField/SetField methods. They are implemented as indexers through GetValue/SetValue.
-0.9.16.12:Change:Hasfld op code renamed to Has.
-0.9.16.11:New:Now variants support conversion to string using toString Prelude function.
-0.9.16.10:Change:Now concatenation operator for strings (++) performs implicit toString convertion (however one of the arguments should still be string).
+0.9.16.31:Change:Pushelem op code stack behavior has changed - it now processes values on a stack in a reverse order.
+0.9.16.30:Change:A bug fixed in compilation logic of pattern matching for variants. A value against which a match is done can be mutated internally by an error which could cause a correct pattern to fail.
+0.9.16.29:Change:An indexing syntax 'x.[y]' is now decomissioned. One should use indexing operator from prelude (:) for similar purpose.
+0.9.16.28:New:Now 'where' bindings can be attached to expression at top-level.
+0.9.16.27:Change:Operators '|>' and '<|' are no longer syntax but regular functions defined in Prelude. Their behavior and performance haven't changed.
+0.9.16.26:Change:Syntax for 'raise' expression is simplified. Parens are now not required around error message, e.g. 'raise Failure "msg"' is valid.
+0.9.16.25:Change:Assignment operator (<-) is decomissioned. Now base Ela implementation is completely pure. Support for mutation state however can be added through libraries.
+0.9.16.24:Change:Records no longer support mutable fields, all record fields are always immutable.
+0.9.16.23:Change:Variable resolving and referencing have been rewritten in compiler and linker. Binary format has changed as is now incompatible with old format.
+0.9.16.22:New:(experimental) A new 'extends' attribute is introduced. Using this attribute one can write functions that extend already existing functions by additional pattern matchings clauses.
+0.9.16.21:Change:Minor internal virtual machine optimizations.
+0.9.16.20:Fix:A bug fixed in a linker - in some cases it didn't provide a file name for compiler errors.
+0.9.16.19:New:Now ElaFunction expose a set of instance ToDelegate methods that converts an Ela function to a .NET delegate.
+0.9.16.18:Change:Now when opening a module in Ela code this module binds to a private (not exported) name.
+0.9.16.17:Change:Now Ela allows hiding of names in a global scope.
+0.9.16.16:Fix:A bug fixed in mutually recursive binding (et-bindings) - the names weren't always resolved correctly which could cause a VM crush.
+0.9.16.15:Fix:A bug fixed in implementation of Callt op code. Sometimes when calling external function it could cause internal VM state corruption.
+0.9.16.14:Change:Now concatenation operation (++) works for all data types. The default implementation is equivalent to 'show x ++ show y'. Concat for tuples, lists, etc. works differently, as it used to.
+0.9.16.13:Change:Parser and compiler behavior and error messages are improved when compiling conditional structures (if/else and guards). Now compiler generates a new ElseMissing error and an AddElse hint.
+0.9.16.12:Change:Now there is no separate implementation for GetField/SetField methods. They are implemented as indexers through GetValue/SetValue.
+0.9.16.11:Change:Hasfld op code renamed to Has.
+0.9.16.10:New:Now variants support conversion to string using toString Prelude function.
 0.9.16.9:Fix:Now let-bindings are processed more correctly in 'et' (mutual recursive) declarations.
 0.9.16.8:Change:Now compiler doesn't generate redundant lexical scope when compiling if/then/else expression.
 0.9.16.7:Change:Now compiler doesn't generate redundant lexical scope when compiling try/with expression.

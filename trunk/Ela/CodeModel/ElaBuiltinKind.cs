@@ -56,6 +56,10 @@ namespace Ela.CodeModel
 
         Convert,
 
+        ForwardPipe,
+
+        BackwardPipe,
+
 
         Add,
 

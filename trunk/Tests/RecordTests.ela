@@ -1,16 +1,16 @@
 let fromLiteral {eq} =
         let rec' = {lang="Ela", dev="Basil"} in
         eq (length rec') 2
-        $ eq rec'.[0] "Ela" 
-        $ eq rec'.[1] "Basil" 
+        $ eq (rec':0) "Ela"
+        $ eq (rec':1) "Basil"
         $ eq rec'.lang "Ela" 
         $ eq rec'.dev "Basil"
-        $ eq rec'.["lang"] "Ela"
-        $ eq rec'.["dev"] "Basil"
+        $ eq (rec':"lang") "Ela"
+        $ eq (rec':"dev") "Basil"
     
 let fromLiteral2 {eq} = 
-        eq rec'.["font-color"] "red"
-        $ eq rec'.["text-decoration"] "none"
+        eq (rec':"font-color") "red"
+        $ eq (rec':"text-decoration") "none"
         where rec' = {"font-color"="red","text-decoration"="none"}
 
 let lightRec {eq} = 

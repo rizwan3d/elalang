@@ -188,6 +188,13 @@ namespace Ela.Compilation
         {
             switch (kind)
             {
+                case ElaBuiltinKind.ForwardPipe:
+                    cw.Emit(Op.Swap);
+                    cw.Emit(Op.Call);
+                    break;
+                case ElaBuiltinKind.BackwardPipe:
+                    cw.Emit(Op.Call);
+                    break;
                 case ElaBuiltinKind.Convert:
                     cw.Emit(Op.Conv);
                     break;
@@ -327,7 +334,6 @@ namespace Ela.Compilation
                     cw.Emit(Op.NotBw);
                     break;
                 case ElaBuiltinKind.Get:
-                    cw.Emit(Op.Swap);
                     cw.Emit(Op.Pushelem);
                     break;
 

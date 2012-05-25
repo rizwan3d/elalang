@@ -16,8 +16,9 @@ CHARACTERS
 	char = ANY - "'" - '\\' - newLine.
 	op = "!%&*+-.:/<=>?@^|~".
 	op2 = "!%&*+-.:/<=?@^|~".
-	op3 = "!%&*+-.:/=>?@^|~".
+	op3 = "!%&*+-.:/=>?@^~".
 	op4 = "!%&*+.:/<=>?@^|~".
+	op5 = "!%&*+-./<=>?@^|~".
 
 TOKENS
 	ident = lcase { letter | digit | "'" }
@@ -55,7 +56,7 @@ TOKENS
 		| "<" [ op3 { op } ]
 		).
 	operatorTok2 = "^" { op }.
-	operatorTok3 = ":" { op }.
+	operatorTok3 = "::" { op }.
 	operatorTok4 = (
 		"+" { op }
 		| "-" [ op4 { op } ]
@@ -63,7 +64,9 @@ TOKENS
 	operatorTok5 = ("*"|"/"|"%") { op }.		
 	operatorTok6 = "<<" { op }.
 	operatorTok7 = ">>" { op }.
-	operatorTok8 = ("~"|"--"|"!"|"?") { op }.
+	operatorTok8 = (("~"|"--"|"!"|"?") { op }
+	               | ":" [ op5 { op } ]).
+	operatorTok9 = "<|" { op }.
 	typeNameTok = "?" lcase { letter }.
 	
 	LBRA = "{".
@@ -1107,7 +1110,7 @@ PRODUCTIONS
 			.)
 		).
 		
-	Operators = operatorTok1|operatorTok2|operatorTok3|operatorTok4|operatorTok5|operatorTok6|operatorTok7|operatorTok8|"::"|"!".
+	Operators = operatorTok1|operatorTok2|operatorTok3|operatorTok4|operatorTok5|operatorTok6|operatorTok7|operatorTok8|operatorTok9|"::".
 		
 	FunName<ElaFunctionLiteral fun> = 
 		(. string val = ""; .)
@@ -1332,7 +1335,7 @@ PRODUCTIONS
 			var code = String.Empty;
 		.)		
 		variantTok (. code = t.val; .)
-		[ "(" Expr<out cexp> ")" ]
+		(Expr<out cexp>|  )
 		(. 
 			r.ErrorCode = code;
 			r.Expression = cexp; 
@@ -1375,51 +1378,12 @@ PRODUCTIONS
 		EndBlock.
 			
 	/* Expr */
-		
-	BackwardPipeExpr<out ElaExpression exp> =
-		ForwardPipeExpr<out exp>
-		{
-			(. 
-				var cexp = default(ElaExpression); 
-				var ot = t;
-				var mi = default(ElaFunctionCall);  
-			.)
-			(
-				"<|" BackwardPipeExpr<out cexp>
-				(. 
-					if (mi == null)
-					{
-						mi = new ElaFunctionCall(ot) { Target = exp };
-						exp = mi; 
-					}
-				
-					mi.Parameters.Add(cexp); 
-				.)
-			)
-		}.
-		
-	ForwardPipeExpr<out ElaExpression exp> = 
-		OrExpr<out exp>
-		{
-			(. 
-				var cexp = default(ElaExpression); 
-			.)
-			(
-				"|>"
-				OrExpr<out cexp>
-				(. 
-					var mi = new ElaFunctionCall(t) { Target = cexp };
-					mi.Parameters.Add(exp);
-					exp = mi;
-				.)
-			)
-		}.
-				
+					
 	OrExpr<out ElaExpression exp> =
 		AndExpr<out exp>
 		{
 			(. var cexp = default(ElaExpression); .)
-			"||" AndExpr<out cexp>
+			"or" AndExpr<out cexp>
 			(. 
 				exp = new ElaBinary(t) { 
 					Left = exp, Operator = ElaOperator.BooleanOr, Right = cexp }; 
@@ -1430,7 +1394,7 @@ PRODUCTIONS
 		OpExpr1<out exp>
 		{
 			(. var cexp = default(ElaExpression); .)
-			"&&" OpExpr1<out cexp>
+			"and" OpExpr1<out cexp>
 			(. 
 				exp = new ElaBinary(t) { 
 					Left = exp, Operator = ElaOperator.BooleanAnd, Right = cexp }; 
@@ -1445,11 +1409,11 @@ PRODUCTIONS
 		.)				
 		(
 			(
-				OpExpr2<out exp>
+				OpExpr1b<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
 					operatorTok1 (. op = t.val; .)
-					[ OpExpr2<out cexp> ]
+					[ OpExpr1b<out cexp> ]
 					(. exp = GetOperatorFun(op, exp, cexp); .)
 				}
 			)
@@ -1457,12 +1421,42 @@ PRODUCTIONS
 			(
 				operatorTok1 (. op = t.val; .)
 				[ 
-					OpExpr2<out exp> 
+					OpExpr1b<out exp> 
 					(. exp = GetOperatorFun(op, null, exp); .)
 				]
 				(.
 					if (exp == null)
 						exp = new ElaVariableReference(ot) { VariableName = op };
+				.)
+			)
+		).
+			
+	OpExpr1b<out ElaExpression exp> =
+		(. 
+			var op = String.Empty; 
+			exp = null;
+			var ot = t; 
+		.)				
+		(
+			(
+				OpExpr2<out exp>
+				{
+					(. var cexp = default(ElaExpression); .)
+					operatorTok9 (. op = t.val; .)
+					[ OpExpr1b<out cexp> ]
+					(. exp = GetOperatorFun(op, exp, cexp); .)
+				}			
+			)
+			|
+			(
+				operatorTok9 (. op = t.val; .)
+				[ 
+					OpExpr2<out exp> 
+					(. exp = GetOperatorFun(op, null, exp); .)
+				]
+				(.
+					if (exp == null)
+						exp = new ElaVariableReference(ot) { VariableName = t.val };
 				.)
 			)
 		).
@@ -1749,14 +1743,14 @@ PRODUCTIONS
 				Application<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
-					(operatorTok8|"!") (. op = t.val; .)
+					(operatorTok8) (. op = t.val; .)
 					[ Application<out cexp> ]
 					(. exp = GetOperatorFun(op, exp, cexp); .)
 				}
 			)
 			|
 			(
-				(operatorTok8|"!") (. op = t.val; .)
+				(operatorTok8) (. op = t.val; .)
 				[ 
 					Application<out exp>
 					(. exp = GetOperatorFun(op, null, exp); .)
@@ -1797,27 +1791,6 @@ PRODUCTIONS
 			"."
 			(
 				(
-					"["
-						(.
-							var indExp = new ElaIndexer(t) { TargetObject = exp };
-							exp = indExp;
-						.)
-						(. var cexp = default(ElaExpression); .)
-						Expr<out cexp>
-						(. indExp.Index = cexp;	.)
-					"]"
-				)
-				|
-				(
-					stringTok
-					(. 
-						var indExp = new ElaIndexer(t) { TargetObject = exp };
-						indExp.Index = new ElaPrimitive(t) { Value = ParseString(t.val) };
-						exp = indExp;
-					.)	
-				)
-				|
-				(
 					"("
 						(ident|variantTok|Operators)
 						(. exp = new ElaFieldReference(t) { FieldName = t.val, TargetObject = exp }; .)
@@ -1838,11 +1811,11 @@ PRODUCTIONS
 		.)				
 		(
 			(
-				BackwardPipeExpr<out exp>
+				OrExpr<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
 					"$"
-					BackwardPipeExpr<out cexp>
+					OrExpr<out cexp>
 					(. 
 						exp = new ElaBinary(t) { Operator = ElaOperator.Sequence, Left = exp, Right = cexp };
 					.)
@@ -1854,18 +1827,24 @@ PRODUCTIONS
 		(. exp = null; .)
 		( 
 			BinaryExpr<out exp>
-			| IfExpr<out exp>
-			| LambdaExpr<out exp>			
+			| IfExpr<out exp> 
+			| LambdaExpr<out exp>
 			| RaiseExpr<out exp>
 			| FailExpr<out exp>
 			| MatchExpr<out exp>		
 			| TryExpr<out exp>			
 		).
-	
+				
+	WhereExpr<ElaExpression cexp, out ElaExpression exp> =
+	    WhereBinding<out exp>
+        (.
+            ((ElaBinding)exp).In = cexp;
+        .).
+        
 	Expr<out ElaExpression exp> = 
 		(. exp = null; .)
 		( 
-			EmbExpr<out exp>	
+			EmbExpr<out exp>
 			| LetBinding<out exp>
 		).
 		
@@ -1931,7 +1910,7 @@ PRODUCTIONS
 		(
 			RootLetBinding<out exp>
 			| IncludeStat<out exp>
-			| EmbExpr<out exp> (. if (FALSE) .) EBLOCK	
+			| EmbExpr<out exp> [WhereExpr<exp, out exp>](. if (FALSE) .) EBLOCK	
 		)
 		(. b.Expressions.Add(exp); .).
 		

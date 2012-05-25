@@ -215,7 +215,6 @@
     <Compile Include="CodeModel\ElaFunctionCall.cs" />
     <Compile Include="CodeModel\ElaFunctionLiteral.cs" />
     <Compile Include="CodeModel\ElaModuleInclude.cs" />
-    <Compile Include="CodeModel\ElaIndexer.cs" />
     <Compile Include="CodeModel\ElaListLiteral.cs" />
     <Compile Include="CodeModel\ElaLiteralValue.cs" />
     <Compile Include="CodeModel\ElaMatchEntry.cs" />
