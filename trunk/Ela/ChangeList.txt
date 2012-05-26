@@ -1,3 +1,4 @@
+0.9.16.32:New:Now debug info (required to build good stack traces) is written to the object files.
 0.9.16.31:Change:Pushelem op code stack behavior has changed - it now processes values on a stack in a reverse order.
 0.9.16.30:Change:A bug fixed in compilation logic of pattern matching for variants. A value against which a match is done can be mutated internally by an error which could cause a correct pattern to fail.
 0.9.16.29:Change:An indexing syntax 'x.[y]' is now decomissioned. One should use indexing operator from prelude (:) for similar purpose.

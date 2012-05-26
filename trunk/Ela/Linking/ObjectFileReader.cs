@@ -3,6 +3,7 @@ using System.IO;
 using Ela.CodeModel;
 using Ela.Compilation;
 using System.Collections.Generic;
+using Ela.Debug;
 
 namespace Ela.Linking
 {
@@ -93,6 +94,33 @@ namespace Ela.Linking
 				frame.Ops.Add(opCode);
 				frame.OpData.Add(OpSizeHelper.OpSize[(Int32)opCode] > 1 ? bw.ReadInt32() : 0);
 			}
+
+            var di = bw.ReadBoolean();
+
+            if (di)
+            {
+                var sym = new DebugInfo();
+
+                c = bw.ReadInt32();
+
+                for (var i = 0; i < c; i++)
+                {
+                    var ln = new LineSym(bw.ReadInt32(), bw.ReadInt32(), bw.ReadInt32());
+                    sym.Lines.Add(ln);
+                }
+
+                c = bw.ReadInt32();
+
+                for (var i = 0; i < c; i++)
+                {
+                    var fn = new FunSym(bw.ReadString(), bw.ReadInt32(), bw.ReadInt32());
+                    fn.Handle = bw.ReadInt32();
+                    fn.EndOffset = bw.ReadInt32();
+                    sym.Functions.Add(fn);
+                }
+
+                frame.Symbols = sym;
+            }
 
 			return frame;
 		}

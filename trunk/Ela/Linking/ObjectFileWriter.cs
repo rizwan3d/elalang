@@ -98,6 +98,36 @@ namespace Ela.Linking
 				if (OpSizeHelper.OpSize[(Int32)op] > 1)
 					bw.Write(frame.OpData[i]);
 			}
+
+            var di = frame.Symbols != null;
+            bw.Write(di); //Contains debug info
+
+            if (di)
+            {
+                var sym = frame.Symbols;
+
+                bw.Write(sym.Lines.Count);
+
+                for (var i = 0; i < sym.Lines.Count; i++)
+                {
+                    var ln = sym.Lines[i];
+                    bw.Write(ln.Offset);
+                    bw.Write(ln.Line);
+                    bw.Write(ln.Column);
+                }
+
+                bw.Write(sym.Functions.Count);
+
+                for (var i = 0; i < sym.Functions.Count; i++)
+                {
+                    var fn = sym.Functions[i];
+                    bw.Write(fn.Name);
+                    bw.Write(fn.StartOffset);
+                    bw.Write(fn.Parameters);
+                    bw.Write(fn.Handle);
+                    bw.Write(fn.EndOffset);
+                }
+            }            
 		}
 		#endregion
 	}
