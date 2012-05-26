@@ -203,7 +203,7 @@ namespace Ela.Linking
 
                 foreach (var r in frame.References)
                 {
-                    if (!mod.NoPrelude || CompilerOptions.Prelude != r.Value.ModuleName)
+                    if (mod == null || !mod.NoPrelude || CompilerOptions.Prelude != r.Value.ModuleName)
                         ResolveModule(r.Value, exportVars);
                 }
 
@@ -427,7 +427,7 @@ namespace Ela.Linking
 			
 			if (pRes.Success)
 			{
-				var cRes = Compile(file, pRes.Expression, frame, scope, mod.NoPrelude);
+				var cRes = Compile(file, pRes.Expression, frame, scope, mod.NoPrelude || mod.ModuleName == CompilerOptions.Prelude);
 				ret = cRes.CodeFrame;
 
 				if (cRes.Success)
@@ -461,7 +461,8 @@ namespace Ela.Linking
             var fnSrc = new FileInfo(Path.Combine(RootFile.DirectoryName, fnWex + EXT));
             RootFile = fnSrc;
 
-            if (fnObj.Exists && (fnSrc.Exists && fnSrc.LastWriteTime <= fnObj.LastWriteTime) ||
+            if (!LinkerOptions.ForceRecompile && 
+                fnObj.Exists && (fnSrc.Exists && fnSrc.LastWriteTime <= fnObj.LastWriteTime) ||
                 !fnSrc.Exists)
             {
                 frame = ReadObjectFile(null, fnObj);

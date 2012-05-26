@@ -47,7 +47,6 @@ namespace Ela.Compilation
 			0, //Swap
 			1, //Newlazy
 			1, //Newlist
-			1, //Newmod
 			-1, //Newtup_2
 			0, //Typeid
 			0, //Stop
@@ -74,7 +73,8 @@ namespace Ela.Compilation
             0, //Gettag
 			-1, //Conv
 			
-            1, //Pushext
+            1, //Newmod
+			1, //Pushext
             0, //Elem
 			0, //Skiptag
 			0, //Newvar

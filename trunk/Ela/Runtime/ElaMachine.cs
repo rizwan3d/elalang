@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Ela.CodeModel;
+using System.IO;
 using Ela.Compilation;
 using Ela.Debug;
 using Ela.Linking;
@@ -1884,7 +1884,18 @@ namespace Ela.Runtime
 			var deb = new ElaDebugger(asm);
 			var mod = asm.GetModule(err.Module);
 			var cs = deb.BuildCallStack(err.CodeOffset, mod, mod.File, err.Stack);
-			return new ElaCodeException(err.FullMessage.Replace("\0",""), err.Code, cs.File, cs.Line, cs.Column, cs, err);
+
+            var fi = cs.File;
+
+            if (StringComparer.OrdinalIgnoreCase.Equals(fi.Extension, ".elaobj"))
+            {
+                var nfi = new FileInfo(fi.FullName.Replace(fi.Extension, ".ela"));
+
+                if (nfi.Exists)
+                    fi = nfi;
+            }
+
+			return new ElaCodeException(err.FullMessage.Replace("\0",""), err.Code, fi, cs.Line, cs.Column, cs, err);
 		}
 
 

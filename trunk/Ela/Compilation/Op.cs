@@ -86,8 +86,6 @@ namespace Ela.Compilation
 
         Newlist,
 
-        Newmod,
-
         Newtup_2,
 
         Typeid,
@@ -138,6 +136,8 @@ namespace Ela.Compilation
 
         Conv,
 
+
+        Newmod,
 
         Pushext,
 

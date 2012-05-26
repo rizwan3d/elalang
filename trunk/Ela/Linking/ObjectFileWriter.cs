@@ -121,7 +121,7 @@ namespace Ela.Linking
                 for (var i = 0; i < sym.Functions.Count; i++)
                 {
                     var fn = sym.Functions[i];
-                    bw.Write(fn.Name);
+                    bw.Write(fn.Name ?? String.Empty);
                     bw.Write(fn.StartOffset);
                     bw.Write(fn.Parameters);
                     bw.Write(fn.Handle);

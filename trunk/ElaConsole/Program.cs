@@ -106,7 +106,9 @@ namespace ElaConsole
 
 			try
 			{
-				var el = new ElaLinker(CreateLinkerOptions(), CreateCompilerOptions(), new FileInfo(opt.FileName));
+                var copt = CreateLinkerOptions();
+                copt.ForceRecompile = true;
+				var el = new ElaLinker(copt, CreateCompilerOptions(), new FileInfo(opt.FileName));
 				var res = el.Build();
 				helper.PrintErrors(res.Messages);
 

@@ -47,7 +47,6 @@ namespace Ela.Compilation
 			1, //Swap
 			1, //Newlazy
 			1, //Newlist
-			1, //Newmod
 			1, //Newtup_2
 			1, //Typeid
 			1, //Stop
@@ -61,20 +60,21 @@ namespace Ela.Compilation
 			1, //Throw
 			1, //Rethrow
 			1, //Force
-			1, //TypeId
+			1, //Type
 			1, //Isnil
 			1, //Succ
 			1, //Pred
 			1, //Max
 			1, //Min
 			1, //Show
-			1, //Tagval
+			1, //Untag
 			1, //Skiphtag
 			1, //Nil
         	1, //Gettag
 			1, //Conv
 			
-            5, //Pushext
+            5, //Newmod
+			5, //Pushext
             5, //Elem
 			5, //Skiptag
 			5, //Newvar
