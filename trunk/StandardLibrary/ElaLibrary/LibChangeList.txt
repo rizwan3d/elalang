@@ -1,3 +1,4 @@
+0.0.9.10:New:A new Format module is added (this module adds a support for format strings).
 0.0.9.9:Change:An indexing operator from Prelude is changed from (!) to (:).
 0.0.9.8:New:A Cell module is added (this module implements reference cells in ML style).
 0.0.9.7:New:An IO module is added.
