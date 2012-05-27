@@ -6,7 +6,7 @@ using System.Collections;
 
 namespace Ela.Runtime
 {
-	public struct ElaValue : IComparable<ElaValue>, IEquatable<ElaValue>
+	public struct ElaValue : IComparable<ElaValue>, IEquatable<ElaValue>, IFormattable
 	{
 		#region Construction
 		public ElaValue(ElaObject val)
@@ -79,7 +79,12 @@ namespace Ela.Runtime
 		public int CompareTo(ElaValue other)
 		{
 			return Ref.Compare(this, other);
-		}
+        }
+
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return Ref.Show(this, new ShowInfo(0, 0, format), ElaObject.DummyContext);
+        }
 
 
 		public override string ToString()
@@ -647,5 +652,5 @@ namespace Ela.Runtime
 			get { return Ref.TypeId; }
 		}
 		#endregion
-	}
+    }
 }

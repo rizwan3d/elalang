@@ -31,7 +31,7 @@ namespace ElaConsole
 
 
 		#region Methods
-		private static int Main(string[] args) 
+        private static int Main(string[] args) 
 		{
             if (!ReadOptions(args))
 				return R_ERR;
