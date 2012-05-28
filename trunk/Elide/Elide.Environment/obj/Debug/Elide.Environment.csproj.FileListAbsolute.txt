@@ -1,9 +1,0 @@
-c:\projects\Elide\Elide.Environment\obj\Debug\ResolveAssemblyReference.cache
-c:\projects\Elide\Elide.Environment\bin\Debug\Elide.Environment.dll
-c:\projects\Elide\Elide.Environment\bin\Debug\Elide.Environment.pdb
-c:\projects\Elide\Elide.Environment\bin\Debug\Elide.Common.dll
-c:\projects\Elide\Elide.Environment\bin\Debug\Elide.Core.dll
-c:\projects\Elide\Elide.Environment\bin\Debug\Elide.Common.pdb
-c:\projects\Elide\Elide.Environment\bin\Debug\Elide.Core.pdb
-c:\projects\Elide\Elide.Environment\obj\Debug\Elide.Environment.dll
-c:\projects\Elide\Elide.Environment\obj\Debug\Elide.Environment.pdb
