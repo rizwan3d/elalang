@@ -1,0 +1,9 @@
+c:\projects\Elide\Elide.Main\obj\Debug\ResolveAssemblyReference.cache
+c:\projects\Elide\Elide.Main\bin\Debug\Elide.Main.dll
+c:\projects\Elide\Elide.Main\bin\Debug\Elide.Main.pdb
+c:\projects\Elide\Elide.Main\bin\Debug\Elide.Core.dll
+c:\projects\Elide\Elide.Main\bin\Debug\Elide.Common.dll
+c:\projects\Elide\Elide.Main\bin\Debug\Elide.Common.pdb
+c:\projects\Elide\Elide.Main\bin\Debug\Elide.Core.pdb
+c:\projects\Elide\Elide.Main\obj\Debug\Elide.Main.dll
+c:\projects\Elide\Elide.Main\obj\Debug\Elide.Main.pdb

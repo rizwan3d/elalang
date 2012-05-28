@@ -1,0 +1,71 @@
+open Con
+open Core
+
+let tr x = writen x $ x
+let id x = x
+
+let toTree (Tree)@x = x;  toTree x = Tree x
+
+let getVal (Tree)@x = (untag x).[0]
+let getBranches (Tree)@x = (untag x).[1]
+
+//Add branch
+let (<+>) x y = let [treeA,treeB] = map toTree [x,y]
+                et val = getVal treeA
+                et branches = getBranches treeA
+                in Tree[val,branches ++ [treeB]]
+//Tuple operator prototype    
+let (comma) x y = let [treeA,treeB] = map toTree [x,y]
+                   et node = Tree[Operator ",",[]]
+                   in (node <+> x) <+> y
+//Action called on the node "," that is tuple operator
+//vals here is a computational stack
+let comma_actor vals = let [x,y] = skip restLength vals
+                        in take restLength vals ++ [Tree[(x,y),[]]]
+                         where restLength = length vals - 2
+
+//Initialize tree wonder - an object, that remember position in the tree and the path to the main node
+let treeWonder x = Wonder {position = toTree x, thePath = []}
+let treeWonderCtor pos path = Wonder {position = pos, thePath = path}
+
+let toMinimal' tree branches path 
+     | length branches == 0 = treeWonderCtor tree path 
+     | else                 = let minBranch = head branches
+                               et nextBranches = getBranches minBranch
+                               in toMinimal' minBranch nextBranches ([tree,0] :: path) //Remember the position and number of the branches (here - min branch)
+
+//Find the minimal ( == branchless) node, remembering the path
+let toMinimal (Wonder x) = toMinimal' tree (getBranches tree) path
+     where { position = tree, thePath = path } = x   
+
+let toNext' [tree,branchN]::path = op (treeWonderCtor next (mem ++ path))
+     where nextBranch = branchN + 1
+        et branches = getBranches tree
+        et maxBranchN = length branches - 1
+        et (next,mem,op) = if
+                              nextBranch <= maxBranchN  
+                            then 
+                              (branches.[nextBranch],[[tree,nextBranch]],toMinimal)
+                            else 
+                              (tree,[],id)
+//Next node in a tree
+let toNext (Wonder x) | path is [] = treeWonderCtor Tree []
+                      | else = toNext' path
+     where { thePath = path }  = x
+
+let go' (Wonder)@wonder vals 
+     | /*(tree == Tree) $*/ writen (tree == Tree) $ path is []     = head <| comma_actor vals
+     | branches is [] = go' (toNext wonder)  (vals ++ [tree])
+     | else           = go' (toNext wonder)  (comma_actor vals)
+     where { position = tree, thePath = path } = untag wonder
+        et branches = getBranches tree
+      
+//This function should be tail-recursive!                       
+let go (Tree)@tree = go' startPosition computationalStack
+     where
+      startPosition = treeWonder tree |> toMinimal
+      et computationalStack = []
+         
+let eval x = let tree = toTree x
+                et vals = tree |> go
+                in vals

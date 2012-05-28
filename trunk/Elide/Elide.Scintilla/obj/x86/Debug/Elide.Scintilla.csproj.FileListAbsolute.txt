@@ -1,0 +1,13 @@
+C:\bin\SciLexer.dll
+C:\bin\SciLexer64.dll
+C:\bin\Elide.Scintilla.dll
+C:\bin\Elide.Scintilla.pdb
+C:\Projects\Elide\Elide.Scintilla\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Projects\Elide\Elide.Scintilla\obj\x86\Debug\Elide.Scintilla.dll
+C:\Projects\Elide\Elide.Scintilla\obj\x86\Debug\Elide.Scintilla.pdb
+C:\Projects\bin\SciLexer.dll
+C:\Projects\bin\Elide.Scintilla.dll
+C:\Projects\bin\Elide.Scintilla.pdb
+C:\Projects\ElaPlatform\Elide\Elide.Scintilla\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Projects\ElaPlatform\Elide\Elide.Scintilla\obj\x86\Debug\Elide.Scintilla.dll
+C:\Projects\ElaPlatform\Elide\Elide.Scintilla\obj\x86\Debug\Elide.Scintilla.pdb

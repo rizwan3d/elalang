@@ -1,0 +1,29 @@
+//Here we use console output for testing purposes
+//Module Con contains implementations of basic console functions such as
+//writen (write line), write (write), readn (read line)
+open Con
+
+//Variables in Ela are declared using a 'let' keyword
+let x = 2
+
+//Actually x is not exactly a variable, you can't change its value.
+//In functional languages such declarations are called bindings.
+//You can declare global and local bindings.
+
+let foo = bar * 2 //foo is a global binding
+          where bar = 4 //bar is a local binding
+
+let _ = writen ("foo=" ++ foo) //Prints foo=8
+
+//Local bindings can be declared using 'where' or 'let/in' constructs
+//This code is equivalent to the previous sample
+let foo2 = let bar2 = 4 
+            in bar2 * 2
+
+let _ = writen ("foo2=" ++ foo2) //Prints foo2=8
+
+//You can use pattern matching in bindings
+//Here we bind two names at once by deconstructing a list of two values
+let [first,second] = [1,2]
+
+let _ = writen ("first+second=" ++ (first+second)) //Prints first+second=3

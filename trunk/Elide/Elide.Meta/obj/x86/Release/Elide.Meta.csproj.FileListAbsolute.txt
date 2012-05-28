@@ -1,0 +1,12 @@
+C:\Projects\Elide\Elide.Meta\bin\x86\Release\Elide.Meta.dll
+C:\Projects\Elide\Elide.Meta\bin\x86\Release\Elide.Meta.pdb
+C:\Projects\Elide\Elide.Meta\obj\x86\Release\ResolveAssemblyReference.cache
+C:\Projects\Elide\Elide.Meta\obj\x86\Release\Elide.Meta.dll
+C:\Projects\Elide\Elide.Meta\obj\x86\Release\Elide.Meta.pdb
+C:\Projects\ElaPlatform\Release\Elide\Elide.Meta.dll
+C:\Projects\ElaPlatform\Release\Elide\Elide.Meta.pdb
+C:\Projects\ElaPlatform\Elide\Elide.Meta\obj\x86\Release\ResolveAssemblyReference.cache
+C:\Projects\ElaPlatform\Elide\Elide.Meta\obj\x86\Release\Elide.Meta.dll
+C:\Projects\ElaPlatform\Elide\Elide.Meta\obj\x86\Release\Elide.Meta.pdb
+C:\Projects\ElaPlatform\Elide\bin\Elide.Meta.dll
+C:\Projects\ElaPlatform\Elide\bin\Elide.Meta.pdb

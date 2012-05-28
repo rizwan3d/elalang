@@ -1,0 +1,5 @@
+c:\Projects\Elide\Ela.CodeEditor\bin\x86\Debug\Ela.CodeEditor.dll
+c:\Projects\Elide\Ela.CodeEditor\bin\x86\Debug\Ela.CodeEditor.pdb
+c:\Projects\Elide\Ela.CodeEditor\obj\x86\Debug\ResolveAssemblyReference.cache
+c:\Projects\Elide\Ela.CodeEditor\obj\x86\Debug\Ela.CodeEditor.dll
+c:\Projects\Elide\Ela.CodeEditor\obj\x86\Debug\Ela.CodeEditor.pdb

@@ -1,0 +1,257 @@
+﻿let simple {eq,eqt} =
+        eq (t + 2) 6
+        $ eq t 4
+        $ eqt (t == 4)
+        where t = (& 2 + 2)
+     
+let lazyList {eqt} =
+        eqt (lst is (0::1::xs))
+        where make n = n :: (& make (n + 1))
+           et lst = make 0
+           
+let lazyList2 {eqt} =
+          eqt <| xs is (1::2::3::_)
+        $ eqt <| xs is (1::2::3::1::2::3::_)
+        where cycle xs = xs ++ (& cycle xs)
+           et xs = cycle [1,2,3]
+              
+let memoization {eq} =
+        let x = {!x=0} in
+        let fun () = x.x <- x.x + 1 $ x in
+        let t = (& (fun ()).x ) in
+          t + 0
+        $ t + 1
+        $ eq x.x 1
+
+let sequencing {eq} = 
+          (& t.val <- 2)
+        $ eq t.val 2
+        $ (& t.val <- t.val + t.val)
+        $ eq t.val 4
+        where t = {!val=0}
+
+let fixPoint {eq} =
+        let fix' f = f (& fix' f) in
+        let factabs fact 0 = 1
+            factabs fact x = x * fact (x - 1) in
+        let res = (fix' factabs) 5 in
+        eq res 120
+
+let forceTest {eqt} = 
+        let _ = eqt (th is ?lazy) in
+        let _ = force th
+        in eqt (th is ?int)
+        where th = (& 2 + 2)
+
+let typeCheck {eqt} =
+        let t = (& 2 * 2) in
+        eqt (t is ?lazy)
+        $ t + 0
+        $ eqt (t is ?int)
+        
+let lazyEquals {eqt} =
+        eqt (thunk1 == 4)
+        $ eqt (thunk1 <> 5)
+        $ eqt (thunk2 == 5)
+        $ eqt (thunk2 <> 4)
+        where thunk1 = (& 2 + 2)
+           et thunk2 = (& add 2 3)
+                   where add x y = x + y
+
+let lazyCompare {eqt,eqf} =
+        eqt (thunk1 > 3)
+        $ eqf (thunk1 > 4)
+        $ eqt (thunk1 <= 4)
+        $ eqt (thunk2 >= 5)
+        $ eqf (thunk2 > 6)
+        $ eqt (thunk2 < 6)
+        where thunk1 = (& 2 + 2)
+           et thunk2 = (& add 2 3)
+                   where add x y = x + y
+
+let lazyMath {eq} =
+        eq (thunk1 + 2) 6
+        $ eq (thunk1 - 2) 2
+        $ eq (thunk1 * 3) 12
+        $ eq (thunk1 / 2) 2
+        $ eq (thunk1 ** 2) 16
+        $ eq (thunk1 % 3) 1
+        $ eq (thunk2 + 2) 7
+        $ eq (thunk2 - 2) 3
+        $ eq (thunk2 * 3) 15
+        $ eq (thunk2 / 2) 2
+        $ eq (thunk2 ** 2) 25
+        $ eq (thunk2 % 2) 1
+        where thunk1 = (& 2 + 2)
+           et thunk2 = (& add 2 3)
+                   where add x y = x + y
+
+let lazyBits {eq} = 
+        eq ((& 2) ||| (& 12)) 14
+        $ eq ((& 2) &&& (& 12)) 0
+        $ eq ((& 2) ^^^ (& 12)) 14
+        $ eq ( (& (& 128) <<< (& 8)) ||| (& 4) ) 32772
+        $ eq (& (& 32772) >>> (& 8)) 128 
+
+let lazyElem {eq} =
+          eq ( fst (& (1,2)) ) 1
+        $ eq ( fst (& ((&12),2)) ) 12
+        $ eq ( snd (& (2,3)) ) 3
+        $ eq ( snd (& ((&2),(&3))) ) 3
+
+let lazyConcat {eq} =
+        eq ((show <| force thunk1) ++ "str") "4str"
+        $ eq ((show <| force thunk2) ++ "str") "5str"
+        where thunk1 = (& 2 + 2)
+           et thunk2 = (& add 2 3)
+                   where add x y = x + y
+        
+let lazyBool {eqt} =
+        eqt <| not (thunk1 == 5)
+        $ eqt <| not (thunk2 == 4)
+        where thunk1 = (& 2 + 2)
+           et thunk2 = (& add 2 3)
+                   where add x y = x + y
+        
+let lazyFunc {eq} =
+        eq (lf 2 3) 5
+        $ eq (lf2 3) (--3)
+        where lf = (& \x y -> x + y)
+           et lf2 = (& \x -> --x)
+
+let lazyIndexer {eq} =
+        eq rec.[ix1] 0
+        $ rec2.[ix2] <- 3
+        $ eq rec2.[ix3] 3
+        $ eq rec2.[ix3] 3
+        where rec = (& { !x = 0, !y = 1 })
+           et rec2 = (& { !x = 0, !y = 1 })
+           et ix1 = (& 0)
+           et ix2 = (& 1)
+           et ix3 = (& 1)
+
+let lazyRecord {eq} =
+        obj.x <- 11
+        $ eq obj.x 11
+        where obj = (& {!x=1,y=2})
+
+let lazySuccPred {eq} = 
+        eq (succ thunk1) 5
+        $ eq (pred thunk2) 4
+        where thunk1 = (& 2 + 2)
+           et thunk2 = (& add 2 3)
+                   where add x y = x + y
+
+let lazyAssign {eq} = 
+        thunk1.x <- 1
+        $ eq thunk1.x 1
+        where thunk1 = (& {!x=0})
+
+let lazyUnary {eq} = 
+        eq (~~~thunk1) (--3)
+        $ eq (--thunk2) (--5)
+        where thunk1 = (& 1+1)
+           et thunk2 = (& add 2 3)
+                   where add x y = x + y
+
+let lazyCall {eq} =
+        eq (2 `f` 3) 5
+        where f = (& \x y -> x + y)
+
+let lazyTailCall {eq} = 
+        eq x 4
+        where fake f = f 2
+           et x = fake (& \x -> x * 2)
+
+let lazyEq {eq} =
+        eq x 1
+        where x = if (& 2 == 2) then 1 else 0 
+
+let tupex {eq} = 
+        eq (fun val) 3
+        where fun (x,y) = x+y
+           et val = (& (1,2))
+
+let lazyVariant {eqt} =
+        match v with
+              Foo 12 = eqt true
+              _      = eqt false
+        where v = (& Foo 12)
+        
+let lazyPartial {eqt,eqf} = 
+        eqt (sum1 == sum11)
+        $ eqf (sum1 == sum2)
+        where sum x y = x + y
+           et sum1 = sum (& 1)
+           et sum2 = sum (& 2)
+           et sum11 = sum (& 1)
+           
+let tupleEq1 {eqt,eqf} = 
+        eqt (tup1 <> tup2)
+        $ eqf (tup3 <> tup4)
+        $ eqt (tup5 <> tup3)
+        where tup1 = (& (1,2,3) )
+           et tup2 = (& (3,4,5) )
+           et tup3 = (1,2,3)
+           et tup4 = (& (1,2,3) )
+           et tup5 = (& (3,4,5) )
+
+let tupleEq2 {eqt,eqf} = 
+        eqf (tup1 == tup2)
+        $ eqt (tup3 == tup4)
+        $ eqf (tup5 == tup3)
+        where tup1 = (& (1,2,3) )
+           et tup2 = (& (3,4,5) )
+           et tup3 = (1,2,3)
+           et tup4 = (& (1,2,3) )
+           et tup5 = (& (3,4,5) )
+           
+let tupleAdd {eq} = 
+        eq (tup1 + tup2) (4,6,8)
+        $ eq (tup3 + tup4) (2,4,6)
+        $ eq (tup5 + tup3) (4,6,8)
+        where tup1 = (& (1,2,3) )
+           et tup2 = (& (3,4,5) )
+           et tup3 = (1,2,3)
+           et tup4 = (& (1,2,3) )
+           et tup5 = (& (3,4,5) )
+           
+let tupleSub {eq} = 
+        eq (tup1 - tup2) (--2,--2,--2)
+        $ eq (tup3 - tup4) (0,0,0)
+        $ eq (tup5 - tup3) (2,2,2)
+        where tup1 = (& (1,2,3) )
+           et tup2 = (& (3,4,5) )
+           et tup3 = (1,2,3)
+           et tup4 = (& (1,2,3) )
+           et tup5 = (& (3,4,5) )
+           
+let tupleGt {eqt,eqf} = 
+        eqf (tup1 > tup2)
+        $ eqf (tup3 > tup4)
+        $ eqt (tup5 > tup3)
+        where tup1 = (& (1,2,3) )
+           et tup2 = (& (3,4,5) )
+           et tup3 = (1,2,3)
+           et tup4 = (& (1,2,3) )
+           et tup5 = (& (3,4,5) )
+           
+let tupleLt {eqt,eqf} = 
+        eqt (tup1 < tup2)
+        $ eqf (tup3 < tup4)
+        $ eqf (tup5 < tup3)
+        where tup1 = (& (1,2,3) )
+           et tup2 = (& (3,4,5) )
+           et tup3 = (1,2,3)
+           et tup4 = (& (1,2,3) )
+           et tup5 = (& (3,4,5) )
+
+let tupleConcat {eq} = 
+        eq (tup1 ++ tup2) (1,2,3,3,4,5)
+        $ eq (tup3 ++ tup4) (1,2,3,1,2,3)
+        $ eq (tup5 ++ tup3) (3,4,5,1,2,3)
+        where tup1 = (& (1,2,3) )
+           et tup2 = (& (3,4,5) )
+           et tup3 = (1,2,3)
+           et tup4 = (& (1,2,3) )
+           et tup5 = (& (3,4,5) )

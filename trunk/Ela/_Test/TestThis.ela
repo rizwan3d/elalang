@@ -1,0 +1,7 @@
+Foo();
+read();
+
+function Foo(x)
+{
+	cout this.x;
+}

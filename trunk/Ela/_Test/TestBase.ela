@@ -1,0 +1,5 @@
+var x = 12;
+var f2 = (x, y) -> x + y + base.x;
+
+print ( f2(3, 4) );
+read();

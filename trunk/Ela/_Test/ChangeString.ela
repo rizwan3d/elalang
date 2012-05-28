@@ -1,0 +1,16 @@
+﻿var x = 0;
+var y = 0;
+var z = 0;
+var str = "some string";
+debugger;
+x = 12 + 2 / 2;
+y += 2;
+ChangeString();
+
+function ChangeString()
+{
+  str += " and appendix";
+  str += " and another shit";
+  var z = 123;
+  var xz = 3 * 2;
+}

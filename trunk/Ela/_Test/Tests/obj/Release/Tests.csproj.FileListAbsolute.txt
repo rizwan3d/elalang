@@ -1,0 +1,4 @@
+C:\Projects\Ela\Tests\bin\Release\Tests.dll
+C:\Projects\Ela\Tests\bin\Release\Tests.pdb
+C:\Projects\Ela\Tests\obj\Release\Tests.dll
+C:\Projects\Ela\Tests\obj\Release\Tests.pdb

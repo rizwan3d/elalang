@@ -1,0 +1,3 @@
+let div x y = x / y
+
+let mul x y = x * y

@@ -1,0 +1,27 @@
+﻿ let iter_l x::xs = iter_l xs | [] = ();
+ 
+ 
+	//for x in $arr do ();
+	
+	
+	
+/*
+001: Nop 
+002: Popvar [0]
+003: Pushvar [0]
+004: Skiptl 
+--005: Br 9
+006: Pushvar [512]
+007: Br 1
+
+
+
+003: Pushvar [0]
+004: Callcc 
+005: Brptr 8
+006: Popvar [256]
+007: Br 3
+
+
+
+*/

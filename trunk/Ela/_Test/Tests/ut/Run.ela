@@ -1,0 +1,10 @@
+open Con
+open ElaUnit
+open UnitTests
+
+1 == true
+
+let _ = [] 
+    |> regFuns UnitTests
+    |> run
+    |> fmt writen

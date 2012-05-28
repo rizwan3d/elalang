@@ -1,0 +1,12 @@
+﻿open Core with foldr, id;
+ 
+let fold f = foldr f [];
+
+let where' f n x z | f x  = n x :: z,
+                   | else = z;
+ 
+let select f n x = n (f x);
+ 
+let f = fold <| where' (>3) <| select (*1) <| id;
+ 
+f [1..10]

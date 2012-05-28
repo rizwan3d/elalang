@@ -1,0 +1,6 @@
+let arr = [| 999,998..0 |]
+
+let _ =
+    for i to length arr - 1 do
+        for j | arr.[j + 1] < arr.[j] to length arr - 2 - i do
+            arr.[j] <-> arr.[j + 1]

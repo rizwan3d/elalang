@@ -1,0 +1,158 @@
+<?xml-stylesheet type="text/xsl" href="Template.xsl"?>
+<article title="Lib.String">
+
+<section level="1" title="Introduction" />
+String module contains functions that operate with strings.
+
+<section level="1" title="Functions" />
+
+<section level="2" title="upper"/>
+<code>
+upper s
+</code>
+Converts a given string to uppercase.
+
+<section level="2" title="lower"/>
+<code>
+lower s
+</code>
+Converts a given string to lowercase.
+
+<section level="2" title="trim"/>
+<code>
+trim s
+</code>
+Strips all trailing and leading spaces from a given string.
+
+<section level="2" title="trimChars"/>
+<code>
+trimChar chz s
+</code>
+Strips all trailing and leading characters <key>chz</key> from a given string:
+<code>trimChars (':',';') ":Foo;" == "Foo"</code>
+
+<section level="2" title="trimStart"/>
+<code>
+trimStart s
+</code>
+Strips all leading spaces from a given string.
+
+<section level="2" title="trimEnd"/>
+<code>
+trimEnd s
+</code>
+Strips all trailing spaces from a given string.
+
+<section level="2" title="trimStartChars"/>
+<code>
+trimStartChars chz s
+</code>
+Strips all leading characters <key>chz</key>  from a given string:
+<code>trimStartChars (':',';') ",;Foo" == "Foo"</code>
+
+<section level="2" title="trimEndChars"/>
+<code>
+trimEndChars chz s
+</code>
+Strips all trailing characters <key>chz</key>  from a given string:
+<code>trimEndChars (':',';') "Foo;" == "Foo"</code>
+
+<section level="2" title="indexOf"/>
+<code>
+indexOf s str
+</code>
+Returns the first index (or <key>-1</key> if nothing was found) of an occurence of the string <key>s</key> in the string <key>str</key>. In the example below
+<key>indexOf</key> will look for the string <key>"Ela"</key> inside the string <key>"Language Ela"</key>:
+<code>indexOf "Ela" "Language Ela"</code>
+
+<section level="2" title="indexOf"/>
+<code>
+indexOfFrom s n str
+</code>
+Works like <key>indexOf</key>, but allows to specify an index at which to start the search:
+<code>indexOfFrom "Ela" 3 "Language Ela"</code>
+
+<section level="2" title="indexOfLast"/>
+<code>
+indexOfLast s str
+</code>
+Works like <key>indexOf</key>, but returns an index of the last occurence of the first string in the second string.
+
+<section level="2" title="indexOfAny"/>
+<code>
+indexOfAny chz str
+</code>
+Returns the first index of any of the chars <key>chz</key> in the the string <key>str</key>:
+<code>indexOfAny ('e','l','a') "Ela uses Ela compiler"</code>
+
+<section level="2" title="indexOfAnyFrom"/>
+<code>
+indexOfAnyFrom chz n str
+</code>
+Works like <key>indexOfAny</key>, but allows to specify an index at which to start the search:
+<code>indexOfAnyFrom ('e','l','a') 4 "Ela uses Ela compiler"</code>
+
+<section level="2" title="startsWith"/>
+<code>
+startsWith s str
+</code>
+Returns <key>true</key> if a string <key>str</key> starts with a string <key>s</key>, otherwise returns <key>false</key>.
+
+<section level="2" title="endsWith"/>
+<code>
+endsWith s str
+</code>
+Returns <key>true</key> if a string <key>str</key> ends with a string <key>s</key>, otherwise returns <key>false</key>.
+
+<section level="2" title="replace"/>
+<code>
+replace s sr str
+</code>
+Replaces a string <key>s</key> with a string <key>sr</key> in a string <key>str</key>:
+<code>replace "Ela" "ELA" "Ela compiler" == "ELA compiler"</code>
+
+<section level="2" title="remove"/>
+<code>
+remove i n str
+</code>
+Removes a number of symbols <key>n</key> start from the position <key>i</key> in a string <key>str</key>:
+<code>
+remove 0 4 "Ela compiler" == "compiler"
+</code>
+
+<section level="2" title="substr"/>
+<code>
+substr i n str
+</code>
+Returns a substring from <key>str</key> starting at position <key>i</key> with the length <key>n</key>:
+<code>
+substr 0 3 "Ela compiler" == "Ela"
+</code>
+
+<section level="2" title="split"/>
+<code>
+split xs str
+</code>
+Splits a given string into a list using a sequence of separators specified as a first argument:
+<code>split (';',',') "Ela;Elide,ElaConsole" == ["Ela","Elide","ElaConsole"]</code>
+
+<section level="2" title="insert"/>
+<code>
+insert n s str
+</code>
+Inserts a string <key>s</key> at a position <key>n</key> inside the string <key>str</key>. This function creates a new string.
+
+<section level="2" title="fromSeq"/>
+<code>
+fromSeq xs
+</code>
+Creates a string from any sequence of characters (such a tuple or a list):
+<code>fromSeq ('a','b','b') $
+fromSeq ['a','b','c']</code>
+
+<section level="1" title="Referencing module" />
+String module is a part of Ela standard library. It can be referenced from code using <key>open</key> directive like so:
+<code>open String#elalib</code>
+or simply
+<code>open String</code>
+</article>

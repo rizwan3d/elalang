@@ -1,0 +1,148 @@
+﻿<?xml-stylesheet type="text/xsl" href="Template.xsl"?>
+<article title="Ela Operator Priority">
+
+  <section level="1" title="Introduction" />
+  This article discusses operator priority and associativity in Ela.
+  
+  <section level="1" title="Operator Symbols" />
+  In Ela operator identifiers can include only the following symbols: <key>!%&amp;*+-.:/&lt;=&gt;?@^|~</key>. Some of the symbols are already used by language constructs.
+  For example, it is not possible to define an operator <key>&amp;</key> as soon as the one is already used to denote lazy lists and lazy expressions. However it is possible
+  to define an operator <key>&amp;.</key>, etc. 
+  <p>
+  All standard arithmetic operators such as <key>+</key>, <key>-</key>, etc., composition operators, application operators and so on are not syntax but functions defined in 
+  Prelude and therefore can be easily redefined.
+  </p>
+  <section level="1" title="Reserved Operators" />
+  The following combinations of operator symbols are reserved and cannot be used in custom operators:
+  <table>
+    <tr>
+      <td width="80px">&amp;</td>
+      <td>Lazy sections</td>
+    </tr>
+    <tr>
+      <td>-&gt;</td>
+      <td>Lambda operator</td>
+    </tr>
+    <tr>
+      <td>|</td>
+      <td>Guard</td>
+    </tr>
+    <tr>
+      <td>@</td>
+      <td>As-pattern</td>
+    </tr>
+    <tr>
+      <td>=</td>
+      <td>Binding</td>
+    </tr>
+  </table>
+  
+  <section level="1" title="Priority and Associativity" />
+  In Ela operator priority and associativity is controlled by the first symbols in operator identifier. The following table lists all operator priorities in order, starting
+  from the loose operators. A notation <key>{op}</key> is used to show that any number (zero or more) of trailing operator symbols is allowed here. For example, priroty of
+  operators <key>=|</key> and <key>=||</key> is the same.
+  <table>
+    <tr>
+      <th width="150px">Operator Symbols</th>
+      <th width="50px">Priority</th>
+      <th width="150px">Associativity</th>
+    </tr>
+    <tr>
+      <td>= {op}</td> 
+      <tdn>1</tdn>
+      <td>Left</td>
+    </tr>
+    <tr>
+      <td>| {op}</td> 
+      <tdn>1</tdn>
+      <td>Left</td>
+    </tr>    
+    <tr>
+      <td>&amp; {op}</td> 
+      <tdn>1</tdn>
+      <td>Left</td>
+    </tr>    
+    <tr>
+      <td>&lt; {op}</td> 
+      <tdn>1</tdn>
+      <td>Left</td>
+    </tr>    
+    <tr>
+      <td>&gt; {op}</td> 
+      <tdn>1</tdn>
+      <td>Left</td>
+    </tr>    
+    <tr>
+      <td>&lt;| {op}</td> 
+      <tdn>2</tdn>
+      <td>Right</td>
+    </tr>    
+    <tr>
+      <td>^ {op}</td> 
+      <tdn>3</tdn>
+      <td>Left</td>
+    </tr>    
+    <tr>
+      <td>: {op}</td> 
+      <tdn>4</tdn>
+      <td>Right</td>
+    </tr>    
+    <tr>
+      <td>+ {op}</td> 
+      <tdn>5</tdn>
+      <td>Left</td>
+    </tr>    
+    <tr>
+      <td>- {op}</td> 
+      <tdn>5</tdn>
+      <td>Left</td>
+    </tr>    
+    <tr>
+      <td>* {op}</td> 
+      <tdn>6</tdn>
+      <td>Left</td>
+    </tr>    
+    <tr>
+      <td>/ {op}</td> 
+      <tdn>6</tdn>
+      <td>Left</td>
+    </tr>    
+    <tr>
+      <td>% {op}</td> 
+      <tdn>6</tdn>
+      <td>Left</td>
+    </tr>    
+    <tr>
+      <td>&lt;&lt; {op}</td> 
+      <tdn>7</tdn>
+      <td>Right</td>
+    </tr>    
+    <tr>
+      <td>&gt;&gt; {op}</td> 
+      <tdn>8</tdn>
+      <td>Left</td>
+    </tr>    
+    <tr>
+      <td>~ {op}</td> 
+      <tdn>9</tdn>
+      <td>Left</td>
+    </tr>    
+    <tr>
+      <td>-- {op}</td> 
+      <tdn>9</tdn>
+      <td>Left</td>
+    </tr>    
+    <tr>
+      <td>! {op}</td> 
+      <tdn>9</tdn>
+      <td>Left</td>
+    </tr>    
+    <tr>
+      <td>? {op}</td> 
+      <tdn>9</tdn>
+      <td>Left</td>
+    </tr>
+    
+    
+  </table>
+</article>

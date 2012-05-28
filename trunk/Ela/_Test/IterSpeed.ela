@@ -1,0 +1,16 @@
+open Debug;
+
+let where f x::xs = if f x then x :: (lazy where f xs) else where f xs
+        | f []    = []
+        
+let where2 f x::xs = if f x then x :: where f xs else where f xs
+         | f []    = []
+        
+let select f x::xs = f x :: select f xs
+         | f [] = []
+        
+let list = [1,2,3,4,5,6,7,8,9,10]
+
+let res = list |> where (>5) |> select (*10)
+
+res

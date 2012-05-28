@@ -1,0 +1,25 @@
+<?xml-stylesheet type="text/xsl" href="Template.xsl"?>
+<article title="Ela Console">
+
+  <section level="1" title="Introduction" />
+  This article provides basic information about Ela Console command line utility.
+
+  <section level="1" title="Overview" />
+  Ela Console uses a standard application configuration file for settings. If you don't see any you can create it. The file should be placed in the same directory as Ela Console (elac.exe file)
+  and have the name elac.exe.config. The structure of the file is pretty straightforward:
+<pre>
+&lt;configuration&gt;
+  &lt;appSettings&gt;
+    &lt;add key="key name" value="key value" /&gt;
+  &lt;/appSettings&gt;
+&lt;/configuration&gt;
+</pre>
+  You can add multiple keys to the appSettings section. In order to learn how Ela Console can be configured simply lunch it with the -help key. You will see a list of command line options - all of these options can be specified via configuration file as well. For example lunching Ela Console like so elac.exe -t is the same as having the following key in the configuration file:
+<pre>
+&lt;add key="t" value="true" /&gt;
+</pre>
+  Normally you might need to provide some settings to Ela linker such as the locations where linker should look for the modules. It can be specified in the following manner:
+  <pre>&lt;add key="ref" value="C:\MyModules\;C:\Ela\Code;C:\Misc" /&gt;</pre>
+  You can specify several folders separated by semicolon. Ela linker will use these folders to loook for the modules that are opened within your code using <key>open &lt;ModuleName&gt;</key> statement. By default linker looks only in the same folder where the executable Ela file is located.
+  
+</article>

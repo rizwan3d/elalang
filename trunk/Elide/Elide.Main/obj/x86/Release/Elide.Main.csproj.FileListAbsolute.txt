@@ -1,0 +1,12 @@
+c:\bin\Elide.Main.dll
+c:\bin\Elide.Main.pdb
+c:\Projects\Elide\Elide.Main\obj\x86\Release\ResolveAssemblyReference.cache
+c:\Projects\Elide\Elide.Main\obj\x86\Release\Elide.Main.dll
+c:\Projects\Elide\Elide.Main\obj\x86\Release\Elide.Main.pdb
+C:\Projects\ElaPlatform\Release\Elide\Elide.Main.dll
+C:\Projects\ElaPlatform\Release\Elide\Elide.Main.pdb
+C:\Projects\ElaPlatform\Elide\Elide.Main\obj\x86\Release\ResolveAssemblyReference.cache
+C:\Projects\ElaPlatform\Elide\Elide.Main\obj\x86\Release\Elide.Main.dll
+C:\Projects\ElaPlatform\Elide\Elide.Main\obj\x86\Release\Elide.Main.pdb
+C:\Projects\ElaPlatform\Elide\bin\Elide.Main.dll
+C:\Projects\ElaPlatform\Elide\bin\Elide.Main.pdb

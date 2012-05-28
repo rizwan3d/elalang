@@ -1,0 +1,22 @@
+﻿<?xml-stylesheet type="text/xsl" href="Template.xsl"?>
+<article title="Records">
+
+  <section level="1" title="Introduction" />
+  This article discusses a record data type.
+  
+  <section level="1" title="Overview" />
+  Records are pretty similar to tuples but provide an ability to access their elements by name. Records in Ela are effectively associative immutable arrays which elements can
+  be accessed both by index and by name. One can use the following literal form to construct records:
+<code>let r = {x = 1, y = 2}</code>
+It is possible to name record fields using a combination of symbols that is not valid for Ela identifier:
+<code>let r = { "long field name" = 1, y = 2 }</code>
+Also if you assign record fields with values of variables Ela can infer field names like so:
+<code>let x = 1
+let y = 2
+{x,y} = {x=1,y=2}</code>
+Records are always compared using structural equality. Also it is not possible to change elements of records or to add new elements. However you can "clone" existing records
+and create new records that "inherit" their attributes. This done using concatenation function <key>++</key>:
+<code>let r1 = {x=1,y=2}
+r1 ++ {z=3} == {x=1,y=2,z=3}</code>
+Concatenation of course always produce a new record.
+</article>

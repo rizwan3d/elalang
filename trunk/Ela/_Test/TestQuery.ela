@@ -1,0 +1,20 @@
+var list = 
+	[
+		new { Id = 1, Items = [0, 1, 2, 3] },
+		new { Id = 0, Items = [4, 5, 6, 7] },
+		new { Id = 2, Items = [8, 9, 10, 11] }
+	];
+
+
+
+
+var f = 
+	let it from list //where it.Id > 0
+	let i from it.Items //where i > 1
+	orderby i asc
+	select new { it.Id, i };
+
+
+var res = f();
+			
+var x = 2;

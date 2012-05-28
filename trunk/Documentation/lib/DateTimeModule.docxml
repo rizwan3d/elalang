@@ -1,0 +1,136 @@
+<?xml-stylesheet type="text/xsl" href="Template.xsl"?>
+<article title="Lib.DateTime">
+
+<section level="1" title="Introduction" />
+DateTime module contains functions that operate with dates and time.
+
+<section level="1" title="Functions" />
+
+<section level="2" title="now"/>
+<code>now ()</code>
+Returns the current date and time.
+
+<section level="2" title="today"/>
+<code>today ()</code>
+Returns the current date.
+
+<section level="2" title="add"/>
+<code>add x y</code>
+Adds one date to another.
+
+<section level="2" title="addTicks"/>
+<code>addTicks ticks date</code>
+Adds a specified number of ticks to a date.
+
+<section level="2" title="addMilliseconds"/>
+<code>addMilliseconds ms date</code>
+Adds a specified number of milliseconds to a date.
+
+<section level="2" title="addSeconds"/>
+<code>addSeconds s date</code>
+Adds a specified number of seconds to a date.
+
+<section level="2" title="addMinutes"/>
+<code>addMinutes mn date</code>
+Adds a specified number of minutes to a date.
+
+<section level="2" title="addHours"/>
+<code>addMinutes hr date</code>
+Adds a specified number of hours to a date.
+
+<section level="2" title="addDays"/>
+<code>addMinutes d date</code>
+Adds a specified number of days to a date.
+
+<section level="2" title="addMonths"/>
+<code>addMinutes m date</code>
+Adds a specified number of months to a date.
+
+<section level="2" title="addYears"/>
+<code>addMinutes yr date</code>
+Adds a specified number of years to a date.
+
+<section level="2" title="years"/>
+<code>years x</code>
+Returns a years component of a given date.
+
+<section level="2" title="months"/>
+<code>months x</code>
+Returns a months component of a given date.
+
+<section level="2" title="days"/>
+<code>days x</code>
+Returns a days component of a given date.
+
+<section level="2" title="hours"/>
+<code>hours x</code>
+Returns a hours component of a given date.
+
+<section level="2" title="minutes"/>
+<code>minutes x</code>
+Returns a minutes component of a given date.
+
+<section level="2" title="seconds"/>
+<code>seconds x</code>
+Returns a seconds component of a given date.
+
+<section level="2" title="milliseconds"/>
+<code>milliseconds x</code>
+Returns a milliseconds component of a given date.
+
+<section level="2" title="ticks"/>
+<code>ticks x</code>
+Returns a ticks component of a given date.
+
+<section level="2" title="dayOfWeek"/>
+<code>dayOfWeek x</code>
+Returns a variant that represents day of week for a given date. A variant tag might one of the following: <key>Fri</key> for Friday,
+<key>Mon</key> for Monday, <key>Sat</key> for Saturday, <key>Sun</key> for Sunday, <key>Thu</key> for Thursday, <key>Tue</key> for Tuesday and
+<key>Wed</key> for Wednesday.
+<code>dayOfWeek (parse "yyyy-MM-dd" "2012-01-01") == Sat</code>
+
+<section level="2" title="dayOfYear"/>
+<code>dayOfYear x</code>
+Returns a day of year for a given date.
+
+<section level="2" title="date"/>
+<code>date x</code>
+Returns a date part (without time) of a given date.
+
+<section level="2" title="parse"/>
+<code>parse fmt str</code>
+Parsers a string <key>str</key> using a format <key>fmt</key> into a date and time instance.
+<code>parse "yyyy-MM-dd" "2012-01-01"</code>
+
+<section level="2" title="toLocaleString"/>
+<code>toLocaleString x</code>
+Converts a given date to local string using a default format.
+
+<section level="2" title="toLocaleStringFormat"/>
+<code>toLocaleString fmt x</code>
+Converts a given date to local string using a format <key>fmt</key>.
+
+<section level="2" title="diff"/>
+<code>diff x y</code>
+Calculates a difference between dates <key>x</key> and <key>y</key>. A difference is returns as a records with the following structure:
+<code>{ ticks, milliseconds, second, minutes, hours, days }</code>
+
+<section level="2" title="diffSeconds"/>
+<code>diffSeconds fmt x</code>
+Calculates a difference in seconds between dates <key>x</key> and <key>y</key>.
+
+<section level="2" title="diffMilliseconds"/>
+<code>diffMilliseconds fmt x</code>
+Calculates a difference in milliseconds between dates <key>x</key> and <key>y</key>.
+
+<section level="2" title="diffTicks"/>
+<code>diffTicks fmt x</code>
+Calculates a difference in ticks between dates <key>x</key> and <key>y</key>.
+
+
+<section level="1" title="Referencing module" />
+DateTime module is a part of Ela standard library. It can be referenced from code using <key>open</key> directive like so:
+<code>open DateTime#elalib</code>
+or simply
+<code>open DateTime</code>
+</article>

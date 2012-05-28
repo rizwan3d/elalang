@@ -1,0 +1,20 @@
+var x = 122;
+
+var f = () ->
+{
+	try
+	{
+		throw "error!";
+	}
+	catch (e)
+	{
+	
+	}
+	finally
+	{
+		x = 200;
+	}
+};
+
+trace( f() );
+trace( x );

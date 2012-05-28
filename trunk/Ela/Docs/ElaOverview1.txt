@@ -1,0 +1,573 @@
+#summary Ela overview
+
+==Introduction==
+
+This article is the very first in series that provides an overview of the Ela programming language. The first part explains what is this language all about and introduces basic Ela concepts.
+
+==What is Ela?==
+
+Ela is a dynamically typed strict functional language. It does support side effects (but does not favor them) and even some imperative programming features. Therefore Ela is a so called impure functional language. 
+
+Dynamic typing means that Ela doesn't type check (mostly) in compile time but defers all type verifications until the runtime. In practice it allows compiler to behave in an optimistic manner - if an operation is syntactically and semantically correct than compiler thinks that the code is correct and will let you to execute it. It gives you a lot of power as soon as you are not burden by the limitations of a type system and the code keeps short because you don't have to prove to Ela compiler that your code is truly correct and operate with types in a correct way. Ela compiler is gentle enough to believe you without it. Of course this approach has its own downfalls but we are not here to discuss the old static vs. dynamic typing thing. 
+
+It is important to understand however that Ela is pretty different from some popular dynamic languages such as JavaScript. Ela is not JavaScript. It does support dynamic typing but unlike JavaScript Ela
+
+  * doesn't use dynamic name lookup (if you try to reference a variable that is not declared you will have a compile time error)
+  * doesn't support dynamic scope but uses lexical scope (like such languages as C, C#, OCaml, Haskell, etc.)
+  * is not a weakly typed language (try to sum string and integer and you will get a compile time error)
+  * doesn't support `eval` in JavaScript style (that can capture local variables and can be used to create pretty weird side effects)
+
+With Ela you will have much more compile time errors and static checking. Also in certain cases (such as verification of pattern matching) Ela does type check at compile time. Dynamic typing is a tool that is here to give you power, not problems.
+
+Now for the "strict" part. Ela is a language with strict, or eager, evaluation. It means that if you write code like so
+
+{{{
+let x = 2 + 2 end
+}}}
+
+the right part of the declaration is executed immediately and `x` is initialized with the result of its evaluation.
+
+This is not the case of the non-strict languages like Haskell. In Haskell the same code will be executed pretty differently. An `x` will be initialized with the expression `2 + 2` and this expression will be executed only when its value is really needed, e.g. when you want to perform some operations with `x`.
+
+Ela provides a support for lazy evaluation but in order to use it you have to explicitly tell the compiler that evaluation of a particular expression should be deferred until its value is needed. This is done like so
+
+{{{
+let x = (& 2 + 2) end
+let y = x * 2 end //The '2 + 2' expression is evaluated here
+}}}
+
+In the contrary in Haskell you will have to explicitely tell the compiler that you want a certain expression to be executed in a strict manner. Haskell can use lazy evaluation by default because Haskell is a pure functional language with no side effects while Ela as we've already learned is not. 
+
+Lazy evaluation is pretty dangerous in the code with side effects. In a regular imperative languages such as C# you will expect that all your statements are executed in order but this is not the case for the lazy evaluation. Imagine that you have the following code:
+
+{{{
+let x = 2 end
+let y = x + 2 end
+x = 3 //Not a valid Ela code
+let z = y end
+}}}
+
+If this code is executed in a strict manner than the value of `z` is `4`. But if this code is executed in a lazy manner than the value of `z` is `5` because `x + 2` gets evaluated after the value of `x` is changed. It might be pretty frustrating - moreover it makes programming a hell of a task. Therefore lazy evaluation is not supported by imperative languages with side effects. 
+
+Ela as it was mentioned before is not a pure functional language therefore its support for the lazy evaluation is limited and you have to explicitly specify that a certain expression should be evaluated in a lazy manner. However Ela does support programming in a pure functional way and it is as easy as in Haskell.
+
+And now we come to the last part - functional. When I say that Ela is a functional language I mean that Ela is a declarative language in which all operations can be seen in the light of combinations of functions. It is probably easier to explain it by an example.
+
+== Right in the middle ==
+
+=== Imperative vs. Functional ===
+
+In an imperative language you have to code a sequence of actions instructing a compiler what it should do exactly to finally come up with what you actually need. Let's take some simple task to illustrate it. Imagine that you need to find all numbers that are greater than 5. This is how your code might look like:
+
+{{{
+for (int i = 0; i < arr.Length; i++)
+    if (arr[i] > 5)
+        newArr.Add(i);
+}}}
+
+But what if next time you need all numbers that are greater than 10? Or lesser than 4?
+
+In Ela you will first create a function that can filter a given list using the specified predicate. This is how this function might look like:
+    
+{{{
+let filter f x::xs | f x  = x :: filter f xs;
+                   | else = filter f xs;
+           _ []           = []
+end
+}}}
+
+A `filter` function takes a predicate and a list and constructs a new list with the elements from the initial list that satisfy the predicate.
+
+Once we have a `filter` function we can define a more specific function that does the task:
+
+{{{
+let filter' = filter (\x -> x > 5) end
+}}}
+
+Or even shorter like so:
+
+{{{
+let filter' = filter (>5) end
+}}}
+
+That is all. We have a solution that can be easily reused in the cases when we need a different selection criteria, not just "greater than 5".
+
+OK, that is the place where I should try to convince you how readable and declarative the Ela solution is, while you (if you haven't tried the functional languages before) will probably think that this code looks like a cryptic mess in comparison with the imperative code above.
+
+But don't give up yet. I am sure that you are bold enough to not quit at the very beggining. Anyway it should be pretty interesting to understand why a lot of people think that this weird functional code is so much better than the imperative one. But you definetly have a lot of questions - what does this strange `filter` declaration with pipes and multiple equatations mean, why do we call `filter` with a single argument when it accepts two arguments, what is this is `\x -> x > 5` thing and, more importantly, what `(>5)` is doing here?
+
+Lets start in order.
+
+=== Anonymous functions ===
+
+An expression `\x -> x > 5` is used to declare an anonymous function which is useful when you don't really need to bind a function to a particular name but to provide it as an argument for another function like in example above. Of course you can declare a function using this syntax _and_ bind it to a name like so:
+
+{{{
+let fun = \x -> x > 5 end
+}}}
+
+But this is exactly the same as:
+
+{{{
+let fun x = x > 5 end
+}}}
+
+Also as soon as all functions are first class values (like integer numbers or strings) you can also use a named function as an argument of another function:
+
+{{{
+let fun x = x > 5 end
+let filter' = filter fun end
+}}}
+
+But in such cases it is probably more visual to declare such one-time-to-use functions in place.
+
+=== Closures ===
+
+Another important thing to understand about Ela functions is that all functions in Ela can capture names declared in the parent scope, e.g. this is a perfectly valid code in Ela:
+
+{{{
+let x = 2 end
+let fun y = x + 2 end
+}}}
+
+The function `fun` captures the name `x` - not just the value of the `x` - which can be seen in the following example:
+
+{{{
+let rec = {!x=2} end//Here we declare a mutable record rec
+let fun y = rec.x + y end
+rec.x <- 4 //Change the value of x
+let res = fun 2 end //The result is 6
+}}}
+
+=== Partial application ===
+
+And the final nuance - all functions in Ela actually accept one and only one argument. I really mean it. There is no way to declare a function that takes, say, two arguments or zero arguments. You might wonder how we've managed to write a `filter` function above which seem to have two arguments instead of one. But don't hurry up.
+
+When we decide that all functions in our language have a single argument it changes quite a few things in the language itself. First we no longer need braces (like in C) to enclose the argument list in a function call - as soon as we don't have any argument list at all, just a single argument. 
+
+You might ask how do we know what is an argument of our function when this argument is not a simple literal value or a variable. In C the code `sin(x) * 2` means that we need to apply `sin` function to the value of `x` and then multiply the result of this application by two. The equivalent in Ela `sin x * 2` looks like we need to apply `sin` to the value of `x * 2`. But in reality this code is executed exactly in the same way as C code before. This is because function application binds tigher than most of other operators. (And if you want to apply `sin` to the result of multiplication of `x` by `2` you can enclose this expression in braces, e.g. `sin (x * 2)`). 
+
+Also function application is left associative which means that if you see an expression like `sum 2 3` this a perfectly valid code and it is executed in same way as `(sum 2) 3`. In other words here we call a function `sum` with the argument `2` and the result of this application is another function that is called with an argument `3`. So `sum 2 3` is not a single function call with two arguments but two function calls.
+
+And this behavior actually unveils the way how Ela deals with the lack of functions that accept an arbitrary number of arguments. We simply declare a function which returns another (which also might return another function and so on). 
+
+This is how an implementation of a `sum` function might look like in Ela:
+
+{{{
+let sum = \x -> \y -> x + y end
+
+let res = sum 2 2 end //Obviously 4
+}}}
+
+or
+
+{{{
+let sum x = let sum' y = x + y in
+            sum'
+end
+}}}
+
+or
+
+{{{
+let sum x = sum'
+            where sum' y = x + y end
+end
+}}}
+
+This trick is possible because as it was mentioned above all functions in Ela are closures and capture variables declared in the parent scope. The same code in JavaScript will look like so:
+
+{{{
+function sum(x) {
+    return function(y) { x + y; }
+}
+}}}
+
+See how the nested function captures an `x` parameter from the scope of the parent `sum` function? A pretty similar staff happens when you declare an Ela function like `\x -> \y -> x + y`.
+
+But frankly speaking all these declarations look quite cumbersome. Its hard to argue that this single-argument-function concept finally leads us to a pretty wordy and inconvinient syntax. But we haven't failed yet. The syntax is not good for many cases? So lets sweeten it with some syntax sugar:
+
+{{{
+let sum x y = x + y end
+}}}
+
+I believe it looks much better now. And it works for anonymous functions as well. We simply say that a declaration in a form `\x y -> x + y` is a syntax sugar for `\x -> \y -> x + y`. We still have two functions here not just one but sometimes it is easier to think of such functions as of a single function like you do in languages like C or C#.
+
+(Starting from this point I will be calling functions as the one above functions with _two_ arguments for the sake of convinience. But we of course know what really happens inside).
+
+But the main question is still unanswered. What was the reason to invent this whole one-argument-function thing? Is it just because somebody really hate braces? Of course there are reasons much better than that.
+
+The main idea behind representation of a function with multiple parameters as a chain of nested functions with single parameter is an ability to partially apply functions. Let's say that you implement a `sum` function in some C-style language:
+
+{{{
+int sum(int x, int y) {
+  return x + y;
+}
+}}}
+
+It looks good. But what if we need another function for just one argument that always add this argument to some fixed number such as `5`? You basically have two options here: to implement a new function that mostly duplicates the previous `sum` definition or to manually hard code this fixed argument in every call to the `sum` function. Both options don't really feel right for me. In Ela, having the `sum` function defined in the similar way, you can simply create a new function by providing only the first argument to it:
+
+{{{
+let sum x y = x + y end
+
+let sum5 = sum 5 end
+}}}
+
+This technique really gives you a lot of power - it allows you to define generic function and create specialized versions of them "on the fly" by fixing some of their arguments.
+
+=== Operators as functions ===
+
+Let's return to the `filter` function. As you can see the original definition of `filter` accepts two arguments - a predicate function which is used to choose which elements from the source list should be included in the result list and the list itself. In other words by changing the predicate function we can filter any list using any condition we can ever think of. So the `filter` function is really generic. However if you want a function to filter a list with a particular condition (e.g. to obtain all elements that are greater than five) you can easily create this function by providing the first argument without the second:
+
+{{{
+let filter' = filter (\x -> x > 5) end
+
+//or
+//let filter' = filter (>5) end
+}}}
+
+But what is this second notation where I use some strange expression `(>5)` instead of anonymous function declaration `\x -> x > 5`? 
+
+The trick here is that most of standard Ela operators are functions. The only difference between an operator such as `>` and a function is that operator is called by default using _infix_ notation. Infix means that the function reference is placed right in the middle of its arguments (when a regular _prefix_ notation assumes that we place a function before its arguments). Actually all Ela functions can be called using prefix notation - you just need to enclose them in back apostrophes:
+
+{{{
+let res1 = sum 2 2 end //prefix call
+
+let res2 = 2 `sum` 2 end //infix call
+}}}
+
+There is no real difference between the two and of course you don't have to use the infix form with regular functions if you don't like it - however in certain cases infix form might be a little bit more readable.
+
+Operators in their turn can also be called in prefix form just as all other function - you just need to enclose them in braces:
+
+{{{
+let res3 = 2 + 2 end
+
+let res4 = (+) 2 2 end
+}}}
+
+As soon as operators are just functions with a different default call notation the technique of partial application described above is possible with operators as well. A code like `(+2)` fixes the second argument of the `+` operator and the code like `(2+)` fixes the first argument. The same for comparison operations and many other operators. So `(>5)` is just a neat and more readable shortcut for the explicit function declaration `\x -> x > 5`.
+
+=== Pattern matching ===
+
+Now we undestand how functions work, that they are first class values like other data types, that they can be partially applied, that operators are also functions - however the declaration of `filter` function might still look pretty cryptic. And now the mystery is unveiled - the `filter` function is defined using pattern matching.
+
+Pattern matching is a powerful technique used by many functional languages that is a more concise and declarative replacement for the sequence of `if` statements to which you got used to in imperative languages. The idea behind pattern matching is as simple as all genius things. 
+
+All objects in any language are constructed using some special syntax or operators. For example, integer numbers are constructed using integer literals (e.g. `42`), strings are constructed using string literals (e.g. `"foo"`), tuples are constructed using tuple literals (e.g. `(1,2,3)` creates a tuple of integer numbers with three elements in it) and linked lists are constructed using list construction operator:
+
+{{{
+let lst = 1::2::[] end //[] is a an empty list
+}}}
+
+List construction operator `::` is right associative. It means that the example above is fully equivalent to the following:
+
+{{{
+let lst = 1::(2::[]) end
+}}}
+
+List is basically a "functional" replacement for an array that can be used instead of it in many cases. Lists are just linked and immutable sequences of elements. In the example above we have an integer number `1` which is wrapped in a special structure that holds the value `1` and a reference to the next element, which is again wrapped in a special structure that holds number `2` and also points to the next element with is an empty list. The first element of a list is usually called a _head_ and the rest of the list without the first element (the list with its head chopped off) is called a _tail_.
+
+But let's return to the pattern matching. The genius idea that I mentioned above is to use object construction syntax to not only construct objects but also to deconstruct them, to disassemble them in parts. Let's see how it works through code sample:
+
+{{{
+let tup = (1,2,3) end
+
+//The value of res is 6
+let res = match tup with
+          (x,y,z) = x + y + z
+          end
+end
+}}}
+
+A mere equivalent code in C# will be the following:
+
+{{{
+var arr = new int[] { 1,2,3 };
+var res = 0;
+
+if (arr.Length == 3)
+    res = arr[0] + arr[1] + arr[2];
+}}}
+
+I hope you will agree with me that Ela version is much more concise than the C# code. Moreover C# code is pretty error prone - it requires us to declare `res` as a mutable variable (because `if` is a statement and not an expression) even if we don't need to change its value afterwards, we have to manually test for the tuple length and explicitly specify indices of the elements. If you make a typo in index than the compiler won't help you at all and you will end up with a runtime error.
+
+Pattern matching is such a neat thing that it is used almost everywhere in Ela. If you see some construct and you don't know what is it - it is most likely yet another way to do pattern matching. For example the code above can be written differently like so:
+
+{{{
+let res = x + y + z
+          where (x,y,z) = tup end
+end
+}}}
+
+Here we use pattern matching directly in variable declaration construct and it is even more visal than the example above. (If you don't understand some syntax in the examples - don't worry, we will deal with these things later).
+
+Linked list can be pattern matched in the same manner as tuples - using list construction syntax:
+
+{{{
+let lst = 1::2::3::[] end //or you can use an equivalent list literal as a shortcut: 
+                            //let lst = [1,2,3] end
+                            
+let res = match lst with
+          x::y::z::[] = x + y + z
+          end
+end
+          
+let res2 = x + y + z
+           where (x::y::z::[]) = lst end
+end
+}}}
+
+But what happens if you try to match an empty list or a list with just two elements using pattern `x::y::z::[]`? The answer is pretty obvious - a "match failed" runtime error. In order to avoid it you should take into account all the possible values in your pattern matching:
+
+{{{
+let res = match lst with
+          x::y::z::[] = x + y + z; //or an equivalent [x,y,z] = x + y + z;
+          x::y::[]    = x + y; //or [x,y] = x + y;
+          x::[]       = x; //or [x] = x;
+          []          = 0
+          end
+end
+}}}
+
+Here we have several match entries separated by semicolons. The first matches against the list with 3 elements, the second - against the list with two elements, the third needs only one element and the last matches an empty list. But in reality we still don't take into account all the possibilities. What will happen if `lst` contains 4 elements? A runtime error. Let's refactor our code:
+
+{{{
+let sum lst = match lst with
+              x::xs = x + sum xs;
+              []    = 0
+              end
+end
+
+let res = sum lst end
+}}}
+
+I hope this one looks better than the example above. And it also works much better. We have created a function that sums all elements in the list of an arbitrary length. The pattern `x::xs` matches a list that contains at least one element (in this case `x` is bound to this element and `xs` to the empty list `[]` which is usually called a _nil_ list). This function is a recursive function - it chops the head of the list and calls itself the rest of the list without the first element. It is executed like so:
+
+{{{
+1 + sum [2,3]
+2 + sum [3]
+3 + 0
+}}}
+
+The result is obviously 6. But let's compilate our task - now we need a `sum` function that sums only positive numbers and ignores the negatives. This is how we should change our code to fullfil this new task:
+
+{{{
+let sum lst = match lst with
+              x::xs | x >= 0 = x + sum xs;
+              x::xs | x < 0  = sum xs;
+              []             = 0
+              end
+end
+}}}
+
+Now we are really close. This "piped" appendix to the pattern is called a _boolean guard_. It is nothing more than an old `if` statement in a new form. Here we simply that the first match entry should be selected when the head of the list is equal or greater than `0`, otherwise we need to skip to the second match entry where we ignore the head of the list and continue to unfold the rest of the list.
+
+There are however a couple of things that just don't feel right about this function. First in the second match entry we bind the head of the list to the `x` when we don't really need it. In other words we declare a variable that is never used. It is not a good practice even in imperative languages. Let's fix it:
+
+{{{
+let sum lst = match lst with
+              x::xs | x >= 0 = x + sum xs;
+              _::xs | x < 0  = sum xs;
+              []             = 0
+              end
+end
+}}}
+
+The pattern `_` is a special "throw away" pattern. He we say that yep, we know that there is something here, but we don't need so get rid of this staff please. 
+
+However the pattern match still looks a bit wordy. Even with this `_` thing we still repeat almost the same pattern twice. In order two avoid this kind of repetition Ela allows you simply to omit the pattern declaration in such cases:
+
+{{{
+let sum lst = match lst with
+              x::xs | x >= 0 = x + sum xs;
+                    | else   = sum xs;
+              []             = 0
+              end
+end
+}}}
+
+Now `sum` function looks OK but is still not perfect. We have to repeat the `lst` parameter twice. Also the whole match declaration syntax adds some unneccessary "weight" to the function. That is the reason why Ela supports yet another syntax sugar for pattern matching. Remember the pattern matching inside a variable declaration? This is pretty similar case. You can use pattern matching directly in function definition:
+
+{{{
+let sum x::xs | x >= 0 = x + sum xs;
+              | else   = sum xs;
+        []             = 0
+end
+}}}
+
+Now it is perfect. You can see that here we use patterns instead of function arguments. It allows us not to declare any intermediate names (like `lst` in the previous example) that are required if you use a regular match construct. 
+
+But let's get back to the `filter` function in the initial example and take a look at it again:
+
+{{{
+let filter f x::xs | f x  = x :: filter f xs;
+                   | else = filter f xs;
+           _ []           = []
+end
+
+let filter' = filter (>5) end
+}}}
+
+Does it still look cryptic?
+
+I hope now you can make your mind whether it is worth to give Ela a try. You definetly have some questions and I will try to answer them in the next chapter.
+
+== From the beggining ==
+
+Ela has a freeform syntax like C# (which means that white spaces, tabs and line feeds are not significant to the compiler). However unlike C# Ela doesn't use curly braces to denote lexical scopes. It also doesn't use a special token (like `;`) to separate statements. (Operator `;` is used is Ela as well but it has completely different meaning - it used to as a separator between entries in pattern matching constructs).
+
+In reality Ela syntax is much simpler than the syntax of such languages as C#. Ela has a pretty limited set of keywords, almost all language constructs in Ela are expression and yield a value. For example the following code is valid in Ela but not in C#:
+
+{{{
+let y = if y < 0 then 
+        0 
+        else y
+end
+}}}
+
+Ela provides a wide set of built-in operators such as arithmetic operators (including division `\`, modulus `%` and power `**`), bitwise operators (left shift `<<<`, right shift `>>>`, bitwise and `&&&`, bitwise or `|||`, bitwise xor `^^^` and bitwise not `~~~`), boolean operators (`&&` and `||` respectively) and many others. Boolean not is represented as a built-in `not` function. Several examples:
+
+{{{
+let x = 2 + 2 * 3 end //result is 6
+
+let y = 12 ||| 2 <<< 8 end //result is 3584
+
+let z = y >>> 8 end //result is 2
+
+let k = 12 - 4 / 2 end //result is 10
+
+let j = (12 - 4) / 2 end //result is 8
+
+let n = not end //'not' is a function and can be binding to a new name
+
+let res = if n (x < y) then //'n' is applied to its argument like any other function
+          x
+          else y
+end
+}}}
+
+Also there is one major principle that guided the Ela syntax design - all Ela operators can be considered as unique identifiers. For example, if `*` operator means multiplication there is no other context where this operator can mean for example pointer indirection. Semicolon `;` operator in Ela is always used to separate match entries and there is no other usage or meaning for this operator. Pipe `|` operator always denote a beggining of a boolean guard and that is the only thing it does. Operator `-` is always a binary minus. 
+
+Because of this principle and unlike many other programming languages Ela uses a different operator for the unary minus: `--`. It is important to remember it - the code `-2` is syntactically incorrect in Ela and if you enclose it in braces like so `(-2)` it will mean the partial application of the subtraction function. Unary negation is written `--2`.
+
+There are many other operators but we will deal with them later. Basic operations in Ela, especially arithmetic, look and behave almost the same like in C style languages such as C#. 
+
+A program in Ela contains of a set of variable declarations (and module `open` directives but we will deal with that later). Alternatively the whole program body can be a single expression. For example both
+
+{{{
+2 + 2
+}}}
+
+and even just
+
+{{{
+2
+}}}
+
+are valid Ela programs. This might be useful in interactive mode or when you attach Ela interpreter to your program and use it to evaluate expressions.
+
+You might also noticed that unlike such languages as C# Ela doesn't use any specific operator to separate statements. This is because `let` and `open` are the only real statements in Ela - the rest language constructs are expressions, yield a value and are combined together using other operators.
+
+As you probably remember from the previous chapter a function in Ela is declared using the same `let` notation. As in other languages Ela allows you to declare local variables in functions. This is done using either the `let` keyword or the `where` keyword.
+
+It is imporant to understand that as soon as the body of a function in Ela is always an expression (e.g. potentially yields a value which is definitely not the case of a declaration in the form `let x = 1`) the syntax of `let` bindings that declare local variables is a little bit different from the one that is used in the top level. It is better to show it by an example:
+
+{{{
+let func x y = let z = x + y in
+               z > 0
+end
+}}}
+
+As you can see here `let` has a mandatory `in` clause and unlike a top level `let` is a pure expression. The value that is returned by `let .. in` expression is the value of an expression that immediately follows `in`. 
+
+Another important thing here is to understand that `let .. in` actually starts a lexical scope. A name `z` in the code sample above is only visible inside the expression that follows `in`. Our function declaration above is fully equivalent to the following C-style code:
+
+{{{
+bool func(int x, int y) {
+   {
+       int z = x + y;
+       return z > 0;
+   }
+}
+}}}
+
+(Of course compiler can recognize that in is this particular case a lexical scope is already introduced with the function declaration).
+
+But what if you want to declare several variables at once? This is also possible using the `and` keyword:
+
+{{{
+let func x y = let z = x + y and
+                   r = z > 0
+                   in r
+end
+}}}
+
+When you declare several _functions_ using `and` these declarations are mutually recursive like in example:
+
+{{{
+let take x::xs = x :: skip xs; 
+         []    = [] and
+    skip _::xs = take xs; 
+         []    = []
+end
+}}}
+
+Here we reference `skip` function from `take` and `take` from `skip`.
+
+However if you declare regular variables in the same manner they are _not_ mutually recursive and the following code won't even compile:
+
+{{{
+let x = y + 2 and
+    y = 2
+end
+}}}
+
+The reason for that is obvious. As you know Ela is a strict language therefore it does execute all expressions in order unless you explicitly tell it not to do so. In the example above Ela will first try to calculate the value of `x` - but in order to do that it needs a value of `y` which is not yet initialized. As a result we have a dead loop. The situation is completely different with functions because the function code itself is not executed when a function gets bound to its name - therefore it is pretty safe to allow mutual recursion there.
+
+Chaining declarations using `and` can be used in both top level and local `let` bindings.
+
+Sometimes declaration of local variables using `let` is not visual enough and tends to produce a not very readable code. Ela has another construct to do local bindings that you actually have seen in the code samples before - a `where` binding. This is how we can write our `func` function with `where`:
+
+{{{
+let func x y = z > 0
+               where z = x + y end
+end
+}}}
+
+This particular code sample is absolutely equivalent to the previous code. It is up to you to decide which variant - with `let` or with `where` - works better for you. I will probably peek the one with `where` as soon as it seems clearer to me and exactly follows the mathematical notation - the whole function body can be read as a mathematical formula: _'z' is greater than zero where z is such..._.
+
+The `where` declaration allows you to do the same things as `let` declaration - you can declare functions (in a regular way and by pattern matching) and you can chain several declarations using `and`:
+
+{{{
+let eq t = x == y
+           where x = fst t and
+                 y = snd t
+           end
+end
+
+let fact = fact' 1L
+           where fact acc 0 = acc;
+		      acc n = f (n * acc) (n - 1)
+           end
+end
+}}}
+
+One of the cool things about `where` is that you can use it in pattern matching as well. Each match entry can end with a `where` clause that declares names visible inside this match entry. 
+This is how we can rewrite a `filter` function from the previous chapter using `where` binding:
+
+{{{
+let filter f x::xs | r    = x :: filter f xs;
+                   | else = filter f xs
+                   where r = f x end;
+           _ []           = []
+end
+}}}
+
+This is something you cannot do with `let` binding. Without `where` you will have to completely rewrite the whole function. Names declared using `where` binding are visible not only inside the match entry to which this declaration is directly attached but also to preceding entries if you omit a pattern declaration in them. In other words the scope of `where` ascends to the top until it reaches the first match entry with the explicit pattern (in the example above this is the entry with the patterns `f` and `x::xs`).
+
+You should also note that a semicolon operator is placed after `where` declaration, not before it. This is because `where` binding is considered to be a part of a match entry.
+
+These are basically all the major things that you should know about Ela syntax. As I mentioned before Ela syntax is actually much simpler than the one of such languages as C#. You don't have to track the expression context to understand what a particular operation means - e.g. operators such as `-`, `|` or `*` always mean the same thing whereever you see them. Ela has only two constructs that can be used to bind names to values - `let` and `where`. Besides them you only need to learn how to use pattern matching (`match` expression), exception handling (`try` expression) and a conditional operator (`if` expression which has a required `else` clause in Ela). That is really it. The rest of Ela code is just a sequence of function applications.
+
+In other words Ela is a small language but not primitive. It fully adopts the functional programming paradigm and in the next chapters I will try to show how you can use Ela to write the same code as you do in imperative language but in more concise, readable and less error prone way.

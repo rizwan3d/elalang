@@ -1,0 +1,17 @@
+C:\Projects\Elide\Ela.WelcomePage\bin\Debug\Ela.WelcomePage.dll
+C:\Projects\Elide\Ela.WelcomePage\bin\Debug\Ela.WelcomePage.pdb
+C:\Projects\Elide\Ela.WelcomePage\bin\Debug\Elide.Common.dll
+C:\Projects\Elide\Ela.WelcomePage\bin\Debug\Elide.Core.dll
+C:\Projects\Elide\Ela.WelcomePage\bin\Debug\Elide.Environment.dll
+C:\Projects\Elide\Ela.WelcomePage\bin\Debug\Elide.Forms.dll
+C:\Projects\Elide\Ela.WelcomePage\bin\Debug\Elide.Main.dll
+C:\Projects\Elide\Ela.WelcomePage\bin\Debug\Elide.Scintilla.dll
+C:\Projects\Elide\Ela.WelcomePage\bin\Debug\Elide.Common.pdb
+C:\Projects\Elide\Ela.WelcomePage\bin\Debug\Elide.Core.pdb
+C:\Projects\Elide\Ela.WelcomePage\bin\Debug\Elide.Environment.pdb
+C:\Projects\Elide\Ela.WelcomePage\bin\Debug\Elide.Forms.pdb
+C:\Projects\Elide\Ela.WelcomePage\bin\Debug\Elide.Main.pdb
+C:\Projects\Elide\Ela.WelcomePage\bin\Debug\Elide.Scintilla.pdb
+C:\Projects\Elide\Ela.WelcomePage\obj\Debug\ResolveAssemblyReference.cache
+C:\Projects\Elide\Ela.WelcomePage\obj\Debug\Ela.WelcomePage.dll
+C:\Projects\Elide\Ela.WelcomePage\obj\Debug\Ela.WelcomePage.pdb

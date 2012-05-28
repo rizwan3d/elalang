@@ -1,0 +1,13 @@
+var zz = "start";
+
+{
+	var x = 2;
+	var y = 4;
+}
+
+{
+	var x = 22;
+	var y = 44;
+}
+
+zz = "end";
