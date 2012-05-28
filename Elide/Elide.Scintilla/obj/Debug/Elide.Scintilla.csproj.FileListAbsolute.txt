@@ -1,9 +1,0 @@
-c:\projects\Elide\Elide.Scintilla\obj\Debug\ResolveAssemblyReference.cache
-c:\projects\Elide\Elide.Scintilla\obj\Debug\Elide.Scintilla.Properties.Resources.resources
-c:\projects\Elide\Elide.Scintilla\obj\Debug\Elide.Scintilla.csproj.GenerateResource.Cache
-c:\projects\Elide\Elide.Scintilla\bin\Debug\SciLexer.dll
-c:\projects\Elide\Elide.Scintilla\bin\Debug\SciLexer64.dll
-c:\projects\Elide\Elide.Scintilla\bin\Debug\Elide.Scintilla.dll
-c:\projects\Elide\Elide.Scintilla\bin\Debug\Elide.Scintilla.pdb
-c:\projects\Elide\Elide.Scintilla\obj\Debug\Elide.Scintilla.dll
-c:\projects\Elide\Elide.Scintilla\obj\Debug\Elide.Scintilla.pdb
