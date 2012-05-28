@@ -1,3 +1,4 @@
+0.9.4.0:Release:Release of 0.9.4.0.
 0.9.3.2:New:A new #eval interactive command is added (this command evals a file which name is given as its argument).
 0.9.3.1:New:A new #reset interactive command is added (this command resets the state of interactive console).
 0.9.3.0:Release:Release of Ela Console 0.9.3

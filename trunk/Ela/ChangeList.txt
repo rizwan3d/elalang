@@ -1,3 +1,4 @@
+0.10.0.0:Release:Release of 0.10.0.0.
 0.9.16.34:Fix:ForceRecompile setting for Ela linker didn't work correctly.
 0.9.16.33:Fix:A bug fixed in serialization of NewMod op code (invalid instruction size).
 0.9.16.32:New:Now debug info (required to build good stack traces) is written to the object files.
