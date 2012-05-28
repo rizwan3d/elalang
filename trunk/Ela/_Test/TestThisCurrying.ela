@@ -1,8 +1,0 @@
-
-var obj = new {
-	X = 12,
-	Add = _ + 2 + this.X
-};
-
-cout obj.Add(2);
-read();

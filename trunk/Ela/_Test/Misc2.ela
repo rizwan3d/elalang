@@ -1,7 +1,0 @@
-﻿ let x = (1,2);
-
-for i to 1000*1000 do
-    ignore
-    (match x with
-    (x,y) = ())
-end

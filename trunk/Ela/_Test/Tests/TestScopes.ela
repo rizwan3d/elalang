@@ -1,4 +1,0 @@
-let foo x y = zoo (x + y)
-              where zoo i = i + i
-
-let bar a b = a - b

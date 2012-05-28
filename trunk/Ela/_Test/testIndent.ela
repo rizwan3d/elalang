@@ -1,7 +1,0 @@
-/*
-    ident inside comment
-  indent inside comment
-*/
-let x 1 = 2 + 2;
-
-cout x

@@ -1,4 +1,0 @@
-﻿var x = ();
-
-when (x is ())
-	cout "void";

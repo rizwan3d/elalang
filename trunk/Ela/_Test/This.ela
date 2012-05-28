@@ -1,6 +1,0 @@
-var obj = new {
-	Field = "Basil",
-	Fun = () -> this.Field
-};
-
-obj.Fun();
