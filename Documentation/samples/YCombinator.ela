@@ -1,0 +1,14 @@
+open Con
+
+//An implementation of Y combinator using thunks
+//Sections surrounded with '(& )' braces are postponed in evaluation
+let fix = \f -> (\x -> (& f (x x))) (\x -> (& f (x x)))
+
+let fac _ 0 = 1
+    fac f n = n * f (n-1)
+
+let fib _ 0 = 0
+    fib _ 1 = 1
+    fib f n = f (n-1) + f (n-2)
+
+(fix fac 12, fix fib 12)

@@ -1,0 +1,34 @@
+var foo = (x, y) -> {
+	try 
+	{
+		var z = 12 / 0;
+	}
+	catch
+	{
+		return 2;
+	}
+	finally
+	{
+	
+	}
+	
+	1;
+};
+
+var x = 122424;
+
+try
+{
+	var x = 12 + foo() + 2;
+	var y = 0;
+	throw "err!";
+}
+catch (e)
+{
+	cout e;
+	throw "err2!";
+}
+finally
+{
+	var x = 22;
+}

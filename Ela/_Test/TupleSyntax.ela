@@ -1,0 +1,64 @@
+﻿open String with format;
+open Debug;
+
+let `TestSession(tests) ( tests: tests );
+	
+let `TestSessionResult(tests, failed) (
+	tests: tests,
+	failed: failed
+);
+
+let `Test(fun, assert) {
+	let t = fun.getType();
+	let name = format("{0}.{1}", t.module.name, t.name);
+	name -> fun -> assert
+}
+
+let createSession() `TestSession([||]);
+
+let registerFunction(session, fun, assert)
+	session.tests.add <| `Test(fun, assert);
+	
+let registerFunctions(session, mod) {
+	let t = mod.getType();
+	
+	for (v in t.getGlobals()) {
+		let f = v.getValue();
+		
+		when (f is function)
+			registerFunction(session, f, \(r) r);
+	}
+		
+	session.tests.length
+}
+
+let runTests(session) {		
+	let list = 
+		[ 
+			for (n -> f -> a in session.tests)				
+				n ->
+				try (f() |> a, "")
+				catch (e) {
+					failed++;
+					false -> e.message
+				}
+		];
+	`TestSessionResult(list, failed)
+}	
+
+let private formatTest(idx, r, n, m)
+	format("\r\n{0}. {1}: {2} {3}", idx, if (r) "Success" else "FAILED ", n, " -> " + m);
+	
+let private formatTests(result, idx, str)
+	on (n,(r,m))::xs,.. -> formatTests(xs, idx + 1, str + formatTest(idx, r, n, m))
+	on [],.. -> str + "\r\n";
+	
+let formatResult(result) {
+	var str = "Test session started\r\n";
+	str += formatTests(result.tests, 1, "");
+	str += "\r\nTest session finished\r\n";
+	str += format("Executed tests: {0}\r\n", result.tests.length);
+	str += format("Successful tests: {0}\r\n", result.tests.length - result.failed);
+	str += format("Failed tests: {0}", result.failed);
+	str
+}

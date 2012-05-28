@@ -1,0 +1,7 @@
+
+var f = (x,y) -> "x=" + x + ";y=" + y;
+
+CallBack(f);
+
+var x = 2;
+trace(x);

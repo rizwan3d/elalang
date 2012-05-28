@@ -1,0 +1,4 @@
+open Con
+
+let extends
+  show (Foos _) = "Foo!"

@@ -1,0 +1,85 @@
+﻿let fromLiteral {eq} = 
+        let tup = ('E', 'l', 'a') in
+        eq (length tup) 3 
+        $ eq (tup:0) 'E' 
+        $ eq (tup:1) 'l'
+        $ eq (tup:2) 'a'
+
+let fromLiteral2 {eq} =
+        let tup = ("Ela",) in
+        eq (length tup) 1 $ eq (tup:0) "Ela"
+    
+let equals {eqt} =
+        eqt (t1 == t2)
+        $ eqt (t1 <> t3)
+        $ eqt (t2 <> t3)
+        $ eqt (t3 == (3,4))
+        where t1 = (1,2)
+           et t2 = (1,2)
+           et t3 = (3,4)
+    
+let compare {eqt,eqf} =
+        eqf (t1 > t2)
+        $ eqt (t1 < t2)
+        $ eqt (t1 <= t2)
+        $ eqt (t3 > t2)
+        $ eqt (t3 >= t2)
+        $ eqt (t2 >= (3,4))    
+        where t1 = (1,2)
+           et t2 = (3,4)
+           et t3 = (5,6)
+    
+let simpleMath {eq} =
+        eq ((1,2)+(2,3)) (3,5)
+        $ eq ((4,5)-(2,1)) (2,4)
+        $ eq ((8,2)*(2,5)) (16,10)
+        $ eq ((4,16)/(2,8)) (2,2)
+        $ eq ((2,3)**(2,3)) (4,27)
+        $ eq ((10,5)%(3,3)) (1,2)
+
+let unary {eq} =
+        eq (--(2,1)) (--2,--1)
+        $ eq (--(21,4.2)) (--21,--4.2)
+
+let succPred {eq} =
+        eq (succ (1,2)) (2,3)
+        $ eq (succ (42.42, 'b')) (43.42, 'c')
+        $ eq (pred (3,4)) (2,3)
+        $ eq (pred (12.1,'B')) (11.1, 'A')
+    
+let concat {eq,eqt} =
+        eq (t1++t2) (1,2,3,4,5,6)
+        $ eq (t2++t1) (4,5,6,1,2,3)
+        where t1 = (1,2,3)
+           et t2 = (4,5,6)
+    
+let genTupleTest {eq} =
+        eq t (1,2,4)
+        where t = (1,) @@ [x \\ x <- [2..5] | x % 2 == 0]
+
+let lengthTest {eq} = 
+          eq (length t1) 3
+        $ eq (length t2) 1
+        where t1 = (1,2,3)
+           et t2 = (1,)
+
+let fstSndTest {eq} =
+          eq (fst t) 1 
+        $ eq (snd t) 2
+        $ eq (fst3 t2) 10
+        $ eq (snd3 t2) 20
+        where t = (1,2)
+           et t2 = (10,20,30)
+
+let flatTest {eq} = 
+        eq t (1,2,3,4,5,6,7)
+        where t = (1,2,(3,4,(5,6)),7)
+
+let flatTest2 {eq} = 
+        eq t (1,2,3,4,5)
+        where => x y = (x, y)
+           et t = 1 => 2 => 3 => 4 => 5
+
+let typeCheck {eqt} =
+        let tup  = (0,) in
+        eqt (tup is ?tuple)

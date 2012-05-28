@@ -1,0 +1,33 @@
+type Suit = V | Q | K | T;
+type Card = Plain(v) | High(v);
+    
+let GetCardRank = c -> 
+	match (c)
+    | Plain(v) -> v
+	| High(v) -> (match(v) | V() -> 13 | Q() -> 14 | K() -> 15 | T() -> 16);
+		
+type Comb =
+    Single(c) | Pair(c) | TwoPair(p1, p2) | Three(c) | Street(c)
+    | Flush(c) | Full(c) | Four(c) | StreetFlush(c);
+    
+let GetRank = cc ->
+    match (cc)
+    | Single(c) -> GetCardRank(c)
+    | TwoPair(p1, p2) -> GetRank(p1) + GetRank(p2)
+    | Pair(c) with r = 0x20 
+    | Three(c) with r = 0x80
+    | Street(c) with r = 0x100 
+    | Flush(c) with r = 0x200
+    | Full(c) with r = 0x300 
+    | Four(c) with r = 0x400
+    | StreetFlush(c) with r = 0x500 -> GetCardRank(c) + r;
+
+let CalcRank = l -> match(l)
+	| [] -> 0 | x::xs -> GetRank(x) + CalcRank(xs);
+	    
+let cards = Comb.Pair(Card.High(Suit.V())) ::
+	Comb.Single(Card.High(Suit.Q())) :: 
+	Comb.Single(Card.Plain(6)) :: 
+	Comb.Single(Card.High(Suit.T())) :: [];	
+
+CalcRank(cards);

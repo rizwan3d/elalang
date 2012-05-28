@@ -1,0 +1,33 @@
+<?xml-stylesheet type="text/xsl" href="Template.xsl"?>
+<article title="Lib.IO">
+
+<section level="1" title="Introduction" />
+IO module contains input and output functions.
+
+<section level="1" title="Functions" />
+
+<section level="2" title="readLines"/>
+<code>
+readLines fn f
+</code>
+This function works like <key>Core.map</key> but instead of a list it accepts a name of a text file (<key>fn</key> argument).
+It then applies function <key>f</key> to each of the lines in a file and concatenates the result. For example if you have the following
+file:
+<pre>First line
+Second line
+Third line</pre>
+reading it like so:
+<code>open IO
+open String
+"myfile.txt" |> readLines upper</code>
+would result in:
+<code>FIRST LINE
+SECOND LINE
+THIRD LINE</code>
+
+<section level="1" title="Referencing module" />
+IO module is a part of Ela standard library. It can be referenced from code using <key>open</key> directive like so:
+<code>open IO#elalib</code>
+or simply
+<code>open IO</code>
+</article>

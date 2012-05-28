@@ -1,0 +1,74 @@
+var res = "msg: ";
+var seq = [0,1,2,3,4];
+
+var f = () -> {
+	var loc1 = "string";
+	var loc2 = true;
+	var loc3 = "another string";
+	
+	loc2++;
+};
+
+f();
+
+for (var i = 0; i < 3; i++)
+{
+	var msg = "Value is ";
+	cout msg + i;
+}
+
+
+try
+{
+	throw "error!";
+}
+catch (e)
+{
+	cout e;
+}
+
+
+if (true)
+{
+	if (false)
+	{
+		var x = 0.2;
+		var y = 0.5;
+	}
+	else
+	{
+		var x = 0.12344;
+		var y = 3.14;
+	}
+
+	var x = 0x20;
+	var y = 0x40;
+}
+else
+{
+	var x = 0x80;
+	var y = 0x100;
+}
+
+
+{
+	var x1 = 1;
+	var y1 = 2;
+	res += (x1 + y1);
+	
+	{
+		var xi = 123;
+		var yi = 321;
+		cout x1 + ";" + y1;
+	}
+}
+
+res += "; ";
+
+{
+	var x2;// = 11;
+	var y2;// = 22;
+	res += (x2 + y2);
+}
+
+return res;

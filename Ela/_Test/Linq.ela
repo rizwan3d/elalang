@@ -1,0 +1,37 @@
+open Debug[elalib] with print;
+
+let seq() for (i to 20) yield i;
+
+let where(f, seq) for (e when f(e) in seq) yield e;
+let select(f, seq) for (e in seq) yield f(e);
+let many(f, seq) for (e in seq) for (c in f(e)) yield c;
+
+//let seq2 = where(seq(), _ % 2 != 0) |> select;
+
+let arr =
+	[|
+		(vals: [| 0, 1, 2, 3, 4 |]),
+		(vals: [| 5, 6, 7, 8, 9 |]),
+		(vals: [| 10, 11, 12, 13, 14 |]),
+		(vals: [| 15, 16, 17, 18, 19 |]),
+		(vals: [| 20, 21, 22, 23, 24 |]),
+		(vals: [| 25, 26, 27, 28, 29 |])
+	|];
+
+
+let seq2 = 
+	seq() |> where(_ > 10) |> select(_ * 10);
+	
+	//list |> where(_ > 10) |> select(_ * 10);
+	//list.Where(x => x > 10).Select(x => x * 10);
+	//list |> where(x -> x > 10) |> select(x -> x  * 10);
+	
+let qry = 
+	arr |> many(_.vals) |> where(_ % 2 == 0);
+	
+ 
+for (e in qry)
+{
+	print(e);
+}
+

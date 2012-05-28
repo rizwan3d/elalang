@@ -1,0 +1,56 @@
+﻿<?xml-stylesheet type="text/xsl" href="Template.xsl"?>
+<article title="Primitive Types">
+
+  <section level="1" title="Introduction" />
+  This article discusses primitive types in Ela.
+  
+  <section level="1" title="Booleans" />
+  Booleans can be created using <key>true</key> and <key>false</key> literals:
+<code>let t = true
+let f = false</code>
+Unlike many other languages booleans in Ela don't support explicit conversion to/from integer numbers. 
+<br/>
+One can use prelude functions <key>not</key>, <key>==</key> and <key>&lt;&gt;</key> with booleans:
+<code>not true == false $
+true == true $
+true &lt;&gt; false</code>
+The following prelude functions returns booleans as a result: <key>not</key> (logical negation), <key>==</key>
+(equality), <key>&lt;&gt;</key> (inequality), <key>&gt;</key> (greater), <key>&gt;=</key> (greater or equal),
+<key>&lt;</key> (lesser), <key>&lt;=</key> (lesser or equal).
+
+<section level="1" title="Numeric types"/>
+Ela has four numeric types - 32-bit integers, 64-bit integers, 32-bit floats and 64-bit floats. In the current
+implementation all these types are mapped respectively to .NET Framework types <key>System.Int32</key>,
+<key>System.Int64</key>, <key>System.Single</key> and <key>System.Double</key>. All these types have their special
+literal syntax:
+<code>let i = 42 //integer
+let l = 42L //long
+let f = 1.42 //float
+let d = 1.42 //double</code>
+Prelude defines multiple arithmetic functions such as <key>+</key> (addition), <key>-</key> (subtraction), <key>*</key>
+(multiplication), <key>/</key> (division), <key>%</key> (remainder), <key>**</key> (power), <key>--</key> (unary negation).
+All these functions support implicit conversions between these types.
+<br/>Once can also use bitwise operators from prelude with integer numbers: <key>&amp;&amp;&amp;</key> (bitwise AND), <key>|||</key>
+(bitwise OR), <key>^^^</key> (bitwise XOR), <key>&lt;&lt;&lt;</key> (left shift), <key>&gt;&gt;&gt;</key> (right shift) and
+<key>~~~</key> (bitwise not).
+
+<section level="1" title="Strings and chars" />
+Strings in Ela are unicode sequences of characters. In the current implementation they do map directly to the .NET Framework data type 
+<key>System.String</key>. Chars are unicode characters.
+<code>let s = "Hello, world!"
+let c = 'C'</code>
+Quoted string literals support C-style escape codes:
+<code>let s = "Hello,\r\nworld!"</code>
+Ela also supports a special literal for multiline strings:
+<code>let s = &lt;[ Multiline
+  string ]&gt;</code>
+Strings and chars can be compared using all standard prelude comparison operators. In order to concatenate strings one can use <key>++</key>
+function from prelude.
+
+<section level="1" title="Unit"/>
+Unit is a "replacement for null" in Ela. Many functional languages use a unit type instead of a null. Unit has its own literal in Ela:
+<code>let u = () //u now is unit</code>
+Unlike null unit is an actual value. You can even apply functions to unit:
+<code>() == ()</code>
+Unit is useful in cases where there is no other meaningful value that can be returned.
+</article>

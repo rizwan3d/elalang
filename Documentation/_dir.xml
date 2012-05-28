@@ -1,0 +1,34 @@
+﻿<documentation>
+  <folder name="Standard Library">
+    <doc name="Prelude" file="lib\Prelude.docxml" />
+    <doc name="Core" file="lib\CoreModule.docxml" />
+    <doc name="Imperative" file="lib\ImperativeModule.docxml" />
+    <doc name="Cell" file="lib\CellModule.docxml" />
+    <doc name="Char" file="lib\CharModule.docxml" />
+    <doc name="Con" file="lib\ConModule.docxml" />
+    <doc name="IO" file="lib\IOModule.docxml" />
+    <doc name="Real" file="lib\RealModule.docxml" />
+    <doc name="String" file="lib\StringModule.docxml" />
+    <doc name="Format" file="lib\FormatModule.docxml" />
+    <doc name="DateTime" file="lib\DateTimeModule.docxml" />
+  </folder>
+  <folder name="Language Reference">
+    <doc name="Bindings" file="Bindings.docxml"/>
+    <doc name="Functions" file="Functions.docxml"/>
+    <doc name="Primitive Types" file="PrimitiveTypes.docxml"/>
+    <doc name="Tuples" file="Tuples.docxml"/>
+    <doc name="Records" file="Records.docxml"/>
+    <doc name="Lists" file="Lists.docxml"/>
+    <doc name="Ranges" file="Ranges.docxml"/>
+    <doc name="Comprehensions" file="Comprehensions.docxml"/>
+    <doc name="Variants" file="Variants.docxml"/>
+    <doc name="Thunks" file="Thunks.docxml"/>
+    <doc name="Pattern Matching" file="PatternMatching.docxml"/>
+    <doc name="Exceptions" file="Exceptions.docxml"/>
+    <doc name="Modules" file="Modules.docxml"/>
+    <doc name="Operator Priority" file="OperatorPriority.docxml" />    
+  </folder>
+  <doc name="Ela and Haskell" file="ElaAndHaskell.docxml" />
+  <doc name="Ela Console" file="ElaConsole.docxml" />
+  <doc name="Embedding Ela" file="Embedding.docxml" />
+</documentation>

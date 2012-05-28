@@ -1,0 +1,14 @@
+for (var i = 0; i < 1000; i++)
+{
+	var z = -1;
+	var s = eval("2 + 2 + z - Foo()");
+	//cout s;
+}
+
+
+//read();
+
+function Foo()
+{
+	return 124;
+}

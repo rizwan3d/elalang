@@ -1,0 +1,13 @@
+open Core
+
+let amb xs = x
+     where join (x::xs) = amb' x (join xs)
+           join [] = \_ -> Some ""
+        et amb' [] _ _ = None
+           amb' (x::xs) n w | eq' w x, n x is Some x' = Some (x ++ " " ++ x')
+                            | else = amb' xs n w
+                            where eq' w x | w is [] = true
+                                          | else = last w == head x
+        et (Some x) = (& join xs "")
+
+amb [["the","that","a"],["frog","elephant","thing"],["walked","treaded","grows"],["slowly","quickly"]]

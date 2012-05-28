@@ -1,0 +1,50 @@
+open Core
+
+let inline ^^ x y = toString x ++ toString y
+
+let assert =
+    {
+        eq  = op' "eq"  (==),
+        neq = op' "neq" (<>),
+        gt  = op' "gt"  (>),
+        lt  = op' "lt"  (<),
+        gte = op' "gte" (>=),
+        lte = op' "lte" (<=),
+        eqt = op' "eqt" (==) true,
+        eqf = op' "eqf" (==) false
+    } 
+    where op' m op x y | op x y = ()
+                       | else   = raise AssertFailed (m)
+
+let funData fun = (t.module.name ++ "." ++ t.name, fun)
+                  where t = type fun
+    
+let regFun fun xs = funData fun  :: xs
+
+let regFuns mod xs = xs ++ (vals |> filter (\x -> x is ?fun) |> map funData)
+                     where vals = [ v.value \\ v <- (type mod).globals ]
+
+let run xs = (res, failed)
+        where exec (n, f) = try (f assert $ n, true, "") with 
+                                 AssertFailed m = (n, false, ": Assert failed: " ++ m)
+                                 v              = (n, false, ": Error occured: " ++ untag v)
+           et count f xs = length <| filter f xs
+           et res = map exec xs
+           et failed = count (\(_,y,_) -> not y) res
+              
+let fmt f prf (tests, failed) =
+        out "Test session started" 
+            (all' f tests 1 "")
+            "Test session finished"
+            ("Executed tests: " ^^ (length tests))
+            ("Successful tests: " ^^ (length tests - failed))
+            ("Failed tests: " ^^ failed)
+        where out v = prf v $ out
+           et tag' true  = "Success "
+              tag' false = "FAILED "
+           et fmt' i (n, r, m) = i ^^ ". " ^^ n ^^ ": " ^^ (tag' r) ^^ " " ^^ m ^^ "\r\n"
+           et all' _ [] _ s = s
+              all' f x::xs i s | f x  = (s ++ fmt' i x) |> all' f xs (i + 1)
+                               | else = all' f xs (i + 1) s
+              
+

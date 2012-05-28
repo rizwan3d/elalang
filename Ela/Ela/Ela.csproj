@@ -1,0 +1,397 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7BDF4A1E-DFFF-4AE5-BD2D-1B1F4BE84B1D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ela</RootNamespace>
+    <AssemblyName>Ela</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <NoStdLib>False</NoStdLib>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TargetFrameworkSubset>
+    </TargetFrameworkSubset>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <SignAssembly>False</SignAssembly>
+    <DelaySign>False</DelaySign>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>..\bin\</OutputPath>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <DebugType>none</DebugType>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\Binaries\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>..\Binaries\</OutputPath>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <DebugType>none</DebugType>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseBuild|AnyCPU' ">
+    <OutputPath>..\Binaries\ReleaseBuild\</OutputPath>
+    <Optimize>true</Optimize>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <DebugType>none</DebugType>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseBuild|x86' ">
+    <OutputPath>..\Binaries\ReleaseBuild\</OutputPath>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <DebugType>none</DebugType>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseBuild|x64' ">
+    <OutputPath>..\Binaries\ReleaseBuild\</OutputPath>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <DebugType>none</DebugType>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Builtins.cs" />
+    <Compile Include="CodeModel\ElaBlock.cs" />
+    <Compile Include="CodeModel\ElaBuiltin.cs" />
+    <Compile Include="CodeModel\ElaBuiltinKind.cs" />
+    <Compile Include="CodeModel\ElaComprehension.cs" />
+    <Compile Include="CodeModel\ElaGenerator.cs" />
+    <Compile Include="CodeModel\ElaImportedVariable.cs" />
+    <Compile Include="CodeModel\ElaLazyLiteral.cs" />
+    <Compile Include="CodeModel\ElaNilPattern.cs" />
+    <Compile Include="CodeModel\ElaOtherwiseGuard.cs" />
+    <Compile Include="CodeModel\ElaPatternGroup.cs" />
+    <Compile Include="CodeModel\ElaRange.cs" />
+    <Compile Include="CodeModel\ElaRecordPattern.cs" />
+    <Compile Include="CodeModel\ElaUnitLiteral.cs" />
+    <Compile Include="CodeModel\ElaVariantLiteral.cs" />
+    <Compile Include="CodeModel\ElaVariantPattern.cs" />
+    <Compile Include="CodeModel\Format.cs" />
+    <Compile Include="Compilation\Builder.Declarations.cs" />
+    <Compile Include="Compilation\Builder.Generators.cs" />
+    <Compile Include="Compilation\Builder.Match.cs" />
+    <Compile Include="Compilation\Builder.Operators.cs" />
+    <Compile Include="Compilation\Builder.Ranges.cs" />
+    <Compile Include="Compilation\Builder.Functions.cs" />
+    <Compile Include="Compilation\DataKind.cs" />
+    <Compile Include="Compilation\ElaCompilerError.cs" />
+    <Compile Include="Compilation\ElaCompilerHint.cs" />
+    <Compile Include="Compilation\ElaCompilerWarning.cs" />
+    <Compile Include="Compilation\ExportVarData.cs" />
+    <Compile Include="Compilation\ExprData.cs" />
+    <Compile Include="Compilation\FunFlag.cs" />
+    <Compile Include="Compilation\IElaCompiler.cs" />
+    <Compile Include="Compilation\ExportVars.cs" />
+    <Compile Include="Compilation\InlineFun.cs" />
+    <Compile Include="Compilation\LateBoundSymbol.cs" />
+    <Compile Include="Compilation\ModuleEventArgs.cs" />
+    <Compile Include="Compilation\NoInit.cs" />
+    <Compile Include="Compilation\OpStackHelper.cs" />
+    <Compile Include="Compilation\Strings.cs" />
+    <Compile Include="Culture.cs" />
+    <Compile Include="Debug\CallStack.cs" />
+    <Compile Include="Debug\ElaDebugException.cs" />
+    <Compile Include="Debug\StackPoint.cs" />
+    <Compile Include="ElaPatterns.cs" />
+    <Compile Include="ElaVersionInfo.cs" />
+    <Compile Include="IReadOnlyMap.cs" />
+    <Compile Include="Compilation\OpSizeHelper.cs" />
+    <Compile Include="ElaTranslationException.cs" />
+    <Compile Include="Linking\ArgumentModule.cs" />
+    <Compile Include="Linking\ModuleEventArgs.cs" />
+    <Compile Include="Loc.cs" />
+    <Compile Include="Runtime\CallFlag.cs" />
+    <Compile Include="Runtime\ElaRuntimeException.cs" />
+    <Compile Include="Runtime\EqHelper.cs" />
+    <Compile Include="Runtime\ObjectModel\DelegateFunction.cs" />
+    <Compile Include="Linking\ElaLinkerError.cs" />
+    <Compile Include="Linking\ElaLinkerException.cs" />
+    <Compile Include="Linking\ElaLinkerWarning.cs" />
+    <Compile Include="Linking\Strings.cs" />
+    <Compile Include="Lookup.cs" />
+    <Compile Include="Parsing\ElaParserException.cs" />
+    <Compile Include="Parsing\ElaParserError.cs" />
+    <Compile Include="Parsing\IElaParser.cs" />
+    <Compile Include="Parsing\Strings.cs" />
+    <Compile Include="Properties\VersionInfo.cs" />
+    <Compile Include="CodeModel\ElaAsPattern.cs" />
+    <Compile Include="CodeModel\ElaDefaultPattern.cs" />
+    <Compile Include="CodeModel\ElaFieldPattern.cs" />
+    <Compile Include="CodeModel\ElaFunctionType.cs" />
+    <Compile Include="CodeModel\ElaHeadTailPattern.cs" />
+    <Compile Include="CodeModel\ElaLiteralPattern.cs" />
+    <Compile Include="CodeModel\ElaTuplePattern.cs" />
+    <Compile Include="CodeModel\ElaTry.cs" />
+    <Compile Include="CodeModel\ElaIsPattern.cs" />
+    <Compile Include="CodeModel\ElaBinary.cs" />
+    <Compile Include="CodeModel\ElaOperator.cs" />
+    <Compile Include="CodeModel\ElaCondition.cs" />
+    <Compile Include="CodeModel\ElaExpression.cs" />
+    <Compile Include="CodeModel\ElaExpressionFlags.cs" />
+    <Compile Include="CodeModel\ElaFieldReference.cs" />
+    <Compile Include="CodeModel\ElaFunctionCall.cs" />
+    <Compile Include="CodeModel\ElaFunctionLiteral.cs" />
+    <Compile Include="CodeModel\ElaModuleInclude.cs" />
+    <Compile Include="CodeModel\ElaListLiteral.cs" />
+    <Compile Include="CodeModel\ElaLiteralValue.cs" />
+    <Compile Include="CodeModel\ElaMatchEntry.cs" />
+    <Compile Include="CodeModel\ElaMatch.cs" />
+    <Compile Include="CodeModel\ElaRecordLiteral.cs" />
+    <Compile Include="CodeModel\ElaFieldDeclaration.cs" />
+    <Compile Include="CodeModel\ElaNodeType.cs" />
+    <Compile Include="CodeModel\ElaTupleLiteral.cs" />
+    <Compile Include="CodeModel\ElaPattern.cs" />
+    <Compile Include="CodeModel\ElaPlaceholder.cs" />
+    <Compile Include="CodeModel\ElaPrimitive.cs" />
+    <Compile Include="CodeModel\ElaRaise.cs" />
+    <Compile Include="CodeModel\ElaIs.cs" />
+    <Compile Include="CodeModel\ElaVariablePattern.cs" />
+    <Compile Include="CodeModel\ElaBinding.cs" />
+    <Compile Include="CodeModel\ElaVariableFlags.cs" />
+    <Compile Include="CodeModel\ElaVariableReference.cs" />
+    <Compile Include="CodeModel\ElaUnitPattern.cs" />
+    <Compile Include="Compilation\CodeFrame.cs" />
+    <Compile Include="Compilation\CodeWriter.cs" />
+    <Compile Include="Compilation\Builder.cs" />
+    <Compile Include="Compilation\CompilerOptions.cs" />
+    <Compile Include="Compilation\CompilerResult.cs" />
+    <Compile Include="Compilation\ElaCompiler.cs" />
+    <Compile Include="Compilation\ElaCompilerException.cs" />
+    <Compile Include="Compilation\Hints.cs" />
+    <Compile Include="Compilation\Label.cs" />
+    <Compile Include="Compilation\LabelMap.cs" />
+    <Compile Include="Compilation\MemoryLayout.cs" />
+    <Compile Include="Compilation\ModuleReference.cs" />
+    <Compile Include="Compilation\Op.cs" />
+    <Compile Include="Compilation\Scope.cs" />
+    <Compile Include="Compilation\ScopeVar.cs" />
+    <Compile Include="Debug\Breakpoint.cs" />
+    <Compile Include="Debug\CallFrame.cs" />
+    <Compile Include="Debug\DebugReader.cs" />
+    <Compile Include="Debug\DebugWriter.cs" />
+    <Compile Include="Debug\EilGenerator.cs" />
+    <Compile Include="Debug\ElaDebugger.cs" />
+    <Compile Include="Debug\FunSym.cs" />
+    <Compile Include="Debug\ScopeSym.cs" />
+    <Compile Include="Debug\DebugInfo.cs" />
+    <Compile Include="Debug\LineSym.cs" />
+    <Compile Include="Debug\SymGenerator.cs" />
+    <Compile Include="Debug\SymTables.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaBoolean.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaChar.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaDummyObject.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaLazyList.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaProxy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Runtime\ObjectModel\ElaUnit.cs" />
+    <Compile Include="FormatHelper.cs" />
+    <Compile Include="Debug\VarSym.cs" />
+    <Compile Include="ElaException.cs" />
+    <Compile Include="ElaMessage.cs" />
+    <Compile Include="FastList.cs" />
+    <Compile Include="FastStack.cs" />
+    <Compile Include="Conv.cs" />
+    <Compile Include="Linking\CodeAssembly.cs" />
+    <Compile Include="Linking\CodeBase.cs" />
+    <Compile Include="Linking\ElaIncrementalLinker.cs" />
+    <Compile Include="Linking\ElaModuleAttribute.cs" />
+    <Compile Include="Linking\ElaLinker.cs" />
+    <Compile Include="Linking\ForeignModule.cs" />
+    <Compile Include="Linking\IntrinsicFrame.cs" />
+    <Compile Include="Linking\LinkerOptions.cs" />
+    <Compile Include="Linking\LinkerResult.cs" />
+    <Compile Include="Linking\ObjectFileReader.cs" />
+    <Compile Include="Linking\ObjectFile.cs" />
+    <Compile Include="Linking\ObjectFileWriter.cs" />
+    <Compile Include="MessageType.cs" />
+    <Compile Include="ElaTypeCode.cs" />
+    <Compile Include="Parsing\ElaParser.cs" />
+    <Compile Include="Parsing\ErrorReporter.cs" />
+    <Compile Include="Parsing\EscapeCodeParser.cs" />
+    <Compile Include="Parsing\Parser.cs">
+      <DependentUpon>ElaParser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parsing\ParserHelper.cs" />
+    <Compile Include="Parsing\ParserResult.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Runtime\CallPoint.cs" />
+    <Compile Include="Runtime\ElaCodeException.cs" />
+    <Compile Include="Runtime\ElaMachine.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Runtime\ElaMachineException.cs" />
+    <Compile Include="Runtime\ElaRuntimeError.cs" />
+    <Compile Include="Runtime\EvalStack.cs" />
+    <Compile Include="Runtime\ExecutionContext.cs" />
+    <Compile Include="Runtime\ExecutionResult.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaDouble.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaError.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaInteger.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaLazy.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaModule.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaRecordField.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaFunction.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaList.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaLong.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaObject.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaSingle.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaString.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaRecord.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaTuple.cs" />
+    <Compile Include="TypeCodeFormat.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaVariant.cs" />
+    <Compile Include="Runtime\ElaValue.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaTypeInfo.cs" />
+    <Compile Include="Runtime\ShowInfo.cs" />
+    <Compile Include="Runtime\Strings.cs" />
+    <Compile Include="Runtime\WorkerThread.cs" />
+    <Compile Include="TranslationResult.cs" />
+    <EmbeddedResource Include="Compilation\Strings\Messages.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Compilation\Strings\Hints.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Compilation\Strings\Errors.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Compilation\Strings\Warnings.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Linking\Strings\Errors.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Linking\Strings\Messages.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Linking\Strings\Warnings.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Parsing\Strings\Errors.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Strings.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Errors.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Runtime\Strings\Errors.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Runtime\Strings\Messages.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="Parsing\Ela.atg">
+      <DependentUpon>ElaParser.cs</DependentUpon>
+    </None>
+    <None Include="Parsing\Parser.frame">
+      <DependentUpon>ElaParser.cs</DependentUpon>
+    </None>
+    <None Include="Parsing\Scanner.frame">
+      <DependentUpon>ElaParser.cs</DependentUpon>
+    </None>
+    <Compile Include="Parsing\Scanner.cs">
+      <DependentUpon>ElaParser.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ChangeList.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>"$(SolutionDir)Binaries\Coco.exe" -N "$(ProjectDir)Parsing\Ela.atg"
+"$(SolutionDir)Binaries\vgen.exe" "$(ProjectDir)ChangeList.txt" "$(ProjectDir)Properties\VersionInfo.cs"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

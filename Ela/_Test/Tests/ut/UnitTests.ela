@@ -1,0 +1,52 @@
+open Con
+open Core
+open TreePrototyping
+
+// let create_tree_from_value {eq} = (Tree 1) `eq` (toTree 1)
+let create_tree_from_tree {eq} = (Tree 1) `eq` (toTree (Tree 1))
+// let create_branch {eq} = let (x,y) = (1,"abc")
+                          // et actual = x << y
+                          // et expected = Tree[x,[Tree[y,[]]]]
+                          // in expected `eq` actual
+let add_branch {eq} = let (x,y,z) = (Tree[1,[]],Tree [true,[]] <+> x,Tree["abc",[]])
+                       et actual = y <+> z
+                       et expected = Tree[true,[x,z]]
+                       in expected `eq` actual
+                       
+let add_2_branches {eq} = let (x,y,z) = (Tree[1,[]],Tree [true,[]],Tree["abc",[]])
+                           et actual = (x <+> y) <+> z
+                           et expected = Tree[1,[y,z]]
+                           in expected `eq` actual
+                           
+let delayed_tuple {eq} = let x = Tree [123,[]] 
+                          et y = Tree ["abc",[]]
+                          et actual = Tree[Operator(","),[x,y]]
+                          et expected = x `comma` y
+                          in expected `eq` actual
+                                                      
+let min_node {eq} = let (x,y) = (Tree[1,[]],Tree [2,[]])
+                      et tree = x <+> y
+                      et wonder = treeWonder tree
+                      et actual = toMinimal wonder
+                      et expected = Wonder {position = y, thePath = [[tree,0]]}
+                      in expected `eq` actual
+                      
+let next_node {eq} = let (x,y,z) = (Tree[1,[]],Tree [2,[]],Tree [3,[]])
+                      et tree = (x <+> y) <+> z
+                      et wonder = treeWonder tree
+                      et actual = wonder |> toMinimal |> toNext
+                      et expected = Wonder {position = z, thePath = [[tree,1]]}
+                      in expected `eq` actual
+
+let upper_next_node {eq} = let (x,y,z) = (Tree[1,[]],Tree [2,[]],Tree [3,[]])
+                      et tree = (x <+> y) <+> z
+                      et wonder = treeWonder tree
+                      et actual = wonder |> toMinimal |> toNext |> toNext
+                      et expected = Wonder {position = tree, thePath = []}
+                      in expected `eq` actual
+                      
+let evaluated_tuple {eq} = let x = Tree [123,[]] 
+                             et y = Tree ["abc",[]]
+                             et actual = eval (x `comma` y)
+                             et expected = Tree[(x,y),[]]
+                               in expected `eq` actual

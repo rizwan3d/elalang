@@ -1,0 +1,24 @@
+ using System;
+ using System.Console;
+ using Nemerle.Macros;
+ 
+ 
+module Main
+{
+	public static Main() : void
+	{
+		def func(o) {
+			WriteLine(o.GetType());
+			o();
+		}
+		
+		func(DoIt);
+	}
+	
+	
+	public static DoIt() : void {}
+	
+	
+	public static DoIt(arg : int) : void {}
+}
+ 

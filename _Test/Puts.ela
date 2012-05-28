@@ -1,0 +1,3 @@
+open Con
+
+let puts = writen << show

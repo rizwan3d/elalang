@@ -1,0 +1,9 @@
+var x = 2;
+
+var f = fun
+{
+	var x = 4;
+	return eval("x");
+};
+
+return f();

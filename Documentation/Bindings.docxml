@@ -1,0 +1,113 @@
+﻿<?xml-stylesheet type="text/xsl" href="Template.xsl"?>
+<article title="Bindings">
+
+  <section level="1" title="Introduction" />
+  This article discusses bindings (similar to variable declarations in imperative languages) in Ela.
+  
+  <section level="1" title="Overview" />
+  Unlike imperative languages Ela doesn't have a concept of <i>variables</i>. Instead like other functional languages Ela has a concept of <i>binding</i>. Binding basically
+  binds an expression to a given name. Unlike variables which can change their values through the code bindings are always immutable. There is no support for mutable variables
+  in Ela. Also Ela even doesn't have a so called <i>assignment</i> operator. An operator <key>=</key> which you can see in bindings is a special form that is only used to bind an
+  expression to a name:
+  <code>let x = 2
+x = 3 //Not a valid Ela code!</code>
+  Another important difference from imperative language is that Ela supports <i>name shadowing</i>. For example, the following code is completely valid:
+  <code>let x = 2
+let x = 3</code>
+  But it is important to understand this example correctly. Here we don't mutate the value of <key>x</key> (which is impossible) we simply use the same name for a different
+  expression. The following example can illustrate how it works:
+  <code>let x = 2
+//A function for one argument that captures x from the global scope
+let sum y = y + x
+let x = 3
+sum 2</code>
+This code evaluates to <key>4</key> (not to <key>5</key>) because function <key>sum</key> was declared before we made a re-binding of a name <key>x</key>.
+<br/>
+Bindings in Ela like in many other languages has a lexical scoping. Global bindings in Ela module are by default included in the export list and can be referenced from other modules.
+<br/>
+Another important thing to remember about bindings in Ela is that names used in bindings should never start with a capital letter. The following code results in an error:
+<code>let Foo = 42</code>
+This is because identifiers that start with a capital letter are used for <i>variant tags</i>.
+
+<section level="1" title="Global Bindings"/>
+Global bindings have the following syntax:
+<code>let [attributes] pattern = expr
+
+//Guarded equations
+let [attributes] pattern | guard1 = expr1 { | guardN = exprN }
+                         | else   = exprN
+</code>
+The <i>attributes</i> clause is optional and can contain one or more binding attributes (see section <i>Binding Attributes</i> for details). The simple case of a mandatory
+<i>pattern</i> clause is an identifier however it can be any supported pattern: 
+<code>let x = 2
+let (x::xs) = [1..10]
+let (Foo x,(1,[y,z])) = (Foo 42,(1,[3,4]))
+let _ = () //Here we simply ignore the value of right-hand expression</code>
+One can also uses guards in bindings:
+<code>let y = 0
+let x | y > 0 = y
+      | else  = 0</code>
+This code is equivalent to the following:
+<code>let x = if y > 0 then y else 0</code>
+An <key>else</key> clause is mandatory. The rest of the syntax is pretty similar to the one used in Haskell.
+<br/>
+Global bindings can only appear at the top level. It is a syntax error to use the binding syntax described here in local scopes.
+
+<section level="1" title="Local Bindings"/>
+Local bindings can be declared using two constructs - <key>let/in</key> bindings and <key>where</key> bindings. Binding made using <key>let/in</key> have the following syntax:
+<code>let [attributes] pattern = expr1 in expr2
+
+//Guarded equations
+let [attributes] pattern | guard1 = expr1 { | guardN = exprN }
+                         | else   = exprN
+ in exprN
+</code>
+The syntax is similar to the one used for global bindings except of a mandatory <key>in</key> clause. The <key>in</key> clause should contain an expression in which (and only in
+which) the binding will be visible, e.g.:
+<code>let x = 2 in x*2
+let y = x //Error ELA302: Name 'x' is not defined
+</code>
+These bindings can appear both at top level and in local levels.
+Bindings done using <key>where</key> have the following syntax:
+<code>expr1
+where [attributes] pattern = expr2
+
+//Guarded equations
+exprN
+where [attributes] pattern | guard1 = expr1 { | guardN = exprN }
+                           | else   = exprN</code>
+
+The syntax is similar to the <key>let</key> bindings however <key>where</key> bindings following mathematical notation and are placed after scope in which they are used.
+A simple example of a <key>where</key> binding:
+<code>x 
+where x = 2</code>
+Which is completely equivalent to:
+<code>let x = 2 in x</code>
+
+<section level="1" title="Mutually Recursive Bindings"/>
+Mutually recursive bindings are declare using <key>et</key> keyword:
+<code>let take (x::xs) = x :: skip xs
+    take []      = []
+ et skip (_::xs) = take xs 
+    skip []      = []</code>
+These are similar to <key>and</key> bindings in ML and allow to reference names before they are declared. Recursive bindings
+can be both top-level and local. They can be done through <key>let</key> and through <key>where</key> bindings. If you use attributes
+in your bindings they will be applied to all bindings in a chain.
+
+<section level="1" title="Binding Attributes"/>
+Currently Ela supports the following binding attributes:
+<table>
+  <tr>
+    <td width="100px"><b>private</b></td>
+    <td>A binding is private and not included in the module export list (valid only on global bindings).</td>
+  </tr>
+  <tr>
+    <td width="100px"><b>extends</b></td>
+    <td>A binding is a function that extends an already defined function with additional pattern matching clauses.</td>
+  </tr>
+  <tr>
+    <td width="100px"><b>inline</b></td>
+    <td>A binding is a function that should be inlined when possible.</td>
+  </tr>
+</table>
+</article>

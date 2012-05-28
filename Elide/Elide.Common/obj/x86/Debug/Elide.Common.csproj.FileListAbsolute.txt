@@ -1,0 +1,10 @@
+C:\bin\Elide.Common.dll
+C:\bin\Elide.Common.pdb
+C:\Projects\Elide\Elide.Common\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Projects\Elide\Elide.Common\obj\x86\Debug\Elide.Common.dll
+C:\Projects\Elide\Elide.Common\obj\x86\Debug\Elide.Common.pdb
+C:\Projects\bin\Elide.Common.dll
+C:\Projects\bin\Elide.Common.pdb
+C:\Projects\ElaPlatform\Elide\Elide.Common\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Projects\ElaPlatform\Elide\Elide.Common\obj\x86\Debug\Elide.Common.dll
+C:\Projects\ElaPlatform\Elide\Elide.Common\obj\x86\Debug\Elide.Common.pdb

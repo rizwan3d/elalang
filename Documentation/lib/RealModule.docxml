@@ -1,0 +1,38 @@
+<?xml-stylesheet type="text/xsl" href="Template.xsl"?>
+<article title="Lib.Real">
+
+<section level="1" title="Introduction" />
+Real module contains functions that operate with chars.
+
+<section level="1" title="Functions" />
+
+<section level="2" title="inf"/>
+<code>
+inf x
+</code>
+Returns <key>true</key> if a given number evaluates to a positive or negative infinity, otherwise returns <key>false</key>.
+
+<section level="2" title="nan"/>
+<code>
+nan x
+</code>
+Returns <key>true</key> if a given number evaluates to a value that is not a number, otherwise returns <key>false</key>.
+
+<section level="2" title="posInf"/>
+<code>
+posInf x
+</code>
+Returns <key>true</key> if a given number evaluates to a positive infinity, otherwise returns <key>false</key>.
+
+<section level="2" title="negInf"/>
+<code>
+negInf x
+</code>
+Returns <key>true</key> if a given number evaluates to a negative infinity, otherwise returns <key>false</key>.
+
+<section level="1" title="Referencing module" />
+Real module is a part of Ela standard library. It can be referenced from code using <key>open</key> directive like so:
+<code>open Real#elalib</code>
+or simply
+<code>open Real</code>
+</article>

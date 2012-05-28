@@ -1,0 +1,44 @@
+//Here we use console output for testing purposes
+//Module Con contains implementations of basic console functions such as
+//writen (write line), write (write), readn (read line)
+open Con
+
+//Definition of a simple named function
+let div1 x y = x / y
+
+//Output function call result
+let _ = writen ("div1: " ++ (div1 12 3))
+
+//The same function using anonymous function syntax
+let div2 = \x y -> x / y
+
+//Output, the result is the same
+let _ = writen ("div2: " ++ (div2 12 3))
+
+//The same function using explicit nested lambdas
+let div3 = \x -> \y -> x / y
+
+//Output, the result is the same
+let _ = writen ("div3: " ++ (div2 12 3))
+
+//Implementation of a 'safe' division function that
+//doesn't fail if the divider is zero. This function is 
+//implemented using pattern matching. This function also
+//uses variants to 'wrap' results.
+let div4 x 0 = None //The divider is zero, just return
+    div4 x y = Some (x / y) //The divider
+
+let _ = writen ("div4: " ++ (div4 12 0)) //Division by zero
+let _ = writen ("div4: " ++ (div4 12 3)) //OK
+
+//And this is how we can unpack the result from a Some|None variant
+let (Some res) = div4 12 3
+let _ = writen ("div4: " ++ res)
+
+//You can define custom operators in the same way as functions.
+//Here is an example of our safe division implemented as operator.
+let x /. 0 = None
+    x /. y = Some (x / y)
+
+let _ = writen ("(/.): " ++ (12 /. 0)) //Will print None
+let _ = writen ("(/.): " ++ (12 /. 4)) //Will print Some 3

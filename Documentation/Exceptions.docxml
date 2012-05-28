@@ -1,0 +1,30 @@
+﻿<?xml-stylesheet type="text/xsl" href="Template.xsl"?>
+<article title="Exceptions">
+
+<section level="1" title="Introduction" />
+This article discusses exception handling in Ela.
+
+<section level="1" title="Exceptions in Ela"/>
+Exception in Ela are represented using variants. A typical exception contains a tag and exception data. Normally exception data is a string message,
+however it can be data of any type. One of the typical tags used for exceptions in Ela is <key>Failure</key>. Standard library generates only exceptions
+with <key>Failure</key> tag.
+
+<section level="1" title="Handling Exceptions" />
+Ela provides a support for structured exception handling in the same way as C-style language. A <key>try/with</key> expression is used to handle exceptions:
+<code>try 2 / 0 with
+    DivizionByZero = 0
+</code>
+This expression has effectively the same syntax as <key>match</key> expression and support pattern matching with multiple clauses is well. When expression that follows
+<key>try</key> keywords doesn't fail <key>try/with</key> returns a value of this expression. If it fails than an exception is matched against patterns that follows
+<key>with</key> keyword.
+
+<section level="1" title="Generating Exceptions"/>
+In order to generate exceptions one can use a <key>raise</key> statement. It has the following syntax:
+<code>raise Tag expr</code>
+An exception should include a variant tag (that denote a type of an exception) and exception data (which can be any expression). Expression that is used to represent
+exception data is always evaluated in a strict manner. Example of <key>raise</key> statement:
+<code>raise DivisionByZero "You cannot divide by zero!"</code>
+There is also a shorter statement <key>fail</key> which always generates exceptions with tag <key>Failure</key>. This tag is commonly used in Ela code.
+<code>fail "Nil list!"</code>
+
+</article>

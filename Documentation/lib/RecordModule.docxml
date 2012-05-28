@@ -1,0 +1,22 @@
+<?xml-stylesheet type="text/xsl" href="Template.xsl"?>
+<article title="Lib.Record">
+
+<section level="1" title="Introduction" />
+Record module contains functions that operate with records.
+
+<section level="1" title="Functions" />
+
+<section level="2" title="hasField"/>
+<code>
+hasField fld rec
+</code>
+Returns <key>true</key> if a record <key>rec</key> has a field <key>fld</key>, otherwise returns <key>false</key>:
+<code>let rec = { foo = "Foo", bar = "Bar" }
+hasField "foo" rec == true</code>
+
+<section level="1" title="Referencing module" />
+Record module is a part of Ela standard library. It can be referenced from code using <key>open</key> directive like so:
+<code>open Record#elalib</code>
+or simply
+<code>open Record</code>
+</article>

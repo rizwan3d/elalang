@@ -1,0 +1,54 @@
+﻿<?xml-stylesheet type="text/xsl" href="Template.xsl"?>
+<article title="Modules">
+
+  <section level="1" title="Introduction" />
+  This article discusses modules in Ela.
+  
+  <section level="1" title="Overview" />
+Modules in Ela are separate translation units. The only way to create a module is to create a separate .ela file. Each .ela file is a module and
+every module is an .ela file. Therefore a program in Ela consists of at least one module. The name of this module is the name of a file without an
+extension, e.g. file Core.ela represents a module Core.
+
+<section level="1" title="Referencing Modules" />
+Modules can be referenced using <key>open</key> statement. This statement can be appear only at top level. It has the following syntax:
+<code>open [ "qualified" ] {path "."} module["#" dll]["@" alias] 
+     ["(" { [ "private" ] name [ "=" localName ] "," } ")" ]</code>
+A simplest form of this statement only includes a module name like so:
+<code>open Core</code>
+Ela linker will try to resolve the path of this module based on the lookup directories provided via configuration. 
+<br/>By default Ela automatically imports all names from module. If several modules define the same set of names they will shadow each other. If
+this is not a desired behavior you can restrict automatic name import by specifying a <key>qualified</key> attribute:
+<code>open qualified Core</code>
+Now in order to reference a name from module you will have to qualify it with the module alias:
+<code>let map = Core.map
+let (+) = Prelude.(+)</code>
+(You can also reference module fields through the module name even if <key>qualified</key> attribute is not specified. This attribute only disallows
+automatic import of names).
+<br/>It is possible to specify a relative path to the module as well using a dot-notation like so:
+<code>open code.samples.Foo</code>
+In this case Ela linker will look a module in a <key>code\samples</key> directory relative to all lookup directories.
+<br/>When opening foreign modules implemented in .NET it is required to specify a DLL name after the hash sign like so:
+<code>open String#elalib</code>
+By default a module will have an alias that is equal to its name. You can however give a different alias to module like so:
+<code>open Char@ch</code>
+Now you can referencing names in the module <key>Char</key> through <key>ch</key> name.
+<br/>Also <key>open</key> directive supports an explicit import list like so:
+<code>open qualified Core ( private map, filter, foldl = fold )</code>
+In code example above the following local names will be created: <key>map</key> with the provide modifier, <key>filter</key> with the public modifier
+(so you will be able to reference it from another module) and <key>fold</key>, mapped to <key>foldl</key> from <key>Core</key> module.
+
+<section level="1" title="Export List" />
+By default all global bindings are included in the export list of a module. If you want to exclude some bindings from export list you should add a
+<key>private</key> modifier to this bindings:
+<code>let private foo = Foo</code>
+
+<section level="1" title="First class Modules" />
+Modules in Ela are first-class values and can be treated as records. Consider the following example:
+<code>open qualified Core
+let get f x = x:f
+
+let _ = get "e" {e=Core.e}
+let _ = get "e" Core
+</code>
+
+</article>

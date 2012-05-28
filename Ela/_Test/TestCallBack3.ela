@@ -1,0 +1,8 @@
+var foo = str -> {
+	return () -> str + " " + "Hello from Ela!";
+};
+
+var f = foo("ss");
+trace(f());
+
+var res = CallBack2(foo);

@@ -1,0 +1,20 @@
+open Record
+
+let rec ?. fld | hasField fld rec = rec.[fld]
+               | else             = rec.base ?. fld
+
+let class = {
+               base = []
+              ,sum  = \x y -> x + y //base implementation
+              ,sub  = \x y -> x - y
+              ,div  = \x y -> x / y
+              ,mul  = \x y -> x * y
+            }
+
+let derived = {
+                 base = class
+                ,mod  = \x y -> x ** y
+                ,sum  = \x y -> x + y + y //override
+              }
+
+(class.sum 3 2, derived.sum 3 2)
