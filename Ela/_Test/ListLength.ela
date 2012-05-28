@@ -1,6 +1,0 @@
-let length = list -> match(list)
-	| [] -> 0 | x::xs -> 1 + length(xs);
-_ = length([0, 1, 2, 3, 4]);
-
-[] instanceOf list
-

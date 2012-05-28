@@ -1,6 +1,0 @@
-let f = () -> (0, 2+3, "str");
-
-
-
-var (x,y,z) = f();
-var res = 2;

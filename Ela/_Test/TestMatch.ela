@@ -1,3 +1,0 @@
-var x = 2;
-cout x;
-let sqrt = x -> x * x; sqrt(4)

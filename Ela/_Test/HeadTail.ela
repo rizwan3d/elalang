@@ -1,6 +1,0 @@
-var list = [0, 1, 2, 3];
-
-var mt = l -> match(l) | [] -> "nil" 
-	| x::xs::xs2 -> string(x) + string(xs) + mt(xs2);
-	
-mt(list);

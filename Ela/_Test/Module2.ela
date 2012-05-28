@@ -1,6 +1,0 @@
-open Module3;;
-
-//let x = Module3.getFoo();;
-
-
-let Testfunc () = true;;
