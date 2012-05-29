@@ -1,0 +1,11 @@
+open Con
+open qualified "$Format" (private countArgs, private format)
+
+let private format' fun fmt xs n | n == 0 = fun (format fmt show showf xs)
+                                 | else = \x -> format' fun fmt (x::xs) (n-1)
+
+let printf fmt = format' write fmt [] (countArgs fmt)
+
+let printfn fmt = format' writen fmt [] (countArgs fmt)
+
+let format fmt = format' id fmt [] (countArgs fmt)
