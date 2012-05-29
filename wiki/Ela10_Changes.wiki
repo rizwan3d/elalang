@@ -75,7 +75,7 @@ let x = 1
 let foo = \x x -> x*x
 }}}
 
-It is important to understand that a lambda declaration `\x x -> x*x` doesn't contain a non-linear pattern (like a Prolog), but is defined according to the rules of lambda calculus - it is fully equivalent to: `\x -> \x -> x*x`. The same works for named functions as well.
+It is important to understand that a lambda declaration `\x x -> x*x` doesn't contain a non-linear pattern (like in Prolog). Ela is a functional, not a logical language. And the lambda above is defined according to the rules of lambda calculus - it is fully equivalent to: `\x -> \x -> x*x`. The same works for named functions as well.
 
 
 == Application operators ==
