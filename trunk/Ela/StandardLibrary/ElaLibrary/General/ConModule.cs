@@ -36,7 +36,7 @@ namespace Ela.Library.General
         
         public string ReadLine()
         {
-            return Console.ReadLine();
+            return Console.ReadLine().Trim('\0');
         }
         
         public ElaUnit Clear()

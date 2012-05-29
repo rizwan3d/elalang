@@ -58,6 +58,8 @@ namespace Ela.Runtime
 		internal int ModuleHandle { get; private set; }
 
 		internal ExecutionContext Context { get; private set; }
+
+        internal Exception LastException { get; set; }
 		#endregion
 	}
 }

@@ -59,14 +59,14 @@ namespace Elide.Console
         {
             var builder = App.GetService<IMenuService>().CreateMenuBuilder<ContextMenuStrip>();            
             sci.ContextMenuStrip = builder
-                .Item("Cut", Cut, sci.HasSelections)
-                .Item("Copy", sci.Copy, sci.HasSelections)
-                .Item("Paste", Paste, sci.CanPaste)
+                .Item("Cut", "Ctrl+X", Cut, sci.HasSelections)
+                .Item("Copy", "Ctrl+C", sci.Copy, sci.HasSelections)
+                .Item("Paste", "Ctrl+V", Paste, sci.CanPaste)
                 .Separator()
                 .Item("Clear All", SmartClear, () => sci.GetTextLength() > lastLen)
                 .Item("Clear History", () => history.Clear(), () => history.Size > 0)
                 .Separator()
-                .Item("Search", Search, () => sci.GetTextLength() > 0)
+                .Item("Search", "Ctrl+F", Search, () => sci.GetTextLength() > 0)
                 .Finish();
         }
 

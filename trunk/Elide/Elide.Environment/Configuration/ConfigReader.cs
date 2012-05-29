@@ -17,7 +17,7 @@ namespace Elide.Environment.Configuration
         public void Read(ExtSection section)
         {
             service.Configs = section.Entries.Select(e => new ConfigInfo(e.Key, TypeFinder.Get(e.Element("type")),
-                e.Element("displayName"), e.Element("category"), e.Element<Int32>("position"), TypeFinder.Get(e.Element("widget"))));
+                e.Element("displayName"), e.Element("category"), e.Element<Int32>("position"), TypeFinder.Get(e.Element("widget")))).ToList();
         }
     }
 }

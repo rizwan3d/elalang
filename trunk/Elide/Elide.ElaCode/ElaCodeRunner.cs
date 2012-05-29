@@ -27,15 +27,20 @@ namespace Elide.ElaCode
             }
             catch (ElaCodeException ex)
             {
-                var mu = (CompiledUnit)asm.MainUnit;
-                var doc = default(Document);
+                if (ex.InnerException == null || !(ex.InnerException is ThreadAbortException))
+                {
+                    var mu = (CompiledUnit)asm.MainUnit;
+                    var doc = default(Document);
 
-                if (!ex.Error.File.Exists)
-                    doc = mu.Document;
-                else if (!ex.Error.File.HasExtension("elaobj"))
-                    doc = new VirtualDocument(ex.Error.File);
+                    if (!ex.Error.File.Exists)
+                        doc = mu.Document;
+                    else if (!ex.Error.File.HasExtension("elaobj"))
+                        doc = new VirtualDocument(ex.Error.File);
 
-                throw new CodeException(doc, ex.Error.Line, ex);
+                    throw new CodeException(doc, ex.Error.Line, ex);
+                }
+
+                return null;
             }
             catch (ElaException ex)
             {

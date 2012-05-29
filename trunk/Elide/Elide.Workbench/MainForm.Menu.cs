@@ -13,6 +13,34 @@ namespace Elide.Workbench
 {
     partial class MainForm
     {
+        private void BuildDocumentTabMenu()
+        {
+            var builder = App.GetService<IMenuService>().CreateMenuBuilder<ContextMenuStrip>();
+            var fs = App.GetService<IFileService>();
+            var docs = App.GetService<IDocumentService>();
+            Action openDir = () =>
+            {
+                var d = App.Document();
+
+                if (d != null && d.FileInfo != null && d.FileInfo.Exists)
+                {
+                    var fi = d.FileInfo;
+                    System.Diagnostics.Process.Start(fi.DirectoryName);
+                }
+            };
+
+            var cm = builder
+                .Item("Save Document", fs.Save, () => App.Document() != null && App.Document().IsDirty)
+                .Separator()
+                .Item("Close", fs.Close, () => App.Document() != null)
+                .Item("Close All Other", fs.CloseAllOther, () => docs.EnumerateDocuments().Count() > 1)
+                .Separator()
+                .Item("Copy Full Path", () => Clipboard.SetText(App.Document().FileInfo.FullName), () => App.Document() != null && App.Document().FileInfo != null)
+                .Item("Open Containing Directory", openDir, () => App.Document() != null && App.Document().FileInfo != null)
+                .Finish();
+            DocumentContainer.ContextMenuStrip = cm;
+        }
+
         private void BuildMenu()
         {
             var builder = App.GetService<IMenuService>().CreateMenuBuilder<MenuStrip>(mainMenu);
@@ -32,7 +60,7 @@ namespace Elide.Workbench
                     .Item("&Close", fs.Close, hasDocs)
                     .Item("Cl&ose All", fs.CloseAll, hasDocs)
                     .Separator()
-                    .Item("&Save", "Ctrl+S", fs.Save, () => hasDocs() && docs.GetActiveDocument() != null && docs.GetActiveDocument().IsDirty)
+                    .Item("&Save", "Ctrl+S", fs.Save, () => docs.GetActiveDocument() != null && docs.GetActiveDocument().IsDirty)
                     .Item("Save &As...", fs.SaveAs, hasDocs)
                     .Item("Save A&ll", "Ctrl+Shift+S", fs.SaveAll, () => docs.EnumerateDocuments().Any(t => t.IsDirty))
                     .Separator()
@@ -59,7 +87,7 @@ namespace Elide.Workbench
                     .Item("Options", () => App.GetService<IConfigDialogService>().ShowConfigDialog())
                     .CloseMenu()
                 .Menu("&Window")
-                    .Item("Close &Current", fs.Close, hasDocs)
+                    .Item("Close &Current", "Ctrl+F4", fs.Close, hasDocs)
                     .Item("Close All &Other", fs.CloseAllOther, () => docs.EnumerateDocuments().Count() > 1)
                     .Item("Close &All", fs.CloseAll, hasDocs)
                     .Separator()

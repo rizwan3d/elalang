@@ -32,8 +32,8 @@ namespace Elide.Workbench.Views
 
             var builder = App.GetService<IMenuService>().CreateMenuBuilder<ContextMenuStrip>();
             var menu = builder
-                .Item("Copy", sci.Copy, sci.HasSelections)
-                .Item("Select All", sci.SelectAll, () => sci.GetTextLength() > 0)
+                .Item("Copy", "Ctrl+C", sci.Copy, sci.HasSelections)
+                .Item("Select All", "Ctrl+A", sci.SelectAll, () => sci.GetTextLength() > 0)
                 .Separator()
                 .Item("Clear", Clear, () => sci.GetTextLength() > 0)
                 .Separator()

@@ -1,1 +1,9 @@
-﻿0.1.0.0:Release:Initial release of Elide.
+﻿0.1.0.8:New:Now Console view supports Ctrl+C,Ctrl+X,Ctrl+V and Ctrl+F shortcuts.
+0.1.0.7:New:Now Output view supports Ctrl+A and Ctrl+C shortcuts.
+0.1.0.6:New:Now EIL generation can be configuration through common program settings.
+0.1.0.5:Fix:Folding now works correctly with multiline strings.
+0.1.0.4:Fix:Autocomplete window could be shown inside comments.
+0.1.0.3:New:A common exception handling dialog is added.
+0.1.0.2:New:A context menu added to the document tab. This menu allows to Save/Close/Close All Other/Copy File Path/Open Container Directory for the current document.
+0.1.0.1:New:A shortcut (Ctrl+F4) is added for Window\Close Current menu item.
+0.1.0.0:Release:Initial release of Elide.

@@ -1626,18 +1626,18 @@ namespace Ela.Runtime
 			var stack = new EvalStack(layout.StackSize);
 			var len = args.Length;
 
-			if (fun.AppliedParameters > 0)
-			{
-				for (var i = 0; i < fun.AppliedParameters; i++)
-					stack.Push(fun.Parameters[fun.AppliedParameters - i - 1]);
-
-				len += fun.AppliedParameters;
-			}
-
 			for (var i = 0; i < len; i++)
-				stack.Push(args[len - i - 1]);
+                stack.Push(args[len - i - 1]);
 
-			if (len != fun.Parameters.Length + 1)
+            if (fun.AppliedParameters > 0)
+            {
+                for (var i = 0; i < fun.AppliedParameters; i++)
+                    stack.Push(fun.Parameters[fun.AppliedParameters - i - 1]);
+
+                //len += fun.AppliedParameters;
+            }
+
+			if (len + fun.AppliedParameters != fun.Parameters.Length + 1)
 			{
 				InvalidParameterNumber(fun.Parameters.Length + 1, len, t, stack);
 				return default(ElaValue);
@@ -1770,10 +1770,12 @@ namespace Ela.Runtime
 			}
 			catch (ElaRuntimeException ex)
 			{
-				ExecuteFail(new ElaError(ex.Category, ex.Message), thread, stack);
+                thread.LastException = ex;
+                ExecuteFail(new ElaError(ex.Category, ex.Message), thread, stack);
 			}
 			catch (Exception ex)
 			{
+                thread.LastException = ex;
 				ExecuteFail(new ElaError(ElaRuntimeError.CallFailed, ex.Message), thread, stack);
 			}
 
@@ -1843,7 +1845,7 @@ namespace Ela.Runtime
 			}
 
 			if (cm == null)
-				throw CreateException(Dump(err, thread));
+				throw CreateException(Dump(err, thread), thread.LastException);
 			else
 			{
 				var c = 1;
@@ -1879,7 +1881,7 @@ namespace Ela.Runtime
 		}
 
 
-		private ElaCodeException CreateException(ElaError err)
+		private ElaCodeException CreateException(ElaError err, Exception ex)
 		{
 			var deb = new ElaDebugger(asm);
 			var mod = asm.GetModule(err.Module);
@@ -1895,7 +1897,7 @@ namespace Ela.Runtime
                     fi = nfi;
             }
 
-			return new ElaCodeException(err.FullMessage.Replace("\0",""), err.Code, fi, cs.Line, cs.Column, cs, err);
+			return new ElaCodeException(err.FullMessage.Replace("\0",""), err.Code, fi, cs.Line, cs.Column, cs, err, ex);
 		}
 
 

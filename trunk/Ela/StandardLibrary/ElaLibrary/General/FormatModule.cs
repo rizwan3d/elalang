@@ -2,6 +2,7 @@
 using Ela.Linking;
 using Ela.Runtime;
 using Ela.Runtime.ObjectModel;
+using System.Collections.Generic;
 
 namespace Ela.Library.General
 {
@@ -12,56 +13,44 @@ namespace Ela.Library.General
 
         }
 
-        private sealed class ArgsFun : ElaFunction
+        private sealed class FormatValue : IFormattable
         {
-            private readonly ElaValue[] arguments;
-            private readonly int num;
-            private readonly string format;
-            private readonly int act;
+            private readonly ElaFunction show;
+            private readonly ElaFunction showf;
+            private readonly ElaValue val;
 
-            internal ArgsFun(string format, ElaValue[] args, int num, int act) : base(1)
+            public FormatValue(ElaFunction show, ElaFunction showf, ElaValue val)
             {
-                this.format = format;
-                this.arguments = args;
-                this.num = num;
-                this.act = act;
+                this.show = show;
+                this.showf = showf;
+                this.val = val;
             }
 
-            public override ElaValue Call(params ElaValue[] args)
+            public string ToString(string format, IFormatProvider formatProvider)
             {
-                var a = args[0];
-                arguments[num] = a;
-
-                if (num == arguments.Length - 1)
-                {
-                    var objs = new Object[arguments.Length];
-
-                    for (var i = 0; i < arguments.Length; i++)
-                        objs[i] = arguments[i];
-
-                    var str = String.Format(format, objs);
-
-                    if (act == 0)
-                        return new ElaValue(str);
-                    else if (act == 1)
-                        Console.Write(str);
-                    else if (act == 2)
-                        Console.WriteLine(str);
-
-                    return new ElaValue(ElaUnit.Instance);
-                }
+                if (String.IsNullOrEmpty(format))
+                    return show.Call(val).AsString();
                 else
-                    return new ElaValue(new ArgsFun(format, arguments, num + 1, act));                
+                    return showf.Call(new ElaValue(format), val).AsString();
             }
         }
-        
+
         public override void Initialize()
         {
-            Add<String,ElaValue>("format", Format);
-            Add<String,ElaValue>("printf", Printf);
-            Add<String,ElaValue>("printfn", Printfn);
+            Add<String,Int32>("countArgs", CountArguments);
+            Add<String,ElaFunction,ElaFunction,IEnumerable<ElaValue>,String>("format", Format);
         }
-        
+
+        private string Format(string format, ElaFunction show, ElaFunction showf, IEnumerable<ElaValue> values)
+        {
+            var objs = new List<Object>();
+
+            foreach (var v in values)
+                objs.Insert(0, new FormatValue(show, showf, v));
+
+            return String.Format(format, objs.ToArray());
+        }
+
         private int CountArguments(string format)
         {
             var ptr = 0;
@@ -86,31 +75,6 @@ namespace Ela.Library.General
             }
 
             return args;
-        }
-        		
-        private ElaValue GetFmt(string format, int act)
-        {
-            var c = CountArguments(format);
-
-            if (c == 0)
-                return new ElaValue(format);
-            else
-                return new ElaValue(new ArgsFun(format, new ElaValue[c], 0, act));
-        }
-
-        public ElaValue Format(string format)
-        {
-            return GetFmt(format, 0);
-        }
-
-        public ElaValue Printf(string format)
-        {
-            return GetFmt(format, 1);
-        }
-
-        public ElaValue Printfn(string format)
-        {
-            return GetFmt(format, 2);
-        }
+        }		
     }
 }

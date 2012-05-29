@@ -97,6 +97,7 @@
     <Compile Include="Configuration\CompilerConfigPage.Designer.cs">
       <DependentUpon>CompilerConfigPage.cs</DependentUpon>
     </Compile>
+    <Compile Include="Configuration\EilGeneratorConfig.cs" />
     <Compile Include="Configuration\ElaEditorConfigPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -125,6 +126,12 @@
     <Compile Include="Lexer\Parser.cs" />
     <Compile Include="Lexer\ParserHelper.cs" />
     <Compile Include="Lexer\Scanner.cs" />
+    <Compile Include="Configuration\EilGeneratorConfigPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Configuration\EilGeneratorConfigPage.Designer.cs">
+      <DependentUpon>EilGeneratorConfigPage.cs</DependentUpon>
+    </Compile>
     <Compile Include="ObjectModel\CompiledAssembly.cs" />
     <Compile Include="ObjectModel\CompiledUnit.cs" />
     <Compile Include="ObjectModel\Reference.cs" />
@@ -186,6 +193,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Images\Field.bmp" />
     <EmbeddedResource Include="Images\Function.bmp" />
+    <EmbeddedResource Include="Configuration\EilGeneratorConfigPage.resx">
+      <DependentUpon>EilGeneratorConfigPage.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\Icon.bmp" />
