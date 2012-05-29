@@ -44,7 +44,7 @@
             this.lookup = new System.Windows.Forms.CheckBox();
             this.skipCheck = new System.Windows.Forms.CheckBox();
             this.warnAsError = new System.Windows.Forms.CheckBox();
-            this.noWarn = new System.Windows.Forms.CheckBox();
+            this.nowarn = new System.Windows.Forms.CheckBox();
             this.recompile = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.SuspendLayout();
@@ -201,17 +201,17 @@
             this.warnAsError.UseVisualStyleBackColor = true;
             this.warnAsError.CheckedChanged += new System.EventHandler(this.CheckedChanged);
             // 
-            // noWarn
+            // nowarn
             // 
-            this.noWarn.AutoSize = true;
-            this.noWarn.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.noWarn.Location = new System.Drawing.Point(15, 47);
-            this.noWarn.Name = "noWarn";
-            this.noWarn.Size = new System.Drawing.Size(155, 17);
-            this.noWarn.TabIndex = 15;
-            this.noWarn.Text = "Don\'t generate &warnings";
-            this.noWarn.UseVisualStyleBackColor = true;
-            this.noWarn.CheckedChanged += new System.EventHandler(this.CheckedChanged);
+            this.nowarn.AutoSize = true;
+            this.nowarn.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            this.nowarn.Location = new System.Drawing.Point(15, 47);
+            this.nowarn.Name = "nowarn";
+            this.nowarn.Size = new System.Drawing.Size(155, 17);
+            this.nowarn.TabIndex = 15;
+            this.nowarn.Text = "Don\'t generate &warnings";
+            this.nowarn.UseVisualStyleBackColor = true;
+            this.nowarn.CheckedChanged += new System.EventHandler(this.CheckedChanged);
             // 
             // recompile
             // 
@@ -230,7 +230,7 @@
             this.Controls.Add(this.lookup);
             this.Controls.Add(this.skipCheck);
             this.Controls.Add(this.warnAsError);
-            this.Controls.Add(this.noWarn);
+            this.Controls.Add(this.nowarn);
             this.Controls.Add(this.recompile);
             this.Controls.Add(this.macroLabel);
             this.Controls.Add(this.remove);
@@ -265,10 +265,10 @@
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
         private System.Windows.Forms.ErrorProvider errorProvider;
         private System.Windows.Forms.Label macroLabel;
+        private System.Windows.Forms.CheckBox nowarn;
+        private System.Windows.Forms.CheckBox recompile;
         private System.Windows.Forms.CheckBox lookup;
         private System.Windows.Forms.CheckBox skipCheck;
         private System.Windows.Forms.CheckBox warnAsError;
-        private System.Windows.Forms.CheckBox noWarn;
-        private System.Windows.Forms.CheckBox recompile;
     }
 }

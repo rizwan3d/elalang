@@ -48,9 +48,10 @@ namespace Elide.Workbench
         private void MainForm_Load(object sender, EventArgs e)
         {
             Icon = System.Drawing.Icon.ExtractAssociatedIcon(Application.ExecutablePath);
-           // AppDomain.CurrentDomain.UnhandledException += (o,ev) => ExceptionManager.Process(ev.ExceptionObject as Exception);
+            AppDomain.CurrentDomain.UnhandledException += (o,ev) => ExceptionManager.Process(ev.ExceptionObject as Exception);
 
             BuildMenu();
+            BuildDocumentTabMenu();
             BuildViews();
 
             var con = App.Config<WorkbenchConfig>();

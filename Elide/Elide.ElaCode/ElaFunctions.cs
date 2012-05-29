@@ -9,6 +9,7 @@ using Elide.Environment;
 using Elide.Environment.Editors;
 using Elide.Scintilla;
 using Elide.TextEditor;
+using Elide.ElaCode.Configuration;
 
 namespace Elide.ElaCode
 {
@@ -77,13 +78,19 @@ namespace Elide.ElaCode
 
         public void GenerateEil()
         {
+            var cfg = app.Config<EilGeneratorConfig>();
+            var opts = cfg.GenerateInDebugMode ? new ExtendedOption[] { ElaCodeBuilder.NoDebug, ElaCodeBuilder.ForceRecompile } 
+                : new ExtendedOption[] { ElaCodeBuilder.ForceRecompile };
+
             var asm = app.GetService<ICodeBuilderService>().
-                RunBuilder<CompiledAssembly>(sci.Text, app.Document(), BuildOptions.Output | BuildOptions.ErrorList, ElaCodeBuilder.ForceRecompile);
+                RunBuilder<CompiledAssembly>(sci.Text, app.Document(), BuildOptions.Output | BuildOptions.ErrorList, opts);
 
             if (asm != null)
-            {
+            {                
                 var frame = asm.Assembly.GetRootModule();
                 var gen = new EilGeneratorHelper(app);
+                gen.PrintOffsets = cfg.IncludeCodeOffsets;
+                gen.IgnoreDebugInfo = !cfg.GenerateInDebugMode;
                 var src = gen.Generate(frame);
 
                 var editor = (EditorInfo)app.GetService<IEditorService>().GetInfo("editors", "EilCode");

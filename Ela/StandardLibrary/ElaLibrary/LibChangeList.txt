@@ -1,3 +1,6 @@
+0.1.0.3:Change:Format module is restructured and rewritten in Ela (instead of C#). Module interface didn't change.
+0.1.0.2:Fix:A bug fixed in Format.printf and Format.printfn - format string without arguments weren't printed.
+0.1.0.1:Change:Now readn function from Con module trims all nil characters.
 0.1.0.0:Release:Release of 0.1.0.0.
 0.0.9.10:New:A new Format module is added (this module adds a support for format strings).
 0.0.9.9:Change:An indexing operator from Prelude is changed from (!) to (:).

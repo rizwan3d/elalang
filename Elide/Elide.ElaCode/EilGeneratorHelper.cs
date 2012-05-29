@@ -17,7 +17,13 @@ namespace Elide.ElaCode
         public string Generate(CodeFrame frame)
         {
             var gen = new EilGenerator(frame);
+            gen.OmitOffsets = !PrintOffsets;
+            gen.IgnoreDebugInfo = IgnoreDebugInfo;
             return gen.Generate();
         }
+
+        public bool PrintOffsets { get; set; }
+
+        public bool IgnoreDebugInfo { get; set; }
     }
 }

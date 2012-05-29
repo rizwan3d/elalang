@@ -13,7 +13,7 @@ namespace Elide.Workbench.Views
         public OutputControl()
         {
             InitializeComponent();
-
+            
             sci = new ScintillaControl();
             sci.Dock = DockStyle.Fill;
             sci.MarginVisible = false;
@@ -30,7 +30,7 @@ namespace Elide.Workbench.Views
         {
             get { return sci; }
         }
-
+        
         [StateItem]
         public bool WordWrap
         {

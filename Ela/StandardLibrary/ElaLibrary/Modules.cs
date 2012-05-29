@@ -3,7 +3,7 @@ using Ela.Library.General;
 using Ela.Library.Collections;
 
 [assembly: ElaModule("$Core", typeof(CoreModule))]
-[assembly: ElaModule("Format", typeof(FormatModule))]
+[assembly: ElaModule("$Format", typeof(FormatModule))]
 [assembly: ElaModule("Experimental", typeof(Experimental))]
 [assembly: ElaModule("Cell", typeof(CellModule))]
 [assembly: ElaModule("IO", typeof(IOModule))]

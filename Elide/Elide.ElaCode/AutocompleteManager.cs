@@ -22,16 +22,34 @@ namespace Elide.ElaCode
             this.sci = sci;
         }
 
+        private bool TestIfComments(int pos, bool checkStr)
+        {
+            var st = sci.GetStyleAt(pos);
+
+            //exclude autocomplete in comments and strings
+            var b = st == TextStyle.MultilineStyle1 || st == TextStyle.MultilineStyle2
+                || st == TextStyle.Style6 || st == TextStyle.Style7;
+
+            if (st == TextStyle.None && checkStr)
+            {
+                var lnn = sci.GetLineFromPosition(pos);
+                var ln = sci.GetLine(lnn);
+                var col = sci.GetColumnFromPosition(pos);
+
+                for (var i = col; i > -1; i--)
+                    if (sci.CharAt(sci.GetPositionByColumn(lnn, i)) == '"')
+                        return true;
+            }
+
+            return b;
+        }
+
         public void DoComplete(int pos, CodeDocument doc)
         {
             if (doc == null)
                 return;
 
-            var st = sci.GetStyleAt(pos);
-
-            //exclude autocomplete in comments and strings
-            if (st == TextStyle.MultilineStyle1 || st == TextStyle.MultilineStyle2 
-                || st == TextStyle.Style6 || st == TextStyle.Style7)
+            if (TestIfComments(pos, true) || TestIfComments(pos - 1, false))
                 return;
 
             var names = default(List<AutocompleteSymbol>);

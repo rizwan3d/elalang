@@ -63,7 +63,7 @@ namespace Elide.ElaCode.Configuration
             noevents = true;
             var c = GetConfig();
             recompile.Checked = c.ForceRecompile;
-            noWarn.Checked = c.NoWarnings;
+            nowarn.Checked = c.NoWarnings;
             warnAsError.Checked = c.WarningsAsErrors;
             skipCheck.Checked = c.SkipTimeStampCheck;
             lookup.Checked = c.LookupStartupDirectory;
@@ -95,7 +95,7 @@ namespace Elide.ElaCode.Configuration
 
             var c = GetConfig();
             c.ForceRecompile = recompile.Checked;
-            c.NoWarnings = noWarn.Checked;
+            c.NoWarnings = nowarn.Checked;
             c.WarningsAsErrors = warnAsError.Checked;
             c.SkipTimeStampCheck = skipCheck.Checked;
             c.LookupStartupDirectory = lookup.Checked;

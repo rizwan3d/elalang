@@ -26,7 +26,8 @@ namespace Elide.ElaCode
                 var li = sci.GetLineIndentation(line);
                 var posLine = sci.GetPositionFromLine(line);
                 var colEnd = sci.GetLineEndColumn(line);
-                var cmt = sci.GetStyleAt(posLine) == TextStyle.MultilineStyle1;
+                var style = sci.GetStyleAt(posLine);
+                var cmt = style == TextStyle.MultilineStyle1 || style == TextStyle.MultilineStyle2;
                 var hasLet = sci.CharAt(posLine) == 'l' && sci.CharAt(posLine + 1) == 'e' && sci.CharAt(posLine + 2) == 't' && !cmt;
 
                 if ((li == 0 || colEnd == li) && lastStart > -1 && line - lastStart > 1 && !cmt)
