@@ -853,7 +853,11 @@ PRODUCTIONS
 		.)		
 		(
 			(
-				ident (. varExp.VariableName = t.val; .)
+				ident 
+				(. 
+					varExp.VariableName = t.val; 
+					varExp.SetLinePragma(t.line, t.col);
+				.)
 				[
 					  FunExpr<varExp>
 					| BindingBodyGuards<varExp>
@@ -869,7 +873,10 @@ PRODUCTIONS
 					if (pat.Type != ElaNodeType.VariablePattern)
 						varExp.Pattern = pat; 
 					else
+					{
 						varExp.VariableName = pat.GetName();
+						varExp.SetLinePragma(pat.Line, pat.Column);
+					}
 				.) 
 				[ 
 					BindingBodyInit<varExp> 
@@ -1286,7 +1293,10 @@ PRODUCTIONS
 					| stringTok (. inc.DllName = ReadString(t.val); .)
 				)
 			]		
-			[ "@" ident (. inc.Alias = t.val; .) ]
+			[ 
+				"@" ident 
+				(. inc.Alias = t.val; .) 
+			]
 			[
 				(. var imp = default(ElaImportedVariable); .)
 				"("

@@ -13,6 +13,20 @@ namespace Ela.Library.General
         {
 
         }
+
+        public class SubFun : ElaFunction
+        {
+            public SubFun()
+                : base(2)
+            {
+               // Spec = 2;
+            }
+
+            protected override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
+            {
+                return arg1.Subtract(arg1, arg2, ctx);
+            }
+        }
         #endregion
 
 
@@ -22,6 +36,8 @@ namespace Ela.Library.General
             Add<ElaValue,String,ElaObject>("newtype", NewType2);
             Add<ElaValue, Proxy>("newType", NewType);
             Add<ElaFunction, Proxy, Proxy>("add", Add);
+            Add("sub", new SubFun());
+            Add<ElaValue,ElaValue,ElaValue>("sum", (x,y)=>x.Add(x,y,null));
         }
 
         public Proxy NewType(ElaValue val)

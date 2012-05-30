@@ -1,3 +1,5 @@
+0.10.0.3:Fix:Function names are better maintained in debug info, more information is now accessible through reflection.
+0.10.0.2:Fix:Locations are corrected in parser for let-bindings and simple patterns.
 0.10.0.1:Fix:A bug fixed when calling partially applied Ela functions from C#.
 0.10.0.0:Release:Release of 0.10.0.0.
 0.9.16.34:Fix:ForceRecompile setting for Ela linker didn't work correctly.

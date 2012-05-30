@@ -82,6 +82,10 @@ namespace Ela.Compilation
 					CompileWhere(s.Where, map, Hints.Left);
 
                 allowNoInits.Push(new NoInit(noInitCode, !addSym));
+
+                if (s.InitExpression.Type == ElaNodeType.Builtin)
+                    map.BuiltinName = s.VariableName;
+
 				var ed = s.InitExpression != null ? CompileExpression(s.InitExpression, map,
                     (s.VariableFlags & ElaVariableFlags.Extends) == ElaVariableFlags.Extends ? Hints.Extends : Hints.None) : default(ExprData);
 				var fc = ed.Type == DataKind.FunCurry || ed.Type == DataKind.FunParams;

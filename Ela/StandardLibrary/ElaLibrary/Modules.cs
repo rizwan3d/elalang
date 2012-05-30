@@ -13,7 +13,7 @@ using Ela.Library.General;
 [assembly: ElaModule("Con", typeof(ConModule))]
 [assembly: ElaModule("Record", typeof(RecordModule))]
 
-//[assembly: ElaModule("Experimental", typeof(Experimental))]
+[assembly: ElaModule("Experimental", typeof(Experimental))]
 //[assembly: ElaModule("Debug", typeof(DebugModule))]
 //[assembly: ElaModule("StringBuilder", typeof(StringBuilderModule))]
 //[assembly: ElaModule("Guid", typeof(GuidModule))]

@@ -172,11 +172,13 @@ namespace Ela.Compilation
 			var funSkipLabel = cw.DefineLabel();
 			cw.Emit(Op.Br, funSkipLabel);
 			var address = cw.Offset;
+            pdb.StartFunction(map.BuiltinName, address, pars);
 			CompileBuiltinInline(kind, exp, map, Hints.None);
 
 			cw.Emit(Op.Ret);
 			frame.Layouts.Add(new MemoryLayout(currentCounter, cw.FinishFrame(), address));
 			EndSection();
+            pdb.EndFunction(frame.Layouts.Count - 1, cw.Offset);
 
 			cw.MarkLabel(funSkipLabel);
 			cw.Emit(Op.PushI4, pars);

@@ -690,6 +690,7 @@ namespace Ela.Compilation
 					if (len != pars)
 					{
 						AddLinePragma(bf);
+                        map.BuiltinName = bf.VariableName;
 						CompileBuiltin(kind, v.Target, map);
 
                         if (v.FlipParameters)

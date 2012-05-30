@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{AFD398CA-09A8-486A-9C65-EDC4954F08C0}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -85,6 +85,7 @@
     <Compile Include="General\CoreModule.cs" />
     <Compile Include="General\DateTimeModule.cs" />
     <Compile Include="General\ElaDateTime.cs" />
+    <Compile Include="General\Experimental.cs" />
     <Compile Include="General\FormatModule.cs" />
     <Compile Include="General\IOModule.cs" />
     <Compile Include="General\RecordModule.cs" />
