@@ -1,6 +1,14 @@
-﻿0.1.0.8:New:Now Console view supports Ctrl+C,Ctrl+X,Ctrl+V and Ctrl+F shortcuts.
+﻿0.1.0.16:Change:Console settings are moved from Environment category to Views category in Options dialog.
+0.1.0.15:New:Output settings added to the Options dialog.
+0.1.0.14:New:File Explorer settings added to the Options dialog.
+0.1.0.13:Change:File Explorer settings are restructured. Now it supports filter of folder levels instead of global filtering.
+0.1.0.12:New:A 'Favorite Folders' feature added to File Explorer.
+0.1.0.11:Change:Now File Explorer view has a root 'My Computer' node (instead of drive nodes as top levels).
+0.1.0.10:Change:Sorting if File Explorer view is corrected - now directories always come first.
+0.1.0.9:New:A 'Flagged documents' node added to Open Files now (now it is possible to 'flag' open documents and to move them a separate folder in this view).
+0.1.0.8:New:Now Console view supports Ctrl+C,Ctrl+X,Ctrl+V and Ctrl+F shortcuts.
 0.1.0.7:New:Now Output view supports Ctrl+A and Ctrl+C shortcuts.
-0.1.0.6:New:Now EIL generation can be configuration through common program settings.
+0.1.0.6:New:Now EIL generation can be configuration through Options dialog.
 0.1.0.5:Fix:Folding now works correctly with multiline strings.
 0.1.0.4:Fix:Autocomplete window could be shown inside comments.
 0.1.0.3:New:A common exception handling dialog is added.

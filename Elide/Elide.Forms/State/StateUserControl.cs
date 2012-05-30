@@ -18,8 +18,8 @@ namespace Elide.Forms.State
 
         protected override void OnLoad(EventArgs e)
         {
-            base.OnLoad(e);
             LoadState();
+            base.OnLoad(e);            
         }
 
         protected override void OnHandleDestroyed(EventArgs e)

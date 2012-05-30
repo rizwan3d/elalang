@@ -23,7 +23,8 @@ namespace Elide.Configuration
             var srv = App.GetService<IConfigService>();
             var map = new Dictionary<String,List<ConfigInfo>>();
 
-            foreach (var ci in srv.EnumerateInfos("configs").OfType<ConfigInfo>())
+            foreach (var ci in srv.EnumerateInfos("configs").OfType<ConfigInfo>()
+                .Where(c => c.Widget != null))
             {
                 var list = default(List<ConfigInfo>);
 

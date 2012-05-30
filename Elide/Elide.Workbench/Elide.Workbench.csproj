@@ -97,6 +97,26 @@
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="AutoSaveService.cs" />
+    <Compile Include="Configuration\AddFolderDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Configuration\AddFolderDialog.Designer.cs">
+      <DependentUpon>AddFolderDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\OutputConfig.cs" />
+    <Compile Include="Configuration\OutputConfigPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Configuration\OutputConfigPage.Designer.cs">
+      <DependentUpon>OutputConfigPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\FileExplorerConfig.cs" />
+    <Compile Include="Configuration\FileExplorerConfigPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Configuration\FileExplorerConfigPage.designer.cs">
+      <DependentUpon>FileExplorerConfigPage.cs</DependentUpon>
+    </Compile>
     <Compile Include="Configuration\WorkbenchConfig.cs" />
     <Compile Include="Configuration\WorkspaceConfigPage.cs">
       <SubType>UserControl</SubType>
@@ -140,6 +160,17 @@
     <Compile Include="PrintHelper.cs" />
     <Compile Include="PrintService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Configuration\AddFolderDialog.resx">
+      <DependentUpon>AddFolderDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\OutputConfigPage.resx">
+      <DependentUpon>OutputConfigPage.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\FileExplorerConfigPage.resx">
+      <DependentUpon>FileExplorerConfigPage.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Configuration\WorkspaceConfigPage.resx">
       <DependentUpon>WorkspaceConfigPage.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -164,6 +195,12 @@
     <Compile Include="StatusBarService.cs" />
     <Compile Include="Tag.cs" />
     <Compile Include="ViewService.cs" />
+    <Compile Include="Views\AddFilterDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\AddFilterDialog.Designer.cs">
+      <DependentUpon>AddFilterDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\ExplorerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -238,6 +275,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\AddFilterDialog.resx">
+      <DependentUpon>AddFilterDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\ExplorerControl.resx">
       <DependentUpon>ExplorerControl.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -274,7 +314,11 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Images\FilterFolder.bmp" />
+    <EmbeddedResource Include="Images\Favorite.bmp" />
+    <EmbeddedResource Include="Images\Computer.bmp" />
     <Content Include="Images\Error.png" />
+    <EmbeddedResource Include="Images\Flag.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -60,14 +60,18 @@
     </services>
 
     <configs>
-        <add key="WorkbenchConfig" type="Elide.Workbench.Configuration.WorkbenchConfig,Elide.Workbench" category="Environment" displayName="General" widget="Elide.Workbench.Configuration.WorkbenchConfigPage,Elide.Workbench" position="0" />
+        <add key="WorkbenchConfig" type="Elide.Workbench.Configuration.WorkbenchConfig,Elide.Workbench" category="Environment" displayName="General" widget="Elide.Workbench.Configuration.WorkbenchConfigPage,Elide.Workbench" position="0" />        
         <add key="StylesConfig" type="Elide.Environment.Configuration.StylesConfig,Elide.Environment" category="Environment" displayName="Fonts and Colors" widget="Elide.Configuration.StylesPage,Elide.Configuration" position="10" />
+      
+        <add key="FileExplorerConfig" type="Elide.Workbench.Configuration.FileExplorerConfig,Elide.Workbench" category="Views" displayName="File Explorer" widget="Elide.Workbench.Configuration.FileExplorerConfigPage,Elide.Workbench" position="0" />
+        <add key="OutputConfig" type="Elide.Workbench.Configuration.OutputConfig,Elide.Workbench" category="Views" displayName="Output" widget="Elide.Workbench.Configuration.OutputConfigPage,Elide.Workbench" position="10" />
+        <add key="ConsoleConfig" type="Elide.Console.Configuration.ConsoleConfig,Elide.Console" category="Views" displayName="Console" widget="Elide.Console.Configuration.ConsoleConfigPage,Elide.Console" position="20" />
+        
         <add key="TextEditorsConfig" type="Elide.TextEditor.Configuration.TextEditorsConfig,Elide.TextEditor" category="Editors" displayName="Text Editor (All)" widget="Elide.TextWorkbench.Configuration.TextEditorConfigPage,Elide.TextWorkbench" position="0"/>
         <add key="PlainTextConfig" type="Elide.PlainText.Configuration.PlainTextConfig,Elide.PlainText" category="Editors" displayName="Plain Text Editor" widget="Elide.PlainText.Configuration.PlainTextConfigPage,Elide.PlainText" position="10" />
         <add key="ElaObjectConfig" type="Elide.ElaObject.Configuration.ElaObjectConfig,Elide.ElaObject" category="Editors" displayName="Ela Object Editor" widget="Elide.ElaObject.Configuration.ObjectFilePage,Elide.ElaObject" position="100" />
         <add key="ElaEditorConfig" type="Elide.CodeEditor.CodeEditorConfig,Elide.CodeEditor" category="Editors" displayName="Ela Code Editor" widget="Elide.ElaCode.Configuration.ElaEditorConfigPage,Elide.ElaCode" position="20" />
-        <add key="ConsoleConfig" type="Elide.Console.Configuration.ConsoleConfig,Elide.Console" category="Environment" displayName="Console" widget="Elide.Console.Configuration.ConsoleConfigPage,Elide.Console" position="30" />
-
+        
         <add key="ElaCompilerConfig" type="Elide.ElaCode.Configuration.CompilerConfig,Elide.ElaCode" category="Ela" displayName="Compiler Settings" widget="Elide.ElaCode.Configuration.CompilerConfigPage,Elide.ElaCode" position="0" />
         <add key="ElaLinkerConfig" type="Elide.ElaCode.Configuration.LinkerConfig,Elide.ElaCode" category="Ela" displayName="Linker Settings" widget="Elide.ElaCode.Configuration.LinkerConfigPage,Elide.ElaCode" position="10" />
         <add key="EilGeneratorConfig" type="Elide.ElaCode.Configuration.EilGeneratorConfig,Elide.ElaCode" category="Ela" displayName="EIL Generator" widget="Elide.ElaCode.Configuration.EilGeneratorConfigPage,Elide.ElaCode" position="20" />

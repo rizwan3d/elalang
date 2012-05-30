@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Elide.Core;
@@ -7,6 +8,7 @@ using Elide.Environment.Configuration;
 using Elide.Environment.Views;
 using Elide.Scintilla;
 using Elide.Scintilla.ObjectModel;
+using Elide.Workbench.Configuration;
 
 namespace Elide.Workbench.Views
 {
@@ -14,6 +16,7 @@ namespace Elide.Workbench.Views
     {
         private OutputControl control;
         private ScintillaControl sci;
+        private bool styling;
         
         public OutputView()
         {
@@ -40,6 +43,7 @@ namespace Elide.Workbench.Views
                 .Item("Word Wrap", null, sci.ToggleWrapMode, null, () => sci.WordWrapMode != WordWrapMode.None)
                 .Finish();
             sci.ContextMenuStrip = menu;
+            UpdateOutputConfig(App.Config<OutputConfig>());
         }
 
         public override void Activate()
@@ -53,7 +57,20 @@ namespace Elide.Workbench.Views
             {
                 var c = (StylesConfig)e.Config;
                 c.Styles["Output"].UpdateStyles(sci);
+                sci.RestyleDocument();
             }
+            else if (e.Config is OutputConfig)
+                UpdateOutputConfig((OutputConfig)e.Config);
+        }
+
+        private void UpdateOutputConfig(OutputConfig cfg)
+        {
+            styling = cfg.Styling;
+            sci.SelectionAlpha = cfg.SelectionTransparency;
+            sci.UseSelectionColor = cfg.UseSelectionColor;
+            sci.MainSelectionForeColor = Color.FromKnownColor(cfg.SelectionForeColor);
+            sci.MainSelectionBackColor = Color.FromKnownColor(cfg.SelectionBackColor);
+            sci.RestyleDocument();
         }
 
         public void WriteString(string text, params object[] args)
@@ -80,7 +97,12 @@ namespace Elide.Workbench.Views
         private void Lex(object sender, StyleNeededEventArgs e)
         {
             var lexer = new OutputLexer();
-            lexer.Parse(e.Text).ToList().ForEach(t => e.AddStyleItem(t.Position, t.Length, t.StyleKey));
+            var tokens = lexer.Parse(e.Text).ToList();
+
+            if (!styling)
+                tokens = tokens.Where(t => t.StyleKey == TextStyle.Invisible).ToList();
+            
+            tokens.ForEach(t => e.AddStyleItem(t.Position, t.Length, t.StyleKey));
         }
     }
 }

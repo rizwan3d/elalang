@@ -10,7 +10,7 @@ namespace Elide.Workbench.Views
         public ExplorerControl()
         {
             InitializeComponent();
-            ShowAllTypes = true;
+            FilteredFolders = new Dictionary<String,String>();
         }
         
         public void Refresh(bool force)
@@ -28,58 +28,12 @@ namespace Elide.Workbench.Views
             }
         }
 
-        public void AddDocumentType(string ext)
-        {
-            if (VisibleDocumentTypes == null)
-                VisibleDocumentTypes = new List<String>();
-
-            VisibleDocumentTypes.Add(ext.ToLower());
-            Refresh(false);
-        }
-
-        public void RemoveDocumentType(string ext)
-        {
-            if (VisibleDocumentTypes != null)
-            {
-                VisibleDocumentTypes.Remove(ext.ToLower());
-                Refresh(false);
-            }
-        }
-
-        public void ToggleShowAllTypes()
-        {
-            ShowAllTypes = !ShowAllTypes;
-            Refresh(false);
-        }
-
-        public void ToggleShowHiddenFolders()
-        {
-            ShowHiddenFolders = !ShowHiddenFolders;
-            Refresh(false);
-        }
-
-        public bool HasDocumentType(string ext)
-        {
-            if (VisibleDocumentTypes == null)
-                return false;
-
-            return VisibleDocumentTypes.Contains(ext.ToLower());
-        }
-
         public LazyTreeView TreeView
         {
             get { return treeView; }
         }
 
-        #region State
         [StateItem]
-        public List<String> VisibleDocumentTypes { get; set; }
-
-        [StateItem]
-        public bool ShowAllTypes { get; set; }
-
-        [StateItem]
-        public bool ShowHiddenFolders { get; set; }
-        #endregion
+        public Dictionary<String,String> FilteredFolders { get; set; }
     }
 }

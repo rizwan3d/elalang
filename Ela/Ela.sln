@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElaLibrary", "StandardLibra
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Code", "Code", "{AB91D945-BA7B-45C8-9226-E861B0FE175A}"
 	ProjectSection(SolutionItems) = preProject
+		StandardLibrary\Code\Core.ela = StandardLibrary\Code\Core.ela
+		StandardLibrary\Code\Format.ela = StandardLibrary\Code\Format.ela
 		StandardLibrary\Code\Imperative.ela = StandardLibrary\Code\Imperative.ela
 		StandardLibrary\Code\Prelude.ela = StandardLibrary\Code\Prelude.ela
 		StandardLibrary\Code\Test.ela = StandardLibrary\Code\Test.ela
