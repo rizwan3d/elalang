@@ -28,6 +28,8 @@ namespace Ela.Compilation
 
 		internal string FunctionName { get; set; }
 
+        internal string BuiltinName { get; set; }
+
 		internal int FunctionParameters { get; set; }
 
 		internal Scope FunctionScope { get; set; }

@@ -22,6 +22,7 @@ namespace Ela.Runtime.ObjectModel
         private const string ISNATIVE = "isNative";
         private const string ISGLOBAL = "isGlobal";
         private const string ISPARTIAL = "isPartial";
+       // public int Spec;
         
 		protected ElaFunction() : this(1)
 		{

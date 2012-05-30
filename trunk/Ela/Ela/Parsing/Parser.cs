@@ -1072,6 +1072,8 @@ internal sealed partial class Parser {
 		if (la.kind == 1) {
 			Get();
 			varExp.VariableName = t.val; 
+			varExp.SetLinePragma(t.line, t.col);
+			
 			if (StartOf(10)) {
 				if (StartOf(5)) {
 					FunExpr(varExp);
@@ -1089,7 +1091,10 @@ internal sealed partial class Parser {
 			if (pat.Type != ElaNodeType.VariablePattern)
 			varExp.Pattern = pat; 
 			else
+			{
 				varExp.VariableName = pat.GetName();
+				varExp.SetLinePragma(pat.Line, pat.Column);
+			}
 			
 			if (StartOf(10)) {
 				if (la.kind == 51) {

@@ -1633,8 +1633,6 @@ namespace Ela.Runtime
             {
                 for (var i = 0; i < fun.AppliedParameters; i++)
                     stack.Push(fun.Parameters[fun.AppliedParameters - i - 1]);
-
-                //len += fun.AppliedParameters;
             }
 
 			if (len + fun.AppliedParameters != fun.Parameters.Length + 1)
@@ -1752,31 +1750,53 @@ namespace Ela.Runtime
 		{
             try
 			{
-				var arr = new ElaValue[funObj.Parameters.Length + 1];
+                //if (funObj.Spec == 2)
+                //{
+                //    var arg = stack.Pop();
 
-				if (funObj.AppliedParameters > 0)
-					Array.Copy(funObj.Parameters, arr, funObj.Parameters.Length);
+                //    if (funObj.Flip)
+                //        stack.Push(funObj.Call(funObj.Parameters[0], arg, thread.Context));
+                //    else
+                //        stack.Push(funObj.Call(arg, funObj.Parameters[0], thread.Context));
 
-				arr[funObj.Parameters.Length] = stack.Pop();
+                //    if (thread.Context.Failed)
+                //    {
+                //        stack.Push(arg);
+                //        stack.Push(new ElaValue(funObj));
+                //        ExecuteFail(thread.Context.Error, thread, stack);
+                //        return true;
+                //    }
+                //}
+                //else
+                {
+                    var arr = new ElaValue[funObj.Parameters.Length + 1];
 
-				if (funObj.Flip)
-				{
-					var x = arr[0];
-					arr[0] = arr[1];
-					arr[1] = x;
-				}
+                    if (funObj.AppliedParameters > 0)
+                        Array.Copy(funObj.Parameters, arr, funObj.Parameters.Length);
 
-				stack.Push(funObj.Call(arr));
+                    arr[funObj.Parameters.Length] = stack.Pop();
+
+                    if (funObj.Flip)
+                    {
+                        var x = arr[0];
+                        arr[0] = arr[1];
+                        arr[1] = x;
+                    }
+
+                    stack.Push(funObj.Call(arr));
+                }
 			}
 			catch (ElaRuntimeException ex)
 			{
                 thread.LastException = ex;
                 ExecuteFail(new ElaError(ex.Category, ex.Message), thread, stack);
+                return true;
 			}
 			catch (Exception ex)
 			{
                 thread.LastException = ex;
 				ExecuteFail(new ElaError(ElaRuntimeError.CallFailed, ex.Message), thread, stack);
+                return true;
 			}
 
             return false;
