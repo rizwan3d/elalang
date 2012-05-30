@@ -17,49 +17,23 @@ namespace Ela.Library.General
             Add<ElaValue,ElaUnit>("write", Write);
             Add<ElaValue,ElaUnit>("writen", WriteLine);
             Add<String>("readn", ReadLine);
-            Add<ElaUnit>("cls", Clear);
-            Add<ElaUnit>("beep", Beep);
-            Add<ElaFunction,ElaUnit>("onCancel", SetOnCancel);
         }
         
         public ElaUnit Write(ElaValue val)
         {
-            Console.Write(val.ToString());
+            Console.Write(val.AsString());
             return ElaUnit.Instance;
         }
         
         public ElaUnit WriteLine(ElaValue val)
         {
-            Console.WriteLine(val.ToString());
+            Console.WriteLine(val.AsString());
             return ElaUnit.Instance;
         }
         
         public string ReadLine()
         {
             return Console.ReadLine().Trim('\0');
-        }
-        
-        public ElaUnit Clear()
-        {
-            Console.Clear();
-            return ElaUnit.Instance;
-        }
-        
-        public ElaUnit Beep()
-        {
-            Console.Beep();
-            return ElaUnit.Instance;
-        }
-
-        public ElaUnit SetOnCancel(ElaFunction fun)
-        {
-            var ctx = new ExecutionContext();
-            Console.CancelKeyPress += (o, e) => {
-                var vr = e.SpecialKey == ConsoleSpecialKey.ControlBreak ?
-                    new ElaVariant("CtrlBreak") : new ElaVariant("CtrlC");
-                e.Cancel = fun.Call(new ElaValue(vr)).AsBoolean();
-            };
-            return ElaUnit.Instance;
         }
     }
 }

@@ -1,11 +1,11 @@
-open Con
+open Console
 open Cell
 
 //An implementation of a function that creates an iterator for a given list
 let iter xs = iter' (cell xs)
-              where iter' cell () | l is (x::xs) = cell |> mutate xs $ Some x
-                                  | else         = None
-                                  where l = valueof cell
+              where iter' c () | l is (x::xs) = c := xs $ Some x
+                               | else         = None
+                                where l = valueof c
 
 //This is a 'foreach' function implementation that works with iterator defined above
 let each f xs = for' (iter xs)

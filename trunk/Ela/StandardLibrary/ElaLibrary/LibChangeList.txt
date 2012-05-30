@@ -1,3 +1,5 @@
+0.1.1.2:Change:Now functions Console.writen and Console.write explicitly call show on a provided argument.
+0.1.1.1:Change:Module Con renamed to Console because of technical reasons.
 0.1.1.0:Release:Release of 0.1.1.0.
 0.1.0.7:New:A new Thunk module is added.
 0.1.0.6:Change:Function 'quot' from Core module is rewritten in Ela.

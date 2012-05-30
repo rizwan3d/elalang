@@ -1,5 +1,3 @@
-open Con
-
 //An implementation of Y combinator using thunks
 //Sections surrounded with '(& )' braces are postponed in evaluation
 let fix = \f -> (\x -> (& f (x x))) (\x -> (& f (x x)))

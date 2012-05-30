@@ -1,5 +1,5 @@
 open Test
-open Con
+open Console
 open BasicTests
 open FunTests
 open RangeTests

@@ -1,4 +1,4 @@
-open Con
+open Console
 
 //This function divides two passed values and handles possible exceptions
 let sum x y = try x / y with

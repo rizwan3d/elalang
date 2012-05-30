@@ -1,4 +1,4 @@
-open Con
+open Console
 
 //This function takes a function and a number of iterations
 //It then calls a provided function on each iteration
