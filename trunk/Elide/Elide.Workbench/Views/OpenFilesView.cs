@@ -16,6 +16,7 @@ namespace Elide.Workbench.Views
     {
         private TreeNode mainFolder;
         private TreeNode otherFolder;
+        private TreeNode flagFolder;
         private TreeNode lastNodeClick;
         private TreeNode lastNodeSel;
         private OpenFilesControl control;
@@ -31,14 +32,16 @@ namespace Elide.Workbench.Views
             base.Initialize(app);
             contextMenu = new ContextMenuStrip();
             contextMenu.Items.Add("Close file", null, (o,e) => CloseDocument(lastNodeClick));
+            contextMenu.Items.Add("Toggle document flag", null, (o,e) => ToggleFlag(lastNodeClick));
             MenuRenderer.ApplySkin(contextMenu);
 
             control = new OpenFilesControl();
             mainFolder = new TreeNode(App.EditorInfo(EditorFlags.Main).DisplayName.Remove("&")) { ImageKey = "Folder", SelectedImageKey = "Folder" };
-            otherFolder = new TreeNode("Other files") { ImageKey = "Folder", SelectedImageKey = "Folder" };
+            otherFolder = new TreeNode("Other Files") { ImageKey = "Folder", SelectedImageKey = "Folder" };
+            flagFolder = new TreeNode("Flagged Files") { ImageKey = "Flag", SelectedImageKey = "Flag" };
             control.TreeView.Nodes.Add(mainFolder);
             control.TreeView.Nodes.Add(otherFolder);
-            WalkDocuments();
+            control.TreeView.Nodes.Add(flagFolder);
 
             App.GetService<IDocumentService>().DocumentAdded += (o,e) => AddDocumentNode(e.Document);
             App.GetService<IDocumentService>().DocumentRemoved += (o,e) => RemoveDocumentNode(e.Document);
@@ -73,6 +76,7 @@ namespace Elide.Workbench.Views
             };
             control.TreeView.DrawNode += TreeView_DrawNode;
             control.TreeView.DrawMode = TreeViewDrawMode.OwnerDrawText;
+            control.Load += (o, e) => WalkDocuments();
         }
 
         private void Refresh()
@@ -127,15 +131,25 @@ namespace Elide.Workbench.Views
 
         private void WalkDocuments()
         {
-            control.TreeView.BeginUpdate();            
+            control.TreeView.BeginUpdate();
+            flagFolder.Nodes.Clear();
+            mainFolder.Nodes.Clear();
+            otherFolder.Nodes.Clear();
+            var flagExp = flagFolder.IsExpanded;
+            var mainExp = mainFolder.IsExpanded;
+            var otherExp = otherFolder.IsExpanded;
             App.GetService<IDocumentService>().EnumerateDocuments().ForEach(d => AddDocumentNode(d));
+            if (flagExp) flagFolder.Expand();
+            if (mainExp) mainFolder.Expand();
+            if (otherExp) otherFolder.Expand();
             control.TreeView.EndUpdate();
         }
 
         private void AddDocumentNode(Document doc)
         {
             var inf = App.EditorInfo(doc);
-            var par = (inf.Flags & EditorFlags.Main) == EditorFlags.Main ? mainFolder : otherFolder;
+            var par = control.FlaggedDocuments.Contains(doc.Title.ToUpper()) ? flagFolder :
+                (inf.Flags & EditorFlags.Main) == EditorFlags.Main ? mainFolder : otherFolder;
 
             if (!control.TreeView.ImageList.Images.ContainsKey(inf.Key))
                 control.TreeView.ImageList.Images.Add(inf.Key, inf.Instance.DocumentIcon);
@@ -149,6 +163,22 @@ namespace Elide.Workbench.Views
 
             if (!par.IsExpanded)
                 par.Expand();
+        }
+
+        private void ToggleFlag(TreeNode tn)
+        {
+            if (tn != null && tn.Tag is Document)
+            {
+                var d = (Document)tn.Tag;
+                var tit = d.Title.ToUpper();
+
+                if (control.FlaggedDocuments.Contains(tit))
+                    control.FlaggedDocuments.Remove(tit);
+                else
+                    control.FlaggedDocuments.Add(tit);
+
+                WalkDocuments();
+            }
         }
 
         private void CloseDocument(TreeNode tn)

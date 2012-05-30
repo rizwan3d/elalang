@@ -94,8 +94,6 @@ namespace Ela.Runtime.ObjectModel
                 ctx.Failed = true;
                 ctx.Thunk = this;
                 return new ElaValue(ElaDummyObject.Instance);
-                //Value = f.Call(new ElaValue(ElaUnit.Instance), ctx);
-                //Function = null;
 			}
 
 			return Value;

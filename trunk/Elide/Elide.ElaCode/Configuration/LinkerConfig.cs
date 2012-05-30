@@ -15,6 +15,13 @@ namespace Elide.ElaCode.Configuration
             Directories.Add(@"%root%\lib");
         }
 
+        public override Config Clone()
+        {
+            var cl = (LinkerConfig)MemberwiseClone();
+            cl.Directories = new List<String>(Directories.ToArray());
+            return cl;
+        }
+
         public List<String> Directories { get; set; }
         
         public bool LookupStartupDirectory { get; set; }

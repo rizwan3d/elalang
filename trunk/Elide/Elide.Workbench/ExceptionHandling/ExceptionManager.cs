@@ -4,6 +4,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Net.Mail;
 using System.Net;
+using Elide.Core;
 
 namespace Elide.Workbench.ExceptionHandling
 {
@@ -11,7 +12,7 @@ namespace Elide.Workbench.ExceptionHandling
 	{
 		private static object syncRoot = new Object();
                 
-        public static void Process(Exception exception)
+        public static void Process(IApp app, Exception exception)
 		{
 			if (exception is ThreadAbortException ||
                 exception == null)
@@ -39,7 +40,7 @@ namespace Elide.Workbench.ExceptionHandling
                 }
 
                 Log(exception);
-                System.Environment.FailFast("Exception", exception);
+                app.Unload();
             }
 		}
         

@@ -6,6 +6,9 @@ namespace Elide.Core
     {
         public static Type Get(string typeStr)
         {
+            if (typeStr == null)
+                return null;
+
             var type = Type.GetType(typeStr);
 
             if (type == null)

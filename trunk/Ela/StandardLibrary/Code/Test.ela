@@ -1,6 +1,9 @@
-open Core
+/* 
+    Ela Imperative module
+    Created in 2011-2012 by Basil Voronkov
+*/
 
-let inline ^^ x y = toString x ++ toString y
+open Core
 
 let assert =
     {
@@ -36,13 +39,13 @@ let fmt f prf (tests, failed) =
         out "Test session started" 
             (all' f tests 1 "")
             "Test session finished"
-            ("Executed tests: " ^^ (length tests))
-            ("Successful tests: " ^^ (length tests - failed))
-            ("Failed tests: " ^^ failed)
+            ("Executed tests: " ++ (length tests))
+            ("Successful tests: " ++ (length tests - failed))
+            ("Failed tests: " ++ failed)
         where out v = prf v $ out
            et tag' true  = "Success "
               tag' false = "FAILED "
-           et fmt' i (n, r, m) = i ^^ ". " ^^ n ^^ ": " ^^ (tag' r) ^^ " " ^^ m ^^ "\r\n"
+           et fmt' i (n, r, m) = i ++ ". " ++ n ++ ": " ++ (tag' r) ++ " " ++ m ++ "\r\n"
            et all' _ [] _ s = s
               all' f x::xs i s | f x  = (s ++ fmt' i x) |> all' f xs (i + 1)
                                | else = all' f xs (i + 1) s
