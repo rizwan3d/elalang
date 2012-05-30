@@ -2,7 +2,6 @@
     Ela Imperative module
     Created in 2012 by Basil Voronkov
 */
-
 let rec f x = f x $ rec f
 
 let rec2 f x y = f x y $ rec2 f

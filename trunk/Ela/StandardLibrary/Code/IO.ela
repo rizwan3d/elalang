@@ -2,7 +2,7 @@
     Ela "dirty" IO module
     Created in 2012 by Basil Voronkov
 */
-open qualified "$IO"@io
+open qualified "$IO"#elalib@io
 
 let readLines fun fl = io.readLine (force fun) (force fl)
 

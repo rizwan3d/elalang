@@ -1,0 +1,17 @@
+/* 
+    Ela Thunk module
+    Created in 2012 by Basil Voronkov
+*/
+let forceAll x | x is ?lazy = forceAll' (force x)
+               | x is ?list = forceList (force x)
+               | else = x
+               where forceAll' x | x is ?tuple or x is ?record = forceTuple x
+                                 | else = force x
+ et forceList (x::xs) = forceAll x :: forceList xs
+    forceList [] = []
+ et forceTuple tup = force' 0
+                      where len = length tup 
+                         et force' i = if i == len - 1 then 
+                                         forceAll (tup:i)
+                                       else
+                                         forceAll (tup:i) => force' (i+1)

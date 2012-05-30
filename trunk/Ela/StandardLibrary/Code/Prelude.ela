@@ -107,7 +107,5 @@ let toVariant x = convert 17 x
 let (!) = __internal apply
 let (|>) = __internal fpipe
 let (<|) = __internal bpipe
-let rec f x = f x $ rec f
-let rec2 f x y = f x y $ rec2 f
 let until p f x | p x  = x  | else = until p f (f x)
 let compare x y | x == y = EQ | x < y = LT | else = GT

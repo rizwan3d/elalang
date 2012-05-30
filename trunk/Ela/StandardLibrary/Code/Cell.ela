@@ -2,7 +2,7 @@
     Ela Cell module
     Created in 2012 by Basil Voronkov
 */
-open qualified "$Cell"@cl
+open qualified "$Cell"#elalib@cl
 
 let cell x = cl.cell (force x)
 
