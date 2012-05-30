@@ -132,7 +132,7 @@ internal sealed partial class Parser {
 
 	void Thunk() {
 		Expect(15);
-		Add(t.pos + 1, 1, TextStyle.Style10); 
+		if (la.val != null && la.val != "" && la.val[0] != '&') Add(t.pos + 1, 1, TextStyle.Style10); 
 	}
 
 	void Primary() {

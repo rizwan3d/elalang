@@ -25,6 +25,8 @@ let indexOf search s = str.indexOf (force search) (force s)
 
 let indexOfFrom search idx s = str.indexOfFrom (force search) (force idx) (force s)
 
+let indexOfAny chz s = str.indexOfAny (forceAll chz) (force s)
+
 let indexOfAnyFrom chz idx s = str.indexOfAnyFrom (forceAll chz) (force idx) (force s)
 
 let startsWith search s = str.startsWith (force search) (force s)

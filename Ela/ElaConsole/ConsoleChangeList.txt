@@ -1,3 +1,5 @@
+0.9.5.0:Release:Release of 0.9.5.0.
+0.9.4.1:Fix:Now Ela Console doesn't crush in a case of internal Ela VM error, but prints an error message.
 0.9.4.0:Release:Release of 0.9.4.0.
 0.9.3.2:New:A new #eval interactive command is added (this command evals a file which name is given as its argument).
 0.9.3.1:New:A new #reset interactive command is added (this command resets the state of interactive console).
