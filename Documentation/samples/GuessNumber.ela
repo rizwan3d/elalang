@@ -1,5 +1,6 @@
 open Core
-open Con
+open Console
+open Format
 open Char
 open DateTime
 
@@ -9,7 +10,7 @@ let rnd' v = rnd s 1 v where s = milliseconds <| now!
 //Implementation of a game
 let start () =
         match bound! with
-              Some v = writen ("Guess a number from 1 to " ++ v) $ guess <| rnd' v
+              Some v = printfn "Guess a number from 1 to {0}." v $ guess <| rnd' v
               None   = start!
  et bound () =
         writen "What's the upper bound?" $ bound' <| toInt <| readn!
@@ -22,7 +23,7 @@ let start () =
               read 'N' = writen "Bye!"
               read x   = writen "Say what?" $ ask!
  et failed v n =
-        writen ("No, this is not " ++ v ++ ". " ++ hint) $ guess n
+        printfn "No, this is not {0}. {1}" v hint $ guess n
         where hint | v < n = "Try bigger."
                    | else  = "Try smaller."
  et guess n = g <| toInt <| readn!

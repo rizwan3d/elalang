@@ -2,7 +2,7 @@
 using Ela.Library.General;
 //using Ela.Library.Collections;
 
-[assembly: ElaModule("Con", typeof(ConModule))]
+[assembly: ElaModule("$Con", typeof(ConModule))]
 [assembly: ElaModule("$Core", typeof(CoreModule))]
 [assembly: ElaModule("$Format", typeof(FormatModule))]
 [assembly: ElaModule("$Cell", typeof(CellModule))]

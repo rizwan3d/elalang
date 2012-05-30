@@ -1,7 +1,7 @@
 //Here we use console output for testing purposes
-//Module Con contains implementations of basic console functions such as
+//Module Console contains implementations of basic console functions such as
 //writen (write line), write (write), readn (read line)
-open Con
+open Console
 
 //Tuples are flat sequences of values. They are convenient for grouping multiple values,
 //for example, when you want to return multiple values from a function. Here we create a
