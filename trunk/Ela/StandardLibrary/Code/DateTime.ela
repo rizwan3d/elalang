@@ -1,0 +1,63 @@
+/* 
+    Ela DateTime module
+    Created in 2012 by Basil Voronkov
+*/
+open qualified "$DateTime"#elalib@dt
+
+let now () = dt.now ()
+
+let today () = dt.today ()
+
+let add x y = dt.add (force x) (force y)
+
+let addTicks x y = dt.addTicks (force x) (force y)
+
+let addMilliseconds x y = dt.addMilliseconds (force x) (force y)
+
+let addSeconds x y = dt.addSeconds (force x) (force y)
+
+let addMinutes x y = dt.addMinutes (force x) (force y)
+
+let addHours x y = dt.addHours (force x) (force y)
+
+let addDays x y = dt.addDays (force x) (force y)
+
+let addMonths x y = dt.addMonths (force x) (force y)
+
+let addYears x y = dt.addYears (force x) (force y)
+
+let years x = dt.years (force x)
+
+let months x = dt.months (force x)
+
+let days x = dt.days (force x)
+
+let hours x = dt.hours (force x)
+
+let minutes x = dt.minutes (force x)
+
+let seconds x = dt.seconds (force x)
+
+let milliseconds x = dt.milliseconds (force x)
+
+let ticks x = dt.ticks (force x)
+
+let dayOfWeek x = dt.dayOfWeek (force x)
+
+let dayOfYear x = dt.dayOfYear (force x)
+
+let date x = dt.date (force x)
+
+let parse fmt x = dt.parse (force fmt) (force x)
+
+let toLocaleString x = dt.toLocaleString (force x)
+
+let toLocaleStringFormat fmt x = dt.toLocaleStringFormat (force fmt) (force x)
+
+let diff x y = dt.diff (force x) (force y)
+
+let diffSeconds x y = dt.diffSeconds (force x) (force y)
+
+let diffMilliseconds x y = dt.diffMilliseconds (force x) (force y)
+
+let diffTicks x y = dt.diffTicks (force x) (force y)

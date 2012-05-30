@@ -2,47 +2,47 @@
     Ela Core module
     Created in 2011-2012 by Basil Voronkov
 */
-open "$Core"#elalib@cm
+open "$Core"#elalib@cm 
 
 /* MATH */
 
 let abs x | x >= 0 = x
           | else   = --x
 
-let exp = cm.exp
+let exp x = cm.exp (force x)
 
 let gcd 0 0 = fail "Core.gcd: gcd 0 0 is undefined"
     gcd x y = gcd' (abs x) (abs y)
               where gcd' x 0 = x
                     gcd' x y = gcd' y (x % y)
                 
-let cos = cm.cos
+let cos x = cm.cos (force x)
 
-let sin = cm.sin
+let sin x = cm.sin (force x)
 
-let acos = cm.acos
+let acos x = cm.acos (force x)
 
-let asin = cm.asin
+let asin x = cm.asin (force x)
 
-let tan = cm.tan
+let tan x = cm.tan (force x)
 
-let quot = cm.quot
+let quot x y = toLong x / toLong y
 
 let lcm _ 0 = 0
     lcm 0 _ = 0
     lcm x y = abs ((x `quot` gcd x y) * y)
 
-let floor = cm.floor
+let floor x = cm.floor (force x)
 
-let ceiling = cm.ceiling
+let ceiling x = cm.ceiling (force x)
 
-let atan = cm.atan
+let atan x = cm.atan (force x)
 
 let sqrt x = x ** 0.5
 
-let truncate = cm.truncate
+let truncate x = cm.truncate (force x)
 
-let log = cm.log
+let log x = cm.log (force x)
 
 let even x = x % 2 == 0
 
@@ -54,13 +54,13 @@ let maxValue x y | x >= y = x
 let minValue x y | x <= y = x
                  | else   = y
 
-let round = cm.round
+let round x = cm.round (force x)
 
-let rnd = cm.rnd
+let rnd seed min max = cm.rnd (force seed) (force min) (force max)
 
-let pi = cm.pi
+let pi = cm.pi //Constant
 
-let e = cm.e
+let e = cm.e //Constant
 
 
 /* Basic */

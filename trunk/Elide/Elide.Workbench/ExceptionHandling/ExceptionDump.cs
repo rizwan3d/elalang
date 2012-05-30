@@ -24,7 +24,7 @@ namespace Elide.Workbench.ExceptionHandling
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat(HDR_DATETIME, DateTime.Now);
-            
+
             if (detailed)
             {
                 sb.AppendFormat(HDR_PRODUCT, Application.ProductVersion);

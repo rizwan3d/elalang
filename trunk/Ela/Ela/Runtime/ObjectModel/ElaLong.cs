@@ -7,8 +7,7 @@ namespace Ela.Runtime.ObjectModel
 		#region Construction
         internal static readonly ElaTypeInfo TypeInfo = new ElaTypeInfo(TypeCodeFormat.GetShortForm(ElaTypeCode.Long), (Int32)ElaTypeCode.Long, true, typeof(ElaLong));
         
-        public ElaLong(long value)
-            : base(ElaTypeCode.Long)
+        public ElaLong(long value) : base(ElaTypeCode.Long)
 		{
 			Value = value;
 		}

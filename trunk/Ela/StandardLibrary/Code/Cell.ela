@@ -1,0 +1,19 @@
+/* 
+    Ela Cell module
+    Created in 2012 by Basil Voronkov
+*/
+open qualified "$Cell"@cl
+
+let cell x = cl.cell (force x)
+
+let mutate e x = cl.mutate (force e) (force x)
+
+let valueof c = cl.valueof (force c)
+
+let c.+ = mutate (valueof c + 1) c
+
+let c.- = mutate (valueof c - 1) c
+
+let c := e = mutate e c
+
+
