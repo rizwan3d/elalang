@@ -3,6 +3,7 @@
     Created in 2012 by Basil Voronkov
 */
 open qualified "$String"#elalib@str
+open Thunk
 
 let upper s = str.upper (force s)
 
@@ -10,21 +11,21 @@ let lower s = str.lower (force s)
 
 let trim s = str.trim (force s)
 
-let trimChars chz s = str.trimChars (force chz) (force s)
+let trimChars chz s = str.trimChars (forceAll chz) (force s)
 
 let trimStart s = str.trimStart (force s)
 
 let trimEnd s = str.trimEnd (force s)
 
-let trimStartChars chz s = str.trimStartChars (force chz) (force s)
+let trimStartChars chz s = str.trimStartChars (forceAll chz) (force s)
 
-let trimEndChars chz s = str.trimEndChars (force chz) (force s)
+let trimEndChars chz s = str.trimEndChars (forceAll chz) (force s)
 
 let indexOf search s = str.indexOf (force search) (force s)
 
 let indexOfFrom search idx s = str.indexOfFrom (force search) (force idx) (force s)
 
-let indexOfAnyFrom chz idx s = str.indexOfAnyFrom (force chz) (force idx) (force s)
+let indexOfAnyFrom chz idx s = str.indexOfAnyFrom (forceAll chz) (force idx) (force s)
 
 let startsWith search s = str.startsWith (force search) (force s)
 
@@ -36,8 +37,8 @@ let remove start n s = str.remove (force start) (force n) (force s)
 
 let substr start n s = str.substr (force start) (force n) (force s)
 
-let split seps s = str.split (force seps) (force s)
+let split seps s = str.split (forceAll seps) (force s)
 
 let insert idx ins s = str.insert (force idx) (force ins) (force s)
 
-let fromSeq seq = str.fromSeq (force seq)
+let fromSeq seq = str.fromSeq (forceAll seq)

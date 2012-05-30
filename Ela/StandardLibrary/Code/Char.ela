@@ -2,7 +2,7 @@
     Ela Char module
     Created in 2012 by Basil Voronkov
 */
-open qualified "$Char"@ch
+open qualified "$Char"#elalib@ch
 
 let lower c = ch.lower (force c)
 

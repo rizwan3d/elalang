@@ -19,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Code", "Code", "{AB91D945-B
 		StandardLibrary\Code\Record.ela = StandardLibrary\Code\Record.ela
 		StandardLibrary\Code\String.ela = StandardLibrary\Code\String.ela
 		StandardLibrary\Code\Test.ela = StandardLibrary\Code\Test.ela
+		StandardLibrary\Code\Thunk.ela = StandardLibrary\Code\Thunk.ela
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{6440104F-093D-47F5-8F7C-3E281483F650}"
