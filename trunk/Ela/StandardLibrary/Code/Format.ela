@@ -2,7 +2,7 @@
     Ela Format module
     Created in 2012 by Basil Voronkov
 */
-open Con
+open Console
 open qualified "$Format"#elalib (private countArgs, private format)
 
 let private format' fun fmt xs n | n == 0 = fun (format fmt show showf xs)
