@@ -24,7 +24,6 @@ namespace Ela.Library.General
 			Add<Double,Double>("acos", Acos);
 			Add<Double,Double>("asin", Asin);
 			Add<Double,Double>("tan", Tan);
-			Add<Int64,Int64,Int64>("quot", Quot);
 			Add<Double,Double>("floor", Floor);
 			Add<Double,Double>("ceiling", Ceiling);
 			Add<Double,Double>("atan", Atan);
@@ -69,13 +68,6 @@ namespace Ela.Library.General
 		public double Tan(double val)
 		{
 			return Math.Tan(val);
-		}
-
-
-		public long Quot(long x, long y)
-		{
-			long u;
-			return Math.DivRem(x, y, out u);
 		}
 
 

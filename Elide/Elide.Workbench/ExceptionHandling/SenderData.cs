@@ -6,7 +6,7 @@ namespace Elide.Workbench.ExceptionHandling
     {
         public const string Recipient = "basil@voronkov.name";
 
-        public const string Login = "wsdmserv@gmail.com";
+        public const string Login = "serv.elalang@gmail.com";
 
         public const string Password = "ghjybryjdtybt";
     }

@@ -1,3 +1,4 @@
+0.10.0.4:Fix:Now it is possible to start a custom operator in Ela with a dot (.) symbol.
 0.10.0.3:Fix:Function names are better maintained in debug info, more information is now accessible through reflection.
 0.10.0.2:Fix:Locations are corrected in parser for let-bindings and simple patterns.
 0.10.0.1:Fix:A bug fixed when calling partially applied Ela functions from C#.

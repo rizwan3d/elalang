@@ -45,6 +45,16 @@ namespace Ela.Runtime
 		internal const int MOD = (Int32)ElaTypeCode.Module;
 		internal const int LAZ = (Int32)ElaTypeCode.Lazy;
 		internal const int VAR = (Int32)ElaTypeCode.Variant;
+
+        private static readonly ElaObject ____ = null;
+        private static readonly ElaObject OINT = ElaInteger.Instance;
+
+        internal ElaObject[][] affinity =
+        {       
+            //          ERR  INT  LNG  REA  DBL  BYT  CHR  STR  UNI  LST  RES  TUP  REC  FUN  OBJ  MOD  LAZ  VAR
+            new ElaObject[] { ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____ }, //ERR
+            new ElaObject[] { ____, OINT, OINT, OINT, OINT, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, OINT, ____ }, //INT
+        };
 		#endregion
 
 
@@ -865,6 +875,8 @@ namespace Ela.Runtime
                         }
 
                         evalStack.Replace(left.Ref.Add(left, right, ctx));
+
+                        //evalStack.Replace(affinity[left.TypeId][right.TypeId].Add(left, right, ctx));
 
                         if (ctx.Failed)
                         {

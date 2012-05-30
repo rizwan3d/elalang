@@ -6,10 +6,10 @@ namespace Elide.Workbench.ExceptionHandling
 {
     public sealed class DumpSender
     {
-        private const string FROM = "user@elalang.net";
-        private const string TITLE = "Elide Error Report";
+        private const string FROM = "serv.elalang@gmail.com";
+        private const string TITLE = "Elide Report";
         private const string DEFAULT_HOST = "smtp.gmail.com";
-        private const int DEFAULT_PORT = 25;
+        private const int DEFAULT_PORT = 587;
         
         public DumpSender()
         {
@@ -25,6 +25,8 @@ namespace Elide.Workbench.ExceptionHandling
             var eml = new MailMessage(From, To, Title, dump);
             var client = new SmtpClient(SmtpHost, Port);
             client.EnableSsl = EnableSsl;
+            client.DeliveryMethod = SmtpDeliveryMethod.Network;
+            client.UseDefaultCredentials = false;
             client.Credentials = Credentials;
           
             try

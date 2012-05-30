@@ -65,7 +65,8 @@ TOKENS
 	operatorTok6 = "<<" { op }.
 	operatorTok7 = ">>" { op }.
 	operatorTok8 = (("~"|"--"|"!"|"?") { op }
-	               | ":" [ op5 { op } ]).
+	               | ":" [ op5 { op } ])
+	               | "." op { op }.
 	operatorTok9 = "<|" { op }.
 	typeNameTok = "?" lcase { letter }.
 	

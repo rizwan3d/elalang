@@ -2,16 +2,16 @@
 using Ela.Library.General;
 //using Ela.Library.Collections;
 
+[assembly: ElaModule("Con", typeof(ConModule))]
 [assembly: ElaModule("$Core", typeof(CoreModule))]
 [assembly: ElaModule("$Format", typeof(FormatModule))]
-[assembly: ElaModule("Cell", typeof(CellModule))]
-[assembly: ElaModule("IO", typeof(IOModule))]
-[assembly: ElaModule("Char", typeof(CharModule))]
-[assembly: ElaModule("String", typeof(StringModule))]
-[assembly: ElaModule("Real", typeof(RealModule))]
-[assembly: ElaModule("DateTime", typeof(DateTimeModule))]
-[assembly: ElaModule("Con", typeof(ConModule))]
-[assembly: ElaModule("Record", typeof(RecordModule))]
+[assembly: ElaModule("$Cell", typeof(CellModule))]
+[assembly: ElaModule("$IO", typeof(IOModule))]
+[assembly: ElaModule("$Char", typeof(CharModule))]
+[assembly: ElaModule("$String", typeof(StringModule))]
+[assembly: ElaModule("$Real", typeof(RealModule))]
+[assembly: ElaModule("$DateTime", typeof(DateTimeModule))]
+[assembly: ElaModule("$Record", typeof(RecordModule))]
 
 [assembly: ElaModule("Experimental", typeof(Experimental))]
 //[assembly: ElaModule("Debug", typeof(DebugModule))]

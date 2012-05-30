@@ -1,3 +1,6 @@
+0.1.0.6:Change:Function 'quot' from Core module is rewritten in Ela.
+0.1.0.5:New:New functions '.+', '.-' and ':=' are added to Cell module.
+0.1.0.4:Change:Library is restructured - now .NET functions are not called directly but through Ela functions.
 0.1.0.3:Change:Format module is restructured and rewritten in Ela (instead of C#). Module interface didn't change.
 0.1.0.2:Fix:A bug fixed in Format.printf and Format.printfn - format string without arguments weren't printed.
 0.1.0.1:Change:Now readn function from Con module trims all nil characters.

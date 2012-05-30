@@ -1,0 +1,7 @@
+/* 
+    Ela Record module
+    Created in 2012 by Basil Voronkov
+*/
+open qualified "$Record"#elalib@r
+
+let hasField fld rec = r.hasField (force fld) (force rec)
