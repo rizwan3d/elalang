@@ -1,3 +1,4 @@
+0.1.1.0:Release:Release of 0.1.1.0.
 0.1.0.7:New:A new Thunk module is added.
 0.1.0.6:Change:Function 'quot' from Core module is rewritten in Ela.
 0.1.0.5:New:New functions '.+', '.-' and ':=' are added to Cell module.

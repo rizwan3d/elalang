@@ -381,7 +381,7 @@ namespace ElaConsole
                     if (exer.ReturnValue.TypeCode != ElaTypeCode.None && exer.ReturnValue.TypeCode != ElaTypeCode.Unit)
 						Console.WriteLine(exer.ReturnValue.ToString());
 				}
-				catch (ElaCodeException ex)
+				catch (ElaException ex)
 				{
 					helper.PrintError(ex.ToString());
 					return R_ERR;

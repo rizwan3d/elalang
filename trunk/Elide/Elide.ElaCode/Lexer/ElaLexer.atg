@@ -79,7 +79,7 @@ PRODUCTIONS
 	    (. Add(pos, t.pos - pos + t.val.Length, TextStyle.MultilineStyle2); .).
 
 	Thunk = 
-		"(&" (. Add(t.pos + 1, 1, TextStyle.Style10); .).
+		"(&" (. if (la.val != null && la.val != "" && la.val[0] != '&') Add(t.pos + 1, 1, TextStyle.Style10); .).
 						
 	Primary = 
 		(
