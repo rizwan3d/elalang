@@ -30,7 +30,6 @@
         {
             this.label = new System.Windows.Forms.Label();
             this.textBox = new System.Windows.Forms.TextBox();
-            this.globals = new System.Windows.Forms.CheckBox();
             this.cancel = new System.Windows.Forms.Button();
             this.accept = new System.Windows.Forms.Button();
             this.allFiles = new System.Windows.Forms.CheckBox();
@@ -54,22 +53,11 @@
             this.textBox.Size = new System.Drawing.Size(335, 22);
             this.textBox.TabIndex = 1;
             // 
-            // globals
-            // 
-            this.globals.AutoSize = true;
-            this.globals.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.globals.Location = new System.Drawing.Point(12, 53);
-            this.globals.Name = "globals";
-            this.globals.Size = new System.Drawing.Size(126, 17);
-            this.globals.TabIndex = 2;
-            this.globals.Text = "&Search only globals";
-            this.globals.UseVisualStyleBackColor = true;
-            // 
             // cancel
             // 
             this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cancel.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.cancel.Location = new System.Drawing.Point(272, 103);
+            this.cancel.Location = new System.Drawing.Point(272, 81);
             this.cancel.Name = "cancel";
             this.cancel.Size = new System.Drawing.Size(75, 23);
             this.cancel.TabIndex = 5;
@@ -80,7 +68,7 @@
             // 
             this.accept.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.accept.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.accept.Location = new System.Drawing.Point(191, 103);
+            this.accept.Location = new System.Drawing.Point(191, 81);
             this.accept.Name = "accept";
             this.accept.Size = new System.Drawing.Size(75, 23);
             this.accept.TabIndex = 4;
@@ -91,7 +79,7 @@
             // 
             this.allFiles.AutoSize = true;
             this.allFiles.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.allFiles.Location = new System.Drawing.Point(12, 76);
+            this.allFiles.Location = new System.Drawing.Point(12, 53);
             this.allFiles.Name = "allFiles";
             this.allFiles.Size = new System.Drawing.Size(129, 17);
             this.allFiles.TabIndex = 3;
@@ -104,11 +92,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancel;
-            this.ClientSize = new System.Drawing.Size(363, 137);
+            this.ClientSize = new System.Drawing.Size(363, 118);
             this.Controls.Add(this.allFiles);
             this.Controls.Add(this.cancel);
             this.Controls.Add(this.accept);
-            this.Controls.Add(this.globals);
             this.Controls.Add(this.textBox);
             this.Controls.Add(this.label);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -126,7 +113,6 @@
 
         private System.Windows.Forms.Label label;
         private System.Windows.Forms.TextBox textBox;
-        private System.Windows.Forms.CheckBox globals;
         private System.Windows.Forms.Button cancel;
         private System.Windows.Forms.Button accept;
         private System.Windows.Forms.CheckBox allFiles;

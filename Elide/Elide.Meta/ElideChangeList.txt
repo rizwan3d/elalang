@@ -1,4 +1,6 @@
-﻿0.1.1.0:Release:Release of Elide 0.1.1.0.
+﻿0.1.1.2:New:Now a symbol is pre-filled in the Find Symbol dialog based on the current selection.
+0.1.1.1:Change:Find Symbol feature is fully rewritten and now searches symbols more correctly.
+0.1.1.0:Release:Release of Elide 0.1.1.0.
 0.1.0.18:Fix:Autocomplete window could be shown inside unclosed strings.
 0.1.0.17:Fix:A bug fixed in highlighting thunks in Ela editor.
 0.1.0.16:Change:Console settings are moved from Environment category to Views category in Options dialog.

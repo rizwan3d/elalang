@@ -365,14 +365,23 @@ PRODUCTIONS
 			[
 				"@" 
 				(. 
-					var asPat = new ElaAsPattern(t) { Pattern = pat }; 
+					var asPat = new ElaAsPattern { Pattern = pat }; 
 					pat = asPat;				
 				.)
 				(
-					ident (. asPat.Name = t.val; .)
+					ident 
+					(. 
+					    asPat.Name = t.val; 
+					    asPat.SetLinePragma(t.line, t.col);
+					.)
 					| 
 					(
-						"(" Operators (. asPat.Name = t.val; .) ")"
+						"(" Operators 
+						(. 
+						    asPat.Name = t.val; 
+						    asPat.SetLinePragma(t.line, t.col); 
+						.)
+						")"
 					)
 				)
 			]		

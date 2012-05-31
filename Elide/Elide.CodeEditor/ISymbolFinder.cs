@@ -5,6 +5,6 @@ namespace Elide.CodeEditor
 {
     public interface ISymbolFinder
     {
-        IEnumerable<SymbolLocation> FindSymbols(string symbol, bool onlyGlobal, bool allFiles);
+        IEnumerable<SymbolLocation> FindSymbols(string symbol, bool allFiles);
     }
 }

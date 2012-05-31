@@ -16,9 +16,13 @@ namespace Elide.CodeWorkbench
 
         }
 
-        public void SearchSymbol(ISymbolFinder finder)
+        public void SearchSymbol(string symbol, ISymbolFinder finder)
         {
             var dlg = new FindSymbolDialog();
+
+            if (!String.IsNullOrWhiteSpace(symbol))
+                dlg.Symbol = symbol;
+
             var sbs = App.GetService<IStatusBarService>();
             sbs.ClearStatusString();
 
@@ -26,7 +30,7 @@ namespace Elide.CodeWorkbench
             {
                 var sw = new Stopwatch();
                 sw.Start();
-                var res = finder.FindSymbols(dlg.Symbol, dlg.OnlyGlobals, dlg.AllFiles).ToList();
+                var res = finder.FindSymbols(dlg.Symbol, dlg.AllFiles).ToList();
                 sw.Stop();
                 var s = (Single)sw.ElapsedMilliseconds / 1000;
                                 
@@ -36,7 +40,7 @@ namespace Elide.CodeWorkbench
                     {
                         var editor = App.Editor(r.Document.GetType());
                         var txt = ((ITextEditor)editor).GetContent(r.Document, r.Line).TrimStart(' ', '\t');
-                        return new ResultItem(txt, r.Document, r.Line, r.Column, txt.Length - System.Environment.NewLine.Length);
+                        return new ResultItem(txt, r.Document, r.Line, r.Column, dlg.Symbol.Length);
                     }));
                 App.OpenView("ResultGrid");
             }
