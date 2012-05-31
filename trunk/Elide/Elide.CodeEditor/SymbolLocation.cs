@@ -9,8 +9,8 @@ namespace Elide.CodeEditor
         public SymbolLocation(CodeDocument doc, int line, int column)
         {
             Document = doc;
-            Line = line;
-            Column = column;
+            Line = line - 1;
+            Column = column - 1;
         }
 
         public int Line { get; private set; }

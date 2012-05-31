@@ -5,6 +5,6 @@ namespace Elide.CodeEditor
 {
     public interface ISymbolSearchService : IService
     {
-        void SearchSymbol(ISymbolFinder finder);
+        void SearchSymbol(string symbol, ISymbolFinder finder);
     }
 }

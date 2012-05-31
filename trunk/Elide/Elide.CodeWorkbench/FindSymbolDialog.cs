@@ -21,16 +21,13 @@ namespace Elide.CodeWorkbench
         public string Symbol
         {
             get { return textBox.Text; }
-            set { textBox.Text = value; }
+            set 
+            { 
+                if (String.IsNullOrWhiteSpace(textBox.Text))
+                    textBox.Text = value; 
+            }
         }
-
-        [StateItem]
-        public bool OnlyGlobals
-        {
-            get { return globals.Checked; }
-            set { globals.Checked = value; }
-        }
-
+        
         [StateItem]
         public bool AllFiles
         {

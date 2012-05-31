@@ -550,16 +550,20 @@ internal sealed partial class Parser {
 		SinglePattern(out pat);
 		if (la.kind == 29) {
 			Get();
-			var asPat = new ElaAsPattern(t) { Pattern = pat }; 
+			var asPat = new ElaAsPattern { Pattern = pat }; 
 			pat = asPat;				
 			
 			if (la.kind == 1) {
 				Get();
 				asPat.Name = t.val; 
+				asPat.SetLinePragma(t.line, t.col);
+				
 			} else if (la.kind == 48) {
 				Get();
 				Operators();
 				asPat.Name = t.val; 
+				asPat.SetLinePragma(t.line, t.col); 
+				
 				Expect(49);
 			} else SynErr(73);
 		}

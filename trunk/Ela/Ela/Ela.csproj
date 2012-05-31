@@ -182,7 +182,6 @@
     <Compile Include="ElaTranslationException.cs" />
     <Compile Include="Linking\ArgumentModule.cs" />
     <Compile Include="Linking\ModuleEventArgs.cs" />
-    <Compile Include="Loc.cs" />
     <Compile Include="Runtime\CallFlag.cs" />
     <Compile Include="Runtime\ElaRuntimeException.cs" />
     <Compile Include="Runtime\EqHelper.cs" />
@@ -191,7 +190,6 @@
     <Compile Include="Linking\ElaLinkerException.cs" />
     <Compile Include="Linking\ElaLinkerWarning.cs" />
     <Compile Include="Linking\Strings.cs" />
-    <Compile Include="Lookup.cs" />
     <Compile Include="Parsing\ElaParserException.cs" />
     <Compile Include="Parsing\ElaParserError.cs" />
     <Compile Include="Parsing\IElaParser.cs" />

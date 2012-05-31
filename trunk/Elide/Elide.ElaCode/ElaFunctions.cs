@@ -104,7 +104,8 @@ namespace Elide.ElaCode
 
         public void FindSymbol()
         {
-            app.GetService<ISymbolSearchService>().SearchSymbol(new SymbolFinder(app));
+            var w = sci.GetWordAt(sci.CurrentPosition);
+            app.GetService<ISymbolSearchService>().SearchSymbol(w, new SymbolFinder(app));
         }
 
         public void Autocomplete()
