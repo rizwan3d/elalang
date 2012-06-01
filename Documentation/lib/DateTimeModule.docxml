@@ -1,10 +1,18 @@
 <?xml-stylesheet type="text/xsl" href="Template.xsl"?>
-<article title="Lib.DateTime">
+<article title="Lib.DateTime" type="module">
 
 <section level="1" title="Introduction" />
 DateTime module contains functions that operate with dates and time.
 
 <section level="1" title="Functions" />
+
+<section level="2" title="maxDateTime"/>
+<code>maxDateTime</code>
+Returns the maximum possible value for date and time.
+
+<section level="2" title="minDateTime"/>
+<code>minDateTime</code>
+Returns the minimum possible value for date and time.
 
 <section level="2" title="now"/>
 <code>now ()</code>
@@ -130,7 +138,5 @@ Calculates a difference in ticks between dates <key>x</key> and <key>y</key>.
 
 <section level="1" title="Referencing module" />
 DateTime module is a part of Ela standard library. It can be referenced from code using <key>open</key> directive like so:
-<code>open DateTime#elalib</code>
-or simply
 <code>open DateTime</code>
 </article>

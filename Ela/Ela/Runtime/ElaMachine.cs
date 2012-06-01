@@ -876,8 +876,6 @@ namespace Ela.Runtime
 
                         evalStack.Replace(left.Ref.Add(left, right, ctx));
 
-                        //evalStack.Replace(affinity[left.TypeId][right.TypeId].Add(left, right, ctx));
-
                         if (ctx.Failed)
                         {
                             evalStack.Replace(right);
@@ -1123,30 +1121,6 @@ namespace Ela.Runtime
                             ExecuteThrow(thread, evalStack);
                             goto SWITCH_MEM;
                         }
-                        break;
-                    case Op.Max:
-                        right = evalStack.Peek();
-                        evalStack.Replace(right.Ref.GetMax(right, ctx));
-
-                        if (ctx.Failed)
-                        {
-                            evalStack.Replace(right);
-                            ExecuteThrow(thread, evalStack);
-                            goto SWITCH_MEM;
-                        }
-
-                        break;
-                    case Op.Min:
-                        right = evalStack.Peek();
-                        evalStack.Replace(right.Ref.GetMin(right, ctx));
-
-                        if (ctx.Failed)
-                        {
-                            evalStack.Replace(right);
-                            ExecuteThrow(thread, evalStack);
-                            goto SWITCH_MEM;
-                        }
-
                         break;
                     case Op.Elem:
                         right = evalStack.Peek();

@@ -1,1 +1,7 @@
+0.1.0.6:Change:DateTime module documentation is updated (new constants added).
+0.1.0.5:Change:Number module documentation is updated (new constants added).
+0.1.0.4:Change:Prelude module documentation is updated according to the module changes (max and min removed).
+0.1.0.3:New:A new document about Thunk module is added.
+0.1.0.2:Change:Console module documentation is updated.
+0.1.0.1:Change:Cell module documentation is updated.
 0.1.0.0:Release:Initial release of Ela Platform documentation.

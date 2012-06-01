@@ -241,12 +241,6 @@ namespace Ela.Compilation
                 case ElaBuiltinKind.Pred:
                     cw.Emit(Op.Pred);
                     break;
-                case ElaBuiltinKind.Max:
-                    cw.Emit(Op.Max);
-                    break;
-                case ElaBuiltinKind.Min:
-                    cw.Emit(Op.Min);
-                    break;
                 case ElaBuiltinKind.Type:
                     cw.Emit(Op.Type);
                     break;

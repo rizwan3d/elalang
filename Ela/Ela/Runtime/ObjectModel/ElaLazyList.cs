@@ -58,6 +58,17 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
+        public override ElaValue Tail()
+        {
+            if (thunk != null)
+            {
+                InternalNext = thunk.Force().Ref as ElaList;
+                thunk = null;
+            }
+
+            return new ElaValue(InternalNext);
+        }
+
 		protected internal override ElaValue Tail(ExecutionContext ctx)
 		{
 			if (thunk != null)
@@ -80,29 +91,6 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override ElaValue Nil(ExecutionContext ctx)
 		{
 			return new ElaValue(ElaLazyList.Empty);
-		}
-
-
-		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			if (left.Ref != this)
-			{
-				var xs = (ElaList)left.Ref;
-				var newLst = this;
-				
-				foreach (var e in xs.Reverse())
-					newLst = new ElaLazyList(newLst, e);
-
-				return new ElaValue(newLst);
-			}
-			else if (right.Ref != this)
-			{
-				var xs = ElaList.FromEnumerable(this).Concatenate((ElaList)right.Ref);
-				return new ElaValue(xs);
-			}
-			
-			ctx.InvalidLeftOperand(left, right, "concat");
-			return Default();
 		}
 
 

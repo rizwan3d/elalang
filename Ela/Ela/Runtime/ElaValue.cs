@@ -452,18 +452,6 @@ namespace Ela.Runtime
         }
 
 
-        public ElaValue GetMax(ExecutionContext ctx)
-        {
-			return Ref.GetMax(this, ctx);
-        }
-
-
-        public ElaValue GetMin(ExecutionContext ctx)
-        {
-			return Ref.GetMin(this, ctx);
-        }
-
-
         public ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             return Ref.Concatenate(left, right, ctx);

@@ -9,6 +9,7 @@ let forceAll x | x is ?lazy = forceAll' (force x)
                                  | else = force x
  et forceList (x::xs) = forceAll x :: forceList xs
     forceList [] = []
+ et forceRecord r = forceTuple r
  et forceTuple tup = force' 0
                       where len = length tup 
                          et force' i = if i == len - 1 then 

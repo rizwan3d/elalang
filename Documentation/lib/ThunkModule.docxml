@@ -1,0 +1,36 @@
+<?xml-stylesheet type="text/xsl" href="Template.xsl"?>
+<article title="Lib.Thunk" type="module">
+
+<section level="1" title="Introduction" />
+Thunk module contains useful functions that operate with thunks.
+
+<section level="1" title="Functions" />
+
+<section level="2" title="forceAll"/>
+<code>
+forceAll t
+</code>
+Recursively forces a given value. For example, if a given value is a list of thunks all thunks in a list will be forced.
+
+<section level="2" title="forceRecord"/>
+<code>
+forceRecord t
+</code>
+Recursively forces a given record.
+
+<section level="2" title="forceTuple"/>
+<code>
+forceTuple t
+</code>
+Recursively forces a given tuple.
+
+<section level="2" title="forceList"/>
+<code>
+forceList t
+</code>
+Recursively forces a given list.
+
+<section level="1" title="Referencing module" />
+Thunk module is a part of Ela standard library. It can be referenced from code using <key>open</key> directive like so:
+<code>open Thunk</code>
+</article>

@@ -55,13 +55,13 @@ namespace Ela.Runtime.ObjectModel
 		#region Operations
 		protected internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return Equal(left, right, "equal", ctx);
+            return Equal(left, right.Force(ctx), "equal", ctx);
 		}
 
 
 		protected internal override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return !Equal(left, right, "notequal", ctx);
+			return !Equal(left, right.Force(ctx), "notequal", ctx);
 		}
 
 
@@ -201,8 +201,12 @@ namespace Ela.Runtime.ObjectModel
 			if (left.TypeId == ElaMachine.LST && right.TypeId == ElaMachine.LST)
 			{
 				var list = (ElaList)right.Ref;
+                var revList = ((ElaList)left.Ref).Reverse(ctx);
 
-				foreach (var e in ((ElaList)left.Ref).Reverse())
+                if (ctx.Failed)
+                    return Default();
+
+				foreach (var e in revList)
 					list = new ElaList(list, e);
 
 				return new ElaValue(list);				
@@ -287,17 +291,37 @@ namespace Ela.Runtime.ObjectModel
 		public virtual ElaList Reverse()
 		{
             var ctx = new ExecutionContext();
+            return Reverse(ctx);
+		}
+        
+        public virtual ElaList Reverse(ExecutionContext ctx)
+		{
             var newLst = ElaList.Empty;
 			var lst = this;
 
             while (!lst.IsNil(ctx))
             {
 				newLst = new ElaList(newLst, lst.Value);
-				lst = lst.Next;
+				lst = lst.Tail(ctx).Ref as ElaList;
+
+                if (ctx.Failed)
+                    return null;
 			}
 
 			return newLst;
 		}
+
+
+        public virtual ElaValue Tail()
+        {
+            return new ElaValue(InternalNext);
+        }
+
+
+        public virtual ElaValue Head()
+        {
+            return InternalValue;
+        }
 
 
 		public IEnumerator<ElaValue> GetEnumerator()
@@ -307,8 +331,12 @@ namespace Ela.Runtime.ObjectModel
 
 			while (!xs.IsNil(ctx))
 			{
-				yield return xs.Head(ctx);
-				xs = xs.Tail(ctx).Ref as ElaList;
+				yield return xs.Head();
+
+                
+
+                var tl = xs.Tail().Ref;
+				xs = tl as ElaList;
 
 				if (xs == null)
 					throw InvalidDefinition();

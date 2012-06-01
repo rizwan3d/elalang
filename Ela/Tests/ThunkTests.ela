@@ -233,3 +233,13 @@ let thunkFun {eq} =
         eq ((& +) 2 2) 4
         $ eq ((& add) 2 2) 4
         where add x y = x + y
+
+let thunkBoolEq {eqt} = 
+        eqt (true == (& true))
+        $ eqt ((& true) == true)
+
+let thunkListEq {eqt} = 
+        eqt ([1,2,3] == (& [1,2,3]))
+        $ eqt ((& [1,2,3]) == [1,2,3])
+        $ eqt ([& x \\ x <- [1..3]] == [1,2,3])
+        $ eqt ([1,2,3] == [& x \\ x <- [1..3]])

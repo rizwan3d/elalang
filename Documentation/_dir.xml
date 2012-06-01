@@ -5,12 +5,13 @@
     <doc name="Imperative" file="lib\ImperativeModule.docxml" />
     <doc name="Cell" file="lib\CellModule.docxml" />
     <doc name="Char" file="lib\CharModule.docxml" />
-    <doc name="Con" file="lib\ConModule.docxml" />
+    <doc name="Console" file="lib\ConsoleModule.docxml" />
     <doc name="IO" file="lib\IOModule.docxml" />
-    <doc name="Real" file="lib\RealModule.docxml" />
+    <doc name="Number" file="lib\NumberModule.docxml" />
     <doc name="String" file="lib\StringModule.docxml" />
     <doc name="Format" file="lib\FormatModule.docxml" />
     <doc name="DateTime" file="lib\DateTimeModule.docxml" />
+    <doc name="Thunk" file="lib\ThunkModule.docxml" />
   </folder>
   <folder name="Language Reference">
     <doc name="Bindings" file="Bindings.docxml"/>

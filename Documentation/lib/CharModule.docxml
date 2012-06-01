@@ -1,5 +1,5 @@
 <?xml-stylesheet type="text/xsl" href="Template.xsl"?>
-<article title="Lib.Char">
+<article title="Lib.Char" type="module">
 
 <section level="1" title="Introduction" />
 Char module contains functions that operate with chars.
@@ -104,7 +104,5 @@ Returns <key>true</key> if a given char is a white space character, otherwise re
 
 <section level="1" title="Referencing module" />
 Char module is a part of Ela standard library. It can be referenced from code using <key>open</key> directive like so:
-<code>open Char#elalib</code>
-or simply
 <code>open Char</code>
 </article>

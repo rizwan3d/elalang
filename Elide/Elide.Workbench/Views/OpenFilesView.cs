@@ -220,6 +220,13 @@ namespace Elide.Workbench.Views
 
                 if (node != null)
                     return node;
+                else
+                {
+                    node = flagFolder.Nodes.OfType<TreeNode>().FirstOrDefault(n => n.Tag == doc);
+
+                    if (node != null)
+                        return node;
+                }
             }
 
             return null;

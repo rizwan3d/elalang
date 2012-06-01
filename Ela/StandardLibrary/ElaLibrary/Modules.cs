@@ -9,7 +9,7 @@ using Ela.Library.General;
 [assembly: ElaModule("$IO", typeof(IOModule))]
 [assembly: ElaModule("$Char", typeof(CharModule))]
 [assembly: ElaModule("$String", typeof(StringModule))]
-[assembly: ElaModule("$Real", typeof(RealModule))]
+[assembly: ElaModule("$Number", typeof(NumberModule))]
 [assembly: ElaModule("$DateTime", typeof(DateTimeModule))]
 [assembly: ElaModule("$Record", typeof(RecordModule))]
 

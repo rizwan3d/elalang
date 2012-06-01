@@ -121,18 +121,6 @@ namespace Ela.Library.General
         }
 
 
-        protected override ElaValue GetMax(ElaValue @this, ExecutionContext ctx)
-        {
-            return new ElaValue(new ElaDateTime(DateTime.MaxValue));
-        }
-
-
-		protected override ElaValue GetMin(ElaValue @this, ExecutionContext ctx)
-        {
-            return new ElaValue(new ElaDateTime(DateTime.MinValue));
-        }
-
-
         private bool Compare(ElaValue left, ElaValue right, Comparison comp, ExecutionContext ctx)
         {
             var ld = left.As<ElaDateTime>();

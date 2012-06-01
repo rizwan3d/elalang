@@ -1,5 +1,5 @@
 <?xml-stylesheet type="text/xsl" href="Template.xsl"?>
-<article title="Lib.Core">
+<article title="Lib.Core" type="module">
 
 <section level="1" title="Introduction" />
 Core module contains multiple important functions including math functions, functions to work with lists, etc. 
