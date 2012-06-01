@@ -2,7 +2,7 @@
     Ela DateTime module
     Created in 2012 by Basil Voronkov
 */
-open qualified "$DateTime"#elalib@dt
+open qualified "$DateTime"#elalib@dt (maxDateTime, minDateTime)
 
 let now () = dt.now ()
 

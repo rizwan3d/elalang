@@ -120,10 +120,6 @@ namespace Ela.Compilation
 
         Pred,
 
-        Max,
-
-        Min,
-
         Show,
 
         Untag,

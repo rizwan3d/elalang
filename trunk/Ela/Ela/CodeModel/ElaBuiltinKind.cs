@@ -20,10 +20,6 @@ namespace Ela.CodeModel
 
         Pred,
 
-        Max,
-
-        Min,
-
         Nil,
 
         Head,

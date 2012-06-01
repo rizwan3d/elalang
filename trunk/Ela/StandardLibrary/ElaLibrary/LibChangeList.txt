@@ -1,3 +1,7 @@
+0.1.1.6:New:Constants maxDateTime, minDateTime added to DateTime module.
+0.1.1.5:New:Constants maxInt, minInt, maxLong, minLong, maxSingle, minSingle, maxDouble, minDouble added to Number module.
+0.1.1.4:Change:Module Real renamed to Number.
+0.1.1.3:Change:Functions 'max' and 'min' removed from Prelude.
 0.1.1.2:Change:Now functions Console.writen and Console.write explicitly call show on a provided argument.
 0.1.1.1:Change:Module Con renamed to Console because of technical reasons.
 0.1.1.0:Release:Release of 0.1.1.0.

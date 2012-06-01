@@ -64,8 +64,6 @@ namespace Ela.Compilation
 			1, //Isnil
 			1, //Succ
 			1, //Pred
-			1, //Max
-			1, //Min
 			1, //Show
 			1, //Untag
 			1, //Skiphtag

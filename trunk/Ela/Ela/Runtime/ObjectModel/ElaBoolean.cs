@@ -32,13 +32,21 @@ namespace Ela.Runtime.ObjectModel
 		#region Operations
 		protected internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return left.TypeId == right.TypeId && left.I4 == right.I4;
+            if (left.TypeId == ElaMachine.BYT)
+                return right.TypeId == ElaMachine.BYT ? left.I4 == right.I4 :
+                    right.Ref.Equal(left, right, ctx);
+
+            return false;
 		}
 
 
 		protected internal override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            return left.TypeId != right.TypeId || left.I4 != right.I4;
+            if (left.TypeId == ElaMachine.BYT)
+                return right.TypeId == ElaMachine.BYT ? left.I4 != right.I4 :
+                    right.Ref.NotEqual(left, right, ctx);
+
+            return true;
 		}
 
 

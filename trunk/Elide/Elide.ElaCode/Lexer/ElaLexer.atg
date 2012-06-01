@@ -89,7 +89,7 @@ PRODUCTIONS
 			| realTok (. Add(t.pos, t.val.Length, TextStyle.Style9); .)
 			| stringTok (. Add(t.pos, t.val.Length, TextStyle.Style7); .)
 			| charTok (. Add(t.pos, t.val.Length, TextStyle.Style8); .)
-			| (operatorTok|"*"|"/"|"*/"|"/*") (. Add(t.pos, t.val.Length, TextStyle.Style4); .)
+			| (operatorTok|"*"|"/"|"*/") (. Add(t.pos, t.val.Length, TextStyle.Style4); .)
 			| "true" (. Add(t.pos, t.val.Length, TextStyle.Style5); .)
 			| "false" (. Add(t.pos, t.val.Length, TextStyle.Style5); .)
 			| parenTok

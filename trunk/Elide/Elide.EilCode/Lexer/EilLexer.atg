@@ -20,13 +20,15 @@ TOKENS
     ident = letter { letter | digit | "'" }
 			| "_" ("'"|letter) { letter | digit | "'" }
 			| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ]
-			| "$" digit.
+			| "$" digit
+			| "#"
+			| parens.
 	
 	intTok = ["-"]( digit { digit } | digit { digit } CONTEXT ("." notDigit) | 
 			( "0x" | "0X" ) hexDigit { hexDigit } ) [ "L" | "l" ].
 			
-    address = "#" ( digit { digit } | digit { digit } CONTEXT ("." notDigit) | 
-			( "0x" | "0X" ) hexDigit { hexDigit } ) [ "L" | "l" ].
+    address = "#" ( digit { digit } | digit { digit } CONTEXT ("." notDigit) 
+			| ( "0x" | "0X" ) hexDigit { hexDigit } ) [ "L" | "l" ].
 						
 	stringTok = "\"" { stringChar
 					| "\\\"" | "\\\\" | "\\0" | "\\b" | "\\n" | "\\r" | "\\t" | "\\'"
@@ -35,8 +37,6 @@ TOKENS
 				"\"".				
 				
 	operatorTok = op { op }.
-	
-	parenTok = parens { parens }.
 	
 	NL = newLine.
 	

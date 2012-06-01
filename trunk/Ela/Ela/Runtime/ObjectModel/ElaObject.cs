@@ -234,20 +234,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal virtual ElaValue GetMax(ElaValue @this, ExecutionContext ctx)
-		{
-			ctx.NoOperator(@this, "max");
-			return Default();
-		}
-
-
-		protected internal virtual ElaValue GetMin(ElaValue @this, ExecutionContext ctx)
-		{
-			ctx.NoOperator(@this, "min");
-			return Default();
-		}
-
-
 		protected internal virtual ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
             var str1 = left.Force(ctx).Show(ShowInfo.Default, ctx);

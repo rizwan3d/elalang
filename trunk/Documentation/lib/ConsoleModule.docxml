@@ -1,8 +1,8 @@
 <?xml-stylesheet type="text/xsl" href="Template.xsl"?>
-<article title="Lib.Con">
+<article title="Lib.Console" type="module">
 
 <section level="1" title="Introduction" />
-Con module contains standard input and output functions.
+Console module contains standard input and output functions.
 
 <section level="1" title="Functions" />
 
@@ -28,8 +28,6 @@ Reads a line from standard input:
 <code>let res = readn ()</code>
 
 <section level="1" title="Referencing module" />
-Con module is a part of Ela standard library. It can be referenced from code using <key>open</key> directive like so:
-<code>open Con#elalib</code>
-or simply
-<code>open Con</code>
+Console module is a part of Ela standard library. It can be referenced from code using <key>open</key> directive like so:
+<code>open Console</code>
 </article>

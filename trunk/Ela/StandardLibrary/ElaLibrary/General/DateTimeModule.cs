@@ -1,6 +1,7 @@
 ﻿using System;
 using Ela.Linking;
 using Ela.Runtime.ObjectModel;
+using Ela.Runtime;
 
 namespace Ela.Library.General
 {
@@ -19,6 +20,8 @@ namespace Ela.Library.General
 		{
 			Add<ElaDateTime>("now", Now);
 			Add<ElaDateTime>("today", Today);
+            Add("maxDateTime", new ElaValue(new ElaDateTime(DateTime.MaxValue)));
+            Add("minDateTime", new ElaValue(new ElaDateTime(DateTime.MinValue)));
 			Add<ElaDateTime,ElaDateTime,ElaDateTime>("add", Add);
 			Add<Int64,ElaDateTime,ElaDateTime>("addTicks", AddTicks);
 			Add<Double,ElaDateTime,ElaDateTime>("addMilliseconds", AddMilliseconds);

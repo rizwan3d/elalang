@@ -1,5 +1,5 @@
 <?xml-stylesheet type="text/xsl" href="Template.xsl"?>
-<article title="Lib.Imperative">
+<article title="Lib.Imperative" type="module">
 
 <section level="1" title="Introduction" />
 Imperative module contains functions that can be used to imitate imperative control structures.

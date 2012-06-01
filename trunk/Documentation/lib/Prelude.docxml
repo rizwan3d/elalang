@@ -1,5 +1,5 @@
 <?xml-stylesheet type="text/xsl" href="Template.xsl"?>
-<article title="Lib.Prelude">
+<article title="Lib.Prelude" type="module">
 
 <section level="1" title="Introduction" />
 Prelude module is an initialization script that contains definitions of basic functions and operators. 
@@ -48,18 +48,6 @@ Returns a specified number raised to a specified power. This function works only
 --x
 </code>
 Negates a given value. This function works only with integer and floating point numbers.
-
-<section level="2" title="max"/>
-<code>
-max x
-</code>
-Returns a maximum value for a given argument.
-
-<section level="2" title="min"/>
-<code>
-min x
-</code>
-Returns a minimum value for a given argument.
 
 <section level="1" title="Bitwise functions" />
 

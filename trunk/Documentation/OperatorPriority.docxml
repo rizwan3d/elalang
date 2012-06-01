@@ -141,6 +141,11 @@
       <td>? {op}</td> 
       <tdn>9</tdn>
       <td>Left</td>
+    </tr>    
+    <tr>
+      <td>. {op}</td> 
+      <tdn>9</tdn>
+      <td>Left</td>
     </tr>
     
     

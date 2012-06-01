@@ -1,3 +1,8 @@
+0.10.1.6:Fix:Concatenation of a lazy list and a strict list could cause stack overflow in a case of recursive thunks.
+0.10.1.5:Fix:A bug fixed in applying 'show' to a result of a lazy and strict list concatenation.
+0.10.1.4:Fix:Comparison of lists and thunks didn't work correctly when thunk was a right operand.
+0.10.1.3:Fix:A bug fixed in comparison of booleans with thunks.
+0.10.1.2:Change:Op codes 'max' and 'min' are decomissioned.
 0.10.1.1:Fix:Location for 'as' pattern is corrected in parser.
 0.10.1.0:Release:Release of 0.10.1.0.
 0.10.0.5:Fix:A VM crush fixed - when running an in-memory module (like in interactive session), in a case of an unhandled Ela exception.

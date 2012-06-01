@@ -4,9 +4,9 @@ using Ela.Runtime;
 
 namespace Ela.Library.General
 {
-    public sealed class RealModule : ForeignModule
+    public sealed class NumberModule : ForeignModule
     {
-        public RealModule()
+        public NumberModule()
         {
 
         }
@@ -17,6 +17,14 @@ namespace Ela.Library.General
             Add<ElaValue,Boolean>("nan", IsNan);
             Add<ElaValue,Boolean>("posInf", IsPositiveInfinity);
             Add<ElaValue,Boolean>("negInf", IsNegativeInfinity);
+            Add("maxInt", new ElaValue(Int32.MaxValue));
+            Add("minInt", new ElaValue(Int32.MinValue));
+            Add("maxLong", new ElaValue(Int64.MaxValue));
+            Add("minLong", new ElaValue(Int64.MinValue));
+            Add("maxSingle", new ElaValue(Single.MaxValue));
+            Add("minSingle", new ElaValue(Single.MinValue));
+            Add("maxDouble", new ElaValue(Double.MaxValue));
+            Add("minDouble", new ElaValue(Double.MinValue));
         }
         
         public bool IsInfinity(ElaValue val)

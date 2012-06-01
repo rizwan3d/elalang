@@ -150,18 +150,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue GetMax(ElaValue @this, ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.GetMax(Value, ctx);
-		}
-
-
-		protected internal override ElaValue GetMin(ElaValue @this, ExecutionContext ctx)
-		{
-			return Force(ctx).Ref.GetMin(Value, ctx);
-		}
-
-
         protected internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
         {
             return Force(ctx).Ref.Successor(Value, ctx);

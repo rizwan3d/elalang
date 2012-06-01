@@ -1,6 +1,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
   <xsl:output method="html" indent="yes" omit-xml-declaration="yes"/>
 	<xsl:template match="article">
+    <xsl:variable name="type" select="@type"/>
 		<html>
 			<head>
 				<title><xsl:value-of select="@title"/></title>
@@ -19,30 +20,21 @@
 				<div class="pageHeader"><xsl:value-of select="@title"/></div>
 
         <div style="padding-left:10px;padding-right:10px;padding-bottom:10px">
-        <!--table cellpadding="0" cellspacing="0" style="margin:0px;width:200px">
-						<tr>
-							<td style="padding-left:3px;cursor:pointer" onclick="toggleExpand('{$arr}', '{$id}')">
-								<xsl:call-template name="Arrow">
-									<xsl:with-param name="id" select="$arr"/>
-								</xsl:call-template>
-							</td>
-							<td class="tocTableTitle" style="cursor:pointer" onclick="toggleExpand('{$arr}', '{$id}')">Table of Contents</td>
-						</tr>
-					</table>
-					<table id="{$id}" cellpadding="0" cellspacing="0" style="margin:0px;border:dotted 1px darkgray;background-color:#F9F9F9;display:none">						
-						<tr>
-							<td class="tocTable">
-								<xsl:for-each select="//section">
-									<div style="padding-left:{(number(@level)-1)*15}px">
-										<a href="#{@title}">
-											<xsl:if test="@level='1'"><xsl:attribute name="style">font-weight:bold</xsl:attribute></xsl:if>
-											<xsl:value-of select="@title"/>
-										</a>
-									</div>
-								</xsl:for-each>
-							</td>					
-						</tr>
-					</table-->
+          <xsl:if test="$type='module'">
+            <h1>Members</h1>
+            <div>
+              <xsl:for-each select="//section[@level='2']">
+                <xsl:if test="position() &gt; 1">
+                  <span style="padding-left:3px;padding-right:3px;color:gray">| </span>
+                </xsl:if>
+
+                <a href="#{@title}">
+                  <!--xsl:attribute name="style">font-weight:bold</xsl:attribute-->
+                  <xsl:value-of select="@title"/>
+                </a>
+              </xsl:for-each>
+            </div>
+          </xsl:if>
           <xsl:apply-templates />
         </div>
         

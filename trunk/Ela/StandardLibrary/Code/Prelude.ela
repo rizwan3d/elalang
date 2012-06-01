@@ -12,10 +12,6 @@ let (%)  = __internal remainder
 let (**) = __internal power
 let (--) = __internal negate
 
-/* Bounds */
-let min = __internal min
-let max = __internal max
-
 /* Bitwise operators */
 let (&&&) = __internal bitwiseand
 let (|||) = __internal bitwiseor

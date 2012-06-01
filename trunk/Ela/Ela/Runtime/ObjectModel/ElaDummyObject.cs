@@ -138,18 +138,6 @@ namespace Ela.Runtime.ObjectModel
 		}
 
 
-		protected internal override ElaValue GetMax(ElaValue @this, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
-		protected internal override ElaValue GetMin(ElaValue @this, ExecutionContext ctx)
-		{
-			return Default();
-		}
-
-
 		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return Default();
