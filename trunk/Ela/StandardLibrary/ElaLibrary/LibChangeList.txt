@@ -1,3 +1,4 @@
+0.1.2.0:Release:Release of 0.1.2.0.
 0.1.1.6:New:Constants maxDateTime, minDateTime added to DateTime module.
 0.1.1.5:New:Constants maxInt, minInt, maxLong, minLong, maxSingle, minSingle, maxDouble, minDouble added to Number module.
 0.1.1.4:Change:Module Real renamed to Number.

@@ -62,7 +62,7 @@ namespace Ela.Runtime
 		{
 			--size;
 
-			if (array[size].TypeId > 5)
+			if (array[size].Ref.TypeId > 5)
 				array[size].Ref = null;
 		}
 
@@ -77,7 +77,7 @@ namespace Ela.Runtime
 		{
 			--size;
 
-			if (array[size].TypeId > 5)
+			if (array[size].Ref.TypeId > 5)
 			{
 				var ret = array[size];
 				array[size].Ref = null;
@@ -123,10 +123,9 @@ namespace Ela.Runtime
 			array[size - 1] = new ElaValue(val);
 		}
 
-
-		internal void Replace(bool val)
+        internal void Replace(bool val)
 		{
-			array[size - 1] = new ElaValue(val);
+            array[size - 1] = new ElaValue(val);
 		}
 		#endregion
 
