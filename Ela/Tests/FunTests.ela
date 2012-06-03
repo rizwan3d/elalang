@@ -190,3 +190,8 @@ let operator1 {eq} =
       eq (rec ? "foo") "foo"
       where  x ? y = x:y
          et rec = { foo = "foo" }
+
+let flipThunk {eq} = 
+      eq (f 2 10) 8
+      where sub x y = x-y
+         et f = flip (& sub)
