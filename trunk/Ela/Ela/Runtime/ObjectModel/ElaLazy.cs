@@ -163,17 +163,17 @@ namespace Ela.Runtime.ObjectModel
 
 		protected internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.Ref is ElaLazyList)
-				return ((ElaLazyList)left.Ref).Concatenate(left, right, ctx);
-			else if (right.Ref is ElaLazyList)
-				return ((ElaLazyList)right.Ref).Concatenate(left, right, ctx);
-			else if (right.Ref == this && left.Ref is ElaList)
+			if (right.Ref == this && left.Ref is ElaList)
 			{
 				var xs = (ElaList)left.Ref;
 				var c = 0;
 				var newLst = default(ElaLazyList);
+                var rev = xs.Reverse(ctx);
 
-				foreach (var e in xs.Reverse())
+                if (ctx.Failed)
+                    return Default();
+                
+				foreach (var e in rev)
 				{
 					if (c == 0)
 						newLst = new ElaLazyList(this, e);

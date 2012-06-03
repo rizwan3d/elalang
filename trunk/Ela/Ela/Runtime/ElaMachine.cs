@@ -45,16 +45,6 @@ namespace Ela.Runtime
 		internal const int MOD = (Int32)ElaTypeCode.Module;
 		internal const int LAZ = (Int32)ElaTypeCode.Lazy;
 		internal const int VAR = (Int32)ElaTypeCode.Variant;
-
-        private static readonly ElaObject ____ = null;
-        private static readonly ElaObject OINT = ElaInteger.Instance;
-
-        internal ElaObject[][] affinity =
-        {       
-            //          ERR  INT  LNG  REA  DBL  BYT  CHR  STR  UNI  LST  RES  TUP  REC  FUN  OBJ  MOD  LAZ  VAR
-            new ElaObject[] { ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____ }, //ERR
-            new ElaObject[] { ____, OINT, OINT, OINT, OINT, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, ____, OINT, ____ }, //INT
-        };
 		#endregion
 
 
@@ -330,8 +320,8 @@ namespace Ela.Runtime
 					#region Object Operations
                     case Op.Show:
                         {
-                            left = evalStack.Pop();
-                            right = evalStack.Peek();
+                            left = evalStack.Pop().Id(ctx);
+                            right = evalStack.Pop();
 
                             if (left.TypeId != STR)
                             {
@@ -1308,26 +1298,28 @@ namespace Ela.Runtime
 					#region Thunk Operations
 					case Op.Flip:
 						{
-							right = evalStack.Peek().Id(ctx);
+                            right = evalStack.Peek();
 
-							if (right.TypeId != FUN)
-							{
-								evalStack.PopVoid();
-								ExecuteFail(new ElaError(ElaRuntimeError.ExpectedFunction, TypeCodeFormat.GetShortForm(right.TypeCode)), thread, evalStack);
-								goto SWITCH_MEM;
-							}
+                            if (right.TypeId == LAZ)
+                                right = right.Ref.Force(right, ctx);
 
-							var fun = (ElaFunction)right.Ref;
-							fun = fun.Captures != null ? fun.CloneFast() : fun.Clone();
-							fun.Flip = !fun.Flip;
-							evalStack.Replace(new ElaValue(fun));
+                            if (ctx.Failed)
+                            {
+                                ExecuteThrow(thread, evalStack);
+                                goto SWITCH_MEM;
+                            }
 
-							if (ctx.Failed)
-							{
-								evalStack.Push(right);
-								ExecuteThrow(thread, evalStack);
-								goto SWITCH_MEM;
-							}
+                            if (right.TypeId != FUN)
+                            {
+                                evalStack.PopVoid();
+                                ExecuteFail(new ElaError(ElaRuntimeError.ExpectedFunction, TypeCodeFormat.GetShortForm(right.TypeCode)), thread, evalStack);
+                                goto SWITCH_MEM;
+                            }
+
+                            var fun = (ElaFunction)right.Ref;
+                            fun = fun.Captures != null ? fun.CloneFast() : fun.Clone();
+                            fun.Flip = !fun.Flip;
+                            evalStack.Replace(new ElaValue(fun));	
 						}
 						break;
                     case Op.Call:
