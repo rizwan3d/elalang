@@ -102,6 +102,16 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
+        protected internal override bool True(ElaValue @this, ExecutionContext ctx)
+        {
+            return Force(ctx).Ref.True(@this, ctx);
+        }
+
+        protected internal override bool False(ElaValue @this, ExecutionContext ctx)
+        {
+            return Force(ctx).Ref.False(@this, ctx);
+        }
+
         protected internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
 			return left.Force(ctx).Equal(left.Force(ctx), right.Force(ctx), ctx);

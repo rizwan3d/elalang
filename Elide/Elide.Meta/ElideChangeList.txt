@@ -1,4 +1,5 @@
-﻿0.1.1.6:Fix:Ela lexer correct (multiline comments highlighting).
+﻿0.1.2.0:Release:Release of Elide 0.1.2.0.
+0.1.1.6:Fix:Ela lexer corrected (multiline comments highlighting).
 0.1.1.5:Fix:EIL lexer corrected (highlighting didn't work correctly in a file with syntax errors).
 0.1.1.4:Fix:A flagged document in Open Files view could still be shown event if closed.
 0.1.1.3:New:Documentation generator now generates a member list for modules.

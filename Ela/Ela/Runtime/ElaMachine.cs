@@ -614,44 +614,36 @@ namespace Ela.Runtime
                         }
 						break;
 					case Op.Brtrue:
-						right = evalStack.Peek().Id(ctx);
+                        right = evalStack.Pop();
 
-						if (right.TypeId == BYT)
-						{
-							if (right.I4 == 1)
-								thread.Offset = opd;
-
-                            evalStack.PopVoid();
+                        if (right.Ref.True(right, ctx))
+                        {
+                            thread.Offset = opd;
                             break;
-						}
-
-                        if (ctx.Failed)
-						{
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
-
-                        InvalidType(right, thread, evalStack, "bool");
-                        break;
-					case Op.Brfalse:
-						right = evalStack.Peek().Id(ctx);
-
-						if (right.TypeId == BYT)
-						{
-							if (right.I4 != 1)
-								thread.Offset = opd;
-
-                            evalStack.PopVoid();
-							break;
-						}
+                        }
 
                         if (ctx.Failed)
                         {
+                            evalStack.Push(right);
                             ExecuteThrow(thread, evalStack);
                             goto SWITCH_MEM;
                         }
+                        break;
+					case Op.Brfalse:
+                        right = evalStack.Pop();
 
-                        InvalidType(right, thread, evalStack, "bool");
+                        if (right.Ref.False(right, ctx))
+                        {
+                            thread.Offset = opd;
+                            break;
+                        }
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Push(right);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
                         break;
 					case Op.Br:
 						thread.Offset = opd;
@@ -668,7 +660,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						if (left.Ref.Equal(left, right, ctx) && !ctx.Failed)
+						if (left.Ref.Equal(left, right, ctx))
 						{
 							thread.Offset = opd;
 							break;
@@ -694,7 +686,7 @@ namespace Ela.Runtime
 							break;
 						}
                         						
-                        if (left.Ref.NotEqual(left, right, ctx) && !ctx.Failed)
+                        if (left.Ref.NotEqual(left, right, ctx))
 						{
 							thread.Offset = opd;
 							break;
@@ -720,7 +712,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-                        if (left.Ref.Lesser(res, right, ctx) && !ctx.Failed)
+                        if (left.Ref.Lesser(res, right, ctx))
 						{
 							thread.Offset = opd;
 							break;
@@ -746,7 +738,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-						if (left.Ref.Greater(left, right, ctx) && !ctx.Failed)
+						if (left.Ref.Greater(left, right, ctx))
 						{
 							thread.Offset = opd;
 							break;
@@ -858,7 +850,7 @@ namespace Ela.Runtime
                         left = evalStack.Pop();
                         right = evalStack.Peek();
 
-                        if (left.TypeId == INT && right.TypeId == INT)
+                        if (left.Ref.TypeId == INT && right.Ref.TypeId == INT)
                         {
                             evalStack.Replace(left.I4 + right.I4);
                             break;
@@ -878,7 +870,7 @@ namespace Ela.Runtime
                         left = evalStack.Pop();
                         right = evalStack.Peek();
 
-                        if (left.TypeId == INT && right.TypeId == INT)
+                        if (left.Ref.TypeId == INT && right.Ref.TypeId == INT)
                         {
                             evalStack.Replace(left.I4 - right.I4);
                             break;
@@ -957,7 +949,7 @@ namespace Ela.Runtime
                         left = evalStack.Pop();
                         right = evalStack.Peek();
 
-                        if (left.TypeId == INT && right.TypeId == INT)
+                        if (left.Ref.TypeId == INT && right.Ref.TypeId == INT)
                         {
                             evalStack.Replace(left.I4 > right.I4);
                             break;

@@ -30,6 +30,16 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
+        protected internal override bool True(ElaValue @this, ExecutionContext ctx)
+        {
+            return @this.I4 == 1;
+        }
+
+        protected internal override bool False(ElaValue @this, ExecutionContext ctx)
+        {
+            return @this.I4 == 0;
+        }
+		
 		protected internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
             if (left.TypeId == ElaMachine.BYT)

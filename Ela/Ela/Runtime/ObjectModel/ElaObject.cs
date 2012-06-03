@@ -42,6 +42,18 @@ namespace Ela.Runtime.ObjectModel
 
 
         #region Methods
+        protected internal virtual bool True(ElaValue @this, ExecutionContext ctx)
+        {
+            ctx.NoOperator(@this, "true");
+            return false;
+        }
+
+        protected internal virtual bool False(ElaValue @this, ExecutionContext ctx)
+        {
+            ctx.NoOperator(@this, "false");
+            return false;
+        }
+
         protected internal virtual bool Is<T>(ElaValue value) where T : ElaObject
         {
             return this is T;
