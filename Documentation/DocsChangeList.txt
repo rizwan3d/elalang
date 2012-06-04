@@ -1,3 +1,4 @@
+0.1.1.1:New:Information about new fold* functions added to Core module article.
 0.1.1.0:Release:Release of 0.1.1.0.
 0.1.0.6:Change:DateTime module documentation is updated (new constants added).
 0.1.0.5:Change:Number module documentation is updated (new constants added).
