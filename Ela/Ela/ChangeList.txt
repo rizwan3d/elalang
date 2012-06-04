@@ -1,4 +1,6 @@
-0.10.3.1:New:Now it is possible to use '\' symbol in custom operators.
+0.11.2.3:Fix:A bug fixed in execution of Brtrue and Brfalse instructions on thunks.
+0.11.2.2:Fix:A critical bug fix - a 'show' function was broken with previous release.
+0.10.2.1:New:Now it is possible to use '\' symbol in custom operators.
 0.10.2.0:Release:Release of 0.10.2.0.
 0.10.1.9:Fix:Op code 'Show' didn't work correctly when a format string was a thunk.
 0.10.1.8:Fix:Flipping a function wrapped in a thunk caused VM to crush.
