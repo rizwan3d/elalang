@@ -5,7 +5,7 @@
   This article discusses operator priority and associativity in Ela.
   
   <section level="1" title="Operator Symbols" />
-  In Ela operator identifiers can include only the following symbols: <key>!%&amp;*+-.:/&lt;=&gt;?@^|~</key>. Some of the symbols are already used by language constructs.
+  In Ela operator identifiers can include only the following symbols: <key>!%&amp;*+-.:/\&lt;=&gt;?@^|~</key>. Some of the symbols are already used by language constructs.
   For example, it is not possible to define an operator <key>&amp;</key> as soon as the one is already used to denote lazy lists and lazy expressions. However it is possible
   to define an operator <key>&amp;.</key>, etc. 
   <p>
@@ -34,6 +34,14 @@
     <tr>
       <td>=</td>
       <td>Binding</td>
+    </tr>
+	 <tr>
+      <td>\</td>
+      <td>Lambda operator</td>	  
+    </tr>
+	<tr>
+      <td>\\</td>
+      <td>Comprehension operator</td>
     </tr>
   </table>
   

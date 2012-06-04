@@ -1,3 +1,4 @@
+0.1.1.2:Change:Article OperatorsPriority updated with new information.
 0.1.1.1:New:Information about new fold* functions added to Core module article.
 0.1.1.0:Release:Release of 0.1.1.0.
 0.1.0.6:Change:DateTime module documentation is updated (new constants added).
