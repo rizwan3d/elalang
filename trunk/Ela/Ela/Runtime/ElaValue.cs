@@ -83,13 +83,13 @@ namespace Ela.Runtime
 
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            return Ref.Show(this, new ShowInfo(0, 0, format), ElaObject.DummyContext);
+            return Ref != null ? Ref.Show(this, new ShowInfo(0, 0, format), ElaObject.DummyContext) : "_|_";
         }
 
 
 		public override string ToString()
 		{
-			return Ref.Show(this, ShowInfo.Default, ElaObject.DummyContext);
+			return Ref != null ? Ref.Show(this, ShowInfo.Default, ElaObject.DummyContext) : "_|_";
 		}
 
 
@@ -126,7 +126,7 @@ namespace Ela.Runtime
 
 		public string GetTypeName()
 		{
-			return Ref.GetTypeName();
+			return Ref != null ? Ref.GetTypeName() : "<unknown>";
 		}
 
 

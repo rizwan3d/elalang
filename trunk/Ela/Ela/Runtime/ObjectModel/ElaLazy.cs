@@ -104,12 +104,12 @@ namespace Ela.Runtime.ObjectModel
 		#region Operations
         protected internal override bool True(ElaValue @this, ExecutionContext ctx)
         {
-            return Force(ctx).Ref.True(@this, ctx);
+            return Force(ctx).Ref.True(Value, ctx);
         }
 
         protected internal override bool False(ElaValue @this, ExecutionContext ctx)
         {
-            return Force(ctx).Ref.False(@this, ctx);
+            return Force(ctx).Ref.False(Value, ctx);
         }
 
         protected internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -311,7 +311,7 @@ namespace Ela.Runtime.ObjectModel
 		protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
 		{
 			if (Function == null)
-				return Value.Ref.Show(@this, info, ctx);
+				return Value.Ref.Show(Value, info, ctx);
 			else
 				return "<thunk>";
 		}

@@ -83,13 +83,13 @@ namespace Ela.Runtime
 			{
 				throw;
 			}
-            catch (Exception ex)
-            {
-                var op = MainThread.Module != null && MainThread.Offset > 0 &&
-                    MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
-                    MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
-                throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
-            }
+            //catch (Exception ex)
+            //{
+            //    var op = MainThread.Module != null && MainThread.Offset > 0 &&
+            //        MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
+            //        MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
+            //    throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
+            //}
 			
 			var evalStack = MainThread.CallStack[0].Stack;
 
@@ -329,7 +329,7 @@ namespace Ela.Runtime
                                 goto SWITCH_MEM;
                             }
 
-                            evalStack.Replace(new ElaValue(right.Ref.Show(right, new ShowInfo(0, 0, left.DirectGetString()), ctx)));
+                            evalStack.Push(new ElaValue(right.Ref.Show(right, new ShowInfo(0, 0, left.DirectGetString()), ctx)));
 
                             if (ctx.Failed)
                             {

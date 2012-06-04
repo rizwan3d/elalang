@@ -55,30 +55,21 @@ namespace Ela.Runtime.ObjectModel
 		#region Operations
 		protected internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            return Equal(left, right.Force(ctx), "equal", ctx);
+            return IsEqual(left, right.Force(ctx), ctx);
 		}
 
 
 		protected internal override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			return !Equal(left, right.Force(ctx), "notequal", ctx);
+            return !IsEqual(left, right.Force(ctx), ctx);
 		}
 
 
-		private bool Equal(ElaValue left, ElaValue right, string op, ExecutionContext ctx)
+		private bool IsEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-			if (left.TypeId != ElaMachine.LST)
-			{
-				ctx.InvalidLeftOperand(left, right, op);
+			if (left.TypeId != ElaMachine.LST || right.TypeId != ElaMachine.LST)
 				return false;
-			}
-
-			if (right.TypeId != ElaMachine.LST)
-			{
-				ctx.InvalidRightOperand(left, right, op);
-				return false;
-			}
-
+			
 			ElaList xs1 = (ElaList)left.Ref;
 			ElaList xs2 = (ElaList)right.Ref;
 
