@@ -4,6 +4,8 @@
 */
 let forceAll x | x is ?lazy = forceAll' (force x)
                | x is ?list = forceList (force x)
+               | x is ?tuple = forceAll' x
+               | x is ?record = forceAll' x
                | else = x
                where forceAll' x | x is ?tuple or x is ?record = forceTuple x
                                  | else = force x
