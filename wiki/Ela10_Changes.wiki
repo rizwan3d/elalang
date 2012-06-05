@@ -110,6 +110,11 @@ let _ = show 2 ++ show 3
 
 For lists, tuples and records a behavior of `(++)` didn't change.
 
+== Logical operators ==
+
+In Ela 0.9 symbolic names `(&&)` and `(||)` were used for logical AND and logical OR operators. These operators were (and still are) special forms but not functions as soon as they are always executed in a lazy way while Ela uses a strict-by-default evaluation strategy.
+In Ela 0.10 these operators are replaced by special keywords `and` and `or`. Symbols previously reserved by these operators can now be used in names of custom functions.
+
 == Breaking standard library changes ==
 
 Functions `rec`, `rec3` and `each` are moved from `Core` module to the new `Imperative` module. Indexing operator `(!!)` from standard prelude is renamed to `(:)`.
