@@ -17,7 +17,7 @@ let rec = { !x = 0 }
 is no longer valid.
 
 Also assignment operator `(<-)` is no longer supported. 
-However mutation of state can be done through library support. Ela 0.10 comes with a standard Cell module that implements reference cells in OCaml style.
+However mutation of state can be done through library support. Ela 0.10 comes with a standard `Cell` module that implements reference cells in OCaml style.
 
 Mutation of data (Ela 0.9):
 
@@ -135,4 +135,5 @@ In Ela 0.10 these operators are replaced by special keywords `and` and `or`. Sym
 == Breaking standard library changes ==
 
 Functions `rec`, `rec3` and `each` are moved from `Core` module to the new `Imperative` module. Indexing operator `(!!)` from standard prelude is renamed to `(:)`.
+
 Module `Con` is now partially written in Ela (`Console.ela`) and renamed to `Console` because of technical reasons (Windows doesn't accept `Con` as a file name).
