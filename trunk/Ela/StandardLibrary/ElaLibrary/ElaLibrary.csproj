@@ -84,6 +84,7 @@
     <Compile Include="General\ConModule.cs" />
     <Compile Include="General\CoreModule.cs" />
     <Compile Include="General\DateTimeModule.cs" />
+    <Compile Include="General\DebugModule.cs" />
     <Compile Include="General\ElaDateTime.cs" />
     <Compile Include="General\Experimental.cs" />
     <Compile Include="General\FormatModule.cs" />

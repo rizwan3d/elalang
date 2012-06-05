@@ -333,7 +333,7 @@ namespace Ela.Runtime
 
                             if (ctx.Failed)
                             {
-                                evalStack.Replace(right);
+                                evalStack.Push(right);
                                 evalStack.Push(left);
                                 ExecuteFail(ctx.Error, thread, evalStack);
                                 goto SWITCH_MEM;
