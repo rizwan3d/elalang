@@ -37,6 +37,23 @@ c |> mutate 1 $
 valueof c
 }}}
 
+Some syntax sugar is also available. An example above can be rewritten using a `(:=)` operator defined in `Cell` module like so:
+
+{{{
+open Cell
+
+let c = cell 0 
+c := 1 $
+valueof c
+}}}
+
+Operators `(.+)` and `(.-)` can be used to perform increment and decrement as in C style languages:
+
+{{{
+let c = cell 0
+c.+ $
+valueof c //value of c is 1
+}}
 
 == Indexing ==
 
@@ -118,3 +135,4 @@ In Ela 0.10 these operators are replaced by special keywords `and` and `or`. Sym
 == Breaking standard library changes ==
 
 Functions `rec`, `rec3` and `each` are moved from `Core` module to the new `Imperative` module. Indexing operator `(!!)` from standard prelude is renamed to `(:)`.
+Module `Con` is now partially written in Ela (`Console.ela`) and renamed to `Console` because of technical reasons (Windows doesn't accept `Con` as a file name).
