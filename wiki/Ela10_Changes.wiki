@@ -53,7 +53,7 @@ Operators `(.+)` and `(.-)` can be used to perform increment and decrement as in
 let c = cell 0
 c.+ $
 valueof c //value of c is 1
-}}
+}}}
 
 == Indexing ==
 
