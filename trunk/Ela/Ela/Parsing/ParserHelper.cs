@@ -10,7 +10,6 @@ namespace Ela.Parsing
 	{
 		private static readonly ElaVariableReference hiddenVar = new ElaVariableReference { VariableName = "$0" };
 		private static readonly ElaVariablePattern hiddenPattern = new ElaVariablePattern { Name = "$0" };
-        private bool FALSE = false;
         private int oldKind = 0;
 
 		#region Methods

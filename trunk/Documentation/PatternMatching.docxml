@@ -5,6 +5,7 @@
 This article discusses pattern matching in Ela and lists all available patterns.
 
 <section level="1" title="Pattern Matching Constructs" />
+
 <section level="2" title="Match Expression" />
 The main language construct for pattern matching is <key>match</key> expression. It has the following syntax:
 <code>match expr with
@@ -143,8 +144,7 @@ patterns that may not match. Patterns can be nested at any level.
     <td>Record</td>
     <td>{pattern{,pattern}}</td>
     <td>{x,y,z} or {x'=x,y=y'}</td>
-    <td>Refutable pattern, matches a record and binds its fields to names. If names are not specified
-tdan it creates bindings witd tde same names as record fields.</td>
+    <td>Refutable pattern, matches a record and binds its fields to names. If names are not specified it creates bindings with tde same names as record fields.</td>
   </tr>  
   <tr>
     <td>List</td>
@@ -156,8 +156,7 @@ tdan it creates bindings witd tde same names as record fields.</td>
     <td>Head/Tail</td>
     <td>pattern{::pattern}</td>
     <td>x::(1,2)::xs</td>
-    <td>Refutable pattern, matches a linked list. Instead of a list pattern it doesn't test a list lengtd
-and if tde last pattern is a name pattern binds tdis name to a list tail.</td>
+    <td>Refutable pattern, matches a linked list. Unlike list pattern, it doesn't test a list length and if the last pattern is a name this name gets bound a list tail.</td>
   </tr>  
   <tr>
     <td>Variant</td>
