@@ -1,12 +1,12 @@
-0.11.2.10:Change:Layout rules for expressions in top level has changed - now multiline expressions at top level should be indented however it is possible to have multiple expressions without explicit sequencing ($).
-0.11.2.9:New:Syntax for lazy blocks is simplified - parens are not always required.
-0.11.2.8:Change:Now Ela allows recursive definitions in all the cases (not only for functions). This enables writing code like so: 'let a = 1::(&a)'. In some cases however a 'bottom reached' exception can be raised in run-time. This exception cannot be handled in user code.
-0.11.2.7:New:Not it is possible to attache a guard to each selector in list comprehension.
-0.11.2.6:New:It is now possible to specify several guards for a single entry, e.g. '|cond1 |cond2' is equivalent to '|cond1 or cond2'.
-0.11.2.5:Change:Guards now cannot be chained using comma, e.g. '| cond1, cond2' is no longer valid, one should write '|cond1 and cond2'.
-0.11.2.4:Fix:Using list comprehensions on a left-hand side could cause a VM stack corruption.
-0.11.2.3:Fix:A bug fixed in execution of Brtrue and Brfalse instructions on thunks.
-0.11.2.2:Fix:A critical bug fix - a 'show' function was broken with previous release.
+0.10.2.10:Change:Layout rules for expressions in top level has changed - now multiline expressions at top level should be indented however it is possible to have multiple expressions without explicit sequencing ($).
+0.10.2.9:New:Syntax for lazy blocks is simplified - parens are not always required.
+0.10.2.8:Change:Now Ela allows recursive definitions in all the cases (not only for functions). This enables writing code like so: 'let a = 1::(&a)'. In some cases however a 'bottom reached' exception can be raised in run-time. This exception cannot be handled in user code.
+0.10.2.7:New:Not it is possible to attache a guard to each selector in list comprehension.
+0.10.2.6:New:It is now possible to specify several guards for a single entry, e.g. '|cond1 |cond2' is equivalent to '|cond1 or cond2'.
+0.10.2.5:Change:Guards now cannot be chained using comma, e.g. '| cond1, cond2' is no longer valid, one should write '|cond1 and cond2'.
+0.10.2.4:Fix:Using list comprehensions on a left-hand side could cause a VM stack corruption.
+0.10.2.3:Fix:A bug fixed in execution of Brtrue and Brfalse instructions on thunks.
+0.10.2.2:Fix:A critical bug fix - a 'show' function was broken with previous release.
 0.10.2.1:New:Now it is possible to use '\' symbol in custom operators.
 0.10.2.0:Release:Release of 0.10.2.0.
 0.10.1.9:Fix:Op code 'Show' didn't work correctly when a format string was a thunk.
