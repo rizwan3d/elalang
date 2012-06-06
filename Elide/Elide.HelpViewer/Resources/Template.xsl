@@ -1,4 +1,6 @@
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+  xmlns:elide="http://elalang.net/elide"
+  version="1.0">
   <xsl:output method="html" indent="yes" omit-xml-declaration="yes"/>
 	<xsl:template match="article">
     <xsl:variable name="type" select="@type"/>
@@ -8,11 +10,6 @@
 				<style>
 					<xsl:call-template name="Styles"/>
 				</style>
-				<script language="javascript">
-             <![CDATA[ 
-           %SCRIPT%
-           ]]>
-				</script>
 			</head>
 			<body leftmargin="0" rightmargin="0" topmargin="0" style="margin-left:0px;margin-right:0px;margin-top:0px;">
 				<xsl:variable name="arr" select="generate-id()"/>
@@ -116,16 +113,9 @@
 	
 	<xsl:template match="code">
 		<xsl:variable name="id" select="generate-id()"/>
-		<pre id="{$id}" onload="alert(DoJava(this.innerHTML))" tab-width="2"><xsl:apply-templates/></pre>
-		<script language="javascript">
-			var el = document.getElementById('<xsl:value-of select="$id"/>');
-      var str = el.innerHTML;
-      str = DoKeywords(str);
-      str = DoComment1(str);
-      str = DoComment2(str);
-      str = DoString(str);
-      el.innerHTML = str;
-    </script>
+		<pre id="{$id}" tab-width="2">
+      <xsl:value-of select="elide:Lex(current(),'ElaCode')" disable-output-escaping="yes" />
+    </pre>
 	</xsl:template>
 
   <xsl:template match="pre">
@@ -133,12 +123,6 @@
     <pre id="{$id}" onload="alert(DoJava(this.innerHTML))" tab-width="2">
       <xsl:apply-templates/>
     </pre>
-    <script language="javascript">
-      var el = document.getElementById('<xsl:value-of select="$id"/>');
-      var str = el.innerHTML;
-      str = DoProcess(str);
-      el.innerHTML = str;
-    </script>
   </xsl:template>
 	
 	<xsl:template match="link">
@@ -282,22 +266,7 @@
 	a:hover
 	{
 		text-decoration:underline;
-	}
-  	
-	.kw	
-	{
-		color:blue;
-	}
-	
-	.str
-	{
-		color:brown;
-	}
-	
-	.com
-	{
-		color:green;
-	}
+	}  
 	
 	ol
 	{
@@ -353,6 +322,44 @@
 		margin-top:7px;
 		margin-bottom:7px;
 		margin-right:50px;
+  }	
+    
+  //Ela lexer
+  .lexer_Style1,.lexer_Default,.lexer_Style4
+  {
+    
   }
+  
+  .lexer_Style2,.lexer_Style10
+  {
+    color:blue;
+  }
+  
+  .lexer_Style3
+  {
+    color:navy;
+    font-weight:bold;
+  }
+  
+  .lexer_Style5
+  {
+    color:teal;
+    font-weight:bold;
+  }
+  
+  .lexer_MultilineStyle1,.lexer_Style6
+  {
+    color:green;
+  }
+  
+  .lexer_Style7,.lexer_MultilineStyle2,.lexer_Style8
+  {
+    color:brown;
+  }
+  
+  .lexer_Style9
+  {
+    color:red;
+  }  
 	</xsl:template>
 </xsl:stylesheet>

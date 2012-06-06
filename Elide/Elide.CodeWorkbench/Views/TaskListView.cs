@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Windows.Forms;
 using Elide.CodeEditor.Views;
 using Elide.Core;
-using Elide.Environment;
 using Elide.Environment.Views;
-using Elide.Scintilla;
 
 namespace Elide.CodeWorkbench.Views
 {

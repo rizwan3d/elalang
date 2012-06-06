@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Elide.Scintilla;
 using System.IO;
+using System.Text;
+using Elide.CodeEditor.Infrastructure;
+using Elide.Scintilla;
 
 namespace Elide.EilCode.Lexer
 {
-	public sealed class EilLexer
+	public sealed class EilLexer : ICodeLexer
 	{
 		public IEnumerable<StyledToken> Parse(string source)
 		{

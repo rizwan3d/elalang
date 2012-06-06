@@ -94,6 +94,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Elide.CodeEditor\Elide.CodeEditor.csproj">
+      <Project>{A7A5BEBC-536C-42A2-8FE2-31483B088F8A}</Project>
+      <Name>Elide.CodeEditor</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Elide.Common\Elide.Common.csproj">
       <Project>{A5363A1F-8DD1-4F6F-A631-EB6864BB1224}</Project>
       <Name>Elide.Common</Name>

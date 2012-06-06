@@ -26,6 +26,8 @@ namespace Elide.CodeEditor
             return ((ITextEditor)CodeEditor.Instance).GetContent(this);
         }
 
+        public CodeEditorFeatures Features { get; protected set; }
+
         public IEnumerable<MessageItem> Messages { get; internal set; }
 
         internal EditorInfo CodeEditor { get; set; }

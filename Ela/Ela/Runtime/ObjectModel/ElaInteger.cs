@@ -36,8 +36,9 @@ namespace Ela.Runtime.ObjectModel
 		#region Operations
 		protected internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
 		{
-            return right.TypeId == ElaMachine.INT ? left.I4 == right.I4 :
-                right.Ref.Equal(left, right, ctx);
+            if (left.TypeId == ElaMachine.INT)
+                return right.TypeId == ElaMachine.INT ? left.I4 == right.I4 :
+                    right.Ref.Equal(left, right, ctx);
                         
             return false;
 		}

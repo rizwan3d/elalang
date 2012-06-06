@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Elide.Scintilla;
+using Elide.CodeEditor.Infrastructure;
 
 namespace Elide.ElaCode.Lexer
 {
-	public sealed class ElaLexer
+	public sealed class ElaLexer : ICodeLexer
 	{
 		public IEnumerable<StyledToken> Parse(string source)
 		{

@@ -9,6 +9,8 @@ using Elide.Environment;
 using Elide.Environment.Editors;
 using Elide.Forms;
 using Elide.HelpViewer.Images;
+using Elide.CodeEditor.Infrastructure;
+using System.Text;
 
 namespace Elide.HelpViewer
 {
@@ -75,20 +77,52 @@ namespace Elide.HelpViewer
                 xml.LoadXml(sr.ReadToEnd());
                 title = xml.ChildNodes.OfType<XmlNode>().First(n => n.Name == "article").Attributes["title"].Value;
                 var xsl = new XslCompiledTransform();
-                var script = String.Empty;
                 
                 using (var xslReader = new StreamReader(typeof(HelpEditor).Assembly.GetManifestResourceStream("Elide.HelpViewer.Resources.Template.xsl")))
-                using (var jsReader = new StreamReader(typeof(HelpEditor).Assembly.GetManifestResourceStream("Elide.HelpViewer.Resources.Colorer.js")))
                 {
-                    script = jsReader.ReadToEnd();
                     var tpl = xslReader.ReadToEnd();
                     xsl.Load(new XmlTextReader(new StringReader(tpl)));
                 }
 
-                var sw = new StringWriter();                
-                xsl.Transform(xml, new XsltArgumentList(), sw);
-                return sw.ToString().Replace("%SCRIPT%", script);
+                var xsltArgs = new XsltArgumentList();
+                xsltArgs.AddExtensionObject("http://elalang.net/elide", this);
+
+                var sw = new StringWriter();
+                xsl.Transform(xml, xsltArgs, sw);
+                return sw.ToString();
             }
+        }
+
+        public string Lex(string src, string lexerKey)
+        {
+            var lexer = App.GetService<ICodeLexerService>().GetLexer(lexerKey);
+            
+            if (lexer != null)
+            {
+                var tokens = lexer.Parse(src);
+
+                if (tokens != null)
+                {
+                    var sb = new StringBuilder(src);
+                    var offset = 0;
+
+                    tokens.ForEach(t =>
+                        {
+                            var span = String.Format("<span class='lexer_{0}'>", t.StyleKey);
+                            var endSpan = "</span>";
+                            sb.Insert(t.Position + offset, span);
+                            offset += span.Length;
+                            sb.Insert(t.Position + offset + t.Length, endSpan);
+                            offset += endSpan.Length;
+                        });
+
+                    return sb.ToString();
+                }
+
+                return src;
+            }
+            else
+                return src;
         }
 
         public Image DocumentIcon

@@ -33,7 +33,7 @@ namespace Ela.Debug
 					frames
 				);
 
-			if (callChain.Count == 0)
+			if (callChain == null || callChain.Count == 0)
 				return retval;
 
 			var mem = default(StackPoint);
