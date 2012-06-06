@@ -488,6 +488,11 @@ namespace Elide.TextEditor
             get { return BuildMenu(); }
         }
 
+        public string EditorKey
+        {
+            get { return editorKey; }
+        }
+
         public abstract Image DocumentIcon { get; }
 
         protected IApp App { get; private set; }

@@ -159,10 +159,7 @@ PRODUCTIONS
 		(
 			"(" 
 				(. ot = t; .)
-				[ 
-					GroupExpr<out exp> 
-					| LazyExpr<out exp>
-				] 
+				[ GroupExpr<out exp> ] 
 			")"
 		)
 		(.
@@ -276,11 +273,11 @@ PRODUCTIONS
 				BinaryExpr<out exp>
 				{
 					(. var old = exp; .)
-					"," 
+					"|" 
 					(. var ot = t; .)
 					BinaryExpr<out exp>
 					(.
-						exp = new ElaBinary(t) { Operator = ElaOperator.BooleanAnd, Left = old, Right = exp };
+						exp = new ElaBinary(t) { Operator = ElaOperator.BooleanOr, Left = old, Right = exp };
 					.)
 				}
 			)
@@ -708,52 +705,66 @@ PRODUCTIONS
 		.).
 		
 	ListLiteral<out ElaExpression exp> = 
-		"["
-			(. 
-				var list = default(List<ElaExpression>);
-				var comp = default(ElaComprehension);
-				var rng = default(ElaRange);
-				var ot = t;
-				
-				exp = null;
-			.)
-			[ 
-				(
-					ParamList<out list, out comp, out rng> 
-					(. 
-						if (list != null)
-						{
-							var listExp = new ElaListLiteral(ot) { Values = list };
-							exp = listExp;	
-						}
-						else if (comp != null)
-						{
-							comp.Initial = new ElaListLiteral(ot);
-							exp = comp;
-						}
-						else if (rng != null)
-						{
-							rng.Initial = new ElaListLiteral(ot);
-							exp = rng;
-						}
-					.)
-				)
-				|
-				(
-					(. var cexp = default(ElaExpression); .)
-					"&" Expr<out cexp> ComprehensionExpr<cexp, out comp>
-					(. 
-						comp.Lazy = true;
-						comp.Initial = new ElaListLiteral(ot);
-						exp = comp;
-					.)
-				)
-			] 
-			(.
-				if (exp == null)
-					exp = new ElaListLiteral(ot);
-			.)
-		"]".
+	    (. exp = null; .)
+	    (
+		    (
+		        "["
+			        (. 
+				        var list = default(List<ElaExpression>);
+				        var comp = default(ElaComprehension);
+				        var rng = default(ElaRange);
+				        var ot = t;
+        				
+				        exp = null;
+			        .)
+			        [ 
+				        (
+					        ParamList<out list, out comp, out rng> 
+					        (. 
+						        if (list != null)
+						        {
+							        var listExp = new ElaListLiteral(ot) { Values = list };
+							        exp = listExp;	
+						        }
+						        else if (comp != null)
+						        {
+							        comp.Initial = new ElaListLiteral(ot);
+							        exp = comp;
+						        }
+						        else if (rng != null)
+						        {
+							        rng.Initial = new ElaListLiteral(ot);
+							        exp = rng;
+						        }
+					        .)
+				        )
+			        ] 
+			        (.
+				        if (exp == null)
+					        exp = new ElaListLiteral(ot);
+			        .)
+		        "]"
+		    )
+		    |
+		    (
+		        "[&"
+			        (. 
+				        var comp = default(ElaComprehension);
+				        var ot = t;        				
+				        exp = null;
+			        .)
+		   	        (
+				        (. var cexp = default(ElaExpression); .)
+				        Expr<out cexp> ComprehensionExpr<cexp, out comp>
+				        (. 
+					        comp.Lazy = true;
+					        comp.Initial = new ElaListLiteral(ot);
+					        exp = comp;
+				        .)
+			        )
+		        "]"
+		    )
+		).
 		
 	LetBinding<out ElaExpression exp> = 
 		(. 
@@ -821,11 +832,11 @@ PRODUCTIONS
 			BinaryExpr<out exp>
 			{
 				(. var old = exp; .)
-				"," 
+				"|" 
 				(. var ot = t; .)
 				BinaryExpr<out exp>
 				(.
-					exp = new ElaBinary(t) { Operator = ElaOperator.BooleanAnd, Left = old, Right = exp };
+					exp = new ElaBinary(t) { Operator = ElaOperator.BooleanOr, Left = old, Right = exp };
 				.)
 			}
 		).
@@ -1852,7 +1863,8 @@ PRODUCTIONS
 			| RaiseExpr<out exp>
 			| FailExpr<out exp>
 			| MatchExpr<out exp>		
-			| TryExpr<out exp>			
+			| TryExpr<out exp>	
+			| LazyExpr<out exp>		
 		).
 				
 	WhereExpr<ElaExpression cexp, out ElaExpression exp> =
@@ -1913,6 +1925,13 @@ PRODUCTIONS
 			(
 				Guard<out cexp>
 				(. it.Guard = cexp; .)
+				[
+				    (
+				        (. var cit = default(ElaGenerator); .)
+				        "," ComprehensionEntry<body, out cit>
+				        (. it.Body = cit; .)
+			        )
+				]
 			)
 		].
 		
@@ -1930,7 +1949,13 @@ PRODUCTIONS
 		(
 			RootLetBinding<out exp>
 			| IncludeStat<out exp>
-			| EmbExpr<out exp> [WhereExpr<exp, out exp>](. if (FALSE) .) EBLOCK	
+			| 
+			(
+			    //EmbExpr<out exp> [WhereExpr<exp, out exp>](. if (FALSE) .) EBLOCK	
+			    (. scanner.InjectBlock(); .)
+			    EmbExpr<out exp> [WhereExpr<exp, out exp>]
+			    EndBlock
+			)
 		)
 		(. b.Expressions.Add(exp); .).
 		

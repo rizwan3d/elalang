@@ -203,6 +203,9 @@ namespace Ela.Compilation
 							AddLinePragma(c);
 							cw.Emit(Op.Genfin);
 						}
+
+                        if ((hints & Hints.Left) == Hints.Left)
+                            AddValueNotUsed(c);
 					}
 					break;
 				case ElaNodeType.ModuleInclude:

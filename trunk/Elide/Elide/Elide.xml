@@ -51,12 +51,17 @@
         <add key="CodeRunnerService" interface="Elide.CodeEditor.Infrastructure.ICodeRunnerService,Elide.CodeEditor" type="Elide.CodeWorkbench.CodeRunnerService,Elide.CodeWorkbench">
             <add key="runners" />
         </add>
+        <add key="CodeLexerService" interface="Elide.CodeEditor.Infrastructure.ICodeLexerService,Elide.CodeEditor" type="Elide.CodeEditor.Infrastructure.CodeLexerService,Elide.CodeEditor">
+            <add key="lexers" />
+        </add>
         <add key="ReferenceResolverService" interface="Elide.CodeEditor.Infrastructure.IReferenceResolverService,Elide.CodeEditor" type="Elide.CodeEditor.Infrastructure.ReferenceResolverService,Elide.CodeEditor">
             <add key="resolvers" />
         </add>
         <add key="AutocompleteService" interface="Elide.CodeEditor.IAutocompleteService,Elide.CodeEditor" type="Elide.CodeWorkbench.AutocompleteService,Elide.CodeWorkbench" />
         <add key="OutlinerSerivce" interface="Elide.CodeEditor.IOutlinerService,Elide.CodeEditor" type="Elide.CodeWorkbench.OutlinerService,Elide.CodeWorkbench" />
         <add key="SymbolSearchService" interface="Elide.CodeEditor.ISymbolSearchService,Elide.CodeEditor" type="Elide.CodeWorkbench.SymbolSearchService,Elide.CodeWorkbench" />
+      
+        
     </services>
 
     <configs>
@@ -162,9 +167,15 @@
     <builders>
         <add key="ElaCodeBuilder" type="Elide.ElaCode.ElaCodeBuilder,Elide.ElaCode" />      
     </builders>
+  
     <runners>
         <add key="ElaCodeRunner" type="Elide.ElaCode.ElaCodeRunner,Elide.ElaCode" />
     </runners>
+
+    <lexers>
+        <add key="ElaCode" type="Elide.ElaCode.Lexer.ElaLexer,Elide.ElaCode" />
+        <add key="EilCode" type="Elide.EilCode.Lexer.EilLexer,Elide.EilCode" />
+    </lexers>
 
     <compilers>
         <add key="ElaBackgroundCompiler" editorKey="ElaCode" type="Elide.ElaCode.ElaBackgroundCompiler,Elide.ElaCode" />

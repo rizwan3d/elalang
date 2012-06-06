@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using Elide;
-using Ela.Compilation;
-using Elide.Scintilla.ObjectModel;
-using Elide.TextEditor;
 using Elide.CodeEditor;
+using Elide.Scintilla.ObjectModel;
 
 namespace Elide.ElaCode
 {
@@ -13,12 +9,12 @@ namespace Elide.ElaCode
     {
         internal ElaDocument(FileInfo fileInfo, SciDocument sciDoc) : base(fileInfo, sciDoc)
         {
-
+            Features = CodeEditorFeatures.Outline | CodeEditorFeatures.Tasks;
         }
 
         internal ElaDocument(string title, SciDocument sciDoc) : base(title, sciDoc)
         {
-
+            Features = CodeEditorFeatures.Outline | CodeEditorFeatures.Tasks;
         }
 
         internal new SciDocument GetSciDocument()

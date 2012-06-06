@@ -87,7 +87,7 @@ namespace Ela.Runtime.ObjectModel
 
 		internal ElaValue Force(ExecutionContext ctx)
 		{
-			var f = Function;
+            var f = Function;
 
 			if (f != null)
 			{
@@ -95,6 +95,12 @@ namespace Ela.Runtime.ObjectModel
                 ctx.Thunk = this;
                 return new ElaValue(ElaDummyObject.Instance);
 			}
+
+            if (Value.Ref == this)
+            {
+                ctx.Fail(ElaRuntimeError.Cyclic);
+                return Default();
+            }
 
 			return Value;
 		}

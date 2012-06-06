@@ -27,9 +27,8 @@ namespace Elide.ElaCode
             base.InternalInitialize();
 
             var sci = GetScintilla();
-            folding = new FoldingManager(sci);            
             sci.SetWordChars("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'_");
-            sci.StyleNeeded += Lex;
+            folding = new FoldingManager(sci);            
             ElaFuns = new ElaFunctions(App, sci);
         }
 
@@ -79,14 +78,6 @@ namespace Elide.ElaCode
                     .Item("Expand All Code", "Ctrl+Shift+M", sci.ExpandAllFold)
                     .CloseMenu()
                 .Separator();
-        }
-
-        private void Lex(object sender, StyleNeededEventArgs e)
-        {
-            var lex = new ElaLexer();
-
-            foreach (var t in lex.Parse(e.Text))
-                e.AddStyleItem(t.Position, t.Length, t.StyleKey);
         }
         
         protected override void FoldNeeded(FoldNeededEventArgs e)

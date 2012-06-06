@@ -15,6 +15,8 @@ namespace Elide.CodeEditor
 {
     public abstract class CodeEditor<T> : AbstractTextEditor<T>, ICodeEditor where T : CodeDocument
     {
+        private ICodeLexer lexer;
+
         protected CodeEditor(string editorKey) : base(editorKey)
         {
             
@@ -30,6 +32,8 @@ namespace Elide.CodeEditor
             sci.MouseDwellEnd += (o,e) => sci.HideCallTip();
             sci.FoldNeeded += FoldNeeded;
             sci.CharAdded += CharAdded;
+            sci.StyleNeeded += Lex;
+            this.lexer = App.GetService<ICodeLexerService>().GetLexer(EditorKey);
             UpdateCodeEditorSettings();
         }
 
@@ -113,6 +117,13 @@ namespace Elide.CodeEditor
         protected virtual void FoldNeeded(FoldNeededEventArgs e)
         {
 
+        }
+        
+        private void Lex(object sender, StyleNeededEventArgs e)
+        {
+            if (lexer != null)
+                foreach (var t in lexer.Parse(e.Text))
+                    e.AddStyleItem(t.Position, t.Length, t.StyleKey);
         }
 
         private CodeDocument Doc()

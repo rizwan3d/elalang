@@ -40,9 +40,9 @@ namespace Ela.Runtime
 
 		ImmutableStructure = 816,
 
-		// = 817,
+		Cyclic = 817,
 
-		UndefinedVariable = 818,
+		BottomReached = 818,
 
 		// = 819,
 

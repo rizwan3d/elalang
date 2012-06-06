@@ -113,14 +113,6 @@ let foldr f z (x::xs) = f x (foldr f z xs)
 
 let fold f xs = foldr f (nil xs) xs
 
-let foldl' f z (x::xs) = foldl' f (& f z x) xs
-    foldl' _ z []      = z
-
-let foldr' f z (x::xs) = f x (foldr' f z xs)
-    foldr' _ z []      = z
-    
-let fold' f xs = foldr' f (nil xs) xs
-
 let concat (x::xs) = x ++ concat xs 
     concat []      = []
 

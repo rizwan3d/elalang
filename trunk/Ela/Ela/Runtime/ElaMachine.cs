@@ -75,21 +75,26 @@ namespace Ela.Runtime
 			MainThread.Offset = MainThread.Offset == 0 ? 0 : MainThread.Offset;
 			var ret = default(ElaValue);
 
-			try
-			{
-				ret = Execute(MainThread);
-			}
-			catch (ElaException)
-			{
-				throw;
-			}
-            //catch (Exception ex)
-            //{
-            //    var op = MainThread.Module != null && MainThread.Offset > 0 &&
-            //        MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
-            //        MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
-            //    throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
-            //}
+            try
+            {
+                ret = Execute(MainThread);
+            }
+            catch (ElaException)
+            {
+                throw;
+            }
+            catch (NullReferenceException ex)
+            {
+                var err = new ElaError(ElaRuntimeError.BottomReached);
+                throw CreateException(Dump(err, MainThread), ex);
+            }
+            catch (Exception ex)
+            {
+                var op = MainThread.Module != null && MainThread.Offset > 0 &&
+                    MainThread.Offset - 1 < MainThread.Module.Ops.Count ?
+                    MainThread.Module.Ops[MainThread.Offset - 1].ToString() : String.Empty;
+                throw Exception("CriticalError", ex, MainThread.Offset - 1, op);
+            }
 			
 			var evalStack = MainThread.CallStack[0].Stack;
 

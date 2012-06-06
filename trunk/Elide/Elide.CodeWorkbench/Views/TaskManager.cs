@@ -102,7 +102,7 @@ namespace Elide.CodeWorkbench.Views
 
         private void AddDocument(CodeDocument codeDoc)
         {
-            if (codeDoc != null)
+            if (codeDoc != null && codeDoc.Features.Set(CodeEditorFeatures.Tasks))
             {
                 var editor = app.Editor(codeDoc.GetType());
                 var sci = editor.Control as ScintillaControl;
@@ -110,7 +110,7 @@ namespace Elide.CodeWorkbench.Views
                 if (sci != null)
                 {
                     var node = new TreeNode();
-                    codeDoc.FileChanged += (o, ev) => ChangeNodeText(node);
+                    codeDoc.FileChanged += (o,ev) => ChangeNodeText(node);
                     node.ImageKey = node.SelectedImageKey = "Folder";
                     node.Tag = codeDoc;
                     node.Nodes.Add(new TreeNode { Tag = stub });

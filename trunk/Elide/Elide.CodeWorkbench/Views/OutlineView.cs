@@ -62,7 +62,7 @@ namespace Elide.CodeWorkbench.Views
 
         private void AddDocument(CodeDocument codeDoc)
         {
-            if (codeDoc != null)
+            if (codeDoc != null && codeDoc.Features.Set(CodeEditorFeatures.Outline))
             {
                 var tn = control.AddDocumentNode(codeDoc);
                 var sci = (ScintillaControl)App.Editor(codeDoc.GetType()).Control;

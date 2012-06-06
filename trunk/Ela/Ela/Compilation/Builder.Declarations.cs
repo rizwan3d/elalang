@@ -50,15 +50,15 @@ namespace Ela.Compilation
 				var addSym = false;
                 var lastSym = default(VarSym);
 				
-				if (s.InitExpression != null && s.InitExpression.Type == ElaNodeType.FunctionLiteral)
+				if (s.InitExpression != null)// && s.InitExpression.Type == ElaNodeType.FunctionLiteral)
 				{
-					var fun = (ElaFunctionLiteral)s.InitExpression;
 					addr = (hints & Hints.And) == Hints.And ? GetNoInitVariable(s.VariableName) : AddVariable(s.VariableName, s, flags, data);
                     lastSym = pdb != null ? pdb.LastVarSym : null;
 
-					if (inline)
+                    if (inline && s.InitExpression.Type == ElaNodeType.FunctionLiteral)
 					{
-						inlineFuns.Remove(fun.Name);
+                        var fun = (ElaFunctionLiteral)s.InitExpression;
+                        inlineFuns.Remove(fun.Name);
 						inlineFuns.Add(fun.Name, new InlineFun(fun, CurrentScope));
 					}
 				}
@@ -307,21 +307,11 @@ namespace Ela.Compilation
 					tuple = (ElaTupleLiteral)s.InitExpression;
 				else
 				{
-                    //if (s.Where != null)
-                    //    CompileWhere(s.Where, map, Hints.Left);
-
-                    //CompileExpression(s.InitExpression, map, Hints.None);
-
-                    //if (s.Where != null)
-                    //    EndScope();
-
-                    //addr = AddVariable();
-                    //cw.Emit(Op.Popvar, addr);
-
                     var po = cw.Offset;
                     var and = s.And;
                     var noInitCode = allowNoInits.Count;
-                    var allow = s.InitExpression != null && s.InitExpression.Type == ElaNodeType.FunctionLiteral;
+                    var allow = s.InitExpression != null;// && s.InitExpression.Type == ElaNodeType.FunctionLiteral;
+                    AddNoInitVariable(s, noInitCode);
 
                     while (and != null && (hints & Hints.And) != Hints.And)
                     {

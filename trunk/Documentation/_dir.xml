@@ -9,9 +9,10 @@
     <doc name="IO" file="lib\IOModule.docxml" />
     <doc name="Number" file="lib\NumberModule.docxml" />
     <doc name="String" file="lib\StringModule.docxml" />
-    <doc name="Format" file="lib\FormatModule.docxml" />
+    <doc name="Record" file="lib\RecordModule.docxml" />
     <doc name="DateTime" file="lib\DateTimeModule.docxml" />
     <doc name="Thunk" file="lib\ThunkModule.docxml" />
+    <doc name="Format" file="lib\FormatModule.docxml" />    
   </folder>
   <folder name="Language Reference">
     <doc name="Bindings" file="Bindings.docxml"/>
