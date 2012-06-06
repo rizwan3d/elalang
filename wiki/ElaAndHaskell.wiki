@@ -11,7 +11,7 @@ This article provides a brief overview of differences between Ela and Haskell. I
 ||             || *Ela* || *Haskell* ||
 || Major programming paradigm || Functional || Functional ||
 || Syntax || ML style, layout based || ML style, layout based ||
-|| Purity || Impure, supports records with optional mutable fields || Pure ||
+|| Purity || Impure `*` || Pure ||
 || Type system || No type system, only dynamic (run-time) typing || Statically typed with type inference ||
 || Type strength || Strong || Strong ||
 || Type safety || Safe || Safe ||
@@ -25,6 +25,8 @@ This article provides a brief overview of differences between Ela and Haskell. I
 || Exceptions || Through structured exception handling || Through monads ||
 || Curried functions || Yes, all functions are curried || Yes, all functions are curried ||
 || Operators as functions || Yes || Yes ||
+
+`*` _Actually Ela is a pure language. The language itself provides no support for mutation of state - no variables, mutable data structures, etc. However Ela doesn't restrict and/or control side effects in the code therefore mutation of state can be easily implemented on a library level. For example, module Cell adds a support for reference cells and module Con provides a support for classical C-style console input/output._
 
 == Syntax overview ==
 
