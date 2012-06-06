@@ -50,7 +50,7 @@ namespace Ela.Compilation
 				var addSym = false;
                 var lastSym = default(VarSym);
 				
-				if (s.InitExpression != null)// && s.InitExpression.Type == ElaNodeType.FunctionLiteral)
+				if (s.InitExpression != null)
 				{
 					addr = (hints & Hints.And) == Hints.And ? GetNoInitVariable(s.VariableName) : AddVariable(s.VariableName, s, flags, data);
                     lastSym = pdb != null ? pdb.LastVarSym : null;
@@ -61,11 +61,6 @@ namespace Ela.Compilation
                         inlineFuns.Remove(fun.Name);
 						inlineFuns.Add(fun.Name, new InlineFun(fun, CurrentScope));
 					}
-				}
-				else
-				{
-                    addr = GetNoInitVariable(s.VariableName);
-                    addSym = true;
 				}
 
 				var po = cw.Offset;

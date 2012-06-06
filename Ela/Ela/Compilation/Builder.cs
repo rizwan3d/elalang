@@ -917,26 +917,6 @@ namespace Ela.Compilation
 			return AddVariable();
 		}
         
-		private bool Validate(ScopeVar var)
-		{
-			if ((var.Flags & ElaVariableFlags.NoInit) != ElaVariableFlags.NoInit)
-                return true;
-
-            if (allowNoInits.Count == 0)
-                return false;
-
-            var d = allowNoInits.Peek();
-
-            if (d.Allow && d.Code == var.Data)
-                return true;
-
-            foreach (var n in allowNoInits)
-                if (n.Allow && n.Code == var.Data)
-                    return true;
-
-            return false;
-		}
-
 
 		private ScopeVar GetVariable(string name, int line, int col)
 		{
@@ -956,10 +936,6 @@ namespace Ela.Compilation
 				if (cur.Locals.TryGetValue(name, out var))
 				{
                     var.Address = shift | var.Address << 8;
-
-                    if (!Validate(var))
-                        AddError(ElaCompilerError.ReferNoInit, line, col, name);
-
 					return var;
 				}
 

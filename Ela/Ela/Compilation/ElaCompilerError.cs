@@ -39,6 +39,6 @@ namespace Ela.Compilation
 
         InvalidBuiltinBinding = 315,
 
-		ReferNoInit = 316,
+		// = 316,
 	}
 }
