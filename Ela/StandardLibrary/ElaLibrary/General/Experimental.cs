@@ -19,7 +19,7 @@ namespace Ela.Library.General
             public SubFun()
                 : base(2)
             {
-               // Spec = 2;
+                Spec = 2;
             }
 
             protected override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)

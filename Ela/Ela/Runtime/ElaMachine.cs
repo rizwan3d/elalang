@@ -471,16 +471,18 @@ namespace Ela.Runtime
 
 						break;
 					case Op.Force:
-						right = evalStack.Peek();
-						evalStack.Replace(right.Ref.Force(right, ctx));
+                        if (evalStack.Peek().TypeId == LAZ)
+                        {
+                            right = evalStack.Peek();
+                            evalStack.Replace(right.Ref.Force(right, ctx));
 
-                        System.Diagnostics.Debug.WriteLine("Failed: " + ctx.Failed);
-                        if (ctx.Failed)
-						{
-							evalStack.Replace(right);
-							ExecuteThrow(thread, evalStack);
-							goto SWITCH_MEM;
-						}
+                            if (ctx.Failed)
+                            {
+                                evalStack.Replace(right);
+                                ExecuteThrow(thread, evalStack);
+                                goto SWITCH_MEM;
+                            }
+                        }
 						break;
 					case Op.Untag:
 						evalStack.Replace((right = evalStack.Peek()).Ref.Untag(ctx));
@@ -1726,24 +1728,24 @@ namespace Ela.Runtime
 		{
             try
 			{
-                //if (funObj.Spec == 2)
-                //{
-                //    var arg = stack.Pop();
+                if (funObj.Spec == 2)
+                {
+                    var arg = stack.Pop();
 
-                //    if (funObj.Flip)
-                //        stack.Push(funObj.Call(funObj.Parameters[0], arg, thread.Context));
-                //    else
-                //        stack.Push(funObj.Call(arg, funObj.Parameters[0], thread.Context));
+                    if (funObj.Flip)
+                        stack.Push(funObj.Call(funObj.Parameters[0], arg, thread.Context));
+                    else
+                        stack.Push(funObj.Call(arg, funObj.Parameters[0], thread.Context));
 
-                //    if (thread.Context.Failed)
-                //    {
-                //        stack.Push(arg);
-                //        stack.Push(new ElaValue(funObj));
-                //        ExecuteFail(thread.Context.Error, thread, stack);
-                //        return true;
-                //    }
-                //}
-                //else
+                    if (thread.Context.Failed)
+                    {
+                        stack.Push(arg);
+                        stack.Push(new ElaValue(funObj));
+                        ExecuteFail(thread.Context.Error, thread, stack);
+                        return true;
+                    }
+                }
+                else
                 {
                     var arr = new ElaValue[funObj.Parameters.Length + 1];
 
