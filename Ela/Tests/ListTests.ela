@@ -98,3 +98,15 @@ let typeCheck {eqt} =
 let lazyCatShow {eq} =
         eq (show <| [1,2,3]++[& x \\ x<-[1..3]]) "[1,2,3,1,2,3]"
         $ eq (show <| [& x \\ x<-[1..3]]++[1,2,3]) "[1,2,3,1,2,3]"
+
+let lazyFoldr {eq} =
+        eq xs [2,3,4,5,6]
+        where foldr f z (x::xs) = f x (& foldr f z xs)
+              foldr _ z []      = z
+           et take 0 xs      = []
+              take n (x::xs) = x :: take (n-1) xs
+              take _ []      = []
+           et map' f = foldr ((::) << f) []
+           et xs = take 5 <| map' (+1) [1..]
+
+
