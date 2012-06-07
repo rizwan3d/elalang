@@ -1,3 +1,4 @@
+0.10.2.11:New:Layout rules for 'open' directive has changed (they are backward compatible). Now it is possible to omit 'open' keyword for multiple directives (all subsequent directives should be indented after the first or put on a single line).
 0.10.2.10:Change:Layout rules for expressions in top level has changed - now multiline expressions at top level should be indented however it is possible to have multiple expressions without explicit sequencing ($).
 0.10.2.9:New:Syntax for lazy blocks is simplified - parens are not always required.
 0.10.2.8:Change:Now Ela allows recursive definitions in all the cases (not only for functions). This enables writing code like so: 'let a = 1::(&a)'. In some cases however a 'bottom reached' exception can be raised in run-time. This exception cannot be handled in user code.

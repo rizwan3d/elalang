@@ -1297,7 +1297,21 @@ PRODUCTIONS
 		(. exp = null; .)
 		(
 			(. scanner.InjectBlock(); .)
-			SYNC OPEN (. var inc = new ElaModuleInclude(t); .)
+			SYNC OPEN
+			(. 
+				var block = new ElaBlock(t); 
+				exp = block;
+				var cexp = default(ElaExpression);
+			.) 
+			IncludeStatElement<out cexp> (. block.Expressions.Add(cexp); .)
+			{ IncludeStatElement<out cexp> (. block.Expressions.Add(cexp); .) }
+			EndBlock
+		).
+	
+	IncludeStatElement<out ElaExpression exp> =
+		(. exp = null; .)
+		(
+			(. var inc = new ElaModuleInclude(t); .)
 			[ QUALIFIED (. inc.RequireQuailified = true; .) ]
 			Qualident<inc.Path>
 			(.
@@ -1325,7 +1339,6 @@ PRODUCTIONS
 					{ "," ImportName<out imp> (. inc.ImportList.Add(imp); .) }
 				")"
 			]
-			EBLOCK
 		).
 		
 	ImportName<out ElaImportedVariable imp> =
