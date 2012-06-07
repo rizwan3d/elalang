@@ -1,3 +1,4 @@
+0.1.2.0:Release:Release of 0.1.2.0.
 0.1.1.4:New:Article CoreModule update information about new non-strict fold*.
 0.1.1.3:Change:Comprehensions article updated with new information.
 0.1.1.2:New:Information about new functions added to RecordModule article.

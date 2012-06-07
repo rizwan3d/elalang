@@ -1,3 +1,4 @@
+0.10.3.0:Release:Release of 0.10.3.0.
 0.10.2.12:Change:Implementation of 'Force' op code is optimized.
 0.10.2.11:New:Layout rules for 'open' directive has changed (they are backward compatible). Now it is possible to omit 'open' keyword for multiple directives (all subsequent directives should be indented after the first or put on a single line).
 0.10.2.10:Change:Layout rules for expressions in top level has changed - now multiline expressions at top level should be indented however it is possible to have multiple expressions without explicit sequencing ($).

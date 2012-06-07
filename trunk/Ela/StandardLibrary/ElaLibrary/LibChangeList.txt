@@ -1,3 +1,4 @@
+0.1.3.0:Release:Release of 0.1.3.0.
 0.1.2.2:New:New functions foldl', foldr' and fold' with non-strict sematics added to Core module.
 0.1.2.1:New:New functions 'addFields' and 'removeFields' added to Record module.
 0.1.2.0:Release:Release of 0.1.2.0.
