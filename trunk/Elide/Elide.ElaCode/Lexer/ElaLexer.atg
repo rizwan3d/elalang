@@ -78,8 +78,8 @@ PRODUCTIONS
 	    "<[" (. var pos = t.pos; .) {ANY} ("]>")
 	    (. Add(pos, t.pos - pos + t.val.Length, TextStyle.MultilineStyle2); .).
 
-	Thunk = 
-		"(&" (. if (la.val != null && la.val != "" && la.val[0] != '&') Add(t.pos + 1, 1, TextStyle.Style10); .).
+	//Thunk = 
+	//	"(&" (. if (la.val != null && la.val != "" && la.val[0] != '&') Add(t.pos + 1, 1, TextStyle.Style10); .).
 						
 	Primary = 
 		(
@@ -101,7 +101,7 @@ PRODUCTIONS
 		( "let" | "where" | "et" | "and" | "or" | "open" | "in" | "is" | "if" | "then" | "else" | "match" | "try" | "with" | "inline" | "private" | "__internal" | "extends" | "qualified" | "raise" | "fail" )
 		(. Add(t.pos, t.val.Length, TextStyle.Style2); .).
 		
-	Code = Keywords | VerbatimString | Comment | SingleLineComment | Primary | NL | Thunk.
+	Code = Keywords | VerbatimString | Comment | SingleLineComment | Primary | NL.// | Thunk.
 	
 	Ela = Code { Code }.
 
