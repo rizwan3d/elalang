@@ -288,8 +288,6 @@ namespace Ela.Compilation
                     cw.Emit(Op.Rem);
                     break;
                 case ElaBuiltinKind.Subtract:
-                    //cw.Emit(Op.Force);
-                    //cw.Emit(Op.Force);
                     cw.Emit(Op.Sub);
                     break;
                 case ElaBuiltinKind.ShiftRight:
