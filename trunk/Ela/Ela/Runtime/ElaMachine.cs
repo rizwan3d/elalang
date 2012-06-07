@@ -338,7 +338,7 @@ namespace Ela.Runtime
 
                             if (ctx.Failed)
                             {
-                                evalStack.Push(right);
+                                evalStack.Replace(right);
                                 evalStack.Push(left);
                                 ExecuteFail(ctx.Error, thread, evalStack);
                                 goto SWITCH_MEM;
@@ -474,7 +474,8 @@ namespace Ela.Runtime
 						right = evalStack.Peek();
 						evalStack.Replace(right.Ref.Force(right, ctx));
 
-						if (ctx.Failed)
+                        System.Diagnostics.Debug.WriteLine("Failed: " + ctx.Failed);
+                        if (ctx.Failed)
 						{
 							evalStack.Replace(right);
 							ExecuteThrow(thread, evalStack);

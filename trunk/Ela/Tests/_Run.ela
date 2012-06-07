@@ -1,15 +1,6 @@
-open Test
-open Console
-open BasicTests
-open FunTests
-open RangeTests
-open ListTests
-open TupleTests
-open RecordTests
-open VariantTests
-open ComprehensionTests
-open ThunkTests
-open MatchTests
+open Test Console
+open BasicTests FunTests RangeTests ListTests TupleTests RecordTests 
+     VariantTests ComprehensionTests ThunkTests MatchTests
 
 let _ = [] 
     |> regFuns BasicTests
