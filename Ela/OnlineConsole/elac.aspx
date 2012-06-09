@@ -150,7 +150,6 @@
 
 		function execEla() {
 			var src = document.getElementById("console").value;
-            document.getElementById("console").value = "";
 			start();
 			var req = createXMLHttpRequest();
 			req.open("POST", "/exec.aspx?tag=" + getTag());
@@ -285,6 +284,14 @@
 			</tr>
 			
 		</table>		
+		<script language="javascript">
+			var p = '<%=Request["eval"]%>';
+			
+			if (p != null && p != '') {
+				document.getElementById("console").value = p;
+				execEla();
+			}
+		</script>
 	</body>
 </html>
 <!--

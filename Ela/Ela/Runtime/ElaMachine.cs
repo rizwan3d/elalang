@@ -720,7 +720,7 @@ namespace Ela.Runtime
 							break;
 						}
 
-                        if (left.Ref.Lesser(res, right, ctx))
+                        if (left.Ref.Lesser(left, right, ctx))
 						{
 							thread.Offset = opd;
 							break;
