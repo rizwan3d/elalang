@@ -19,7 +19,7 @@ You can specify an optional step in a range:
 If the first element of a range is lesser than the last element of a range is mandatory:
 <code>[10,9..1] $ [10,7.. --10]</code>
 Ranges can contain numeric types or tuples:
-<code>[(1,2)..(10,20)] == [(1,2),(2,3),(3,4),(4,5),(5,6)]</code>
+<code>[(1,2)..(5,10)] == [(1,2),(2,3),(3,4),(4,5),(5,6)]</code>
 
 <section level="1" title="Non-strict Ranges" />
 It is possible to construct non-strict ranges (such as infinite lists). In this case the last element in range should be omitted:

@@ -1,3 +1,4 @@
+0.10.3.2:Fix:A bug fixed in Skiptn op code.
 0.10.3.1:Fix:A bug fixed in Br_lt op code that was causing mis-behavior of this op code for values of types other than int (defect #4).
 0.10.3.0:Release:Release of 0.10.3.0.
 0.10.2.12:Change:Implementation of 'Force' op code is optimized.
