@@ -1,3 +1,4 @@
+0.10.4.0:Release:Release of 0.10.4.0.
 0.10.3.3:Fix:A bug fixed in marshalling of .NET functions into Ela code that have more than 4 arguments (incorrect number of arguments was determined).
 0.10.3.2:Fix:A bug fixed in Skiptn op code.
 0.10.3.1:Fix:A bug fixed in Br_lt op code that was causing mis-behavior of this op code for values of types other than int (defect #4).
