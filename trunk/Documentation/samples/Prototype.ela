@@ -26,4 +26,4 @@ let derived = {
    (derived?."sum") 3 2 //Here we call function derived.sum
   ,(derived?."sub") 3 2 //Here we call function class.sub
   ,(derived?."mod") 3 2 //Here we call function derived.mod
-)
+  )
