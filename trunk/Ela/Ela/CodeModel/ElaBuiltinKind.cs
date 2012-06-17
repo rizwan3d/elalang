@@ -28,30 +28,22 @@ namespace Ela.CodeModel
 
         IsNil,
 
-        Fst,
-
-        Snd,
-
-        Fst3,
-
-        Snd3,
-
         Gettag,
 
         Untag,
-
-        Apply,
-
 
         Negate,
 
         BitwiseNot,
 
+        
 
         Showf,
 
-        Convert,
+        Readf,
 
+        Cast,
+        
         ForwardPipe,
 
         BackwardPipe,
@@ -95,10 +87,8 @@ namespace Ela.CodeModel
 
         ShiftLeft,
 
-        CompForward,
+        Get,
 
-        CompBackward,
-
-        Get
+        RecField
     }
 }

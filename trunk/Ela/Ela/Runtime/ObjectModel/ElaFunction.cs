@@ -9,8 +9,6 @@ namespace Ela.Runtime.ObjectModel
 	public class ElaFunction : ElaObject
 	{
 		#region Construction
-        internal static readonly ElaTypeInfo TypeInfo = new ElaTypeInfo(TypeCodeFormat.GetShortForm(ElaTypeCode.Function), (Int32)ElaTypeCode.Function, true, typeof(ElaFunction));
-        
         private ElaMachine vm;
 		internal static readonly ElaValue[] defaultParams = new ElaValue[] { new ElaValue(ElaUnit.Instance) };
 		internal static readonly ElaValue[] emptyParams = new ElaValue[0];
@@ -22,8 +20,8 @@ namespace Ela.Runtime.ObjectModel
         private const string ISNATIVE = "isNative";
         private const string ISGLOBAL = "isGlobal";
         private const string ISPARTIAL = "isPartial";
-        public int Spec;
-        
+        internal bool table;
+         
 		protected ElaFunction() : this(1)
 		{
 
@@ -66,77 +64,14 @@ namespace Ela.Runtime.ObjectModel
                 yield return Parameters[i];
         }
 
-
-        protected internal override ElaValue Call(ElaValue value, ExecutionContext ctx)
-		{
-			try
-			{
-				return vm != null ? vm.CallPartial(this, value) : Call(value);
-			}
-			catch (ElaCodeException ex)
-			{
-				ctx.Fail(ex.ErrorObject);
-				return Default();
-			}
-		}
-
-
-        protected internal override ElaValue Call(ElaValue arg1, ElaValue arg2, ExecutionContext ctx)
-        {
-            var ret = Call(arg1, ctx);
-
-            if (!ctx.Failed)
-                return ret.Call(arg2, ctx);
-
-            return ret;
-        }
-
-
 		internal ElaValue CallWithThrow(ElaValue value)
 		{
 			return vm.CallPartial(this, value);
 		}
 
 
-		protected internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-            var leftFun = left.Ref as ElaFunction;
-            var rightFun = right.Ref as ElaFunction;
-
-            if (leftFun == null || rightFun == null)
-                return false;
-
-			return IsEqual(leftFun, rightFun, ctx);
-		}
-
-
-		protected internal override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-            var leftFun = left.Ref as ElaFunction;
-            var rightFun = right.Ref as ElaFunction;
-
-            if (leftFun == null || rightFun == null)
-                return true;
-
-            return !IsEqual(leftFun, rightFun, ctx);
-		}
-
-
-        private bool IsEqual(ElaFunction left, ElaFunction right, ExecutionContext ctx)
+        public override string ToString(string format, IFormatProvider provider)
         {
-            return Object.ReferenceEquals(left, right) ||
-                left.Handle == right.Handle &&
-                left.ModuleHandle == right.ModuleHandle &&
-                left.AppliedParameters == right.AppliedParameters &&
-                left.Flip == right.Flip &&
-                EqHelper.ListEquals(left.Parameters, right.Parameters, ctx) &&
-                (Object.ReferenceEquals(left.LastParameter.Ref, right.LastParameter.Ref) ||
-                    left.LastParameter.Equals(right.LastParameter));
-        }
-
-
-        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
-		{
 			var sb = new StringBuilder();
 			sb.Append("*");
 
@@ -433,20 +368,6 @@ namespace Ela.Runtime.ObjectModel
 				args = defaultParams;
 
 			return vm.Call(this, args);
-		}
-
-
-		public override ElaTypeInfo GetTypeInfo()
-		{
-			return CreateTypeInfo(
-                new ElaRecordField(MODULE, new ElaModule(ModuleHandle, vm).GetTypeInfo()),
-                new ElaRecordField(HANDLE, Handle),
-                new ElaRecordField(NAME, GetFunctionName()),
-                new ElaRecordField(PARAMS, Parameters.Length + 1 - AppliedParameters),
-                new ElaRecordField(ISNATIVE, vm != null),
-                new ElaRecordField(ISGLOBAL, vm == null || Captures.Count == 1),
-                new ElaRecordField(ISPARTIAL, AppliedParameters > 0)
-            );
 		}
 
 

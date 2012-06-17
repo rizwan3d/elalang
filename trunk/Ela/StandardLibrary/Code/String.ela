@@ -1,5 +1,5 @@
 /* 
-    Ela String module
+    Module string
     Created in 2012 by Basil Voronkov
 */
 open qualified "$String"#elalib@str

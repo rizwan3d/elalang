@@ -68,6 +68,7 @@ namespace Ela.Linking
                 bw.Write(u.Name);
                 bw.Write(u.Address);
                 bw.Write(u.Data);
+                bw.Write(u.Flags);
                 bw.Write(u.Line);
                 bw.Write(u.Column);
             }
@@ -98,6 +99,43 @@ namespace Ela.Linking
 				if (OpSizeHelper.OpSize[(Int32)op] > 1)
 					bw.Write(frame.OpData[i]);
 			}
+
+            var types = frame.Types;
+            bw.Write(types.Count);
+
+            foreach (var t in types.Keys) 
+                bw.Write(t);
+
+            var classes = frame.Classes;
+            bw.Write(classes.Count);
+
+            foreach (var kv in classes)
+            {
+                bw.Write(kv.Key);
+                bw.Write(kv.Value.Members.Length);
+
+                for (var i = 0; i < kv.Value.Members.Length; i++)
+                {
+                    var m = kv.Value.Members[i];
+                    bw.Write(m.Arguments);
+                    bw.Write(m.Mask);
+                    bw.Write(m.Name);
+                }
+            }
+
+            var inst = frame.Instances;
+            bw.Write(inst.Count);
+
+            for (var i = 0; i < inst.Count; i++)
+            {
+                var it = inst[i];
+                bw.Write(it.Type);
+                bw.Write(it.Class);
+                bw.Write(it.TypeModuleId);
+                bw.Write(it.ClassModuleId);
+                bw.Write(it.Line);
+                bw.Write(it.Column);
+            }
 
             var di = frame.Symbols != null;
             bw.Write(di); //Contains debug info

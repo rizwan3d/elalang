@@ -29,6 +29,8 @@ namespace Ela.Linking
 
         ExportedNameRemoved = 610,
 
-        ExportedNameChanged = 611
+        ExportedNameChanged = 611,
+
+        InstanceAlreadyExists = 612,
 	}
 }

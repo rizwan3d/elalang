@@ -1,63 +1,89 @@
 /* 
-    Ela DateTime module
+    Module datetime
     Created in 2012 by Basil Voronkov
 */
-open qualified "$DateTime"#elalib@dt (maxDateTime, minDateTime)
+open qualified "$DateTime"#elalib@dt
 
-let now () = dt.now ()
+/* Construction */
+type datetime x = cons x
+        where cons ?long@x = DateTime x
+              cons (y,m,d) = DateTime (dt.newDateTime y m d 0 0 0 0)
+              cons (y,m,d,h,mm) = DateTime (dt.newDateTime y m d h mm 0 0)
+              cons (y,m,d,h,mm,s,ms) = DateTime (dt.newDateTime y m d h mm s ms)
 
-let today () = dt.today ()
+let now () = datetime <| dt.now!
 
-let add x y = dt.add (force x) (force y)
+let today () = datetime <| dt.today!
 
-let addTicks x y = dt.addTicks (force x) (force y)
+let maxDateTime = datetime <| dt.maxDateTime
 
-let addMilliseconds x y = dt.addMilliseconds (force x) (force y)
+let minDateTime = datetime <| dt.minDateTime
 
-let addSeconds x y = dt.addSeconds (force x) (force y)
+/* Instances */
+instance Eq datetime
+  where (DateTime x) == (DateTime y) = x == y
+     et (DateTime x) <> (DateTime y) = x <> y
 
-let addMinutes x y = dt.addMinutes (force x) (force y)
+instance Ord datetime
+  where (DateTime x) > (DateTime y) = x > y
+     et (DateTime x) < (DateTime y) = x < y
+     et (DateTime x) >= (DateTime y) = x >= y
+     et (DateTime x) <= (DateTime y) = x <= y
 
-let addHours x y = dt.addHours (force x) (force y)
+instance Show datetime
+  where showf fmt (DateTime x) = dt.formatToString fmt x
 
-let addDays x y = dt.addDays (force x) (force y)
+//instance Read datetime
+//  where readf fmt str = datetime (dt.parse fmt str)
 
-let addMonths x y = dt.addMonths (force x) (force y)
+instance Typeable datetime
+  where cast ?long x = dt.ticks x
 
-let addYears x y = dt.addYears (force x) (force y)
+/* Functions */
+let add (DateTime x) (DateTime y) = datetime <| dt.add x y
 
-let years x = dt.years (force x)
+let addTicks (DateTime x) (DateTime y) = datetime <| dt.addTicks x y
 
-let months x = dt.months (force x)
+let addMilliseconds (DateTime x) (DateTime y) = datetime <| dt.addMilliseconds x y
 
-let days x = dt.days (force x)
+let addSeconds (DateTime x) (DateTime y) = datetime <| dt.addSeconds x y
 
-let hours x = dt.hours (force x)
+let addMinutes (DateTime x) (DateTime y) = datetime <| dt.addMinutes x y
 
-let minutes x = dt.minutes (force x)
+let addHours (DateTime x) (DateTime y) = datetime <| dt.addHours x y
 
-let seconds x = dt.seconds (force x)
+let addDays (DateTime x) (DateTime y) = datetime <| dt.addDays x y
 
-let milliseconds x = dt.milliseconds (force x)
+let addMonths (DateTime x) (DateTime y) = datetime <| dt.addMonths x y
 
-let ticks x = dt.ticks (force x)
+let addYears (DateTime x) (DateTime y) = datetime <| dt.addYears x y
 
-let dayOfWeek x = dt.dayOfWeek (force x)
+let years (DateTime x) = dt.years x
 
-let dayOfYear x = dt.dayOfYear (force x)
+let months (DateTime x) = dt.months x
 
-let date x = dt.date (force x)
+let days (DateTime x) = dt.days x
 
-let parse fmt x = dt.parse (force fmt) (force x)
+let hours (DateTime x) = dt.hours x
 
-let toLocaleString x = dt.toLocaleString (force x)
+let minutes (DateTime x) = dt.minutes x
 
-let toLocaleStringFormat fmt x = dt.toLocaleStringFormat (force fmt) (force x)
+let seconds (DateTime x) = dt.seconds x
 
-let diff x y = dt.diff (force x) (force y)
+let milliseconds (DateTime x) = dt.milliseconds x
 
-let diffSeconds x y = dt.diffSeconds (force x) (force y)
+let ticks (DateTime x) = dt.ticks x
 
-let diffMilliseconds x y = dt.diffMilliseconds (force x) (force y)
+let dayOfWeek (DateTime x) = dt.dayOfWeek x
 
-let diffTicks x y = dt.diffTicks (force x) (force y)
+let dayOfYear (DateTime x) = dt.dayOfYear x
+
+let date (DateTime x) = datetime <| dt.date x
+
+let diff (DateTime x) (DateTime y) = dt.diff x y
+
+let diffSeconds x y = seconds (diffTicks x y)
+
+let diffMilliseconds x y = milliseconds (diffTicks x y)
+
+let diffTicks (DateTime x) (DateTime y) = x - y

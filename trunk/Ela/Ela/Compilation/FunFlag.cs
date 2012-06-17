@@ -10,6 +10,6 @@ namespace Ela.Compilation
 
 		Inline,
 
-        Extends
+        Newtype
 	}
 }

@@ -78,6 +78,9 @@ namespace ElaConsole.Options
 
 		[CommandLineOption("prelude")]
 		public string Prelude { get; set; }
+
+        [CommandLineOption("noprelude")]
+        public bool NoPrelude { get; set; }
 		#endregion
 
 

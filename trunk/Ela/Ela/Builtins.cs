@@ -6,12 +6,6 @@ namespace Ela
 {
     internal static class Builtins
     {
-        internal static int Params(ElaBuiltinKind kind)
-        {
-            return kind >= ElaBuiltinKind.Showf ? 2 : 1;
-        }
-
-
         internal static ElaBuiltinKind Kind(string func)
         {
             switch (func)
@@ -22,24 +16,21 @@ namespace Ela
                 case "flip": return ElaBuiltinKind.Flip;
                 case "force": return ElaBuiltinKind.Force;
                 case "length": return ElaBuiltinKind.Length;
-                case "type": return ElaBuiltinKind.Type;
+                case "typeinfo": return ElaBuiltinKind.Type;
                 case "succ": return ElaBuiltinKind.Succ;
                 case "pred": return ElaBuiltinKind.Pred;
                 case "nil": return ElaBuiltinKind.Nil;
                 case "head": return ElaBuiltinKind.Head;
                 case "tail": return ElaBuiltinKind.Tail;
                 case "isnil": return ElaBuiltinKind.IsNil;
-                case "fst": return ElaBuiltinKind.Fst;
-                case "fst3": return ElaBuiltinKind.Fst3;
-                case "snd": return ElaBuiltinKind.Snd;
-                case "snd3": return ElaBuiltinKind.Snd3;
                 case "gettag": return ElaBuiltinKind.Gettag;
                 case "untag": return ElaBuiltinKind.Untag;
-                case "apply": return ElaBuiltinKind.Apply;
-
+                
                 case "showf": return ElaBuiltinKind.Showf;
-                case "convert": return ElaBuiltinKind.Convert;
+                case "readf": return ElaBuiltinKind.Readf;
 
+                case "recfield": return ElaBuiltinKind.RecField;
+                case "cast": return ElaBuiltinKind.Cast;
                 case "equal": return ElaBuiltinKind.Equal;
                 case "notequal": return ElaBuiltinKind.NotEqual;
                 case "greaterequal": return ElaBuiltinKind.GreaterEqual;
@@ -61,8 +52,6 @@ namespace Ela
                 case "bitwisenot": return ElaBuiltinKind.BitwiseNot;
                 case "concat": return ElaBuiltinKind.Concat;
                 case "cons": return ElaBuiltinKind.Cons;
-                case "compforward": return ElaBuiltinKind.CompForward;
-                case "compbackward": return ElaBuiltinKind.CompBackward;
                 case "get": return ElaBuiltinKind.Get;
 
                 default: return ElaBuiltinKind.None;

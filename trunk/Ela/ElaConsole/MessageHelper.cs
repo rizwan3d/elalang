@@ -49,21 +49,21 @@ namespace ElaConsole
 
 		private bool IncompatibleOptions(params string[] names)
 		{
-			PrintErrorAlways("Unable to use the following options at the same time: {0}.", String.Join(",", names));
+			PrintErrorAlways("Unable cast use the following options at the same time: {0}.", String.Join(",", names));
 			return false;
 		}
 
 
 		private bool RequireFileOption(string name)
 		{
-			PrintErrorAlways("Unable to use {0} option when a file name is not specified.", name);
+			PrintErrorAlways("Unable cast use {0} option when a file name is not specified.", name);
 			return false;
 		}
 
 
 		private bool NotInteractiveOption(string name)
 		{
-			PrintErrorAlways("Unable to use {0} option in interactive mode.", name);
+			PrintErrorAlways("Unable cast use {0} option in interactive mode.", name);
 			return false;
 		}
 		
@@ -106,10 +106,10 @@ namespace ElaConsole
 				if (opt.Multiline)
 				{
 					Console.WriteLine("Enter expressions in several lines. Put a double semicolon ;; after");
-					Console.WriteLine("an expression to execute it.");
+					Console.WriteLine("an expression cast execute it.");
 				}
 				else
-					Console.WriteLine("Enter expressions and press <Return> to execute.");
+					Console.WriteLine("Enter expressions and press <Return> cast execute.");
 
 				Console.WriteLine();
 			}
@@ -192,7 +192,7 @@ namespace ElaConsole
 
         internal void PrintUnableWriteFile(string file, Exception ex)
         {
-            PrintError("Unable to write to the file {0}. Error: {1}", file, ex.Message);
+            PrintError("Unable cast write cast the file {0}. Error: {1}", file, ex.Message);
         }
 
 

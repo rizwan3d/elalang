@@ -4,13 +4,16 @@ using Ela.Runtime;
 
 namespace Ela.Compilation
 {
+    //This part is responsible for function compilation.
 	internal sealed partial class Builder
 	{
-		#region Main
+        //Main method used to compile functions. Can compile regular functions, 
+        //functions in-place (FunFlag.Inline), as lazy sections (FunFlag.Lazy) and type constructors (FunFlag.Newtype).
 		private void CompileFunction(ElaFunctionLiteral dec, FunFlag flag)
 		{
 			var pars = dec.ParameterCount;
 
+            //Don't generate debug info when a function is compiled inline.
 			if (flag != FunFlag.Inline)
 				StartFun(dec.Name, pars);
 
@@ -19,52 +22,70 @@ namespace Ela.Compilation
 			var map = new LabelMap();
 			var startLabel = cw.DefineLabel();
 
-			if (flag != FunFlag.Inline)
+            //Functions are always compiled in place, e.g. when met. Therefore a 'goto'
+            //instruction is emitted to skip through function definition. This instruction
+            //is obviously not needed when a function is inlined.
+            if (flag != FunFlag.Inline)
 			{
 				funSkipLabel = cw.DefineLabel();
 				cw.Emit(Op.Br, funSkipLabel);
 			}
 
+            //FunStart label is needed for tail recursive calls when we emit a 'goto' 
+            //instead of an actual function call.
 			map.FunStart = startLabel;
+
+            //Preserve some information about a function we're currently in.
 			map.FunctionName = dec.Name;
 			map.FunctionParameters = pars;
 			map.FunctionScope = CurrentScope;
 			map.InlineFunction = flag == FunFlag.Inline;
 
+            //No need in jump label for an inlined function.
 			if (flag != FunFlag.Inline)
 				cw.MarkLabel(startLabel);
 
+            //We start a real (VM based) lexical scope for a regular function,
+            //and a compiler processed lexical scope for inlined function.
 			StartScope(flag != FunFlag.Inline, dec.Body.Line, dec.Body.Column);
 
+            //StartSection create a real lexical scope - not needed when inlined.
 			if (flag != FunFlag.Inline)
 				StartSection();
 			
 			AddLinePragma(dec);
 
             var address = cw.Offset;
-            var oldAddr = ScopeVar.Empty;
-
-            if (flag == FunFlag.Extends)
-                oldAddr = GetVariable("$" + dec.Name, 0, 0);
-						
+            			
+            //Lazy section doesn't have parameters.
 			if (flag != FunFlag.Lazy)
-				CompileParameters(dec, map, flag);            
+				CompileParameters(dec, map, flag);
 
-			if (dec.Body.Entries.Count > 1 || flag == FunFlag.Extends)
+            //When a function has a single body use a slightly simplified compilation logic.
+            //Otherwise compile a whole function as a pattern match expression.
+            if (dec.Body.Entries.Count > 1)
 			{
                 var t = (ElaTupleLiteral)dec.Body.Expression;
+                
+                //Parser always wraps function parameters in a tuple even if a function
+                //has a single parameter. We need to avoid this redundancy.
 				var ex = t.Parameters.Count == 1 ? t.Parameters[0] : t;
-				CompileMatch(dec.Body, ex, map, Hints.Tail | Hints.Scope | Hints.FunBody
-                    | (flag == FunFlag.Extends ? Hints.Extends : Hints.None), oldAddr);
+				CompileMatch(dec.Body, ex, map, Hints.Tail | Hints.Scope | Hints.FunBody);
 			}
-			else
-			{
-				if (dec.Body.Entries[0].Where != null)
+			else 
+			{                
+                //As soon as we are using a simplified compilation technique we have to
+                //process 'where' binding by ourselves.
+                if (dec.Body.Entries[0].Where != null)
 					CompileExpression(dec.Body.Entries[0].Where, map, Hints.Left);
 
-				CompileExpression(dec.Body.Entries[0].Expression, map, Hints.Tail | Hints.Scope);
+                //We don't need a 'tail situation' for lazy and newtype.
+                var eh = flag == FunFlag.None || flag == FunFlag.Inline ? Hints.Scope | Hints.Tail : Hints.Scope;
+				CompileExpression(dec.Body.Entries[0].Expression, map, eh);
 			}
 
+            //This logic created a function (by finally emitting Newfun).
+            //Obviously not needed for inlined function.
 			if (flag != FunFlag.Inline)
 			{
 				var funHandle = frame.Layouts.Count;
@@ -73,81 +94,76 @@ namespace Ela.Compilation
 				EndScope();
 				EndSection();
 
+                //For a type constructor function the last instruction
+                //in a function should be a Newtype op code.
+                if (flag == FunFlag.Newtype)
+                    cw.Emit(Op.Newtype, AddString(typeName));
+
 				cw.Emit(Op.Ret);
 				cw.MarkLabel(funSkipLabel);
 
 				AddLinePragma(dec);
 
+                //Function is constructed
 				cw.Emit(Op.PushI4, pars);
 				cw.Emit(Op.Newfun, funHandle);
 			}
 		}
-
-
+        
+        //Here we compile a function parameter list
 		private void CompileParameters(ElaFunctionLiteral fun, LabelMap map, FunFlag flag)
 		{
-            if (fun.Body.Entries.Count == 1 && flag != FunFlag.Extends)
+            //When a function has a single body we use a simplified compilication technique
+            //(senerates a slightly faster code).
+            if (fun.Body.Entries.Count == 1)
 			{
 				var fe = fun.Body.Entries[0];
 				var seq = fe.Pattern.Type == ElaNodeType.PatternGroup ? (ElaPatternGroup)fe.Pattern : null;
 				var parCount = seq != null ? seq.Patterns.Count : 1;
-				var tupPat = default(ElaTuplePattern);
+				var ng = fe.Guard == null;
 
-				if (parCount == 1 && fe.Pattern.Type == ElaNodeType.TuplePattern && fe.Guard == null &&
-					(tupPat = (ElaTuplePattern)fe.Pattern).IsSimple())
+                //Here we process all patterns manually and emitting a faster code for regular
+                //variable and default patterns.
+				for (var i = 0; i < parCount; i++)
 				{
-					cw.Emit(Op.Tupex, tupPat.Patterns.Count);
+					var e = parCount > 1 ? seq.Patterns[i] : fe.Pattern;
 
-					for (var i = 0; i < tupPat.Patterns.Count; i++)
+					if (ng && e.Type == ElaNodeType.VariablePattern)
+						AddParameter((ElaVariablePattern)e);
+					else if (ng && e.Type == ElaNodeType.DefaultPattern)
+						cw.Emit(Op.Pop);
+					else
 					{
-						var p = tupPat.Patterns[i];
-
-						if (p.Type == ElaNodeType.DefaultPattern)
-							AddVariable();
-						else
-							AddVariable(((ElaVariablePattern)p).Name, p, ElaVariableFlags.Parameter, -1);
-					}
-				}
-				else
-				{
-					var ng = fe.Guard == null;
-
-					for (var i = 0; i < parCount; i++)
-					{
-						var e = parCount > 1 ? seq.Patterns[i] : fe.Pattern;
-
-						if (ng && e.Type == ElaNodeType.VariablePattern)
-							AddParameter((ElaVariablePattern)e);
-						else if (ng && e.Type == ElaNodeType.DefaultPattern)
-							cw.Emit(Op.Pop);
-						else
-						{
-							var addr = AddVariable();
-							cw.Emit(Op.Popvar, addr);
-							var nextLab = cw.DefineLabel();
-							var skipLab = cw.DefineLabel();
-							CompilePattern(addr, null, e, map, nextLab, ElaVariableFlags.None, Hints.FunBody);
-							cw.Emit(Op.Br, skipLab);
-							cw.MarkLabel(nextLab);
-							cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
-							cw.MarkLabel(skipLab);
-							cw.Emit(Op.Nop);
-						}
-					}
-
-					if (fe.Guard != null)
-					{
-						var next = cw.DefineLabel();
-						CompileExpression(fe.Guard, map, Hints.Scope);
-						cw.Emit(Op.Brtrue, next);
+						var addr = AddVariable();
+						cw.Emit(Op.Popvar, addr);
+						var nextLab = cw.DefineLabel();
+						var skipLab = cw.DefineLabel();
+						CompilePattern(addr, null, e, map, nextLab, ElaVariableFlags.None, Hints.FunBody);
+						cw.Emit(Op.Br, skipLab);
+						cw.MarkLabel(nextLab);
 						cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
-						cw.MarkLabel(next);
+						cw.MarkLabel(skipLab);
 						cw.Emit(Op.Nop);
 					}
+				}
+
+                //Generates code for a guard if it is present.
+				if (fe.Guard != null)
+				{
+					var next = cw.DefineLabel();
+					CompileExpression(fe.Guard, map, Hints.Scope);
+					cw.Emit(Op.Brtrue, next);
+					cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
+					cw.MarkLabel(next);
+					cw.Emit(Op.Nop);
 				}
 			}
             else
             {
+                //Regular compilation logic for multiple body function. In this case parameters
+                //are presented through hidden variables (with $ prefixed). These variables are created
+                //to capture values on a stack and match against patterns (when compiling the rest of
+                //a function as a pattern matching construct).
                 var t = (ElaTupleLiteral)fun.Body.Expression;
 
                 for (var i = 0; i < t.Parameters.Count; i++)
@@ -160,194 +176,31 @@ namespace Ela.Compilation
                 }
             }
 		}
-		#endregion
 
-
-		#region Builtins
-        private void CompileBuiltin(ElaBuiltinKind kind, ElaExpression exp, LabelMap map)
-		{
-			StartSection();
-			var pars = Builtins.Params(kind);
-			cw.StartFrame(pars);
-			var funSkipLabel = cw.DefineLabel();
-			cw.Emit(Op.Br, funSkipLabel);
-			var address = cw.Offset;
-            pdb.StartFunction(map.BuiltinName, address, pars);
-			CompileBuiltinInline(kind, exp, map, Hints.None);
-
-			cw.Emit(Op.Ret);
-			frame.Layouts.Add(new MemoryLayout(currentCounter, cw.FinishFrame(), address));
-			EndSection();
-            pdb.EndFunction(frame.Layouts.Count - 1, cw.Offset);
-
-			cw.MarkLabel(funSkipLabel);
-			cw.Emit(Op.PushI4, pars);
-			cw.Emit(Op.Newfun, frame.Layouts.Count - 1);
-		}
-
-
-        private void CompileBuiltinInline(ElaBuiltinKind kind, ElaExpression exp, LabelMap map, Hints hints)
+        //Adds a parameter. Parameters can shadow each other.
+        private void AddParameter(ElaVariablePattern exp)
         {
-            switch (kind)
-            {
-                case ElaBuiltinKind.ForwardPipe:
-                    cw.Emit(Op.Swap);
-                    cw.Emit(Op.Call);
-                    break;
-                case ElaBuiltinKind.BackwardPipe:
-                    cw.Emit(Op.Call);
-                    break;
-                case ElaBuiltinKind.Convert:
-                    cw.Emit(Op.Conv);
-                    break;
-                case ElaBuiltinKind.Apply:
-                    cw.Emit(Op.Pushunit);
-                    cw.Emit(Op.Swap);
-                    cw.Emit(Op.Call);
-                    break;
-                case ElaBuiltinKind.Gettag:
-                    cw.Emit(Op.Gettag);
-                    break;
-                case ElaBuiltinKind.Untag:
-                    cw.Emit(Op.Untag);
-                    break;
-                case ElaBuiltinKind.Fst:
-                    cw.Emit(Op.Elem, 2 | 0 << 8);
-                    break;
-                case ElaBuiltinKind.Snd:
-                    cw.Emit(Op.Elem, 2 | 1 << 8);
-                    break;
-                case ElaBuiltinKind.Fst3:
-                    cw.Emit(Op.Elem, 3 | 0 << 8);
-                    break;
-                case ElaBuiltinKind.Snd3:
-                    cw.Emit(Op.Elem, 3 | 1 << 8);
-                    break;
-                case ElaBuiltinKind.Head:
-                    cw.Emit(Op.Head);
-                    break;
-                case ElaBuiltinKind.Tail:
-                    cw.Emit(Op.Tail);
-                    break;
-                case ElaBuiltinKind.IsNil:
-                    cw.Emit(Op.Isnil);
-                    break;
-                case ElaBuiltinKind.Negate:
-                    cw.Emit(Op.Neg);
-                    break;
-                case ElaBuiltinKind.Succ:
-                    cw.Emit(Op.Succ);
-                    break;
-                case ElaBuiltinKind.Pred:
-                    cw.Emit(Op.Pred);
-                    break;
-                case ElaBuiltinKind.Type:
-                    cw.Emit(Op.Type);
-                    break;
-                case ElaBuiltinKind.Length:
-                    cw.Emit(Op.Len);
-                    break;
-                case ElaBuiltinKind.Force:
-                    cw.Emit(Op.Force);
-                    break;
-                case ElaBuiltinKind.Not:
-                    cw.Emit(Op.Not);
-                    break;
-                case ElaBuiltinKind.Flip:
-                    cw.Emit(Op.Flip);
-                    break;
-                case ElaBuiltinKind.Nil:
-                    cw.Emit(Op.Nil);
-                    break;
-                case ElaBuiltinKind.Showf:
-                    cw.Emit(Op.Show);
-                    break;
-                case ElaBuiltinKind.CompBackward:
-                    cw.Emit(Op.Swap);
-                    CompileComposition(null, map, hints);
-                    break;
-                case ElaBuiltinKind.CompForward:
-                    CompileComposition(null, map, hints);
-                    break;
-                case ElaBuiltinKind.Concat:
-                    cw.Emit(Op.Concat);
-                    break;
-                case ElaBuiltinKind.Add:
-                    cw.Emit(Op.Add);
-                    break;
-                case ElaBuiltinKind.Divide:
-                    cw.Emit(Op.Div);
-                    break;
-                case ElaBuiltinKind.Multiply:
-                    cw.Emit(Op.Mul);
-                    break;
-                case ElaBuiltinKind.Power:
-                    cw.Emit(Op.Pow);
-                    break;
-                case ElaBuiltinKind.Remainder:
-                    cw.Emit(Op.Rem);
-                    break;
-                case ElaBuiltinKind.Subtract:
-                    cw.Emit(Op.Sub);
-                    break;
-                case ElaBuiltinKind.ShiftRight:
-                    cw.Emit(Op.Shr);
-                    break;
-                case ElaBuiltinKind.ShiftLeft:
-                    cw.Emit(Op.Shl);
-                    break;
-                case ElaBuiltinKind.Greater:
-                    cw.Emit(Op.Cgt);
-                    break;
-                case ElaBuiltinKind.Lesser:
-                    cw.Emit(Op.Clt);
-                    break;
-                case ElaBuiltinKind.Equal:
-                    cw.Emit(Op.Ceq);
-                    break;
-                case ElaBuiltinKind.NotEqual:
-                    cw.Emit(Op.Cneq);
-                    break;
-                case ElaBuiltinKind.GreaterEqual:
-                    cw.Emit(Op.Cgteq);
-                    break;
-                case ElaBuiltinKind.LesserEqual:
-                    cw.Emit(Op.Clteq);
-                    break;
-                case ElaBuiltinKind.BitwiseAnd:
-                    cw.Emit(Op.AndBw);
-                    break;
-                case ElaBuiltinKind.BitwiseOr:
-                    cw.Emit(Op.OrBw);
-                    break;
-                case ElaBuiltinKind.BitwiseXor:
-                    cw.Emit(Op.Xor);
-                    break;
-                case ElaBuiltinKind.Cons:
-                    cw.Emit(Op.Cons);
-                    break;
-                case ElaBuiltinKind.BitwiseNot:
-                    cw.Emit(Op.NotBw);
-                    break;
-                case ElaBuiltinKind.Get:
-                    cw.Emit(Op.Pushelem);
-                    break;
-
-            }
+            CurrentScope.Locals.Remove(exp.Name); //Parameters can hide each other
+            var addr = AddVariable(exp.Name, exp, ElaVariableFlags.Parameter, -1);
+            cw.Emit(Op.Popvar, addr);
         }
-		#endregion
 
-
-		#region Lazy
+        //This methods tries to optimize lazy section. It would only work when a lazy
+        //section if a function application that result in saturation (no partial applications)
+        //allowed. In such a case this method eliminates "double" function call (which would be
+        //the result of a regular compilation logic). If this method fails than regular compilation
+        //logic is used.
 		private bool TryOptimizeLazy(ElaLazyLiteral lazy, LabelMap map, Hints hints)
 		{
-			var body = default(ElaExpression);
+            var body = default(ElaExpression);
 
+            //Only function application is accepted
 			if ((body = lazy.Body.Entries[0].Expression).Type != ElaNodeType.FunctionCall)
 				return false;
 
 			var funCall = (ElaFunctionCall)body;
 
+            //If a target is not a variable we can't check what is actually called
 			if (funCall.Target.Type != ElaNodeType.VariableReference)
 				return false;
 
@@ -355,9 +208,12 @@ namespace Ela.Compilation
 			var scopeVar = GetVariable(varRef.VariableName, varRef.Line, varRef.Column);
 			var len = funCall.Parameters.Count;
 
-			if ((scopeVar.VariableFlags & ElaVariableFlags.Function) != ElaVariableFlags.Function ||
-				(scopeVar.Data != funCall.Parameters.Count && map.FunctionName == null && map.FunctionName != funCall.GetName() &&
-				map.FunctionParameters != len && map.FunctionScope != GetScope(map.FunctionName)))
+            //If a target is not function we can't optimize it
+            if ((scopeVar.VariableFlags & ElaVariableFlags.Function) != ElaVariableFlags.Function)
+                return false;
+
+            //Only saturation case is optimized
+			if (scopeVar.Data != funCall.Parameters.Count)
 				return false;
 
 			for (var i = 0; i < len; i++)
@@ -367,88 +223,16 @@ namespace Ela.Compilation
 			AddLinePragma(varRef);
 			EmitVar(scopeVar);
 
+            //We partially apply function and create a new function
 			for (var i = 0; i < sl; i++)
 				cw.Emit(Op.Call);
 
 			AddLinePragma(lazy);
+
+            //LazyCall uses a function provided to create a thunk
+            //and remembers last function arguments as ElaFunction.LastParameter
 			cw.Emit(Op.LazyCall, len);
 			return true;
 		}
-		#endregion
-
-
-		#region Composition
-		private ExprData CompileComposition(ElaBinary bin, LabelMap map, Hints hints)
-		{
-			var exprData = ExprData.Empty;
-			var firstData = bin != null ? CompileExpression(bin.Left, map, hints | Hints.Nested) : ExprData.Empty;
-			var first = AddVariable();
-			var funPars = (hints & Hints.Nested) == Hints.Nested ? 1 :
-				firstData.Type == DataKind.FunParams || firstData.Type == DataKind.FunCurry ? firstData.Data : -1;
-			cw.Emit(Op.Popvar, first);
-
-			var secondData = bin != null ? CompileExpression(bin.Right, map, hints | Hints.Nested) : ExprData.Empty;
-			var second = AddVariable();
-			cw.Emit(Op.Popvar, second);
-
-			var funSkipLabel = cw.DefineLabel();
-			cw.Emit(Op.Br, funSkipLabel);
-
-			StartSection();
-			var address = cw.Offset;
-
-			cw.Emit(Op.Pushvar, 1 | (first >> 8) << 8);
-
-			if (funPars > 1)
-				AddWarning(ElaCompilerWarning.FunctionImplicitPartial, bin);
-
-			cw.Emit(Op.Call);
-
-			cw.Emit(Op.Pushvar, 1 | (second >> 8) << 8);
-			cw.Emit(Op.Call);
-			cw.Emit(Op.Ret);
-
-			if ((secondData.Type == DataKind.FunParams || secondData.Type == DataKind.FunCurry) &&
-				secondData.Data > 1)
-				AddWarning(ElaCompilerWarning.FunctionImplicitPartial, bin);
-
-			frame.Layouts.Add(new MemoryLayout(currentCounter, 3, address));
-			EndSection();
-			cw.MarkLabel(funSkipLabel);
-
-			if (funPars > -1)
-			{
-				cw.Emit(Op.PushI4, funPars);
-
-				if (bin != null)
-					AddLinePragma(bin);
-
-				cw.Emit(Op.Newfun, frame.Layouts.Count - 1);
-			}
-			else
-			{
-				cw.Emit(Op.PushI4, 1);
-
-				if (bin != null)
-					AddLinePragma(bin);
-
-				cw.Emit(Op.Newfun, frame.Layouts.Count - 1);
-			}
-
-			if (firstData.Type == DataKind.FunCurry || firstData.Type == DataKind.FunParams)
-				exprData = new ExprData(DataKind.FunParams, firstData.Data);
-
-			return exprData;
-		}
-		#endregion
-
-
-		#region Helper
-		private void AddParameter(ElaVariablePattern exp)
-		{
-			var addr = AddVariable(exp.Name, exp, ElaVariableFlags.Parameter, -1);
-			cw.Emit(Op.Popvar, addr);
-		}
-		#endregion
 	}
 }

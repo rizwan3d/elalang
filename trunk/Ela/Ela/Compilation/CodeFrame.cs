@@ -28,6 +28,9 @@ namespace Ela.Compilation
 			Strings = new FastList<String>();
 			_references = new ReferenceMap();
             HandleMap = new FastList<Int32>();
+            Types = new Dictionary<String,Int32>();
+            Classes = new Dictionary<String,ClassData>();
+            Instances = new FastList<InstanceData>();
             LateBounds = new FastList<LateBoundSymbol>();
        	}
 		#endregion
@@ -60,6 +63,9 @@ namespace Ela.Compilation
 			copy._references = new ReferenceMap(_references);
 			copy.Symbols = Symbols != null ? Symbols.Clone() : null;
             copy.HandleMap = HandleMap.Clone();
+            copy.Types = new Dictionary<String,Int32>(Types);
+            copy.Classes = new Dictionary<String,ClassData>(Classes);
+            copy.Instances = Instances.Clone();
             copy.LateBounds = LateBounds.Clone();
          	return copy;
 		}
@@ -72,6 +78,12 @@ namespace Ela.Compilation
 
 			_references.Add(alias, mr);
 		}
+
+
+        public override string ToString()
+        {
+            return File != null ? File.ToString() : "";
+        }
 		#endregion
 
 
@@ -95,6 +107,12 @@ namespace Ela.Compilation
         internal FastList<MemoryLayout> Layouts { get; private set; }
 
         internal FastList<String> Strings { get; private set; }
+
+        internal Dictionary<String,Int32> Types { get; private set; }
+
+        internal Dictionary<String,ClassData> Classes { get; private set; }
+
+        internal FastList<InstanceData> Instances { get; private set; }
 
         public FastList<LateBoundSymbol> LateBounds { get; private set; }
         #endregion

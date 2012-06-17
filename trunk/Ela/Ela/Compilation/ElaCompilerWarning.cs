@@ -9,7 +9,7 @@ namespace Ela.Compilation
 		
 		// = 400,
 
-		EmbeddedBinding = 401,
+		// = 401,
 
 		MatchEntryAlwaysFail = 402,
 
@@ -20,5 +20,7 @@ namespace Ela.Compilation
 		FunctionInvalidType = 405,
 
 		FunctionImplicitPartial = 406,
+
+        BottomValue = 407,
 	}
 }

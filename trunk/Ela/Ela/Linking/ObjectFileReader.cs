@@ -70,7 +70,7 @@ namespace Ela.Linking
 
             for (var i = 0; i < c; i++)
                 frame.LateBounds.Add(new LateBoundSymbol(
-                    bw.ReadString(), bw.ReadInt32(), bw.ReadInt32(), bw.ReadInt32(),
+                    bw.ReadString(), bw.ReadInt32(), bw.ReadInt32(), bw.ReadInt32(), bw.ReadInt32(),
                     bw.ReadInt32()));
 
 			c = bw.ReadInt32();
@@ -93,7 +93,37 @@ namespace Ela.Linking
 				var opCode = (Op)bw.ReadByte();
 				frame.Ops.Add(opCode);
 				frame.OpData.Add(OpSizeHelper.OpSize[(Int32)opCode] > 1 ? bw.ReadInt32() : 0);
-			}
+            }
+
+            c = bw.ReadInt32();
+
+            for (var i = 0; i < c; i++)
+                frame.Types.Add(bw.ReadString(), -1);
+
+            c = bw.ReadInt32();
+
+            for (var i = 0; i < c; i++)
+            {
+                var k = bw.ReadString();
+                var cc = bw.ReadInt32();
+                var mbr = new ElaClassMember[cc];
+
+                for (var j = 0; j < cc; j++)
+                {
+                    var m = new ElaClassMember();
+                    m.Arguments = bw.ReadInt32();
+                    m.Mask = bw.ReadInt32();
+                    m.Name = bw.ReadString();
+                    mbr[j] = m;
+                }
+
+                frame.Classes.Add(k, new ClassData(mbr));
+            }
+
+            c = bw.ReadInt32();
+
+            for (var i = 0; i < c; i++)
+                frame.Instances.Add(new InstanceData(bw.ReadString(), bw.ReadString(), bw.ReadInt32(), bw.ReadInt32(), bw.ReadInt32(), bw.ReadInt32()));
 
             var di = bw.ReadBoolean();
 

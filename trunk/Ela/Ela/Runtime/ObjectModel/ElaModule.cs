@@ -9,8 +9,6 @@ namespace Ela.Runtime.ObjectModel
 	public sealed class ElaModule : ElaObject
 	{
 		#region Construction
-        internal static readonly ElaTypeInfo TypeInfo = new ElaTypeInfo(TypeCodeFormat.GetShortForm(ElaTypeCode.Module), (Int32)ElaTypeCode.Module, true, typeof(ElaModule));
-        
         private const string GLOBALS = "globals";
         private const string REFERENCES = "references";
         private const string ASSEMBLY = "assembly";
@@ -40,27 +38,32 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-		protected internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return left.TypeCode == right.TypeCode &&
-				((ElaModule)left.Ref).Handle == ((ElaModule)right.Ref).Handle;
-		}
-
-
-		protected internal override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-		{
-			return left.TypeCode != right.TypeCode ||
-				((ElaModule)left.Ref).Handle != ((ElaModule)right.Ref).Handle;
-		}
-
-
-        protected internal override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
-		{
+        public override string ToString(string format, IFormatProvider provider)
+        {
 			return String.Format(MODULE, vm != null ? vm.Assembly.GetModuleName(Handle) : String.Empty);
 		}
 
 
-        protected internal override ElaValue GetValue(ElaValue index, ExecutionContext ctx)
+        internal int GetVariableCount(ExecutionContext ctx)
+        {
+            if (vm != null)
+            {
+                var frame = vm.Assembly.GetModule(Handle);
+                var c = 0;
+
+                foreach (var sv in frame.GlobalScope.Locals)
+                    if ((sv.Value.Flags & ElaVariableFlags.Private) != ElaVariableFlags.Private)
+                        c++;
+
+                return c;
+            }
+
+            ctx.Fail(ElaRuntimeError.Unknown, "VM is non present");
+            return 0;
+        }
+
+
+        internal ElaValue GetValue(ElaValue index, ExecutionContext ctx)
 		{
 			if (vm != null)
 			{
@@ -92,52 +95,10 @@ namespace Ela.Runtime.ObjectModel
             ctx.Fail(ElaRuntimeError.Unknown, "VM is non present");
 			return Default();
 		}
-
-
-		protected internal override bool Has(string field, ExecutionContext ctx)
-		{
-			if (vm != null)
-			{
-				var frame = vm.Assembly.GetModule(Handle);
-				ScopeVar sc;
-
-				if (!frame.GlobalScope.Locals.TryGetValue(field, out sc) || 
-					(sc.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private)
-					return false;
-
-				return true;
-			}
-
-			return false;
-		}
 		#endregion
 
 
 		#region Methods
-        public override ElaPatterns GetSupportedPatterns()
-        {
-            return ElaPatterns.Record;
-        }
-
-
-		public override ElaTypeInfo GetTypeInfo()
-		{
-            var frame = vm != null ? vm.Assembly.GetModule(Handle) : null;
-            var name = vm != null ? vm.Assembly.GetModuleName(Handle) : null;
-
-            return CreateTypeInfo(
-                new ElaRecordField(GLOBALS, GetVariables(frame)),
-                new ElaRecordField(REFERENCES, GetReferences(frame)),
-                new ElaRecordField(ASSEMBLY, GetAssemblyInfo()),
-                new ElaRecordField(HANDLE, Handle),
-                new ElaRecordField(NAME, name),
-                new ElaRecordField(CODEBASE, frame != null && frame.File != null ? frame.File.FullName : null),
-                new ElaRecordField(ISNATIVE, frame != null ? new ElaValue(!(frame is IntrinsicFrame)) : new ElaValue(ElaUnit.Instance)),
-                new ElaRecordField(ISMAINMODULE, Handle == 0)
-            );
-		}
-
-
         private IEnumerable<ElaRecord> GetVariables(CodeFrame frame)
         {
             if (frame != null)

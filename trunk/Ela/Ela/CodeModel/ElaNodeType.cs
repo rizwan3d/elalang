@@ -92,6 +92,16 @@ namespace Ela.CodeModel
 
 		AsPattern,
 
-		PatternGroup
+		PatternGroup,
+
+        
+
+        TypeClass,
+
+        ClassInstance,
+
+        ClassMember,
+
+        Newtype
 	}
 }

@@ -1,5 +1,5 @@
 /*
-    Ela Cell module
+    Module console
     Created in 2012 by Basil Voronkov
 */
 open qualified "$Con"#elalib@con

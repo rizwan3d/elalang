@@ -15,7 +15,6 @@ namespace Ela.Compilation
 			1, //PushI1_1
 			-1, //Pop
 			1, //Pushstr_0
-			-2, //Reccons
 			0, //Genfin
 			-1, //Cons
 			-1, //Gen
@@ -48,7 +47,6 @@ namespace Ela.Compilation
 			1, //Newlazy
 			1, //Newlist
 			-1, //Newtup_2
-			0, //Typeid
 			0, //Stop
 			-1, //NewI8
 			-1, //NewR8
@@ -69,19 +67,24 @@ namespace Ela.Compilation
 			0, //Skiphtag
 			0, //Nil
             0, //Gettag
-			-1, //Conv
-			
+			-1, //Cast
+            -1, //Recfld
+            -2, //Readf
+            -3, //Addmbr            
+            -1, //Traitch
+
+            0, //Newtype
+            -2, //Reccons
+			-1, //Tupcons
+            1, //Typeid
+            1, //Classid
+            -1, //Newfunc
             1, //Newmod
 			1, //Pushext
-            0, //Elem
-			0, //Skiptag
+            0, //Skiptag
 			0, //Newvar
 			1, //Newrec
 			1, //Newtup
-			-1, //Skiptn
-			-1, //Skiptl
-			0, //Pat
-			-1, //Tupex
 			0, //Failwith
 			0, //Start
 			1, //Pushstr
@@ -92,15 +95,9 @@ namespace Ela.Compilation
 			0, //Pushfld
 			-1, //Popvar
 			0, //Runmod
-			0, //Has
 			0, //Br
 			-1, //Brtrue
 			-1, //Brfalse
-			-2, //Br_lt
-			-2, //Br_gt
-			-2, //Br_eq
-			-2, //Br_neq
-			-1, //Brnil
 			0, //Newfun			
 		};
     }

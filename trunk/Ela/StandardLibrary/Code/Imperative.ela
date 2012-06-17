@@ -1,5 +1,5 @@
 /* 
-    Ela Imperative module
+    Module imperative
     Created in 2012 by Basil Voronkov
 */
 let rec f x = f x $ rec f

@@ -126,7 +126,7 @@
   <data name="UseIgnoreToPop" xml:space="preserve">
     <value>Use 'let _ = ...' expression to disable warning, e.g. 'let_ = x'.</value>
   </data>
-  <data name="UseReferenceCell" xml:space="preserve">
-    <value>Use a reference cell for state mutation, e.g. 'let mut = {{!value=...}}'.</value>
+  <data name="UseThunk" xml:space="preserve">
+    <value>Consider explicitly marking an expression as a thunk, e.g. '(&amp; {0})'.</value>
   </data>
 </root>

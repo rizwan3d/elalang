@@ -1,38 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ela.CodeModel;
+using Ela.Linking;
+using Ela.Runtime.Classes;
 
 namespace Ela.Compilation
 {
     public sealed class ExportVars
     {
         #region Construction
-        private Dictionary<String,ExportVarData> map;
+        private readonly Dictionary<String,ExportVarData> variables;
+        private readonly CodeAssembly asm;
 
-        public ExportVars()
+        public ExportVars(CodeAssembly asm)
         {
-            map = new Dictionary<String,ExportVarData>();
+            this.asm = asm;
+            variables = new Dictionary<String,ExportVarData>();
         }
         #endregion
 
 
 		#region Methods
-        public void AddName(string name, ElaBuiltinKind kind, int moduleHandle, int address)
+        public void AddVariable(string name, ElaBuiltinKind kind, ElaVariableFlags flags, int moduleHandle, int address)
         {
-            map.Remove(name);
-            map.Add(name, new ExportVarData(kind, moduleHandle, address));
+            variables.Remove(name);
+            variables.Add(name, new ExportVarData(kind, flags, moduleHandle, address));
         }
 
-        public bool FindName(string name, out ExportVarData data)
+        public bool FindVariable(string name, out ExportVarData data)
         {
-            return map.TryGetValue(name, out data);
+            return variables.TryGetValue(name, out data);
         }
 
-
-		internal Dictionary<String,ExportVarData> GetMap()
-		{
-			return map;
-		}
+        public bool HasVariable(string name)
+        {
+            return variables.ContainsKey(name);
+        }
         #endregion
     }
 }

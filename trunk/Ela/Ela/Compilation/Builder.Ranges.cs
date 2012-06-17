@@ -112,26 +112,22 @@ namespace Ela.Compilation
 			cw.Emit(Op.Pushvar, step);
 			cw.Emit(Op.Pushvar, start);
 			cw.Emit(Op.Add);
-			
-			if (rng.Second != null)
-				cw.Emit(Op.Dup);
-
+            cw.Emit(Op.Dup);
+            
 			cw.Emit(Op.Popvar, second);
 
-			if (rng.Second != null)
-			{
-				cw.Emit(Op.Pushvar, start);
-				cw.Emit(Op.Br_gt, trueLab);
+            cw.Emit(Op.Pushvar, start);
+            cw.Emit(Op.Cgt);
+            cw.Emit(Op.Brtrue, trueLab);
 
-				CompileExpression(rng.Initial, map, Hints.None);
-				CompileStrictRangeCycle(start, second, step, last, hints, false);
+            CompileExpression(rng.Initial, map, Hints.None);
+            CompileStrictRangeCycle(start, second, step, last, hints, false);
 
-				cw.Emit(Op.Br, endLab);
-				cw.MarkLabel(trueLab);
-			}
-
-			CompileExpression(rng.Initial, map, Hints.None);
-			CompileStrictRangeCycle(start, second, step, last, hints, true);
+            cw.Emit(Op.Br, endLab);
+            cw.MarkLabel(trueLab);
+            
+            CompileExpression(rng.Initial, map, Hints.None);
+            CompileStrictRangeCycle(start, second, step, last, hints, true);
 
 			cw.MarkLabel(endLab);
 			cw.Emit(Op.Genfin);
@@ -162,10 +158,11 @@ namespace Ela.Compilation
 			cw.Emit(Op.Pushvar, last);
 
 			if (brGt)
-				cw.Emit(Op.Br_gt, exitLab);
+				cw.Emit(Op.Cgt);
 			else
-				cw.Emit(Op.Br_lt, exitLab);
+				cw.Emit(Op.Clt);
 
+            cw.Emit(Op.Brtrue, exitLab);
 			cw.Emit(Op.Pushvar, start);
 			cw.Emit(Op.Gen);
 

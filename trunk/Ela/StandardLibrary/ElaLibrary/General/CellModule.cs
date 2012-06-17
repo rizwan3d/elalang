@@ -20,16 +20,6 @@ namespace Ela.Library.General
 
             }
 
-            protected override string GetTypeName()
-            {
-                return "cell";
-            }
-
-            protected override string Show(ElaValue @this, ShowInfo info, ExecutionContext ctx)
-            {
-                return "<cell: " + Value.Show(info, ctx) + ">";
-            }
-
             internal ElaValue Value { get; set; }
         }
         #endregion

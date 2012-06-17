@@ -15,7 +15,7 @@ namespace Ela.Compilation
 
 		__Reserved2 = 0x08,
 
-		__Reserved3 = 0x10,
+		Lazy = 0x10,
 
 		Tail = 0x20,
 
@@ -25,10 +25,6 @@ namespace Ela.Compilation
 
 		And = 0x100,
 
-		FunBody = 0x200,
-
-		Silent = 0x400,
-
-        Extends = 0x800
+		FunBody = 0x200
 	}
 }

@@ -11,7 +11,7 @@ CHARACTERS
 	digit = "0123456789".
 	notDigit = ANY - digit.
 	hexDigit = digit + "ABCDEFabcdef".
-	verbatimChar = ANY.
+	verbatimChar = ANY - "]>".
 	stringChar = ANY - '"' - '\\' - newLine.
 	char = ANY - "'" - '\\' - newLine.
 	op = "!%&*+-.:/\\<=>?@^|~".
@@ -68,7 +68,6 @@ TOKENS
 	               | ":" [ op5 { op } ])
 	               | "." op { op }.
 	operatorTok9 = "<|" { op }.
-	typeNameTok = "?" lcase { letter }.
 	
 	LBRA = "{".
 	RBRA = "}".
@@ -112,7 +111,7 @@ IGNORE cr + lf
 
 PRODUCTIONS
 	EndBlock = EBLOCK (. if (!t.virt) scanner.PopIndent(); .).
-
+	
 	Literal<out ElaExpression exp> = 
 		(. exp = null; .)
 		(	
@@ -454,18 +453,41 @@ PRODUCTIONS
 		).
 		
 	TypeCheckPattern<out ElaPattern pat> = 
+		"?"
 		(. 
 			var eis = new ElaIsPattern(t);
 			pat = eis; 			
+			var fst = default(String); 
+			var snd = default(String);
 		.)
 		(
-			typeNameTok
-			(. 
-				eis.TypeCode = GetType(t.val); 
-				
-				if (eis.TypeCode == ElaTypeCode.None)
-					eis.TypeName = t.val.Substring(1);
-			.)
+		    (
+			    (
+			        ident (. fst = t.val; .) [ "." ident (. snd = t.val; .) ]
+			        (. 
+			            if (fst != null && snd != null)
+			            {
+			                eis.TypePrefix = fst;
+			                eis.TypeName = snd; 
+			            }
+			            else
+			                eis.TypeName = fst;
+			        .)
+			    )
+			    |
+			    (
+			        "("
+			            { 
+			                (ident|variantTok) (. fst = t.val; snd = null; .) 
+			                [ "." (ident|variantTok) (. snd = t.val; .) ]
+			                (.
+			                    var ti = new TraitInfo(snd != null ? fst : null, snd != null ? snd : fst);
+			                    eis.Traits.Add(ti);
+			                .)			                
+			            }
+			        ")"
+			    )
+			)
 		).		
 						
 	IdentPattern<out ElaPattern pat> =
@@ -629,7 +651,7 @@ PRODUCTIONS
 		(
 			(
 				(
-					(ident|variantTok)
+					ident
 					(. fld = new ElaFieldDeclaration(t) { FieldName = t.val }; .) 
 					[						
 						"=" Expr<out cexp> 
@@ -809,10 +831,6 @@ PRODUCTIONS
 			(
 				"inline" (. flags |= ElaVariableFlags.Inline; .)					
 			)
-			|
-			(
-				"extends" (. flags |= ElaVariableFlags.Extends; .)					
-			)
 		)
 		[VariableAttributes<ref flags>].			
 		
@@ -869,7 +887,6 @@ PRODUCTIONS
 		(. 
 			var varExp = new ElaBinding(t) { VariableFlags = flags }; 
 			exp = varExp;
-			var cexp = default(ElaExpression); 
 			var pat = default(ElaPattern);
 		.)		
 		(
@@ -885,7 +902,7 @@ PRODUCTIONS
 					| BindingBodyInit<varExp>
 					| InfixFunExpr<new ElaVariablePattern(t) { Name = t.val },varExp>
 				]
-				(. SetObjectMetadata(varExp, cexp); .)
+				(. SetObjectMetadata(varExp); .)
 			)
 			| 
 			(
@@ -1324,7 +1341,6 @@ PRODUCTIONS
 				"#"
 				(
 					ident (. inc.DllName = t.val; .)
-					| variantTok (. inc.DllName = t.val; .)
 					| stringTok (. inc.DllName = ReadString(t.val); .)
 				)
 			]		
@@ -1353,7 +1369,6 @@ PRODUCTIONS
 		(. var val = String.Empty; .)
 		(
 			ident (. val = t.val; .)
-			| variantTok (. val = t.val; .)
 			| stringTok (. val = ReadString(t.val); .)
 		)
 		(. path.Add(val); .)
@@ -1836,13 +1851,13 @@ PRODUCTIONS
 			(
 				(
 					"("
-						(ident|variantTok|Operators)
+						(ident|Operators)
 						(. exp = new ElaFieldReference(t) { FieldName = t.val, TargetObject = exp }; .)
 					")"
 				)
 				|
 				(
-					(ident|variantTok)
+					ident
 					(. exp = new ElaFieldReference(t) { FieldName = t.val, TargetObject = exp }; .)
 				)
 			)			
@@ -1957,11 +1972,152 @@ PRODUCTIONS
 			DeclarationBlock<b> { DeclarationBlock<b> }
 		).		
 		
+	TypeClass<out ElaExpression exp> = 
+	    (. 
+	        exp = null; 
+	        scanner.InjectBlock();
+	    .)
+	    (
+	        "class" 
+	        (. 
+	            var tc = new ElaTypeClass(t);
+	            exp = tc;
+	        .)
+	        (ident|variantTok)
+	        (. 
+	            var nm = default(String);
+	            tc.Name = t.val;
+	        .)
+	        (
+	            (
+	                "__internal" (ident|variantTok) (. tc.BuiltinName = t.val; .)
+	                { 
+	                    (ident (. nm=t.val; .) |Operators (. nm=t.val; .) | "(" (Operators|ident) (. nm=t.val; .) ")") 
+	                    (. 
+	                        tc.Members.Add(new ElaClassMember(t) { Name = nm });
+	                    .)  
+                    }
+	            )
+	            |
+	            (
+	                (. var targ = String.Empty; .)
+	                ident (. targ = t.val; .)
+	                (
+	                    "where"
+	                    (
+	                        (ident (. nm=t.val; .) |Operators (. nm=t.val; .) | "(" (Operators|ident) (. nm=t.val; .) ")") 
+	                        "::"
+	                        (.
+	                            var count = 0;
+	                            var mask = 0;
+	                        .)
+	                        (
+	                            (ident|"_") (. BuildMask(ref count, ref mask, t.val, targ); .)
+	                            { "->" (ident|"_") (. BuildMask(ref count, ref mask, t.val, targ); .)  }
+	                        )
+	                        (.	                        
+	                            tc.Members.Add(new ElaClassMember(t) { Name = nm, Arguments = count, Mask = mask });
+	                        .)
+	                    )
+	                    { 
+	                        "et" (ident (. nm=t.val; .) |Operators (. nm=t.val; .) | "(" (Operators|ident) (. nm=t.val; .) ")") 
+	                        "::"
+	                        (.
+	                            count = 0;
+	                            mask = 0;
+	                        .)
+	                        (
+	                            (ident|"_") (. BuildMask(ref count, ref mask, t.val, targ); .)
+	                            { "->" (ident|"_") (. BuildMask(ref count, ref mask, t.val, targ); .)  }
+	                        )
+	                        (.	                        
+	                            tc.Members.Add(new ElaClassMember(t) { Name = nm, Arguments = count, Mask = mask });
+	                        .)
+	                    }
+	                )
+	            )
+	        )
+	        EndBlock
+	    ).
+	    
+	ClassInstance<out ElaExpression exp> = 
+	    (. 
+	        exp = null; 
+	        var fst0 = default(String);
+	        var snd0 = default(String);
+	        var fst = default(String);
+	        var snd = default(String);
+	    .)
+	    (
+	        "instance"
+	        (.
+	            var ci = new ElaClassInstance(t);
+	            exp = ci;
+	        .)
+	        (ident|variantTok)  (. fst0 = t.val; .)
+	        [ "." (ident|variantTok) (. snd0 = t.val; .) ]
+	        (.	                
+	            if (fst0 != null && snd0 != null)
+	            {
+	                ci.TypeClassPrefix = fst0;
+	                ci.TypeClassName = snd0;
+	            }
+	            else
+	                ci.TypeClassName = fst0;
+	        .)
+	        (
+	            ident  (. fst = t.val; .)
+	            [ "." ident (. snd = t.val; .) ]
+	        )
+	        (. 
+	            
+	            if (fst != null && snd != null)
+	            {
+	                ci.TypePrefix = fst;
+	                ci.TypeName = snd;
+	            }
+	            else
+	                ci.TypeName = fst;
+	            
+	            var cexp = default(ElaExpression);
+	        .)
+	        WhereBinding<out cexp>
+	        (. ci.Where = (ElaBinding)cexp; .)
+	    ).
+	    
+    NewType<out ElaExpression exp> = 
+        (. 
+            exp = null; 
+            scanner.InjectBlock();
+        .)
+        (
+            "type" ident
+            (.
+                var nt = new ElaNewtype(t) { Name = t.val };
+                exp = nt;
+                var pat = default(ElaPattern);
+            .)
+            [
+                RootPattern<out pat>
+                (.
+                    var m = new ElaMatch(t);
+                    nt.Body = m;
+                    var cexp = default(ElaExpression);
+                .)
+                "=" Expr<out cexp> [WhereExpr<cexp, out cexp>]
+		        (. m.Entries.Add(new ElaMatchEntry { Pattern = pat, Expression = cexp }); .)      
+		    ]
+		    EndBlock      
+        ).
+		
 	DeclarationBlock<ElaBlock b> =
 		(. var exp = default(ElaExpression); .)
 		(
 			RootLetBinding<out exp>
 			| IncludeStat<out exp>
+			| TypeClass<out exp>
+			| ClassInstance<out exp>
+			| NewType<out exp>
 			| 
 			(
 			    //EmbExpr<out exp> [WhereExpr<exp, out exp>](. if (FALSE) .) EBLOCK	

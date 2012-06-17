@@ -99,6 +99,8 @@ namespace Ela.CodeModel
 		public ElaBinding And { get; set; }
 
 		public ElaExpression In { get; set; }
+
+        internal bool MemberBinding { get; set; }
 		#endregion
 	}
 }

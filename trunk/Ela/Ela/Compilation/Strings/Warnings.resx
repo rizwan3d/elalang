@@ -117,8 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="EmbeddedBinding" xml:space="preserve">
-    <value>Variable declared inside an embedded expression is not visible from the rest of the code.</value>
+  <data name="BottomValue" xml:space="preserve">
+    <value>An expression '{0}' is executed in a strict manner and references a name before it's actual assignment.</value>
   </data>
   <data name="FunctionImplicitPartial" xml:space="preserve">
     <value>Function is partially applied during composition. This is odd for the composition semantics. Consider rewriting this code.</value>

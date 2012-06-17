@@ -30,16 +30,29 @@ namespace Ela.Parsing
 			return true;
 		}
 
-		private void SetObjectMetadata(ElaBinding varExp, ElaExpression cexp)
+        private void BuildMask(ref int count, ref int mask, string val, string targ)
+        {
+            var flag = 0;
+
+            if (val == targ)
+                flag = 1;
+            else if (val != "_")
+                AddError(ElaParserError.InvalidFunctionSignature, val);
+
+            mask |= flag << count;
+            count++;
+        }
+
+		private void SetObjectMetadata(ElaBinding varExp)
 		{
-			if (cexp != null)
+			if (varExp.InitExpression != null)
 			{
-				if (cexp.Type == ElaNodeType.FunctionLiteral && varExp.VariableName != null)
+                if (varExp.InitExpression.Type == ElaNodeType.FunctionLiteral && varExp.VariableName != null)
 				{
-					((ElaFunctionLiteral)cexp).Name = varExp.VariableName;
+                    ((ElaFunctionLiteral)varExp.InitExpression).Name = varExp.VariableName;
 					varExp.VariableFlags |= ElaVariableFlags.Function;
 				}
-				else if ((cexp.Type < ElaNodeType.FunctionLiteral || cexp.Type == ElaNodeType.Primitive) && varExp.VariableName != null)
+                else if ((varExp.InitExpression.Type < ElaNodeType.FunctionLiteral || varExp.InitExpression.Type == ElaNodeType.Primitive) && varExp.VariableName != null)
 					varExp.VariableFlags |= ElaVariableFlags.ObjectLiteral;
 			}
 		}
@@ -61,7 +74,7 @@ namespace Ela.Parsing
 
         private void ProcessFunctionParameters(ElaFunctionLiteral mi, Token ot, ElaBinding varExp)
         {
-            if (mi.Body.Entries.Count > 1 || (varExp.VariableFlags & ElaVariableFlags.Extends) == ElaVariableFlags.Extends)
+            if (mi.Body.Entries.Count > 1)
             {
                 var patterns = default(List<ElaPattern>);
                 var pars = 0;
@@ -80,36 +93,6 @@ namespace Ela.Parsing
                 	tp.Parameters.Add(new ElaVariableReference(ot) { VariableName = "$" + i });
                 
                 mi.Body.Expression = tp;
-                
-                //if ((varExp.VariableFlags & ElaVariableFlags.Extends) == ElaVariableFlags.Extends)
-                //{
-                //    if (mi.ParameterCount > 1)
-                //    {
-                //        var group = new ElaPatternGroup();
-
-                //        for (var i = 0; i < mi.ParameterCount; i++)
-                //            group.Patterns.Add(new ElaVariablePattern { Name = "$" + i });
-
-                //        var call = new ElaFunctionCall { Target = new ElaVariableReference { VariableName = "$" + mi.Name } };
-
-                //        for (var i = 0; i < mi.ParameterCount; i++)
-                //            call.Parameters.Add(new ElaVariableReference { VariableName = "$" + i });
-
-                //        mi.Body.Entries.Add(new ElaMatchEntry { Pattern = group, Expression = call });
-                //    }
-                //    else
-                //    {
-                //        var fc = new ElaFunctionCall { Target = new ElaVariableReference { VariableName = "$" + mi.Name } };
-                //        fc.Parameters.Add(new ElaVariableReference { VariableName = "$1" });
-
-                //        mi.Body.Entries.Add(new ElaMatchEntry {
-                //            Pattern = new ElaVariablePattern { Name = "$1" },
-                //            Expression = fc
-                //        });
-
-                //    }
-                    
-                //}
             }
         }
 
@@ -156,32 +139,6 @@ namespace Ela.Parsing
 
 			return ret;
 		}
-
-
-		private ElaTypeCode GetType(string val)
-		{
-            val = val.Substring(1);
-
-			return
-				val == "int" ? ElaTypeCode.Integer :
-				val == "single" ? ElaTypeCode.Single :
-				val == "bool" ? ElaTypeCode.Boolean :
-				val == "char" ? ElaTypeCode.Char :
-				val == "long" ? ElaTypeCode.Long :
-				val == "double" ? ElaTypeCode.Double :
-				val == "string" ? ElaTypeCode.String :
-				val == "list" ? ElaTypeCode.List :
-				val == "record" ? ElaTypeCode.Record :
-				val == "tuple" ? ElaTypeCode.Tuple :
-				val == "fun" ? ElaTypeCode.Function :
-				val == "object" ? ElaTypeCode.Object :
-				val == "unit" ? ElaTypeCode.Unit :
-				val == "module" ? ElaTypeCode.Module :
-				val == "lazy" ? ElaTypeCode.Lazy :
-				val == "variant" ? ElaTypeCode.Variant :
-				ElaTypeCode.None;
-		}
-
 
 		private ElaLiteralValue ParseInt(string val)
 		{

@@ -7,17 +7,17 @@ namespace Ela.Compilation
 		None = 0,
 
 
-		ExtendsOnlyFunctions = 300,
+        PrivateNameInModule = 300,
 
-		ExtendsNameMissing = 301,
+		UndefinedNameInModule = 301,
 
 		UndefinedName = 302,
 
-		// = 303,
+		UndefinedType = 303,
 
 		PlaceholderNotValid = 304,
 
-		// = 305,
+		TypeAlreadyDeclared = 305,
 
 		PatternNotAllArgs = 306,
 
@@ -40,5 +40,31 @@ namespace Ela.Compilation
         InvalidBuiltinBinding = 315,
 
 		// = 316,
+
+        ClassAlreadyDeclared = 317,
+
+        UnknownClass = 318,
+
+        MemberNoPatterns = 319,
+
+        // = 320,
+
+        MemberNotAll = 321,
+
+        InvalidBuiltinClass = 322,
+
+        InvalidBuiltinClassDefinition = 323,
+
+        NoHindingSameScope = 324,
+
+        InvalidQualident = 325,
+
+        InvalidMemberSignature = 326,
+
+        OnlyBuiltinTypeNoDefinition = 327,
+
+        InvalidProgram = 328,
+
+        TooManyErrors = 329,
 	}
 }

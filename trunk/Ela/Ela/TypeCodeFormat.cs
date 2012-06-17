@@ -15,14 +15,14 @@ namespace Ela
 		private const string BOOL = "bool";
 		private const string RECORD = "record";
 		private const string TUPLE = "tuple";
-		private const string PRX = "proxy";
 		private const string LIST = "list";
 		private const string FUN = "fun";
 		private const string UNIT = "unit";
 		private const string MOD = "module";
 		private const string OBJ = "object";
-		private const string LAZ = "lazy";
+		private const string LAZ = "thunk";
 		private const string VAR = "variant";
+        private const string TYP = "typeinfo";
 		#endregion
 
 
@@ -47,6 +47,7 @@ namespace Ela
                 case OBJ: return ElaTypeCode.Object;
                 case LAZ: return ElaTypeCode.Lazy;
                 case VAR: return ElaTypeCode.Variant;
+                case TYP: return ElaTypeCode.TypeInfo;
                 default: return ElaTypeCode.None;
             }
         }
@@ -71,6 +72,7 @@ namespace Ela
 				case ElaTypeCode.Object: return OBJ;
 				case ElaTypeCode.Lazy: return LAZ;
 				case ElaTypeCode.Variant: return VAR;
+                case ElaTypeCode.TypeInfo: return TYP;
 				default: return ERR;
 			}
 		}
