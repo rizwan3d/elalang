@@ -24,16 +24,18 @@ namespace Ela.Compilation
 
 		public CompilerResult Compile(ElaExpression expr, CompilerOptions options, ExportVars builtins, CodeFrame frame, Scope globalScope)
 		{
+            Options = options;
+            var helper = new Builder(frame, this, builtins, globalScope);
+                
             try
             {
-				Options = options;
-				var helper = new Builder(frame, this, builtins, globalScope);
-				helper.CompileUnit(expr);
-				frame.Symbols = frame.Symbols == null ? helper.Symbols :
-					helper.Symbols != null ? frame.Symbols.Merge(helper.Symbols) : frame.Symbols;
-				frame.GlobalScope = globalScope;
-				return new CompilerResult(frame, helper.Success, helper.Errors.ToArray());
+                helper.CompileUnit(expr);
             }
+            catch (TerminationException)
+            {
+                //Nothing should be done here. This was thrown to stop compilation.      
+            }
+#if !DEBUG
             catch (Exception ex)
             {
                 if (ex is ElaCompilerException)
@@ -41,6 +43,13 @@ namespace Ela.Compilation
 
                 throw new ElaCompilerException(Strings.GetMessage("Ice", ex.Message), ex);
             }
+#endif
+
+            frame.Symbols = frame.Symbols == null ? helper.Symbols :
+                helper.Symbols != null ? frame.Symbols.Merge(helper.Symbols) : frame.Symbols;
+            frame.GlobalScope = globalScope;
+            return new CompilerResult(frame, helper.Success, helper.Errors.ToArray());
+
 		}
 
         public static int GetOpCodeSize(Op op)

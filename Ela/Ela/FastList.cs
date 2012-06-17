@@ -59,7 +59,17 @@ namespace Ela
 		}
 
 
-		public T[] ToArray()
+        public bool Contains(T val)
+        {
+            for (var i = 0; i < size; i++)
+                if (array[i].Equals(val))
+                    return true;
+
+            return false;
+        }
+
+
+        public T[] ToArray()
 		{
 			var arr = new T[size];
 			Array.Copy(array, arr, size);
@@ -91,7 +101,20 @@ namespace Ela
 		{
 			for (var i = start; i < end; i++)
 				Add(arr[i]);
-		}
+        }
+
+
+        internal void AddRange(T[] arr, int start, int end)
+        {
+            for (var i = start; i < end; i++)
+                Add(arr[i]);
+        }
+
+
+        internal void AddMultiple(params T[] args)
+        {
+            AddRange(args, 0, args.Length);
+        }
 
 
 		internal void Add(T val)

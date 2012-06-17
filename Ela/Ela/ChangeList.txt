@@ -1,3 +1,43 @@
+0.10.4.39:Change:Built-in 'apply' function is decomissioned. Now this function is implemented directly in Ela.
+0.10.4.38:Change:Now backward and forward composition are no longer built-in functions but are directly implemented in Ela prelude.
+0.10.4.37:New:Now when a number of errors exceeds 100 Ela generates a 'Too many errors' message and stops compilation.
+0.10.4.37:New:Now an external name prefixed with a module alias is resolved at compile-time.
+0.10.4.36:Change:Now Ela disallows to use uppercased names (variants) for module names for user type names.
+0.10.4.35:Change:Now Ela always restricts hiding of names in the same scope (except of function parameters which can hide each other).
+0.10.4.34:Change:Now it is not possible to use uppercased names as record names (e.g. variant literals). It is only possible when such names are quoted as strings.
+0.10.4.33:Change:A generation of warning FunctionInvalidType (when a user tries to apply a non-function) is now fixed (didn't work before).
+0.10.4.32:Change:Function inlining is refactored and is now more flexible.
+0.10.4.31:Change:Experimental 'let extends' functions are now decomissioned.
+0.10.4.30:Fix:A bug fixed that could cause VM crush in a case when whole program consists of 'open' module directives.
+0.10.4.29:Change:Compiler no longer generated CheckEmbedded warning (it has no meaning in current architecture).
+0.10.4.28:New:Now compiler generates errors if names in module import list are invalid (used to result in run-time errors).
+0.10.4.27:Change:Module includes compilation logic is refactored and optimized (for explicit import list).
+0.10.4.26:Change:Interactive mode of Ela machine was updated to support new language changes.
+0.10.4.25:Change:Ela object format (and object file readers/writers) are updated to include new class/instance/user type information.
+0.10.4.24:New:Now compiler generates an appropriate warning (and a hint) when it sees that a certain calculation would result in a bottom value.
+0.10.4.23:New:Now Ela machine tries to handle OutOfMemory exceptions.
+0.10.4.22:Change:Ela introspection is completely rewritten. Now typeinfo is a separate data type in Ela. Also it contains the same set of metadata for all types.
+0.10.4.21:New:Now type reference (in the form '?typename') is a first class value in Ela.
+0.10.4.20:Change:Implementation of conditional branching in VM (Brtrue, Brfalse) is refactored to better handle thunks.
+0.10.4.19:New:A new 'Recfld' and a corresponding built-in function are added (query a name of a record field based on its index).
+0.10.4.18:Change:Multiple functions that were hardcoded in Ela run-time environment (lists/record/tuple concatenation, head/tail, etc.) are stripped off and moved to Ela code.
+0.10.4.17:Change:Compilation logic for comprehensions is refactored according to the new VM architecuture.
+0.10.4.16:Change:Compilation logic for ranges is refactored according to the new VM architecuture.
+0.10.4.15:Change:Implementation of thunk calculation is changed according to the new VM architecture.
+0.10.4.14:New:A new pattern is added that allows to check if a given value implements particular traits, e.g. (x is ?(Eq Ord)).
+0.10.4.13:Change:Ela machine internals are completely rewritten to support new type class concept. All operations with standard types are now done through type classes. It is also possible to writes instance of type classes for standard types.
+0.10.4.12:New:A new concept of type class (trait) is introduced. Traits can be declared by user and used like interfaces for custom types. In order to specify an implementation of a trait for a custom type one should use an 'instance' declaration.
+0.10.4.11:New:A new concept of 'user types' is introduced. Now one can declared a custom type by using a declaration in the form 'type mytype x = x'. 
+0.10.4.10:Change:Processing of module 'open' directives has changed. Now they are not processed in declaration order but are executed always before the rest of the code - you now can reference names from a module before this module is declared.
+0.10.4.9:Change:A compilation model has changed. Now Ela doesn't require a forward declaration, e.g. all program bindings are considered to be mutually recursive (and self-recursive) - not only for functions but for regular values as well.
+0.10.4.8:Change:Now Ela disallows shadowing of the names in global scope (however shadowing in local scope still works even for the names in the same scope).
+0.10.4.7:Change:Op code Conv (used for type casting) is decomissioned and replaced by a new Cast op code.
+0.10.4.6:Change:Op code Tupex (used to optimize calls of tupled functions) is now decomissioned. It could ill-behave in certain cases.
+0.10.4.5:Change:Op code Has is decomissioned. It was used to test if a record has a particular field. Now compiler generates an implicit exception handling block.
+0.10.4.4:Change:Op code Pat is decomissioned. It was used to test if a given value implements a particular pattern (in pattern matching sense). Now compiler generates an implicit exception handling block.
+0.10.4.3:Change:Op codes Skiptl and Skiptn are decomissioned. Compiler would emit regular Tail/IsNil/Head op codes instead.
+0.10.4.2:Change:Op code Elem and corresponding built-in function is decomissioned. This op code was used for optimized implementation of fst/snd functions which are now written directly in Ela.
+0.10.4.1:Change:Op codes Brnil, Br_eq, Br_neq, Br_lt, Br_gt are now decomissioned. Instead compiler would emit an appropriate comparison op code and a Brtrue/Brfalse op code. The latter are the only condition branching op codes available now.
 0.10.4.0:Release:Release of 0.10.4.0.
 0.10.3.3:Fix:A bug fixed in marshalling of .NET functions into Ela code that have more than 4 arguments (incorrect number of arguments was determined).
 0.10.3.2:Fix:A bug fixed in Skiptn op code.

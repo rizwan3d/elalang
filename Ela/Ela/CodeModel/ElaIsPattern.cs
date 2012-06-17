@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Ela.Parsing;
 
@@ -24,7 +25,7 @@ namespace Ela.CodeModel
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			sb.Append('?');
-			sb.Append(!String.IsNullOrEmpty(TypeName) ? TypeName : TypeCodeFormat.GetShortForm(TypeCode));
+			sb.Append(TypeName);
 		}
 
 
@@ -58,15 +59,21 @@ namespace Ela.CodeModel
             else
                 return true;
 
-			return @is.TypeCode != TypeCode || @is.TypeName != TypeName;
+			return @is.TypeName != TypeName;
 		}
 		#endregion
 
 
 		#region Properties
-		public ElaTypeCode TypeCode { get; set; }
+		public string TypeName { get; set; }
 
-        public string TypeName { get; set; }
+        public string TypePrefix { get; set; }
+
+        private List<TraitInfo> _traits;
+        public List<TraitInfo> Traits
+        {
+            get { return _traits ?? (_traits = new List<TraitInfo>()); }
+        }
 		#endregion
 	}
 }

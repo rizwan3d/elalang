@@ -20,7 +20,7 @@ namespace Ela.Parsing
 
 		InvalidFunctionDeclaration = 7,
 
-		// = 8,
+		InvalidFunctionSignature = 8,
 
 		ComprehensionOpInvalidOperand = 9,
 

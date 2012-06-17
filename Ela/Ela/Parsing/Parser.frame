@@ -64,7 +64,7 @@ internal sealed partial class Parser {
 	
 	void AddError(ElaParserError error, params object[] args)
 	{
-		errors.AddErr(la.line, la.col, error, args);
+		errors.AddErr(t.line, t.col, error, args);
 	}
 	
 	

@@ -1,41 +1,36 @@
 ﻿using System;
-using Ela.Runtime.ObjectModel;
-using System.Runtime.InteropServices;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
+using Ela.Runtime.ObjectModel;
 
 namespace Ela.Runtime
 {
-	public struct ElaValue : IComparable<ElaValue>, IEquatable<ElaValue>, IFormattable
+	public struct ElaValue : IFormattable
 	{
 		#region Construction
-		public ElaValue(ElaObject val)
+        internal ElaValue(int val, ElaObject obj)
+        {
+            I4 = val;
+            Ref = obj;
+        }
+        
+        public ElaValue(ElaObject val)
 		{
 			I4 = 0;
 			Ref = val;
 		}
-
-
+        
 		public ElaValue(int val)
 		{
 			I4 = val;
 			Ref = ElaInteger.Instance;
 		}
 
-
 		public ElaValue(char val)
 		{
 			I4 = (Int32)val;
 			Ref = ElaChar.Instance;
 		}
-
-
-		public ElaValue(int val, ElaObject obj)
-		{
-			I4 = val;
-			Ref = obj;
-		}
-
 
 		public ElaValue(float val)
 		{
@@ -45,28 +40,24 @@ namespace Ela.Runtime
 			Ref = ElaSingle.Instance;
 		}
 
-
 		public ElaValue(bool val)
 		{
 			I4 = val ? 1 : 0;
 			Ref = ElaBoolean.Instance;
 		}
-
-
+        
 		public ElaValue(string value)
 		{
 			I4 = 0;
 			Ref = new ElaString(value);
 		}
-
-
+        
 		public ElaValue(long val)
 		{
 			I4 = 0;
 			Ref = new ElaLong(val);
 		}
-
-
+        
 		public ElaValue(double val)
 		{
 			I4 = 0;
@@ -74,25 +65,64 @@ namespace Ela.Runtime
 		}
 		#endregion
 
-
-		#region Methods
-		public int CompareTo(ElaValue other)
-		{
-			return Ref.Compare(this, other);
-        }
-
-        public string ToString(string format, IFormatProvider formatProvider)
+		#region Casting
+        internal float GetReal()
         {
-            return Ref != null ? Ref.Show(this, new ShowInfo(0, 0, format), ElaObject.DummyContext) : "_|_";
+            if (TypeCode == ElaTypeCode.Integer)
+                return (Single)I4;
+            else if (TypeCode == ElaTypeCode.Long)
+                return (Single)((ElaLong)Ref).Value;
+
+            return DirectGetReal();
         }
 
+        internal float DirectGetReal()
+        {
+            var conv = new Conv();
+            conv.I4_1 = I4;
+            return conv.R4;
+        }
+
+        internal string DirectGetString()
+        {
+            return ((ElaString)Ref).Value;
+        }
+
+        internal double GetDouble()
+        {
+            return TypeCode == ElaTypeCode.Double ? ((ElaDouble)Ref).Value :
+                TypeCode == ElaTypeCode.Single ? DirectGetReal() :
+                TypeCode == ElaTypeCode.Long ? ((ElaLong)Ref).Value :
+                (Double)I4;
+        }
+
+        internal long GetLong()
+        {
+            return TypeCode == ElaTypeCode.Long ? ((ElaLong)Ref).Value : I4;
+        }
 
 		public override string ToString()
 		{
-			return Ref != null ? Ref.Show(this, ShowInfo.Default, ElaObject.DummyContext) : "_|_";
-		}
+            return ToString(String.Empty, Culture.NumberFormat);   
+        }
+        
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            if (Ref == null)
+                return "_|_";
 
-
+            if (TypeId == ElaMachine.INT)
+                return I4.ToString(format, formatProvider);
+            else if (TypeId == ElaMachine.REA)
+                return DirectGetReal().ToString(format, Culture.NumberFormat);
+            else if (TypeId == ElaMachine.CHR)
+                return ((Char)I4).ToString();
+            else if (TypeId == ElaMachine.BYT)
+                return I4 == 1 ? Boolean.TrueString : Boolean.FalseString;
+            else
+                return Ref.ToString(format, formatProvider);
+        }
+        
         public override int GetHashCode()
         {
             switch (Ref.TypeId)
@@ -104,89 +134,21 @@ namespace Ela.Runtime
                 default: return Ref.GetHashCode();
             }
         }
-
-
-        public override bool Equals(object obj)
-        {
-            return obj is ElaValue ? Equal(this, (ElaValue)obj, ElaObject.DummyContext) : false;
-        }
-
-
-        public bool Equals(ElaValue other)
-        {
-            return Equal(this, other, ElaObject.DummyContext);
-        }
-
-
-		public ElaValue Id(ExecutionContext ctx)
-		{
-			return Ref.TypeId == ElaMachine.LAZ ? Ref.Force(this, ctx) : this;
-		}
-
-
+                
 		public string GetTypeName()
 		{
 			return Ref != null ? Ref.GetTypeName() : "<unknown>";
 		}
-
-
-		internal float GetReal()
-		{
-			if (TypeCode == ElaTypeCode.Integer)
-				return (Single)I4;
-			else if (TypeCode == ElaTypeCode.Long)
-				return (Single)((ElaLong)Ref).Value;
-
-			return DirectGetReal();
-		}
-
-
-		internal float DirectGetReal()
-		{
-			var conv = new Conv();
-			conv.I4_1 = I4;
-			return conv.R4;
-		}
-
-
-        internal string DirectGetString()
-        {
-            return ((ElaString)Ref).GetValue();
-        }
-
-
-		internal double GetDouble()
-		{
-			return TypeCode == ElaTypeCode.Double ? ((ElaDouble)Ref).Value :
-				TypeCode == ElaTypeCode.Single ? DirectGetReal() :
-				TypeCode == ElaTypeCode.Long ? ((ElaLong)Ref).Value :
-				(Double)I4;
-		}
-
-
-		internal long GetLong()
-		{
-			return TypeCode == ElaTypeCode.Long ? ((ElaLong)Ref).Value : I4;				
-		}
-
-
+        
         public bool Is<T>()
         {
 			return Ref is T;
         }
-
-
+        
         public T As<T>() where T : class
         {
 			return Ref as T;
         }
-
-
-        public bool ReferenceEquals(ElaValue other)
-        {
-			return Ref == other.Ref;
-        }
-
 
 		public static ElaValue FromObject(object value)
 		{
@@ -217,86 +179,78 @@ namespace Ela.Runtime
             else
                 throw new InvalidCastException();
 		}
-
-
+        
 		public T Convert<T>()
 		{
 			var ti = typeof(T);
 			return (T)Convert(ti);
 		}
 
-
 		public object Convert(Type ti)
 		{
-			var ctx = new ExecutionContext();
-			var type = default(ElaTypeInfo);
-
-            if (ti == typeof(Int32))
-                type = ElaInteger.TypeInfo;
-            else if (ti == typeof(Single))
-                type = ElaSingle.TypeInfo;
-            else if (ti == typeof(Int64))
-                type = ElaLong.TypeInfo;
-            else if (ti == typeof(Double))
-                type = ElaDouble.TypeInfo;
-            else if (ti == typeof(Boolean))
-                type = ElaBoolean.TypeInfo;
-            else if (ti == typeof(String))
-                type = ElaString.TypeInfo;
-            else if (ti == typeof(Char))
-                type = ElaChar.TypeInfo;
-            else if (ti == typeof(ElaList))
-                type = ElaList.TypeInfo;
-            else if (ti == typeof(ElaRecord))
-                type = ElaRecord.TypeInfo;
-            else if (ti == typeof(ElaTuple))
-                type = ElaTuple.TypeInfo;
-            else if (ti == typeof(ElaVariant))
-                type = ElaVariant.TypeInfo;
-            else if (ti == typeof(ElaFunction))
-                type = ElaFunction.TypeInfo;
-            else if (ti == typeof(ElaModule))
-                type = ElaModule.TypeInfo;
+			if (ti == typeof(Int32) && TypeId == ElaMachine.INT)
+                return I4;
+            else if (ti == typeof(Single) && TypeId <= ElaMachine.REA)
+                return GetReal();
+            else if (ti == typeof(Int64) && TypeId <= ElaMachine.LNG)
+                return GetLong();
+            else if (ti == typeof(Double) && TypeId <= ElaMachine.DBL)
+                return GetDouble();
+            else if (ti == typeof(Boolean) && TypeId == ElaMachine.BYT)
+                return I4 == 1;
+            else if (ti == typeof(String) && TypeId == ElaMachine.STR)
+                return DirectGetString();
+            else if (ti == typeof(Char) && TypeId == ElaMachine.CHR)
+                return (Char)I4;
+            else if (ti == typeof(ElaList) && TypeId == ElaMachine.LST)
+                return (ElaList)Ref;
+            else if (ti == typeof(ElaRecord) && TypeId == ElaMachine.REC)
+                return (ElaRecord)Ref;
+            else if (ti == typeof(ElaTuple) && TypeId == ElaMachine.TUP)
+                return (ElaTuple)Ref;
+            else if (ti == typeof(ElaVariant) && TypeId == ElaMachine.VAR)
+                return (ElaVariant)Ref;
+            else if (ti == typeof(ElaFunction) && TypeId == ElaMachine.FUN)
+                return (ElaFunction)Ref;
+            else if (ti == typeof(ElaModule) && TypeId == ElaMachine.MOD)
+                return (ElaModule)Ref;
+            else if (ti == typeof(ElaTypeInfo) && TypeId == ElaMachine.TYP)
+                return (ElaTypeInfo)Ref;
+            else if (ti == typeof(ElaUnit) && TypeId == ElaMachine.UNI)
+                return ElaUnit.Instance;
+            else if (ti == typeof(ElaObject))
+                return Ref;
             else if (ti == typeof(ElaValue))
                 return this;
             else if (ti == typeof(Object))
                 return AsObject();
+            else if (ti.IsArray)
+                return ConvertToArray(ti.GetElementType());
+            else if (ti.IsGenericType && ti.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                return ConvertToArray(ti.GetGenericArguments()[0]);
             else
             {
-                if (ti == typeof(ElaUnit))
+                try
                 {
-                    if (TypeCode == ElaTypeCode.Unit)
-                        return ElaUnit.Instance;
-                    else
-                        throw InvalidCast(TypeCode, type.ReflectedTypeCode);
-                }
-                else if (ti == typeof(ElaObject))
-                    return Ref;
-                else if (ti.IsArray)
-                    return ConvertToArray(ti.GetElementType());
-                else if (ti.IsGenericType && ti.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-                    return ConvertToArray(ti.GetGenericArguments()[0]);
-                else
                     return System.Convert.ChangeType(Ref, ti);
+                }
+                catch (Exception) { }
             }
 
-            if (type.ReflectedTypeCode == TypeCode)
-                return AsObject();
-
-			var ret = Ref.Convert(this, type, ctx).AsObject();
-
-			if (ctx.Failed)
-				throw InvalidCast(TypeCode, type.ReflectedTypeCode);
-
-			return ret;
+            throw InvalidCast(ti);
 		}
-
 
 		private object ConvertToArray(Type el)
 		{
 			var seq = (IEnumerable<ElaValue>)Ref;
-			var len = Ref.GetLength(ElaObject.DummyContext);
-			var arr = Array.CreateInstance(el, len.AsInteger());
+            var len = 0;
+
+            if (Ref is ElaList)
+                len = ((ElaList)Ref).Length;
+            else if (Ref is ElaTuple)
+                len = ((ElaTuple)Ref).Length;
+
+			var arr = Array.CreateInstance(el, len);
 			var i = 0;
 
 			foreach (var e in seq)
@@ -307,29 +261,21 @@ namespace Ela.Runtime
 
 			return arr;
 		}
-		#endregion
 
-
-		#region Cast Methods
 		public object AsObject()
 		{
 			switch (TypeCode)
 			{
-				case ElaTypeCode.Boolean: return AsBoolean();
-				case ElaTypeCode.Char: return AsChar();
-				case ElaTypeCode.Double: return ((ElaDouble)Ref).Value;
-				case ElaTypeCode.Function: return (ElaFunction)Ref;
-				case ElaTypeCode.Integer: return AsInteger();
-				case ElaTypeCode.List: return (ElaList)Ref;
-                case ElaTypeCode.Long: return ((ElaLong)Ref).Value;
-				case ElaTypeCode.Record: return (ElaRecord)Ref;
+				case ElaTypeCode.Boolean: return I4 == 1;
+				case ElaTypeCode.Char: return (Char)I4;
+				case ElaTypeCode.Double: return Ref.AsDouble();
+				case ElaTypeCode.Integer: return I4;
+				case ElaTypeCode.Long: return Ref.AsLong();
 				case ElaTypeCode.Single: return DirectGetReal();
 				case ElaTypeCode.String: return DirectGetString();
-				case ElaTypeCode.Tuple: return (ElaTuple)Ref;
 				case ElaTypeCode.Unit: return null;
 				case ElaTypeCode.Lazy:
-                    var v = Ref.Force(this, ElaObject.DummyContext);
-                    return v.AsObject();
+                    return Ref.Force(this, ElaObject.DummyContext).Ref;
 				default:
 					if (Ref == null)
 						throw new InvalidOperationException();
@@ -337,304 +283,80 @@ namespace Ela.Runtime
 						return Ref;
 			}
 		}
-
-
-		public int AsInteger()
+        
+		public int AsInt32()
 		{
 			if (TypeCode == ElaTypeCode.Integer)
 				return I4;
-            else 
-                return Ref.AsInteger(this);
+
+            throw InvalidCast(typeof(Int32));
 		}
 
+        public long AsInt64()
+        {
+            if (TypeCode == ElaTypeCode.Long)
+                return Ref.AsLong();
+
+            throw InvalidCast(typeof(Int64));
+        }
 
         public char AsChar()
         {
             if (TypeCode == ElaTypeCode.Char)
                 return (Char)I4;
-            else
-                return Ref.AsChar(this);
+
+            throw InvalidCast(typeof(Char));
         }
-
-
+        
         public float AsSingle()
         {
             if (TypeCode == ElaTypeCode.Single)
                 return DirectGetReal();
-            else
-                return Ref.AsSingle(this);
+
+            throw InvalidCast(typeof(Single));
         }
-        
+
+        public double AsDouble()
+        {
+            if (TypeCode == ElaTypeCode.Double)
+                return Ref.AsDouble();
+
+            throw InvalidCast(typeof(Double));
+        }        
 
         public string AsString()
         {
             if (TypeCode == ElaTypeCode.String)
                 return DirectGetString();
-            else
-                return ((Char)I4).ToString();
+
+            throw InvalidCast(typeof(String));
         }
 
         public bool AsBoolean()
         {
             if (TypeCode == ElaTypeCode.Boolean)
                 return I4 == 1;
-            else
-                return Ref.AsBoolean(this);
+
+            throw InvalidCast(typeof(Boolean));
         }
-
-
-		private InvalidCastException InvalidCast(ElaTypeCode target, ElaTypeCode source)
+        
+		private InvalidCastException InvalidCast(System.Type target)
 		{
-            return new InvalidCastException(Strings.GetMessage("InvalidCast", TypeCodeFormat.GetShortForm(source), 
-                TypeCodeFormat.GetShortForm(target)));
+            return new InvalidCastException(Strings.GetMessage("InvalidCast", TypeCodeFormat.GetShortForm(TypeCode), 
+                target.Name));
 		}
 		#endregion
-
-
-        #region Operations
-        public bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.Equal(left, right, ctx);
-        }
-
-
-        public bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.NotEqual(left, right, ctx);
-        }
-
-
-        public bool Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.Greater(left, right, ctx);
-        }
-
-
-        public bool Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.Lesser(left, right, ctx);
-        }
-
-
-        public bool GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.GreaterEqual(left, right, ctx);
-        }
-
-
-        public bool LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.LesserEqual(left, right, ctx);
-        }
-
-
-        public ElaValue GetLength(ExecutionContext ctx)
-        {
-            return Ref.GetLength(ctx);
-        }
-
-
-        public ElaValue Successor(ExecutionContext ctx)
-        {
-            return Ref.Successor(this, ctx);
-        }
-
-
-        public ElaValue Predecessor(ExecutionContext ctx)
-        {
-            return Ref.Predecessor(this, ctx);
-        }
-
-
-        public ElaValue GetValue(ElaValue index, ExecutionContext ctx)
-        {
-            return Ref.GetValue(index, ctx);
-        }
-
-
-        public ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.Concatenate(left, right, ctx);
-        }
-
-
-        public ElaValue Add(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.Add(left, right, ctx);
-        }
-
-
-        public ElaValue Subtract(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.Subtract(left, right, ctx);
-        }
-
-
-        public ElaValue Multiply(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.Multiply(left, right, ctx);
-        }
-
-
-        public ElaValue Divide(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.Divide(left, right, ctx);
-        }
-
-
-        public ElaValue Remainder(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.Remainder(left, right, ctx);
-        }
-
-
-        public ElaValue Power(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.Power(left, right, ctx);
-        }
-
-
-        public ElaValue BitwiseOr(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.BitwiseOr(left, right, ctx);
-        }
-
-
-        public ElaValue BitwiseAnd(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.BitwiseAnd(left, right, ctx);
-        }
-
-
-        public ElaValue BitwiseXor(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.BitwiseXor(left, right, ctx);
-        }
-
-
-        public ElaValue BitwiseNot(ExecutionContext ctx)
-        {
-            return Ref.BitwiseNot(this, ctx);
-        }
-
-
-        public ElaValue ShiftRight(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.ShiftRight(left, right, ctx);
-        }
-
-
-        public ElaValue ShiftLeft(ElaValue left, ElaValue right, ExecutionContext ctx)
-        {
-            return Ref.ShiftLeft(left, right, ctx);
-        }
-
-
-        public ElaValue Negate(ExecutionContext ctx)
-        {
-            return Ref.Negate(this, ctx);
-        }
-
-
-        public ElaValue Head(ExecutionContext ctx)
-        {
-			return Ref.Head(ctx);
-        }
-
-
-        public ElaValue Tail(ExecutionContext ctx)
-        {
-			return Ref.Tail(ctx);
-        }
-
-
-        public bool IsNil(ExecutionContext ctx)
-        {
-			return Ref.IsNil(ctx);
-        }
-
-
-        public ElaValue Cons(ElaObject instance, ElaValue value, ExecutionContext ctx)
-        {
-			return Ref.Cons(instance, value, ctx);
-        }
-
-
-		public ElaValue Nil(ExecutionContext ctx)
-		{
-			return Ref.Nil(ctx);
-		}
-
-
-        public ElaValue Generate(ElaValue value, ExecutionContext ctx)
-        {
-			return Ref.Generate(value, ctx);
-        }
-
-
-        public ElaValue GenerateFinalize(ExecutionContext ctx)
-        {
-			return Ref.GenerateFinalize(ctx);
-        }
-
-
-        public bool HasField(string field, ExecutionContext ctx)
-        {
-			return Ref.Has(field, ctx);
-        }
-
-
-        public string Show(ShowInfo info, ExecutionContext ctx)
-        {
-            return Ref.Show(this, info, ctx);
-        }
-
-
-        public ElaValue Convert(ElaTypeInfo type, ExecutionContext ctx)
-        {
-            return Ref.Convert(this, type, ctx);
-        }
-
-
-        public ElaValue Call(ElaValue value, ExecutionContext ctx)
-        {
-            return Ref.Call(value, ctx);
-        }
-
-
-        public ElaValue Force(ExecutionContext ctx)
-        {
-            return Ref.Force(this, ctx);
-        }
-
-
-        public string GetTag(ExecutionContext ctx)
-        {
-			return Ref.GetTag(ctx);
-        }
-
-
-        public ElaValue Untag(ExecutionContext ctx)
-        {
-			return Ref.Untag(ctx);
-        }
-        #endregion
         
-
-		#region Fields
-		internal int I4;
+		#region Properties
+		internal readonly int I4;
 
 		internal ElaObject Ref;
-		#endregion
-
-
-		#region Properties
-		public ElaTypeCode TypeCode
+		
+        public ElaTypeCode TypeCode
 		{
 			get { return Ref != null ? (ElaTypeCode)TypeId : ElaTypeCode.None; }
 		}
-
-
+        
 		internal int TypeId
 		{
 			get { return Ref.TypeId; }

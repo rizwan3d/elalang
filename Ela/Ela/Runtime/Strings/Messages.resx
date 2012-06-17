@@ -135,6 +135,9 @@
   <data name="NotSupported" xml:space="preserve">
     <value>This type of conversion is not supported.</value>
   </data>
+  <data name="OutOfMemory" xml:space="preserve">
+    <value>Ela machine is out of memory.</value>
+  </data>
   <data name="StackCorrupted" xml:space="preserve">
     <value>Stack is corrupted.</value>
   </data>

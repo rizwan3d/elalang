@@ -75,16 +75,16 @@ namespace Ela.Runtime
 
 		internal ElaValue Pop()
 		{
-			--size;
+            --size;
 
-			if (array[size].Ref.TypeId > 5)
-			{
-				var ret = array[size];
-				array[size].Ref = null;
-				return ret;
-			}
+            if (array[size].Ref.TypeId > 5)
+            {
+                var ret = array[size];
+                array[size].Ref = null;
+                return ret;
+            }
 
-			return array[size];
+            return array[size];
 		}
 
 

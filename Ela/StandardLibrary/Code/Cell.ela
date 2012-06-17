@@ -1,14 +1,24 @@
 /* 
-    Ela Cell module
+    Module cell
     Created in 2012 by Basil Voronkov
 */
 open qualified "$Cell"#elalib@cl
 
-let cell x = cl.cell (force x)
+/* Construction */
+type cell x = RefCell (cl.cell x)
 
-let mutate e x = cl.mutate (force e) (force x)
+/* Instances */
+instance Eq cell
+  where (RefCell x) == (RefCell y) = x == y
+     et (RefCell x) <> (RefCell y) = x <> y
 
-let valueof c = cl.valueof (force c)
+instance Show cell
+  where showf fmt (RefCell x) = "<cell:" ++ showf fmt x ++ ">"
+
+/* Functions */
+let mutate e (RefCell x) = cell <| cl.mutate (force e) x
+
+let valueof (RefCell x) = cl.valueof x
 
 let c.+ = mutate (valueof c + 1) c
 

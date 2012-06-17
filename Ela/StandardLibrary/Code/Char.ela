@@ -1,5 +1,5 @@
 /* 
-    Ela Char module
+    Module char
     Created in 2012 by Basil Voronkov
 */
 open qualified "$Char"#elalib@ch

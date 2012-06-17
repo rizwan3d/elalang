@@ -1,5 +1,5 @@
 /* 
-    Ela Core module
+    Module Core
     Created in 2011-2012 by Basil Voronkov
 */
 open "$Core"#elalib@cm 

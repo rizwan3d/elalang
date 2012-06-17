@@ -24,7 +24,7 @@ namespace Ela.CodeModel
 		#region Methods
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
-			sb.Append("if " + Condition.ToString() + " then " + True.ToString() + " else " + 
+            sb.Append("if " + Condition.ToString() + " then " + True.ToString() + " else " + 
                 (False ?? (Object)"<ERROR>").ToString());
 		}
 		#endregion

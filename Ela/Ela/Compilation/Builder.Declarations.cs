@@ -2,13 +2,134 @@
 using Ela.CodeModel;
 using Ela.Runtime;
 using Ela.Debug;
+using System.Collections.Generic;
 
 namespace Ela.Compilation
 {
 	internal sealed partial class Builder
-	{
-		#region Main
-		private void CompileDeclaration(ElaBinding s, LabelMap map, Hints hints)
+    {
+        #region Forward Declaration
+        private string typeName;
+        private void RunTypes(ElaBlock block, LabelMap map, Hints hints)
+        {
+            var len = block.Expressions.Count;
+
+            for (var idx = 0; idx < len; idx++)
+            {
+                var exp = block.Expressions[idx];
+                var last = idx == len - 1;
+
+                if (exp.Type == ElaNodeType.Newtype)
+                {
+                    var v = (ElaNewtype)exp;
+                    var tc = -1;
+
+                    if (v.Body == null)
+                    {
+                        tc = (Int32)TypeCodeFormat.GetTypeCode(v.Name);
+
+                        if (tc == 0)
+                            AddError(ElaCompilerError.OnlyBuiltinTypeNoDefinition, v, v.Name);
+                       
+                        var sca = AddVariable("$$" + v.Name, v, ElaVariableFlags.None, -1);
+                        cw.Emit(Op.PushI4, tc);
+                        cw.Emit(Op.Popvar, sca);
+                    }
+
+                    if (frame.Types.ContainsKey(v.Name))
+                        AddError(ElaCompilerError.TypeAlreadyDeclared, v, v.Name);
+                    else
+                    {
+                        frame.Types.Add(v.Name, tc);
+
+                        if (v.Body != null)
+                        {
+                            typeName = v.Name;
+                            CompileFunction(v, FunFlag.Newtype);
+                            var addr = AddVariable(v.Name, v, ElaVariableFlags.TypeFun, -1);
+                            AddLinePragma(exp);
+                            cw.Emit(Op.Popvar, addr);
+                            var sa = AddVariable("$$" + v.Name, v, ElaVariableFlags.None, -1);
+                            cw.Emit(Op.Typeid, AddString(v.Name));
+                            cw.Emit(Op.Popvar, sa);
+                        }
+                    }
+                }                
+            }
+        }
+
+        private void RunInstances(ElaBlock block, LabelMap map, Hints hints)
+        {
+            var len = block.Expressions.Count;
+
+            for (var idx = 0; idx < len; idx++)
+            {
+                var exp = block.Expressions[idx];
+                var last = idx == len - 1;
+
+                if (exp.Type == ElaNodeType.ClassInstance)
+                {
+                    var v = (ElaClassInstance)exp;
+                    CompileInstance(v, map, last ? Hints.None : hints);
+                }
+            }
+        }
+
+        private void RunForwardDeclaration(ElaBlock block, LabelMap map, Hints hints)
+        {
+            var len = block.Expressions.Count;
+
+            for (var idx = 0; idx < len; idx++)
+            {
+                var exp = block.Expressions[idx];
+                var last = idx == len - 1;
+
+                switch (exp.Type)
+                {
+                    case ElaNodeType.TypeClass:
+                        {
+                            var v = (ElaTypeClass)exp;
+                            CompileClass(v, map, last ? Hints.None : hints);
+                        }
+                        break;
+                    case ElaNodeType.Binding:
+                        {
+                            var v = (ElaBinding)exp;
+                            var and = v;
+
+                            do
+                            {
+                                AddNoInitVariable(and);
+                                and = and.And;
+                            }
+                            while (and != null);
+                        }
+                        break;
+                    case ElaNodeType.Block:
+                        {
+                            var b = (ElaBlock)exp;
+                            //This is a set of module include directives
+                            RunForwardDeclaration(b, map, Hints.None);
+
+                            //A module include directive might be the last statement in a module
+                            if ((hints & Hints.Left) != Hints.Left)
+                                cw.Emit(Op.Pushunit);
+                            break;
+                        }
+                    case ElaNodeType.ModuleInclude:
+                        {
+                            var s = (ElaModuleInclude)exp;
+                            CompileModuleInclude(s, map, Hints.Left);
+                        }
+                        break;
+                }
+            }
+        }
+        #endregion
+
+
+        #region Variables
+        private void CompileDeclaration(ElaBinding s, LabelMap map, Hints hints)
 		{
 			if (s.InitExpression == null)
 				AddError(ElaCompilerError.VariableDeclarationInitMissing, s);
@@ -24,16 +145,6 @@ namespace Ela.Compilation
                 if (String.IsNullOrEmpty(s.VariableName))
                     AddError(ElaCompilerError.InvalidBuiltinBinding, s);
 			}
-
-            if ((s.VariableFlags & ElaVariableFlags.Extends) == ElaVariableFlags.Extends && s.InitExpression != null
-                && s.InitExpression.Type != ElaNodeType.FunctionLiteral)
-                AddError(ElaCompilerError.ExtendsOnlyFunctions, s, s);
-
-            if ((s.VariableFlags & ElaVariableFlags.Extends) == ElaVariableFlags.Extends &&
-                (hints & Hints.And) != Hints.And)
-            {
-                AddOldNames(s);
-            }
 			
 			if (s.In != null)
 				StartScope(false, s.In.Line, s.In.Column);
@@ -43,49 +154,85 @@ namespace Ela.Compilation
                 AddError(ElaCompilerError.PrivateOnlyGlobal, s);
 
             var inline = (s.VariableFlags & ElaVariableFlags.Inline) == ElaVariableFlags.Inline;
+            var inlineData = -1;
 			
 			if (s.Pattern == null)
 			{
 				var addr = -1;
 				var addSym = false;
                 var lastSym = default(VarSym);
-				
-				if (s.InitExpression != null)
-				{
-					addr = (hints & Hints.And) == Hints.And ? GetNoInitVariable(s.VariableName) : AddVariable(s.VariableName, s, flags, data);
+
+                if (s.InitExpression != null && !s.MemberBinding)
+                {
+                    var andHint = (hints & Hints.And) == Hints.And;
+
+                    if (CurrentScope == globalScope || andHint)
+                        addr = GetNoInitVariable(s.VariableName);
+
+                    if (addr == -1 && !andHint)
+                        addr = AddVariable(s.VariableName, s, flags, data);
+                    
                     lastSym = pdb != null ? pdb.LastVarSym : null;
 
                     if (inline && s.InitExpression.Type == ElaNodeType.FunctionLiteral)
-					{
+                    {
                         var fun = (ElaFunctionLiteral)s.InitExpression;
-                        inlineFuns.Remove(fun.Name);
-						inlineFuns.Add(fun.Name, new InlineFun(fun, CurrentScope));
-					}
-				}
+                        inlineData = inlineFuns.Count;
+                        inlineFuns.Add(new InlineFun(fun, CurrentScope));
+                    }
+                }
+                else
+                {
+                    addr = AddVariable();
+                    addSym = true;
+                }
 
 				var po = cw.Offset;
 				var and = s.And;
-                var noInitCode = allowNoInits.Count;
 
-				while (and != null && (hints & Hints.And) != Hints.And)
+				while (and != null && (hints & Hints.And) != Hints.And && CurrentScope != globalScope)
 				{
-                    AddNoInitVariable(and, noInitCode);
+                    if (!and.MemberBinding)
+                        AddNoInitVariable(and);
+
                     and = and.And;
 				}
 
 				if (s.Where != null)
 					CompileWhere(s.Where, map, Hints.Left);
 
-                allowNoInits.Push(new NoInit(noInitCode, !addSym));
-
                 if (s.InitExpression.Type == ElaNodeType.Builtin)
                     map.BuiltinName = s.VariableName;
 
-				var ed = s.InitExpression != null ? CompileExpression(s.InitExpression, map,
-                    (s.VariableFlags & ElaVariableFlags.Extends) == ElaVariableFlags.Extends ? Hints.Extends : Hints.None) : default(ExprData);
-				var fc = ed.Type == DataKind.FunCurry || ed.Type == DataKind.FunParams;
-				allowNoInits.Pop();
+                var expHints = s.InitExpression.Type != ElaNodeType.LazyLiteral && s.InitExpression.Type != ElaNodeType.FunctionLiteral ? Hints.Lazy : Hints.None;
 
+                var ed = default(ExprData);
+
+                if (s.InitExpression != null)
+                {
+                    if (s.MemberBinding)
+                    {
+                        var btVar = GetVariable(s.VariableName, s.Line, s.Column);
+                        var args = 1;
+
+                        if ((btVar.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin)
+                            args = BuiltinParams((ElaBuiltinKind)btVar.Data);
+                        else
+                            args = btVar.Data;
+
+                        if (s.InitExpression.Type != ElaNodeType.FunctionLiteral)
+                            EtaExpand(s.InitExpression, map, expHints, args);
+                        else if (((ElaFunctionLiteral)s.InitExpression).ParameterCount < args)
+                            EtaExpand(s.InitExpression, map, expHints, args);
+                        else
+                            CompileExpression(s.InitExpression, map, expHints);
+                    }
+                    else
+                        ed = CompileExpression(s.InitExpression, map, expHints);
+                }
+                				
+				var fc = ed.Type == DataKind.FunParams;
+				
 				if (ed.Type == DataKind.FunParams && addSym)
 				{
 					pdb.StartFunction(s.VariableName, po, ed.Data);
@@ -95,11 +242,12 @@ namespace Ela.Compilation
 				if (s.Where != null)
 					EndScope();
 
-				if (addr != -1)
+				if (!s.MemberBinding)
 				{
                     if (fc)
                     {
-                        CurrentScope.ChangeVariable(s.VariableName, new ScopeVar(s.VariableFlags | ElaVariableFlags.Function, addr >> 8, ed.Data));
+                        CurrentScope.ChangeVariable(s.VariableName, new ScopeVar(s.VariableFlags | ElaVariableFlags.Function, addr >> 8, 
+                            inline ? inlineData : ed.Data));
 
                         if (lastSym != null)
                         {
@@ -118,19 +266,23 @@ namespace Ela.Compilation
                         }
                     }
 				}
-				else if (addr == -1)
-				{
-					if (fc)
-						flags |= ElaVariableFlags.Function;
 
-					if (ed.Type == DataKind.Builtin)
-						flags |= ElaVariableFlags.Builtin;
+				AddLinePragma(s);				
+                cw.Emit(Op.Popvar, addr);
 
-					addr = AddVariable(s.VariableName, s, flags, data != -1 ? data : ed.Data);
-				}
+                if (s.MemberBinding)
+                {
+                    cw.Emit(Op.Pushvar, addr);
+                    var sv = GetVariable(s.VariableName, CurrentScope.Parent, GetFlags.None, s.Line, s.Column);
 
-				AddLinePragma(s);
-				cw.Emit(Op.Popvar, addr);
+                    if ((sv.Flags & ElaVariableFlags.Builtin) != ElaVariableFlags.Builtin)
+                        EmitVar(sv);
+                    else
+                        cw.Emit(Op.PushI4, (Int32)sv.Data);
+
+                    EmitSpecName(currentTypePrefix, "$$" + currentType, s, ElaCompilerError.UndefinedType);
+                    cw.Emit(Op.Addmbr);
+                }
 			}
 			else
 				CompileBindingPattern(s, map, hints);
@@ -149,24 +301,26 @@ namespace Ela.Compilation
 				EndScope();
 		}
 
-        private void AddOldNames(ElaBinding s)
+        private void EtaExpand(ElaExpression exp, LabelMap map, Hints hints, int args)
         {
-            var and = s;
-            
-            while (and != null)
-            {
-                var sa = default(ScopeVar);
+            StartSection();
+            StartScope(true, exp.Line, exp.Column);
+            cw.StartFrame(args);
+            var funSkipLabel = cw.DefineLabel();
+            cw.Emit(Op.Br, funSkipLabel);
+            var address = cw.Offset;
+            CompileExpression(exp, map, (hints & Hints.Lazy) == Hints.Lazy ? (hints ^ Hints.Lazy) : hints);
 
-                if (and.Pattern != null)
-                    AddError(ElaCompilerError.ExtendsNameMissing, and, and.Pattern);
-                else
-                    sa = GetVariable(and.VariableName, and.Line, and.Column);
+            for (var i = 0; i < args; i++)
+                cw.Emit(Op.Call);
 
-                EmitVar(sa);
-                var a = AddVariable("$" + and.VariableName, and, ElaVariableFlags.SpecialName | ElaVariableFlags.Private, -1);
-                cw.Emit(Op.Popvar, a);
-                and = and.And;
-            }            
+            cw.Emit(Op.Ret);
+            frame.Layouts.Add(new MemoryLayout(currentCounter, cw.FinishFrame(), address));
+            EndSection();
+            EndScope();
+            cw.MarkLabel(funSkipLabel);
+            cw.Emit(Op.PushI4, args);
+            cw.Emit(Op.Newfun, frame.Layouts.Count - 1);
         }
 
         private int GetNoInitVariable(string name)
@@ -184,15 +338,15 @@ namespace Ela.Compilation
             return -1;
         }
 
-        private void AddNoInitVariable(ElaBinding exp, int noInitCode)
+        private void AddNoInitVariable(ElaBinding exp)
         {
             if (!String.IsNullOrEmpty(exp.VariableName))
-                AddVariable(exp.VariableName, exp, exp.VariableFlags | ElaVariableFlags.NoInit, noInitCode);
+                AddVariable(exp.VariableName, exp, exp.VariableFlags | ElaVariableFlags.NoInit, -1);
             else
-                AddPatternVariables(exp.Pattern, noInitCode);
+                AddPatternVariables(exp.Pattern);
         }
 
-        private void AddPatternVariables(ElaPattern pat, int noInitCode)
+        private void AddPatternVariables(ElaPattern pat)
         {
             switch (pat.Type)
             {
@@ -201,7 +355,7 @@ namespace Ela.Compilation
                         var vp = (ElaVariantPattern)pat;
 
                         if (vp.Pattern != null)
-                            AddPatternVariables(vp.Pattern, noInitCode);
+                            AddPatternVariables(vp.Pattern);
                     }
                     break;
                 case ElaNodeType.IsPattern:
@@ -210,8 +364,8 @@ namespace Ela.Compilation
                 case ElaNodeType.AsPattern:
                     {
                         var asPat = (ElaAsPattern)pat;
-                        AddVariable(asPat.Name, asPat, ElaVariableFlags.NoInit, noInitCode);
-                        AddPatternVariables(asPat.Pattern, noInitCode);
+                        AddVariable(asPat.Name, asPat, ElaVariableFlags.NoInit, -1);
+                        AddPatternVariables(asPat.Pattern);
                     }
                     break;
                 case ElaNodeType.LiteralPattern: //Idle
@@ -219,7 +373,7 @@ namespace Ela.Compilation
                 case ElaNodeType.VariablePattern:
                     {
                         var vexp = (ElaVariablePattern)pat;
-                        AddVariable(vexp.Name, vexp, ElaVariableFlags.NoInit, noInitCode);
+                        AddVariable(vexp.Name, vexp, ElaVariableFlags.NoInit, -1);
                     }
                     break;
                 case ElaNodeType.RecordPattern:
@@ -228,7 +382,7 @@ namespace Ela.Compilation
 
                         foreach (var e in rexp.Fields)
                             if (e.Value != null)
-                                AddPatternVariables(e.Value, noInitCode);
+                                AddPatternVariables(e.Value);
                     }
                     break;
                 case ElaNodeType.PatternGroup:
@@ -237,7 +391,7 @@ namespace Ela.Compilation
                         var texp = (ElaTuplePattern)pat;
 
                         foreach (var e in texp.Patterns)
-                            AddPatternVariables(e, noInitCode);
+                            AddPatternVariables(e);
                     }
                     break;
                 case ElaNodeType.DefaultPattern: //Idle
@@ -247,7 +401,7 @@ namespace Ela.Compilation
                         var hexp = (ElaHeadTailPattern)pat;
 
                         foreach (var e in hexp.Patterns)
-                            AddPatternVariables(e, noInitCode);
+                            AddPatternVariables(e);
                     }
                     break;
                 case ElaNodeType.NilPattern: //Idle
@@ -279,66 +433,303 @@ namespace Ela.Compilation
         
 		private void CompileBindingPattern(ElaBinding s, LabelMap map, Hints hints)
 		{
-            //if (s.Pattern.Type == ElaNodeType.DefaultPattern)
-            //{
-            //    if (s.Where != null)
-            //        CompileWhere(s.Where, map, Hints.Left);
+            var next = cw.DefineLabel();
+			var exit = cw.DefineLabel();
+			var addr = -1;
+			var tuple = default(ElaTupleLiteral);
 
-            //    CompileExpression(s.InitExpression, map, Hints.Nested);
-
-            //    if (s.Where != null)
-            //        EndScope();
-
-            //    cw.Emit(Op.Pop);
-            //}
-            //else
+			if (s.InitExpression.Type == ElaNodeType.TupleLiteral && s.Pattern.Type == ElaNodeType.TuplePattern && s.Where == null)
+				tuple = (ElaTupleLiteral)s.InitExpression;
+			else
 			{
-				var next = cw.DefineLabel();
-				var exit = cw.DefineLabel();
-				var addr = -1;
-				var tuple = default(ElaTupleLiteral);
+                var po = cw.Offset;
+                var and = s.And;
 
-				if (s.InitExpression.Type == ElaNodeType.TupleLiteral && s.Pattern.Type == ElaNodeType.TuplePattern && s.Where == null)
-					tuple = (ElaTupleLiteral)s.InitExpression;
-				else
-				{
-                    var po = cw.Offset;
-                    var and = s.And;
-                    var noInitCode = allowNoInits.Count;
-                    var allow = s.InitExpression != null;// && s.InitExpression.Type == ElaNodeType.FunctionLiteral;
-                    AddNoInitVariable(s, noInitCode);
+                if (CurrentScope != globalScope)
+                {
+                    AddNoInitVariable(s);
 
                     while (and != null && (hints & Hints.And) != Hints.And)
                     {
-                        AddNoInitVariable(and, noInitCode);
+                        AddNoInitVariable(and);
                         and = and.And;
                     }
+                }
 
-                    if (s.Where != null)
-                        CompileWhere(s.Where, map, Hints.Left);
+                if (s.Where != null)
+                    CompileWhere(s.Where, map, Hints.Left);
 
-                    allowNoInits.Push(new NoInit(noInitCode, allow));
-                    
-                    if (s.InitExpression != null) 
-                        CompileExpression(s.InitExpression, map, Hints.None);
-                    
-                    allowNoInits.Pop();
+                if (s.InitExpression != null) 
+                    CompileExpression(s.InitExpression, map, Hints.None);
+                
+                if (s.Where != null)
+                    EndScope();
 
-                    if (s.Where != null)
-                        EndScope();
-
-                    addr = AddVariable();
-                    cw.Emit(Op.Popvar, addr);
-				}
-
-				CompilePattern(addr, tuple, s.Pattern, map, next, s.VariableFlags, Hints.Silent);
-				cw.Emit(Op.Br, exit);
-				cw.MarkLabel(next);
-				cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
-				cw.MarkLabel(exit);
-				cw.Emit(Op.Nop);
+                addr = AddVariable();
+                cw.Emit(Op.Popvar, addr);
 			}
+
+			CompilePattern(addr, tuple, s.Pattern, map, next, s.VariableFlags, Hints.None);
+			cw.Emit(Op.Br, exit);
+			cw.MarkLabel(next);
+			cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
+			cw.MarkLabel(exit);
+			cw.Emit(Op.Nop);
 		}
 		#endregion
-	}
+
+        #region Classes
+        public void CompileClass(ElaTypeClass s, LabelMap map, Hints hints)
+        {
+            if (s.BuiltinName != null)
+                CompileBuiltinClass(s, map, hints);
+            else
+            {
+                for (var i = 0; i < s.Members.Count; i++)
+                {
+                    var m = s.Members[i];
+
+                    if (m.Mask == 0)
+                        AddError(ElaCompilerError.InvalidMemberSignature, m, m.Name);
+
+                    var addr = AddVariable(m.Name, m, ElaVariableFlags.ClassFun, m.Arguments);
+                    cw.Emit(Op.PushI4, m.Mask);
+                    cw.Emit(Op.PushI4, m.Arguments);
+                    cw.Emit(Op.Newfunc, AddString(m.Name));
+                    cw.Emit(Op.Popvar, addr);
+                }
+            }
+
+            var sa = AddVariable("$$$" + s.Name, s, ElaVariableFlags.None, -1);
+            cw.Emit(Op.Classid, AddString(s.Name));
+            cw.Emit(Op.Popvar, sa);
+            
+            if (frame.Classes.ContainsKey(s.Name))
+                AddError(ElaCompilerError.ClassAlreadyDeclared, s, s.Name);
+            else
+                frame.Classes.Add(s.Name, new ClassData(s.Members.ToArray()));
+
+            //A class declaration might be the last statement in a module
+            if ((hints & Hints.Left) != Hints.Left)
+                cw.Emit(Op.Pushunit);
+        }
+
+        private void CompileBuiltinClass(ElaTypeClass s, LabelMap map, Hints hints)
+        {
+            switch (s.BuiltinName)
+            {
+                case "Typeable":
+                    CompileBuiltinMember(ElaBuiltinKind.Cast, s, 0, map);
+                    break;
+                case "Eq":
+                    CompileBuiltinMember(ElaBuiltinKind.Equal, s, 0, map);
+                    CompileBuiltinMember(ElaBuiltinKind.NotEqual, s, 1, map);
+                    AddBuiltinInstances("Eq", ElaTypeCode.Integer, ElaTypeCode.Long, ElaTypeCode.Single, ElaTypeCode.Double, ElaTypeCode.Boolean, ElaTypeCode.Char, ElaTypeCode.String, ElaTypeCode.Unit, ElaTypeCode.TypeInfo, ElaTypeCode.Function, ElaTypeCode.Module);
+                    break;
+                case "Ord":
+                    CompileBuiltinMember(ElaBuiltinKind.Greater, s, 0, map);
+                    CompileBuiltinMember(ElaBuiltinKind.Lesser, s, 1, map);
+                    CompileBuiltinMember(ElaBuiltinKind.GreaterEqual, s, 2, map);
+                    CompileBuiltinMember(ElaBuiltinKind.LesserEqual, s, 3, map);
+                    AddBuiltinInstances("Ord", ElaTypeCode.Integer, ElaTypeCode.Long, ElaTypeCode.Single, ElaTypeCode.Double, ElaTypeCode.Char, ElaTypeCode.String);
+                    break;
+                case "Num":
+                    CompileBuiltinMember(ElaBuiltinKind.Add, s, 0, map);
+                    CompileBuiltinMember(ElaBuiltinKind.Subtract, s, 1, map);
+                    CompileBuiltinMember(ElaBuiltinKind.Multiply, s, 2, map);
+                    CompileBuiltinMember(ElaBuiltinKind.Divide, s, 3, map);
+                    CompileBuiltinMember(ElaBuiltinKind.Power, s, 4, map);
+                    CompileBuiltinMember(ElaBuiltinKind.Remainder, s, 5, map);
+                    CompileBuiltinMember(ElaBuiltinKind.Negate, s, 6, map);
+                    AddBuiltinInstances("Num", ElaTypeCode.Integer, ElaTypeCode.Long, ElaTypeCode.Single, ElaTypeCode.Double);
+                    break;
+                case "Bit":
+                    CompileBuiltinMember(ElaBuiltinKind.BitwiseAnd, s, 0, map);
+                    CompileBuiltinMember(ElaBuiltinKind.BitwiseOr, s, 1, map);
+                    CompileBuiltinMember(ElaBuiltinKind.BitwiseXor, s, 2, map);
+                    CompileBuiltinMember(ElaBuiltinKind.BitwiseNot, s, 3, map);
+                    CompileBuiltinMember(ElaBuiltinKind.ShiftLeft, s, 4, map);
+                    CompileBuiltinMember(ElaBuiltinKind.ShiftRight, s, 5, map);
+                    AddBuiltinInstances("Bit", ElaTypeCode.Integer, ElaTypeCode.Long);
+                    break;
+                case "Enum":
+                    CompileBuiltinMember(ElaBuiltinKind.Succ, s, 0, map);
+                    CompileBuiltinMember(ElaBuiltinKind.Pred, s, 1, map);
+                    AddBuiltinInstances("Enum", ElaTypeCode.Integer, ElaTypeCode.Long, ElaTypeCode.Single, ElaTypeCode.Double, ElaTypeCode.Char);
+                    break;
+                case "Seq":
+                    CompileBuiltinMember(ElaBuiltinKind.Head, s, 0, map);
+                    CompileBuiltinMember(ElaBuiltinKind.Tail, s, 1, map);
+                    CompileBuiltinMember(ElaBuiltinKind.IsNil, s, 2, map);
+                    AddBuiltinInstances("Seq", ElaTypeCode.String, ElaTypeCode.List);
+                    break;
+                case "Ix":
+                    CompileBuiltinMember(ElaBuiltinKind.Get, s, 0, map);
+                    CompileBuiltinMember(ElaBuiltinKind.Length, s, 1, map);
+                    AddBuiltinInstances("Ix", ElaTypeCode.String, ElaTypeCode.Tuple, ElaTypeCode.Record);
+                    break;
+                case "Cons":
+                    CompileBuiltinMember(ElaBuiltinKind.Cons, s, 0, map);
+                    CompileBuiltinMember(ElaBuiltinKind.Nil, s, 1, map);
+                    AddBuiltinInstances("Cons", ElaTypeCode.List);
+                    break;
+                case "Cat":
+                    CompileBuiltinMember(ElaBuiltinKind.Concat, s, 0, map);
+                    AddBuiltinInstances("Cat", ElaTypeCode.Record, ElaTypeCode.Tuple, ElaTypeCode.Char, ElaTypeCode.String);
+                    break;
+                case "Show":
+                    CompileBuiltinMember(ElaBuiltinKind.Showf, s, 0, map);
+                    AddBuiltinInstances("Show", ElaTypeCode.Integer, ElaTypeCode.Long, ElaTypeCode.Single, ElaTypeCode.Double, ElaTypeCode.Boolean, ElaTypeCode.Char, ElaTypeCode.String, ElaTypeCode.Unit, ElaTypeCode.TypeInfo, ElaTypeCode.Function, ElaTypeCode.Module);
+                    break;
+                default:
+                    AddError(ElaCompilerError.InvalidBuiltinClass, s, s.BuiltinName);
+                    break;
+            }
+        }
+
+        private void AddBuiltinInstances(string @class, params ElaTypeCode[] types)
+        {
+            for (var i = 0; i < types.Length; i++)
+                frame.Instances.Add(new InstanceData(TypeCodeFormat.GetShortForm(types[i]), @class, -1, -1, 0, 0));
+        }
+
+        private void CompileBuiltinMember(ElaBuiltinKind kind, ElaTypeClass s, int memIndex, LabelMap map)
+        {
+            var flags = ElaVariableFlags.Builtin | ElaVariableFlags.ClassFun;
+
+            if (memIndex > s.Members.Count - 1)
+            {
+                AddError(ElaCompilerError.InvalidBuiltinClassDefinition, s, s.BuiltinName);
+                return;
+            }
+
+            var m = s.Members[memIndex];
+            CompileBuiltin(kind, m, map);
+            cw.Emit(Op.Popvar, AddVariable(m.Name, m, flags, (Int32)kind));
+        }
+
+        private string currentType;
+        private string currentTypePrefix;
+        public void CompileInstance(ElaClassInstance s, LabelMap map, Hints hints)
+        {
+            currentType = s.TypeName;
+            currentTypePrefix = s.TypePrefix;
+            var mod = default(CodeFrame);
+            var mbr = default(ClassData);
+            var modId = -1;
+
+            if (s.TypeClassPrefix == null)
+            {
+                if (!frame.Classes.TryGetValue(s.TypeClassName, out mbr))
+                {
+                    var sv = GetVariable("$$$" + s.TypeClassName, CurrentScope, GetFlags.NoError, s.Line, s.Column);
+
+                    if (sv.IsEmpty())
+                    {
+                        AddError(ElaCompilerError.UnknownClass, s, s.TypeClassName);
+                        return;
+                    }
+
+                    modId = sv.Address & Byte.MaxValue;
+                    mod = refs[modId];
+                }
+            }
+            else
+            {
+                var sv = GetVariable(s.TypeClassPrefix, s.Line, s.Column);
+
+                if (sv.IsEmpty())
+                    return;
+
+                if ((sv.Flags & ElaVariableFlags.Module) != ElaVariableFlags.Module)
+                {
+                    AddError(ElaCompilerError.InvalidQualident, s, s.TypeClassPrefix);
+                    return;
+                }
+
+                modId = frame.References[s.TypeClassPrefix].LogicalHandle;
+                mod = refs[modId];
+            }
+            
+            if (mbr == null && (mod == null || !mod.Classes.TryGetValue(s.TypeClassName, out mbr)))
+            {
+                AddError(ElaCompilerError.UnknownClass, s, s.TypeClassName);
+                return;
+            }
+
+            var typCode = -1;
+            
+            if (s.TypePrefix == null)
+            {
+                if (!frame.Types.ContainsKey(s.TypeName))
+                {
+                    var sv = GetVariable("$$" + s.TypeName, CurrentScope, GetFlags.NoError, s.Line, s.Column);
+
+                    if (sv.IsEmpty())
+                    {
+                        AddError(ElaCompilerError.UndefinedType, s, s.TypeName);
+                        return;
+                    }
+
+                    typCode = sv.Address & Byte.MaxValue;
+                }
+            }
+            else
+            {
+                var sv = GetVariable(s.TypePrefix, s.Line, s.Column);
+
+                if (sv.IsEmpty())
+                    return;
+
+                if ((sv.Flags & ElaVariableFlags.Module) != ElaVariableFlags.Module)
+                {
+                    AddError(ElaCompilerError.InvalidQualident, s, s.TypePrefix);
+                    return;
+                }
+
+                typCode = frame.References[s.TypeClassPrefix].LogicalHandle;
+            }
+
+            frame.Instances.Add(new InstanceData(s.TypeName, s.TypeClassName, typCode, modId, s.Line, s.Column));
+
+            var classMembers = new List<String>(mbr.Members.Length);
+
+            for (var i = 0; i < mbr.Members.Length; i++)
+                classMembers.Add(mbr.Members[i].Name);
+
+            var b = s.Where;
+            var err = false;
+
+            while (b != null)
+            {
+                if (b.Pattern != null)
+                {
+                    AddError(ElaCompilerError.MemberNoPatterns, b.Pattern, b.Pattern.ToString());
+                    err = true;
+                }
+
+                if (!String.IsNullOrEmpty(b.VariableName))
+                {
+                    if (classMembers.Contains(b.VariableName))
+                    {
+                        b.MemberBinding = true;
+                        classMembers.Remove(b.VariableName);
+                    }
+                }
+
+                b = b.And;
+            }
+
+            if (classMembers.Count > 0)
+                AddError(ElaCompilerError.MemberNotAll, s, s.TypeClassName, s.TypeClassName + " " + s.TypeName);
+
+            if (!err)
+            {
+                StartScope(false, s.Where.Line, s.Where.Column);
+                CompileDeclaration(s.Where, map, hints);
+                EndScope();
+            }
+        }
+        #endregion
+    }
 }

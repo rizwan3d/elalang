@@ -42,6 +42,8 @@ namespace Ela
 
 		Lazy = 16,
 
-		Variant = 17
+		Variant = 17,
+
+        TypeInfo = 18
 	}
 }

@@ -5,6 +5,7 @@ using Ela.CodeModel;
 using Ela.Compilation;
 using Ela.Parsing;
 using Ela.Runtime;
+using Ela.Runtime.Classes;
 
 namespace Ela.Linking
 {
@@ -149,6 +150,45 @@ namespace Ela.Linking
 		}
 
 
+        private void ProcessTypeAndClasses(CodeFrame frame, int hdl)
+        {
+            foreach (var k in new List<String>(frame.Types.Keys))
+            {
+                if (frame.Types[k] == -1)
+                {
+                    var c = Assembly.Types.Count;
+                    frame.Types[k] = c;
+                    Assembly.Types.Add(new TypeData(c, k));
+                    Assembly.Cls.Add(new Class());
+                }
+            }
+
+            foreach (var k in new List<String>(frame.Classes.Keys))
+            {
+                var c = Assembly.ClassIndexer;
+                frame.Classes[k].Code = c;
+                Assembly.ClassIndexer++;
+            }
+
+            foreach (var id in frame.Instances)
+            {
+                var typeModule = Assembly.GetModule(id.TypeModuleId == -1 ? hdl : frame.HandleMap[id.TypeModuleId]);
+                var typeCode = typeModule.Types[id.Type];
+
+                var classModule = Assembly.GetModule(id.ClassModuleId == -1 ? hdl : frame.HandleMap[id.ClassModuleId]);
+                var classCode = (Int64)classModule.Classes[id.Class].Code;
+
+                var lo = (Int64)typeCode << 32;
+                long instanceCode = classCode | lo;
+
+                if (Assembly.Instances.ContainsKey(instanceCode))
+                    AddError(ElaLinkerError.InstanceAlreadyExists, frame.File, id.Line, id.Column, id.Class, id.Type);
+                else
+                    Assembly.Instances.Add(instanceCode, 0);
+            }
+        }
+
+
         private CodeFrame FillExports(CodeFrame frame, ExportVars exportVars, int logicHandle)
         {
             foreach (var kv in frame.GlobalScope.EnumerateVars())
@@ -156,8 +196,9 @@ namespace Ela.Linking
                 var sv = kv.Value;
 
                 if ((sv.Flags & ElaVariableFlags.Private) != ElaVariableFlags.Private)
-                    exportVars.AddName(kv.Key, 
+                    exportVars.AddVariable(kv.Key, 
                         (sv.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin ? (ElaBuiltinKind)sv.Data : ElaBuiltinKind.None,
+                        sv.Flags,
                         logicHandle, sv.Address);
             }
 
@@ -170,7 +211,7 @@ namespace Ela.Linking
             foreach (var l in obj.LateBounds)
             {
                 var vk = default(ExportVarData);
-                var found = exportVars.FindName(l.Name, out vk);
+                var found = exportVars.FindVariable(l.Name, out vk);
 
                 if (!found || l.Address >> 8 != vk.Address || (l.Address & Byte.MaxValue) != vk.ModuleHandle)
                     AddError(ElaLinkerError.ExportedNameRemoved, fi,
@@ -251,7 +292,12 @@ namespace Ela.Linking
             if (frame != null)
             {
                 frame.File = fi;
-                return Assembly.AddModule(mod.ToString(), frame, mod.RequireQuailified, logicHandle);
+                var hdl =  Assembly.AddModule(mod.ToString(), frame, mod.RequireQuailified, logicHandle);
+
+                if (frame != null)
+                    ProcessTypeAndClasses(frame, hdl);
+
+                return hdl;
             }
             else
                 return -1;
@@ -260,7 +306,7 @@ namespace Ela.Linking
 
         protected virtual ExportVars CreateExportVars(FileInfo fi)
         {
-            return new ExportVars();
+            return new ExportVars(Assembly);
         }
 
 
@@ -491,7 +537,7 @@ namespace Ela.Linking
 			}
 
             var exportVars = CreateExportVars(file);
-			elac.ModuleInclude += (o, e) => ResolveModule(e.Module, exportVars);
+			elac.ModuleInclude += (o, e) => e.Frame = ResolveModule(e.Module, exportVars);
 			var res = frame != null ? elac.Compile(expr, CompilerOptions, exportVars, frame, scope) :
 				elac.Compile(expr, opts, exportVars);
 			AddMessages(res.Messages, file == null ? RootFile : file);

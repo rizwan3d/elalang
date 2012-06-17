@@ -7,26 +7,30 @@ namespace Ela.CodeModel
 	{
 		None = 0x00,
 
-		External = 0x01,
+		External = 1 << 0,
 
-		Private = 0x02,
+        Private = 1 << 1,
 
-		Module = 0x04,
+        Module = 1 << 2,
 
-		Function = 0x08,
+        Function = 1 << 3,
 
-		ObjectLiteral = 0x10,
+        ObjectLiteral = 1 << 4,
 
-		SpecialName = 0x20,
+        SpecialName = 1 << 5,
 
-		Parameter = 0x40,
+        Parameter = 1 << 6,
 
-		Builtin = 0x80,
+        Builtin = 1 << 7,
 
-		Inline = 0x100,
+        Inline = 1 << 8,
 
-		NoInit = 0x200,
+        NoInit = 1 << 9,
 
-        Extends = 0x400
+        // = 1 << 10,
+
+        ClassFun = 1 << 11,
+
+        TypeFun = 1 << 12
 	}
 }

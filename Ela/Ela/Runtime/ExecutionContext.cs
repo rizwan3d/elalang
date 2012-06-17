@@ -16,9 +16,9 @@ namespace Ela.Runtime
 
 
 		#region Methods
-        public void NoOverload(string tag, string function)
+        public void NoOverload(string type, string function)
         {
-            Fail(ElaRuntimeError.NoOverload, function, tag);
+            Fail(ElaRuntimeError.NoOverload, function, type);
         }
 
 
@@ -26,6 +26,12 @@ namespace Ela.Runtime
 		{
 			Fail(ElaRuntimeError.InvalidFormat, format, value.ToString(), value.GetTypeName());
 		}
+
+
+        public void UnableRead(ElaValue val, string str)
+        {
+            Fail(ElaRuntimeError.Read, ((ElaTypeInfo)val.Ref).ReflectedTypeName, str);
+        }
 
 
 		public void DivideByZero(ElaValue value)
@@ -104,7 +110,7 @@ namespace Ela.Runtime
 		}
 
 
-		public void Fail(ElaError err)
+		internal void Fail(ElaError err)
 		{
 			if (!Failed)
 			{

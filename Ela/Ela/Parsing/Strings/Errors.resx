@@ -420,4 +420,7 @@
   <data name="InvalidOperator" xml:space="preserve">
     <value>Invalid operator.</value>
   </data>
+  <data name="InvalidFunctionSignature" xml:space="preserve">
+    <value>Invalid function signature. A symbol '{0}' is unexpected.</value>
+  </data>
 </root>

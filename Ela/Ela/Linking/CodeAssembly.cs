@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Ela.Compilation;
 using Ela.Runtime;
+using Ela.Runtime.Classes;
 
 namespace Ela.Linking
 {
@@ -31,6 +32,53 @@ namespace Ela.Linking
 			foreignModules = new FastList<ForeignModule>();
 			moduleMap = new Dictionary<String,Int32>();
             quals = new FastList<Boolean>();
+            Instances = new Dictionary<Int64,Byte>();
+            Types = new FastList<TypeData>
+                {
+                    new TypeData(ElaTypeCode.None),
+                    new TypeData(ElaTypeCode.Integer),
+                    new TypeData(ElaTypeCode.Long),
+                    new TypeData(ElaTypeCode.Single),
+                    new TypeData(ElaTypeCode.Double),
+                    new TypeData(ElaTypeCode.Boolean),
+                    new TypeData(ElaTypeCode.Char),
+                    new TypeData(ElaTypeCode.String),
+                    new TypeData(ElaTypeCode.Unit),
+                    new TypeData(ElaTypeCode.List),
+                    new TypeData(ElaTypeCode.__Reserved),
+                    new TypeData(ElaTypeCode.Tuple),
+                    new TypeData(ElaTypeCode.Record),
+                    new TypeData(ElaTypeCode.Function),
+                    new TypeData(ElaTypeCode.Object),
+                    new TypeData(ElaTypeCode.Module),
+                    new TypeData(ElaTypeCode.Lazy),
+                    new TypeData(ElaTypeCode.Variant),
+                    new TypeData(ElaTypeCode.TypeInfo)
+                };
+            Cls = new FastList<Class>();
+            Cls.AddRange(
+                new Class[]
+                {
+                    new Class(), //ERR
+                    new IntegerInstance(), //INT
+                    new LongInstance(), //LNG
+                    new SingleInstance(), //SNG
+                    new DoubleInstance(), //DBL
+                    new BooleanInstance(), //BYT
+                    new CharInstance(), //CHR
+                    new StringInstance(), //STR
+                    new Class(), //UNI
+                    new ListInstance(), //LST
+                    new Class(), //TAB
+                    new TupleInstance(), //TUP
+                    new RecordInstance(), //REC
+                    new Class(), //FUN
+                    new Class(), //OBJ
+                    new ModuleInstance(), //MOD
+                    new LazyInstance(), //LAZ
+                    new Class(), //VAR
+                    new TypeInfoInstance(), //TYP
+                });
 		}
 		#endregion
 
@@ -160,6 +208,14 @@ namespace Ela.Linking
 		{
 			get { return modules.Count; }
 		}
+
+        internal int ClassIndexer { get; set; }
+
+        internal Dictionary<Int64,Byte> Instances { get; private set; }
+        
+        internal FastList<TypeData> Types { get; private set; }
+
+        internal FastList<Class> Cls { get; private set; }
 		#endregion
 	}
 }

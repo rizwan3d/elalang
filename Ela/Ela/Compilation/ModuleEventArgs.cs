@@ -14,6 +14,8 @@ namespace Ela.Compilation
 
 		#region Properties
 		public ModuleReference Module { get; private set; }
+
+        internal CodeFrame Frame { get; set; }
 		#endregion
 	}
 }

@@ -53,6 +53,25 @@ namespace Ela.Compilation
                     yield return kv;
         }
 
+        internal bool LocalOrParent(string var)
+        {
+            if (Function)
+                return Locals.ContainsKey(var);
+
+            var s = this;
+
+            do
+            {
+                if (s.Locals.ContainsKey(var))
+                    return true;
+
+                s = s.Parent;
+            }
+            while (s != null && !s.Function);
+
+            return false;
+        }
+
 
 		internal void ChangeVariable(string name, ScopeVar var)
 		{

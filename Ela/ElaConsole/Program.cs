@@ -379,7 +379,7 @@ namespace ElaConsole
 						Console.WriteLine("Execution time: {0}", sw.Elapsed);
 
                     if (exer.ReturnValue.TypeCode != ElaTypeCode.None && exer.ReturnValue.TypeCode != ElaTypeCode.Unit)
-						Console.WriteLine(exer.ReturnValue.ToString());
+						Console.WriteLine(vm.PrintValue(exer.ReturnValue));
 				}
 				catch (ElaException ex)
 				{
@@ -412,7 +412,7 @@ namespace ElaConsole
 					ShowHints = !opt.SupressHints,
 					GenerateDebugInfo = opt.Debug,
 					Optimize = !opt.DisableOptimization,
-					Prelude = opt.Prelude
+					Prelude = opt.NoPrelude ? null : opt.Prelude
 				};
 		}
 
@@ -432,6 +432,7 @@ namespace ElaConsole
 			foreach (var s in opt.ReferencePaths)
 				linkOpt.CodeBase.Directories.Add(new DirectoryInfo(s));
 
+            linkOpt.CodeBase.Directories.Add(new DirectoryInfo(Environment.CurrentDirectory));
 			return linkOpt;
 		}
 

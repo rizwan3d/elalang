@@ -120,23 +120,35 @@
   <data name="CastNotSupported" xml:space="preserve">
     <value>Casting to the type '{0}' is not supported.</value>
   </data>
+  <data name="ClassAlreadyDeclared" xml:space="preserve">
+    <value>A module already defines a class '{0}'.</value>
+  </data>
   <data name="ElseGuardNotValid" xml:space="preserve">
     <value>An 'else' guard is not valid in this context.</value>
   </data>
   <data name="ElseMissing" xml:space="preserve">
     <value>A mandatory 'else' clause is missing. A conditional expression should be always terminated with an 'else' clause.</value>
   </data>
-  <data name="ExtendsNameMissing" xml:space="preserve">
-    <value>Unable to extend an existing binding. Name of the binding cannot be inferred from: '{0}'.</value>
-  </data>
-  <data name="ExtendsOnlyFunctions" xml:space="preserve">
-    <value>Unable to use attribute 'extends' on binding '{0}'. Only functions can be extended.</value>
-  </data>
   <data name="InfiniteRangeOnlyList" xml:space="preserve">
     <value>Range: {0} is invalid. Only lists can be generated using infinite ranges.</value>
   </data>
   <data name="InvalidBuiltinBinding" xml:space="preserve">
     <value>Invalid binding for a built-in function implementation. Function head is missing.</value>
+  </data>
+  <data name="InvalidBuiltinClass" xml:space="preserve">
+    <value>Invalid built-in class '{0}'.</value>
+  </data>
+  <data name="InvalidBuiltinClassDefinition" xml:space="preserve">
+    <value>Invalid definition of a built-in class '{0}'.</value>
+  </data>
+  <data name="InvalidMemberSignature" xml:space="preserve">
+    <value>A function '{0}' signature is invalid. Type parameter should be used in a signature at least once.</value>
+  </data>
+  <data name="InvalidProgram" xml:space="preserve">
+    <value>Invalid program body.</value>
+  </data>
+  <data name="InvalidQualident" xml:space="preserve">
+    <value>An expression '{0}' is invalid in this context. A module alias is expected.</value>
   </data>
   <data name="InvalidVariant" xml:space="preserve">
     <value>Invalid variant declaration '{0}'. Only one value can be tagged. Use tuples to tag several values.</value>
@@ -147,17 +159,47 @@
   <data name="MatchNotSupportedInFor" xml:space="preserve">
     <value>An expression: {0} is invalid. Pattern matching is not allowed in for/to and for/downto cycles.</value>
   </data>
+  <data name="MemberNoPatterns" xml:space="preserve">
+    <value>Pattern '{0}' inside member binding is invalid. Patterns are not allowed in member bindings.</value>
+  </data>
+  <data name="MemberNotAll" xml:space="preserve">
+    <value>Not all of the members for class '{0}' are declared in instance '{1}'.</value>
+  </data>
+  <data name="NoHindingSameScope" xml:space="preserve">
+    <value>A conflicting definition of '{0}'. Shadowing of names in the same lexical scope if not allowed.</value>
+  </data>
+  <data name="OnlyBuiltinTypeNoDefinition" xml:space="preserve">
+    <value>Invalid definition of type '{0}'. Only built-in types can have no definition.</value>
+  </data>
   <data name="PatternNotAllArgs" xml:space="preserve">
     <value>Not all of the function arguments are specified in the pattern {0}.</value>
   </data>
   <data name="PlaceholderNotValid" xml:space="preserve">
     <value>An expression '_' is not valid in this context.</value>
   </data>
+  <data name="PrivateNameInModule" xml:space="preserve">
+    <value>A name '{0}' from module '{1}' is marked as private.</value>
+  </data>
   <data name="PrivateOnlyGlobal" xml:space="preserve">
     <value>A 'private' modifier is valid only on global bindings.</value>
   </data>
+  <data name="TooManyErrors" xml:space="preserve">
+    <value>Too many errors.</value>
+  </data>
+  <data name="TypeAlreadyDeclared" xml:space="preserve">
+    <value>A module already defines a type '{0}'.</value>
+  </data>
   <data name="UndefinedName" xml:space="preserve">
     <value>A name '{0}' is not defined in a module or externally.</value>
+  </data>
+  <data name="UndefinedNameInModule" xml:space="preserve">
+    <value>A module '{0}' doesn't have a name '{1}' in its export list.</value>
+  </data>
+  <data name="UndefinedType" xml:space="preserve">
+    <value>Unknown type '{0}'.</value>
+  </data>
+  <data name="UnknownClass" xml:space="preserve">
+    <value>Unknown class '{0}'.</value>
   </data>
   <data name="VariableDeclarationInitMissing" xml:space="preserve">
     <value>Names cannot be declared without initialization.</value>

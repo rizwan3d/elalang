@@ -60,6 +60,11 @@ namespace Ela.CodeModel
 		public ElaExpressionFlags Flags { get; internal protected set; }
 		
 		public ElaNodeType Type { get; protected set; }
+
+        internal string Code
+        {
+            get { return ToString(); }
+        }
 		#endregion
 	}
 }

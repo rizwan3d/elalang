@@ -1,9 +1,9 @@
 /* 
-    Ela Imperative module
+    Module test
     Created in 2011-2012 by Basil Voronkov
 */
 
-open Core
+open core
 
 let assert =
     {
