@@ -291,7 +291,7 @@ namespace Ela.Compilation
                             AddHint(ElaCompilerHint.UseThunk, exp, v.VariableName);
                         }
 
-                        EmitVar(scopeVar);
+                        PushVar(scopeVar);
 
                         if ((hints & Hints.Left) == Hints.Left)
                             AddValueNotUsed(v);
@@ -333,7 +333,7 @@ namespace Ela.Compilation
 
                         CompileExpression(v.Expression, map, Hints.None | Hints.Scope);
                         var addr = AddVariable();
-                        cw.Emit(Op.Popvar, addr);
+                        PopVar(addr);
                         var next = cw.DefineLabel();
                         var exit = cw.DefineLabel();
                         var err = cw.DefineLabel();

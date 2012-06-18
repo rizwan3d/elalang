@@ -45,7 +45,7 @@ namespace Ela.Compilation
 
                     AddLinePragma(im);
                     cw.Emit(Op.Pushext, modHandle | sv.Address << 8);
-                    cw.Emit(Op.Popvar, a);
+                    PopVar(a);
                 }
             }
         }
@@ -81,7 +81,7 @@ namespace Ela.Compilation
             refs.Add(ev.Frame);
 
             if (addr != -1)
-                cw.Emit(Op.Popvar, addr);
+                PopVar(addr);
 
             return ev.Frame;
         }

@@ -89,8 +89,21 @@ namespace Ela.Parsing
 
                 var tp = new ElaTupleLiteral(ot);
 
+                //for (var i = 0; i < pars; i++)
+                //    tp.Parameters.Add(new ElaVariableReference(ot) { VariableName = "$" + i });
+
                 for (var i = 0; i < pars; i++)
-                	tp.Parameters.Add(new ElaVariableReference(ot) { VariableName = "$" + i });
+                {
+                    if (patterns != null && patterns[i].Type == ElaNodeType.VariablePattern)
+                    {
+                        tp.Parameters.Add(new ElaVariableReference(ot)
+                        {
+                            VariableName = ((ElaVariablePattern)patterns[i]).Name
+                        });
+                    }
+                    else
+                        tp.Parameters.Add(new ElaVariableReference(ot) { VariableName = "$" + i });
+                }
                 
                 mi.Body.Expression = tp;
             }

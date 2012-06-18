@@ -25,15 +25,34 @@ namespace Ela.Compilation
             currentCounter = frame.Layouts.Count > 0 ? frame.Layouts[0].Size : 0;
         }
 
-        //This method should be used always instead of direct emitting of Pushvar op code.
+        //This method should be used always instead of direct emitting Pushvar/Pushloc op codes.
         //It first checks if a given variable is an external and in such a case generates
-        //a different op code.
-        private void EmitVar(ScopeVar sv)
+        //a different op code. For locals it uses PushVar(int) to generate an appropriate op code.
+        private void PushVar(ScopeVar sv)
         {
             if ((sv.Flags & ElaVariableFlags.External) == ElaVariableFlags.External)
                 cw.Emit(Op.Pushext, sv.Address);
             else
-                cw.Emit(Op.Pushvar, sv.Address);
+                PushVar(sv.Address);
+        }
+
+        //This method emits either Pushvar or Pushloc.
+        private void PushVar(int address)
+        {
+            if ((address & Byte.MaxValue) == 0)
+                cw.Emit(Op.Pushloc, address >> 8);
+            else
+                cw.Emit(Op.Pushvar, address);
+        }
+
+        //This method emits either Popvar or Poploc. This method should always be used instead of
+        //directly emitting Popvar/Poploc op codes.
+        private void PopVar(int address)
+        {
+            if ((address & Byte.MaxValue) == 0)
+                cw.Emit(Op.Poploc, address >> 8);
+            else
+                cw.Emit(Op.Popvar, address);
         }
 
         //This method is used to generate Push* op code for a special name prefixed by $$ or $$$.
@@ -69,7 +88,7 @@ namespace Ela.Compilation
                 if (a.IsEmpty())
                     AddError(err, exp, specName.TrimStart('$'));
 
-                EmitVar(a);
+                PushVar(a);
             }
         }
 

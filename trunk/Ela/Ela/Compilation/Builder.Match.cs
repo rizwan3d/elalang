@@ -22,13 +22,13 @@ namespace Ela.Compilation
 				{
 					CompileExpression(matchExp, map, Hints.None);
 					serv = AddVariable();
-					cw.Emit(Op.Popvar, serv);
+                    PopVar(serv);
 				}
 			}
 			else
 			{
 				serv = AddVariable();
-				cw.Emit(Op.Popvar, serv);
+                PopVar(serv);
 			}
 
 			var len = exp.Entries.Count;
@@ -172,7 +172,7 @@ namespace Ela.Compilation
 
 			if ((hints & Hints.Throw) == Hints.Throw)
 			{
-				cw.Emit(Op.Pushvar, serv);
+				PushVar(serv);
 				cw.Emit(Op.Rethrow);
 			}
             else
@@ -217,7 +217,7 @@ namespace Ela.Compilation
 					else
 					{
 						var vp = (ElaVariantPattern)patExp;
-						cw.Emit(Op.Pushvar, pushSys);
+						PushVar(pushSys);
 						
 						if (!String.IsNullOrEmpty(vp.Tag))
 							cw.Emit(Op.Skiptag, AddString(vp.Tag));
@@ -228,10 +228,10 @@ namespace Ela.Compilation
 
 						if (vp.Pattern != null)
 						{
-							cw.Emit(Op.Pushvar, pushSys);
+							PushVar(pushSys);
 							cw.Emit(Op.Untag);
                             var newSys = AddVariable();
-							cw.Emit(Op.Popvar, newSys);
+                            PopVar(newSys);
 							CompilePattern(newSys, null, vp.Pattern, map, nextLab, flags, hints);
 						}
 					}
@@ -243,7 +243,7 @@ namespace Ela.Compilation
                         else
                         {
                             cw.Emit(Op.PushI4_0);
-                            cw.Emit(Op.Pushvar, pushSys);
+                            PushVar(pushSys);
                             cw.Emit(Op.Type);
                             cw.Emit(Op.Pushelem);                            
                             cw.Emit(Op.PushI4, (Int32)ElaTypeCode.Unit);
@@ -261,11 +261,11 @@ namespace Ela.Compilation
 						{
 							CompileExpression(tuple, map, Hints.None);
 							pushSys = AddVariable();
-							cw.Emit(Op.Popvar, pushSys);
+                            PopVar(pushSys);
 						}
 
-						cw.Emit(Op.Pushvar, pushSys);
-						cw.Emit(Op.Popvar, addr);
+						PushVar(pushSys);
+                        PopVar(addr);
 
 						CompilePattern(pushSys, tuple, asPat.Pattern, map, nextLab, flags, hints);
 					}
@@ -275,7 +275,7 @@ namespace Ela.Compilation
 						MatchEntryAlwaysFail(patExp, nextLab);
 					else
 					{
-						cw.Emit(Op.Pushvar, pushSys);
+						PushVar(pushSys);
                         PushPrimitive(((ElaLiteralPattern)patExp).Value);
                         cw.Emit(Op.Cneq);
 						cw.Emit(Op.Brtrue, nextLab);
@@ -292,7 +292,7 @@ namespace Ela.Compilation
                             if (!String.IsNullOrEmpty(tp.TypeName))
                             {
                                 cw.Emit(Op.PushI4_0);
-                                cw.Emit(Op.Pushvar, pushSys);
+                                PushVar(pushSys);
                                 cw.Emit(Op.Type);
                                 cw.Emit(Op.Pushelem);
                                 EmitSpecName(tp.TypePrefix, "$$" + tp.TypeName, tp, ElaCompilerError.UndefinedType);                            
@@ -305,7 +305,7 @@ namespace Ela.Compilation
                                 {
                                     var t = tp.Traits[i];
 
-                                    cw.Emit(Op.Pushvar, pushSys);
+                                    PushVar(pushSys);
                                     EmitSpecName(t.Prefix, "$$$" + t.Name, tp, ElaCompilerError.UnknownClass);
 
                                     cw.Emit(Op.Traitch);
@@ -319,20 +319,27 @@ namespace Ela.Compilation
 					{
 						var vexp = (ElaVariablePattern)patExp;
 
-						if (tuple != null)
-						{
-							CompileExpression(tuple, map, Hints.None);
-							pushSys = AddVariable();
-							cw.Emit(Op.Popvar, pushSys);
-						}
+                        if (tuple != null)
+                        {
+                            CompileExpression(tuple, map, Hints.None);
+                            PopVar(AddMatchVariable(vexp.Name, flags, vexp));
+                        }
+                        else
+                        {
+                            if (CurrentScope.Parent != null)
+                            {
+                                var sv = default(ScopeVar);
 
-						var addr = AddMatchVariable(vexp.Name, flags, vexp);
+                                if (!CurrentScope.Function && CurrentScope.Parent.Locals.TryGetValue(vexp.Name, out sv) &&
+                                    (sv.Flags & ElaVariableFlags.Parameter) == ElaVariableFlags.Parameter &&
+                                    (0 | sv.Address << 8) == pushSys)
+                                    break;
+                            }
 
-						if (pushSys != addr)
-						{
-							cw.Emit(Op.Pushvar, pushSys);
-							cw.Emit(Op.Popvar, addr);
-						}
+                            var addr = AddMatchVariable(vexp.Name, flags, vexp);
+                            PushVar(pushSys);
+                            PopVar(addr);
+                        }
 					}
 					break;
 				case ElaNodeType.RecordPattern:
@@ -355,7 +362,7 @@ namespace Ela.Compilation
 						MatchEntryAlwaysFail(patExp, nextLab);
 					else
 					{
-						cw.Emit(Op.Pushvar, pushSys);
+						PushVar(pushSys);
 						cw.Emit(Op.Isnil);
 						cw.Emit(Op.Brfalse, nextLab);
 					}
@@ -366,19 +373,19 @@ namespace Ela.Compilation
 
 		private void CompileHeadTailPattern(int pushSys, ElaHeadTailPattern pexp, LabelMap map, Label nextLab, ElaVariableFlags flags, Hints hints)
 		{
-			cw.Emit(Op.Pushvar, pushSys);
+			PushVar(pushSys);
             cw.Emit(Op.Isnil);
 			cw.Emit(Op.Brtrue, nextLab);
 
 			var els = pexp.Patterns;
 			var len = els.Count;
-			cw.Emit(Op.Pushvar, pushSys);
+			PushVar(pushSys);
 
             if (len > 2)
             {
                 pushSys = AddVariable();
 				cw.Emit(Op.Dup);
-				cw.Emit(Op.Popvar, pushSys);
+                PopVar(pushSys);
             }
 
 			for (var i = 0; i < len; i++)
@@ -391,10 +398,10 @@ namespace Ela.Compilation
 					if (i > 0)
 					{
 						cw.Emit(Op.Dup);
-						cw.Emit(Op.Popvar, pushSys);
+                        PopVar(pushSys);
                         cw.Emit(Op.Isnil);
 						cw.Emit(Op.Brtrue, nextLab);
-						cw.Emit(Op.Pushvar, pushSys);
+						PushVar(pushSys);
 					}
 
 					cw.Emit(Op.Head);
@@ -404,20 +411,20 @@ namespace Ela.Compilation
 				{
 					var nm = ((ElaVariablePattern)e).Name;
 					var a = AddMatchVariable(nm, flags, e);
-					cw.Emit(Op.Popvar, a);
+                    PopVar(a);
 				}
 				else if (e.Type == ElaNodeType.DefaultPattern)
 					cw.Emit(Op.Pop);
 				else
 				{
 					var newSys = AddVariable();
-					cw.Emit(Op.Popvar, newSys);
+                    PopVar(newSys);
 					CompilePattern(newSys, null, e, map, nextLab, flags, hints);
 				}
 
 				if (!isEnd)
 				{
-					cw.Emit(Op.Pushvar, pushSys);
+					PushVar(pushSys);
 					cw.Emit(Op.Tail);
 				}
 			}
@@ -436,9 +443,9 @@ namespace Ela.Compilation
 					var addr = AddVariable();
 					var str = AddString(fld.Name);
 
-					cw.Emit(Op.Pushvar, pushSys);
+					PushVar(pushSys);
 					cw.Emit(Op.Pushfld, str);
-					cw.Emit(Op.Popvar, addr);
+                    PopVar(addr);
 					CompilePattern(addr, null, fld.Value, map, nextLab, flags, hints);
 				}
 			}
@@ -474,7 +481,7 @@ namespace Ela.Compilation
 						{
 							CompileExpression(tuple.Parameters[i], map, hints);
 							newSys = AddVariable();
-							cw.Emit(Op.Popvar, newSys);
+                            PopVar(newSys);
 						}
 
 						CompilePattern(newSys, null, seq.Patterns[i], map, nextLab, flags, hints);
@@ -483,7 +490,7 @@ namespace Ela.Compilation
 			}
 			else
 			{
-				cw.Emit(Op.Pushvar, pushSys);
+				PushVar(pushSys);
 				cw.Emit(Op.Len);
 
 				if (len == 0)
@@ -503,10 +510,10 @@ namespace Ela.Compilation
 					else
 						cw.Emit(Op.PushI4, i);
 
-                    cw.Emit(Op.Pushvar, pushSys);
+                    PushVar(pushSys);
                     cw.Emit(Op.Pushelem);
 					var newSys = AddVariable();
-					cw.Emit(Op.Popvar, newSys);
+                    PopVar(newSys);
 					CompilePattern(newSys, null, pat, map, nextLab, flags, hints);
 				}
 			}

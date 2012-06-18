@@ -23,21 +23,21 @@ namespace Ela.Compilation
 			var serv = AddVariable();
 			CompileExpression(s.Target, map, Hints.None);
 			cw.Emit(Op.Dup);
-			cw.Emit(Op.Popvar, serv);
+            PopVar(serv);
 			cw.Emit(Op.Isnil);
 			cw.Emit(Op.Brtrue, breakExit);
 
 			cw.MarkLabel(iter);
-			cw.Emit(Op.Pushvar, serv);
+			PushVar(serv);
 
             cw.Emit(Op.Isnil);
             cw.Emit(Op.Brtrue, breakExit);
-            cw.Emit(Op.Pushvar, serv);
+            PushVar(serv);
             cw.Emit(Op.Head);
-            cw.Emit(Op.Popvar, addr);
-            cw.Emit(Op.Pushvar, serv);
+            PopVar(addr);
+            PushVar(serv);
             cw.Emit(Op.Tail);
-            cw.Emit(Op.Popvar, 0 | ((addr >> 8) + 1) << 8);
+            PopVar(0 | ((addr >> 8) + 1) << 8);
 
 			if (s.Pattern.Type != ElaNodeType.VariablePattern)
 				CompilePattern(addr, null, s.Pattern, map, iter, ElaVariableFlags.None, hints);
@@ -75,7 +75,7 @@ namespace Ela.Compilation
 		{
             var fun = CompileRecursiveFor(s, map, hints, -1, -1);
 			CompileExpression(s.Target, map, Hints.None);
-			cw.Emit(Op.Pushvar, fun);
+			PushVar(fun);
 			cw.Emit(Op.Call);
 		}
 
@@ -98,21 +98,21 @@ namespace Ela.Compilation
 
             var sys = AddVariable();
             cw.Emit(Op.Dup);
-            cw.Emit(Op.Popvar, sys);
+            PopVar(sys);
             cw.Emit(Op.Isnil);
             cw.Emit(Op.Brtrue, endLab);
-            cw.Emit(Op.Pushvar, sys);
+            PushVar(sys);
             cw.Emit(Op.Head);
-            cw.Emit(Op.Popvar, head);
-            cw.Emit(Op.Pushvar, sys);
+            PopVar(head);
+            PushVar(sys);
             cw.Emit(Op.Tail);
-            cw.Emit(Op.Popvar, tail);
+            PopVar(tail);
 
 			if (s.Pattern.Type == ElaNodeType.VariablePattern)
 			{
 				var addr = AddVariable(((ElaVariablePattern)s.Pattern).Name, s.Pattern, ElaVariableFlags.None, -1);
-				cw.Emit(Op.Pushvar, head);
-				cw.Emit(Op.Popvar, addr);
+				PushVar(head);
+                PopVar(addr);
 			}
 			else
 				CompilePattern(head, null, s.Pattern, map, iterLab, ElaVariableFlags.None, hints);
@@ -133,14 +133,14 @@ namespace Ela.Compilation
 				var f = (ElaGenerator)s.Body;
 				var child = CompileRecursiveFor(f, map, hints, funAddr, tail);
 				CompileExpression(f.Target, map, Hints.None);
-                cw.Emit(Op.Pushvar, child);
+                PushVar(child);
 				cw.Emit(Op.Call);
                 cw.Emit(Op.Br, exitLab);//
 			}
 			else
 			{
-				cw.Emit(Op.Pushvar, tail);
-				cw.Emit(Op.Pushvar, 1 | (funAddr >> 8) << 8);
+				PushVar(tail);
+				PushVar(1 | (funAddr >> 8) << 8);
 				cw.Emit(Op.LazyCall);
 				CompileExpression(s.Body, map, Hints.None);
 				cw.Emit(Op.Gen);
@@ -148,8 +148,8 @@ namespace Ela.Compilation
 			}
 
 			cw.MarkLabel(iterLab);
-			cw.Emit(Op.Pushvar, tail);
-			cw.Emit(Op.Pushvar, 1 | (funAddr >> 8) << 8);
+			PushVar(tail);
+			PushVar(1 | (funAddr >> 8) << 8);
 			cw.Emit(Op.Call);
             cw.Emit(Op.Br, exitLab);//
 
@@ -159,8 +159,8 @@ namespace Ela.Compilation
 				cw.Emit(Op.Newlist);
 			else
 			{
-				cw.Emit(Op.Pushvar, 1 | (parentTail >> 8) << 8);
-				cw.Emit(Op.Pushvar, 2 | (parent >> 8) << 8);
+				PushVar(1 | (parentTail >> 8) << 8);
+				PushVar(2 | (parent >> 8) << 8);
 				cw.Emit(Op.Call);
 			}
 
@@ -173,7 +173,7 @@ namespace Ela.Compilation
 			cw.MarkLabel(funSkipLabel);
 			cw.Emit(Op.PushI4, 1);
 			cw.Emit(Op.Newfun, frame.Layouts.Count - 1);
-			cw.Emit(Op.Popvar, funAddr);
+            PopVar(funAddr);
 			return funAddr;
 		}
 		#endregion

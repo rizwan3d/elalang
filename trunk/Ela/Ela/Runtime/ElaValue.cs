@@ -348,7 +348,7 @@ namespace Ela.Runtime
 		#endregion
         
 		#region Properties
-		internal readonly int I4;
+		internal int I4;
 
 		internal ElaObject Ref;
 		

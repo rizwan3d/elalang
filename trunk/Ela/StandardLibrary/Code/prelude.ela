@@ -74,6 +74,18 @@ instance Eq variant
 /* Ord */
 class Ord __internal Ord (>) (<) (>=) (<=)
 
+instance Ord tuple
+  where x<y = fold (<) x y
+     et x>y = fold (>) x y
+     et x<=y = fold (<=) x y
+     et x>=y = fold (>=) x y
+     et fold f tup1 tup2 | length tup2 <> len = fail "Tuples should be of the same length."
+                         | else = fold' 0
+                         where len = length tup1
+                            et fold' n | n == len - 1 = e
+                                       | else = if e then true else fold' (n+1)
+                                       where e = (tup1:n) `f` (tup2:n)
+
 /* Num */
 class Num __internal Num (+) (-) (*) (/) (**) (%) (--)
 

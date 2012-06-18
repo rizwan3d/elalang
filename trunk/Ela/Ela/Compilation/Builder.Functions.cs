@@ -135,7 +135,7 @@ namespace Ela.Compilation
 					else
 					{
 						var addr = AddVariable();
-						cw.Emit(Op.Popvar, addr);
+                        PopVar(addr);
 						var nextLab = cw.DefineLabel();
 						var skipLab = cw.DefineLabel();
 						CompilePattern(addr, null, e, map, nextLab, ElaVariableFlags.None, Hints.FunBody);
@@ -172,7 +172,7 @@ namespace Ela.Compilation
                     var addr = AddVariable(v.VariableName, v,
                         v.VariableName[0] == '$' ?
                         (ElaVariableFlags.SpecialName | ElaVariableFlags.Parameter) : ElaVariableFlags.Parameter, -1);
-                    cw.Emit(Op.Popvar, addr);
+                    PopVar(addr);
                 }
             }
 		}
@@ -182,7 +182,7 @@ namespace Ela.Compilation
         {
             CurrentScope.Locals.Remove(exp.Name); //Parameters can hide each other
             var addr = AddVariable(exp.Name, exp, ElaVariableFlags.Parameter, -1);
-            cw.Emit(Op.Popvar, addr);
+            PopVar(addr);
         }
 
         //This methods tries to optimize lazy section. It would only work when a lazy
@@ -221,7 +221,7 @@ namespace Ela.Compilation
 
 			var sl = len - 1;
 			AddLinePragma(varRef);
-			EmitVar(scopeVar);
+			PushVar(scopeVar);
 
             //We partially apply function and create a new function
 			for (var i = 0; i < sl; i++)

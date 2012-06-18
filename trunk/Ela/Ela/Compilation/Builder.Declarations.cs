@@ -33,7 +33,7 @@ namespace Ela.Compilation
                        
                         var sca = AddVariable("$$" + v.Name, v, ElaVariableFlags.None, -1);
                         cw.Emit(Op.PushI4, tc);
-                        cw.Emit(Op.Popvar, sca);
+                        PopVar(sca);
                     }
 
                     if (frame.Types.ContainsKey(v.Name))
@@ -48,10 +48,10 @@ namespace Ela.Compilation
                             CompileFunction(v, FunFlag.Newtype);
                             var addr = AddVariable(v.Name, v, ElaVariableFlags.TypeFun, -1);
                             AddLinePragma(exp);
-                            cw.Emit(Op.Popvar, addr);
+                            PopVar(addr);
                             var sa = AddVariable("$$" + v.Name, v, ElaVariableFlags.None, -1);
                             cw.Emit(Op.Typeid, AddString(v.Name));
-                            cw.Emit(Op.Popvar, sa);
+                            PopVar(sa);
                         }
                     }
                 }                
@@ -267,16 +267,16 @@ namespace Ela.Compilation
                     }
 				}
 
-				AddLinePragma(s);				
-                cw.Emit(Op.Popvar, addr);
+				AddLinePragma(s);
+                PopVar(addr);
 
                 if (s.MemberBinding)
                 {
-                    cw.Emit(Op.Pushvar, addr);
+                    PushVar(addr);
                     var sv = GetVariable(s.VariableName, CurrentScope.Parent, GetFlags.None, s.Line, s.Column);
 
                     if ((sv.Flags & ElaVariableFlags.Builtin) != ElaVariableFlags.Builtin)
-                        EmitVar(sv);
+                        PushVar(sv);
                     else
                         cw.Emit(Op.PushI4, (Int32)sv.Data);
 
@@ -466,7 +466,7 @@ namespace Ela.Compilation
                     EndScope();
 
                 addr = AddVariable();
-                cw.Emit(Op.Popvar, addr);
+                PopVar(addr);
 			}
 
 			CompilePattern(addr, tuple, s.Pattern, map, next, s.VariableFlags, Hints.None);
@@ -496,13 +496,13 @@ namespace Ela.Compilation
                     cw.Emit(Op.PushI4, m.Mask);
                     cw.Emit(Op.PushI4, m.Arguments);
                     cw.Emit(Op.Newfunc, AddString(m.Name));
-                    cw.Emit(Op.Popvar, addr);
+                    PopVar(addr);
                 }
             }
 
             var sa = AddVariable("$$$" + s.Name, s, ElaVariableFlags.None, -1);
             cw.Emit(Op.Classid, AddString(s.Name));
-            cw.Emit(Op.Popvar, sa);
+            PopVar(sa);
             
             if (frame.Classes.ContainsKey(s.Name))
                 AddError(ElaCompilerError.ClassAlreadyDeclared, s, s.Name);
@@ -605,7 +605,7 @@ namespace Ela.Compilation
 
             var m = s.Members[memIndex];
             CompileBuiltin(kind, m, map);
-            cw.Emit(Op.Popvar, AddVariable(m.Name, m, flags, (Int32)kind));
+            PopVar(AddVariable(m.Name, m, flags, (Int32)kind));
         }
 
         private string currentType;
