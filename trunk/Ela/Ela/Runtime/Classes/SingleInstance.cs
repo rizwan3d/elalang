@@ -291,11 +291,11 @@ namespace Ela.Runtime.Classes
             switch (castTo.TypeCode)
             {
                 case ElaTypeCode.Double:
-                    return new ElaValue((Int32)value.DirectGetReal());
+                    return new ElaValue((Double)value.DirectGetReal());
                 case ElaTypeCode.Long:
                     return new ElaValue((Int64)value.DirectGetReal());
                 case ElaTypeCode.Integer:
-                    return new ElaValue((Single)value.DirectGetReal());
+                    return new ElaValue((Int32)value.DirectGetReal());
                 default:
                     {
                         ctx.ConversionFailed(value, castTo.GetTypeName());

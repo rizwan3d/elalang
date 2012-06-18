@@ -1,3 +1,4 @@
+0.10.4.40:Change:Comparison logic for functions have changed. Now functions are equal only if their handles are equal (they are created from the same literal form) and they are not partially applied.
 0.10.4.39:Change:Built-in 'apply' function is decomissioned. Now this function is implemented directly in Ela.
 0.10.4.38:Change:Now backward and forward composition are no longer built-in functions but are directly implemented in Ela prelude.
 0.10.4.37:New:Now when a number of errors exceeds 100 Ela generates a 'Too many errors' message and stops compilation.

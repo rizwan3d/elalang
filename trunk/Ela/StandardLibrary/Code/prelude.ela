@@ -72,7 +72,7 @@ instance Eq variant
      et x <> y = tag x <> tag y or untag x <> untag y
 
 /* Ord */
-class Ord __internal Ord (>) (<) (<=) (>=)
+class Ord __internal Ord (>) (<) (>=) (<=)
 
 /* Num */
 class Num __internal Num (+) (-) (*) (/) (**) (%) (--)

@@ -62,6 +62,18 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId);
 		}
+
+        internal virtual bool True(ElaValue @this, ExecutionContext ctx)
+        {
+            ctx.NoOperator(@this, "true");
+            return false;
+        }
+
+        internal virtual bool False(ElaValue @this, ExecutionContext ctx)
+        {
+            ctx.NoOperator(@this, "false");
+            return false;
+        }
     	
 		protected internal virtual ElaValue Tail(ExecutionContext ctx)
 		{

@@ -1,0 +1,27 @@
+/*
+  Module reflect
+  Created in 2012 by Basil Voronkov
+*/
+open qualified "$Reflect"#elalib@reflect
+
+let funArgsCount x = reflect.funArgsCount (force x)
+
+let funName x = reflect.funName (force x)
+
+let funAppliedArgsCount x = reflect.funAppliedArgsCount (force x)
+
+let funAppliedArgs x = reflect.funAppliedArgs (force x)
+
+let moduleHandle x = reflect.moduleHandle (force x)
+
+let moduleName x = reflect.moduleName (force x)
+
+let moduleExportList x = reflect.moduleExportList (force x)
+
+let moduleReferences x = reflect.moduleReferences (force x)
+
+let asmMainModule () = reflect.asmMainModule reflect
+
+let asmModuleCount () = reflect.asmModuleCount reflect
+
+let asmModules () = reflect.asmModules reflect

@@ -138,6 +138,11 @@ namespace Ela.Compilation
 
             var fieldSv = default(ScopeVar);
 
+            //We have such a reference but looks like it couldn't be obtained
+            //We don't need to handle this situation here, it is already reported by a linker
+            if (refs[mod.LogicalHandle] == null)
+                return false;
+
             //No such name, now captured statically
             if (!refs[mod.LogicalHandle].GlobalScope.Locals.TryGetValue(p.FieldName, out fieldSv))
             {

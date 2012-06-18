@@ -46,14 +46,18 @@ namespace Ela.Runtime.ObjectModel
 
                 idx = GetOrdinal(key.DirectGetString());
             }
+            else
+            {
+                idx = key.I4;
 
-			if (key.I4 != -1 && key.I4 < values.Length)
-			    return values[key.I4];
-		    else
-			{
-				ctx.IndexOutOfRange(key, new ElaValue(this));
-				return Default();
-			}			
+                if (key.I4 == -1 || key.I4 > values.Length - 1)
+                {
+                    ctx.IndexOutOfRange(key, new ElaValue(this));
+                    return Default();
+                }
+            }
+
+			return values[idx];
 		}
 
 		public override string ToString(string format, IFormatProvider provider)

@@ -671,12 +671,9 @@ namespace Ela.Runtime
                         }
 						break;
 					case Op.Brtrue:
-                        right = evalStack.Pop();
+                        right = evalStack.PopFast();
 
-                        if (right.TypeId == LAZ)
-                            right = right.Ref.Force(right, ctx);
-
-                        if (right.I4 == 1)
+                        if (right.Ref.True(right, ctx))
                             thread.Offset = opd;
 
                         if (ctx.Failed)
@@ -687,12 +684,9 @@ namespace Ela.Runtime
                         }
                         break;
 					case Op.Brfalse:
-                        right = evalStack.Pop();
+                        right = evalStack.PopFast();
 
-                        if (right.TypeId == LAZ)
-                            right = right.Ref.Force(right, ctx);
-
-                        if (right.I4 == 0)
+                        if (right.Ref.False(right, ctx))
                             thread.Offset = opd;                            
 
                         if (ctx.Failed)
@@ -1109,9 +1103,6 @@ namespace Ela.Runtime
                                 right = right.Ref.Force(right, ctx);
                             }
 
-                            if (left.TypeId != TYP)
-                                ctx.InvalidType(TypeCodeFormat.GetShortForm(ElaTypeCode.TypeInfo), left);
-
                             if (!ctx.Failed)
                             {
                                 if (right.Ref.TypeId == left.Ref.TypeId)
@@ -1190,7 +1181,7 @@ namespace Ela.Runtime
 						evalStack.Replace(new ElaValue(new ElaVariant(frame.Strings[opd], right)));
 						break;
 					case Op.Newlazy:
-						evalStack.Push(new ElaValue(new ElaLazy((ElaFunction)evalStack.Pop().Ref)));
+						evalStack.Push(new ElaValue(-1, new ElaLazy((ElaFunction)evalStack.Pop().Ref)));
 						break;
 					case Op.Newfun:
 						{
@@ -1307,7 +1298,7 @@ namespace Ela.Runtime
 						{
 							var fun = ((ElaFunction)evalStack.Pop().Ref).CloneFast();
 							fun.LastParameter = evalStack.Pop();
-							evalStack.Push(new ElaValue(new ElaLazy(fun)));
+							evalStack.Push(new ElaValue(-1, new ElaLazy(fun)));
 						}
 						break;
                     case Op.Callt:
@@ -1386,6 +1377,10 @@ namespace Ela.Runtime
                     case Op.Type:
                         {
                             right = evalStack.Peek();
+
+                            if (right.TypeId == LAZ && ((ElaLazy)right.Ref).Value.Ref != null)
+                                right = right.Ref.Force(right, ctx);
+
                             evalStack.Replace(new ElaValue(new ElaTypeInfo(asm.Types[right.Ref.TypeId])));
                         }
                         break;

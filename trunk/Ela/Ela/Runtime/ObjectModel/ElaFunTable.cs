@@ -103,7 +103,7 @@ namespace Ela.Runtime.ObjectModel
             return base.ToString(format, provider);
         }
 
-        protected override string GetFunctionName()
+        public override string GetFunctionName()
         {
             return name;
         }

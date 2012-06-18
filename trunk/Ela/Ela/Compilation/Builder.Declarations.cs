@@ -445,11 +445,11 @@ namespace Ela.Compilation
                 var po = cw.Offset;
                 var and = s.And;
 
-                if (CurrentScope != globalScope)
+                if (CurrentScope != globalScope && (hints & Hints.And) != Hints.And)
                 {
                     AddNoInitVariable(s);
 
-                    while (and != null && (hints & Hints.And) != Hints.And)
+                    while (and != null)
                     {
                         AddNoInitVariable(and);
                         and = and.And;

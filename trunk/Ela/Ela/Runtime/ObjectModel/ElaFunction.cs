@@ -58,10 +58,20 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Operations
-        public IEnumerable<ElaValue> GetAppliedParameters()
+        public IEnumerable<ElaValue> GetAppliedArguments()
         {
             for (var i = 0; i < AppliedParameters; i++)
                 yield return Parameters[i];
+        }
+
+        public int GetArgumentNumber()
+        {
+            return Parameters.Length + 1;
+        }
+
+        public int GetAppliedArgumentNumber()
+        {
+            return AppliedParameters;
         }
 
 		internal ElaValue CallWithThrow(ElaValue value)
@@ -323,7 +333,6 @@ namespace Ela.Runtime.ObjectModel
 			ret.vm = vm;
 			ret.Captures = Captures;
 			ret.Flip = Flip;
-            ret.OverloadName = OverloadName;
 			return ret;
 		}
 
@@ -343,7 +352,6 @@ namespace Ela.Runtime.ObjectModel
 			newInstance.vm = vm;
 			newInstance.Captures = Captures;
 			newInstance.Flip = Flip;
-            newInstance.OverloadName = OverloadName;
 			return newInstance;
 		}
 
@@ -360,8 +368,7 @@ namespace Ela.Runtime.ObjectModel
 			nf.Parameters = pars;
 			return nf;
 		}
-
-
+        
 		public virtual ElaValue Call(params ElaValue[] args)
 		{
 			if (args == null || args.Length == 0)
@@ -369,9 +376,8 @@ namespace Ela.Runtime.ObjectModel
 
 			return vm.Call(this, args);
 		}
-
-
-		protected virtual string GetFunctionName()
+        
+		public virtual string GetFunctionName()
 		{
 			var funName = DEF_NAME;
 
@@ -425,8 +431,6 @@ namespace Ela.Runtime.ObjectModel
 		internal ElaValue[] Parameters { get; set; }
 
 		internal ElaValue LastParameter { get; set; }
-
-        internal string OverloadName { get; set; }
 
 		private bool _flip;
 		internal bool Flip 

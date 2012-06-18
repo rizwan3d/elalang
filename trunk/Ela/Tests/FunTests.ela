@@ -5,12 +5,6 @@ let private inline
  et calc x y = (x / y) * (x + y) 
  et compare x y = if x > y then Gt else NotGt
 
-let private double (Foo x) = x+x
-
-let extendFuns {eq} =
-        eq (double 2) 4
-        where extends double x = x+x
-
 let partial1 {eq} =
           eq (sum 2 3) 5
         $ eq (sum2 3) 5
@@ -187,8 +181,8 @@ let comparision {eq} =
            et fun2 = getFun ()
 
 let operator1 {eq} =
-      eq (rec ? "foo") "foo"
-      where  x ? y = x:y
+      eq (rec ?. "foo") "foo"
+      where  x ?. y = x:y
          et rec = { foo = "foo" }
 
 let flipThunk {eq} = 
