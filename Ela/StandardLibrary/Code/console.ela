@@ -1,0 +1,11 @@
+/*
+    Module console
+    Created in 2012 by Basil Voronkov
+*/
+open qualified "$Con"#elalib@con
+
+let write x = con.write (show x)
+
+let writen x = con.writen (show x)
+
+let readn = con.readn
