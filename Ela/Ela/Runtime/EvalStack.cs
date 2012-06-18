@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Ela.Runtime.ObjectModel;
 
 namespace Ela.Runtime
 {
@@ -73,7 +74,7 @@ namespace Ela.Runtime
 		}
 
 
-		internal ElaValue Pop()
+        internal ElaValue Pop()
 		{
             --size;
 
@@ -100,15 +101,19 @@ namespace Ela.Runtime
 		}
 
 
+        private ElaValue emptyInt = new ElaValue(ElaInteger.Instance);
 		internal void Push(int val)
 		{
-			array[size++] = new ElaValue(val);
+            emptyInt.I4 = val;
+            array[size++] = emptyInt;// new ElaValue(val);
 		}
 
 
-		internal void Push(bool val)
+        private ElaValue emptyBool = new ElaValue(ElaBoolean.Instance);
+        internal void Push(bool val)
 		{
-			array[size++] = new ElaValue(val);
+            emptyBool.I4 = val ? 1 :0;
+            array[size++] = emptyBool;// new ElaValue(val);
 		}
 
 
@@ -120,12 +125,14 @@ namespace Ela.Runtime
 
 		internal void Replace(int val)
 		{
-			array[size - 1] = new ElaValue(val);
+            emptyInt.I4 = val;
+            array[size - 1] = emptyInt;// new ElaValue(val);
 		}
 
         internal void Replace(bool val)
 		{
-            array[size - 1] = new ElaValue(val);
+            emptyBool.I4 = val ? 1 : 0;
+            array[size - 1] = emptyBool;// new ElaValue(val);
 		}
 		#endregion
 

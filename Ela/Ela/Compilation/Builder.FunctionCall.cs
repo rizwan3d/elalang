@@ -160,7 +160,7 @@ namespace Ela.Compilation
                 {
                     //Regular situation, just push a target name
                     AddLinePragma(v.Target);
-                    EmitVar(sv);
+                    PushVar(sv);
 
                     if ((sv.VariableFlags & ElaVariableFlags.Function) == ElaVariableFlags.Function)
                         ed = new ExprData(DataKind.FunParams, sv.Data);

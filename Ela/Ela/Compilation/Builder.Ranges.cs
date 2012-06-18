@@ -18,9 +18,9 @@ namespace Ela.Compilation
 				var sv = AddVariable();
 				CompileExpression(range.First, map, hints);
 				cw.Emit(Op.Dup);
-				cw.Emit(Op.Popvar, sv);
+                PopVar(sv);
 				CompileCycleFunction(range.Second, map);
-				cw.Emit(Op.Pushvar, sv);
+                PushVar(sv);
 				cw.Emit(Op.Gen);
 			}
 			else if (!TryOptimizeRange(range, map, hints))
@@ -85,38 +85,38 @@ namespace Ela.Compilation
 		{
 			var start = AddVariable();
 			CompileExpression(rng.First, map, Hints.None);
-			cw.Emit(Op.Popvar, start);
+            PopVar(start);
 
 			var last = AddVariable();
 			CompileExpression(rng.Last, map, Hints.None);
-			cw.Emit(Op.Popvar, last);
+            PopVar(last);
 
 			var step = AddVariable();
 
 			if (rng.Second != null)
 			{
-				cw.Emit(Op.Pushvar, start);
+                PushVar(start);
 				CompileExpression(rng.Second, map, Hints.None);
 				cw.Emit(Op.Sub);
-				cw.Emit(Op.Popvar, step);
+                PopVar(step);
 			}
 			else
 			{
 				cw.Emit(Op.PushI4, 1);
-				cw.Emit(Op.Popvar, step);
+                PopVar(step);
 			}
 
 			var second = AddVariable();
 			var trueLab = cw.DefineLabel();
 			var endLab = cw.DefineLabel();
-			cw.Emit(Op.Pushvar, step);
-			cw.Emit(Op.Pushvar, start);
+			PushVar(step);
+			PushVar(start);
 			cw.Emit(Op.Add);
             cw.Emit(Op.Dup);
-            
-			cw.Emit(Op.Popvar, second);
 
-            cw.Emit(Op.Pushvar, start);
+            PopVar(second);
+
+            PushVar(start);
             cw.Emit(Op.Cgt);
             cw.Emit(Op.Brtrue, trueLab);
 
@@ -136,12 +136,12 @@ namespace Ela.Compilation
 
 		private void CompileStrictRangeCycle(int start, int second, int step, int last, Hints hints, bool brGt)
 		{
-			cw.Emit(Op.Pushvar, start);
+            PushVar(start);
 			cw.Emit(Op.Gen);
 
-			cw.Emit(Op.Pushvar, second);
+            PushVar(second);
 			cw.Emit(Op.Dup);
-			cw.Emit(Op.Popvar, start);
+            PopVar(start);
 
 			cw.Emit(Op.Gen);
 
@@ -149,13 +149,13 @@ namespace Ela.Compilation
 			var exitLab = cw.DefineLabel();
 			cw.MarkLabel(iterLab);
 
-			cw.Emit(Op.Pushvar, step);
-			cw.Emit(Op.Pushvar, start);
+            PushVar(step);
+            PushVar(start);
 			cw.Emit(Op.Add);
 			cw.Emit(Op.Dup);
-			cw.Emit(Op.Popvar, start);
+            PopVar(start);
 
-			cw.Emit(Op.Pushvar, last);
+            PushVar(last);
 
 			if (brGt)
 				cw.Emit(Op.Cgt);
@@ -163,7 +163,7 @@ namespace Ela.Compilation
 				cw.Emit(Op.Clt);
 
             cw.Emit(Op.Brtrue, exitLab);
-			cw.Emit(Op.Pushvar, start);
+            PushVar(start);
 			cw.Emit(Op.Gen);
 
 			cw.Emit(Op.Br, iterLab);
@@ -175,21 +175,21 @@ namespace Ela.Compilation
 		private void CompileCycleFunction(ElaExpression sec, LabelMap map)
 		{
 			var start = AddVariable();
-			cw.Emit(Op.Popvar, start);
+            PopVar(start);
 			var step = AddVariable();
 			var fun = AddVariable();
 
 			if (sec != null)
 			{
-				cw.Emit(Op.Pushvar, start);
+                PushVar(start);
 				CompileExpression(sec, map, Hints.None);
 				cw.Emit(Op.Sub);
-				cw.Emit(Op.Popvar, step);
+                PopVar(step);
 			}
 			else
 			{
 				cw.Emit(Op.PushI4, 1);
-				cw.Emit(Op.Popvar, step);
+                PopVar(step);
 			}
 
 			StartSection();
@@ -198,14 +198,14 @@ namespace Ela.Compilation
 			cw.Emit(Op.Br, funSkipLabel);
 			var address = cw.Offset;
 
-			cw.Emit(Op.Pushvar, 1 | (fun >> 8) << 8);
+            PushVar(1 | (fun >> 8) << 8);
 			cw.Emit(Op.Newlazy);
 
-			cw.Emit(Op.Pushvar, 1 | (step >> 8) << 8);
-			cw.Emit(Op.Pushvar, 1 | (start >> 8) << 8);
+            PushVar(1 | (step >> 8) << 8);
+            PushVar(1 | (start >> 8) << 8);
 			cw.Emit(Op.Add);
-			cw.Emit(Op.Dup);			
-			cw.Emit(Op.Popvar, 1 | (start >> 8) << 8);
+			cw.Emit(Op.Dup);
+            PopVar(1 | (start >> 8) << 8);
 			
 			cw.Emit(Op.Gen);
 
@@ -217,7 +217,7 @@ namespace Ela.Compilation
 			cw.Emit(Op.PushI4, 1);
 			cw.Emit(Op.Newfun, frame.Layouts.Count - 1);
 			cw.Emit(Op.Dup);
-			cw.Emit(Op.Popvar, fun);
+            PopVar(fun);
 			cw.Emit(Op.Newlazy);
 		}
 		#endregion

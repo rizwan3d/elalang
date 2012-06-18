@@ -1,3 +1,5 @@
+0.10.4.42:New:New Pushloc and Poploc op codes are created (the push and pop only local variables).
+0.10.4.41:Change:Compilation of 'variable pattern' is optimized in a case when a function is defined by pattern matching (unneccessary push/pop instructions are eliminated).
 0.10.4.40:Change:Comparison logic for functions have changed. Now functions are equal only if their handles are equal (they are created from the same literal form) and they are not partially applied.
 0.10.4.39:Change:Built-in 'apply' function is decomissioned. Now this function is implemented directly in Ela.
 0.10.4.38:Change:Now backward and forward composition are no longer built-in functions but are directly implemented in Ela prelude.
