@@ -26,10 +26,10 @@ namespace Ela.Runtime.ObjectModel
         private const string ALIAS = "alias";
         private const string PATH = "path";
         private const string MODULECOUNT = "moduleCount";
-        private const string MODULE = "[module:{0}]";
+        private const string MODULE = "[module:{0}:{1}]";
 		private ElaMachine vm;
 
-		internal ElaModule(int handle, ElaMachine vm) : base(ElaTypeCode.Module)
+		public ElaModule(int handle, ElaMachine vm) : base(ElaTypeCode.Module)
 		{
 			Handle = handle;
 			this.vm = vm;
@@ -40,7 +40,7 @@ namespace Ela.Runtime.ObjectModel
 		#region Operations
         public override string ToString(string format, IFormatProvider provider)
         {
-			return String.Format(MODULE, vm != null ? vm.Assembly.GetModuleName(Handle) : String.Empty);
+            return String.Format(MODULE, vm != null ? vm.Assembly.GetModuleName(Handle) : String.Empty, Handle);
 		}
 
 
@@ -99,51 +99,57 @@ namespace Ela.Runtime.ObjectModel
 
 
 		#region Methods
-        private IEnumerable<ElaRecord> GetVariables(CodeFrame frame)
+        public IEnumerable<ElaRecord> GetVariables()
         {
-            if (frame != null)
+            if (vm == null)
+                throw new ElaRuntimeException("VM is non present");
+
+            var frame = vm.Assembly.GetModule(Handle);            
+
+            foreach (var v in frame.GlobalScope.EnumerateNames())
             {
-                foreach (var v in frame.GlobalScope.EnumerateNames())
-                {
-					var sv = frame.GlobalScope.GetVariable(v);
+				var sv = frame.GlobalScope.GetVariable(v);
 
-					if ((sv.Flags & ElaVariableFlags.Private) != ElaVariableFlags.Private)
-					{
-						var val = vm.GetVariableByHandle(Handle, sv.Address);
+				if ((sv.Flags & ElaVariableFlags.Private) != ElaVariableFlags.Private)
+				{
+                    var val = vm.GetVariableByHandle(Handle, sv.Address);
 
-						if (val.Ref != null)
-							yield return new ElaRecord(
-								new ElaRecordField(ADDRESS, sv.Address),
-								new ElaRecordField(VARNAME, v),
-								new ElaRecordField(VALUE, val),
-								new ElaRecordField(ISPRIVATE, (sv.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private));
-					}
-                }
+					if (val.Ref != null)
+						yield return new ElaRecord(
+							new ElaRecordField(ADDRESS, sv.Address),
+							new ElaRecordField(VARNAME, v),
+							new ElaRecordField(VALUE, val),
+							new ElaRecordField(ISPRIVATE, (sv.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private));
+				}
             }
         }
 
-
-        private IEnumerable<ElaRecord> GetReferences(CodeFrame frame)
+        public IEnumerable<ElaRecord> GetReferences()
         {
-            if (frame != null)
-            {
-                foreach (var kv in frame.References)
-                    yield return new ElaRecord(
-                        new ElaRecordField(MODULENAME, kv.Value.ModuleName),
-                        new ElaRecordField(DLLNAME, kv.Value.DllName),
-                        new ElaRecordField(ALIAS, kv.Key),
-                        new ElaRecordField(PATH, String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), kv.Value.Path)));
-            }
+            if (vm == null)
+                throw new ElaRuntimeException("VM is non present");
+
+            var frame = vm.Assembly.GetModule(Handle);
+            
+            foreach (var kv in frame.References)
+                yield return new ElaRecord(
+                    new ElaRecordField(MODULENAME, kv.Value.ModuleName),
+                    new ElaRecordField(DLLNAME, kv.Value.DllName),
+                    new ElaRecordField(ALIAS, kv.Key),
+                    new ElaRecordField(PATH, String.Join(System.IO.Path.DirectorySeparatorChar.ToString(), kv.Value.Path)));
+        }
+        
+        public ElaMachine GetCurrentMachine()
+        {
+            return vm;
         }
 
-
-        private ElaObject GetAssemblyInfo()
+        public string GetModuleName()
         {
-            if (vm != null)
-                return new ElaRecord(
-                    new ElaRecordField(MODULECOUNT, vm.Assembly.ModuleCount));
-            else
-                return ElaUnit.Instance;
+            if (vm == null)
+                throw new ElaRuntimeException("VM is non present");
+
+            return vm.Assembly.GetModuleName(Handle);
         }
 		#endregion
 

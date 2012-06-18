@@ -72,7 +72,7 @@ namespace Ela.Linking
                     new Class(), //TAB
                     new TupleInstance(), //TUP
                     new RecordInstance(), //REC
-                    new Class(), //FUN
+                    new FunctionInstance(), //FUN
                     new Class(), //OBJ
                     new ModuleInstance(), //MOD
                     new LazyInstance(), //LAZ

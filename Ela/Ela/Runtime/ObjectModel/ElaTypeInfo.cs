@@ -34,7 +34,7 @@ namespace Ela.Runtime.ObjectModel
             }
 
             sbInst.Append(')');
-            return String.Format("typeinfo {{ typeCode={0}, specName={1}, instances={2} }}", ReflectedTypeCode, ReflectedTypeName, sbInst);
+            return String.Format("typeinfo {{ typeCode={0}, typeName={1}, instances={2} }}", ReflectedTypeCode, ReflectedTypeName, sbInst);
         }
 
         public bool HasInstance(string instance)

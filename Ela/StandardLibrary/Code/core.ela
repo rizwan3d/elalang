@@ -1,8 +1,8 @@
 /* 
-    Module core
-    Created in 2011-2012 by Basil Voronkov
+  Module core
+  Created in 2011-2012 by Basil Voronkov
 */
-open "$Core"#elalib@cm 
+open qualified "$Core"#elalib@cm 
 
 /* MATH */
 

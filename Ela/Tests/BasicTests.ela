@@ -68,6 +68,7 @@ let simpleMath {eq,gt,lt} =
 let concat {eq} =
           eq ("1" ++ "&" ++ "2") "1&2"
         $ eq (toString 'A' ++ toString 'B' ++ toString 'C') "ABC"
+        $ eq ('A' ++ 'B' ++ 'C') "ABC"
         
 let charConcat {eq} =
           eq ('1' ++ '2') "12"
@@ -120,10 +121,9 @@ let bitwiseOperators2 {eq} =
         $ eq (v ^^^ 0x04) 2
     
 let cast {eq} = 
-          eq (toInt "123") 123
-        $ eq (toSingle "12.2") 12.2
-        $ eq (toString 124) "124"
-        $ eq (toBool "True") true
+          eq (toInt 123.2) 123
+        $ eq (toInt 'A') 65
+        $ eq (toSingle 12.2D) 12.2
 
 let bitNot {eq} =
           eq (~~~2) (--3)

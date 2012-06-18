@@ -7,6 +7,8 @@ namespace Ela.Runtime.Classes
     {
         internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
+            right = right.Ref.Force(right, ctx);
+
             if (right.TypeId != ElaMachine.STR)
             {
                 if (right.TypeId == ElaMachine.CHR)
@@ -38,7 +40,7 @@ namespace Ela.Runtime.Classes
                 return false;
             }
 
-            return left.DirectGetString() == right.DirectGetString();
+            return left.DirectGetString() != right.DirectGetString();
         }
 
         internal override ElaValue GetLength(ElaValue value, ExecutionContext ctx)

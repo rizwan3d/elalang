@@ -138,7 +138,7 @@
     <Compile Include="Compilation\Builder.FunctionsBuiltin.cs" />
     <Compile Include="Compilation\Builder.Debug.cs" />
     <Compile Include="Compilation\Builder.FunctionCall.cs" />
-    <Compile Include="Compilation\Builder.Includes.cs" />
+    <Compile Include="Compilation\Builder.Modules.cs" />
     <Compile Include="Compilation\Builder.Literals.cs" />
     <Compile Include="Compilation\Builder.Errors.cs" />
     <Compile Include="Compilation\Builder.Variables.cs" />
@@ -201,6 +201,7 @@
     <Compile Include="Linking\ModuleEventArgs.cs" />
     <Compile Include="Runtime\CallFlag.cs" />
     <Compile Include="Runtime\Classes\DoubleInstance.cs" />
+    <Compile Include="Runtime\Classes\FunctionInstance.cs" />
     <Compile Include="Runtime\Classes\IntegerInstance.cs" />
     <Compile Include="Runtime\Classes\LazyInstance.cs" />
     <Compile Include="Runtime\Classes\ListInstance.cs" />

@@ -12,6 +12,7 @@ using Ela.Library.General;
 [assembly: ElaModule("$Number", typeof(NumberModule))]
 [assembly: ElaModule("$DateTime", typeof(DateTimeModule))]
 [assembly: ElaModule("$Record", typeof(RecordModule))]
+[assembly: ElaModule("$Reflect", typeof(ReflectModule))]
 
 [assembly: ElaModule("experimental", typeof(Experimental))]
 [assembly: ElaModule("debug", typeof(DebugModule))]

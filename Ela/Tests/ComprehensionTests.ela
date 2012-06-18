@@ -17,13 +17,13 @@ let listSelect1 {eq} =
         where li = [x * 2 \\ x <- [1..10] | x % 2 == 0 and x > 4 and x < 10] 
 
 let listSelect2 {eq} =
-        eq (length lst1) 2
-        $ eq (lst1:0) 7
-        $ eq (lst1:1) 9
-        $ eq (length lst2) 1
-        $ eq (lst2:0) 7
-        where lst1 = [x + y \\ (x,y) <- [(1,2)..(4,5)] | x > 2]
-           et lst2 = [x + y \\ (x,y) <- [(1,2)..(4,5)] | x > 2 and y < 5]
+        eq (length lst1) 3
+        $ eq (lst1:0) 3
+        $ eq (lst1:1) 4
+        $ eq (length lst2) 2
+        $ eq (lst2:0) 3
+        where lst1 = [x \\ x <- [1..5] | x > 2]
+           et lst2 = [x \\ x <- [1..5] | x > 2 and x < 5]
     
 let listSelect3 {eq} =
         eq (length li) 4

@@ -52,15 +52,16 @@ let identityVariant {eq} =
 
 let compare {eq,neq} =
         eq v1 v3
-        $ neq v1 v2
+        $ neq v1 v7
         $ eq v4 v5
-        $ neq v4 v6
+        $ eq v2 v6
         where v1 = Foo 12
            et v2 = Foo true
            et v3 = Foo 12
            et v4 = Foo (& 12)
            et v5 = Foo (& 12)
            et v6 = Foo (& true)
+           et v7 = Foo 23
 
 let typeCheck {eqt} =
         let vr  = None in

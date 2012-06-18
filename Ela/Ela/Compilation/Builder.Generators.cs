@@ -39,8 +39,6 @@ namespace Ela.Compilation
             cw.Emit(Op.Tail);
             cw.Emit(Op.Popvar, 0 | ((addr >> 8) + 1) << 8);
 
-			cw.Emit(Op.Br, breakExit);
-
 			if (s.Pattern.Type != ElaNodeType.VariablePattern)
 				CompilePattern(addr, null, s.Pattern, map, iter, ElaVariableFlags.None, hints);
 

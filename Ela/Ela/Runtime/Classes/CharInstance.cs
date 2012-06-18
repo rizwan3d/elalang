@@ -7,6 +7,8 @@ namespace Ela.Runtime.Classes
     {
         internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
+            right = right.Ref.Force(right, ctx);
+            
             if (right.TypeId != ElaMachine.CHR)
             {
                 if (right.TypeId == ElaMachine.STR)
@@ -16,7 +18,7 @@ namespace Ela.Runtime.Classes
                 return Default();
             }
 
-            return new ElaValue((Char)left.I4 + (Char)right.I4);
+            return new ElaValue(((Char)left.I4).ToString() + (Char)right.I4);
         }
 
         internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)

@@ -19,7 +19,7 @@ namespace Ela.Runtime.ObjectModel
 			Name = name;
 		}
 
-		protected override string GetFunctionName()
+		public override string GetFunctionName()
 		{
 			return Name;
 		}

@@ -1,17 +1,17 @@
-open Test Console
-open BasicTests FunTests RangeTests ListTests TupleTests RecordTests 
-     VariantTests ComprehensionTests ThunkTests MatchTests
+open test console
+open basictests funtests rangetests listtests tupletests recordtests 
+     varianttests comprehensiontests thunktests matchtests
 
 let _ = [] 
-    |> regFuns BasicTests
-    |> regFuns FunTests
-    |> regFuns RangeTests
-    |> regFuns ListTests
-    |> regFuns TupleTests
-    |> regFuns RecordTests
-    |> regFuns VariantTests
-    |> regFuns ComprehensionTests
-    |> regFuns ThunkTests
-    |> regFuns MatchTests
+    |> regFuns basictests
+    |> regFuns funtests
+    |> regFuns rangetests
+    |> regFuns listtests
+    |> regFuns tupletests
+    |> regFuns recordtests
+    |> regFuns varianttests
+    |> regFuns comprehensiontests
+    |> regFuns thunktests
+    |> regFuns matchtests
     |> run
     |> fmt (\(_,x,_) -> not x) writen

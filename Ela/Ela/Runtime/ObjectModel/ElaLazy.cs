@@ -54,6 +54,26 @@ namespace Ela.Runtime.ObjectModel
         {
             return "<thunk>";
         }
+
+        internal override bool True(ElaValue @this, ExecutionContext ctx)
+        {
+            var ret = Force(ctx);
+
+            if (ctx.Failed)
+                return false;
+
+            return ret.Ref.True(ret, ctx);
+        }
+
+        internal override bool False(ElaValue @this, ExecutionContext ctx)
+        {
+            var ret = Force(ctx);
+
+            if (ctx.Failed)
+                return false;
+
+            return ret.Ref.False(ret, ctx);
+        }
 		        
         protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
 		{
