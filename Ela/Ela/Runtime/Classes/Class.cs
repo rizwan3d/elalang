@@ -426,20 +426,12 @@ namespace Ela.Runtime.Classes
             }
         }
 
-        internal virtual ElaValue CastTo(ElaTypeInfo typeInfo, ElaValue value, ExecutionContext ctx)
+        internal virtual ElaValue CastTo(ElaValue castTo, ElaValue value, ExecutionContext ctx)
         {
             if (cast != null)
             {
                 ctx.SetDeffered(cast, 2);
                 return Default();
-            }
-
-            if (value.Ref is ElaUserType)
-            {
-                var ut = (ElaUserType)value.Ref;
-
-                if (ut.Value.TypeId == typeInfo.ReflectedTypeCode)
-                    return ut.Value;
             }
 
             ctx.NoOverload(value.GetTypeName(), "cast");

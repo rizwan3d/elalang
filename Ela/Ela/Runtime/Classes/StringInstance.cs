@@ -115,17 +115,15 @@ namespace Ela.Runtime.Classes
             return left.DirectGetString().Length == 0;
         }
 
-        internal override ElaValue CastTo(ElaTypeInfo typeInfo, ElaValue value, ExecutionContext ctx)
+        internal override ElaValue CastTo(ElaValue castTo, ElaValue value, ExecutionContext ctx)
         {
-            var tc = (ElaTypeCode)typeInfo.ReflectedTypeCode;
-
-            switch (tc)
+            switch (castTo.TypeCode)
             {
                 case ElaTypeCode.List:
                     return new ElaValue(((ElaString)value.Ref).ToList());
                 default:
                     {
-                        ctx.ConversionFailed(value, typeInfo.ReflectedTypeName);
+                        ctx.ConversionFailed(value, castTo.GetTypeName());
                         return Default();
                     };
             }
