@@ -1114,12 +1114,10 @@ namespace Ela.Runtime
 
                             if (!ctx.Failed)
                             {
-                                var ti = (ElaTypeInfo)left.Ref;
-
-                                if (right.Ref.TypeId == ti.ReflectedTypeCode)
+                                if (right.Ref.TypeId == left.Ref.TypeId)
                                     evalStack.Push(right);
                                 else
-                                    evalStack.Push(cls[right.Ref.TypeId].CastTo(ti, right, ctx));
+                                    evalStack.Push(cls[right.Ref.TypeId].CastTo(left, right, ctx));
 
                                 if (!ctx.Failed)
                                     break;

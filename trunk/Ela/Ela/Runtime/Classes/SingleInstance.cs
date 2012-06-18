@@ -286,11 +286,9 @@ namespace Ela.Runtime.Classes
             return new ElaValue(res);
         }
 
-        internal override ElaValue CastTo(ElaTypeInfo typeInfo, ElaValue value, ExecutionContext ctx)
+        internal override ElaValue CastTo(ElaValue castTo, ElaValue value, ExecutionContext ctx)
         {
-            var tc = (ElaTypeCode)typeInfo.ReflectedTypeCode;
-
-            switch (tc)
+            switch (castTo.TypeCode)
             {
                 case ElaTypeCode.Double:
                     return new ElaValue((Int32)value.DirectGetReal());
@@ -300,7 +298,7 @@ namespace Ela.Runtime.Classes
                     return new ElaValue((Single)value.DirectGetReal());
                 default:
                     {
-                        ctx.ConversionFailed(value, typeInfo.ReflectedTypeName);
+                        ctx.ConversionFailed(value, castTo.GetTypeName());
                         return Default();
                     };
             }
