@@ -20,8 +20,6 @@ namespace Ela.CodeModel
 
         Pred,
 
-        Nil,
-
         Head,
 
         Tail,

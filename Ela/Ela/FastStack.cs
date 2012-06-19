@@ -6,7 +6,6 @@ namespace Ela
 {
 	internal class FastStack<T> : IEnumerable<T>
 	{
-		#region Construction
 		private const int DEFAULT_SIZE = 4;
 		private T[] array;
 		private int size;
@@ -16,67 +15,56 @@ namespace Ela
 		{
 
 		}
-
-
+        
 		internal FastStack(int size)
 		{
 			this.initialSize = size;
 			array = new T[size];
 		}
-		#endregion
-
-
-		#region Methods
-		public IEnumerator<T> GetEnumerator()
+		
+        public IEnumerator<T> GetEnumerator()
 		{
 			for (var i = 0; i < size; i++)
 				yield return array[i];
 		}
-
-
+        
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}
-
-
+        
 		public void Clear(int offset)
 		{
 			var newArr = new T[array.Length];
 			Array.Copy(array, 0, newArr, 0, offset);
 			array = newArr;
 		}
-
-
+        
 		internal FastStack<T> Clone()
 		{
 			var ret = (FastStack<T>)MemberwiseClone();
 			ret.array = (T[])array.Clone();
 			return ret;
 		}
-
-
+        
 		internal void Clear()
 		{
 			size = 0;
 			array = new T[initialSize];
 		}
-
-
+        
 		internal T Pop()
 		{
 			var ret = array[--size];
 			array[size] = default(T);
 			return ret;
 		}
-
-
+        
 		internal T Peek()
 		{
 			return array[size - 1];
 		}
-
-
+        
 		internal void Push(T val)
 		{
 			if (size == array.Length)
@@ -88,8 +76,7 @@ namespace Ela
 
 			array[size++] = val;
 		}
-
-
+        
 		internal void Trim(int num)
 		{
 			var iter = size - num;
@@ -99,27 +86,21 @@ namespace Ela
 
 			size -= num;
 		}
-
-
+        
 		internal void Replace(T val)
 		{
 			array[size - 1] = val;
 		}
-		#endregion
-
-
-		#region Properties
+		
 		internal int Count
 		{
 			get { return size; }
 		}
-
-
+        
 		internal T this[int index]
 		{
 			get { return array[index]; }
 			set { array[index] = value; }
 		}
-		#endregion
 	}
 }

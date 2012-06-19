@@ -94,9 +94,6 @@ namespace Ela.Compilation
                 case ElaBuiltinKind.Flip:
                     cw.Emit(Op.Flip);
                     break;
-                case ElaBuiltinKind.Nil:
-                    cw.Emit(Op.Nil);
-                    break;
                 case ElaBuiltinKind.Showf:
                     cw.Emit(Op.Show);
                     break;

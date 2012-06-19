@@ -6,7 +6,6 @@ namespace Ela
 {
 	public sealed class FastList<T> : IEnumerable<T>
 	{
-		#region Construction
 		internal static readonly FastList<T> Empty = new FastList<T>();
 		private T[] array;
 		private const int DEFAULT_SIZE = 4;
@@ -32,23 +31,18 @@ namespace Ela
 			array = (T[])list.array.Clone();
 			size = list.size;
 		}
-		#endregion
-
-
-		#region Methods
-		public IEnumerator<T> GetEnumerator()
+		
+        public IEnumerator<T> GetEnumerator()
 		{
 			for (var i = 0; i < size; i++)
 				yield return array[i];
 		}
-
-
+        
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}
-
-
+        
 		public FastList<T> Clone()
 		{
 			var list = new FastList<T>();
@@ -57,8 +51,7 @@ namespace Ela
 			list.initialSize = initialSize;
 			return list;
 		}
-
-
+        
         public bool Contains(T val)
         {
             for (var i = 0; i < size; i++)
@@ -67,8 +60,7 @@ namespace Ela
 
             return false;
         }
-
-
+        
         public T[] ToArray()
 		{
 			var arr = new T[size];
@@ -76,46 +68,34 @@ namespace Ela
 			return arr;
 		}
 
-
 		internal T[] GetRawArray()
 		{
 			return array;
 		}
-
-
+        
 		internal void Clear()
 		{
 			size = 0;
 			array = new T[initialSize];
 		}
 
-
 		internal void AddRange(IEnumerable<T> seq)
 		{
 			foreach (var s in seq)
 				Add(s);
 		}
-
-
+        
 		internal void AddRange(FastList<T> arr, int start, int end)
 		{
 			for (var i = start; i < end; i++)
 				Add(arr[i]);
         }
-
-
+        
         internal void AddRange(T[] arr, int start, int end)
         {
             for (var i = start; i < end; i++)
                 Add(arr[i]);
         }
-
-
-        internal void AddMultiple(params T[] args)
-        {
-            AddRange(args, 0, args.Length);
-        }
-
 
 		internal void Add(T val)
 		{
@@ -128,8 +108,7 @@ namespace Ela
 
 			array[size++] = val;
 		}
-
-
+        
 		internal bool Remove(T val)
 		{
 			var index = Array.IndexOf(array, val);
@@ -148,7 +127,6 @@ namespace Ela
 				return false;
 		}
 
-
 		internal void Trim()
 		{
 			if (array.Length > size)
@@ -158,21 +136,16 @@ namespace Ela
 				array = newArr;
 			}
 		}
-		#endregion
 
-
-		#region Properties
 		public int Count
 		{
 			get { return size; }
 		}
-
-
+        
 		public T this[int index]
 		{
 			get { return array[index]; }
 			internal set { array[index] = value; }
 		}
-		#endregion
 	}
 }

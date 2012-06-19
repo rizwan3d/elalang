@@ -63,7 +63,6 @@ namespace Ela.Compilation
         Show,
         Untag,
         Skiphtag,
-        Nil,
         Gettag,
         Cast,
         Recfld,

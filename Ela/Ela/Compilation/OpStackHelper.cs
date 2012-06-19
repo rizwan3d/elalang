@@ -65,8 +65,7 @@ namespace Ela.Compilation
 			-1, //Show
 			0, //Untag
 			0, //Skiphtag
-			0, //Nil
-            0, //Gettag
+			0, //Gettag
 			-1, //Cast
             -1, //Recfld
             -2, //Readf

@@ -200,12 +200,6 @@ instance Enum char
 instance Enum tuple
   where succ = mapTuple succ
      et pred = mapTuple pred
-/*     et sp fun tup = sp' 0
-           where sp' n | n == len - 1 = (fun (tup:n),)
-                       | else = (fun (tup:n),) ++ sp' (n+1)
-              et len = length tup*/
-
-
 
 /* Seq */
 class Seq __internal Seq head tail isnil
@@ -231,9 +225,6 @@ instance Ix list
                where get _ [] = raise IndexOutOfRange ("Index " ++ n ++ " is out of range.")
                      get i (x::xs) | i == n = x
                                    | else = get (i+1) xs
-
-/* Cons */
-class Cons __internal Cons (::) nil
 
 /* Cat */
 class Cat __internal Cat (++)
@@ -324,8 +315,9 @@ let readList    = readf "" ?list
 let readTuple   = readf "" ?tuple
 let readRecord  = readf "" ?record */
 
-/* Boolean operators */
+/* Misc operators */
 let not = __internal not
+let (::) = __internal cons
 
 /* Function related operators and functions */
 let (>>) f g x = g (f x)

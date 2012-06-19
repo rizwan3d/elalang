@@ -7,22 +7,6 @@ namespace Ela.Runtime.Classes
 {
     internal sealed class ListInstance : Class
     {
-        internal override ElaValue Construct(ElaValue instance, ElaValue value, ExecutionContext ctx)
-        {
-            var next = instance.Ref;
-            var tl = next as ElaLazyList;
-
-            if (tl != null)
-                return new ElaValue(new ElaLazyList(tl, value));
-
-            return new ElaValue(new ElaList((ElaList)next, value));
-        }
-
-        internal override ElaValue Nil(ElaValue value, ExecutionContext ctx)
-        {
-            return new ElaValue(ElaList.Empty);
-        }
-
         internal override ElaValue Parse(ElaValue instance, string format, string value, ExecutionContext ctx)
         {
             try

@@ -209,7 +209,6 @@
     <Compile Include="Runtime\Classes\DoubleInstance.cs" />
     <Compile Include="Runtime\Classes\FunctionInstance.cs" />
     <Compile Include="Runtime\Classes\IntegerInstance.cs" />
-    <Compile Include="Runtime\Classes\LazyInstance.cs" />
     <Compile Include="Runtime\Classes\ListInstance.cs" />
     <Compile Include="Runtime\Classes\LongInstance.cs" />
     <Compile Include="Runtime\Classes\ModuleInstance.cs" />

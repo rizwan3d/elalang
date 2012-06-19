@@ -1,3 +1,4 @@
+0.10.4.47:Change:Built-in 'nil' function is decomissioned.
 0.10.4.46:Change:Thunks are not forced recursively.
 0.10.4.45:Change:Compilation of lazy literals was simplified.
 0.10.4.44:Change:Now ranges uses 'Succ' op code to generate a second range element (if it is not specified).

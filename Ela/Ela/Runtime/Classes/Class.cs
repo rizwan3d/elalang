@@ -6,8 +6,6 @@ namespace Ela.Runtime.Classes
 {
     public class Class
     {
-        private ElaFunction cons;
-        private ElaFunction nil;
         private ElaFunction read;
 
         private ElaFunction or;
@@ -127,29 +125,6 @@ namespace Ela.Runtime.Classes
 
             ctx.NoOverload(left.GetTypeName(), "concatenate");
             return Default();
-        }
-
-        internal virtual ElaValue Construct(ElaValue instance, ElaValue value, ExecutionContext ctx)
-        {
-            if (cons != null)
-            {
-                ctx.SetDeffered(cons, 2);
-                return Default();
-            }
-
-            ctx.NoOverload(instance.GetTypeName(), "cons");
-            return Default();
-        }
-
-        internal virtual ElaValue Nil(ElaValue value, ExecutionContext ctx)
-        {
-            if (nil != null)
-            {
-                ctx.SetDeffered(nil, 1);
-                return Default();
-            }
-
-            return new ElaValue(ElaList.Empty);
         }
 
         internal virtual ElaValue Successor(ElaValue @this, ExecutionContext ctx)
@@ -535,12 +510,6 @@ namespace Ela.Runtime.Classes
                     cast = fun;
                     break;
 
-                case ElaBuiltinKind.Cons:
-                    cons = fun;
-                    break;
-                case ElaBuiltinKind.Nil:
-                    nil = fun;
-                    break;
                 case ElaBuiltinKind.Readf:
                     read = fun;
                     break;
