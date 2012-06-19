@@ -35,7 +35,12 @@ namespace Ela.Compilation
             var funSkipLabel = cw.DefineLabel();
             cw.Emit(Op.Br, funSkipLabel);
             var address = cw.Offset;
-            var ed = CompileExpression(exp, map, hints);
+
+            var newMap = new LabelMap();
+            map.FunctionScope = CurrentScope;
+            map.FunctionParameters = 1;
+
+            var ed = CompileExpression(exp, newMap, Hints.Scope | Hints.FunBody);
             cw.Emit(Op.Ret);
             frame.Layouts.Add(new MemoryLayout(currentCounter, cw.FinishFrame(), address));
             EndSection();

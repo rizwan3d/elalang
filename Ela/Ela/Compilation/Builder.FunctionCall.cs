@@ -34,6 +34,12 @@ namespace Ela.Compilation
 
             var fun = inlineFuns[sv.Data];
 
+            //For now we only inline functions within the same scope (or from global
+            //scope). There may be a problem with a variable indexing when a function
+            //from parent non-global scope captures a variable from local scope.
+            if (fun.Scope != CurrentScope && fun.Scope != globalScope)
+                return false;
+
             //We only inline when an exact same number of arguments is provided (e.g. this is
             //not a partial application).
             if (v.Parameters.Count != fun.Literal.ParameterCount)

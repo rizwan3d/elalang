@@ -60,13 +60,10 @@ namespace Ela.Compilation
             var map = new LabelMap();
             var block = (ElaBlock)expr;
 
-            //Main compilation routines
-            RunForwardDeclaration(block, map, Hints.Left);
-            RunTypes(block, map, Hints.Left);
-            RunInstances(block, map, Hints.Left);
-            //RewriteOrder(block, map);
-            CompileExpression(expr, map, Hints.Scope);
+            //Main compilation routine
+            CompileProgram(block, map);
             
+            //Every Ela module should end with a Stop op code
 			cw.Emit(Op.Stop);
 			cw.CompileOpList();
 
@@ -185,23 +182,6 @@ namespace Ela.Compilation
                     break;
                 case ElaNodeType.Binding:
                     CompileDeclaration((ElaBinding)exp, map, hints);
-                    break;
-                case ElaNodeType.Block:
-                    {
-                        var s = (ElaBlock)exp;
-                        AddLinePragma(s);
-                        var len = s.Expressions.Count - 1;
-
-                        //Normally this should be an impossible situation
-                        if (len < 0)
-                            AddError(ElaCompilerError.InvalidProgram, s);
-
-                        for (var i = 0; i < len; i++)
-                            CompileExpression(s.Expressions[i], map, Hints.Left);
-
-                        //The last expression yields a value (no Left hint therefore).
-                        CompileExpression(s.Expressions[len], map, hints);
-                    }
                     break;
                 case ElaNodeType.Condition:
                     {
