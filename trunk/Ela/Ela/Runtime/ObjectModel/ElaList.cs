@@ -56,6 +56,11 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return new ElaValue(InternalNext);
 		}
+
+        internal override ElaValue Cons(ElaValue value, ExecutionContext ctx)
+        {
+            return new ElaValue(new ElaList(this, value));
+        }
         
 		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
 		{

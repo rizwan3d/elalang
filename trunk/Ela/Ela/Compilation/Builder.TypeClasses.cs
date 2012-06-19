@@ -96,10 +96,6 @@ namespace Ela.Compilation
                     CompileBuiltinMember(ElaBuiltinKind.Get, s, 0, map);
                     CompileBuiltinMember(ElaBuiltinKind.Length, s, 1, map);
                     break;
-                case "Cons":
-                    CompileBuiltinMember(ElaBuiltinKind.Cons, s, 0, map);
-                    CompileBuiltinMember(ElaBuiltinKind.Nil, s, 1, map);
-                    break;
                 case "Cat":
                     CompileBuiltinMember(ElaBuiltinKind.Concat, s, 0, map);
                     break;

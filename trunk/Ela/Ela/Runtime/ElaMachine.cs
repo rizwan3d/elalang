@@ -478,7 +478,7 @@ namespace Ela.Runtime
                     case Op.Cons:
                         left = evalStack.Pop();
                         right = evalStack.Peek();
-                        evalStack.Replace(cls[right.TypeId].Construct(right, left, ctx));
+                        evalStack.Replace(right.Ref.Cons(left, ctx));
 
                         if (ctx.Failed)
                         {
@@ -534,21 +534,6 @@ namespace Ela.Runtime
                             right = right.Ref.Force(right, ctx);
 
                         evalStack.Replace(cls[right.TypeId].Head(right, ctx));
-
-                        if (ctx.Failed)
-                        {
-                            evalStack.Replace(right);
-                            ExecuteThrow(thread, evalStack);
-                            goto SWITCH_MEM;
-                        }
-                        break;
-                    case Op.Nil:
-                        right = evalStack.Peek();
-
-                        if (right.TypeId == LAZ)
-                            right = right.Ref.Force(right, ctx);
-
-                        evalStack.Replace(cls[right.TypeId].Nil(right, ctx));
 
                         if (ctx.Failed)
                         {

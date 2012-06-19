@@ -81,6 +81,12 @@ namespace Ela.Runtime.ObjectModel
 			return Default();
 		}
 
+        internal virtual ElaValue Cons(ElaValue val, ExecutionContext ctx)
+        {
+            ctx.NoOperator(new ElaValue(this), "cons");
+            return Default();
+        }
+
 		protected internal virtual ElaValue Generate(ElaValue value, ExecutionContext ctx)
 		{
 			ctx.NoOperator(new ElaValue(this), "gen");

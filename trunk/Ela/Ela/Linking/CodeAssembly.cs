@@ -75,7 +75,7 @@ namespace Ela.Linking
                     new FunctionInstance(), //FUN
                     new Class(), //OBJ
                     new ModuleInstance(), //MOD
-                    new LazyInstance(), //LAZ
+                    new Class(), //LAZ
                     new Class(), //VAR
                     new TypeInfoInstance(), //TYP
                 });
