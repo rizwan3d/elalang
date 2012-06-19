@@ -41,6 +41,7 @@ namespace Ela.Compilation
             map.FunctionParameters = 1;
 
             var ed = CompileExpression(exp, newMap, Hints.Scope | Hints.FunBody);
+            
             cw.Emit(Op.Ret);
             frame.Layouts.Add(new MemoryLayout(currentCounter, cw.FinishFrame(), address));
             EndSection();

@@ -13,3 +13,5 @@ let printf fmt = format' write (force fmt) [] (fm.countArgs (force fmt))
 let printfn fmt = format' writen (force fmt) [] (fm.countArgs (force fmt))
 
 let format fmt = format' id (force fmt) [] (fm.countArgs (force fmt))
+
+(& & &2) + 2

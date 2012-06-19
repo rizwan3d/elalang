@@ -1,42 +1,34 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 
 namespace Ela.Runtime.ObjectModel
 {
 	public sealed class ElaString : ElaObject, IEnumerable<ElaValue>
 	{
-		#region Construction
-        public static readonly ElaString Empty = new ElaString(String.Empty);
+		public static readonly ElaString Empty = new ElaString(String.Empty);
 		
 		public ElaString(string value) : base(ElaTypeCode.String)
 		{
 			this.Value = value ?? String.Empty;
 		}
-		#endregion
-
-
-		#region Methods
+		
         public IEnumerator<ElaValue> GetEnumerator()
 		{
 			foreach (var c in Value)
 				yield return new ElaValue(c);
 		}
-
-
+        
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}
-
-
+        
         public override string ToString(string format, IFormatProvider provider)
         {
             return Value;
         }
-
-
+        
         internal ElaList ToList()
         {
             var str = Value;
@@ -47,9 +39,7 @@ namespace Ela.Runtime.ObjectModel
 
             return xs;
         }
-		#endregion
-
-
+		
 		internal ElaValue GetValue(ElaValue key, ExecutionContext ctx)
 		{
 			if (key.TypeId != ElaMachine.INT)

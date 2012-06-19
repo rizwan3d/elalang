@@ -35,7 +35,6 @@ namespace Ela.Runtime.ObjectModel
             return new ElaTuple(res);
         }
         
-
         public override string ToString(string format, IFormatProvider formatProvider)
         {
             var sb = new StringBuilder();

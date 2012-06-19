@@ -1,23 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ela.CodeModel;
-using Ela.Linking;
 using Ela.Compilation;
 
 namespace Ela.Runtime.ObjectModel
 {
 	public sealed class ElaModule : ElaObject
 	{
-		#region Construction
-        private const string GLOBALS = "globals";
-        private const string REFERENCES = "references";
-        private const string ASSEMBLY = "assembly";
-        private const string HANDLE = "handle";
-        private const string NAME = "name";
-        private const string CODEBASE = "codeBase";
-        private const string ISNATIVE = "isNative";
-        private const string ISMAINMODULE = "isMainModule";
-        private const string ADDRESS = "address";
+		private const string ADDRESS = "address";
         private const string VARNAME = "name";
         private const string ISPRIVATE = "isPrivate";
         private const string VALUE = "value";
@@ -25,7 +15,6 @@ namespace Ela.Runtime.ObjectModel
         private const string DLLNAME = "dllName";
         private const string ALIAS = "alias";
         private const string PATH = "path";
-        private const string MODULECOUNT = "moduleCount";
         private const string MODULE = "[module:{0}:{1}]";
 		private ElaMachine vm;
 
@@ -34,16 +23,12 @@ namespace Ela.Runtime.ObjectModel
 			Handle = handle;
 			this.vm = vm;
 		}
-		#endregion
 
-
-		#region Operations
         public override string ToString(string format, IFormatProvider provider)
         {
             return String.Format(MODULE, vm != null ? vm.Assembly.GetModuleName(Handle) : String.Empty, Handle);
 		}
-
-
+        
         internal int GetVariableCount(ExecutionContext ctx)
         {
             if (vm != null)
@@ -61,7 +46,6 @@ namespace Ela.Runtime.ObjectModel
             ctx.Fail(ElaRuntimeError.Unknown, "VM is non present");
             return 0;
         }
-
 
         internal ElaValue GetValue(ElaValue index, ExecutionContext ctx)
 		{
@@ -95,10 +79,7 @@ namespace Ela.Runtime.ObjectModel
             ctx.Fail(ElaRuntimeError.Unknown, "VM is non present");
 			return Default();
 		}
-		#endregion
 
-
-		#region Methods
         public IEnumerable<ElaRecord> GetVariables()
         {
             if (vm == null)
@@ -151,11 +132,7 @@ namespace Ela.Runtime.ObjectModel
 
             return vm.Assembly.GetModuleName(Handle);
         }
-		#endregion
 
-
-		#region Properties
 		public int Handle { get; private set; }
-		#endregion
 	}
 }

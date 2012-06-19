@@ -9,7 +9,6 @@ namespace Ela.Runtime
 {
 	public sealed class ElaCodeException : ElaException
 	{
-		#region Construction
 		private const string EXC_FORMAT = "{0}\r\n{1}";
 
 		internal ElaCodeException(string message, ElaRuntimeError error, FileInfo file, int line, int col,
@@ -21,18 +20,14 @@ namespace Ela.Runtime
 			CallStack = callStack;
 			ErrorObject = errObj;
 		}
-		#endregion
-
-
-		#region Methods
+		
 		public override string ToString()
 		{
 			return String.Format(EXC_FORMAT,
 				Error != null ? Error.ToString() : String.Empty,
 				FormatCallStack(CallStack));
 		}
-
-
+        
 		private string FormatCallStack(IEnumerable<CallFrame> points)
 		{
 			var sb = new StringBuilder();
@@ -42,15 +37,11 @@ namespace Ela.Runtime
 
 			return sb.ToString();
 		}
-		#endregion
 
-
-		#region Properties
 		public ElaMessage Error { get; private set; }
 
 		public IEnumerable<CallFrame> CallStack { get; private set; }
 
 		internal ElaError ErrorObject { get; private set; }
-		#endregion
 	}
 }

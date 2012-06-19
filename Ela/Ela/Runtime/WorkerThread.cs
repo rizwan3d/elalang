@@ -1,15 +1,11 @@
 ﻿using System;
 using Ela.Compilation;
 using Ela.Linking;
-using Ela.Runtime.ObjectModel;
 
 namespace Ela.Runtime
 {
 	public class WorkerThread
 	{
-		#region Construction
-		internal const int EndAddress = 0;
-
 		private WorkerThread()
 		{
 			
@@ -22,17 +18,13 @@ namespace Ela.Runtime
             CallStack = new FastStack<CallPoint>();
 			Context = new ExecutionContext();
 		}
-		#endregion
-
-
-		#region Methods
-		internal void SwitchModule(int handle)
+		
+        internal void SwitchModule(int handle)
 		{
 			ModuleHandle = handle;
 			Module = Assembly.GetModule(handle);
 		}
-
-
+        
 		internal WorkerThread Clone()
 		{
 			var ret = new WorkerThread();
@@ -43,11 +35,8 @@ namespace Ela.Runtime
 			ret.Offset = 1;
 			return ret;
 		}
-		#endregion
-
-
-		#region Properties
-		internal CodeAssembly Assembly { get; private set; }
+		
+        internal CodeAssembly Assembly { get; private set; }
 
 		internal FastStack<CallPoint> CallStack { get; private set; }
 
@@ -60,6 +49,5 @@ namespace Ela.Runtime
 		internal ExecutionContext Context { get; private set; }
 
         internal Exception LastException { get; set; }
-		#endregion
 	}
 }

@@ -38,24 +38,34 @@ namespace Ela.Compilation
             }
         }
 
-        //Warnings can be ignored or generated as errors
         private void AddWarning(ElaCompilerWarning warning, ElaExpression exp, params object[] args)
         {
+            AddWarning(warning, exp.Line, exp.Column, args);
+        }
+
+        //Warnings can be ignored or generated as errors
+        private void AddWarning(ElaCompilerWarning warning, int line, int col, params object[] args)
+        {
             if (options.WarningsAsErrors)
-                AddError((ElaCompilerError)warning, exp, args);
+                AddError((ElaCompilerError)warning, line, col, args);
             else if (!options.NoWarnings)
                 Errors.Add(new ElaMessage(Strings.GetWarning(warning, args), MessageType.Warning,
-                    (Int32)warning, exp.Line, exp.Column));
+                    (Int32)warning, line, col));
+        }
+
+        private void AddHint(ElaCompilerHint hint, ElaExpression exp, params object[] args)
+        {
+            AddHint(hint, exp.Line, exp.Column, args);
         }
 
         //Hints can be ignored, also a single hint is shown just once
-        private void AddHint(ElaCompilerHint hint, ElaExpression exp, params object[] args)
+        private void AddHint(ElaCompilerHint hint, int line, int col, params object[] args)
         {
             //Only show the same hint once
             if (options.ShowHints && !options.NoWarnings && !shownHints.ContainsKey(hint))
             {
                 Errors.Add(new ElaMessage(Strings.GetHint(hint, args), MessageType.Hint,
-                    (Int32)hint, exp.Line, exp.Column));
+                    (Int32)hint, line, col));
                 shownHints.Add(hint, hint);
             }
         }

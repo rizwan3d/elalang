@@ -39,15 +39,15 @@ namespace Ela.Compilation
 
         InvalidBuiltinBinding = 315,
 
-		// = 316,
+		BindingsAndRestrictedGlobal = 316,
 
         ClassAlreadyDeclared = 317,
 
         UnknownClass = 318,
 
-        MemberNoPatterns = 319,
+        MemberInvalid = 319,
 
-        // = 320,
+        MemberNoPatterns = 320,
 
         MemberNotAll = 321,
 

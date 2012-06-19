@@ -82,6 +82,9 @@ namespace Ela.Runtime
             if (val.Ref == null)
                 return "_|_";
 
+            if (val.TypeCode == ElaTypeCode.Lazy)
+                val = ((ElaLazy)val.Ref).Force();
+
             var ctx = new ExecutionContext();
             var ret = cls[val.TypeId].Showf(String.Empty, val, ctx);
 
@@ -117,11 +120,13 @@ namespace Ela.Runtime
             {
                 throw;
             }
+#if !DEBUG
             catch (NullReferenceException ex)
             {
                 var err = new ElaError(ElaRuntimeError.BottomReached);
                 throw CreateException(Dump(err, MainThread), ex);
             }
+#endif
             catch (OutOfMemoryException)
             {
                 throw Exception("OutOfMemory");
@@ -268,7 +273,7 @@ namespace Ela.Runtime
                         evalStack.Push(new ElaValue(frame.Strings[opd]));
                         break;
                     case Op.Pushstr_0:
-                        evalStack.Push(new ElaValue(String.Empty));
+                        evalStack.Push(new ElaValue(ElaString.Empty));
                         break;
                     case Op.PushI4:
                         evalStack.Push(opd);
@@ -1334,6 +1339,19 @@ namespace Ela.Runtime
                             {
                                 cc.Thunk.Value = evalStack.Pop();
                                 thread.Offset = callStack.Peek().BreakAddress;
+
+                                if (cc.Thunk.Value.TypeId == LAZ)
+                                {
+                                    cc.Thunk.Value = cc.Thunk.Value.Ref.Force(cc.Thunk.Value, ctx);
+
+                                    if (ctx.Failed)
+                                    {
+                                        thread.Offset++;
+                                        ExecuteThrow(thread, evalStack);
+                                        goto SWITCH_MEM;
+                                    }
+                                }
+
                                 goto SWITCH_MEM;
                             }
 

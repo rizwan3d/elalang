@@ -1,32 +1,23 @@
 ﻿using System;
-using System.Text;
-using Ela.Debug;
-using Ela.CodeModel;
 using System.Collections.Generic;
+using System.Text;
+using Ela.CodeModel;
+using Ela.Debug;
 
 namespace Ela.Runtime.ObjectModel
 {
 	public class ElaFunction : ElaObject
 	{
-		#region Construction
-        private ElaMachine vm;
+		private ElaMachine vm;
 		internal static readonly ElaValue[] defaultParams = new ElaValue[] { new ElaValue(ElaUnit.Instance) };
 		internal static readonly ElaValue[] emptyParams = new ElaValue[0];
 		private const string DEF_NAME = "<f>";
-        private const string MODULE = "module";
-        private const string HANDLE = "handle";
-        private const string NAME = "name";
-        private const string PARAMS = "parameters";
-        private const string ISNATIVE = "isNative";
-        private const string ISGLOBAL = "isGlobal";
-        private const string ISPARTIAL = "isPartial";
         internal bool table;
          
 		protected ElaFunction() : this(1)
 		{
 
-		}
-		
+		}		
 		
 		protected ElaFunction(int parCount) : base(ElaTypeCode.Function)
 		{
@@ -38,7 +29,6 @@ namespace Ela.Runtime.ObjectModel
 			else
 				Parameters = emptyParams;
 		}
-
 		
 		internal ElaFunction(int handle, int module, int parCount, FastList<ElaValue[]> captures, ElaMachine vm) : base(ElaTypeCode.Function)
 		{
@@ -48,16 +38,12 @@ namespace Ela.Runtime.ObjectModel
 			this.vm = vm;
 			Parameters = parCount > 1 ? new ElaValue[parCount - 1] : emptyParams;
 		}
-
-
+        
 		private ElaFunction(ElaValue[] pars) : base(ElaTypeCode.Function)
 		{
 			Parameters = pars;
 		}
-		#endregion
 
-
-		#region Operations
         public IEnumerable<ElaValue> GetAppliedArguments()
         {
             for (var i = 0; i < AppliedParameters; i++)
@@ -78,8 +64,7 @@ namespace Ela.Runtime.ObjectModel
 		{
 			return vm.CallPartial(this, value);
 		}
-
-
+        
         public override string ToString(string format, IFormatProvider provider)
         {
 			var sb = new StringBuilder();
@@ -93,120 +78,97 @@ namespace Ela.Runtime.ObjectModel
 
 			return GetFunctionName() + ":" + sb.ToString();
 		}
-		#endregion
 
-
-		#region Static Methods
 		public static ElaFunction Create<T1>(ElaFun<T1> fun)
 		{
 			return new DelegateFunction<T1>(DEF_NAME, fun);
 		}
-
-
+        
 		public static ElaFunction Create<T1,T2>(ElaFun<T1,T2> fun)
 		{
 			return new DelegateFunction<T1,T2>(DEF_NAME, fun);
 		}
-
-
+        
 		public static ElaFunction Create<T1,T2,T3>(ElaFun<T1,T2,T3> fun)
 		{
 			return new DelegateFunction<T1,T2,T3>(DEF_NAME, fun);
 		}
-
-
+        
 		public static ElaFunction Create<T1,T2,T3,T4>(ElaFun<T1,T2,T3,T4> fun)
 		{
 			return new DelegateFunction<T1,T2,T3,T4>(DEF_NAME, fun);
 		}
-
-
+        
 		public static ElaFunction Create<T1,T2,T3,T4,T5>(ElaFun<T1,T2,T3,T4,T5> fun)
 		{
 			return new DelegateFunction<T1,T2,T3,T4,T5>(DEF_NAME, fun);
 		}
-
-
+        
 		public static ElaFunction Create<T1,T2,T3,T4,T5,T6>(ElaFun<T1,T2,T3,T4,T5,T6> fun)
 		{
 			return new DelegateFunction<T1,T2,T3,T4,T5,T6>(DEF_NAME, fun);
 		}
-
-
+        
 		public static ElaFunction Create<T1,T2,T3,T4,T5,T6,T7>(ElaFun<T1,T2,T3,T4,T5,T6,T7> fun)
 		{
 			return new DelegateFunction<T1,T2,T3,T4,T5,T6,T7>(DEF_NAME, fun);
 		}
 
-
 		public static ElaFunction Create<T1,T2,T3,T4,T5,T6,T7,T8>(ElaFun<T1,T2,T3,T4,T5,T6,T7,T8> fun)
 		{
 			return new DelegateFunction<T1,T2,T3,T4,T5,T6,T7,T8>(DEF_NAME, fun);
 		}
-
-
+        
 		public static ElaFunction Create<T1,T2,T3,T4,T5,T6,T7,T8,T9>(ElaFun<T1,T2,T3,T4,T5,T6,T7,T8,T9> fun)
 		{
 			return new DelegateFunction<T1,T2,T3,T4,T5,T6,T7,T8,T9>(DEF_NAME, fun);
 		}
-
-
+        
 		public static ElaFunction Create<T1>(string name, ElaFun<T1> fun)
 		{
 			return new DelegateFunction<T1>(name, fun);
 		}
-
-
+        
 		public static ElaFunction Create<T1,T2>(string name, ElaFun<T1,T2> fun)
 		{
 			return new DelegateFunction<T1,T2>(name, fun);
 		}
-
-
+        
 		public static ElaFunction Create<T1,T2,T3>(string name, ElaFun<T1,T2,T3> fun)
 		{
 			return new DelegateFunction<T1,T2,T3>(name, fun);
 		}
 
-
 		public static ElaFunction Create<T1,T2,T3,T4>(string name, ElaFun<T1,T2,T3,T4> fun)
 		{
 			return new DelegateFunction<T1,T2,T3,T4>(name, fun);
 		}
-
-
+        
 		public static ElaFunction Create<T1,T2,T3,T4,T5>(string name, ElaFun<T1,T2,T3,T4,T5> fun)
 		{
 			return new DelegateFunction<T1,T2,T3,T4,T5>(name, fun);
 		}
-
-
+        
 		public static ElaFunction Create<T1,T2,T3,T4,T5,T6>(string name, ElaFun<T1,T2,T3,T4,T5,T6> fun)
 		{
 			return new DelegateFunction<T1,T2,T3,T4,T5,T6>(name, fun);
 		}
-
 
 		public static ElaFunction Create<T1,T2,T3,T4,T5,T6,T7>(string name, ElaFun<T1,T2,T3,T4,T5,T6,T7> fun)
 		{
 			return new DelegateFunction<T1,T2,T3,T4,T5,T6,T7>(name, fun);
 		}
 
-
 		public static ElaFunction Create<T1,T2,T3,T4,T5,T6,T7,T8>(string name, ElaFun<T1,T2,T3,T4,T5,T6,T7,T8> fun)
 		{
 			return new DelegateFunction<T1,T2,T3,T4,T5,T6,T7,T8>(name, fun);
 		}
 
-
 		public static ElaFunction Create<T1,T2,T3,T4,T5,T6,T7,T8,T9>(string name, ElaFun<T1,T2,T3,T4,T5,T6,T7,T8,T9> fun)
 		{
 			return new DelegateFunction<T1,T2,T3,T4,T5,T6,T7,T8,T9>(name, fun);
 		}
-		#endregion
 
-
-		#region Methods
         public Delegate ToDelegate()
         {
             var len = Parameters.Length;
@@ -336,7 +298,6 @@ namespace Ela.Runtime.ObjectModel
 			return ret;
 		}
 
-
 		protected ElaFunction CloneFast(ElaFunction newInstance)
 		{
 			var pars = new ElaValue[Parameters.Length];
@@ -354,8 +315,7 @@ namespace Ela.Runtime.ObjectModel
 			newInstance.Flip = Flip;
 			return newInstance;
 		}
-
-
+        
 		public virtual ElaFunction Clone()
 		{
 			var nf = (ElaFunction)MemberwiseClone();
@@ -414,10 +374,7 @@ namespace Ela.Runtime.ObjectModel
 
 			return funName;
 		}
-		#endregion
 
-
-		#region Properties
 		internal ElaMachine Machine { get { return vm; } }
 
 		internal int Handle { get; private set; }
@@ -442,6 +399,5 @@ namespace Ela.Runtime.ObjectModel
 					_flip = value;
 			}
 		}
-		#endregion
 	}
 }

@@ -1,3 +1,4 @@
+0.10.4.46:Change:Thunks are not forced recursively.
 0.10.4.45:Change:Compilation of lazy literals was simplified.
 0.10.4.44:Change:Now ranges uses 'Succ' op code to generate a second range element (if it is not specified).
 0.10.4.43:Change:Now Pushvar and Popvar op codes only work with non-local names.

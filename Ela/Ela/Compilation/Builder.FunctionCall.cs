@@ -15,7 +15,7 @@ namespace Ela.Compilation
                 return false;
 
             var name = v.Target.GetName();
-            var sv = GetVariable(name, v.Target.Line, v.Target.Column);
+            var sv = GetVariable(name, CurrentScope, GetFlags.NoError, v.Target.Line, v.Target.Column);
 
             //Only function literals with 'inline' attribute are accepted
             if ((sv.Flags & ElaVariableFlags.Function) != ElaVariableFlags.Function
@@ -74,19 +74,6 @@ namespace Ela.Compilation
             {
                 bf = (ElaVariableReference)v.Target;
                 sv = GetVariable(bf.VariableName, bf.Line, bf.Column);
-
-                //We try to apply a function refered by its name when this name is initialized by a function
-                //later in the code. This situation might happen because all bindings in Ela are mutually recrusive.
-                //A solution here might be to create an implicit lazy section, we however prefer an explicit way and
-                //simply generate an appropriate warning with a recommendation to use a lazy section.
-                if ((sv.Flags & ElaVariableFlags.NoInit) == ElaVariableFlags.NoInit && (hints & Hints.Lazy) == Hints.Lazy &&
-                    CurrentScope.LocalOrParent(bf.VariableName))
-                {
-                    //Disabled (explicit better than implicit)                        
-                    //return CompileLazyFunctionCall(v, map, hints);
-                    AddWarning(ElaCompilerWarning.BottomValue, bf, bf.VariableName);
-                    AddHint(ElaCompilerHint.UseThunk, bf, v);
-                }
 
                 //If the target is one of the built-in application function we need to transform this
                 //to a regular function call, e.g. 'x |> f' is translated into 'f x' by manually creating

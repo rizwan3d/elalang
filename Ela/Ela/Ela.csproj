@@ -295,7 +295,6 @@
     <Compile Include="Debug\SymTables.cs" />
     <Compile Include="Runtime\ObjectModel\ElaBoolean.cs" />
     <Compile Include="Runtime\ObjectModel\ElaChar.cs" />
-    <Compile Include="Runtime\ObjectModel\ElaDummyObject.cs" />
     <Compile Include="Runtime\ObjectModel\ElaFunTable.cs" />
     <Compile Include="Runtime\ObjectModel\ElaLazyList.cs" />
     <Compile Include="Runtime\ObjectModel\ElaUnit.cs" />

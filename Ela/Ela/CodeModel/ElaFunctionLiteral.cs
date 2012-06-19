@@ -29,7 +29,7 @@ namespace Ela.CodeModel
         
         internal override bool Safe()
         {
-            return true;
+            return false;
         }
 
 		internal override void ToString(StringBuilder sb, Fmt fmt)

@@ -12,8 +12,7 @@ namespace Ela.Runtime
 		{
 			return String.Format(messages.GetString(key), args);
 		}
-
-
+        
 		internal static string GetError(ElaRuntimeError error, params object[] args)
 		{
 			try

@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Ela.Parsing;
 
 namespace Ela.CodeModel
 {
-	public sealed class ElaBinding : ElaExpression
+	public sealed class ElaBinding : ElaExpression, IEnumerable<ElaBinding>
 	{
 		internal ElaBinding(Token tok) : base(tok, ElaNodeType.Binding)
 		{
@@ -90,6 +91,20 @@ namespace Ela.CodeModel
 
 		public ElaExpression In { get; set; }
 
-        internal bool MemberBinding { get; set; }
-	}
+        public IEnumerator<ElaBinding> GetEnumerator()
+        {
+            var b = this;
+
+            while (b != null)
+            {
+                yield return b;
+                b = b.And;
+            }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+    }
 }

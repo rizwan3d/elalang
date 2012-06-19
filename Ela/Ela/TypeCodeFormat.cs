@@ -4,7 +4,6 @@ namespace Ela
 {
 	public static class TypeCodeFormat
 	{
-		#region Construction
 		private const string ERR = "INVALID";
 		private const string CHAR = "char";
 		private const string INT = "int";
@@ -23,10 +22,7 @@ namespace Ela
 		private const string LAZ = "thunk";
 		private const string VAR = "variant";
         private const string TYP = "typeinfo";
-		#endregion
-
-
-		#region Methods
+		
         public static ElaTypeCode GetTypeCode(string type)
         {
             switch (type)
@@ -76,6 +72,5 @@ namespace Ela
 				default: return ERR;
 			}
 		}
-		#endregion
 	}
 }
