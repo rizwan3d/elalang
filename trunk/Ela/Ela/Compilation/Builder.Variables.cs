@@ -136,12 +136,11 @@ namespace Ela.Compilation
         {
             var cur = startScope;
             var shift = 0;
+            var var = ScopeVar.Empty;
 
             //Walks the scopes recursively to look for a variable
             do
             {
-                var var = default(ScopeVar);
-
                 if (cur.Locals.TryGetValue(name, out var))
                 {
                     var.Address = shift | var.Address << 8;
@@ -151,10 +150,11 @@ namespace Ela.Compilation
                 if (cur.Function)
                     shift++;
 
+                var = ScopeVar.Empty;
                 cur = cur.Parent;
             }
             while (cur != null);
-
+            
             //If this flag is set we don't need to go further
             if ((getFlags & GetFlags.Local) == GetFlags.Local)
             {

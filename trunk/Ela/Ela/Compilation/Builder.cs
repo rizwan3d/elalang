@@ -61,7 +61,7 @@ namespace Ela.Compilation
             var block = (ElaBlock)expr;
 
             //Main compilation routine
-            CompileProgram(block, map);
+            CompileProgram(block.Expressions, map);
             
             //Every Ela module should end with a Stop op code
 			cw.Emit(Op.Stop);
@@ -181,7 +181,10 @@ namespace Ela.Compilation
                     }
                     break;
                 case ElaNodeType.Binding:
-                    CompileDeclaration((ElaBinding)exp, map, hints);
+                    {
+                        var b = (ElaBinding)exp;
+                        WalkDeclarations(b, map, hints);
+                    }
                     break;
                 case ElaNodeType.Condition:
                     {
@@ -247,17 +250,6 @@ namespace Ela.Compilation
                         var v = (ElaVariableReference)exp;
                         AddLinePragma(v);
                         var scopeVar = GetVariable(v.VariableName, v.Line, v.Column);
-
-                        if ((hints & Hints.Lazy) == Hints.Lazy && (scopeVar.Flags & ElaVariableFlags.NoInit) == ElaVariableFlags.NoInit &&
-                            CurrentScope.LocalOrParent(v.VariableName))
-                        {
-                            //Disabled (explicit better than implicit)                        
-                            //EmitAsLazy(scopeVar);
-                            //AddLinePragma(exp);
-                            //cw.Emit(Op.Newlazy);
-                            AddWarning(ElaCompilerWarning.BottomValue, exp, v.VariableName);
-                            AddHint(ElaCompilerHint.UseThunk, exp, v.VariableName);
-                        }
 
                         PushVar(scopeVar);
 

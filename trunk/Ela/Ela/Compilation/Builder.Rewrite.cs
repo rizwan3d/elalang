@@ -7,9 +7,9 @@ namespace Ela.Compilation
     internal sealed partial class Builder
     {
         //Main compilation method that runs compilation in seven steps by rewriting binding order.
-        private void CompileProgram(ElaBlock block, LabelMap map)
+        private void CompileProgram(List<ElaExpression> exps, LabelMap map)
         {
-            var list = ProcessSafeExpressions(block.Expressions, map);
+            var list = ProcessSafeExpressions(exps, map);
             list = ProcessTypes(list, map);
             list = ProcessInstances(list, map);
             list = ProcessFunctions(list, map);
@@ -40,31 +40,25 @@ namespace Ela.Compilation
                     //An invalid binding, we should throw this one as soon as possible
                     if (b.InitExpression == null)
                         AddError(ElaCompilerError.VariableDeclarationInitMissing, b);
-                    else if (b.InitExpression.Type == ElaNodeType.Builtin && b.In == null && b.And == null)
+                    else if (b.In == null)
                     {
-                        //This is a global binding that is initialized with a built-in. It is perfectly
-                        //safe to compile it right away. This will avoid creation of unneccessary thunks
-                        CompileDeclaration(b, map, Hints.Left);
+                        //This error is not strictly neccessary, but I don't really want
+                        //to have write some additional boilerplate to handle this right now
+                        if (b.And != null)
+                            AddError(ElaCompilerError.BindingsAndRestrictedGlobal, b);
+
+                        //Forward declaration
+                        AddNoInitVariable(b);
+
+                        //This is a global binding that is initialized with a built-in. Or a 'safe'
+                        //expression (no variable references). It is perfectly safe to compile it right away. 
+                        if (b.InitExpression.Type == ElaNodeType.Builtin || b.Safe())
+                            CompileDeclaration(b, map, Hints.Left);
+                        else
+                            list.Add(b);
                     }
                     else
-                    {
-                        //If this is a global binding we have to declare all names
-                        //from it (we may have several bindings here, chained using 'et').
-                        if (b.In == null)
-                        {
-                            var and = b;
-
-                            do
-                            {
-                                AddNoInitVariable(and);
-                                and = and.And;
-                            }
-                            while (and != null);
-                        }
-
-                        //We still need to compile it later, so add it to a list
                         list.Add(b);
-                    }
                 }
                 else if (e.Type == ElaNodeType.TypeClass)
                 {
@@ -147,7 +141,7 @@ namespace Ela.Compilation
             for (var i = 0; i < len; i++)
             {
                 var e = exps[i];
-                 
+
                 if (e.Type == ElaNodeType.Binding)
                 {
                     var b = (ElaBinding)e;
@@ -160,7 +154,9 @@ namespace Ela.Compilation
                     }
                     else
                         list.Add(e);
-                }                
+                }
+                else
+                    list.Add(e);
             }
 
             return list;
@@ -177,7 +173,7 @@ namespace Ela.Compilation
             for (var i = 0; i < len; i++)
             {
                 var e = exps[i];
-                
+
                 if (e.Type == ElaNodeType.Binding)
                 {
                     var b = (ElaBinding)e;
@@ -188,6 +184,8 @@ namespace Ela.Compilation
                     else
                         list.Add(e);
                 }
+                else
+                    list.Add(e);
             }
 
             return list;
@@ -203,7 +201,7 @@ namespace Ela.Compilation
             for (var i = 0; i < len; i++)
             {
                 var e = exps[i];
-                
+
                 if (e.Type == ElaNodeType.Binding)
                 {
                     var b = (ElaBinding)e;
@@ -214,6 +212,8 @@ namespace Ela.Compilation
                     else
                         list.Add(e);
                 }
+                else
+                    list.Add(e);
             }
 
             return list;
@@ -355,7 +355,12 @@ namespace Ela.Compilation
                 case ElaNodeType.VariableReference:
                     {
                         var v = (ElaVariableReference)exp;
-                        return (GetVariable(v.VariableName, CurrentScope, GetFlags.NoError, 0, 0).Flags & ElaVariableFlags.NoInit) != ElaVariableFlags.NoInit;
+                        var sv = GetVariable(v.VariableName, CurrentScope, GetFlags.NoError, 0, 0);
+
+                        //It is OK if a name is not initialized yet but is a function as long as we
+                        //know that functions are initialized at an early stage
+                        return (sv.Flags & ElaVariableFlags.NoInit) != ElaVariableFlags.NoInit ||
+                            (sv.Flags & ElaVariableFlags.Function) == ElaVariableFlags.Function;
                     }
                 case ElaNodeType.Placeholder:
                     return true;
@@ -363,14 +368,24 @@ namespace Ela.Compilation
                     {
                         var v = (ElaFunctionCall)exp;
 
-                        if (!TryStrict(v.Target))
+                        if (v.Target.Type != ElaNodeType.VariableReference)
                             return false;
 
-                        for (var i = 0; i < v.Parameters.Count; i++)
-                            if (!TryStrict(v.Parameters[i]))
-                                return false;
+                        var sv = GetVariable(v.Target.GetName(), CurrentScope, GetFlags.NoError, 0, 0);
 
-                        return true;
+                        if ((sv.Flags & ElaVariableFlags.External) == ElaVariableFlags.External)
+                        {
+                            for (var i = 0; i < v.Parameters.Count; i++)
+                                if (!TryStrict(v.Parameters[i]))
+                                    return false;
+
+                            return true;
+                        }
+
+                        if ((sv.Flags & ElaVariableFlags.Function) != ElaVariableFlags.Function || sv.Data <= 0)
+                            return false;
+
+                        return sv.Data < v.Parameters.Count;
                     }
                 case ElaNodeType.Is:
                     {
@@ -398,13 +413,22 @@ namespace Ela.Compilation
         }
 
         
-        private ExprData CompileStrictOrLazy(ElaBinding b, ElaExpression exp, LabelMap map, Hints hints)
+        private ExprData CompileStrictOrLazy(ElaExpression exp, LabelMap map, Hints hints)
         {
-            if ((b != null && (hints & Hints.And) != Hints.And && b.And == null && CurrentScope != globalScope) ||
-                TryStrict(exp))
-                return CompileExpression(exp, map, hints);
-            else
-                return CompileLazyExpression(exp, map, hints);
+            //if (!TryStrict(exp))
+            //{
+            //    //if ((var.VariableFlags & ElaVariableFlags.NoInit) == ElaVariableFlags.NoInit &&
+            //    //    (var.VariableFlags & ElaVariableFlags.Function) != ElaVariableFlags.Function &&
+            //    //    (var.VariableFlags & ElaVariableFlags.Builtin) != ElaVariableFlags.Builtin)
+            //    {
+            //        AddWarning(ElaCompilerWarning.BottomValue, exp.Line, exp.Column, FormatNode(exp));
+            //        AddHint(ElaCompilerHint.UseThunk, exp.Line, exp.Column, FormatNode(exp));
+            //    }
+            //}
+                
+            return CompileExpression(exp, map, hints);
+            //else
+            //    return CompileLazyExpression(exp, map, hints);
         }
     }
 }

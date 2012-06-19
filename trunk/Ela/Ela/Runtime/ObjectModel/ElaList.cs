@@ -6,26 +6,10 @@ using System.Text;
 namespace Ela.Runtime.ObjectModel
 {
 	public class ElaList : ElaObject, IEnumerable<ElaValue>
-	{
-		#region Construction
+	{		
         public static readonly ElaList Empty = ElaNilList.Instance;
 
-		public ElaList(ElaList next, object value) : this(next, ElaValue.FromObject(value))
-		{
-
-		}
-
-
-		public ElaList(ElaList next, ElaValue value) : base(ElaTypeCode.List)
-		{
-			InternalNext = next;
-			InternalValue = value;
-		}
-		#endregion
-
-
-		#region Nested Classes
-		private sealed class ElaNilList : ElaList
+        private sealed class ElaNilList : ElaList
 		{
 			internal static readonly ElaNilList Instance = new ElaNilList();
 
@@ -37,10 +21,18 @@ namespace Ela.Runtime.ObjectModel
 				return Default();
 			}
 		}
-		#endregion
+        
+		public ElaList(ElaList next, object value) : this(next, ElaValue.FromObject(value))
+		{
 
+		}
+        
+		public ElaList(ElaList next, ElaValue value) : base(ElaTypeCode.List)
+		{
+			InternalNext = next;
+			InternalValue = value;
+		}		
 
-		#region Operations
 		internal int GetLength()
 		{
             ElaList xs = this;
@@ -59,8 +51,7 @@ namespace Ela.Runtime.ObjectModel
 
             return count;
 		}
-
-
+        
 		protected internal override ElaValue Tail(ExecutionContext ctx)
 		{
 			return new ElaValue(InternalNext);
@@ -93,10 +84,7 @@ namespace Ela.Runtime.ObjectModel
             sb.Append(']');
             return sb.ToString();
         }
-		#endregion
 
-
-		#region Methods
         public static ElaList FromEnumerable(IEnumerable seq)
 		{
 			var list = ElaList.Empty;
@@ -106,8 +94,7 @@ namespace Ela.Runtime.ObjectModel
 
 			return list.Reverse();
 		}
-
-
+        
 		public static ElaList FromEnumerable(IEnumerable<ElaValue> seq)
 		{
 			var list = ElaList.Empty;
@@ -117,7 +104,6 @@ namespace Ela.Runtime.ObjectModel
 
 			return list.Reverse();
 		}
-
 
 		public virtual ElaList Reverse()
 		{
@@ -133,12 +119,10 @@ namespace Ela.Runtime.ObjectModel
 			return newLst;
 		}
 
-
         public virtual ElaValue Tail()
         {
             return new ElaValue(InternalNext);
         }
-
 
         public IEnumerator<ElaValue> GetEnumerator()
 		{
@@ -155,22 +139,17 @@ namespace Ela.Runtime.ObjectModel
 					throw InvalidDefinition();
 			}
 		}
-
-
+        
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}
-
-
+        
 		protected virtual Exception InvalidDefinition()
 		{
-			return new ElaRuntimeException("InvalidList", "Invalid rec definition.");
+			return new ElaRuntimeException("InvalidList", "Invalid list definition.");
 		}
-		#endregion
 
-
-		#region Properties
 		protected internal ElaValue InternalValue;
 		protected ElaList InternalNext;
 
@@ -194,6 +173,5 @@ namespace Ela.Runtime.ObjectModel
 		{
 			get { return GetLength(); }
 		}
-		#endregion
 	}
 }

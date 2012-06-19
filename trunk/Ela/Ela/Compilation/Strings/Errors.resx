@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BindingsAndRestrictedGlobal" xml:space="preserve">
+    <value>Chaining bindings using 'et' is invalid for global bindings. Top level is mutual recursive by default.</value>
+  </data>
   <data name="CastNotSupported" xml:space="preserve">
     <value>Casting to the type '{0}' is not supported.</value>
   </data>
@@ -156,8 +159,11 @@
   <data name="MatchNotSupportedInFor" xml:space="preserve">
     <value>An expression: {0} is invalid. Pattern matching is not allowed in for/to and for/downto cycles.</value>
   </data>
+  <data name="MemberInvalid" xml:space="preserve">
+    <value>A function '{0}' is not a member of a class '{1}'.</value>
+  </data>
   <data name="MemberNoPatterns" xml:space="preserve">
-    <value>Pattern '{0}' inside member binding is invalid. Patterns are not allowed in member bindings.</value>
+    <value>A name of a class member cannot be inferred from a '{0}'. Patterns are not allowed in member bindings.</value>
   </data>
   <data name="MemberNotAll" xml:space="preserve">
     <value>Not all of the members for class '{0}' are declared in instance '{1}'.</value>

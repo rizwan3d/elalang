@@ -1,9 +1,8 @@
-let private inline
-    sum x y = x + y
- et even x = x % 2 == 0
- et odd x = x % 2 <> 0
- et calc x y = (x / y) * (x + y) 
- et compare x y = if x > y then Gt else NotGt
+let private inline sum x y = x + y
+let private inline even x = x % 2 == 0
+let private inline odd x = x % 2 <> 0
+let private inline calc x y = (x / y) * (x + y) 
+let private inline compare x y = if x > y then Gt else NotGt
 
 let partial1 {eq} =
           eq (sum 2 3) 5

@@ -53,11 +53,10 @@ namespace Ela.CodeModel
 			foreach (var p in Entries)
 			{
 				if (c++ > 0)
-				{
 					sb.AppendLine();
-					sb.Append(' ', 6);
-				}
-
+				
+                sb.Append(' ', 6);
+				
 				if (p.Pattern == null && op != null)
 					sb.Append(' ', op.ToString().Length);
 

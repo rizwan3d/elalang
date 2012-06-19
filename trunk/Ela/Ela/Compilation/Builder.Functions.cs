@@ -65,8 +65,8 @@ namespace Ela.Compilation
                 
                 //Parser always wraps function parameters in a tuple even if a function
                 //has a single parameter. We need to avoid this redundancy.
-				var ex = t.Parameters.Count == 1 ? t.Parameters[0] : t;
-				CompileMatch(dec.Body, ex, map, Hints.Tail | Hints.Scope | Hints.FunBody);
+                var ex = t.Parameters.Count == 1 ? t.Parameters[0] : t;
+                CompileMatch(dec.Body, ex, map, Hints.Tail | Hints.Scope | Hints.FunBody);
 			}
 			else 
 			{                
@@ -75,7 +75,7 @@ namespace Ela.Compilation
                 if (dec.Body.Entries[0].Where != null)
 					CompileExpression(dec.Body.Entries[0].Where, map, Hints.Left);
 
-                //We don't need a 'tail situation' for lazy and newtype.
+                //We don't need a 'tail situation' for newtype.
                 var eh = flag == FunFlag.None || flag == FunFlag.Inline ? Hints.Scope | Hints.Tail : Hints.Scope;
 				CompileExpression(dec.Body.Entries[0].Expression, map, eh);
 			}

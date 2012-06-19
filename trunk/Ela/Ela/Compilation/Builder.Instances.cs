@@ -7,19 +7,9 @@ namespace Ela.Compilation
     //This Part is responsible for compilation of type class instances
     internal sealed partial class Builder
     {
-        //A name of the type that is currently processed (used when compiling a binding)
-        private string currentType;
-        
-        //A current type prefix (module alias), used when compiling a binding
-        private string currentTypePrefix;
-
         //Main method for instnace compilation
         private void CompileInstance(ElaClassInstance s, LabelMap map, Hints hints)
         {
-            //Set the currently processed type
-            currentType = s.TypeName;
-            currentTypePrefix = s.TypePrefix;
-
             //Obtain type class data
             var mod = default(CodeFrame);
             var mbr = default(ClassData);
@@ -48,23 +38,31 @@ namespace Ela.Compilation
                 classMembers.Add(mbr.Members[i].Name);
 
             var b = s.Where;
-            var err = false;
 
+            //Fill two lists - class members and just helper functions
             while (b != null)
             {
-                //Patterns in bindings are currently not allowed in instances
+                var err = false;
+
+                //Patterns are now allowed in member bindings
                 if (b.Pattern != null)
                 {
-                    AddError(ElaCompilerError.MemberNoPatterns, b.Pattern, b.Pattern.ToString());
+                    AddError(ElaCompilerError.MemberNoPatterns, b.Pattern, FormatNode(b.Pattern));
                     err = true;
                 }
 
-                //Here we mark a binding as 'member binding' so that CompileDeclaration will know that
-                //it needs to apply a slightly different logic to it.
-                if (!String.IsNullOrEmpty(b.VariableName) && classMembers.Contains(b.VariableName))
+                //Only member functions can be declared inside instance
+                if (!classMembers.Contains(b.VariableName))
                 {
-                    b.MemberBinding = true;
+                    AddError(ElaCompilerError.MemberInvalid, b, b.VariableName, s.TypeClassName);
+                    err = true;
+                }
+
+                //Compile member function                 
+                if (!err)
+                {
                     classMembers.Remove(b.VariableName);
+                    CompileInstanceMember(b, map, s.TypePrefix, s.TypeName);
                 }
 
                 b = b.And;
@@ -77,14 +75,6 @@ namespace Ela.Compilation
             //Not all of the members are implemented, which is an error
             if (classMembers.Count > 0)
                 AddError(ElaCompilerError.MemberNotAll, s, s.TypeClassName, s.TypeClassName + " " + s.TypeName);
-
-            //If there are no errors we can compile members
-            if (!err)
-            {
-                StartScope(false, s.Where.Line, s.Where.Column);
-                CompileDeclaration(s.Where, map, hints);
-                EndScope();
-            }
         }
 
         //This method returns type class data including: type class metadata (ClassData), module local ID
@@ -140,7 +130,7 @@ namespace Ela.Compilation
             }
         }
 
-        //Here we obtain type information - 
+        //Here we obtain type information - local ID of a module where a type is defined.
         private void ObtainType(ElaClassInstance s, out int typCode)
         {
             typCode = -1;
@@ -184,6 +174,75 @@ namespace Ela.Compilation
                 //that should be unique within this module).
                 typCode = frame.References[s.TypePrefix].LogicalHandle;
             }
+        }
+
+        //Compile an instance member.
+        private void CompileInstanceMember(ElaBinding s, LabelMap map, string currentTypePrefix, string currentType)
+        {
+            //Obtain a 'table' function of a class
+            var btVar = GetVariable(s.VariableName, s.Line, s.Column);
+            var builtin = (btVar.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin;
+            var args = 0;
+            
+            //Here we need to understand how many arguments a class function has.
+            //If our declaration has less arguments (allowed by Ela) we need to do
+            //eta expansion.
+            if (builtin)
+                args = BuiltinParams((ElaBuiltinKind)btVar.Data);
+            else
+                args = btVar.Data;
+
+            //Eta expansion should be done if a member is not a function literal
+            //(it can be a partially applied function) or if a number of arguments
+            //doesn't match.
+            if (s.InitExpression.Type != ElaNodeType.FunctionLiteral)
+                EtaExpand(s.InitExpression, map, args);
+            else if (((ElaFunctionLiteral)s.InitExpression).ParameterCount < args)
+                EtaExpand(s.InitExpression, map, args);
+            else
+                CompileExpression(s.InitExpression, map, Hints.None);
+
+            AddLinePragma(s);
+
+            //Depending whether this is a built-in class or a different approach is
+            //used to add a member function.
+            if (!builtin)
+                PushVar(btVar);
+            else
+                cw.Emit(Op.PushI4, (Int32)btVar.Data);
+
+            //We need to obtain a 'real' global ID of the type that we are extending. This
+            //is done using this helper method.
+            EmitSpecName(currentTypePrefix, "$$" + currentType, s, ElaCompilerError.UndefinedType);
+            
+            //Finally adding a member function.
+            cw.Emit(Op.Addmbr);
+        }
+
+        //Perform an eta expansion for a given expression
+        private void EtaExpand(ElaExpression exp, LabelMap map, int args)
+        {
+            //Here we generate a function which has a provided number of
+            //arguments
+            StartSection();
+            StartScope(true, exp.Line, exp.Column);
+            cw.StartFrame(args);
+            var funSkipLabel = cw.DefineLabel();
+            cw.Emit(Op.Br, funSkipLabel);
+            var address = cw.Offset;
+            CompileExpression(exp, map, Hints.None);
+
+            //Functions are curried so generate a call for each argument
+            for (var i = 0; i < args; i++)
+                cw.Emit(Op.Call);
+
+            cw.Emit(Op.Ret);
+            frame.Layouts.Add(new MemoryLayout(currentCounter, cw.FinishFrame(), address));
+            EndSection();
+            EndScope();
+            cw.MarkLabel(funSkipLabel);
+            cw.Emit(Op.PushI4, args);
+            cw.Emit(Op.Newfun, frame.Layouts.Count - 1);
         }
 
         //An instance might be missing a body. If this instance corresponds to

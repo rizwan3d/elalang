@@ -47,7 +47,7 @@ namespace Ela.Runtime.ObjectModel
                 return Default();
             }
 
-			return Value;
+			return Value.Ref.Force(Value, ctx);
 		}
 
         public override string ToString(string format, IFormatProvider provider)

@@ -7,29 +7,23 @@ namespace Ela.Runtime.ObjectModel
 {
 	public class ElaLazyList : ElaList
 	{
-		#region Construction
 		private ElaLazy thunk;
 		
 		public ElaLazyList(ElaLazy next, object value) : this(next, ElaValue.FromObject(value))
 		{
 
 		}
-
-
+        
 		public ElaLazyList(ElaLazy next, ElaValue value) : this((ElaLazyList)null, value)
 		{
 			this.thunk = next;
 		}
-
-
+        
 		public ElaLazyList(ElaLazyList next, ElaValue value) : base(next, value)
 		{
 			
 		}
-		#endregion
-
-
-		#region Operations
+		
         public override ElaValue Tail()
         {
             if (thunk != null)
@@ -49,7 +43,7 @@ namespace Ela.Runtime.ObjectModel
 
                 if (InternalNext == null)
                 {
-                    ctx.Fail("InvalidLazyList", "Invalid lazy rec definition.");
+                    ctx.Fail("InvalidLazyList", "Invalid lazy list definition.");
                     return Default();
                 }
 
@@ -67,29 +61,21 @@ namespace Ela.Runtime.ObjectModel
 				return new ElaValue(new ElaLazyList((ElaLazyList)InternalNext, value));
 		}
 
-
 		protected internal override ElaValue GenerateFinalize(ExecutionContext ctx)
 		{
 			return new ElaValue(this);
         }
 
-
         public override string ToString(string format, IFormatProvider formatProvider)
         {
             return "[lazy list]";
         }
-		#endregion
-
-
-		#region Methods
+		
 		protected override Exception InvalidDefinition()
 		{
 			return new ElaRuntimeException("InvalidLazyList", "Invalid lazy list definition.");
 		}
-		#endregion
-
-
-		#region Properties
+		
 		public override ElaList Next
 		{
 			get
@@ -108,6 +94,5 @@ namespace Ela.Runtime.ObjectModel
 				return InternalNext;
 			}
 		}
-		#endregion
 	}
 }
