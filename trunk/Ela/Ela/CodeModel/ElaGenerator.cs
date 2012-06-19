@@ -6,29 +6,28 @@ namespace Ela.CodeModel
 {
 	public sealed class ElaGenerator : ElaExpression
 	{
-		#region Construction
 		internal ElaGenerator(Token tok) : base(tok, ElaNodeType.Generator)
 		{
 			
 		}
-
-
+        
 		public ElaGenerator() : this(null)
 		{
 			
 		}
-		#endregion
-
-
-		#region Methods
+        
+        internal override bool Safe()
+        {
+            return (Guard == null || Guard.Safe()) && Target != null && Target.Safe() && Body != null && Body.Safe(); 
+        }
+		
 		internal override void ToString(StringBuilder sb, Fmt fmt)		
 		{
 			var sbNew = new StringBuilder();
 			var sel = GetSelect(this, fmt, sbNew);
 			sb.Append(sel.ToString() + " \\\\ " + sbNew.ToString());
 		}
-
-
+        
 		private ElaExpression GetSelect(ElaGenerator gen, Fmt fmt, StringBuilder sb)
 		{
 			sb.Append(gen.Pattern.ToString());
@@ -49,10 +48,7 @@ namespace Ela.CodeModel
 			else
 				return gen.Body;
 		}
-		#endregion
-
-
-		#region Properties
+		
 		public ElaPattern Pattern { get; set; }
 
 		public ElaExpression Guard { get; set; }
@@ -60,6 +56,5 @@ namespace Ela.CodeModel
 		public ElaExpression Target { get; set; }
 
 		public ElaExpression Body { get; set; }
-		#endregion
 	}
 }

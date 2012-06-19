@@ -6,21 +6,21 @@ namespace Ela.CodeModel
 {
 	public sealed class ElaBinary : ElaExpression
 	{
-		#region Construction
 		internal ElaBinary(Token tok) : base(tok, ElaNodeType.Binary)
 		{
 
 		}
-
-
+        
 		public ElaBinary() : base(ElaNodeType.Binary)
 		{
 
 		}
-		#endregion
+		
+        internal override bool Safe()
+        {
+            return Left.Safe() && Right.Safe();
+        }
 
-
-		#region Methods
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
             var paren = (Format.IsHiddenVar(Left) || Format.IsHiddenVar(Right)) &&
@@ -38,17 +38,11 @@ namespace Ela.CodeModel
 			if (paren)
 				sb.Append(')');
 		}
-		#endregion
-
-
-		#region Properties
-		public ElaExpression Left { get; set; }
+		
+        public ElaExpression Left { get; set; }
 
 		public ElaExpression Right { get; set; }
 
 		public ElaOperator Operator { get; set; }
-
-		public string CustomOperator { get; set; }
-		#endregion
 	}
 }

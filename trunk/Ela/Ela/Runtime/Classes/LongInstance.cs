@@ -385,9 +385,9 @@ namespace Ela.Runtime.Classes
             switch (castTo.TypeCode)
             {
                 case ElaTypeCode.Double:
+                    return new ElaValue((Double)value.Ref.AsLong());
+                case ElaTypeCode.Integer:
                     return new ElaValue((Int32)value.Ref.AsLong());
-                case ElaTypeCode.Long:
-                    return new ElaValue((Int64)value.Ref.AsLong());
                 case ElaTypeCode.Single:
                     return new ElaValue((Single)value.Ref.AsLong());
                 default:

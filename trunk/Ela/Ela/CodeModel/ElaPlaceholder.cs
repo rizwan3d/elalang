@@ -6,25 +6,24 @@ namespace Ela.CodeModel
 {
 	public sealed class ElaPlaceholder : ElaExpression
 	{
-		#region Construction
 		internal ElaPlaceholder(Token tok) : base(tok, ElaNodeType.Placeholder)
 		{
 			
 		}
 
-
 		public ElaPlaceholder() : this(null)
 		{
 			
 		}
-		#endregion
 
+        internal override bool Safe()
+        {
+            return true;
+        }
 
-		#region Methods
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			sb.Append('_');
 		}
-		#endregion
 	}
 }

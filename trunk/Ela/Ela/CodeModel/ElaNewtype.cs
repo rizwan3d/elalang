@@ -6,21 +6,21 @@ namespace Ela.CodeModel
 {
     public sealed class ElaNewtype : ElaFunctionLiteral
     {
-        #region Construction
         internal ElaNewtype(Token tok): base(tok, ElaNodeType.Newtype)
         {
 
         }
-
-
+        
         public ElaNewtype() : base(ElaNodeType.Newtype)
         {
 
         }
-        #endregion
+        
+        internal override bool Safe()
+        {
+            return true;
+        }
 
-
-        #region Methods
         internal override void ToString(StringBuilder sb, Fmt fmt)
         {
             sb.Append("type ");
@@ -31,6 +31,5 @@ namespace Ela.CodeModel
             Body.Entries[0].Expression.ToString(sb, fmt);
             sb.AppendLine();
         }
-        #endregion
     }
 }

@@ -4,29 +4,30 @@ using Ela.Parsing;
 
 namespace Ela.CodeModel
 {
-	public sealed class ElaLazyLiteral : ElaFunctionLiteral
+	public sealed class ElaLazyLiteral : ElaExpression
 	{
-		#region Construction
 		internal ElaLazyLiteral(Token tok) : base(tok, ElaNodeType.LazyLiteral)
 		{
 
 		}
-
-
+        
 		public ElaLazyLiteral() : base(ElaNodeType.LazyLiteral)
 		{
 
-		}
-		#endregion
+        }
 
-
-		#region Methods
+        internal override bool Safe()
+        {
+            return true;
+        }
+		
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
-			sb.Append("(& "); 
-			Body.Entries[0].Expression.ToString(sb, fmt);
+			sb.Append("(& ");
+            Expression.ToString(sb, fmt);
 			sb.Append(')');
 		}
-		#endregion
+
+        public ElaExpression Expression { get; set; }
 	}
 }

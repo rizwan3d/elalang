@@ -64,6 +64,7 @@ namespace Ela.Compilation
             RunForwardDeclaration(block, map, Hints.Left);
             RunTypes(block, map, Hints.Left);
             RunInstances(block, map, Hints.Left);
+            //RewriteOrder(block, map);
             CompileExpression(expr, map, Hints.Scope);
             
 			cw.Emit(Op.Stop);
@@ -114,20 +115,7 @@ namespace Ela.Compilation
                 case ElaNodeType.LazyLiteral:
                     {
                         var v = (ElaLazyLiteral)exp;
-
-                        //Try to optimize lazy section for a case
-                        //when a function application is marked as lazy
-                        if (!TryOptimizeLazy(v, map, hints))
-                        {
-                            //Regular lazy section compilation
-                            //Create a closure around section
-                            CompileFunction(v, FunFlag.Lazy);
-                            AddLinePragma(exp);
-                            cw.Emit(Op.Newlazy);
-                        }
-
-                        if ((hints & Hints.Left) == Hints.Left)
-                            AddValueNotUsed(v);
+                        CompileLazy(v, map, hints);
                     }
                     break;
                 case ElaNodeType.Try:
@@ -166,7 +154,7 @@ namespace Ela.Compilation
                             CompileLazyList(c.Generator, map, hints);
                         else
                         {
-                            CompileExpression(c.Initial, map, Hints.None);
+                            cw.Emit(Op.Newlist);
                             CompileGenerator(c.Generator, map, Hints.None);
                             AddLinePragma(c);
                             cw.Emit(Op.Genfin);

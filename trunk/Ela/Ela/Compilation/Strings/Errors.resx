@@ -129,9 +129,6 @@
   <data name="ElseMissing" xml:space="preserve">
     <value>A mandatory 'else' clause is missing. A conditional expression should be always terminated with an 'else' clause.</value>
   </data>
-  <data name="InfiniteRangeOnlyList" xml:space="preserve">
-    <value>Range: {0} is invalid. Only lists can be generated using infinite ranges.</value>
-  </data>
   <data name="InvalidBuiltinBinding" xml:space="preserve">
     <value>Invalid binding for a built-in function implementation. Function head is missing.</value>
   </data>
@@ -166,7 +163,7 @@
     <value>Not all of the members for class '{0}' are declared in instance '{1}'.</value>
   </data>
   <data name="NoHindingSameScope" xml:space="preserve">
-    <value>A conflicting definition of '{0}'. Shadowing of names in the same lexical scope if not allowed.</value>
+    <value>A conflicting definition of '{0}'. Shadowing of names in the same lexical scope is not allowed.</value>
   </data>
   <data name="OnlyBuiltinTypeNoDefinition" xml:space="preserve">
     <value>Invalid definition of type '{0}'. Only built-in types can have no definition.</value>

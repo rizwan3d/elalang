@@ -25,7 +25,7 @@ namespace Ela.Compilation
 
 		CastNotSupported = 308,
 
-		InfiniteRangeOnlyList = 309,
+		// = 309,
 
 		VariableDeclarationInitMissing = 310,
 

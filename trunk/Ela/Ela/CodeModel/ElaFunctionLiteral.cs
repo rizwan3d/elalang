@@ -7,37 +7,31 @@ namespace Ela.CodeModel
 {
 	public class ElaFunctionLiteral : ElaExpression
 	{
-		#region Construction
-		internal ElaFunctionLiteral(Token tok, ElaNodeType type)
-			: base(tok, type)
+		internal ElaFunctionLiteral(Token tok, ElaNodeType type) : base(tok, type)
 		{
 			
 		}
 
-
-		internal ElaFunctionLiteral(Token tok)
-			: this(tok, ElaNodeType.FunctionLiteral)
+		internal ElaFunctionLiteral(Token tok) : this(tok, ElaNodeType.FunctionLiteral)
 		{
 
 		}
 
-
-		public ElaFunctionLiteral(ElaNodeType type)
-			: this(null, type)
+		public ElaFunctionLiteral(ElaNodeType type) : this(null, type)
 		{
 
 		}
-
-
-		public ElaFunctionLiteral()
-			: this(null, ElaNodeType.FunctionLiteral)
+        
+		public ElaFunctionLiteral() : this(null, ElaNodeType.FunctionLiteral)
 		{
 
 		}
-		#endregion
+        
+        internal override bool Safe()
+        {
+            return true;
+        }
 
-
-		#region Methods
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
             if (String.IsNullOrEmpty(Name))
@@ -89,10 +83,7 @@ namespace Ela.CodeModel
                 }
             }
 		}
-		#endregion
 
-
-		#region Properties
 		public int ParameterCount
 		{
 			get
@@ -107,6 +98,5 @@ namespace Ela.CodeModel
 		public string Name { get; set; }
 
 		public ElaMatch Body { get; set; }
-		#endregion
 	}
 }

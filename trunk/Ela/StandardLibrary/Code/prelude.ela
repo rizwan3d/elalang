@@ -34,6 +34,20 @@ let toChar   = cast '\0'
 let toList   = cast []
 let toString = cast ""
 
+instance Typeable bool //toInt
+
+instance Typeable char //toString, toInt
+
+instance Typeable double //toInt, toLong, toSingle
+
+instance Typeable int //toChar, toDouble, toLong, toSingle
+
+instance Typeable long //toDouble, toInt, toSingle
+
+instance Typeable single //toDouble, toLong, toInt
+
+instance Typeable string //toList
+
 instance Typeable list
   where cast ?string x = castString x
      et castString (x::xs) = toString x ++ castString xs
@@ -41,6 +55,28 @@ instance Typeable list
 
 /* Eq */
 class Eq __internal Eq (==) (<>)
+
+instance Eq int
+
+instance Eq char
+
+instance Eq bool
+
+instance Eq double
+
+instance Eq single
+
+instance Eq long
+
+instance Eq string
+
+instance Eq unit
+
+instance Eq typeinfo
+
+instance Eq fun
+
+instance Eq module
 
 instance Eq tuple
   where x == y = x `eq` y
@@ -74,6 +110,18 @@ instance Eq variant
 /* Ord */
 class Ord __internal Ord (>) (<) (>=) (<=)
 
+instance Ord int
+
+instance Ord long
+
+instance Ord single
+
+instance Ord double
+
+instance Ord char
+
+instance Ord string
+
 instance Ord tuple
   where x<y = fold (<) x y
      et x>y = fold (>) x y
@@ -89,11 +137,53 @@ instance Ord tuple
 /* Num */
 class Num __internal Num (+) (-) (*) (/) (**) (%) (--)
 
+instance Num int
+
+instance Num long
+
+instance Num single
+
+instance Num double
+
+instance Num tuple
+  where (+) = join (+)
+     et x-y = join (-) x y
+     et x*y = join (*) x y
+     et x/y = join (/) x y
+     et x**y = join (**) x y
+     et x%y = join (%) x y
+     et x-- = mapTup (--) x
+     et mapTup f tup = map' 0
+                 where len = length tup
+                    et map' n | n == len - 1 = e
+                              | else = e ++ map' (n+1)
+                              where e = ( f (tup:n), )
+     et join f tup1 tup2 | length tup2 <> len = fail "Tuples should be of the same length."
+                         | else = join' 0
+                         where len = length tup1
+                            et join' n | n == len - 1 = e
+                                       | else = e ++ join' (n+1)
+                                       where e = ( (tup1:n) `f` (tup2:n), )
+
 /* Bit */
 class Bit __internal Bit (&&&) (|||) (^^^) (~~~) (<<<) (>>>)
 
+instance Bit int
+
+instance Bit long
+
 /* Enum */
 class Enum __internal Enum succ pred
+
+instance Enum int
+
+instance Enum long
+
+instance Enum double
+
+instance Enum single
+
+instance Enum char
 
 instance Enum tuple
   where succ = sp succ
@@ -106,8 +196,18 @@ instance Enum tuple
 /* Seq */
 class Seq __internal Seq head tail isnil
 
+instance Seq list
+
+instance Seq string
+
 /* Ix */
 class Ix __internal Ix (:) length
+
+instance Ix string
+
+instance Ix tuple
+
+instance Ix record
 
 instance Ix list
   where length xs = len 0 xs
@@ -124,6 +224,14 @@ class Cons __internal Cons (::) nil
 /* Cat */
 class Cat __internal Cat (++)
 
+instance Cat char
+
+instance Cat string
+
+instance Cat tuple
+
+instance Cat record
+
 instance Cat list
   where xs++ys = cat (reverse xs) ys
                  where cat (x::xs) ys = cat xs (x::ys)
@@ -137,6 +245,28 @@ instance Cat list
 class Show __internal Show showf
 
 let show = showf ""
+
+instance Show int
+
+instance Show long
+
+instance Show single
+
+instance Show double
+
+instance Show char
+
+instance Show bool
+
+instance Show string
+
+instance Show unit
+
+instance Show typeinfo
+
+instance Show fun
+
+instance Show module
 
 instance Show variant
   where showf f x = if v is ?unit then tag x else tag x ++ " " ++ showf f v

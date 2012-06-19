@@ -196,26 +196,5 @@ namespace Ela.Compilation
 
             return ed;
         }
-
-        //Temporary disabled
-        //private ExprData CompileLazyFunctionCall(ElaFunctionCall exp, LabelMap map, Hints hints)
-        //{
-        //    StartSection();
-        //    StartScope(true, exp.Line, exp.Column);
-        //    cw.StartFrame(1);
-        //    var funSkipLabel = cw.DefineLabel();
-        //    cw.Emit(Op.Br, funSkipLabel);
-        //    var address = cw.Offset;
-        //    var ed = CompileFunctionCall(exp, map, hints ^ Hints.Lazy);
-        //    cw.Emit(Op.Ret);
-        //    frame.Layouts.Add(new MemoryLayout(currentCounter, cw.FinishFrame(), address));
-        //    EndSection();
-        //    EndScope();
-        //    cw.MarkLabel(funSkipLabel);
-        //    cw.Emit(Op.PushI4, 1);
-        //    cw.Emit(Op.Newfun, frame.Layouts.Count - 1);
-        //    cw.Emit(Op.Newlazy);
-        //    return ed;
-        //}
     }
 }

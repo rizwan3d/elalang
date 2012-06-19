@@ -7,22 +7,22 @@ namespace Ela.CodeModel
 {
 	public sealed class ElaModuleInclude : ElaExpression
 	{
-		#region Construction
 		internal ElaModuleInclude(Token tok) : base(tok, ElaNodeType.ModuleInclude)
 		{
 			Flags = ElaExpressionFlags.ReturnsUnit;
 			Path = new List<String>();
 		}
-
-
+        
 		public ElaModuleInclude() : this(null)
 		{
 			
 		}
-		#endregion
+		
+        internal override bool Safe()
+        {
+            return true;
+        }
 
-
-		#region Methods
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			sb.Append("open ");
@@ -49,10 +49,7 @@ namespace Ela.CodeModel
 				sb.Append(DllName);
 			}
 		}
-		#endregion
 
-
-		#region Properties
 		public string Name { get; set; }
 
 		public string Alias { get; set; }
@@ -79,6 +76,7 @@ namespace Ela.CodeModel
 				return _importList;
 			}
 		}
-		#endregion
+
+        public ElaModuleInclude And { get; set; }
 	}
 }

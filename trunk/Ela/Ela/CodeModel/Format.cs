@@ -10,7 +10,6 @@ namespace Ela.CodeModel
 			
 		}
 
-
 		internal Fmt(int indent, FmtFlags flags)
 		{
 			Indent = indent;
@@ -38,14 +37,13 @@ namespace Ela.CodeModel
 
 	internal static class Format
 	{
-        private static readonly char[] ops = new char[] { '!', '%', '&', '*', '+', '-', '.', ':', '/', '<', '=', '>', '?', '@', '^', '|', '~' };
+        private static readonly char[] ops = new char[] { '!', '%', '&', '*', '+', '-', '.', ':', '/', '\\', '<', '=', '>', '?', '@', '^', '|', '~' };
         
         public static bool IsSymbolic(string name)
         {
             return name.IndexOfAny(ops) != -1;
         }
-
-
+        
 		public static string OperatorAsString(ElaOperator op)
 		{
 			switch (op)
@@ -57,7 +55,6 @@ namespace Ela.CodeModel
 					return String.Empty;
 			}
 		}
-
 
 		public static bool IsSimpleExpression(ElaExpression p)
 		{
@@ -72,14 +69,12 @@ namespace Ela.CodeModel
 				p.Type == ElaNodeType.UnitLiteral;
 		}
 
-
 		public static bool IsHiddenVar(ElaExpression p)
 		{
 			return p != null && p.Type == ElaNodeType.VariableReference &&
 				((ElaVariableReference)p).VariableName[0] == '$';
 		}
-
-
+        
 		public static void PutInBraces(ElaExpression e, StringBuilder sb, Fmt fmt)
 		{
 			var simple = IsSimpleExpression(e);
@@ -93,7 +88,6 @@ namespace Ela.CodeModel
 			else
 				e.ToString(sb, fmt);				
 		}
-
 
 		public static void PutInBraces(ElaPattern e, StringBuilder sb, Fmt fmt)
 		{

@@ -262,12 +262,7 @@ namespace Ela.Runtime
                         evalStack.Push(locals[opd]);
                         break;
                     case Op.Pushvar:
-                        i4 = opd & Byte.MaxValue;
-
-                        if (i4 == 0)
-                            evalStack.Push(locals[opd >> 8]);
-                        else
-                            evalStack.Push(captures[captures.Count - i4][opd >> 8]);
+                        evalStack.Push(captures[captures.Count - (opd & Byte.MaxValue)][opd >> 8]);
                         break;
                     case Op.Pushstr:
                         evalStack.Push(new ElaValue(frame.Strings[opd]));
@@ -342,19 +337,13 @@ namespace Ela.Runtime
                         locals[opd] = evalStack.Pop();
                         break;
                     case Op.Popvar:
-                        right = evalStack.Pop();
-                        i4 = opd & Byte.MaxValue;
-
-                        if (i4 == 0)
-                            locals[opd >> 8] = right;
-                        else
-                            captures[captures.Count - i4][opd >> 8] = right;
+                        captures[captures.Count - (opd & Byte.MaxValue)][opd >> 8] = evalStack.Pop();
                         break;
                     case Op.Dup:
-                        evalStack.Push(evalStack.Peek());
+                        evalStack.Dup();
                         break;
                     case Op.Swap:
-                        right = evalStack.Pop();
+                        right = evalStack.PopFast();
                         left = evalStack.Peek();
                         evalStack.Replace(right);
                         evalStack.Push(left);
@@ -371,6 +360,17 @@ namespace Ela.Runtime
                             if (left.TypeId != STR)
                             {
                                 InvalidType(left, thread, evalStack, TypeCodeFormat.GetShortForm(ElaTypeCode.String));
+                                goto SWITCH_MEM;
+                            }
+
+                            if (right.TypeId == LAZ)
+                                right = right.Ref.Force(right, ctx);
+
+                            if (ctx.Failed)
+                            {
+                                evalStack.Push(right);
+                                evalStack.Push(left);
+                                ExecuteFail(ctx.Error, thread, evalStack);
                                 goto SWITCH_MEM;
                             }
 
@@ -465,7 +465,6 @@ namespace Ela.Runtime
                             }
                         }
                         break;
-
                     case Op.Tupcons:
                         right = evalStack.Pop();
                         left = evalStack.Peek();

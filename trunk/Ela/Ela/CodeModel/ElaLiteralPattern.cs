@@ -6,27 +6,21 @@ namespace Ela.CodeModel
 {
 	public sealed class ElaLiteralPattern : ElaPattern
 	{
-		#region Construction
 		internal ElaLiteralPattern(Token tok) : base(tok, ElaNodeType.LiteralPattern)
 		{
 
 		}
 
-
 		internal ElaLiteralPattern() : base(ElaNodeType.LiteralPattern)
 		{
 
 		}
-		#endregion
 		
-
-		#region Methods
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			sb.Append(Value);
 		}
-
-
+        
 		internal override bool CanFollow(ElaPattern pat)
 		{
 			if (pat.IsIrrefutable())
@@ -40,11 +34,7 @@ namespace Ela.CodeModel
 
 			return true;
 		}
-		#endregion
-
-
-		#region Properties
+		
 		public ElaLiteralValue Value { get; set; }
-		#endregion
 	}
 }

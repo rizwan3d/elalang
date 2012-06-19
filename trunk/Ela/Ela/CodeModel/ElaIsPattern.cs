@@ -7,28 +7,22 @@ namespace Ela.CodeModel
 {
 	public sealed class ElaIsPattern : ElaPattern
 	{
-		#region Construction
 		internal ElaIsPattern(Token tok) : base(tok, ElaNodeType.IsPattern)
 		{
 
 		}
-
-
+        
 		internal ElaIsPattern() : base(ElaNodeType.IsPattern)
 		{
 
 		}
-		#endregion
-
-
-		#region Methods
+		
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			sb.Append('?');
 			sb.Append(TypeName);
 		}
-
-
+        
 		internal override bool CanFollow(ElaPattern pat)
 		{
 			if (pat.IsIrrefutable())
@@ -61,10 +55,7 @@ namespace Ela.CodeModel
 
 			return @is.TypeName != TypeName;
 		}
-		#endregion
 
-
-		#region Properties
 		public string TypeName { get; set; }
 
         public string TypePrefix { get; set; }
@@ -74,6 +65,5 @@ namespace Ela.CodeModel
         {
             get { return _traits ?? (_traits = new List<TraitInfo>()); }
         }
-		#endregion
 	}
 }

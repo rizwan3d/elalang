@@ -7,21 +7,21 @@ namespace Ela.CodeModel
 {
     public sealed class ElaTypeClass : ElaExpression
     {
-        #region Construction
         internal ElaTypeClass(Token tok) : base(tok, ElaNodeType.TypeClass)
         {
             Members = new List<ElaClassMember>();
         }
-
-
+        
         public ElaTypeClass() : this(null)
         {
 
         }
-        #endregion
 
-
-        #region Methods
+        internal override bool Safe()
+        {
+            return true;
+        }
+        
         internal override void ToString(StringBuilder sb, Fmt fmt)
         {
             sb.Append("class ");
@@ -66,15 +66,11 @@ namespace Ela.CodeModel
                 sb.AppendLine();
             }
         }
-        #endregion
 
-
-        #region Properties
         public string Name { get; set; }
 
         public string BuiltinName { get; set; }
 
         public List<ElaClassMember> Members { get; set; }
-        #endregion
     }
 }

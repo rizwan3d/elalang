@@ -7,33 +7,38 @@ namespace Ela.CodeModel
 {
 	public class ElaMatch : ElaExpression
 	{
-		#region Construction
 		internal ElaMatch(Token tok, ElaNodeType type) : base(tok, type)
 		{
 			Entries = new List<ElaMatchEntry>();
 		}
-
 
 		internal ElaMatch(Token tok) : this(tok, ElaNodeType.Match)
 		{
 			
 		}
 
-
 		public ElaMatch() : this(null, ElaNodeType.Match)
 		{
-			
-		}
-		#endregion
 
+        }
 
-		#region Methods
+        internal override bool Safe()
+        {
+            if (Expression != null && !Expression.Safe())
+                return false;
+
+            foreach (var e in Entries)
+                if (!e.Safe())
+                    return false;
+
+            return true;
+        }
+
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			ToString(sb, fmt, "match");
 		}
-
-
+        
 		internal void ToString(StringBuilder sb, Fmt fmt, string keyword)
 		{
 			sb.Append(keyword);
@@ -62,13 +67,9 @@ namespace Ela.CodeModel
 					op = p.Pattern;
 			}
 		}
-		#endregion
 
-
-		#region Properties
 		public ElaExpression Expression { get; set; }
 		
 		public List<ElaMatchEntry> Entries { get; private set; }
-		#endregion
 	}
 }

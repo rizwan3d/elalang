@@ -139,9 +139,11 @@
     <Compile Include="Compilation\Builder.FunctionsBuiltin.cs" />
     <Compile Include="Compilation\Builder.Debug.cs" />
     <Compile Include="Compilation\Builder.FunctionCall.cs" />
+    <Compile Include="Compilation\Builder.Lazy.cs" />
     <Compile Include="Compilation\Builder.Modules.cs" />
     <Compile Include="Compilation\Builder.Literals.cs" />
     <Compile Include="Compilation\Builder.Errors.cs" />
+    <Compile Include="Compilation\Builder.Rewrite.cs" />
     <Compile Include="Compilation\Builder.Variables.cs" />
     <Compile Include="Compilation\ClassData.cs" />
     <Compile Include="Compilation\TerminationException.cs" />

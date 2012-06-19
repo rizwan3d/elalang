@@ -148,7 +148,7 @@ namespace Ela.Parsing
 
 		ExpectedKeywordAsAmp = 156,
 
-		ExpectedComprehensionOp = 157,
+		// = 157,
 
 
 

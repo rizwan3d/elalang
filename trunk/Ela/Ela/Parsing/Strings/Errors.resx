@@ -393,9 +393,6 @@
   <data name="ComprehensionOpInvalidOperand" xml:space="preserve">
     <value>Invalid right operand for the comprehension '@@' operator.</value>
   </data>
-  <data name="ExpectedComprehensionOp" xml:space="preserve">
-    <value>Expected comprehension operator '@@'.</value>
-  </data>
   <data name="ExpectedComprehensionSlash" xml:space="preserve">
     <value>Expected operator '\\'.</value>
   </data>

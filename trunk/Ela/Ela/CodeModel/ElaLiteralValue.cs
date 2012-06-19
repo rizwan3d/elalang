@@ -4,7 +4,6 @@ namespace Ela.CodeModel
 {
 	public struct ElaLiteralValue : IEquatable<ElaLiteralValue>
 	{
-		#region Construction
 		private Conv data;
 		private string str;
 
@@ -16,7 +15,6 @@ namespace Ela.CodeModel
 			LiteralType = ElaTypeCode.Integer;
 		}
 
-
 		public ElaLiteralValue(float val)
 		{
 			data = new Conv();
@@ -24,16 +22,14 @@ namespace Ela.CodeModel
 			str = null;
 			LiteralType = ElaTypeCode.Single;
 		}
-
-
+        
 		public ElaLiteralValue(string val)
 		{
 			data = new Conv();
 			str = val;
 			LiteralType = ElaTypeCode.String;
 		}
-
-
+        
 		public ElaLiteralValue(bool val)
 		{
 			data = new Conv();
@@ -41,7 +37,6 @@ namespace Ela.CodeModel
 			str = null;
 			LiteralType = ElaTypeCode.Boolean;
 		}
-
 
 		public ElaLiteralValue(char val)
 		{
@@ -51,7 +46,6 @@ namespace Ela.CodeModel
 			LiteralType = ElaTypeCode.Char;	
 		}
 
-
 		public ElaLiteralValue(long val)
 		{
 			data = new Conv();
@@ -59,7 +53,6 @@ namespace Ela.CodeModel
 			str = null;
 			LiteralType = ElaTypeCode.Long;	
 		}
-
 
 		public ElaLiteralValue(double val)
 		{
@@ -69,64 +62,52 @@ namespace Ela.CodeModel
 			LiteralType = ElaTypeCode.Double;	
 		}
 
-
 		public ElaLiteralValue(ElaTypeCode type)
 		{
 			data = new Conv();
 			str = null;
 			LiteralType = type;			
 		}
-		#endregion
 
-
-		#region Methods
 		public int AsInteger()
 		{
 			return data.I4_1;
 		}
 
-
 		public float AsReal()
 		{
 			return data.R4;
 		}
-		
-		
+				
 		public long AsLong()
 		{
 			return data.I8;
 		}
 
-
 		public double AsDouble()
 		{
 			return data.R8;
 		}
-
-
+        
 		public bool AsBoolean()
 		{
 			return data.I4_1 == 1;
 		}
-
 
 		public char AsChar()
 		{
 			return (Char)data.I4_1;
 		}
 
-
 		public string AsString()
 		{
 			return str;
 		}
 
-
 		internal Conv GetData()
 		{
 			return data;
 		}
-
 
 		public ElaLiteralValue MakeNegative()
 		{
@@ -142,7 +123,6 @@ namespace Ela.CodeModel
 				throw new NotSupportedException();
 		}
 
-
 		public override string ToString()
 		{
 			switch (LiteralType)
@@ -157,8 +137,7 @@ namespace Ela.CodeModel
 				default: return String.Empty;
 			}
 		}
-
-
+        
 		public bool Equals(ElaLiteralValue value)
 		{
 			if (LiteralType != value.LiteralType)
@@ -176,11 +155,7 @@ namespace Ela.CodeModel
 				default: return true;
 			}
 		}
-		#endregion
 
-
-		#region Fields
 		public readonly ElaTypeCode LiteralType;
-		#endregion
 	}
 }

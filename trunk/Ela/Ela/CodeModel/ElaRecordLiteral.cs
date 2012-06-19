@@ -7,34 +7,36 @@ namespace Ela.CodeModel
 {
 	public class ElaRecordLiteral : ElaExpression
 	{
-		#region Construction
 		internal ElaRecordLiteral(Token tok) : this(tok, ElaNodeType.RecordLiteral)
 		{
 			
 		}
-
-
+        
 		internal ElaRecordLiteral(Token tok, ElaNodeType type) : base(tok, type)
 		{
 			Fields = new List<ElaFieldDeclaration>();
 		}
-
-
+        
 		public ElaRecordLiteral() : this(ElaNodeType.RecordLiteral)
 		{
 			
 		}
-
-
+        
 		protected ElaRecordLiteral(ElaNodeType type) : base(type)
 		{
 			Fields = new List<ElaFieldDeclaration>();
 		}
-		#endregion
 		
+		internal override bool Safe()
+        {
+            foreach (var f in Fields)
+                if (!f.Safe())
+                    return false;
 
-		#region Methods
-		internal override void ToString(StringBuilder sb, Fmt fmt)
+            return true;
+        }
+        
+        internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			sb.Append('{');
 			var c = 0;
@@ -49,11 +51,7 @@ namespace Ela.CodeModel
 
 			sb.Append('}');
 		}
-		#endregion
-
 		
-		#region Properties
 		public List<ElaFieldDeclaration> Fields { get; private set; }
-		#endregion
 	}
 }

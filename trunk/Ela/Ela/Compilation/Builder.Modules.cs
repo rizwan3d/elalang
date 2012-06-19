@@ -48,6 +48,17 @@ namespace Ela.Compilation
                     PopVar(a);
                 }
             }
+
+            //Several 'open' directives can be chained
+            if (s.And != null)
+            {
+                CompileModuleInclude(s.And, map, hints);
+                return;
+            }
+
+            //A module include directive might be the last statement in a module
+            if ((hints & Hints.Left) != Hints.Left)
+                cw.Emit(Op.Pushunit);
         }
 
         //Includes a module reference (used for user references, Prelude and Arguments module).

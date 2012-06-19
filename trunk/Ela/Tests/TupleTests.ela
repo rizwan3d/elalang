@@ -52,10 +52,6 @@ let concat {eq,eqt} =
         $ eq (t2++t1) (4,5,6,1,2,3)
         where t1 = (1,2,3)
            et t2 = (4,5,6)
-    
-let genTupleTest {eq} =
-        eq t (1,2,4)
-        where t = (1,) @@ [x \\ x <- [2..5] | x % 2 == 0]
 
 let lengthTest {eq} = 
           eq (length t1) 3

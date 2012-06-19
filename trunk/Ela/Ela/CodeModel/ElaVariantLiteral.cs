@@ -6,38 +6,31 @@ namespace Ela.CodeModel
 {
 	public class ElaVariantLiteral : ElaExpression
 	{
-		#region Construction
-		internal ElaVariantLiteral(Token tok)
-			: base(tok, ElaNodeType.VariantLiteral)
+		internal ElaVariantLiteral(Token tok) : base(tok, ElaNodeType.VariantLiteral)
 		{
 
 		}
 
-
-		public ElaVariantLiteral()
-			: this(null)
+		public ElaVariantLiteral() : this(null)
 		{
 
-		}
-		#endregion
+        }
 
+        internal override bool Safe()
+        {
+            return true;
+        }
 
-		#region Methods
 		internal override string GetName()
 		{
 			return Tag;
 		}
-
-
+        
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			sb.Append(Tag);
 		}
-		#endregion
 
-
-		#region Properties
 		public string Tag { get; set; }
-		#endregion
 	}
 }
