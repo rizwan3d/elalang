@@ -7,30 +7,29 @@ namespace Ela.CodeModel
 {
 	public sealed class ElaFunctionCall : ElaExpression
 	{
-		#region Construction
 		private static readonly char[] opChars = new char[] { '!', '%', '&', '*', '+', '-', '.', ':', '/', '<', '=', '>', '?', '@', '^', '|', '~', '"' };
 
 		internal ElaFunctionCall(Token tok) : base(tok, ElaNodeType.FunctionCall)
 		{
 			Parameters = new List<ElaExpression>();
 		}
-
-
+        
 		public ElaFunctionCall() : this(null)
 		{
 			
 		}
-		#endregion
-
-
-		#region Methods
+		
 		internal override string GetName()
 		{
 			return Target.GetName();
 		}
-
-
-		internal override void ToString(StringBuilder sb, Fmt fmt)
+        
+        internal override bool Safe()
+        {
+            return false;
+        }
+        
+        internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			var paren = (fmt.Flags & FmtFlags.NoParen) != FmtFlags.NoParen && FlipParameters;
 
@@ -60,16 +59,12 @@ namespace Ela.CodeModel
 			if (paren)
 				sb.Append(')');
 		}
-		#endregion
-
-
-		#region Properties
-		public ElaExpression Target { get; set; }
+		
+        public ElaExpression Target { get; set; }
 
 		public List<ElaExpression> Parameters { get; set; }
 
 		public bool FlipParameters { get; set; }
-		#endregion
 	}
 
 }

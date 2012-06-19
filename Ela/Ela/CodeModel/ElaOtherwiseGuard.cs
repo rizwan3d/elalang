@@ -6,25 +6,24 @@ namespace Ela.CodeModel
 {
 	public sealed class ElaOtherwiseGuard : ElaExpression
 	{
-		#region Construction
 		internal ElaOtherwiseGuard(Token t) : base(t, ElaNodeType.OtherwiseGuard)
 		{
 
 		}
 
-
 		public ElaOtherwiseGuard() : base(ElaNodeType.OtherwiseGuard)
 		{
 
-		}
-		#endregion
+        }
 
+        internal override bool Safe()
+        {
+            return true;
+        }
 
-		#region Methods
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			sb.Append("else");
 		}
-		#endregion
 	}
 }

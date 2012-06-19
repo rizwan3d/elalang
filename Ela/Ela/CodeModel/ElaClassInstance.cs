@@ -7,21 +7,21 @@ namespace Ela.CodeModel
 {
     public sealed class ElaClassInstance : ElaExpression
     {
-        #region Construction
         internal ElaClassInstance(Token tok) : base(tok, ElaNodeType.ClassInstance)
         {
             
         }
-
-
+        
         public ElaClassInstance() : this(null)
         {
 
         }
-        #endregion
 
-
-        #region Methods
+        internal override bool Safe()
+        {
+            return true;
+        }
+        
         internal override void ToString(StringBuilder sb, Fmt fmt)
         {
             sb.Append("instance ");
@@ -39,10 +39,7 @@ namespace Ela.CodeModel
             sb.AppendLine();            
             Where.ToString(sb, new Fmt(2), "where");
         }
-        #endregion
-
-
-        #region Properties
+        
         public string TypeClassPrefix { get; set; }
 
         public string TypeClassName { get; set; }
@@ -52,6 +49,5 @@ namespace Ela.CodeModel
         public string TypePrefix { get; set; }
 
         public ElaBinding Where { get; set; }
-        #endregion
     }
 }

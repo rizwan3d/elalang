@@ -5,7 +5,6 @@ namespace Ela.Parsing
 {
 	internal static class ErrorReporter
 	{
-		#region Methods
 		internal static ElaMessage CreateMessage(int error, string message, int line, int col, Token tok)
 		{
 			var err = String.IsNullOrEmpty(tok.val) ? ElaParserError.InvalidSyntax :
@@ -43,7 +42,6 @@ namespace Ela.Parsing
 
 			return new ElaMessage(Strings.GetMessage(err, msg), MessageType.Error, (Int32)err, line, col);
 		}
-
 
 		private static ElaParserError InvalidToken(int error, string prod)
 		{
@@ -135,16 +133,14 @@ namespace Ela.Parsing
 				case "LazyExpr": return ElaParserError.InvalidLazy;
 				case "ComprehensionExpr": return ElaParserError.InvalidComprehension;
 				case "ComprehensionEntry": return ElaParserError.InvalidComprehension;
-                case "ComprehensionOpExpr": return ElaParserError.InvalidComprehension;
-				case "Expr": return ElaParserError.InvalidExpression;
+                case "Expr": return ElaParserError.InvalidExpression;
 				case "EmbExpr": return ElaParserError.InvalidExpression;
 				case "DeclarationBlock": return ElaParserError.InvalidRoot;
 				case "Ela": return ElaParserError.InvalidRoot;
 				default: return ElaParserError.InvalidProduction;
 			}
 		}
-
-
+        
 		private static ElaParserError ExpectToken(int error, string prod)
 		{
 			switch (error)
@@ -160,7 +156,11 @@ namespace Ela.Parsing
 				case Parser._operatorTok3:
 				case Parser._operatorTok4:
 				case Parser._operatorTok5: 
-				case Parser._operatorTok6: return ElaParserError.ExpectedOperatorToken;
+				case Parser._operatorTok6:
+                case Parser._operatorTok7:
+                case Parser._operatorTok8:
+                case Parser._operatorTok9: 
+                    return ElaParserError.ExpectedOperatorToken;
 				case Parser._LBRA: return ElaParserError.ExpectedCurlyBrace;
 				case Parser._RBRA: return ElaParserError.ExpectedCurlyBrace;
 				case Parser._LILB: return ElaParserError.ExpectedSquareBrace;
@@ -171,7 +171,6 @@ namespace Ela.Parsing
 				case Parser._IN: return ElaParserError.ExpectedKeywordIn;
 				case Parser._MATCH: return ElaParserError.ExpectedKeywordMatch;
 				case Parser._ASAMP: return ElaParserError.ExpectedKeywordAsAmp;
-				case Parser._COMPH: return ElaParserError.ExpectedComprehensionOp;
 				case Parser._IS: return ElaParserError.ExpectedIsOperator;
 				case Parser._LET: return ElaParserError.ExpectedKeywordLet;
 				case Parser._PRIVATE: return ElaParserError.ExpectedKeywordPrivate;
@@ -191,6 +190,5 @@ namespace Ela.Parsing
 				default: return ElaParserError.ExpectedToken;
 			}
 		}
-		#endregion
 	}
 }

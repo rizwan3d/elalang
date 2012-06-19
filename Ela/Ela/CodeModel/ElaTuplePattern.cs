@@ -7,27 +7,21 @@ namespace Ela.CodeModel
 {
 	public class ElaTuplePattern : ElaPattern
 	{
-		#region Construction
 		internal ElaTuplePattern(Token tok) : base(tok, ElaNodeType.TuplePattern)
 		{
 			
 		}
-
-
+        
 		internal ElaTuplePattern(Token tok, ElaNodeType type) : base(tok, type)
 		{
 			
 		}
-
-
+        
 		public ElaTuplePattern() : this(null)
 		{
 			
 		}
-		#endregion
-
-
-		#region Methods
+		
 		internal bool IsSimple()
 		{
 			foreach (var p in _patterns)
@@ -36,8 +30,7 @@ namespace Ela.CodeModel
 
 			return true;
 		}
-
-
+        
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			sb.Append('(');
@@ -53,8 +46,7 @@ namespace Ela.CodeModel
 
 			sb.Append(')');
 		}
-
-
+        
 		internal override bool CanFollow(ElaPattern pat)
 		{
 			if (pat.IsIrrefutable())
@@ -88,10 +80,7 @@ namespace Ela.CodeModel
 
 			return true;
 		}
-		#endregion
 
-
-		#region Properties
 		private List<ElaPattern> _patterns;
 		public List<ElaPattern> Patterns
 		{
@@ -104,11 +93,9 @@ namespace Ela.CodeModel
 			}
 		}
 
-
 		public bool HasChildren
 		{
 			get { return _patterns != null; }
 		}
-		#endregion
 	}
 }

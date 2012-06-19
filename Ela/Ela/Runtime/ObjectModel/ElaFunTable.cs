@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Ela.Runtime.ObjectModel
 {
@@ -93,14 +94,23 @@ namespace Ela.Runtime.ObjectModel
 
         public override string ToString(string format, IFormatProvider provider)
         {
-            if (funs.Count > 0)
+            var sb = new StringBuilder();
+
+            for (var i = 0; i < Parameters.Length + 1; i++)
             {
-                var en = funs.Values.GetEnumerator();
-                en.MoveNext();
-                return en.Current.ToString(format, provider);
+                if (i > 0)
+                    sb.Append("->");
+
+                var m = (1 << i);
+
+                if ((mask & m) == m)
+                    sb.Append('a');
+                else
+                    sb.Append('*');
             }
 
-            return base.ToString(format, provider);
+
+            return sb.ToString();
         }
 
         public override string GetFunctionName()

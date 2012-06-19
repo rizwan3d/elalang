@@ -7,21 +7,16 @@ namespace Ela.CodeModel
 {
     public sealed class ElaClassMember : ElaExpression
     {
-        #region Construction
         internal ElaClassMember(Token tok) : base(tok, ElaNodeType.TypeClass)
         {
             
         }
-
-
+        
         public ElaClassMember() : this(null)
         {
 
         }
-        #endregion
-
-
-        #region Methods
+        
         internal override void ToString(StringBuilder sb, Fmt fmt)
         {
             sb.Append(Name);
@@ -38,15 +33,16 @@ namespace Ela.CodeModel
                     sb.Append("_");
             }
         }
-        #endregion
 
-
-        #region Properties
+        internal override bool Safe()
+        {
+            return true;
+        }
+        
         public string Name { get; set; }
 
         public int Arguments { get; set; }
 
         public int Mask { get; set; }
-        #endregion
     }
 }

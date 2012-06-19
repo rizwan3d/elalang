@@ -6,21 +6,16 @@ namespace Ela.CodeModel
 {
 	public sealed class ElaVariantPattern : ElaPattern
 	{
-		#region Construction
 		internal ElaVariantPattern(Token tok) : base(tok, ElaNodeType.VariantPattern)
 		{
 
 		}
-
-
+        
 		public ElaVariantPattern() : base(ElaNodeType.VariantPattern)
 		{
 
 		}
-		#endregion
-
-
-		#region Methods
+		
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			sb.Append(Tag);
@@ -31,8 +26,7 @@ namespace Ela.CodeModel
 				Format.PutInBraces(Pattern, sb, fmt);
 			}
 		}
-
-
+        
 		internal override bool CanFollow(ElaPattern pat)
 		{
 			if (pat.IsIrrefutable())
@@ -52,13 +46,9 @@ namespace Ela.CodeModel
 
 			return true;
 		}
-		#endregion
-
-
-		#region Properties
+		
 		public string Tag { get; set; }
 
 		public ElaPattern Pattern { get; set; }
-		#endregion
 	}
 }

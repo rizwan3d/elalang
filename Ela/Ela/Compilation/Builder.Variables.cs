@@ -9,7 +9,7 @@ namespace Ela.Compilation
         //Variables indexers
         private FastStack<Int32> counters = new FastStack<Int32>(); //Scope based index stack
         private int currentCounter; //Global indexer
-		
+        
         //Flags used by GetVariable method
         [Flags]
         private enum GetFlags
@@ -157,7 +157,10 @@ namespace Ela.Compilation
 
             //If this flag is set we don't need to go further
             if ((getFlags & GetFlags.Local) == GetFlags.Local)
+            {
+                AddError(ElaCompilerError.UndefinedName, line, col, name);
                 return ScopeVar.Empty;
+            }
 
             var vk = default(ExportVarData);
 

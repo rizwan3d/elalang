@@ -8,7 +8,7 @@ namespace Ela.Compilation
 	internal sealed partial class Builder
 	{
         //Main method used to compile functions. Can compile regular functions, 
-        //functions in-place (FunFlag.Inline), as lazy sections (FunFlag.Lazy) and type constructors (FunFlag.Newtype).
+        //functions in-place (FunFlag.Inline) and type constructors (FunFlag.Newtype).
 		private void CompileFunction(ElaFunctionLiteral dec, FunFlag flag)
 		{
 			var pars = dec.ParameterCount;
@@ -54,12 +54,8 @@ namespace Ela.Compilation
 				StartSection();
 			
 			AddLinePragma(dec);
-
-            var address = cw.Offset;
-            			
-            //Lazy section doesn't have parameters.
-			if (flag != FunFlag.Lazy)
-				CompileParameters(dec, map, flag);
+            var address = cw.Offset;            			
+            CompileParameters(dec, map, flag);
 
             //When a function has a single body use a slightly simplified compilation logic.
             //Otherwise compile a whole function as a pattern match expression.
@@ -184,55 +180,5 @@ namespace Ela.Compilation
             var addr = AddVariable(exp.Name, exp, ElaVariableFlags.Parameter, -1);
             PopVar(addr);
         }
-
-        //This methods tries to optimize lazy section. It would only work when a lazy
-        //section if a function application that result in saturation (no partial applications)
-        //allowed. In such a case this method eliminates "double" function call (which would be
-        //the result of a regular compilation logic). If this method fails than regular compilation
-        //logic is used.
-		private bool TryOptimizeLazy(ElaLazyLiteral lazy, LabelMap map, Hints hints)
-		{
-            var body = default(ElaExpression);
-
-            //Only function application is accepted
-			if ((body = lazy.Body.Entries[0].Expression).Type != ElaNodeType.FunctionCall)
-				return false;
-
-			var funCall = (ElaFunctionCall)body;
-
-            //If a target is not a variable we can't check what is actually called
-			if (funCall.Target.Type != ElaNodeType.VariableReference)
-				return false;
-
-			var varRef = (ElaVariableReference)funCall.Target;
-			var scopeVar = GetVariable(varRef.VariableName, varRef.Line, varRef.Column);
-			var len = funCall.Parameters.Count;
-
-            //If a target is not function we can't optimize it
-            if ((scopeVar.VariableFlags & ElaVariableFlags.Function) != ElaVariableFlags.Function)
-                return false;
-
-            //Only saturation case is optimized
-			if (scopeVar.Data != funCall.Parameters.Count)
-				return false;
-
-			for (var i = 0; i < len; i++)
-				CompileExpression(funCall.Parameters[len - i - 1], map, Hints.None);
-
-			var sl = len - 1;
-			AddLinePragma(varRef);
-			PushVar(scopeVar);
-
-            //We partially apply function and create a new function
-			for (var i = 0; i < sl; i++)
-				cw.Emit(Op.Call);
-
-			AddLinePragma(lazy);
-
-            //LazyCall uses a function provided to create a thunk
-            //and remembers last function arguments as ElaFunction.LastParameter
-			cw.Emit(Op.LazyCall, len);
-			return true;
-		}
 	}
 }

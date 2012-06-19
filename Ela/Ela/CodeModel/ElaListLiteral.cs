@@ -7,21 +7,28 @@ namespace Ela.CodeModel
 {
 	public sealed class ElaListLiteral : ElaExpression
 	{
-		#region Construction
 		internal ElaListLiteral(Token tok) : base(tok, ElaNodeType.ListLiteral)
 		{
 			
 		}
-
-
+        
 		public ElaListLiteral() : this(null)
 		{
 			
 		}
-		#endregion
+        
+        internal override bool Safe()
+        {
+            if (_values == null)
+                return true;
 
+            foreach (var e in _values)
+                if (!e.Safe())
+                    return false;
 
-		#region Methods
+            return true;
+        }
+		
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			sb.Append('[');
@@ -37,10 +44,12 @@ namespace Ela.CodeModel
 
 			sb.Append(']');
 		}
-		#endregion
 
-
-		#region Properties
+        public bool HasValues()
+        {
+            return _values != null;
+        }
+		
 		private List<ElaExpression> _values;
 		public List<ElaExpression> Values 
 		{
@@ -53,6 +62,5 @@ namespace Ela.CodeModel
 			}
 			internal set { _values = value; }
 		}
-		#endregion
 	}
 }

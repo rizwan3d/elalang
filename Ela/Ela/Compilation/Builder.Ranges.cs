@@ -12,9 +12,6 @@ namespace Ela.Compilation
 
 			if (range.Last == null)
 			{
-				if (range.Initial.Type != ElaNodeType.ListLiteral)
-					AddError(ElaCompilerError.InfiniteRangeOnlyList, range, FormatNode(parent));
-
 				var sv = AddVariable();
 				CompileExpression(range.First, map, hints);
 				cw.Emit(Op.Dup);
@@ -52,7 +49,7 @@ namespace Ela.Compilation
 			if (Math.Abs((fstVal - lstVal) / step) > 20)
 				return false;
 
-			CompileExpression(range.Initial, map, Hints.None);
+			cw.Emit(Op.Newlist);
 
 			if (snd != null)
 			{
@@ -92,19 +89,18 @@ namespace Ela.Compilation
             PopVar(last);
 
 			var step = AddVariable();
+			PushVar(start);
 
-			if (rng.Second != null)
-			{
+            if (rng.Second != null)
+                CompileExpression(rng.Second, map, Hints.None);
+            else
+            {
                 PushVar(start);
-				CompileExpression(rng.Second, map, Hints.None);
-				cw.Emit(Op.Sub);
-                PopVar(step);
-			}
-			else
-			{
-				cw.Emit(Op.PushI4, 1);
-                PopVar(step);
-			}
+                cw.Emit(Op.Succ);
+            }
+			
+            cw.Emit(Op.Sub);
+            PopVar(step);
 
 			var second = AddVariable();
 			var trueLab = cw.DefineLabel();
@@ -120,13 +116,13 @@ namespace Ela.Compilation
             cw.Emit(Op.Cgt);
             cw.Emit(Op.Brtrue, trueLab);
 
-            CompileExpression(rng.Initial, map, Hints.None);
+            cw.Emit(Op.Newlist);
             CompileStrictRangeCycle(start, second, step, last, hints, false);
 
             cw.Emit(Op.Br, endLab);
             cw.MarkLabel(trueLab);
-            
-            CompileExpression(rng.Initial, map, Hints.None);
+
+            cw.Emit(Op.Newlist);
             CompileStrictRangeCycle(start, second, step, last, hints, true);
 
 			cw.MarkLabel(endLab);

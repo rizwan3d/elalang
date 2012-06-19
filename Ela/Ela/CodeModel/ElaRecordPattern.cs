@@ -7,21 +7,16 @@ namespace Ela.CodeModel
 {
 	public class ElaRecordPattern : ElaPattern
 	{
-		#region Construction
 		internal ElaRecordPattern(Token tok) : base(tok, ElaNodeType.RecordPattern)
 		{
 			Fields = new List<ElaFieldPattern>();
 		}
-
-
+        
 		public ElaRecordPattern() : this(null)
 		{
 
 		}
-		#endregion
-
-
-		#region Methods
+		
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			sb.Append('{');
@@ -37,8 +32,7 @@ namespace Ela.CodeModel
 
 			sb.Append('}');
 		}
-
-
+        
 		internal override bool CanFollow(ElaPattern pat)
 		{
 			if (pat.IsIrrefutable())
@@ -60,11 +54,7 @@ namespace Ela.CodeModel
 
 			return true;
 		}
-		#endregion
-
-
-		#region Properties
+		
 		public List<ElaFieldPattern> Fields { get; private set; }
-		#endregion
 	}
 }

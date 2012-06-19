@@ -6,21 +6,16 @@ namespace Ela.CodeModel
 {
 	public sealed class ElaFieldPattern : ElaPattern
 	{
-		#region Construction
 		internal ElaFieldPattern(Token tok) : base(tok, ElaNodeType.FieldPattern)
 		{
 
 		}
-
-
+        
 		public ElaFieldPattern() : base(ElaNodeType.FieldPattern)
 		{
 
 		}
-		#endregion
-
-
-		#region Methods
+		
 		internal override void ToString(StringBuilder sb, Fmt fmt)		
 		{
 			if (Value.GetName() == Name)
@@ -32,8 +27,7 @@ namespace Ela.CodeModel
 				Value.ToString(sb, fmt);
 			}
 		}
-
-
+        
 		internal override bool CanFollow(ElaPattern pat)
 		{
 			if (pat.IsIrrefutable())
@@ -47,13 +41,9 @@ namespace Ela.CodeModel
 
 			return true;
 		}
-		#endregion
-
-
-		#region Properties
+		
 		public string Name { get; set; }
 
 		public ElaPattern Value { get; set; }
-		#endregion
 	}
 }

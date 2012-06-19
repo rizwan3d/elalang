@@ -6,34 +6,30 @@ namespace Ela.CodeModel
 {
 	public sealed class ElaFieldDeclaration : ElaExpression
 	{
-		#region Construction
 		internal ElaFieldDeclaration(Token tok) : base(tok, ElaNodeType.FieldDeclaration)
 		{
 
 		}
-
-
+        
 		public ElaFieldDeclaration() : base(ElaNodeType.FieldDeclaration)
 		{
 
 		}
-		#endregion
-
-
-		#region Methods
+        
+        internal override bool Safe()
+        {
+            return FieldValue != null && FieldValue.Safe();
+        }
+		
 		internal override void ToString(StringBuilder sb, Fmt fmt)		
 		{
 			sb.Append(FieldName);
 			sb.Append('=');
 			FieldValue.ToString(sb, fmt);
 		}
-		#endregion
-
-
-		#region Properties
-		public string FieldName { get; set; }
+		
+        public string FieldName { get; set; }
 
 		public ElaExpression FieldValue { get; set; }
-		#endregion
 	}
 }

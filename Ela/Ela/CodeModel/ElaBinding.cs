@@ -6,27 +6,29 @@ namespace Ela.CodeModel
 {
 	public sealed class ElaBinding : ElaExpression
 	{
-		#region Construction
 		internal ElaBinding(Token tok) : base(tok, ElaNodeType.Binding)
 		{
 			Flags = ElaExpressionFlags.ReturnsUnit;
 		}
-
-
+        
 		public ElaBinding() : this(null)
 		{
 			
 		}
-		#endregion
-		
 
-		#region Methods
-		internal override void ToString(StringBuilder sb, Fmt fmt)
+        internal override bool Safe()
+        {
+            return Pattern == null &&
+                (InitExpression != null && InitExpression.Safe()) &&
+                (In == null || In.Safe()) &&
+                (And == null || And.Safe());
+        }
+		
+        internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			ToString(sb, fmt, "let");
 		}
-
-
+        
 		internal void ToString(StringBuilder sb, Fmt fmt, string keyword)
 		{
 			var len = sb.Length;
@@ -59,13 +61,6 @@ namespace Ela.CodeModel
 				sb.Append(InitExpression);
 			}
 
-			if (Where != null)
-			{
-				sb.AppendLine();
-				sb.Append(' ', indent);
-				Where.ToString(sb, new Fmt(indent), "where");
-			}
-
 			if (And != null)
 			{
 				sb.AppendLine();
@@ -82,25 +77,19 @@ namespace Ela.CodeModel
 				In.ToString(sb, fmt);
 			}
 		}
-		#endregion
-
-
-		#region Properties
-		public string VariableName { get; set; }
+		
+        public string VariableName { get; set; }
 
         public ElaVariableFlags VariableFlags { get; set; }
 
 		public ElaExpression InitExpression { get; set; }
 
 		public ElaPattern Pattern { get; set; }
-
-		public ElaBinding Where { get; set; }
 		
 		public ElaBinding And { get; set; }
 
 		public ElaExpression In { get; set; }
 
         internal bool MemberBinding { get; set; }
-		#endregion
 	}
 }

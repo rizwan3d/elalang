@@ -6,13 +6,11 @@ namespace Ela.CodeModel
 {
 	public abstract class ElaExpression
 	{
-		#region Construction
 		protected ElaExpression(ElaNodeType type) : this(null, type)
 		{
 
 		}
-
-
+        
 		internal ElaExpression(Token tok, ElaNodeType type)
 		{
 			Type = type;
@@ -23,37 +21,33 @@ namespace Ela.CodeModel
 				Column = tok.col;
 			}
 		}
-		#endregion
-
-
-		#region Methods
-		public void SetLinePragma(int line, int column)
+		
+        public void SetLinePragma(int line, int column)
 		{
 			Line = line;
 			Column = column;
 		}
 
-
-		internal virtual string GetName()
+        internal virtual string GetName()
 		{
 			return null;
 		}
-
-
+        
+        internal virtual bool Safe()
+        {
+            return false;
+        }
+        
 		public override string ToString()
 		{
 			var sb = new StringBuilder();
 			ToString(sb, new Fmt());
 			return sb.ToString();
 		}
-
-
+        
 		internal abstract void ToString(StringBuilder sb, Fmt fmt);
-		#endregion
-
-
-		#region Properties
-		public int Line { get; private set; }
+		
+        public int Line { get; private set; }
 
 		public int Column { get; private set; }
 		
@@ -65,6 +59,5 @@ namespace Ela.CodeModel
         {
             get { return ToString(); }
         }
-		#endregion
 	}
 }

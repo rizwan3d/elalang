@@ -7,21 +7,16 @@ namespace Ela.CodeModel
 {
 	public sealed class ElaHeadTailPattern : ElaTuplePattern
 	{
-		#region Construction
 		internal ElaHeadTailPattern(Token tok) : base(tok, ElaNodeType.HeadTailPattern)
 		{
 			
 		}
-
-
+        
 		public ElaHeadTailPattern() : this(null)
 		{
 			
 		}
-		#endregion
-
-
-		#region Methods
+		
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			var c = 0;
@@ -34,8 +29,7 @@ namespace Ela.CodeModel
 				Format.PutInBraces(f, sb, fmt);
 			}
 		}
-
-
+        
 		internal override bool CanFollow(ElaPattern pat)
 		{
 			if (pat.IsIrrefutable())
@@ -76,6 +70,5 @@ namespace Ela.CodeModel
 
 			return true;
 		}
-		#endregion
 	}
 }

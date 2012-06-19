@@ -54,7 +54,7 @@ let listLazy2 {eqt} =
     
 let compOperator {eqt} =
         eqt (lst is [2,4,6,8,10])
-        where lst = [] @@ [x \\ x <- [1..10] | x % 2 == 0]
+        where lst = [x \\ x <- [1..10] | x % 2 == 0]
         
 let triangles {eq,eqt} =
         eqt ((head triangles) is ?tuple)

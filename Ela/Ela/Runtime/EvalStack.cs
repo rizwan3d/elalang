@@ -100,6 +100,11 @@ namespace Ela.Runtime
 			array[size++] = val;
 		}
 
+        internal void Dup()
+        {
+            array[size++] = array[size - 2];
+        }
+
 
         private ElaValue emptyInt = new ElaValue(ElaInteger.Instance);
 		internal void Push(int val)

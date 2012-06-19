@@ -7,27 +7,33 @@ namespace Ela.CodeModel
 {
 	public class ElaTupleLiteral : ElaExpression
 	{
-		#region Construction
 		internal ElaTupleLiteral(Token tok, ElaNodeType type) : base(tok, type)
 		{
 
 		}
-
-
+        
 		internal ElaTupleLiteral(Token tok) : base(tok, ElaNodeType.TupleLiteral)
 		{
 			
 		}
-
-
+        
 		public ElaTupleLiteral() : this(null)
 		{
-			
-		}
-		#endregion
 
+        }
 
-		#region Methods
+        internal override bool Safe()
+        {
+            if (_parameters == null)
+                return true;
+
+            foreach (var p in _parameters)
+                if (!p.Safe())
+                    return false;
+
+            return true;
+        }
+		
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			sb.Append('(');
@@ -43,10 +49,7 @@ namespace Ela.CodeModel
 
 			sb.Append(')');
 		}
-		#endregion
-
-
-		#region Properties
+		
 		private List<ElaExpression> _parameters;
 		public List<ElaExpression> Parameters
 		{
@@ -58,9 +61,7 @@ namespace Ela.CodeModel
 				return _parameters;
 			}
 		}
-
-
+        
 		public bool HasParameters { get { return _parameters != null; } }
-		#endregion
 	}
 }

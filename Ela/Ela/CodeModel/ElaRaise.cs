@@ -6,21 +6,21 @@ namespace Ela.CodeModel
 {
 	public sealed class ElaRaise : ElaExpression
 	{
-		#region Construction
 		internal ElaRaise(Token tok) : base(tok, ElaNodeType.Raise)
 		{
 			Flags = ElaExpressionFlags.ReturnsUnit;
 		}
-
-
+        
 		public ElaRaise() : this(null)
 		{
-			
-		}
-		#endregion
 
+        }
 
-		#region Methods
+        internal override bool Safe()
+        {
+            return Expression == null || Expression.Safe();
+        }
+		
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			if (ErrorCode == "Failure")
@@ -41,13 +41,9 @@ namespace Ela.CodeModel
 				}
 			}
 		}
-		#endregion
-
-
-		#region Properties
+		
 		public string ErrorCode { get; set; }
 
-		public ElaExpression Expression { get; set; }	
-		#endregion
+        public ElaExpression Expression { get; set; }
 	}
 }

@@ -77,7 +77,6 @@ TOKENS
 	PIPE = "|".
 	ARROW = "->".
 	LAMBDA = "\\".
-	COMPH = "@@".
 	COMPO = "\\\\".
 	
 	DOT = ".".
@@ -745,19 +744,13 @@ PRODUCTIONS
 					        (. 
 						        if (list != null)
 						        {
-							        var listExp = new ElaListLiteral(ot) { Values = list };
-							        exp = listExp;	
-						        }
+						            var listExp = new ElaListLiteral(ot) { Values = list };
+							        exp = listExp;
+						        }	
 						        else if (comp != null)
-						        {
-							        comp.Initial = new ElaListLiteral(ot);
-							        exp = comp;
-						        }
+						            exp = comp;
 						        else if (rng != null)
-						        {
-							        rng.Initial = new ElaListLiteral(ot);
-							        exp = rng;
-						        }
+						            exp = rng;
 					        .)
 				        )
 			        ] 
@@ -780,7 +773,6 @@ PRODUCTIONS
 				        Expr<out cexp> ComprehensionExpr<cexp, out comp>
 				        (. 
 					        comp.Lazy = true;
-					        comp.Initial = new ElaListLiteral(ot);
 					        exp = comp;
 				        .)
 			        )
@@ -993,7 +985,11 @@ PRODUCTIONS
 			(. varExp.InitExpression = cexp; .)
 			[
 				WhereBinding<out cexp2> 
-				(. varExp.Where = (ElaBinding)cexp2; .)
+				(. 
+				    var b = (ElaBinding)cexp2;
+				    b.In = cexp; 
+				    varExp.InitExpression = cexp2;
+				.)
 			]
 		).
 		
@@ -1316,16 +1312,15 @@ PRODUCTIONS
 			(. scanner.InjectBlock(); .)
 			SYNC OPEN
 			(. 
-				var block = new ElaBlock(t); 
-				exp = block;
-				var cexp = default(ElaExpression);
+				var inc = default(ElaModuleInclude); 
+				var par = default(ElaModuleInclude); 
 			.) 
-			IncludeStatElement<out cexp> (. block.Expressions.Add(cexp); .)
-			{ IncludeStatElement<out cexp> (. block.Expressions.Add(cexp); .) }
+			IncludeStatElement<out inc> (. exp = inc; par = inc; .)
+			{ IncludeStatElement<out inc> (. par.And = inc; par = inc; .) }
 			EndBlock
 		).
 	
-	IncludeStatElement<out ElaExpression exp> =
+	IncludeStatElement<out ElaModuleInclude exp> =
 		(. exp = null; .)
 		(
 			(. var inc = new ElaModuleInclude(t); .)
@@ -1645,44 +1640,11 @@ PRODUCTIONS
 		InfixExpr<out exp>
 		{
 			(
-				(
-					(. var pat = default(ElaPattern); .)
-					IS IsOperatorPattern<out pat> 
-					(. exp = new ElaIs(t) { Expression = exp, Pattern = pat }; .)
-				)
-				|
-				COMPH ComprehensionOpExpr<exp, out exp>
+				(. var pat = default(ElaPattern); .)
+				IS IsOperatorPattern<out pat> 
+				(. exp = new ElaIs(t) { Expression = exp, Pattern = pat }; .)
 			)
-		}.		
-		
-	ComprehensionOpExpr<ElaExpression init, out ElaExpression exp> =
-		(.
-			var list = default(List<ElaExpression>);
-			var comp = default(ElaComprehension);
-			var rng = default(ElaRange);
-			exp = null;
-		.)
-		(
-			"["
-				(
-					ParamList<out list, out comp, out rng>
-					(.
-						if (rng != null) {
-							rng.Initial = init;
-							exp = rng;
-						}
-						else if (comp != null) {
-							comp.Initial = init;
-							exp = comp;
-						}
-						else {
-							AddError(ElaParserError.ComprehensionOpInvalidOperand);
-							exp = new ElaRange();
-						}
-					.)
-				)
-			"]"		
-		).
+		}.
 		
 	InfixExpr<out ElaExpression exp> = 
 		(. 
@@ -1914,9 +1876,7 @@ PRODUCTIONS
 			(. var lazy = new ElaLazyLiteral(t); .)
 			Expr<out exp>
 			(.
-				var m = new ElaMatch(t);
-				m.Entries.Add(new ElaMatchEntry { Pattern = new ElaUnitPattern(), Expression = exp });
-				lazy.Body = m;
+			    lazy.Expression = exp;
 				exp = lazy;
 			.)
 		).
@@ -2081,8 +2041,10 @@ PRODUCTIONS
 	            
 	            var cexp = default(ElaExpression);
 	        .)
-	        WhereBinding<out cexp>
-	        (. ci.Where = (ElaBinding)cexp; .)
+	        [
+	            WhereBinding<out cexp>
+	            (. ci.Where = (ElaBinding)cexp; .)
+	        ]
 	    ).
 	    
     NewType<out ElaExpression exp> = 

@@ -7,21 +7,16 @@ namespace Ela.CodeModel
 {
 	public sealed class ElaBlock : ElaExpression
 	{
-		#region Construction
 		internal ElaBlock(Token tok) : base(tok, ElaNodeType.Block)
 		{
 			
 		}
-
-
+        
 		public ElaBlock() : base(ElaNodeType.Block)
 		{
 			
 		}
-		#endregion
-				
-
-		#region Methods
+		
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			foreach (var e in Expressions)
@@ -32,10 +27,7 @@ namespace Ela.CodeModel
 				sb.AppendLine(e.ToString());
 			}
 		}
-		#endregion
-
-
-		#region Properties
+		
 		private List<ElaExpression> _expressions;
 		public List<ElaExpression> Expressions
 		{
@@ -47,17 +39,7 @@ namespace Ela.CodeModel
 				return _expressions;
 			}
 		}
-
-
-		public bool StartScope { get; set; }
-
-
-		public bool IsEmpty
-		{
-			get { return _expressions == null; }
-		}
-				
-
+		
 		public ElaExpression LastExpression
 		{
 			get
@@ -71,6 +53,5 @@ namespace Ela.CodeModel
 					return null;
 			}
 		}
-		#endregion
 	}
 }
