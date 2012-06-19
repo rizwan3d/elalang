@@ -81,7 +81,7 @@ let takeElems {eqt} =
                     let r = pt lst 1 in
                     if r is [] then None else Some r 
         in
-        let res = take [0, 1, 2, 3, 4] 3 in
+        let res = take [0,1,2,3,4] 3 in
         eqt <| res is Some [0,1,2]
 
 let lazyList {eq} =

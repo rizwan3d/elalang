@@ -28,8 +28,8 @@ namespace Ela.Compilation
                 true,                //add variable
                 false);              //NoPrelude
 
-            //Process explicit import list for a module
-            if (s.HasImportList)
+            //Process explicit import list for a module if module is valid and has an import list
+            if (s.HasImportList && modFrame != null)
             {
                 var il = s.ImportList;
 

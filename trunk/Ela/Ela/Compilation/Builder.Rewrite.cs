@@ -6,43 +6,139 @@ namespace Ela.Compilation
 {
     internal sealed partial class Builder
     {
-        private void RewriteOrder(ElaBlock block, LabelMap map)
+        //Main compilation method that runs compilation in seven steps by rewriting binding order.
+        private void CompileProgram(ElaBlock block, LabelMap map)
         {
             var list = ProcessSafeExpressions(block.Expressions, map);
+            list = ProcessTypes(list, map);
+            list = ProcessInstances(list, map);
             list = ProcessFunctions(list, map);
+            list = ProcessBindings(list, map);
+            list = ProcessPatternBindings(list, map);
+            ProcessExpressions(list, map);
         }
 
+        //Safe expressions are expressions that can be compiled first - these are type class declarations,
+        //modules includes and built-ins (all of them don't reference any names but instead do a lot of bindings
+        //that are used by the rest of the code). This method also declares all names from global bindings in
+        //advance (so that top level can be mutualy recursive).
         private FastList<ElaExpression> ProcessSafeExpressions(List<ElaExpression> exps, LabelMap map)
         {
             var len = exps.Count;
             var list = new FastList<ElaExpression>(len);
 
+            //We walk through all expressions and create a new list of expression that contains
+            //only elements that are not compiled by this routine
             for (var i = 0; i < len; i++)
             {
-                var hints = i == len - 1 ? Hints.None : Hints.Left;
                 var e = exps[i];
 
                 if (e.Type == ElaNodeType.Binding)
                 {
                     var b = (ElaBinding)e;
 
-                    if (b.InitExpression != null)
+                    //An invalid binding, we should throw this one as soon as possible
+                    if (b.InitExpression == null)
+                        AddError(ElaCompilerError.VariableDeclarationInitMissing, b);
+                    else if (b.InitExpression.Type == ElaNodeType.Builtin && b.In == null && b.And == null)
                     {
-                        if (b.InitExpression.Type != ElaNodeType.FunctionLiteral && b.InitExpression.Type != ElaNodeType.LazyLiteral
-                            && b.Safe())
+                        //This is a global binding that is initialized with a built-in. It is perfectly
+                        //safe to compile it right away. This will avoid creation of unneccessary thunks
+                        CompileDeclaration(b, map, Hints.Left);
+                    }
+                    else
+                    {
+                        //If this is a global binding we have to declare all names
+                        //from it (we may have several bindings here, chained using 'et').
+                        if (b.In == null)
                         {
-                            CompileDeclaration(b, map, hints);
-                            continue;
+                            var and = b;
+
+                            do
+                            {
+                                AddNoInitVariable(and);
+                                and = and.And;
+                            }
+                            while (and != null);
                         }
+
+                        //We still need to compile it later, so add it to a list
+                        list.Add(b);
                     }
                 }
-
-                list.Add(e);
+                else if (e.Type == ElaNodeType.TypeClass)
+                {
+                    //A type class is compiled right away
+                    var v = (ElaTypeClass)e;
+                    CompileClass(v, map, Hints.Left);
+                }
+                else if (e.Type == ElaNodeType.ModuleInclude)
+                {
+                    //Open module is compiled right away
+                    var s = (ElaModuleInclude)e;
+                    CompileModuleInclude(s, map, Hints.Left);
+                }
+                else
+                    list.Add(e); //The rest will be compiled later
             }
 
             return list;
         }
 
+        //The second step is to compile types - we need to compile them separately because type definitions
+        //can reference other names (declared on a previous stage) and types themselves can be widely referenced
+        //in the code (e.g. in instance, in regular expressions, etc.).
+        private FastList<ElaExpression> ProcessTypes(FastList<ElaExpression> exps, LabelMap map)
+        {
+            var len = exps.Count;
+            var list = new FastList<ElaExpression>(len);
+
+            for (var i = 0; i < len; i++)
+            {
+                var e = exps[i];
+                
+                //The only node that we need to process here. It is always compiled here
+                if (e.Type == ElaNodeType.Newtype)
+                {
+                    var t = (ElaNewtype)e;
+                    CompileType(t, map, Hints.Left);
+                }
+                else
+                    list.Add(e);
+            }
+
+            return list;
+        }
+
+        //The third step is to compile instances - this should be done after type (as soon as instances
+        //reference types) and after the first step as well (as soon as instances reference type classes
+        //and can reference any other local and non-local names). It is important however to compile
+        //instances before any user code gets executed because they effectively mutate function tables.
+        private FastList<ElaExpression> ProcessInstances(FastList<ElaExpression> exps, LabelMap map)
+        {
+            var len = exps.Count;
+            var list = new FastList<ElaExpression>(len);
+
+            for (var i = 0; i < len; i++)
+            {
+                var e = exps[i];
+              
+                //The only node that we need to process here. It is always compiled here
+                if (e.Type == ElaNodeType.ClassInstance)
+                {
+                    var v = (ElaClassInstance)e;
+                    CompileInstance(v, map, Hints.Left);
+                }
+                else
+                    list.Add(e);
+            }
+
+            return list;
+        }
+            
+        //The fourth step - now we can compile global user defined functions and lazy sections. This is
+        //user code however it is not executed when bindings are done therefore we wouldn't need to enforce
+        //laziness here. Bindings done through pattern matching are rejected on this stage.
         private FastList<ElaExpression> ProcessFunctions(FastList<ElaExpression> exps, LabelMap map)
         {
             var len = exps.Count;
@@ -51,28 +147,28 @@ namespace Ela.Compilation
             for (var i = 0; i < len; i++)
             {
                 var e = exps[i];
-                var hints = i == len - 1 ? Hints.None : Hints.Left;
-                
+                 
                 if (e.Type == ElaNodeType.Binding)
                 {
                     var b = (ElaBinding)e;
 
-                    if (b.InitExpression != null)
+                    //We need to ensure that this is a global binding that it is not defined by pattern matching
+                    if (b.In == null && b.Pattern == null &&
+                       (b.InitExpression.Type == ElaNodeType.FunctionLiteral || b.InitExpression.Type == ElaNodeType.LazyLiteral))
                     {
-                        if (b.InitExpression.Type == ElaNodeType.FunctionLiteral || b.InitExpression.Type == ElaNodeType.LazyLiteral)
-                        {
-                            CompileDeclaration(b, map, hints);
-                            continue;
-                        }
+                        CompileDeclaration(b, map, Hints.Left);
                     }
-                }
-
-                list.Add(e);
+                    else
+                        list.Add(e);
+                }                
             }
 
             return list;
         }
 
+        //The fifth step is to compile the rest of global bindings except of bindings defined by pattern
+        //matching. This is the first stage when laziness can be enforce - e.g. compiler would create thunks
+        //when needed.
         private FastList<ElaExpression> ProcessBindings(FastList<ElaExpression> exps, LabelMap map)
         {
             var len = exps.Count;
@@ -81,30 +177,69 @@ namespace Ela.Compilation
             for (var i = 0; i < len; i++)
             {
                 var e = exps[i];
-                var hints = i == len - 1 ? Hints.None : Hints.Left;
-
+                
                 if (e.Type == ElaNodeType.Binding)
                 {
                     var b = (ElaBinding)e;
 
-                    if (b.InitExpression == null)
-                    {
-                        CompileDeclaration(b, map, hints);
-                        continue;
-                    }
-
-                    if (!TryStrict(b.InitExpression))
-                        b.InitExpression.Flags |= ElaExpressionFlags.Lazy;
-                    
-                    CompileDeclaration(b, map, hints);
-                    continue;
+                    //We still only process bindings without pattern matching and only global bindings
+                    if (b.Pattern == null && b.In == null)
+                        CompileDeclaration(b, map, Hints.Left);
+                    else
+                        list.Add(e);
                 }
-
-                list.Add(e);
             }
 
             return list;
         }
+
+        //The sixth step is to compile global bindings defined by pattern matching - we do not enforce
+        //thunks here and in some cases execution of such code may result in 'BottomReached' run-time error.
+        private FastList<ElaExpression> ProcessPatternBindings(FastList<ElaExpression> exps, LabelMap map)
+        {
+            var len = exps.Count;
+            var list = new FastList<ElaExpression>(len);
+
+            for (var i = 0; i < len; i++)
+            {
+                var e = exps[i];
+                
+                if (e.Type == ElaNodeType.Binding)
+                {
+                    var b = (ElaBinding)e;
+
+                    //Only globals are taken
+                    if (b.In == null)
+                        CompileDeclaration(b, map, Hints.Left);
+                    else
+                        list.Add(e);
+                }
+            }
+
+            return list;
+        }
+        
+        //The seventh step is to compile let/in (local bindings) and the rest of expressions - we do not enforce
+        //thunks here and in some cases execution of such code may result in 'BottomReached' run-time error.
+        private void ProcessExpressions(FastList<ElaExpression> exps, LabelMap map)
+        {
+            var len = exps.Count;
+            
+            for (var i = 0; i < len; i++)
+            {
+                var e = exps[i];
+                var hints = i == len - 1 ? Hints.None : Hints.Left;
+
+                //Compile everything that is left
+                CompileExpression(e, map, hints);
+            }
+
+            //It may happens that nothing is left on this stage however Ela program have to return
+            //something. Therefore just return unit.
+            if (len == 0)
+                cw.Emit(Op.Pushunit);
+        }
+
 
         private bool TryStrict(ElaExpression exp)
         {
@@ -170,7 +305,7 @@ namespace Ela.Compilation
                 case ElaNodeType.Binding:
                     {
                         var e = (ElaBinding)exp;
-                        return e.Pattern == null && TryStrict(e.InitExpression);
+                        return e.Pattern == null || TryStrict(e.InitExpression);
                     }
                 case ElaNodeType.Condition:
                     {
@@ -228,12 +363,14 @@ namespace Ela.Compilation
                     {
                         var v = (ElaFunctionCall)exp;
 
-                        if (v.Target.Type != ElaNodeType.VariableReference)
+                        if (!TryStrict(v.Target))
                             return false;
 
-                        var tv = GetVariable(v.Target.GetName(), CurrentScope, GetFlags.NoError, 0, 0);
-                        return (tv.Flags & ElaVariableFlags.Function) == ElaVariableFlags.Function &&
-                            tv.Data > v.Parameters.Count;
+                        for (var i = 0; i < v.Parameters.Count; i++)
+                            if (!TryStrict(v.Parameters[i]))
+                                return false;
+
+                        return true;
                     }
                 case ElaNodeType.Is:
                     {
@@ -261,9 +398,13 @@ namespace Ela.Compilation
         }
 
         
-        private void RewritePattern(ElaBinding b, LabelMap map, Hints hints)
+        private ExprData CompileStrictOrLazy(ElaBinding b, ElaExpression exp, LabelMap map, Hints hints)
         {
-
+            if ((b != null && (hints & Hints.And) != Hints.And && b.And == null && CurrentScope != globalScope) ||
+                TryStrict(exp))
+                return CompileExpression(exp, map, hints);
+            else
+                return CompileLazyExpression(exp, map, hints);
         }
     }
 }

@@ -203,27 +203,5 @@ namespace Ela.Compilation
 
             return null;
         }
-        
-        //Temporary disabled
-        //private void EmitAsLazy(ScopeVar sv)
-        //{
-        //    StartSection();
-        //    cw.StartFrame(1);
-        //    var funSkipLabel = cw.DefineLabel();
-        //    cw.Emit(Op.Br, funSkipLabel);
-        //    var address = cw.Offset;
-
-        //    if ((sv.Flags & ElaVariableFlags.External) == ElaVariableFlags.External)
-        //        cw.Emit(Op.Pushext, sv.Address);
-        //    else
-        //        cw.Emit(Op.Pushvar, ((sv.Address & Byte.MaxValue) + 1) | (sv.Address >> 8) << 8);
-
-        //    cw.Emit(Op.Ret);
-        //    frame.Layouts.Add(new MemoryLayout(currentCounter, cw.FinishFrame(), address));
-        //    EndSection();            
-        //    cw.MarkLabel(funSkipLabel);
-        //    cw.Emit(Op.PushI4, 1);
-        //    cw.Emit(Op.Newfun, frame.Layouts.Count - 1);
-        //}
     }
 }
