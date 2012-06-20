@@ -9,6 +9,12 @@ let hasField fld rec = r.hasField (force fld) (force rec)
 
 let addFields fields rec = r.addFields (force fields) (force rec)
 
+let addField fld val rec = r.addField (force fld) val (force rec)
+
 let removeFields fields rec = r.removeFields (forceAll fields) (force rec)
+
+let removeField fld rec = r.removeField (force fld) (force rec)
+
+let changeField fld val rec = r.changeField (force fld) val (force rec)
 
 let fields rec = r.fields (force rec)

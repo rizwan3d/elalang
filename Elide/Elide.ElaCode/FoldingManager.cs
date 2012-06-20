@@ -28,8 +28,10 @@ namespace Elide.ElaCode
                 var colEnd = sci.GetLineEndColumn(line);
                 var style = sci.GetStyleAt(posLine);
                 var cmt = style == TextStyle.MultilineStyle1 || style == TextStyle.MultilineStyle2;
-                var hasLet = sci.CharAt(posLine) == 'l' && sci.CharAt(posLine + 1) == 'e' && sci.CharAt(posLine + 2) == 't' && !cmt;
 
+                var ln = sci.GetLine(line).Text.Substring(li);
+                var hasLet = (ln.StartsWith("let") || ln.StartsWith("class") || ln.StartsWith("instance") || ln.StartsWith("type")) && !cmt;
+                
                 if ((li == 0 || colEnd == li) && lastStart > -1 && line - lastStart > 1 && !cmt)
                 {
                     e.AddFoldRegion(1, lastStart, line);

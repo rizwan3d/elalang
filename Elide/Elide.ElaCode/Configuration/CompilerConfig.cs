@@ -8,7 +8,7 @@ namespace Elide.ElaCode.Configuration
     {
         public CompilerConfig()
         {
-            Prelude = "Prelude";
+            Prelude = "prelude";
             Optimize = true;
             ShowHints = true;
         }
