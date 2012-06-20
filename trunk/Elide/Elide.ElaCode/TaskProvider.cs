@@ -20,7 +20,7 @@ namespace Elide.ElaCode
         public IEnumerable<TaskItem> GetTasks(CodeDocument doc)
         {
             var tp = new ElaTaskParser();
-            return tp.Parse(doc.GetContext());
+            return tp.Parse(doc.GetContent());
         }
 
         public IApp App { get; set; }

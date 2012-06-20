@@ -5,7 +5,8 @@ namespace Elide.ElaObject.ObjectModel
 {
     public sealed class ElaObjectFile
     {
-        internal ElaObjectFile(Header header, IEnumerable<Reference> refs, IEnumerable<Global> globals, IEnumerable<LateBound> lateBounds, IEnumerable<Layout> layouts, IEnumerable<String> strings, IEnumerable<OpCode> opCodes)
+        internal ElaObjectFile(Header header, IEnumerable<Reference> refs, IEnumerable<Global> globals, IEnumerable<LateBound> lateBounds, 
+            IEnumerable<Layout> layouts, IEnumerable<String> strings, IEnumerable<OpCode> opCodes, IEnumerable<String> types, IEnumerable<Class> classes, IEnumerable<Instance> instances)
         {
             Header = header;
             References = refs;
@@ -14,6 +15,9 @@ namespace Elide.ElaObject.ObjectModel
             Layouts = layouts;
             Strings = strings;
             OpCodes = opCodes;
+            Types = types;
+            Classes = classes;
+            Instances = instances;
         }
 
         public Header Header { get; private set; }
@@ -29,5 +33,11 @@ namespace Elide.ElaObject.ObjectModel
         public IEnumerable<String> Strings { get; private set; }
 
         public IEnumerable<OpCode> OpCodes { get; private set; }
+
+        public IEnumerable<String> Types { get; private set; }
+
+        public IEnumerable<Class> Classes { get; private set; }
+
+        public IEnumerable<Instance> Instances { get; private set; }
     }
 }

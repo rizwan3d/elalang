@@ -33,7 +33,8 @@ namespace Ela.Library.General
         
         public string ReadLine()
         {
-            return Console.ReadLine().Trim('\0');
+            var ln = Console.ReadLine();
+            return ln != null ? ln.Trim('\0') : String.Empty;
         }
     }
 }

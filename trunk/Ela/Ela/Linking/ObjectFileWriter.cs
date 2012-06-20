@@ -100,13 +100,13 @@ namespace Ela.Linking
 					bw.Write(frame.OpData[i]);
 			}
 
-            var types = frame.Types;
+            var types = frame.InternalTypes;
             bw.Write(types.Count);
 
             foreach (var t in types.Keys) 
                 bw.Write(t);
 
-            var classes = frame.Classes;
+            var classes = frame.InternalClasses;
             bw.Write(classes.Count);
 
             foreach (var kv in classes)
@@ -123,7 +123,7 @@ namespace Ela.Linking
                 }
             }
 
-            var inst = frame.Instances;
+            var inst = frame.InternalInstances;
             bw.Write(inst.Count);
 
             for (var i = 0; i < inst.Count; i++)

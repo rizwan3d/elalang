@@ -98,7 +98,7 @@ PRODUCTIONS
 		).
 		
 	Keywords = 
-		( "let" | "where" | "et" | "and" | "or" | "open" | "in" | "is" | "if" | "then" | "else" | "match" | "try" | "with" | "inline" | "private" | "__internal" | "extends" | "qualified" | "raise" | "fail" )
+		( "let" | "where" | "et" | "and" | "or" | "open" | "in" | "is" | "if" | "then" | "else" | "match" | "try" | "with" | "inline" | "private" | "__internal" | "qualified" | "raise" | "fail" | "instance" | "class" | "type" )
 		(. Add(t.pos, t.val.Length, TextStyle.Style2); .).
 		
 	Code = Keywords | VerbatimString | Comment | SingleLineComment | Primary | NL.// | Thunk.

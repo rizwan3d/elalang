@@ -15,11 +15,20 @@ namespace Ela.Compilation
             var mbr = default(ClassData);
             var modId = -1;
             ObtainTypeClass(s, out mbr, out modId, out mod);
+            var notFound = mbr == null && (mod == null || !mod.InternalClasses.TryGetValue(s.TypeClassName, out mbr));
             
             //Type class not found, nothing else to do
-            if (mbr == null && (mod == null || !mod.Classes.TryGetValue(s.TypeClassName, out mbr)))
+            if (notFound)
             {
-                AddError(ElaCompilerError.UnknownClass, s, s.TypeClassName);
+                if (!options.IgnoreUndefined)
+                    AddError(ElaCompilerError.UnknownClass, s, s.TypeClassName);
+                else
+                {
+                    //Add an instance anyway - the IgnoreUndefine flag is usually set just to gather some module metadata,
+                    //so we need to populate it anyway.
+                    frame.InternalInstances.Add(new InstanceData(s.TypeName, s.TypeClassName, -1, modId, s.Line, s.Column));
+                }
+                
                 return;
             }
 
@@ -28,7 +37,7 @@ namespace Ela.Compilation
             ObtainType(s, out typCode);           
 
             //Add new instance registration information
-            frame.Instances.Add(new InstanceData(s.TypeName, s.TypeClassName, typCode, modId, s.Line, s.Column));
+            frame.InternalInstances.Add(new InstanceData(s.TypeName, s.TypeClassName, typCode, modId, s.Line, s.Column));
 
             //Fill a list of classMembers, this list is used in this method to validate
             //whether all members of a class have an implementation
@@ -90,11 +99,11 @@ namespace Ela.Compilation
             if (s.TypeClassPrefix == null)
             {
                 //We first check if a class definition is non-local
-                if (!frame.Classes.TryGetValue(s.TypeClassName, out mbr))
+                if (!frame.InternalClasses.TryGetValue(s.TypeClassName, out mbr))
                 {
                     var sv = GetVariable("$$$" + s.TypeClassName, CurrentScope, GetFlags.NoError, s.Line, s.Column);
 
-                    if (sv.IsEmpty())
+                    if (sv.IsEmpty() && !options.IgnoreUndefined)
                     {
                         AddError(ElaCompilerError.UnknownClass, s, s.TypeClassName);
                         return;
@@ -105,7 +114,9 @@ namespace Ela.Compilation
                     //local index of a referenced module - that is exactly what we need here to obtain
                     //a compiled module frame (from refs array).
                     modId = sv.Address & Byte.MaxValue;
-                    mod = refs[modId];
+
+                    if (modId < refs.Count && modId > 0)
+                        mod = refs[modId];
                 }
             }
             else
@@ -126,7 +137,9 @@ namespace Ela.Compilation
                 //In this case we can look for a reference based on its alias (alias should be unique within
                 //the current module).
                 modId = frame.References[s.TypeClassPrefix].LogicalHandle;
-                mod = refs[modId];
+                
+                if (modId < refs.Count && modId > 0)
+                    mod = refs[modId];
             }
         }
 
@@ -138,11 +151,11 @@ namespace Ela.Compilation
             if (s.TypePrefix == null)
             {
                 //First we check that type is not defined locally
-                if (!frame.Types.ContainsKey(s.TypeName))
+                if (!frame.InternalTypes.ContainsKey(s.TypeName))
                 {
                     var sv = GetVariable("$$" + s.TypeName, CurrentScope, GetFlags.NoError, s.Line, s.Column);
 
-                    if (sv.IsEmpty())
+                    if (sv.IsEmpty() && !options.IgnoreUndefined)
                     {
                         AddError(ElaCompilerError.UndefinedType, s, s.TypeName);
                         return;

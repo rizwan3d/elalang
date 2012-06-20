@@ -21,7 +21,7 @@ namespace Elide.CodeEditor
             UnitVersion = -1;
         }
 
-        public string GetContext()
+        public string GetContent()
         {
             return ((ITextEditor)CodeEditor.Instance).GetContent(this);
         }

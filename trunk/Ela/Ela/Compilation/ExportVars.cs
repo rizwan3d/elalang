@@ -1,26 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ela.CodeModel;
-using Ela.Linking;
-using Ela.Runtime.Classes;
 
 namespace Ela.Compilation
 {
     public sealed class ExportVars
     {
-        #region Construction
         private readonly Dictionary<String,ExportVarData> variables;
-        private readonly CodeAssembly asm;
-
-        public ExportVars(CodeAssembly asm)
+        
+        public ExportVars()
         {
-            this.asm = asm;
             variables = new Dictionary<String,ExportVarData>();
         }
-        #endregion
-
-
-		#region Methods
+        
         public void AddVariable(string name, ElaBuiltinKind kind, ElaVariableFlags flags, int moduleHandle, int address)
         {
             variables.Remove(name);
@@ -36,6 +28,5 @@ namespace Ela.Compilation
         {
             return variables.ContainsKey(name);
         }
-        #endregion
     }
 }

@@ -91,6 +91,9 @@
     <Compile Include="ICodeEditor.cs" />
     <Compile Include="Infrastructure\CodeLexerInfo.cs" />
     <Compile Include="Infrastructure\CodeLexerReader.cs" />
+    <Compile Include="Infrastructure\IClass.cs" />
+    <Compile Include="Infrastructure\IClassInstance.cs" />
+    <Compile Include="Infrastructure\IClassMember.cs" />
     <Compile Include="Infrastructure\ICodeLexer.cs" />
     <Compile Include="Infrastructure\ICodeLexerService.cs" />
     <Compile Include="Infrastructure\BackgroundCompilerService.cs" />
@@ -124,6 +127,7 @@
     <Compile Include="Infrastructure\IReferenceResolver.cs" />
     <Compile Include="Infrastructure\IReferenceResolverService.cs" />
     <Compile Include="Infrastructure\CodeLexerService.cs" />
+    <Compile Include="Infrastructure\IType.cs" />
     <Compile Include="Infrastructure\ReferenceResolverReader.cs" />
     <Compile Include="Infrastructure\ReferenceResolverService.cs" />
     <Compile Include="Infrastructure\ResolverInfo.cs" />

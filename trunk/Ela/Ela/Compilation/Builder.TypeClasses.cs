@@ -37,10 +37,10 @@ namespace Ela.Compilation
             PopVar(sa);
 
             //Some validation
-            if (frame.Classes.ContainsKey(s.Name))
+            if (frame.InternalClasses.ContainsKey(s.Name))
                 AddError(ElaCompilerError.ClassAlreadyDeclared, s, s.Name);
             else
-                frame.Classes.Add(s.Name, new ClassData(s.Members.ToArray()));
+                frame.InternalClasses.Add(s.Name, new ClassData(s.Members.ToArray()));
 
             //A class declaration might be the last statement in a module
             if ((hints & Hints.Left) != Hints.Left)

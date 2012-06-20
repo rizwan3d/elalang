@@ -1,13 +1,19 @@
 ﻿using System;
 using Ela.CodeModel;
+using System.Collections.Generic;
 
 namespace Ela.Compilation
 {
-    internal sealed class ClassData
+    public sealed class ClassData
     {
         internal ClassData(ElaClassMember[] members)
         {
             Members = members;
+        }
+
+        public IEnumerable<ElaClassMember> GetMembers()
+        {
+            return Members;
         }
 
         internal ElaClassMember[] Members { get; private set; }

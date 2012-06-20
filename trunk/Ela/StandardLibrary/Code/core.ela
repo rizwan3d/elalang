@@ -2,7 +2,7 @@
   Module core
   Created in 2011-2012 by Basil Voronkov
 */
-open qualified "$Core"#elalib@cm 
+open qualified "Core"#elalib@cm 
 
 /* MATH */
 

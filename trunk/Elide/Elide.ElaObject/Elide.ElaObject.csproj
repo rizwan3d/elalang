@@ -107,9 +107,11 @@
     <Compile Include="ObjectFileViewer.designer.cs">
       <DependentUpon>ObjectFileViewer.cs</DependentUpon>
     </Compile>
+    <Compile Include="ObjectModel\Class.cs" />
     <Compile Include="ObjectModel\ElaObjectFile.cs" />
     <Compile Include="ObjectModel\Global.cs" />
     <Compile Include="ObjectModel\Header.cs" />
+    <Compile Include="ObjectModel\Instance.cs" />
     <Compile Include="ObjectModel\LateBound.cs" />
     <Compile Include="ObjectModel\Layout.cs" />
     <Compile Include="ObjectModel\OpCode.cs" />
@@ -195,6 +197,18 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\PrivateVariable.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Interface.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Instance.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Type.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Member.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -72,8 +72,16 @@ namespace Elide.ElaCode
                     var vars = LookVars(dr, ln != null ? ln.Offset : scope.EndOffset, scope.Index);
                     names = vars
                         .Where(v => v.Name[0] != '$')
-                        .Select(v => new AutocompleteSymbol(v.Name, 
-                            ((ElaVariableFlags)v.Flags).Set(ElaVariableFlags.Module) ? AutocompleteSymbolType.Module : AutocompleteSymbolType.Variable))
+                        .Select(v => 
+                            {
+                                var f = (ElaVariableFlags)v.Flags;
+                                return new AutocompleteSymbol(v.Name,
+                                    f.Set(ElaVariableFlags.Module) ? AutocompleteSymbolType.Module :
+                                    f.Set(ElaVariableFlags.TypeFun) ? AutocompleteSymbolType.Type :
+                                    f.Set(ElaVariableFlags.ClassFun) ? AutocompleteSymbolType.Member :
+                                        AutocompleteSymbolType.Variable);
+                                
+                            })
                         .ToList();
                 }
             }

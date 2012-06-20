@@ -50,6 +50,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElaConsole", "ElaConsole\El
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{1D581C7A-8753-4761-A78C-FD477A550C4B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "collections", "collections", "{9B3FF1AF-670F-4D82-B36C-B3D0321DEDB0}"
+	ProjectSection(SolutionItems) = preProject
+		StandardLibrary\Code\collections\alist.ela = StandardLibrary\Code\collections\alist.ela
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,6 +132,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{AFD398CA-09A8-486A-9C65-EDC4954F08C0} = {290E64EC-5C01-490D-8AFF-101E4D1EB716}
 		{AB91D945-BA7B-45C8-9226-E861B0FE175A} = {290E64EC-5C01-490D-8AFF-101E4D1EB716}
+		{9B3FF1AF-670F-4D82-B36C-B3D0321DEDB0} = {AB91D945-BA7B-45C8-9226-E861B0FE175A}
 		{850B41D5-8924-49A1-BE4E-6768CD8CABF9} = {6440104F-093D-47F5-8F7C-3E281483F650}
 		{48AE1C4A-B3A0-4669-A0B1-80D1364531BB} = {6440104F-093D-47F5-8F7C-3E281483F650}
 	EndGlobalSection

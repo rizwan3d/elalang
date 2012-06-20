@@ -75,7 +75,7 @@ namespace Ela.Compilation
                 var mod = lh > -1 && lh < refs.Count ? refs[lh] : null;
 
                 //A name (or even module) not found, generate an error
-                if (mod == null || !mod.GlobalScope.Locals.TryGetValue(specName, out extVar))
+                if ((mod == null || !mod.GlobalScope.Locals.TryGetValue(specName, out extVar)) && !options.IgnoreUndefined)
                     AddError(err, exp, ns + "." + specName.TrimStart('$'));
 
                 cw.Emit(Op.Pushext, lh | (extVar.Address << 8));
@@ -85,7 +85,7 @@ namespace Ela.Compilation
                 //Without a qualident it is pretty straightforward
                 var a = GetVariable(specName, CurrentScope, GetFlags.NoError, exp.Line, exp.Column);
 
-                if (a.IsEmpty())
+                if (a.IsEmpty() && !options.IgnoreUndefined)
                     AddError(err, exp, specName.TrimStart('$'));
 
                 PushVar(a);
@@ -158,7 +158,9 @@ namespace Ela.Compilation
             //If this flag is set we don't need to go further
             if ((getFlags & GetFlags.Local) == GetFlags.Local)
             {
-                AddError(ElaCompilerError.UndefinedName, line, col, name);
+                if (!options.IgnoreUndefined && (getFlags & GetFlags.NoError) != GetFlags.NoError)
+                    AddError(ElaCompilerError.UndefinedName, line, col, name);
+
                 return ScopeVar.Empty;
             }
 

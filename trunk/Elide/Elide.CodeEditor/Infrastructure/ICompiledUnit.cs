@@ -9,6 +9,12 @@ namespace Elide.CodeEditor.Infrastructure
 
         IEnumerable<CodeName> Globals { get; }
 
+        IEnumerable<IType> Types { get; }
+
+        IEnumerable<IClassInstance> Instances { get; }
+
+        IEnumerable<IClass> Classes { get; }
+
         IEnumerable<IReference> References { get; }
     }
 }

@@ -65,6 +65,35 @@ namespace Ela.Debug
 					case Op.Pushfld:
 						val = String.Format(STR, frame.Strings[od]);
 						break;
+                    case Op.Pushloc:
+                    case Op.Poploc:
+                        val = null;
+
+                        if (dr != null)
+                        {
+                            var scope = dr.FindScopeSym(i);
+                            
+                            if (scope != null)
+                            {
+                                var idx = scope.Index;
+                                var var = default(VarSym);
+
+                                while (idx > -1)
+                                {
+                                    if ((var = dr.FindVarSym(od, scope.Index)) != null)
+                                    {
+                                        val = var.Name;
+                                        break;
+                                    }
+
+                                    idx--;
+                                }
+                            }
+                        }
+
+                        if (val == null)
+                            val = String.Format(VAR, od);
+                        break;
 					case Op.Pushvar:
 					case Op.Popvar:
 						if (dr != null)

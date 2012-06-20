@@ -155,7 +155,8 @@ namespace Ela.Compilation
                 return false;
 
             //No such name, now captured statically
-            if (!refs[mod.LogicalHandle].GlobalScope.Locals.TryGetValue(p.FieldName, out fieldSv))
+            if (!refs[mod.LogicalHandle].GlobalScope.Locals.TryGetValue(p.FieldName, out fieldSv) &&
+                !options.IgnoreUndefined)
             {
                 AddError(ElaCompilerError.UndefinedNameInModule, p, p.TargetObject.GetName(), p.FieldName);
                 return false;

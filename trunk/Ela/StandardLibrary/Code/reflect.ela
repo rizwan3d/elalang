@@ -2,7 +2,7 @@
   Module reflect
   Created in 2012 by Basil Voronkov
 */
-open qualified "$Reflect"#elalib@reflect
+open qualified "Reflect"#elalib@reflect
 
 let funArgsCount x = reflect.funArgsCount (force x)
 

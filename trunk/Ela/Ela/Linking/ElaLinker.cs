@@ -152,31 +152,31 @@ namespace Ela.Linking
 
         private void ProcessTypeAndClasses(CodeFrame frame, int hdl)
         {
-            foreach (var k in new List<String>(frame.Types.Keys))
+            foreach (var k in new List<String>(frame.InternalTypes.Keys))
             {
-                if (frame.Types[k] == -1)
+                if (frame.InternalTypes[k] == -1)
                 {
                     var c = Assembly.Types.Count;
-                    frame.Types[k] = c;
+                    frame.InternalTypes[k] = c;
                     Assembly.Types.Add(new TypeData(c, k));
                     Assembly.Cls.Add(new Class());
                 }
             }
 
-            foreach (var k in new List<String>(frame.Classes.Keys))
+            foreach (var k in new List<String>(frame.InternalClasses.Keys))
             {
                 var c = Assembly.ClassIndexer;
-                frame.Classes[k].Code = c;
+                frame.InternalClasses[k].Code = c;
                 Assembly.ClassIndexer++;
             }
 
-            foreach (var id in frame.Instances)
+            foreach (var id in frame.InternalInstances)
             {
                 var typeModule = Assembly.GetModule(id.TypeModuleId == -1 ? hdl : frame.HandleMap[id.TypeModuleId]);
-                var typeCode = typeModule.Types[id.Type];
+                var typeCode = typeModule.InternalTypes[id.Type];
 
                 var classModule = Assembly.GetModule(id.ClassModuleId == -1 ? hdl : frame.HandleMap[id.ClassModuleId]);
-                var classCode = (Int64)classModule.Classes[id.Class].Code;
+                var classCode = (Int64)classModule.InternalClasses[id.Class].Code;
 
                 var lo = (Int64)typeCode << 32;
                 long instanceCode = classCode | lo;
@@ -306,7 +306,7 @@ namespace Ela.Linking
 
         protected virtual ExportVars CreateExportVars(FileInfo fi)
         {
-            return new ExportVars(Assembly);
+            return new ExportVars();
         }
 
 
