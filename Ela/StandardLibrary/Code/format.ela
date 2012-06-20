@@ -3,7 +3,7 @@
     Created in 2012 by Basil Voronkov
 */
 open console
-open qualified "$Format"#elalib@fm
+open qualified "Format"#elalib@fm
 
 let private format' fun fmt xs n | n == 0 = fun (fm.format fmt show showf xs)
                                  | else = \x -> format' fun fmt (x::xs) (n-1)
@@ -13,5 +13,3 @@ let printf fmt = format' write (force fmt) [] (fm.countArgs (force fmt))
 let printfn fmt = format' writen (force fmt) [] (fm.countArgs (force fmt))
 
 let format fmt = format' id (force fmt) [] (fm.countArgs (force fmt))
-
-(& & &2) + 2

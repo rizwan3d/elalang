@@ -24,6 +24,11 @@ namespace Elide.ElaObject
             ImageList.Images.Add("Symbol", Bitmaps.Load<NS>("Symbol"));
             ImageList.Images.Add("Layout", Bitmaps.Load<NS>("Layout"));
             ImageList.Images.Add("Op", Bitmaps.Load<NS>("Op"));
+            ImageList.Images.Add("Member", Bitmaps.Load<NS>("Member"));
+            ImageList.Images.Add("Interface", Bitmaps.Load<NS>("Interface"));
+            ImageList.Images.Add("Instance", Bitmaps.Load<NS>("Instance"));
+            ImageList.Images.Add("Type", Bitmaps.Load<NS>("Type"));
+
         }
         
         private void ObjectFileViewer_Load(object sender, EventArgs e)

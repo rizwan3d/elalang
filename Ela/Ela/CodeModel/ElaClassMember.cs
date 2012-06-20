@@ -20,17 +20,21 @@ namespace Ela.CodeModel
         internal override void ToString(StringBuilder sb, Fmt fmt)
         {
             sb.Append(Name);
-            sb.Append("::");
 
-            for (var i = 0; i < Arguments; i++)
+            if (Mask != 0)
             {
-                if (i > 0)
-                    sb.Append("->");
+                sb.Append("::");
 
-                if ((Mask & (1 << i)) == (1 << i))
-                    sb.Append("a");
-                else
-                    sb.Append("_");
+                for (var i = 0; i < Arguments; i++)
+                {
+                    if (i > 0)
+                        sb.Append("->");
+
+                    if ((Mask & (1 << i)) == (1 << i))
+                        sb.Append("a");
+                    else
+                        sb.Append("_");
+                }
             }
         }
 

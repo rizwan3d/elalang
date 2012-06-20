@@ -79,7 +79,9 @@ namespace Elide.CodeEditor
 
         private void FoldNeeded(object sender, FoldNeededEventArgs e)
         {
-            if (GetConfig().EnableFolding)
+            var cfg = GetConfig();
+
+            if (cfg != null && cfg.EnableFolding)
                 FoldNeeded(e);
         }
 

@@ -19,7 +19,10 @@ namespace Elide.ElaObject
                 ReadLateBounds(reader).ToList(),
                 ReadLayouts(reader).ToList(),
                 ReadStrings(reader).ToList(),
-                ReadCode(reader).ToList());
+                ReadCode(reader).ToList(),
+                ReadTypes(reader).ToList(),
+                ReadClasses(reader).ToList(),
+                ReadInstances(reader).ToList());
         }
 
         private IEnumerable<Reference> ReadReferences(BinaryReader br)
@@ -104,6 +107,48 @@ namespace Elide.ElaObject
                 var opCode = (Op)br.ReadByte();
                 var arg = ElaCompiler.GetOpCodeSize(opCode) > 1 ? (int?)br.ReadInt32() : null;
                 yield return new OpCode(i, opCode, arg);
+            }
+        }
+
+        private IEnumerable<String> ReadTypes(BinaryReader br)
+        {
+            var c = br.ReadInt32();
+
+            for (var i = 0; i < c; i++)
+                yield return br.ReadString();
+        }
+
+        private IEnumerable<Class> ReadClasses(BinaryReader br)
+        {
+            var c = br.ReadInt32();
+
+            for (var i = 0; i < c; i++)
+            {
+                var name = br.ReadString();
+                var mc = br.ReadInt32();
+                var list = new List<ElaClassMember>();
+
+                for (var j = 0; j < mc; j++)
+                    list.Add(new ElaClassMember { Arguments = br.ReadInt32(), Mask = br.ReadInt32(), Name = br.ReadString() });
+
+                yield return new Class(name, list);
+            }
+        }
+
+        private IEnumerable<Instance> ReadInstances(BinaryReader br)
+        {
+            var c = br.ReadInt32();
+
+            for (var i = 0; i < c; i++)
+            {
+                yield return new Instance(
+                       br.ReadString(),
+                       br.ReadString(),
+                       br.ReadInt32(),
+                       br.ReadInt32(),
+                       br.ReadInt32(),
+                       br.ReadInt32()
+                    );
             }
         }
 

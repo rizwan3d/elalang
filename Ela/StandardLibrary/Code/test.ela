@@ -31,7 +31,7 @@ let run xs = (res, failed)
                                  v              = (n, false, ": Error occured: " ++ untag v)
            et count f xs = length <| filter f xs
            et res = map exec xs
-           et failed = count (not << snd3) /*(\(_,y,_) -> not y)*/ res
+           et failed = count (not << snd3) res
               
 let fmt f prf (tests, failed) =
         out "Test session started" 

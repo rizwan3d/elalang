@@ -2,7 +2,7 @@
     Module string
     Created in 2012 by Basil Voronkov
 */
-open qualified "$String"#elalib@str
+open qualified "String"#elalib@str
 open thunk
 
 let upper s = str.upper (force s)

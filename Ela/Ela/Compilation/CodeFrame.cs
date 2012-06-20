@@ -28,9 +28,9 @@ namespace Ela.Compilation
 			Strings = new FastList<String>();
 			_references = new ReferenceMap();
             HandleMap = new FastList<Int32>();
-            Types = new Dictionary<String,Int32>();
-            Classes = new Dictionary<String,ClassData>();
-            Instances = new FastList<InstanceData>();
+            InternalTypes = new Dictionary<String,Int32>();
+            _internalClasses = new ClassMap();
+            InternalInstances = new FastList<InstanceData>();
             LateBounds = new FastList<LateBoundSymbol>();
        	}
 		#endregion
@@ -43,10 +43,10 @@ namespace Ela.Compilation
 			internal ReferenceMap(ReferenceMap copy) : base(copy) { }
 		}
 
-
-        private sealed class AttributeMap : Dictionary<String,String>, IReadOnlyMap<String,String>
+        private sealed class ClassMap : Dictionary<String,ClassData>, IReadOnlyMap<String,ClassData>
         {
-            internal AttributeMap() { }
+            internal ClassMap() { }
+			internal ClassMap(ClassMap copy) : base(copy) { }
         }
 		#endregion
 
@@ -63,9 +63,9 @@ namespace Ela.Compilation
 			copy._references = new ReferenceMap(_references);
 			copy.Symbols = Symbols != null ? Symbols.Clone() : null;
             copy.HandleMap = HandleMap.Clone();
-            copy.Types = new Dictionary<String,Int32>(Types);
-            copy.Classes = new Dictionary<String,ClassData>(Classes);
-            copy.Instances = Instances.Clone();
+            copy.InternalTypes = new Dictionary<String,Int32>(InternalTypes);
+            copy._internalClasses = new ClassMap(_internalClasses);
+            copy.InternalInstances = InternalInstances.Clone();
             copy.LateBounds = LateBounds.Clone();
          	return copy;
 		}
@@ -94,6 +94,21 @@ namespace Ela.Compilation
 			get { return _references; }
 		}
 
+        public IReadOnlyMap<String,ClassData> Classes
+        {
+            get { return _internalClasses; }
+        }
+
+        public IEnumerable<String> Types
+        {
+            get { return InternalTypes.Keys; }
+        }
+
+        public IEnumerable<InstanceData> Instances
+        {
+            get { return InternalInstances; }
+        }
+
 		public FastList<Op> Ops { get; private set; }
 
 		public FastList<Int32> OpData { get; private set; }
@@ -108,11 +123,15 @@ namespace Ela.Compilation
 
         internal FastList<String> Strings { get; private set; }
 
-        internal Dictionary<String,Int32> Types { get; private set; }
+        internal Dictionary<String,Int32> InternalTypes { get; private set; }
 
-        internal Dictionary<String,ClassData> Classes { get; private set; }
+        private ClassMap _internalClasses;
+        internal Dictionary<String,ClassData> InternalClasses
+        {
+            get { return _internalClasses; }
+        }
 
-        internal FastList<InstanceData> Instances { get; private set; }
+        internal FastList<InstanceData> InternalInstances { get; private set; }
 
         public FastList<LateBoundSymbol> LateBounds { get; private set; }
         #endregion

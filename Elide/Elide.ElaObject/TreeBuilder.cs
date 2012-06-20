@@ -30,7 +30,10 @@ namespace Elide.ElaObject
             tree.Nodes.Add(ReadLateBounds(objectFile.LateBounds));
             tree.Nodes.Add(ReadLayouts(objectFile.Layouts));
             tree.Nodes.Add(ReadStrings(objectFile.Strings));
-            
+            tree.Nodes.Add(ReadTypes(objectFile.Types));
+            tree.Nodes.Add(ReadClasses(objectFile.Classes));
+            tree.Nodes.Add(ReadInstances(objectFile.Instances));
+
             if (config.DisplayFlatOpCodes)
                 tree.Nodes.Add(ReadCode(objectFile.OpCodes));
 
@@ -75,7 +78,7 @@ namespace Elide.ElaObject
         private TreeNode ReadGlobals(IEnumerable<Global> globals)
         {
             var par = Group("Globals");
-            globals.ForEach(g =>
+            globals.Where(g => !g.Name.StartsWith("$")).ForEach(g =>
                 {
                     var n = par.Element(g.Name, null, 
                         g.Flags.Set(ElaVariableFlags.Private) ? "PrivateVariable" : "Variable");
@@ -132,6 +135,40 @@ namespace Elide.ElaObject
         {
             var par = Group("String Table");
             strings.ForEach(s => par.Element("String", "\"" + s.Replace("\"", "\\\"") + "\""));
+            return par;
+        }
+
+        private TreeNode ReadTypes(IEnumerable<String> strings)
+        {
+            var par = Group("Types");
+            strings.ForEach(s => par.Element(s, null, "Type"));
+            return par;
+        }
+
+        private TreeNode ReadClasses(IEnumerable<Class> classes)
+        {
+            var par = Group("Classes");
+            classes.ForEach(c =>
+                {
+                    var n = par.Element(c.Name, null, "Interface");
+                    c.Members.ForEach(m => n.Element(m.ToString(), null, "Member"));
+                });
+            return par;
+        }
+
+        private TreeNode ReadInstances(IEnumerable<Instance> instances)
+        {
+            var par = Group("Instances");
+            instances.ForEach(c =>
+            {
+                var n = par.Element(c.Class + " " + c.Type, null, "Instance");
+                n.Element("Class", c.Class);
+                n.Element("Class Module ID", c.ClassModuleId < 0 ? "(local)" : c.ClassModuleId.ToString());
+                n.Element("Type", c.Type);
+                n.Element("Type Module ID", c.TypeModuleId < 0 ? "(local)" : c.TypeModuleId.ToString());
+                n.Element("Line", c.Line);
+                n.Element("Column", c.Column);
+            });
             return par;
         }
 

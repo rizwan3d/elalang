@@ -2,7 +2,7 @@
     Module console
     Created in 2012 by Basil Voronkov
 */
-open qualified "$Con"#elalib@con
+open qualified "Con"#elalib@con
 
 let write x = con.write (show x)
 

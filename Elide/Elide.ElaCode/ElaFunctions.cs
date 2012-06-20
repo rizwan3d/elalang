@@ -79,8 +79,8 @@ namespace Elide.ElaCode
         public void GenerateEil()
         {
             var cfg = app.Config<EilGeneratorConfig>();
-            var opts = cfg.GenerateInDebugMode ? new ExtendedOption[] { ElaCodeBuilder.NoDebug, ElaCodeBuilder.ForceRecompile } 
-                : new ExtendedOption[] { ElaCodeBuilder.ForceRecompile };
+            var opts = cfg.GenerateInDebugMode ? new ExtendedOption[] { ElaCodeBuilder.ForceRecompile }
+                : new ExtendedOption[] { ElaCodeBuilder.NoDebug, ElaCodeBuilder.ForceRecompile };
 
             var asm = app.GetService<ICodeBuilderService>().
                 RunBuilder<CompiledAssembly>(sci.Text, app.Document(), BuildOptions.Output | BuildOptions.ErrorList, opts);

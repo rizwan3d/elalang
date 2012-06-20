@@ -94,6 +94,39 @@ namespace Elide.ElaCode
                     break;
                 case ElaNodeType.Builtin:
                     break;
+                case ElaNodeType.Newtype:
+                    {
+                        var b = (ElaNewtype)expr;
+
+                        if (b.Body != null)
+                            FindName(name, doc, b.Body, syms);
+                    }
+                    break;
+                case ElaNodeType.TypeClass:
+                    {
+                        var b = (ElaTypeClass)expr;
+
+                        if (b.Members != null)
+                            foreach (var m in b.Members)
+                                FindName(name, doc, m, syms);
+                    }
+                    break;
+                case ElaNodeType.ClassMember:
+                    {
+                        var b = (ElaClassMember)expr;
+                        
+                        if (b.Name == name)
+                            syms.Add(new SymbolLocation(doc, b.Line, b.Column));
+                    }
+                    break;
+                case ElaNodeType.ClassInstance:
+                    {
+                        var b = (ElaClassInstance)expr;
+
+                        if (b.Where != null)
+                            FindName(name, doc, b.Where, syms);
+                    }
+                    break;
                 case ElaNodeType.Binding:
                     {
                         var b = (ElaBinding)expr;
@@ -102,9 +135,6 @@ namespace Elide.ElaCode
                             syms.Add(new SymbolLocation(doc, b.Line, b.Column));
                         else if (b.Pattern != null)
                             FindName(name, doc, b.Pattern, syms);
-
-                        if (b.Where != null)
-                            FindName(name, doc, b.Where, syms);
 
                         if (b.And != null)
                             FindName(name, doc, b.And, syms);
@@ -122,9 +152,6 @@ namespace Elide.ElaCode
 
                         if (c.Generator != null)
                             FindName(name, doc, c.Generator, syms);
-
-                        if (c.Initial != null)
-                            FindName(name, doc, c.Initial, syms);
                     }
                     break;
                 case ElaNodeType.Condition:
@@ -235,8 +262,8 @@ namespace Elide.ElaCode
                     {
                         var l = (ElaLazyLiteral)expr;
 
-                        if (l.Body != null)
-                            FindName(name, doc, l.Body, syms);
+                        if (l.Expression != null)
+                            FindName(name, doc, l.Expression, syms);
                     }
                     break;
                 case ElaNodeType.ListLiteral:
@@ -319,9 +346,6 @@ namespace Elide.ElaCode
                 case ElaNodeType.Range:
                     {
                         var r = (ElaRange)expr;
-
-                        if (r.Initial != null)
-                            FindName(name, doc, r.Initial, syms);
 
                         if (r.First != null)
                             FindName(name, doc, r.First, syms);

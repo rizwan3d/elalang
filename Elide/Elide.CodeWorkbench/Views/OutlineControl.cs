@@ -34,6 +34,10 @@ namespace Elide.CodeWorkbench.Views
             imageList.Images.Add("Reference", Bitmaps.Load<NS>("Reference"));
             imageList.Images.Add("Variable", Bitmaps.Load<NS>("Variable"));
             imageList.Images.Add("Module", Bitmaps.Load<NS>("Module"));
+            imageList.Images.Add("Interface", Bitmaps.Load<NS>("Interface"));
+            imageList.Images.Add("Type", Bitmaps.Load<NS>("Type"));
+            imageList.Images.Add("Instance", Bitmaps.Load<NS>("Instance"));
+            imageList.Images.Add("Member", Bitmaps.Load<NS>("Member"));
             treeView.ImageList = imageList;
         }
 
@@ -72,6 +76,69 @@ namespace Elide.CodeWorkbench.Views
                     foreach (var v in doc.Unit.Globals)
                     {
                         var tn = new TreeNode(v.Name) { ImageKey = "Variable", SelectedImageKey = "Variable" };
+                        tn.Tag = v;
+                        node.Nodes.Add(tn);
+                    }
+                }
+
+                treeView.EndUpdate();
+            }
+            else if (node.Text == "Classes")
+            {
+                var doc = (CodeDocument)node.Parent.Tag;
+
+                treeView.BeginUpdate();
+                node.Nodes.Clear();
+
+                if (doc.Unit != null)
+                {
+                    foreach (var v in doc.Unit.Classes)
+                    {
+                        var tn = new TreeNode(v.Name) { ImageKey = "Interface", SelectedImageKey = "Interface" };
+                        tn.Tag = v;
+                        node.Nodes.Add(tn);
+
+                        foreach (var m in v.Members)
+                        {
+                            var cn = new TreeNode(m.ToString()) { ImageKey = "Member", SelectedImageKey = "Member" };
+                            tn.Nodes.Add(cn);
+                        }
+                    }
+                }
+
+                treeView.EndUpdate();
+            }
+            else if (node.Text == "Instances")
+            {
+                var doc = (CodeDocument)node.Parent.Tag;
+
+                treeView.BeginUpdate();
+                node.Nodes.Clear();
+
+                if (doc.Unit != null)
+                {
+                    foreach (var v in doc.Unit.Instances)
+                    {
+                        var tn = new TreeNode(v.Class + " " + v.Type) { ImageKey = "Instance", SelectedImageKey = "Instance" };
+                        tn.Tag = v;
+                        node.Nodes.Add(tn);
+                    }
+                }
+
+                treeView.EndUpdate();
+            }
+            else if (node.Text == "Types")
+            {
+                var doc = (CodeDocument)node.Parent.Tag;
+
+                treeView.BeginUpdate();
+                node.Nodes.Clear();
+
+                if (doc.Unit != null)
+                {
+                    foreach (var v in doc.Unit.Types)
+                    {
+                        var tn = new TreeNode(v.Name) { ImageKey = "Type", SelectedImageKey = "Type" };
                         tn.Tag = v;
                         node.Nodes.Add(tn);
                     }
@@ -170,6 +237,24 @@ namespace Elide.CodeWorkbench.Views
             binds.SelectedImageKey = "Folder";
             binds.Nodes.Add(new TreeNode());
             tn.Nodes.Add(binds);
+
+            var classes = new TreeNode("Classes");
+            classes.ImageKey = "Folder";
+            classes.SelectedImageKey = "Folder";
+            classes.Nodes.Add(new TreeNode());
+            tn.Nodes.Add(classes);
+
+            var inst = new TreeNode("Instances");
+            inst.ImageKey = "Folder";
+            inst.SelectedImageKey = "Folder";
+            inst.Nodes.Add(new TreeNode());
+            tn.Nodes.Add(inst);
+
+            var types = new TreeNode("Types");
+            types.ImageKey = "Folder";
+            types.SelectedImageKey = "Folder";
+            types.Nodes.Add(new TreeNode());
+            tn.Nodes.Add(types);
         }
 
         public TreeView TreeView

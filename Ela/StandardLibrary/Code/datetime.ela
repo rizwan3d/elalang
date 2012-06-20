@@ -2,7 +2,7 @@
     Module datetime
     Created in 2012 by Basil Voronkov
 */
-open qualified "$DateTime"#elalib@dt
+open qualified "DateTime"#elalib@dt 
 
 /* Construction */
 type datetime x = cons x

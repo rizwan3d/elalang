@@ -51,7 +51,9 @@ namespace Elide.CodeWorkbench
                     {
                         sci.RegisterAutocompleteImage(1, Pixmap.FromBitmap((Bitmap)Bitmaps.Load<NS>("PixmapVariable")));
                         sci.RegisterAutocompleteImage(2, Pixmap.FromBitmap((Bitmap)Bitmaps.Load<NS>("PixmapModule")));
-                        sci.RegisterAutocompleteImage(3, Pixmap.FromBitmap((Bitmap)Bitmaps.Load<NS>("PixmapKeyword")));
+                        sci.RegisterAutocompleteImage(3, Pixmap.FromBitmap((Bitmap)Bitmaps.Load<NS>("PixmapMember")));
+                        sci.RegisterAutocompleteImage(4, Pixmap.FromBitmap((Bitmap)Bitmaps.Load<NS>("PixmapType")));
+                        sci.RegisterAutocompleteImage(5, Pixmap.FromBitmap((Bitmap)Bitmaps.Load<NS>("PixmapKeyword")));
                         scis.Add(sci, null);
                     }
 
@@ -65,7 +67,10 @@ namespace Elide.CodeWorkbench
         {
             return String.Format("{0}?{1}", symbol.Name,
                 symbol.Type == AutocompleteSymbolType.Variable ? "1" :
-                symbol.Type == AutocompleteSymbolType.Module ? "2" : "3");
+                symbol.Type == AutocompleteSymbolType.Module ? "2" :
+                symbol.Type == AutocompleteSymbolType.Member ? "3" :
+                symbol.Type == AutocompleteSymbolType.Type ? "4" : 
+                "5");
         }
     }
 }

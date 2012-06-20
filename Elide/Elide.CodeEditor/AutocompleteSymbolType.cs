@@ -10,6 +10,10 @@ namespace Elide.CodeEditor
 
         Variable,
 
-        Module
+        Module,
+
+        Type,
+
+        Member,
     }
 }

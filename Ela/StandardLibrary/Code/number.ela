@@ -2,7 +2,7 @@
     Module number
     Created in 2012 by Basil Voronkov
 */
-open qualified "$Number"#elalib@rl
+open qualified "Number"#elalib@rl
     (
         maxInt,
         minInt,

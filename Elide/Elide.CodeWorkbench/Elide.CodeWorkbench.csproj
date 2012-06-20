@@ -250,7 +250,18 @@
     <EmbeddedResource Include="Images\Book.bmp" />
     <EmbeddedResource Include="Images\Article.bmp" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Instance.bmp" />
+    <EmbeddedResource Include="Images\Interface.bmp" />
+    <EmbeddedResource Include="Images\Type.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Member.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\PixmapMember.bmp" />
+    <EmbeddedResource Include="Images\PixmapType.bmp" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

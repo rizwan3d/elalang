@@ -98,7 +98,7 @@ namespace Ela.Linking
             c = bw.ReadInt32();
 
             for (var i = 0; i < c; i++)
-                frame.Types.Add(bw.ReadString(), -1);
+                frame.InternalTypes.Add(bw.ReadString(), -1);
 
             c = bw.ReadInt32();
 
@@ -117,13 +117,13 @@ namespace Ela.Linking
                     mbr[j] = m;
                 }
 
-                frame.Classes.Add(k, new ClassData(mbr));
+                frame.InternalClasses.Add(k, new ClassData(mbr));
             }
 
             c = bw.ReadInt32();
 
             for (var i = 0; i < c; i++)
-                frame.Instances.Add(new InstanceData(bw.ReadString(), bw.ReadString(), bw.ReadInt32(), bw.ReadInt32(), bw.ReadInt32(), bw.ReadInt32()));
+                frame.InternalInstances.Add(new InstanceData(bw.ReadString(), bw.ReadString(), bw.ReadInt32(), bw.ReadInt32(), bw.ReadInt32(), bw.ReadInt32()));
 
             var di = bw.ReadBoolean();
 

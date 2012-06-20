@@ -31,7 +31,7 @@ namespace Ela.Runtime
         #endregion
 
 
-        #region Types
+        #region InternalTypes
         internal const int UNI = (Int32)ElaTypeCode.Unit;
         internal const int INT = (Int32)ElaTypeCode.Integer;
         internal const int REA = (Int32)ElaTypeCode.Single;
@@ -1363,7 +1363,7 @@ namespace Ela.Runtime
                         break;
                     case Op.Newtype:
                         {
-                            var tid = asm.Types[thread.Module.Types[frame.Strings[opd]]];
+                            var tid = asm.Types[thread.Module.InternalTypes[frame.Strings[opd]]];
                             evalStack.Replace(new ElaValue(new ElaUserType(tid.TypeName, tid.TypeCode, evalStack.Peek())));
                         }
                         break;
@@ -1377,10 +1377,10 @@ namespace Ela.Runtime
                         }
                         break;
                     case Op.Typeid:
-                        evalStack.Push(thread.Module.Types[frame.Strings[opd]]);
+                        evalStack.Push(thread.Module.InternalTypes[frame.Strings[opd]]);
                         break;
                     case Op.Classid:
-                        evalStack.Push(thread.Module.Classes[frame.Strings[opd]].Code);
+                        evalStack.Push(thread.Module.InternalClasses[frame.Strings[opd]].Code);
                         break;
                     case Op.Type:
                         {

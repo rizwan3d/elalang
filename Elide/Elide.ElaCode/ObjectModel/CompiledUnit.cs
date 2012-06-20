@@ -17,6 +17,9 @@ namespace Elide.ElaCode.ObjectModel
             CodeFrame = codeFrame;
             Globals = ExtractNames(codeFrame).ToList();
             Document = doc;
+            Classes = codeFrame.Classes.Select(kv => new TypeClass(kv.Key, kv.Value)).ToList();
+            Instances = codeFrame.Instances.Select(i => new TypeClassInstance(i.Class, i.Type));
+            Types = codeFrame.Types.Select(s => new UserType(s));
             References = codeFrame.References.Where(r => !r.Key.StartsWith("$__")).Select(r => new Reference(this, r.Value)).ToList();
         }
 
@@ -33,7 +36,7 @@ namespace Elide.ElaCode.ObjectModel
                 {
                     var flags = (ElaVariableFlags)v.Flags;
 
-                    if (!flags.Set(ElaVariableFlags.Private))
+                    if (!flags.Set(ElaVariableFlags.Private) && !v.Name.StartsWith("$"))
                     {
                         var ln = dr.FindLineSym(v.Offset);
                         yield return new CodeName(v.Name, ln.Line, ln.Column);
@@ -45,8 +48,8 @@ namespace Elide.ElaCode.ObjectModel
                 foreach (var v in codeFrame.GlobalScope.EnumerateNames())
                 {
                     var sv = codeFrame.GlobalScope.GetVariable(v);
-                    
-                    if (!sv.VariableFlags.Set(ElaVariableFlags.Private))
+
+                    if (!sv.VariableFlags.Set(ElaVariableFlags.Private) && !v.StartsWith("$"))
                         yield return new CodeName(v, 0, 0);
                 }
             }
@@ -64,5 +67,11 @@ namespace Elide.ElaCode.ObjectModel
         public IEnumerable<CodeName> Globals { get; private set; }
 
         public IEnumerable<IReference> References { get; private set; }
+
+        public IEnumerable<IType> Types { get; private set; }
+
+        public IEnumerable<IClass> Classes { get; private set; }
+
+        public IEnumerable<IClassInstance> Instances { get; private set; }
     }
 }

@@ -32,11 +32,11 @@ namespace Ela.Compilation
 
             //Type is already declared within the same module (types from different
             //modules can shadow each, so this is perfectly OK).
-            if (frame.Types.ContainsKey(v.Name))
+            if (frame.InternalTypes.ContainsKey(v.Name))
                 AddError(ElaCompilerError.TypeAlreadyDeclared, v, v.Name);
             else
             {
-                frame.Types.Add(v.Name, tc);
+                frame.InternalTypes.Add(v.Name, tc);
 
                 //A regular type definition with body
                 if (v.Body != null)
