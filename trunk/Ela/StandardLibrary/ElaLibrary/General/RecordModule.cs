@@ -1,7 +1,8 @@
 ﻿using System;
-using Ela.Linking;
-using Ela.Runtime.ObjectModel;
 using System.Collections.Generic;
+using Ela.Linking;
+using Ela.Runtime;
+using Ela.Runtime.ObjectModel;
 
 namespace Ela.Library.General
 {
@@ -16,13 +17,24 @@ namespace Ela.Library.General
         {
             Add<String,ElaRecord,Boolean>("hasField", HasField);
             Add<ElaRecord,ElaRecord,ElaRecord>("addFields", AddFields);
+            Add<String,ElaValue,ElaRecord,ElaRecord>("addField", AddField);
             Add<IEnumerable<String>,ElaRecord,ElaRecord>("removeFields", RemoveFields);
+            Add<String,ElaRecord,ElaRecord>("removeField", RemoveField);
+            Add<String,ElaValue,ElaRecord,ElaRecord>("changeField", ChangeField);
             Add<ElaRecord,ElaList>("fields", GetFields);
         }
 
         public bool HasField(string field, ElaRecord rec)
         {
             return rec.HasField(field);
+        }
+
+        public ElaRecord AddField(string field, ElaValue value, ElaRecord rec)
+        {
+            var fieldList = new List<ElaRecordField>();
+            fieldList.AddRange(rec);
+            fieldList.Add(new ElaRecordField(field, value));
+            return new ElaRecord(fieldList.ToArray());
         }
 
         public ElaRecord AddFields(ElaRecord fields, ElaRecord rec)
@@ -41,6 +53,28 @@ namespace Ela.Library.General
             foreach (var f in rec)
                 if (fieldArr.IndexOf(f.Field) == -1)
                     fieldList.Add(f);
+
+            return new ElaRecord(fieldList.ToArray());
+        }
+
+        public ElaRecord RemoveField(string field, ElaRecord rec)
+        {
+            var fieldList = new List<ElaRecordField>();
+            
+            foreach (var f in rec)
+                if (f.Field != field)
+                    fieldList.Add(f);
+
+            return new ElaRecord(fieldList.ToArray());
+        }
+
+        public ElaRecord ChangeField(string field, ElaValue value, ElaRecord rec)
+        {
+            var fieldList = new List<ElaRecordField>();
+
+            foreach (var f in rec)
+                if (f.Field == field)
+                    fieldList.Add(new ElaRecordField(f.Field, value));
 
             return new ElaRecord(fieldList.ToArray());
         }

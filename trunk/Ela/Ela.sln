@@ -53,6 +53,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "collections", "collections", "{9B3FF1AF-670F-4D82-B36C-B3D0321DEDB0}"
 	ProjectSection(SolutionItems) = preProject
 		StandardLibrary\Code\collections\alist.ela = StandardLibrary\Code\collections\alist.ela
+		StandardLibrary\Code\collections\queue.ela = StandardLibrary\Code\collections\queue.ela
 	EndProjectSection
 EndProject
 Global

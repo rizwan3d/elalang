@@ -151,9 +151,7 @@ namespace Elide.Workbench.Views
                 if (String.IsNullOrWhiteSpace(mask))
                     control.FilteredFolders.TryGetValue(dir.FullName.ToUpper(), out mask);
 
-                mask = String.IsNullOrWhiteSpace(mask) ? "*.*" : mask;
-                var dirSeq = (IEnumerable<FileSystemInfo>)dir.GetFileSystemInfos(mask);
-
+                var dirSeq = (IEnumerable<FileSystemInfo>)dir.GetFileSystemInfos();
                 dirSeq = cfg.SortAscending ? dirSeq.OrderBy(d => d.Name) : dirSeq.OrderByDescending(d => d.Name);
 
                 if (cfg.SortDirectoriesFirst)
@@ -161,7 +159,8 @@ namespace Elide.Workbench.Views
                
 				foreach (var e in dirSeq)
 				{
-					if ((e.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden || cfg.ShowHiddenFilesFolders)
+					if ((e is DirectoryInfo || mask == null || mask == "*.*" || Like(e.Name, mask)) &&
+                        ((e.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden || cfg.ShowHiddenFilesFolders))
                     {
                         var isFolder = e is DirectoryInfo;
                         var img = "Folder";
@@ -193,6 +192,18 @@ namespace Elide.Workbench.Views
 				treeView.EndUpdate();
 			}
 		}
+
+        private bool Like(string str, string pattern)
+        {
+            try 
+            {
+                return Microsoft.VisualBasic.CompilerServices.LikeOperator.LikeString(str, pattern, Microsoft.VisualBasic.CompareMethod.Binary);
+            }
+            catch 
+            {
+                return false;
+            }
+        }
 
         public ContextMenuStrip BuildMenu()
         {

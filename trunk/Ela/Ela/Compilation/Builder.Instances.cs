@@ -115,7 +115,7 @@ namespace Ela.Compilation
                     //a compiled module frame (from refs array).
                     modId = sv.Address & Byte.MaxValue;
 
-                    if (modId < refs.Count && modId > 0)
+                    if (modId < refs.Count && modId >= 0)
                         mod = refs[modId];
                 }
             }
@@ -138,7 +138,7 @@ namespace Ela.Compilation
                 //the current module).
                 modId = frame.References[s.TypeClassPrefix].LogicalHandle;
                 
-                if (modId < refs.Count && modId > 0)
+                if (modId < refs.Count && modId >= 0)
                     mod = refs[modId];
             }
         }
