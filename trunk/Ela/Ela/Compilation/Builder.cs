@@ -41,6 +41,7 @@ namespace Ela.Compilation
 			stringLookup = new Dictionary<String, Int32>();
 			inlineFuns = new FastList<InlineFun>();
 
+            ResumeIndexer();
             Success = true;			
 		}
 
