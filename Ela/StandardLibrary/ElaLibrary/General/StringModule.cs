@@ -27,8 +27,6 @@ namespace Ela.Library.General
 			Add<String,String,Int32>("indexOf", IndexOf);
 			Add<String,Int32,String,Int32>("indexOfFrom", IndexOfFrom);
 			Add<String,String,Int32>("indexOfLast", LastIndexOf);
-			Add<Char[],String,Int32>("indexOfAny", IndexOfAny);
-			Add<Char[],Int32,String,Int32>("indexOfAnyFrom", IndexOfAnyFrom);
 			Add<String,String,Boolean>("startsWith", StartsWith);
 			Add<String,String,Boolean>("endsWith", EndsWith);
 			Add<String,String,String,String>("replace", Replace);
@@ -36,7 +34,6 @@ namespace Ela.Library.General
 			Add<String[],String,ElaList>("split", Split);
 			Add<Int32,Int32,String,String>("substr", Substring);
 			Add<Int32,String,String,String>("insert", Insert);
-            Add<IEnumerable<ElaValue>,String>("fromSeq", FromSeq);
 		}
         
 		public string ToUpper(string val)
@@ -93,16 +90,6 @@ namespace Ela.Library.General
 		{
 			return str.LastIndexOf(search);
 		}
-
-		public int IndexOfAny(char[] cz, string str)
-		{
-			return str.IndexOfAny(cz);
-		}
-
-		public int IndexOfAnyFrom(char[] cz, int index, string str)
-		{
-			return str.IndexOfAny(cz, index);
-		}
         		
 		public bool StartsWith(string search, string str)
 		{
@@ -144,15 +131,5 @@ namespace Ela.Library.General
 		{
             return str.Insert(index, toInsert);
 		}
-
-        public string FromSeq(IEnumerable<ElaValue> list)
-        {
-            var sb = new StringBuilder();
-
-            foreach (var e in list)
-                sb.Append((Char)e.AsObject());
-
-            return sb.ToString();
-        }
 	}
 }

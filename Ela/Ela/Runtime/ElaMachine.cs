@@ -15,6 +15,7 @@ namespace Ela.Runtime
         #region Construction
         internal ElaValue[][] modules;
         private readonly CodeAssembly asm;
+        private int lastOffset;
 
         public ElaMachine(CodeAssembly asm)
         {
@@ -110,6 +111,7 @@ namespace Ela.Runtime
         public ExecutionResult Run()
         {
             MainThread.Offset = MainThread.Offset == 0 ? 0 : MainThread.Offset;
+            lastOffset = MainThread.Module.Ops.Count;
             var ret = default(ElaValue);
 
             try
@@ -154,6 +156,13 @@ namespace Ela.Runtime
         {
             MainThread.Offset = offset;
             return Run();
+        }
+
+
+        public ExecutionResult Resume()
+        {
+            RefreshState();
+            return Run(lastOffset);
         }
 
 

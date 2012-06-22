@@ -51,7 +51,8 @@ instance Typeable string //toList
 instance Typeable list
   where cast ?string x = castString x
 
-let castString (x::xs) = toString x ++ castString xs
+let private
+    castString (x::xs) = toString x ++ castString xs
     castString [] = ""
 
 /* Eq */
@@ -338,7 +339,7 @@ let fst3 (x,_,_) = x
 let snd3 (_,y,_) = y
 
 /* Complex behaviors */
-let typeinfo = __internal typeinfo
+let getType = __internal typeinfo
 let force = __internal force
 
 /* Variants */

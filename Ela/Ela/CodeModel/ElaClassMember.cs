@@ -7,7 +7,7 @@ namespace Ela.CodeModel
 {
     public sealed class ElaClassMember : ElaExpression
     {
-        internal ElaClassMember(Token tok) : base(tok, ElaNodeType.TypeClass)
+        internal ElaClassMember(Token tok) : base(tok, ElaNodeType.ClassMember)
         {
             
         }
@@ -23,7 +23,7 @@ namespace Ela.CodeModel
 
             if (Mask != 0)
             {
-                sb.Append("::");
+                sb.Append(":: ");
 
                 for (var i = 0; i < Arguments; i++)
                 {
