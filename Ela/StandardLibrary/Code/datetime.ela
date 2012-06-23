@@ -87,3 +87,5 @@ let diffSeconds x y = seconds (diffTicks x y)
 let diffMilliseconds x y = milliseconds (diffTicks x y)
 
 let diffTicks (DateTime x) (DateTime y) = x - y
+
+let parse fmt str = datetime (dt.parse fmt str)

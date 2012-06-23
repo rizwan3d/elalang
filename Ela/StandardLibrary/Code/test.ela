@@ -4,7 +4,8 @@
 */
 open core reflect format@form
 
-let assert =
+let private
+  assert =
     {
         eq  = op' "eq"  (==),
         neq = op' "neq" (<>),
@@ -18,7 +19,8 @@ let assert =
     where op' m op x y | op x y = ()
                        | else   = raise AssertFailed m
 
-let funData mod fun = (moduleName mod ++ "." ++ funName fun, fun)
+let private 
+  funData mod fun = (moduleName mod ++ "." ++ funName fun, fun)
 
 let regFun fun xs = funData fun  :: xs
 
@@ -33,7 +35,7 @@ let run xs = (res, failed)
            et res = map exec xs
            et failed = count (not << snd3) res
               
-let fmt f prf (tests, failed) =
+let report f prf (tests, failed) =
         out "Test session started" 
             (all' f tests 1 "")
             "Test session finished"

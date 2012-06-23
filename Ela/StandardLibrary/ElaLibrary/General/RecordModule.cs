@@ -75,6 +75,8 @@ namespace Ela.Library.General
             foreach (var f in rec)
                 if (f.Field == field)
                     fieldList.Add(new ElaRecordField(f.Field, value));
+                else
+                    fieldList.Add(f);
 
             return new ElaRecord(fieldList.ToArray());
         }
