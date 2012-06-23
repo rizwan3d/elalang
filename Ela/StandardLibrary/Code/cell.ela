@@ -25,5 +25,3 @@ let c.+ = mutate (valueof c + 1) c
 let c.- = mutate (valueof c - 1) c
 
 let c := e = mutate e c
-
-
