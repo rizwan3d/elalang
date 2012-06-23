@@ -71,7 +71,7 @@ namespace Ela.Linking
 			var mod = new ModuleReference(Path.GetFileNameWithoutExtension(RootFile != null ? RootFile.Name : MemoryFile));
 			var frame = Build(mod, RootFile);
 			RegisterFrame(new ModuleReference(
-				Path.GetFileNameWithoutExtension(RootFile.Name)), frame, RootFile, -1);
+                Path.GetFileNameWithoutExtension(RootFile.Name)), frame, RootFile, false, -1);
 			return new LinkerResult(Assembly, Success, Messages);
 		}
 
@@ -81,7 +81,7 @@ namespace Ela.Linking
 			var mod = new ModuleReference(Path.GetFileNameWithoutExtension(RootFile != null ? RootFile.Name : MemoryFile));
             var frame = Build(mod, null, source, null, null);
 			RegisterFrame(new ModuleReference(
-				Path.GetFileNameWithoutExtension(RootFile.Name)), frame, RootFile, -1);
+                Path.GetFileNameWithoutExtension(RootFile.Name)), frame, RootFile, false, -1);
 			return new LinkerResult(Assembly, Success, Messages);
 		}
 
@@ -126,18 +126,18 @@ namespace Ela.Linking
                             if (!bin)
                             {
                                 frame = Build(mod, fi);
-                                hdl = RegisterFrame(mod, frame, fi, mod.LogicalHandle);
+                                hdl = RegisterFrame(mod, frame, fi, false, mod.LogicalHandle);
                             }
                             else
                             {
                                 frame = ReadObjectFile(mod, fi);
-                                hdl = RegisterFrame(mod, frame, fi, mod.LogicalHandle);
+                                hdl = RegisterFrame(mod, frame, fi, false, mod.LogicalHandle);
                             }
                         }
                         else
                         {
                             frame = TryResolveModule(mod);
-                            hdl = RegisterFrame(mod, frame, fi, mod.LogicalHandle);
+                            hdl = RegisterFrame(mod, frame, fi, false, mod.LogicalHandle);
                         }
                     }
                 }
@@ -150,7 +150,7 @@ namespace Ela.Linking
 		}
 
 
-        private void ProcessTypeAndClasses(CodeFrame frame, int hdl)
+        private void ProcessTypeAndClasses(CodeFrame frame, bool reload, int hdl)
         {
             foreach (var k in new List<String>(frame.InternalTypes.Keys))
             {
@@ -182,7 +182,10 @@ namespace Ela.Linking
                 long instanceCode = classCode | lo;
 
                 if (Assembly.Instances.ContainsKey(instanceCode))
-                    AddError(ElaLinkerError.InstanceAlreadyExists, frame.File, id.Line, id.Column, id.Class, id.Type);
+                {
+                    if (!reload)
+                        AddError(ElaLinkerError.InstanceAlreadyExists, frame.File, id.Line, id.Column, id.Class, id.Type);
+                }
                 else
                     Assembly.Instances.Add(instanceCode, 0);
             }
@@ -287,16 +290,13 @@ namespace Ela.Linking
 		}
 
 
-		internal int RegisterFrame(ModuleReference mod, CodeFrame frame, FileInfo fi, int logicHandle)
+		internal int RegisterFrame(ModuleReference mod, CodeFrame frame, FileInfo fi, bool reload, int logicHandle)
 		{
             if (frame != null)
             {
                 frame.File = fi;
                 var hdl =  Assembly.AddModule(mod.ToString(), frame, mod.RequireQuailified, logicHandle);
-
-                if (frame != null)
-                    ProcessTypeAndClasses(frame, hdl);
-
+                ProcessTypeAndClasses(frame, reload, hdl);
                 return hdl;
             }
             else
@@ -439,7 +439,7 @@ namespace Ela.Linking
 					return null;
 				}
 
-				hdl = RegisterFrame(mod, frame, fi, mod.LogicalHandle);
+                hdl = RegisterFrame(mod, frame, fi, false, mod.LogicalHandle);
 				return frame;
 			}
 		}

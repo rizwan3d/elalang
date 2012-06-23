@@ -104,10 +104,10 @@
 				CompilerOptions co = new CompilerOptions();
 				co.Prelude = "Prelude";
 				linker = new ElaIncrementalLinker(lo, co);
+				linker.AddArgument("webOut", webOutDelegate);				
 				Session["Linker"] = linker;
 			}
 
-			linker.AddArgument("webOut", webOutDelegate);				
 			linker.SetSource(source);
 			LinkerResult lres = linker.Build();
 			

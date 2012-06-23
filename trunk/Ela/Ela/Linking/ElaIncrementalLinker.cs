@@ -65,7 +65,7 @@ namespace Ela.Linking
 			}
 
 			frame = Build(mod, RootFile, source, frame, scope);			
-			RegisterFrame(mod, frame, RootFile, -1);
+			RegisterFrame(mod, frame, RootFile, !scratch, -1);
 
 			if (Success)
 				Assembly.RefreshRootModule(frame);
