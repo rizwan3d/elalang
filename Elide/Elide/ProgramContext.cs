@@ -4,13 +4,14 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using Elide.Core;
+using System.Collections.Generic;
 
 namespace Elide
 {
     internal sealed class ProgramContext : ApplicationContext
     {
         private readonly IApp app;
-
+        
         public ProgramContext(string[] args)
         {
             var sections = ExtList<ExtSection>.Empty;
