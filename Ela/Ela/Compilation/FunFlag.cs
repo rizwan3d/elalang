@@ -6,8 +6,6 @@ namespace Ela.Compilation
 	{
 		None,
 
-		Inline,
-
-        Newtype
+		Inline
 	}
 }

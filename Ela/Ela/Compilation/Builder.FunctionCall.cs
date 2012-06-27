@@ -8,72 +8,64 @@ namespace Ela.Compilation
     {
         //Try to inline a function by compiling it in place. If a function cannot be
         //inlined than it returns false and a caller emits a regular function call.
-        private bool TryCompileInlineCall(ElaFunctionCall v, LabelMap map, Hints hints)
+        private bool TryCompileInlineCall(ElaJuxtaposition v, LabelMap map, Hints hints)
         {
-            //If we don't know what is to be called - don't inline
-            if (v.Target.Type != ElaNodeType.VariableReference)
-                return false;
+            ////If we don't know what is to be called - don't inline
+            //if (v.Target.Type != ElaNodeType.NameReference)
+            //    return false;
 
-            var name = v.Target.GetName();
-            var sv = GetVariable(name, CurrentScope, GetFlags.NoError, v.Target.Line, v.Target.Column);
+            //var name = v.Target.GetFunctionName();
+            //var sv = GetVariable(name, CurrentScope, GetFlags.NoError, v.Target.Line, v.Target.Column);
 
-            //Only function literals with 'inline' attribute are accepted
-            if ((sv.Flags & ElaVariableFlags.Function) != ElaVariableFlags.Function
-                || (sv.Flags & ElaVariableFlags.Inline) != ElaVariableFlags.Inline)
-                return false;
+            ////Only function literals with 'inline' attribute are accepted
+            //if ((sv.Flags & ElaVariableFlags.Function) != ElaVariableFlags.Function
+            //    || (sv.Flags & ElaVariableFlags.Inline) != ElaVariableFlags.Inline)
+            //    return false;
 
-            //Here we make sure that this is not a direct recursion. Indirect recursion is
-            //OK as soon as we inline only function literals, not just expressions.
-            if (map.FunctionName == name)
-                return false;
+            ////Here we make sure that this is not a direct recursion. Indirect recursion is
+            ////OK as soon as we inline only function literals, not just expressions.
+            //if (map.FunctionName == name)
+            //    return false;
 
-            //This should be an impossible situation. Normally Data should contains an index
-            //of InlineFun instance (with function data) in inlineFuns list.
-            if (sv.Data < 0)
-                return false;
+            ////This should be an impossible situation. Normally Data should contains an index
+            ////of InlineFun instance (with function data) in inlineFuns list.
+            //if (sv.Data < 0)
+            //    return false;
 
-            var fun = inlineFuns[sv.Data];
+            //var fun = inlineFuns[sv.Data];
 
-            //For now we only inline functions within the same scope (or from global
-            //scope). There may be a problem with a variable indexing when a function
-            //from parent non-global scope captures a variable from local scope.
-            if (fun.Scope != CurrentScope && fun.Scope != globalScope)
-                return false;
+            ////For now we only inline functions within the same scope (or from global
+            ////scope). There may be a problem with a variable indexing when a function
+            ////from parent non-global scope captures a variable from local scope.
+            //if (fun.Scope != CurrentScope && fun.Scope != globalScope)
+            //    return false;
 
-            //We only inline when an exact same number of arguments is provided (e.g. this is
-            //not a partial application).
-            if (v.Parameters.Count != fun.Literal.ParameterCount)
-                return false;
+            ////We only inline when an exact same number of arguments is provided (e.g. this is
+            ////not a partial application).
+            //if (v.Parameters.Count != fun.Literal.ParameterCount)
+            //    return false;
 
-            //Compiling function in-place
-            var oc = CurrentScope;
-            CurrentScope = new Scope(false, fun.Scope);
-            CompileFunction(fun.Literal, FunFlag.Inline);
-            CurrentScope = oc;
-            return true;
+            ////Compiling function in-place
+            //var oc = CurrentScope;
+            //CurrentScope = new Scope(false, fun.Scope);
+            //CompileFunction(fun.Literal, FunFlag.Inline);
+            //CurrentScope = oc;
+            //return true;
+
+            return false;
         }
         
         //Compiling a regular function call.
-        private ExprData CompileFunctionCall(ElaFunctionCall v, LabelMap map, Hints hints)
+        private ExprData CompileFunctionCall(ElaJuxtaposition v, LabelMap map, Hints hints)
         {
             var ed = ExprData.Empty;
-            var bf = default(ElaVariableReference);
+            var bf = default(ElaNameReference);
             var sv = default(ScopeVar);
 
-            //Variant literals are recognized by parser as function calls.
-            //Here we ensure that we actually have a function call, not a variant.
-            if (v.Target.Type == ElaNodeType.VariantLiteral)
+            if (v.Target.Type == ElaNodeType.NameReference)
             {
-                if (v.Parameters.Count != 1)
-                    AddError(ElaCompilerError.InvalidVariant, v, v);
-
-                CompileVariant((ElaVariantLiteral)v.Target, v.Parameters[0], map, Hints.None);
-                return ed;
-            }
-            else if (v.Target.Type == ElaNodeType.VariableReference)
-            {
-                bf = (ElaVariableReference)v.Target;
-                sv = GetVariable(bf.VariableName, bf.Line, bf.Column);
+                bf = (ElaNameReference)v.Target;
+                sv = GetVariable(bf.Name, bf.Line, bf.Column);
 
                 //If the target is one of the built-in application function we need to transform this
                 //to a regular function call, e.g. 'x |> f' is translated into 'f x' by manually creating
@@ -85,14 +77,14 @@ namespace Ela.Compilation
 
                     if (k == ElaBuiltinKind.BackwardPipe && v.Parameters.Count == 2)
                     {
-                        var fc = new ElaFunctionCall { Target = v.Parameters[0] };
+                        var fc = new ElaJuxtaposition { Target = v.Parameters[0] };
                         fc.SetLinePragma(v.Line, v.Column);
                         fc.Parameters.Add(v.Parameters[1]);
                         return CompileFunctionCall(fc, map, hints);
                     }
                     else if (k == ElaBuiltinKind.ForwardPipe && v.Parameters.Count == 2)
                     {
-                        var fc = new ElaFunctionCall { Target = v.Parameters[1] };
+                        var fc = new ElaJuxtaposition { Target = v.Parameters[1] };
                         fc.SetLinePragma(v.Line, v.Column);
                         fc.Parameters.Add(v.Parameters[0]);
                         return CompileFunctionCall(fc, map, hints);
@@ -135,7 +127,7 @@ namespace Ela.Compilation
                     if (len != pars)
                     {
                         AddLinePragma(bf);
-                        map.BuiltinName = bf.VariableName;
+                        map.BuiltinName = bf.Name;
                         CompileBuiltin(kind, v.Target, map);
 
                         if (v.FlipParameters)

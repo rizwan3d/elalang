@@ -126,9 +126,6 @@
   <data name="ClassAlreadyDeclared" xml:space="preserve">
     <value>A module already defines a class '{0}'.</value>
   </data>
-  <data name="ElseGuardNotValid" xml:space="preserve">
-    <value>An 'else' guard is not valid in this context.</value>
-  </data>
   <data name="ElseMissing" xml:space="preserve">
     <value>A mandatory 'else' clause is missing. A conditional expression should be always terminated with an 'else' clause.</value>
   </data>
@@ -141,8 +138,17 @@
   <data name="InvalidBuiltinClassDefinition" xml:space="preserve">
     <value>Invalid definition of a built-in class '{0}'.</value>
   </data>
+  <data name="InvalidExpression" xml:space="preserve">
+    <value>An expression '{0}' is not valid in this context.</value>
+  </data>
+  <data name="InvalidMatchEntry" xml:space="preserve">
+    <value>Match entry {0} is invalid.</value>
+  </data>
   <data name="InvalidMemberSignature" xml:space="preserve">
     <value>A function '{0}' signature is invalid. Type parameter should be used in a signature at least once.</value>
+  </data>
+  <data name="InvalidPattern" xml:space="preserve">
+    <value>Invalid pattern {0}.</value>
   </data>
   <data name="InvalidProgram" xml:space="preserve">
     <value>Invalid program body.</value>
@@ -174,8 +180,11 @@
   <data name="OnlyBuiltinTypeNoDefinition" xml:space="preserve">
     <value>Invalid definition of type '{0}'. Only built-in types can have no definition.</value>
   </data>
-  <data name="PatternNotAllArgs" xml:space="preserve">
-    <value>Not all of the function arguments are specified in the pattern {0}.</value>
+  <data name="PatternsTooFew" xml:space="preserve">
+    <value>Not all of the patterns are specified in the entry {0}. Expected {1} pattern(s), found {2} pattern(s).</value>
+  </data>
+  <data name="PatternsTooMany" xml:space="preserve">
+    <value>Too many patterns are specified in the entry {0}. Expected {1} pattern(s), found {2} pattern(s).</value>
   </data>
   <data name="PlaceholderNotValid" xml:space="preserve">
     <value>An expression '_' is not valid in this context.</value>

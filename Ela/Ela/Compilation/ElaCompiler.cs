@@ -15,21 +15,21 @@ namespace Ela.Compilation
 
 
 		#region Methods
-		public CompilerResult Compile(ElaExpression expr, CompilerOptions options, ExportVars builtins)
+		public CompilerResult Compile(ElaProgram prog, CompilerOptions options, ExportVars builtins)
 		{
 			var frame = new CodeFrame();
-			return Compile(expr, options, builtins, frame, new Scope(false, null));
+			return Compile(prog, options, builtins, frame, new Scope(false, null));
 		}
 
 
-		public CompilerResult Compile(ElaExpression expr, CompilerOptions options, ExportVars builtins, CodeFrame frame, Scope globalScope)
+        public CompilerResult Compile(ElaProgram prog, CompilerOptions options, ExportVars builtins, CodeFrame frame, Scope globalScope)
 		{
             Options = options;
             var helper = new Builder(frame, this, builtins, globalScope);
                 
             try
             {
-                helper.CompileUnit(expr);
+                helper.CompileUnit(prog);
             }
             catch (TerminationException)
             {

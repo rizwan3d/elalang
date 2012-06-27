@@ -63,17 +63,17 @@ namespace Ela.Compilation
             var body = default(ElaExpression);
 
             //Only function application is accepted
-            if ((body = lazy.Expression).Type != ElaNodeType.FunctionCall)
+            if ((body = lazy.Expression).Type != ElaNodeType.Juxtaposition)
                 return false;
 
-            var funCall = (ElaFunctionCall)body;
+            var funCall = (ElaJuxtaposition)body;
 
             //If a target is not a variable we can't check what is actually called
-            if (funCall.Target.Type != ElaNodeType.VariableReference)
+            if (funCall.Target.Type != ElaNodeType.NameReference)
                 return false;
 
-            var varRef = (ElaVariableReference)funCall.Target;
-            var scopeVar = GetVariable(varRef.VariableName, varRef.Line, varRef.Column);
+            var varRef = (ElaNameReference)funCall.Target;
+            var scopeVar = GetVariable(varRef.Name, varRef.Line, varRef.Column);
             var len = funCall.Parameters.Count;
 
             //If a target is not function we can't optimize it

@@ -4,21 +4,21 @@ using Ela.Parsing;
 
 namespace Ela.CodeModel
 {
-	public sealed class ElaVariableReference : ElaExpression
+	public sealed class ElaNameReference : ElaExpression
 	{
-		internal ElaVariableReference(Token tok) : base(tok, ElaNodeType.VariableReference)
+		internal ElaNameReference(Token tok) : base(tok, ElaNodeType.NameReference)
 		{
 			
 		}
         
-		public ElaVariableReference() : this(null)
+		public ElaNameReference() : this(null)
 		{
 			
 		}
 		
         internal override string GetName()
 		{
-			return VariableName;
+			return Name;
         }
 
         internal override bool Safe()
@@ -28,10 +28,10 @@ namespace Ela.CodeModel
 
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
-			if (VariableName[0] != '$')
-				sb.Append(VariableName);
+			if (Name[0] != '$')
+				sb.Append(Name);
 		}
 
-		public string VariableName { get; set; }
+		public string Name { get; set; }
 	}
 }

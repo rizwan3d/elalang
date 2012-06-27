@@ -8,7 +8,7 @@ namespace Ela.CodeModel
 	{
 		internal ElaUnitLiteral(Token tok) : base(tok, ElaNodeType.UnitLiteral)
 		{
-			Flags = ElaExpressionFlags.ReturnsUnit;
+			
 		}
 
 		public ElaUnitLiteral() : this(null)

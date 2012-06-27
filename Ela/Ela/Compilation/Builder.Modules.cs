@@ -11,7 +11,7 @@ namespace Ela.Compilation
         private FastList<CodeFrame> refs = new FastList<CodeFrame>();
 
         //Compiles an 'open' module directive.
-        private void CompileModuleInclude(ElaModuleInclude s, LabelMap map, Hints hints)
+        private void CompileModuleInclude(ElaModuleInclude s, LabelMap map)
         {
             var modHandle = frame.References.Count;
 
@@ -52,13 +52,9 @@ namespace Ela.Compilation
             //Several 'open' directives can be chained
             if (s.And != null)
             {
-                CompileModuleInclude(s.And, map, hints);
+                CompileModuleInclude(s.And, map);
                 return;
             }
-
-            //A module include directive might be the last statement in a module
-            if ((hints & Hints.Left) != Hints.Left)
-                cw.Emit(Op.Pushunit);
         }
 
         //Includes a module reference (used for user references, Prelude and Arguments module).
@@ -136,7 +132,7 @@ namespace Ela.Compilation
         //and the code gets compiled as a regular field reference.
         private bool TryOptimizeFieldReference(ElaFieldReference p)
         {
-            if (p.TargetObject.Type != ElaNodeType.VariableReference)
+            if (p.TargetObject.Type != ElaNodeType.NameReference)
                 return false;
             
             var mod = default(ModuleReference);

@@ -7,15 +7,19 @@ namespace Ela.Compilation
     //This part is responsible for function compilation.
 	internal sealed partial class Builder
 	{
-        //Main method used to compile functions. Can compile regular functions, 
-        //functions in-place (FunFlag.Inline) and type constructors (FunFlag.Newtype).
-		private void CompileFunction(ElaFunctionLiteral dec, FunFlag flag)
+        //Main method used to compile functions. Can compile regular named functions, 
+        //named functions in-place (FunFlag.Inline) and type constructors (FunFlag.Newtype).
+		private void CompileFunction(ElaEquation dec, FunFlag flag)
 		{
-			var pars = dec.ParameterCount;
+            var fc = (ElaJuxtaposition)dec.Left;
+			var pars = fc.Parameters.Count;
+
+            //Target can be null in a case of an anonymous function (lambda)
+            var name = fc.Target != null ? fc.Target.GetName() : String.Empty;
 
             //Don't generate debug info when a function is compiled inline.
 			if (flag != FunFlag.Inline)
-				StartFun(dec.Name, pars);
+				StartFun(name, pars);
 
 			var funSkipLabel = Label.Empty;
 
@@ -36,7 +40,7 @@ namespace Ela.Compilation
 			map.FunStart = startLabel;
 
             //Preserve some information about a function we're currently in.
-			map.FunctionName = dec.Name;
+			map.FunctionName = name;
 			map.FunctionParameters = pars;
 			map.FunctionScope = CurrentScope;
 			map.InlineFunction = flag == FunFlag.Inline;
@@ -47,38 +51,20 @@ namespace Ela.Compilation
 
             //We start a real (VM based) lexical scope for a regular function,
             //and a compiler processed lexical scope for inlined function.
-			StartScope(flag != FunFlag.Inline, dec.Body.Line, dec.Body.Column);
+			StartScope(flag != FunFlag.Inline, dec.Right.Line, dec.Right.Column);
 
             //StartSection create a real lexical scope - not needed when inlined.
 			if (flag != FunFlag.Inline)
 				StartSection();
-			
+
+            //If this a 'type member' function we can specify a tail hint because
+            //it could cause a generation of Callt when we need to construct a type
+            //(using Newtype) as the very last instruction in such a function.
+            var hints = Hints.Scope | (dec.AssociatedType != null ? Hints.None : Hints.Tail);
+
 			AddLinePragma(dec);
-            var address = cw.Offset;            			
-            CompileParameters(dec, map, flag);
-
-            //When a function has a single body use a slightly simplified compilation logic.
-            //Otherwise compile a whole function as a pattern match expression.
-            if (dec.Body.Entries.Count > 1)
-			{
-                var t = (ElaTupleLiteral)dec.Body.Expression;
-                
-                //Parser always wraps function parameters in a tuple even if a function
-                //has a single parameter. We need to avoid this redundancy.
-                var ex = t.Parameters.Count == 1 ? t.Parameters[0] : t;
-                CompileMatch(dec.Body, ex, map, Hints.Tail | Hints.Scope | Hints.FunBody);
-			}
-			else 
-			{                
-                //As soon as we are using a simplified compilation technique we have to
-                //process 'where' binding by ourselves.
-                if (dec.Body.Entries[0].Where != null)
-					CompileExpression(dec.Body.Entries[0].Where, map, Hints.Left);
-
-                //We don't need a 'tail situation' for newtype.
-                var eh = flag == FunFlag.None || flag == FunFlag.Inline ? Hints.Scope | Hints.Tail : Hints.Scope;
-				CompileExpression(dec.Body.Entries[0].Expression, map, eh);
-			}
+            var address = cw.Offset;
+            CompileFunctionMatch(pars, dec, map, hints);
 
             //This logic created a function (by finally emitting Newfun).
             //Obviously not needed for inlined function.
@@ -92,8 +78,8 @@ namespace Ela.Compilation
 
                 //For a type constructor function the last instruction
                 //in a function should be a Newtype op code.
-                if (flag == FunFlag.Newtype)
-                    cw.Emit(Op.Newtype, AddString(typeName));
+                if (dec.AssociatedType != null)
+                    cw.Emit(Op.Newtype, AddString(dec.AssociatedType));
 
 				cw.Emit(Op.Ret);
 				cw.MarkLabel(funSkipLabel);
@@ -105,80 +91,55 @@ namespace Ela.Compilation
 				cw.Emit(Op.Newfun, funHandle);
 			}
 		}
-        
-        //Here we compile a function parameter list
-		private void CompileParameters(ElaFunctionLiteral fun, LabelMap map, FunFlag flag)
-		{
-            //When a function has a single body we use a simplified compilication technique
-            //(senerates a slightly faster code).
-            if (fun.Body.Entries.Count == 1)
-			{
-				var fe = fun.Body.Entries[0];
-				var seq = fe.Pattern.Type == ElaNodeType.PatternGroup ? (ElaPatternGroup)fe.Pattern : null;
-				var parCount = seq != null ? seq.Patterns.Count : 1;
-				var ng = fe.Guard == null;
 
-                //Here we process all patterns manually and emitting a faster code for regular
-                //variable and default patterns.
-				for (var i = 0; i < parCount; i++)
-				{
-					var e = parCount > 1 ? seq.Patterns[i] : fe.Pattern;
-
-					if (ng && e.Type == ElaNodeType.VariablePattern)
-						AddParameter((ElaVariablePattern)e);
-					else if (ng && e.Type == ElaNodeType.DefaultPattern)
-						cw.Emit(Op.Pop);
-					else
-					{
-						var addr = AddVariable();
-                        PopVar(addr);
-						var nextLab = cw.DefineLabel();
-						var skipLab = cw.DefineLabel();
-						CompilePattern(addr, null, e, map, nextLab, ElaVariableFlags.None, Hints.FunBody);
-						cw.Emit(Op.Br, skipLab);
-						cw.MarkLabel(nextLab);
-						cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
-						cw.MarkLabel(skipLab);
-						cw.Emit(Op.Nop);
-					}
-				}
-
-                //Generates code for a guard if it is present.
-				if (fe.Guard != null)
-				{
-					var next = cw.DefineLabel();
-					CompileExpression(fe.Guard, map, Hints.Scope);
-					cw.Emit(Op.Brtrue, next);
-					cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
-					cw.MarkLabel(next);
-					cw.Emit(Op.Nop);
-				}
-			}
-            else
-            {
-                //Regular compilation logic for multiple body function. In this case parameters
-                //are presented through hidden variables (with $ prefixed). These variables are created
-                //to capture values on a stack and match against patterns (when compiling the rest of
-                //a function as a pattern matching construct).
-                var t = (ElaTupleLiteral)fun.Body.Expression;
-
-                for (var i = 0; i < t.Parameters.Count; i++)
-                {
-                    var v = (ElaVariableReference)t.Parameters[i];
-                    var addr = AddVariable(v.VariableName, v,
-                        v.VariableName[0] == '$' ?
-                        (ElaVariableFlags.SpecialName | ElaVariableFlags.Parameter) : ElaVariableFlags.Parameter, -1);
-                    PopVar(addr);
-                }
-            }
-		}
-
-        //Adds a parameter. Parameters can shadow each other.
-        private void AddParameter(ElaVariablePattern exp)
+        //Used to compile an anonymous function (lambda). This function returns a number of parameters 
+        //in compiled lambda.
+        private int CompileLambda(ElaEquation bid)
         {
-            CurrentScope.Locals.Remove(exp.Name); //Parameters can hide each other
-            var addr = AddVariable(exp.Name, exp, ElaVariableFlags.Parameter, -1);
-            PopVar(addr);
+            var fc = new ElaJuxtaposition();
+
+            //Lambda is parsed as a an application of a lambda operator, e.g.
+            //expr -> expr, therefore it needs to be transformed in order to be
+            //able to use existing match compilation logic.
+            if (bid.Left.Type == ElaNodeType.Juxtaposition)
+            {
+                var f = (ElaJuxtaposition)bid.Left;
+                fc.Parameters.Add(f.Target);
+                fc.Parameters.AddRange(f.Parameters);
+            }
+            else
+                fc.Parameters.Add(bid.Left);
+
+            bid.Left = fc;
+            var parLen = fc.Parameters.Count;
+            StartFun(null, parLen);
+
+            var funSkipLabel = cw.DefineLabel();
+            var map = new LabelMap();
+            cw.Emit(Op.Br, funSkipLabel);
+
+            //We start a real (VM based) lexical scope for a function.
+            StartScope(true, bid.Right.Line, bid.Right.Column);
+            StartSection();
+
+            var address = cw.Offset;
+            CompileFunctionMatch(parLen, bid, map, Hints.Scope | Hints.Tail);
+
+            var funHandle = frame.Layouts.Count;
+            var ss = EndFun(funHandle);
+            frame.Layouts.Add(new MemoryLayout(currentCounter, ss, address));
+            EndScope();
+            EndSection();
+
+            cw.Emit(Op.Ret);
+            cw.MarkLabel(funSkipLabel);
+
+            AddLinePragma(bid);
+
+            //Function is constructed
+            cw.Emit(Op.PushI4, parLen);
+            cw.Emit(Op.Newfun, funHandle);
+            return parLen;
         }
 	}
 }

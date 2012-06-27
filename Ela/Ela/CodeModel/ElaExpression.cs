@@ -51,9 +51,9 @@ namespace Ela.CodeModel
 
 		public int Column { get; private set; }
 		
-		public ElaExpressionFlags Flags { get; internal protected set; }
-		
 		public ElaNodeType Type { get; protected set; }
+
+        public bool Parens { get; set; }
 
         internal string Code
         {

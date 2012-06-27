@@ -60,7 +60,7 @@ namespace Ela.CodeModel
 		{
 			return 
 				p == null ||
-				p.Type == ElaNodeType.VariableReference ||
+				p.Type == ElaNodeType.NameReference ||
 				p.Type == ElaNodeType.Primitive ||
 				p.Type == ElaNodeType.ListLiteral ||
 				p.Type == ElaNodeType.RecordLiteral ||
@@ -71,8 +71,8 @@ namespace Ela.CodeModel
 
 		public static bool IsHiddenVar(ElaExpression p)
 		{
-			return p != null && p.Type == ElaNodeType.VariableReference &&
-				((ElaVariableReference)p).VariableName[0] == '$';
+			return p != null && p.Type == ElaNodeType.NameReference &&
+				((ElaNameReference)p).Name[0] == '$';
 		}
         
 		public static void PutInBraces(ElaExpression e, StringBuilder sb, Fmt fmt)
@@ -89,21 +89,21 @@ namespace Ela.CodeModel
 				e.ToString(sb, fmt);				
 		}
 
-		public static void PutInBraces(ElaPattern e, StringBuilder sb, Fmt fmt)
-		{
-			var complex = e.Type == ElaNodeType.HeadTailPattern ||
-				e.Type == ElaNodeType.VariantPattern ||
-				e.Type == ElaNodeType.AsPattern ||
-				e.Type == ElaNodeType.IsPattern;
+        //public static void PutInBraces(ElaPattern e, StringBuilder sb, Fmt fmt)
+        //{
+        //    var complex = e.Type == ElaNodeType.HeadTailPattern ||
+        //        e.Type == ElaNodeType.VariantPattern ||
+        //        e.Type == ElaNodeType.AsPattern ||
+        //        e.Type == ElaNodeType.IsPattern;
 
-			if (complex)
-			{
-				sb.Append('(');
-				e.ToString(sb, fmt.Add(FmtFlags.NoParen));
-				sb.Append(')');
-			}
-			else
-				e.ToString(sb, fmt);
-		}
+        //    if (complex)
+        //    {
+        //        sb.Append('(');
+        //        e.ToString(sb, fmt.Add(FmtFlags.NoParen));
+        //        sb.Append(')');
+        //    }
+        //    else
+        //        e.ToString(sb, fmt);
+        //}
 	}
 }

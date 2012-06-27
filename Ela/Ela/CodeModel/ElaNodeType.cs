@@ -15,7 +15,7 @@ namespace Ela.CodeModel
 		
 		UnitLiteral = 4,
 
-		FunctionLiteral = 5,
+		Lambda = 5,
 
 		LazyLiteral = 6,
 
@@ -27,13 +27,13 @@ namespace Ela.CodeModel
 
 		Binary,
 
-		FunctionCall,
+		Juxtaposition,
 
 		FieldDeclaration,
 
 		Primitive,
 
-		VariableReference,
+		NameReference,
 
         FieldReference,
 
@@ -41,21 +41,19 @@ namespace Ela.CodeModel
 		
 		Placeholder,
 
-		Is,
+		As,
 
 		Condition,
 
 		Try,
 
-		Binding,
+		Equation,
 
 		Raise,
 
-		Block,
+		EquationSet,
 
 		Match,
-
-		MatchEntry,
 
 		Range,
 
@@ -65,36 +63,11 @@ namespace Ela.CodeModel
 
 		Generator,
 
+        LetBinding,
 
-		OtherwiseGuard,
-		
-		DefaultPattern,
+        TypeCheck,
 
-		UnitPattern,
-
-		NilPattern,
-
-		LiteralPattern,
-
-		VariablePattern,
-
-		VariantPattern,
-
-		HeadTailPattern,
-
-		TuplePattern,
-
-		RecordPattern,
-
-		FieldPattern,
-
-		IsPattern,
-
-		AsPattern,
-
-		PatternGroup,
-
-        
+			
 
         TypeClass,
 

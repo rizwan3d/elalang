@@ -99,8 +99,6 @@ TOKENS
 	WHERE = "where".
 	QUALIFIED = "qualified".
 	
-	ET = "et".
-	
 	EBLOCK = ";".
 	
 	
@@ -120,7 +118,8 @@ PRODUCTIONS
 			| TupleLiteral<out exp>
 			| SimpleExpr<out exp>
 			| VariantLiteral<out exp>
-		).		
+		)
+		[ As<ref exp> ].		
 		
 	VariantLiteral<out ElaExpression exp> = 
 		variantTok (. exp = new ElaVariantLiteral(t) { Tag = t.val }; .).
@@ -145,7 +144,7 @@ PRODUCTIONS
 	VariableReference<out ElaExpression exp> =
 		(. exp = null; .)
 		(
-			ident (. exp = new ElaVariableReference(t) { VariableName = t.val }; .)
+			ident (. exp = new ElaNameReference(t) { Name = t.val }; .)
 			| "_" (. exp = new ElaPlaceholder(t); .)
 		).
 		
@@ -157,7 +156,11 @@ PRODUCTIONS
 		(
 			"(" 
 				(. ot = t; .)
-				[ GroupExpr<out exp> ] 
+				[ GroupExpr<out exp> ]
+				(.
+				    if (exp != null)
+				        exp.Parens = true;
+				.)
 			")"
 		)
 		(.
@@ -191,443 +194,6 @@ PRODUCTIONS
 				)
 			]
 		).
-			
-		
-	/* Match */
-	
-	MatchExpr<out ElaExpression exp> = 
-		(. scanner.InjectBlock(); .)
-		SYNC MATCH
-		(. 
-			var match = new ElaMatch(t);
-			exp = match; 
-			var cexp = default(ElaExpression);
-		.)
-		Expr<out cexp> (. match.Expression = cexp; .)
-		WITH
-		(
-			MatchEntry<match>
-			{ 
-				MatchEntry<match>
-				| ChildMatchEntry<match>
-			}
-		)		
-		EndBlock.
-					
-	MatchEntry<ElaMatch match> = 
-		(. var cexp = default(ElaExpression); .)
-		(. scanner.InjectBlock(); .)
-		(		
-			(. 
-				var pat = default(ElaPattern); 
-				var ot = t; 
-			.)			
-			RootPattern<out pat>
-			(. 
-				var entry = new ElaMatchEntry(ot);
-				entry.Pattern = pat;				
-				match.Entries.Add(entry);
-			.)
-			[ 
-				Guard<out cexp>
-				(. entry.Guard = cexp; .)
-			]
-		)
-		(	
-			"=" Expr<out cexp>
-			(. entry.Expression = cexp; .)	
-		)
-		[ 
-			WhereBinding<out cexp> 
-			(. entry.Where = cexp; .) 
-		]
-		(. if (RequireEndBlock()) .) EndBlock.
-		
-	ChildMatchEntry<ElaMatch match> = 
-		(. var cexp = default(ElaExpression); .)
-		(		
-			(. 
-				var entry = new ElaMatchEntry(t);
-				match.Entries.Add(entry);
-			.)
-			Guard<out cexp>
-			(. entry.Guard = cexp; .)
-			
-			"=" Expr<out cexp>
-			(. entry.Expression = cexp; .)	
-			
-			[ 
-				WhereBinding<out cexp> 
-				(. entry.Where = cexp; .) 
-			]
-		)
-		(. if (RequireEndBlock()) .) EndBlock.
-		
-	Guard<out ElaExpression exp> = 
-		(. exp = null; .)
-		"|" 		
-		(
-			(
-				BinaryExpr<out exp>
-				{
-					(. var old = exp; .)
-					"|" 
-					(. var ot = t; .)
-					BinaryExpr<out exp>
-					(.
-						exp = new ElaBinary(t) { Operator = ElaOperator.BooleanOr, Left = old, Right = exp };
-					.)
-				}
-			)
-			| "else" (. exp = new ElaOtherwiseGuard(t); .)
-		).	
-		
-	RootPattern<out ElaPattern pat> =
-		OrPattern<out pat> 
-		[ ConsPattern<pat, out pat> ].
-		
-	ParenPattern<out ElaPattern pat> =
-		(. pat = null; .)
-		(
-			OrPattern<out pat> 
-		)
-		[ ConsPattern<pat, out pat> ]		
-		[ TuplePattern<pat, out pat> ].
-		
-	VariantPattern<out ElaPattern pat> = 
-		(. 
-			pat = null; 
-			var vp = default(ElaVariantPattern);
-			var cpat = default(ElaPattern);
-		.)
-		(
-			(
-				variantTok  
-				(. 
-					vp = new ElaVariantPattern(t);
-					vp.Tag = t.val; 
-				.)
-			)
-			[ 
-				AsPattern<out cpat> 
-				(. vp.Pattern = cpat; .)
-			]
-			(. pat = vp; .)
-		).
-	
-	SimpleVariantPattern<out ElaPattern pat> = 
-		(. pat = null; .)
-		(
-			variantTok  
-			(. 
-				pat = new ElaVariantPattern(t) { Tag = t.val };
-			.)
-		).
-			
-	OrPattern<out ElaPattern pat> =	
-		(. pat = null; .)
-		(VariantPattern<out pat> | AsPattern<out pat>).
-		
-	FuncPattern<out ElaPattern pat> =
-		(. pat = null; .)
-		(
-			AsPattern<out pat> 
-			| SimpleVariantPattern<out pat>
-		).
-					
-	FuncPattern2<out ElaPattern pat> =
-		(. pat = null; .)
-		(
-			(AsPattern<out pat>|SimpleVariantPattern<out pat>) [ ConsPattern<pat, out pat> ]
-		).
-
-	SinglePattern<out ElaPattern pat> =			
-		(. pat = null; .)
-		(
-			DefaultPattern<out pat>
-			| UnitPattern<out pat>
-			| LiteralPattern<out pat> 
-			| ListPattern<out pat>
-			| RecordPattern<out pat>
-			| IdentPattern<out pat>
-			| TypeCheckPattern<out pat>
-		).
-			
-	AsPattern<out ElaPattern pat> =
-		(. pat = null; .)
-		(
-			SinglePattern<out pat>
-			[
-				"@" 
-				(. 
-					var asPat = new ElaAsPattern { Pattern = pat }; 
-					pat = asPat;				
-				.)
-				(
-					ident 
-					(. 
-					    asPat.Name = t.val; 
-					    asPat.SetLinePragma(t.line, t.col);
-					.)
-					| 
-					(
-						"(" Operators 
-						(. 
-						    asPat.Name = t.val; 
-						    asPat.SetLinePragma(t.line, t.col); 
-						.)
-						")"
-					)
-				)
-			]		
-		).
-		
-	UnitPattern<out ElaPattern pat> = 
-		(.
-			var ot = t;
-			pat = null;
-		.)
-		(
-			"(" 
-				[ ParenPattern<out pat> | SymbolicIdentPattern<out pat> ] 
-			")" 
-		)
-		(. 
-			if (pat == null)
-				pat = new ElaUnitPattern(ot); 
-		.). 
-		
-	DefaultPattern<out ElaPattern pat> = 
-		"_" (. pat = new ElaDefaultPattern(t); .). 
-		
-	SymbolicIdentPattern<out ElaPattern pat> = 
-		Operators (. pat = new ElaVariablePattern(t) { Name = t.val }; .).
-		
-	BindingPattern<out ElaPattern pat> =
-		(. pat = null; .)
-		(
-			DefaultPattern<out pat>
-			| UnitPattern<out pat>
-			| LiteralPattern<out pat> 
-			| ListPattern<out pat>
-			| RecordPattern<out pat>
-			| TypeCheckPattern<out pat>
-			| SimpleVariantPattern<out pat>
-		)
-		[
-			"@" 
-			(. 
-				var asPat = new ElaAsPattern(t) { Pattern = pat }; 
-				pat = asPat;				
-			.)
-			(
-				ident (. asPat.Name = t.val; .)
-				| 
-				(
-					"(" Operators (. asPat.Name = t.val; .) ")"
-				)
-			)
-		].		
-		
-	GeneratorPattern<out ElaPattern pat> =
-		(. pat = null; string name = null; .)
-		(
-			  IdentPattern<out pat> (. name = pat.GetName(); .)
-			| LiteralPattern<out pat>
-			| RecordPattern<out pat>
-			| ListPattern<out pat>
-			| UnitPattern<out pat>
-			| SimpleVariantPattern<out pat>
-		).
-		
-	IsOperatorPattern<out ElaPattern pat> = 
-		(. pat = null; .)
-		(
-			TypeCheckPattern<out pat>
-			| LiteralPattern<out pat>
-			| RecordPattern<out pat>
-			| ListPattern<out pat>
-			| UnitPattern<out pat>
-			| VariantPattern<out pat>
-		).
-		
-	TypeCheckPattern<out ElaPattern pat> = 
-		"?"
-		(. 
-			var eis = new ElaIsPattern(t);
-			pat = eis; 			
-			var fst = default(String); 
-			var snd = default(String);
-		.)
-		(
-		    (
-			    (
-			        ident (. fst = t.val; .) [ "." ident (. snd = t.val; .) ]
-			        (. 
-			            if (fst != null && snd != null)
-			            {
-			                eis.TypePrefix = fst;
-			                eis.TypeName = snd; 
-			            }
-			            else
-			                eis.TypeName = fst;
-			        .)
-			    )
-			    |
-			    (
-			        "("
-			            { 
-			                (ident|variantTok) (. fst = t.val; snd = null; .) 
-			                [ "." (ident|variantTok) (. snd = t.val; .) ]
-			                (.
-			                    var ti = new TraitInfo(snd != null ? fst : null, snd != null ? snd : fst);
-			                    eis.Traits.Add(ti);
-			                .)			                
-			            }
-			        ")"
-			    )
-			)
-		).		
-						
-	IdentPattern<out ElaPattern pat> =
-		ident (. pat = new ElaVariablePattern(t) { Name = t.val }; .).	
-		
-	RecordPattern<out ElaPattern pat> = 
-		(. 
-			pat = null; 
-			var cpat = default(ElaFieldPattern);
-		.)
-		(
-			"{"
-				(. 
-					var rec = new ElaRecordPattern(t); 
-					pat = rec; 
-				.)				
-				[
-					FieldPattern<out cpat>
-					(. rec.Fields.Add(cpat); .)
-					{
-						","
-						FieldPattern<out cpat>
-						(. rec.Fields.Add(cpat); .)
-					}
-				]
-			"}"		
-		).
-		
-	FieldPattern<out ElaFieldPattern fld> =
-		(. 
-			fld = null;
-			var cpat = default(ElaPattern);
-		.)
-		(
-			(
-				stringTok
-				(. fld = new ElaFieldPattern(t) { Name = ReadString(t.val) }; .)		
-				"=" AsPattern<out cpat>
-				(. fld.Value = cpat; .)
-			)
-			|
-			(
-				ident
-				(. fld = new ElaFieldPattern(t) { Name = t.val }; .)		
-				[
-					"=" AsPattern<out cpat>
-				]
-				(. 
-					if (cpat == null)
-						cpat = new ElaVariablePattern(t) { Name = fld.Name };
-					
-					fld.Value = cpat; 
-				.)
-			)
-		).	
-			
-	TuplePattern<ElaPattern prev, out ElaPattern pat> = 
-		(.
-			var seq = new ElaTuplePattern(t); 
-			seq.Patterns.Add(prev);
-			var cpat = default(ElaPattern);
-			pat = seq;
-		.)
-		(
-			"," 
-			[
-				AsPattern<out cpat> [ ConsPattern<cpat, out cpat> ]	
-				(. seq.Patterns.Add(cpat); .)
-				{ 
-					"," 
-					AsPattern<out cpat> [ ConsPattern<cpat, out cpat> ]	
-					(. seq.Patterns.Add(cpat); .)
-				}
-			]
-		).
-			
-	ConsPattern<ElaPattern prev, out ElaPattern exp> =
-		(. 
-			var cexp = default(ElaPattern); 
-			var ht = new ElaHeadTailPattern(t); 
-			ht.Patterns.Add(prev);
-			exp = ht;				
-		.)
-		(
-			"::" AsPattern<out cexp>
-			(. ht.Patterns.Add(cexp); .)
-			{
-				"::" AsPattern<out cexp>
-				(. ht.Patterns.Add(cexp); .)
-			}
-		).
-				
-	LiteralPattern<out ElaPattern pat> =
-		(
-			(. 
-				var lit = default(ElaLiteralValue);
-				pat = null;
-			.) 
-			(
-				stringTok (. lit = ParseString(t.val); .)
-				| charTok (. lit = ParseChar(t.val); .)
-				| intTok (. lit = ParseInt(t.val); .)
-				| realTok (. lit = ParseReal(t.val); .)
-				| "true" (. lit = new ElaLiteralValue(true); .)
-				| "false" (. lit = new ElaLiteralValue(false); .)
-			)
-			(.
-				pat = new ElaLiteralPattern(t) { Value = lit };				
-			.)
-		).		
-			
-	ListPattern<out ElaPattern pat> = 
-		(.
-			var cexp = default(ElaPattern); 
-			var ht = default(ElaHeadTailPattern); 
-			pat = null;
-		.)
-		"["
-			[
-				(.
-					ht = new ElaHeadTailPattern(t);			
-				.)
-				AsPattern<out cexp> 
-				(.  ht.Patterns.Add(cexp);  .)
-				{ 
-					"," AsPattern<out cexp> 
-					(. ht.Patterns.Add(cexp); .)
-				}
-				(.
-					ht.Patterns.Add(new ElaNilPattern(t));
-					pat = ht;
-				.)
-			]
-			(.
-				if (pat == null)
-					pat = new ElaNilPattern(t);
-			.)
-		"]".
-			
-	/* End Match */
-		
 		
 	RecordLiteral<out ElaExpression exp> =
 		(. 
@@ -658,7 +224,7 @@ PRODUCTIONS
 					]
 					(.
 						if (fld.FieldValue == null)
-							fld.FieldValue = new ElaVariableReference(t) { VariableName = t.val };
+							fld.FieldValue = new ElaNameReference(t) { Name = t.val };
 					.)
 				)
 				|
@@ -682,8 +248,7 @@ PRODUCTIONS
 			Expr<out cexp>
 			(. rng.Last = cexp; .)
 		].
-		
-				
+						
 	ParamList<. out List<ElaExpression> list, out ElaComprehension comp, out ElaRange rng .> =
 		(. 
 			var exp = default(ElaExpression); 
@@ -694,8 +259,7 @@ PRODUCTIONS
 		Expr<out exp> 
 		[
 			ComprehensionExpr<exp, out comp>
-			| 
-			RangeExpr<exp, null, out rng>
+			| RangeExpr<exp, null, out rng>
 			|
 			(
 				(. var oexp = exp; .)
@@ -780,595 +344,8 @@ PRODUCTIONS
 		    )
 		).
 		
-	LetBinding<out ElaExpression exp> = 
-		(. 
-			exp = null; 
-			var inExp = default(ElaExpression);
-			var flags = default(ElaVariableFlags);
-		.)
-		SYNC LET [VariableAttributes<ref flags>] 
-		BindingBody<flags, out exp>
-		WEAK IN Expr<out inExp>
-		(. ((ElaBinding)exp).In = inExp; .).
-		
-	RootLetBinding<out ElaExpression exp> = 
-		(. 
-			exp = null; 
-			var inExp = default(ElaExpression);
-			var flags = default(ElaVariableFlags);
-		.)
-		(
-			(. scanner.InjectBlock(); .) 
-			SYNC LET 
-			[VariableAttributes<ref flags>] 
-			BindingBody<flags, out exp>
-			(
-				(
-					WEAK IN Expr<out inExp> 
-					(. ((ElaBinding)exp).In = inExp; .)	
-					EndBlock
-				)
-				|
-				EndBlock
-			)	
-		).
-		
-		
-	VariableAttributes<ref ElaVariableFlags flags> =
-		(
-			(
-				"private" (. flags |= ElaVariableFlags.Private; .)
-			)
-			|
-			(
-				"inline" (. flags |= ElaVariableFlags.Inline; .)					
-			)
-		)
-		[VariableAttributes<ref flags>].			
-		
-	WhereBinding<out ElaExpression exp> = 
-		(.
-			var flags = default(ElaVariableFlags); 
-			scanner.InjectBlock(); 
-		.) 
-		SYNC WHERE 
-		[VariableAttributes<ref flags>] 			
-		BindingBody<flags, out exp> 
-		EndBlock.
-		
-	BindingGuard<out ElaExpression exp> = 
-		(. exp = null; .)
-		(
-			BinaryExpr<out exp>
-			{
-				(. var old = exp; .)
-				"|" 
-				(. var ot = t; .)
-				BinaryExpr<out exp>
-				(.
-					exp = new ElaBinary(t) { Operator = ElaOperator.BooleanOr, Left = old, Right = exp };
-				.)
-			}
-		).
-		
-	BindingGuardList<ref ElaCondition cond> =
-		(.
-			var gexp = default(ElaExpression);
-			var cexp = default(ElaExpression);
-		.)
-		(				
-			"|" 
-			(
-				(
-					(.
-						var newCond = new ElaCondition(t);
-						cond.False = newCond;
-						cond = newCond;
-					.)
-					BindingGuard<out gexp> (. cond.Condition = gexp; .) "=" Expr<out cexp> (. cond.True = cexp; .)
-					[ BindingGuardList<ref cond> ]
-				)
-				|
-				(
-					"else" "=" Expr<out cexp> (. cond.False = cexp; .)
-				)
-			)
-		).
-		
-	BindingBody<ElaVariableFlags flags, out ElaExpression exp> =
-		(. 
-			var varExp = new ElaBinding(t) { VariableFlags = flags }; 
-			exp = varExp;
-			var pat = default(ElaPattern);
-		.)		
-		(
-			(
-				ident 
-				(. 
-					varExp.VariableName = t.val; 
-					varExp.SetLinePragma(t.line, t.col);
-				.)
-				[
-					  FunExpr<varExp>
-					| BindingBodyGuards<varExp>
-					| BindingBodyInit<varExp>
-					| InfixFunExpr<new ElaVariablePattern(t) { Name = t.val },varExp>
-				]
-				(. SetObjectMetadata(varExp); .)
-			)
-			| 
-			(
-				BindingPattern<out pat> 
-				(. 
-					if (pat.Type != ElaNodeType.VariablePattern)
-						varExp.Pattern = pat; 
-					else
-					{
-						varExp.VariableName = pat.GetName();
-						varExp.SetLinePragma(pat.Line, pat.Column);
-					}
-				.) 
-				[ 
-					BindingBodyInit<varExp> 
-					| 
-					(
-						(. varExp.Pattern = null; .)
-						InfixFunExpr<pat,varExp>
-					)
-					|
-					(
-						(. 
-							if (pat.Type != ElaNodeType.VariablePattern)
-								AddError(ElaParserError.InvalidFunctionDeclaration, pat);
-						.)						
-						FunExpr<varExp>
-					)
-					| 
-					(
-						BindingBodyGuards<varExp>
-					)	
-				]
-			)
-			| BindingBodyOperator<varExp>
-		)		
-		[
-			WEAK ET BindingBody<flags, out exp>
-			(.
-				((ElaBinding)varExp).And = (ElaBinding)exp;
-				exp = varExp;
-			.)
-		].
-			
-	BindingBodyOperator<ElaBinding varExp> =
-		(
-			Operators
-			(. varExp.VariableName = t.val; .)
-			(
-			
-				(
-					FunExpr<varExp>
-					(. 
-						var fun = (ElaFunctionLiteral)varExp.InitExpression;
-						fun.FunctionType = ElaFunctionType.Operator;
-					.)
-				)
-				|
-				(
-					BindingBodyInit<varExp>
-					(. 
-						if (varExp.InitExpression.Type == ElaNodeType.FunctionLiteral)
-							((ElaFunctionLiteral)varExp.InitExpression).FunctionType = ElaFunctionType.Operator;
-					.)
-				)
-				| 
-				(
-					BindingBodyGuards<varExp>
-				)					
-			)
-		).
-		
-	BindingBodyInit<ElaBinding varExp> =
-		(. 
-			var cexp = default(ElaExpression); 
-			var cexp2 = default(ElaExpression);
-		.)
-		(
-			"=" 
-			(
-				Expr<out cexp>
-				|
-				(
-					"__internal" ident
-					(. cexp = new ElaBuiltin(t) { Kind = Builtins.Kind(t.val) }; .)
-				)
-			)
-			(. varExp.InitExpression = cexp; .)
-			[
-				WhereBinding<out cexp2> 
-				(. 
-				    var b = (ElaBinding)cexp2;
-				    b.In = cexp; 
-				    varExp.InitExpression = cexp2;
-				.)
-			]
-		).
-		
-	BindingBodyGuards<ElaBinding varExp> = 
-		(.
-			var gexp = default(ElaExpression);
-			var cexp3 = default(ElaExpression);
-			var cond = new ElaCondition(t);
-			varExp.InitExpression = cond;
-		.)
-		(
-			"|" BindingGuard<out gexp> (. cond.Condition = gexp; .) 
-			"=" Expr<out cexp3> (. cond.True = cexp3; .)
-			[ BindingGuardList<ref cond> ]
-		).
-		
-	InfixFunExpr<ElaPattern pat, ElaBinding varExp> =
-		(
-			(. 
-				var ot = t;
-				var mi = new ElaFunctionLiteral(t);
-				varExp.InitExpression = mi;
-				mi.Body = new ElaMatch(t);            
-				scanner.InjectBlock(t.col);				
-			.)	
-			InfixFunBodyExprFirst<pat,mi>
-			(. 
-				varExp.VariableName = mi.Name;
-				ProcessFunctionParameters(mi, ot, varExp); 
-			.)			
-		).
-    
-	InfixFunBodyExprFirst<ElaPattern pat, ElaFunctionLiteral fun> =
-		(.
-			var ot = t;
-			var match = fun.Body;
-			var cexp = default(ElaExpression);			
-			var entry = new ElaMatchEntry(t);
-			match.Entries.Add(entry);
-			entry.Pattern = pat;
-		.)		
-		(
-			InfixFunName<fun> 
-			[
-				FuncPattern<out pat>
-				(.
-					var seq = new ElaPatternGroup(ot);
-					seq.Patterns.Add(entry.Pattern);
-					seq.Patterns.Add(pat);
-					entry.Pattern = seq;
-				.)
-			]            
-			[
-				Guard<out cexp>
-				(. entry.Guard = cexp; .)
-			]
-			"=" 
-			(
-				(. var fexp = default(ElaExpression); .)
-				Expr<out fexp>
-				(. entry.Expression = fexp; .)
-			)
-			[ WhereBinding<out cexp> (. entry.Where = cexp; .) ]
-			(. if (RequireEndBlock()) .) EndBlock
-			[ 
-				(
-					(
-						(. scanner.InjectBlock(); .)
-						InfixFunBodyExpr<fun>
-					)
-					| InfixChildFunBodyExpr<fun>
-				)
-			]
-		).
-
-	InfixFunBodyExpr<ElaFunctionLiteral fun> =
-		(.
-			var ot = t;
-			var match = fun.Body;
-			var pat = default(ElaPattern);
-			var cexp = default(ElaExpression);			
-			var entry = new ElaMatchEntry(t);
-			match.Entries.Add(entry);
-		.)		
-		(
-			( FuncPattern<out pat> (. entry.Pattern = pat; .) )
-			InfixFunName<fun> 
-			[
-				FuncPattern<out pat>
-				(.
-					var seq = new ElaPatternGroup(ot);
-					seq.Patterns.Add(entry.Pattern);
-					seq.Patterns.Add(pat);
-					entry.Pattern = seq;
-				.)
-			]            
-			[
-				Guard<out cexp>
-				(. entry.Guard = cexp; .)
-			]
-			"=" 
-			(
-				(. var fexp = default(ElaExpression); .)
-				Expr<out fexp>
-				(. entry.Expression = fexp; .)
-			)
-			[ WhereBinding<out cexp> (. entry.Where = cexp; .) ]
-			(. if (RequireEndBlock()) .) EndBlock
-			[ 
-				(
-					(
-						(. scanner.InjectBlock(); .)
-						InfixFunBodyExpr<fun>
-					)
-					| InfixChildFunBodyExpr<fun>
-				)
-			]
-		).
-			
-	InfixChildFunBodyExpr<ElaFunctionLiteral fun> =
-		(.
-			var ot = t;
-			var match = fun.Body;
-			var cexp = default(ElaExpression);
-			var entry = new ElaMatchEntry(t);
-			match.Entries.Add(entry);
-		.)
-		(
-			Guard<out cexp>
-			(. entry.Guard = cexp; .)
-			"=" 
-			(
-				(. var fexp = default(ElaExpression); .)
-				Expr<out fexp>
-				(. entry.Expression = fexp; .)
-			)
-			[ WhereBinding<out cexp> (. entry.Where = cexp; .) ]
-			(. if (RequireEndBlock()) .) EndBlock
-			[ 
-				(
-					(
-						(. scanner.InjectBlock(); .)
-						InfixFunBodyExpr<fun>
-					)
-					| InfixChildFunBodyExpr<fun>
-				)
-			]
-		).
-	    
-	InfixFunName<ElaFunctionLiteral fun> = 
-		(
-			(. var name = String.Empty; .)
-			("`" ident (. name = t.val; .) "`"| Operators (. name = t.val; .))
-			(.
-				if (String.IsNullOrEmpty(fun.Name))
-					fun.Name = name;
-				else if (name != fun.Name)
-					AddError(ElaParserError.InvalidFunctionDeclaration, name);
-			.)
-		).
-		
 	Operators = operatorTok1|operatorTok2|operatorTok3|operatorTok4|operatorTok5|operatorTok6|operatorTok7|operatorTok8|operatorTok9|"::".
-		
-	FunName<ElaFunctionLiteral fun> = 
-		(. string val = ""; .)
-		(
-			(
-				ident (. val = t.val; .)
-				| Operators (. val = t.val; .)
-				| "(" Operators (. val = t.val; .) ")"
-			)
-			(.
-				if (val != fun.Name)
-					AddError(ElaParserError.InvalidFunctionDeclaration, t.val);
-			.)
-		).
-		
-	FunExpr<ElaBinding varExp> =
-		(
-			(. 
-				var ot = t;
-				var mi = new ElaFunctionLiteral(t);
-				mi.Name = varExp.VariableName;
-				varExp.InitExpression = mi;
-				mi.Body = new ElaMatch(t);
-				scanner.InjectBlock(t.col);				
-			.)	
-			FunBodyExpr<mi>
-			(. ProcessFunctionParameters(mi, ot, varExp); .)			
-		).
-		
-	FunBodyExpr<ElaFunctionLiteral fun> =
-		(.
-			var ot = t;
-			var match = fun.Body;
-			var pat = default(ElaPattern);
-			var seq = default(ElaPatternGroup);
-			var cexp = default(ElaExpression);			
-			var entry = new ElaMatchEntry(t);
-			match.Entries.Add(entry);
-		.)		
-		(
-			(	
-				FuncPattern2<out pat> (. entry.Pattern = pat; .)
-				{ 
-					FuncPattern2<out pat> 
-					(. 
-						if (seq == null)
-						{
-							seq = new ElaPatternGroup(ot);
-							seq.Patterns.Add(entry.Pattern);
-							entry.Pattern = seq;							
-						}
-					
-						seq.Patterns.Add(pat); 
-					.) 
-				} 				
-			)
-			[
-				Guard<out cexp>
-				(. entry.Guard = cexp; .)
-			]
-			"=" 
-			(
-				(. var fexp = default(ElaExpression); .)
-				Expr<out fexp>
-				(. entry.Expression = fexp; .)
-			)
-			[ WhereBinding<out cexp> (. entry.Where = cexp; .) ]
-			(. if (RequireEndBlock()) .) EndBlock
-			[ 
-				(
-					(
-						(. scanner.InjectBlock(); .)
-						FunName<fun> FunBodyExpr<fun>
-					)
-					| ChildFunBodyExpr<fun>
-				)
-			]
-		).
-		
-	ChildFunBodyExpr<ElaFunctionLiteral fun> =
-		(.
-			var ot = t;
-			var match = fun.Body;
-			var cexp = default(ElaExpression);
-			var entry = new ElaMatchEntry(t);
-			match.Entries.Add(entry);
-		.)
-		(
-			Guard<out cexp>
-			(. entry.Guard = cexp; .)
-			"=" 
-			(
-				(. var fexp = default(ElaExpression); .)
-				Expr<out fexp>
-				(. entry.Expression = fexp; .)
-			)
-			[ WhereBinding<out cexp> (. entry.Where = cexp; .) ]
-			(. if (RequireEndBlock()) .) EndBlock
-			[ 
-				(
-					(
-						(. scanner.InjectBlock(); .)
-						FunName<fun> FunBodyExpr<fun>
-					)
-					| ChildFunBodyExpr<fun>
-				)
-			]
-		).
-		
-	LambdaExpr<out ElaExpression exp> =
-		SYNC LAMBDA
-		(.
-			var ot = t;
-			var pat = default(ElaPattern);
-			var seq = default(ElaPatternGroup);
 			
-			var mi = new ElaFunctionLiteral(t);
-			exp = mi;
-			var match = new ElaMatch(t);
-			mi.Body = match;
-			
-			var entry = new ElaMatchEntry(t);
-			match.Entries.Add(entry);
-		.)
-		(
-			(		
-				FuncPattern2<out pat> (. entry.Pattern = pat; .)
-				{ 
-					FuncPattern2<out pat> 
-					(. 
-						if (seq == null)
-						{
-							seq = new ElaPatternGroup(ot);
-							seq.Patterns.Add(entry.Pattern);
-							entry.Pattern = seq;							
-						}
-					
-						seq.Patterns.Add(pat); 
-					.) 
-				} 				
-			)
-			[
-				(. var cexp = default(ElaExpression); .)
-				Guard<out cexp>
-				(. entry.Guard = cexp; .)
-			]
-			"->" 
-			(
-				(. var fexp = default(ElaExpression); .)
-				Expr<out fexp>
-				(. entry.Expression = fexp; .)
-			)
-		).
-		
-	IncludeStat<out ElaExpression exp> = 
-		(. exp = null; .)
-		(
-			(. scanner.InjectBlock(); .)
-			SYNC OPEN
-			(. 
-				var inc = default(ElaModuleInclude); 
-				var par = default(ElaModuleInclude); 
-			.) 
-			IncludeStatElement<out inc> (. exp = inc; par = inc; .)
-			{ IncludeStatElement<out inc> (. par.And = inc; par = inc; .) }
-			EndBlock
-		).
-	
-	IncludeStatElement<out ElaModuleInclude exp> =
-		(. exp = null; .)
-		(
-			(. var inc = new ElaModuleInclude(t); .)
-			[ QUALIFIED (. inc.RequireQuailified = true; .) ]
-			Qualident<inc.Path>
-			(.
-				var name = inc.Path[inc.Path.Count - 1];				
-				inc.Path.RemoveAt(inc.Path.Count - 1);				
-				inc.Alias = inc.Name = name;
-				exp = inc;
-			.)	
-			[
-				"#"
-				(
-					ident (. inc.DllName = t.val; .)
-					| stringTok (. inc.DllName = ReadString(t.val); .)
-				)
-			]		
-			[ 
-				"@" ident 
-				(. inc.Alias = t.val; .) 
-			]
-			[
-				(. var imp = default(ElaImportedVariable); .)
-				"("
-					ImportName<out imp> (. inc.ImportList.Add(imp); .)
-					{ "," ImportName<out imp> (. inc.ImportList.Add(imp); .) }
-				")"
-			]
-		).
-		
-	ImportName<out ElaImportedVariable imp> =
-		(. imp = new ElaImportedVariable(t); .)
-		(
-			[ "private" (. imp.Private = true; .) ]
-			ident (. imp.Name = imp.LocalName = t.val; .)
-			[ "=" ident (. imp.Name = t.val; .) ]
-		).
-		
-	Qualident<. List<String> path .> = 
-		(. var val = String.Empty; .)
-		(
-			ident (. val = t.val; .)
-			| stringTok (. val = ReadString(t.val); .)
-		)
-		(. path.Add(val); .)
-		[ "." Qualident<path> ].
-	
 	IfExpr<out ElaExpression exp> = 
 		IFS
 		(. 
@@ -1379,56 +356,45 @@ PRODUCTIONS
 		Expr<out cexp> (. cond.Condition = cexp; .)
 		THEN Expr<out cexp> (. cond.True = cexp; .)
 		WEAK ELSE Expr<out cexp> (. cond.False = cexp; .).
-    
-	RaiseExpr<out ElaExpression exp> = 
-		RAISE
-		(. 
-			var r = new ElaRaise(t);
-			exp = r;
-			var cexp = default(ElaExpression); 
-			var code = String.Empty;
-		.)		
-		variantTok (. code = t.val; .)
-		(Expr<out cexp>|  )
-		(. 
-			r.ErrorCode = code;
-			r.Expression = cexp; 
-		.).
 		
-	FailExpr<out ElaExpression exp> = 
-		FAIL
+	MatchExpr<out ElaExpression exp> = 
+	    (. 
+	        scanner.InjectBlock(); 
+	        bindings.Push(unit);
+	    .)
+		SYNC MATCH
 		(. 
-			var r = new ElaRaise(t);
-			exp = r;
-			var cexp = default(ElaExpression); 
-		.)		
-		Expr<out cexp>
+			var match = new ElaMatch(t);
+			exp = match; 
+			var block = default(ElaEquationSet);
+			var cexp = default(ElaExpression);
+		.)
+		Expr<out cexp> (. match.Expression = cexp; .)
+		WITH BindingChain<out block>
 		(. 
-			r.Expression = cexp; 
-			r.ErrorCode = "Failure"; 
-		.).	
+		    match.Entries = block; 
+		    bindings.Pop();
+		.)
+		EndBlock.
 		
-	TryExpr<out ElaExpression exp> =
-		(. scanner.InjectBlock(); .)
-		TRY
+	TryExpr<out ElaExpression exp> = 
+	    (. 
+	        scanner.InjectBlock(); 
+	        bindings.Push(unit);
+	    .)
+		SYNC TRY
 		(. 
-			var ot = t;
 			var match = new ElaTry(t);
 			exp = match; 
+			var block = default(ElaEquationSet);
 			var cexp = default(ElaExpression);
-		.)		
+		.)
 		Expr<out cexp> (. match.Expression = cexp; .)
-		WITH
-		(
-			(. scanner.InjectBlock(); .)
-			MatchEntry<match> 
-			EndBlock
-			{ 
-				(. scanner.InjectBlock(); .)
-				MatchEntry<match> 
-				EndBlock
-			}
-		)	
+		WITH BindingChain<out block>
+		(. 
+		    match.Entries = block; 
+		    bindings.Pop();
+		.)
 		EndBlock.
 			
 	/* Expr */
@@ -1480,7 +446,7 @@ PRODUCTIONS
 				]
 				(.
 					if (exp == null)
-						exp = new ElaVariableReference(ot) { VariableName = op };
+						exp = new ElaNameReference(ot) { Name = op };
 				.)
 			)
 		).
@@ -1510,7 +476,7 @@ PRODUCTIONS
 				]
 				(.
 					if (exp == null)
-						exp = new ElaVariableReference(ot) { VariableName = t.val };
+						exp = new ElaNameReference(ot) { Name = t.val };
 				.)
 			)
 		).
@@ -1540,7 +506,7 @@ PRODUCTIONS
 				]
 				(.
 					if (exp == null)
-						exp = new ElaVariableReference(ot) { VariableName = t.val };
+						exp = new ElaNameReference(ot) { Name = t.val };
 				.)
 			)
 		).
@@ -1571,7 +537,7 @@ PRODUCTIONS
 				]
 				(.
 					if (exp == null)
-						exp = new ElaVariableReference(ot) { VariableName = t.val };
+						exp = new ElaNameReference(ot) { Name = t.val };
 				.)
 			)
 		).
@@ -1601,7 +567,7 @@ PRODUCTIONS
 				]
 				(.
 					if (exp == null)
-						exp = new ElaVariableReference(ot) { VariableName = t.val };
+						exp = new ElaNameReference(ot) { Name = t.val };
 				.)
 			)
 		).
@@ -1614,11 +580,11 @@ PRODUCTIONS
 		.)				
 		(
 			(
-				CastExpr<out exp>
+				InfixExpr<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
 					operatorTok5 (. op = t.val; .)
-					[ CastExpr<out cexp> ]
+					[ InfixExpr<out cexp> ]
 					(. exp = GetOperatorFun(op, exp, cexp); .)
 				}
 			)
@@ -1626,25 +592,15 @@ PRODUCTIONS
 			(
 				operatorTok5 (. op = t.val; .)
 				[ 
-					CastExpr<out exp> 
+					InfixExpr<out exp> 
 					(. exp = GetOperatorFun(op, null, exp); .)
 				]
 				(.
 					if (exp == null)
-						exp = new ElaVariableReference(ot) { VariableName = t.val };
+						exp = new ElaNameReference(ot) { Name = t.val };
 				.)
 			)
 		).
-		
-	CastExpr<out ElaExpression exp> = 
-		InfixExpr<out exp>
-		{
-			(
-				(. var pat = default(ElaPattern); .)
-				IS IsOperatorPattern<out pat> 
-				(. exp = new ElaIs(t) { Expression = exp, Pattern = pat }; .)
-			)
-		}.
 		
 	InfixExpr<out ElaExpression exp> = 
 		(. 
@@ -1665,7 +621,7 @@ PRODUCTIONS
 					)
 					[ OpExpr6<out cexp> ]
 					(. 
-						var fc = new ElaFunctionCall(ot) { 
+						var fc = new ElaJuxtaposition(ot) { 
 								Target = funexp
 							};
 						fc.Parameters.Add(exp);			
@@ -1718,7 +674,7 @@ PRODUCTIONS
 				]
 				(.
 					if (exp == null)
-						exp = new ElaVariableReference(ot) { VariableName = t.val };
+						exp = new ElaNameReference(ot) { Name = t.val };
 				.)
 			)
 		).
@@ -1748,7 +704,7 @@ PRODUCTIONS
 				]
 				(.
 					if (exp == null)
-						exp = new ElaVariableReference(ot) { VariableName = t.val };
+						exp = new ElaNameReference(ot) { Name = t.val };
 				.)
 			)
 		).
@@ -1778,18 +734,21 @@ PRODUCTIONS
 				]
 				(.
 					if (exp == null)
-						exp = new ElaVariableReference(ot) { VariableName = t.val };
+						exp = new ElaNameReference(ot) { Name = t.val };
 				.)
 			)
 		).
 			
 	Application<out ElaExpression exp> = 
-		(. exp = null; .)
+		(. 
+		    exp = null; 
+		    var variant = false;
+		.)
 		(
 			AccessExpr<out exp>
 			(. 
 				var ot = t;
-				var mi = default(ElaFunctionCall); 
+				var mi = default(ElaJuxtaposition); 
 				var cexp = default(ElaExpression);
 			.)	
 			{
@@ -1797,11 +756,22 @@ PRODUCTIONS
 				(. 
 					if (mi == null)
 					{
-						mi = new ElaFunctionCall(ot) { Target = exp };
-						exp = mi; 
+					    if (variant)
+					        AddError(ElaParserError.InvalidVariantLiteral);
+						if (exp.Type == ElaNodeType.VariantLiteral)
+						{
+						    ((ElaVariantLiteral)exp).Expression = cexp;
+						    variant = true;
+						}
+						else
+						{
+						    mi = new ElaJuxtaposition(ot) { Target = exp };
+						    exp = mi; 
+						}
 					}
 				
-					mi.Parameters.Add(cexp); 
+				    if (mi != null)
+					    mi.Parameters.Add(cexp); 
 				.)					
 			}								
 		).
@@ -1846,29 +816,44 @@ PRODUCTIONS
 		
 	EmbExpr<out ElaExpression exp> = 
 		(. exp = null; .)
-		( 
+		(  
 			BinaryExpr<out exp>
-			| IfExpr<out exp> 
+			| IfExpr<out exp>  
+			| LazyExpr<out exp>
+			| Builtin<out exp>	
 			| LambdaExpr<out exp>
-			| RaiseExpr<out exp>
+			| LetBinding<out exp>
 			| FailExpr<out exp>
-			| MatchExpr<out exp>		
-			| TryExpr<out exp>	
-			| LazyExpr<out exp>		
+			| RaiseExpr<out exp>
+			| TypeCheckExpr<out exp>
+			| MatchExpr<out exp>
+			| TryExpr<out exp>
 		).
-				
-	WhereExpr<ElaExpression cexp, out ElaExpression exp> =
-	    WhereBinding<out exp>
-        (.
-            ((ElaBinding)exp).In = cexp;
-        .).
+		
+	As<ref ElaExpression exp> =
+	    (
+	        "@" 
+	        (. 
+	            var @as = new ElaAs(t) { Expression = exp }; 
+	            exp = @as; 
+	        .)
+	        (
+	            ident (. @as.Name = t.val; .)
+	            | "(" Operators (.  @as.Name = t.val; .) ")"
+	        )
+	    ).
         
 	Expr<out ElaExpression exp> = 
 		(. exp = null; .)
 		( 
 			EmbExpr<out exp>
-			| LetBinding<out exp>
 		).
+		
+	Builtin<out ElaExpression exp> = 
+	    (
+		    "__internal" ident
+		    (. exp = new ElaBuiltin(t) { Kind = Builtins.Kind(t.val) }; .)
+	    ).
 		
 	LazyExpr<out ElaExpression exp> =
 		(
@@ -1880,7 +865,35 @@ PRODUCTIONS
 				exp = lazy;
 			.)
 		).
-	
+    
+	RaiseExpr<out ElaExpression exp> = 
+		RAISE
+		(. 
+			var r = new ElaRaise(t);
+			exp = r;
+			var cexp = default(ElaExpression); 
+			var code = String.Empty;
+		.)		
+		variantTok (. code = t.val; .)
+		(Expr<out cexp>|  )
+		(. 
+			r.ErrorCode = code;
+			r.Expression = cexp; 
+		.).
+		
+	FailExpr<out ElaExpression exp> = 
+		FAIL
+		(. 
+			var r = new ElaRaise(t);
+			exp = r;
+			var cexp = default(ElaExpression); 
+		.)		
+		Expr<out cexp>
+		(. 
+			r.Expression = cexp; 
+			r.ErrorCode = "Failure"; 
+		.).	
+		
 	ComprehensionExpr<ElaExpression sel, out ElaComprehension exp> =
 		(. 	
 			var it = default(ElaGenerator); 
@@ -1894,10 +907,10 @@ PRODUCTIONS
 			it = new ElaGenerator(t);
 			it.Body = body;
 			var cexp = default(ElaExpression);
-			var pat = default(ElaPattern);
+			var pat = default(ElaExpression);
 		.)
 		(
-			GeneratorPattern<out pat> "<-" Expr<out cexp>
+			Expr<out pat> "<-" Expr<out cexp>
 			(. 
 				it.Pattern = pat;
 				it.Target = cexp;
@@ -1911,7 +924,7 @@ PRODUCTIONS
 			)
 			|
 			(
-				Guard<out cexp>
+				"|" Expr<out cexp>
 				(. it.Guard = cexp; .)
 				[
 				    (
@@ -1921,27 +934,265 @@ PRODUCTIONS
 			        )
 				]
 			)
-		].
-		
-	Ela = 
+		].		
+	
+	TypeCheckExpr<out ElaExpression pat> = 
+		"?"
+		(. 
+			var eis = new ElaTypeCheck(t);
+			pat = eis; 			
+			var fst = default(String); 
+			var snd = default(String);
+		.)
 		(
+		    (
+			    (
+			        ident (. fst = t.val; .) [ "." ident (. snd = t.val; .) ]
+			        (. 
+			            if (fst != null && snd != null)
+			            {
+			                eis.TypePrefix = fst;
+			                eis.TypeName = snd; 
+			            }
+			            else
+			                eis.TypeName = fst;
+			        .)
+			    )
+			    |
+			    (
+			        "("
+			            { 
+			                (ident|variantTok) (. fst = t.val; snd = null; .) 
+			                [ "." (ident|variantTok) (. snd = t.val; .) ]
+			                (.
+			                    var ti = new TraitInfo(snd != null ? fst : null, snd != null ? snd : fst);
+			                    eis.Traits.Add(ti);
+			                .)			                
+			            }
+			        ")"
+			    )
+			)
+		).
+	
+	LambdaExpr<out ElaExpression exp> =
+		SYNC LAMBDA
+		(.
+		    var lambda = new ElaLambda(t);
+		    exp = lambda;
+			var left = default(ElaExpression);
+			var right = default(ElaExpression);
+		.)
+		(
+		    Expr<out left>
+			(
+				"->" Expr<out right> 
+	            | "|" LambdaGuard<out right>
+			)
 			(.
-				var b = new ElaBlock(t);
-				Expression = b;
-			.)			
-			DeclarationBlock<b> { DeclarationBlock<b> }
-		).		
+			    lambda.Left = left;
+			    lambda.Right = right;
+			.)
+		).
 		
-	TypeClass<out ElaExpression exp> = 
+	LambdaGuard<out ElaExpression exp> = 
 	    (. 
-	        exp = null; 
+	        var ifExp = new ElaCondition(t);
+	        exp = ifExp;
+	        
+	        var cond = default(ElaExpression);
+	        var trueExp = default(ElaExpression);
+	        var falseExp = default(ElaExpression);
+	    .)
+	    (
+	        BinaryExpr<out cond> (. ifExp.Condition = cond; .)
+	        "->" Expr<out trueExp> (. ifExp.True = trueExp; .)
+	        (
+	            "|" 
+	            (
+	                ( "else" "->" Expr<out falseExp>)
+	                | LambdaGuard<out falseExp>
+	            )
+	            (. ifExp.False = falseExp; .)
+	        )
+	    ).   
+		
+	WhereBinding<out ElaEquationSet block> = 
+		(. 
+		    scanner.InjectBlock(); 
+		    bindings.Push(null);
+		.) 
+		SYNC WHERE 
+		BindingChain<out block> 
+		(. bindings.Pop(); .)
+		EndBlock.
+		
+	LetBinding<out ElaExpression exp> = 
+	    (. exp = null; .)
+	    (
+	        SYNC LET 
+	        (. 
+	            var bid = new ElaLetBinding(t);
+	            var block = default(ElaEquationSet);
+	            var cexp = default(ElaExpression);
+	            exp = bid;
+	        .)
+		    BindingChain<out block> 
+		    IN Expr<out cexp>
+		    (.
+		        bid.Equations = block;
+		        bid.Expression = cexp;
+		    .)
+		).
+		
+	BindingChain<out ElaEquationSet block> =
+	    (. 
+	        block = new ElaEquationSet(); 
+	        scanner.InjectBlock();
+	    .)
+	    (
+	        Binding<block,null> EndBlock
+	        {	            
+	            (. scanner.InjectBlock(); .)
+	            Binding<block,null>
+	            EndBlock
+	        }
+	    ).	 
+	    
+	Guard<out ElaExpression exp> = 
+	    (. 
+	        var ifExp = new ElaCondition(t);
+	        exp = ifExp;
+	        
+	        var cond = default(ElaExpression);
+	        var trueExp = default(ElaExpression);
+	        var falseExp = default(ElaExpression);
+	    .)
+	    (
+	        BinaryExpr<out cond> (. ifExp.Condition = cond; .)
+	        "=" Expr<out trueExp> (. ifExp.True = trueExp; .)
+	        (
+	            "|" 
+	            (
+	                ( "else" "=" Expr<out falseExp>)
+	                | Guard<out falseExp>
+	            )
+	            (. ifExp.False = falseExp; .)
+	        )
+	    ).   
+		
+	Binding<ElaEquationSet block, string type> =
+	    (. 
+	        var bid = new ElaEquation(t);
+	        var left = default(ElaExpression);
+	        var right = default(ElaExpression);
+	    .)
+	    (
+	        Expr<out left> 
+	        [ 
+	            "=" Expr<out right> 
+	            | "|" Guard<out right>
+	        ]
+	        [
+	            (. var cb = default(ElaEquationSet); .)
+	            WhereBinding<out cb>
+	            (. 
+	                var letb = new ElaLetBinding();                    
+                    if (cb != null) letb.SetLinePragma(cb.Line, cb.Column);                    
+                    letb.Equations = cb;
+	                    
+	                if (right != null)
+	                {
+	                    letb.Expression = right;
+                        right = letb;
+	                }
+	                else
+	                {
+	                    letb.Expression = left;
+	                    left = letb;
+	                }	                    
+	            .)
+	        ]
+	        (. ProcessBinding(block, bid, left, right, type); .)
+	    ).
+	    
+	IncludeStat = 
+		(. var modInc = default(ElaModuleInclude); .)
+		(
+			(. scanner.InjectBlock(); .)
+			SYNC OPEN
+			(. 
+				var inc = default(ElaModuleInclude); 
+				var par = default(ElaModuleInclude); 
+			.) 
+			IncludeStatElement<out inc> (. modInc = inc; par = inc; .)
+			{ IncludeStatElement<out inc> (. par.And = inc; par = inc; .) }
+			EndBlock
+			(.
+			    modInc.And = Program.Includes;
+			    Program.Includes = modInc;
+			.)
+		).
+	
+	IncludeStatElement<out ElaModuleInclude exp> =
+		(. exp = null; .)
+		(
+			(. var inc = new ElaModuleInclude(t); .)
+			[ QUALIFIED (. inc.RequireQuailified = true; .) ]
+			Qualident<inc.Path>
+			(.
+				var name = inc.Path[inc.Path.Count - 1];				
+				inc.Path.RemoveAt(inc.Path.Count - 1);				
+				inc.Alias = inc.Name = name;
+				exp = inc;
+			.)	
+			[
+				"#"
+				(
+					ident (. inc.DllName = t.val; .)
+					| stringTok (. inc.DllName = ReadString(t.val); .)
+				)
+			]		
+			[ 
+				"@" ident 
+				(. inc.Alias = t.val; .) 
+			]
+			[
+				(. var imp = default(ElaImportedVariable); .)
+				"("
+					ImportName<out imp> (. inc.ImportList.Add(imp); .)
+					{ "," ImportName<out imp> (. inc.ImportList.Add(imp); .) }
+				")"
+			]
+		).
+		
+	ImportName<out ElaImportedVariable imp> =
+		(. imp = new ElaImportedVariable(t); .)
+		(
+			[ "private" (. imp.Private = true; .) ]
+			ident (. imp.Name = imp.LocalName = t.val; .)
+			[ "=" ident (. imp.Name = t.val; .) ]
+		).
+		
+	Qualident<. List<String> path .> = 
+		(. var val = String.Empty; .)
+		(
+			ident (. val = t.val; .)
+			| stringTok (. val = ReadString(t.val); .)
+		)
+		(. path.Add(val); .)
+		[ "." Qualident<path> ].
+		
+	TypeClass = 
+	    (. 
+	        var tc = default(ElaTypeClass);
 	        scanner.InjectBlock();
 	    .)
 	    (
 	        "class" 
 	        (. 
-	            var tc = new ElaTypeClass(t);
-	            exp = tc;
+	            tc = new ElaTypeClass(t); 	            
+	            tc.And = Program.Classes;
+	            Program.Classes = tc;
 	        .)
 	        (ident|variantTok)
 	        (. 
@@ -1980,7 +1231,7 @@ PRODUCTIONS
 	                        .)
 	                    )
 	                    { 
-	                        "et" (ident (. nm=t.val; .) |Operators (. nm=t.val; .) | "(" (Operators|ident) (. nm=t.val; .) ")") 
+	                        (ident (. nm=t.val; .) |Operators (. nm=t.val; .) | "(" (Operators|ident) (. nm=t.val; .) ")") 
 	                        "::"
 	                        (.
 	                            count = 0;
@@ -2000,9 +1251,39 @@ PRODUCTIONS
 	        EndBlock
 	    ).
 	    
-	ClassInstance<out ElaExpression exp> = 
+    NewType = 
+        (. scanner.InjectBlock(); .)
+        (
+            "type" ident
+            (.
+                var nt = new ElaNewtype(t) { Name = t.val };                	            
+	            nt.And = Program.Types;
+	            Program.Types = nt;
+            .)
+            [
+                (. 
+	                scanner.InjectBlock(); 
+	                bindings.Push(null);
+	            .) 
+                SYNC WHERE 
+		        (. scanner.InjectBlock(); .)
+		        (
+	                Binding<Program.TopLevel,nt.Name> EndBlock
+	                {	            
+	                    (. scanner.InjectBlock(); .)
+	                    Binding<Program.TopLevel,nt.Name>
+	                    EndBlock
+	                }
+	            )		        
+		        (. bindings.Pop(); .)
+		        EndBlock
+                (. nt.HasBody = true; .)
+		    ]
+		    EndBlock      
+        ).
+        
+	ClassInstance = 
 	    (. 
-	        exp = null; 
 	        var fst0 = default(String);
 	        var snd0 = default(String);
 	        var fst = default(String);
@@ -2012,7 +1293,14 @@ PRODUCTIONS
 	        "instance"
 	        (.
 	            var ci = new ElaClassInstance(t);
-	            exp = ci;
+	            
+	            if (Program.Instances == null)
+	                Program.Instances = ci;
+	            else
+	            {
+	                Program.Instances.And = ci;
+	                Program.Instances = ci;
+	            }
 	        .)
 	        (ident|variantTok)  (. fst0 = t.val; .)
 	        [ "." (ident|variantTok) (. snd0 = t.val; .) ]
@@ -2029,8 +1317,7 @@ PRODUCTIONS
 	            ident  (. fst = t.val; .)
 	            [ "." ident (. snd = t.val; .) ]
 	        )
-	        (. 
-	            
+	        (. 	            
 	            if (fst != null && snd != null)
 	            {
 	                ci.TypePrefix = fst;
@@ -2039,55 +1326,30 @@ PRODUCTIONS
 	            else
 	                ci.TypeName = fst;
 	            
-	            var cexp = default(ElaExpression);
+	            var block = default(ElaEquationSet);
 	        .)
 	        [
-	            WhereBinding<out cexp>
-	            (. ci.Where = (ElaBinding)cexp; .)
+	            WhereBinding<out block>
+	            (. ci.Where = block; .)
 	        ]
 	    ).
-	    
-    NewType<out ElaExpression exp> = 
-        (. 
-            exp = null; 
-            scanner.InjectBlock();
-        .)
-        (
-            "type" ident
-            (.
-                var nt = new ElaNewtype(t) { Name = t.val };
-                exp = nt;
-                var pat = default(ElaPattern);
-            .)
-            [
-                RootPattern<out pat>
-                (.
-                    var m = new ElaMatch(t);
-                    nt.Body = m;
-                    var cexp = default(ElaExpression);
-                .)
-                "=" Expr<out cexp> [WhereExpr<cexp, out cexp>]
-		        (. m.Entries.Add(new ElaMatchEntry { Pattern = pat, Expression = cexp }); .)      
-		    ]
-		    EndBlock      
-        ).
 		
-	DeclarationBlock<ElaBlock b> =
-		(. var exp = default(ElaExpression); .)
+	TopLevel =
+	    (. scanner.InjectBlock(); .)
+	    (
+	        Binding<Program.TopLevel,null>
+	        | IncludeStat
+	        | TypeClass
+	        | NewType
+	        | ClassInstance
+	    )
+	    EndBlock
+	    [ TopLevel ].
+		
+	Ela = 
 		(
-			RootLetBinding<out exp>
-			| IncludeStat<out exp>
-			| TypeClass<out exp>
-			| ClassInstance<out exp>
-			| NewType<out exp>
-			| 
-			(
-			    //EmbExpr<out exp> [WhereExpr<exp, out exp>](. if (FALSE) .) EBLOCK	
-			    (. scanner.InjectBlock(); .)
-			    EmbExpr<out exp> [WhereExpr<exp, out exp>]
-			    EndBlock
-			)
-		)
-		(. b.Expressions.Add(exp); .).
+			(. Program = new ElaProgram(); .)			
+			TopLevel
+		).		
 		
 END Ela.

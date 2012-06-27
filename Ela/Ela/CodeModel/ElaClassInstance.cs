@@ -37,7 +37,7 @@ namespace Ela.CodeModel
             
             sb.Append(TypeName);
             sb.AppendLine();            
-            Where.ToString(sb, new Fmt(2), "where");
+            Where.ToString(sb, new Fmt(2));
         }
         
         public string TypeClassPrefix { get; set; }
@@ -48,6 +48,8 @@ namespace Ela.CodeModel
 
         public string TypePrefix { get; set; }
 
-        public ElaBinding Where { get; set; }
+        public ElaEquationSet Where { get; set; }
+
+        public ElaClassInstance And { get; set; }
     }
 }

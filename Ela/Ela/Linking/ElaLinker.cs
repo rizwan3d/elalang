@@ -6,6 +6,7 @@ using Ela.Compilation;
 using Ela.Parsing;
 using Ela.Runtime;
 using Ela.Runtime.Classes;
+using System.Diagnostics;
 
 namespace Ela.Linking
 {
@@ -451,14 +452,14 @@ namespace Ela.Linking
 		}
 
 
-		internal CodeFrame Build(ModuleReference mod, FileInfo file, string source, 
-			CodeFrame frame, Scope scope)
-		{
-			if (Assembly.ModuleCount == 0)
-				Assembly.AddModule(mod.ToString(), frame, mod.RequireQuailified, mod.LogicalHandle);
-			
+        internal CodeFrame Build(ModuleReference mod, FileInfo file, string source,
+            CodeFrame frame, Scope scope)
+        {
+            if (Assembly.ModuleCount == 0)
+                Assembly.AddModule(mod.ToString(), frame, mod.RequireQuailified, mod.LogicalHandle);
+
             var ret = default(CodeFrame);
-           
+
             if (file != null && file == RootFile)
             {
                 if (!CheckRootFile(out ret))
@@ -469,33 +470,33 @@ namespace Ela.Linking
                 file = RootFile;
             }
 
-			var pRes = Parse(file, source);
-			
-			if (pRes.Success)
-			{
-				var cRes = Compile(file, pRes.Expression, frame, scope, mod.NoPrelude || mod.ModuleName == CompilerOptions.Prelude);
-				ret = cRes.CodeFrame;
+            var pRes = Parse(file, source);
+            
+            if (pRes.Success)
+            {
+                var cRes = Compile(file, pRes.Program, frame, scope, mod.NoPrelude || mod.ModuleName == CompilerOptions.Prelude);
+                ret = cRes.CodeFrame;
 
-				if (cRes.Success)
-				{
-					if (ret.Symbols != null)
-						ret.Symbols.File = file != null ? file : RootFile;
+                if (cRes.Success)
+                {
+                    if (ret.Symbols != null)
+                        ret.Symbols.File = file != null ? file : RootFile;
 
-					return ret;
-				}
-				else
-					ret = null;
-			}
+                    return ret;
+                }
+                else
+                    ret = null;
+            }
 
-			if (file != RootFile)
-				AddError(ElaLinkerError.ModuleLinkFailed, 
-					RootFile,
-					mod != null ? mod.Line : 0, 
-					mod != null ? mod.Column : 0,
-					Path.GetFileNameWithoutExtension(file != null ? file.Name :
-						RootFile != null ? RootFile.Name : "<" + MemoryFile + ">"));
-			return ret;
-		}
+            if (file != RootFile)
+                AddError(ElaLinkerError.ModuleLinkFailed,
+                    RootFile,
+                    mod != null ? mod.Line : 0,
+                    mod != null ? mod.Column : 0,
+                    Path.GetFileNameWithoutExtension(file != null ? file.Name :
+                        RootFile != null ? RootFile.Name : "<" + MemoryFile + ">"));
+            return ret;
+        }
 
 
         internal bool CheckRootFile(out CodeFrame frame)
@@ -525,7 +526,7 @@ namespace Ela.Linking
         }
 
 
-		internal CompilerResult Compile(FileInfo file, ElaExpression expr, CodeFrame frame, Scope scope, bool noPrelude)
+		internal CompilerResult Compile(FileInfo file, ElaProgram prog, CodeFrame frame, Scope scope, bool noPrelude)
 		{
 			var elac = new C();
 			var opts = CompilerOptions;
@@ -538,8 +539,8 @@ namespace Ela.Linking
 
             var exportVars = CreateExportVars(file);
 			elac.ModuleInclude += (o, e) => e.Frame = ResolveModule(e.Module, exportVars);
-			var res = frame != null ? elac.Compile(expr, CompilerOptions, exportVars, frame, scope) :
-				elac.Compile(expr, opts, exportVars);
+			var res = frame != null ? elac.Compile(prog, CompilerOptions, exportVars, frame, scope) :
+				elac.Compile(prog, opts, exportVars);
 			AddMessages(res.Messages, file == null ? RootFile : file);
 			return res;
 		}

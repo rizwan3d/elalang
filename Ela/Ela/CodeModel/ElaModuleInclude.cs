@@ -9,7 +9,6 @@ namespace Ela.CodeModel
 	{
 		internal ElaModuleInclude(Token tok) : base(tok, ElaNodeType.ModuleInclude)
 		{
-			Flags = ElaExpressionFlags.ReturnsUnit;
 			Path = new List<String>();
 		}
         

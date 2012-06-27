@@ -79,13 +79,13 @@ namespace Ela.Compilation
             Locals[name] = sv;
         }
 
-        internal int TryChangeVariable(string name, ElaVariableFlags flags)
+        internal int TryChangeVariable(string name)
         {
             var v = default(ScopeVar);
 
             if (Locals.TryGetValue(name, out v))
             {
-                v = new ScopeVar(flags, v.Address, -1);
+                v = new ScopeVar(ElaVariableFlags.None, v.Address, -1);
                 Locals[name] = v;
                 return v.Address;
             }

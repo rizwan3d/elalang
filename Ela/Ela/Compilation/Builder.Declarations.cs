@@ -6,63 +6,61 @@ namespace Ela.Compilation
 {
 	internal sealed partial class Builder
     {
-        //Processes a binding or a chain of bindings (done through 'et').
-        private void WalkDeclarations(ElaBinding s, LabelMap map, Hints hints)
+        //Processes a binding or a chain of bindings.
+        private void WalkDeclarations(ElaEquationSet s, LabelMap map, Hints hints)
         {
-            var inExp = s.In;
-
-            //These bindings introduce a new lexical scope
-            if (inExp != null)
-                StartScope(false, s.In.Line, s.In.Column);
-
-            //Loop through all bindings and do the forward declaration
-            foreach (var b in s)
-                AddNoInitVariable(b);
+            //Do the forward declaration
+            foreach (var e in s.Equations)
+                AddNoInitVariable(e);
 
             //Compile
-            foreach (var b in s)
-                CompileDeclaration(b, map, hints);
-
-            //Compile 'in' expression if present
-            if (inExp != null)
-            {
-                CompileExpression(inExp, map, hints);
-                EndScope(); //Closing a scope
-            }
+            foreach (var e in s.Equations)
+                CompileDeclaration(e, map, hints);
         }
         
-        private void CompileDeclaration(ElaBinding s, LabelMap map, Hints hints)
+        private void CompileDeclaration(ElaEquation s, LabelMap map, Hints hints)
         {
             //Check for some errors
             ValidateBinding(s);
+            var fun = s.IsFunction();
 
-            if (s.Pattern != null)
+            if (s.Left.Type != ElaNodeType.NameReference && !fun)
                 CompileBindingPattern(s, map);
             else
             {
                 var addr = GetNoInitVariable(s);
 
                 //Compile expression and write it to a variable
-                CompileExpression(s.InitExpression, map, Hints.None);
+                if (fun)
+                    CompileFunction(s, FunFlag.None);
+                else
+                {
+                    CompileExpression(s.Right, map, Hints.None);
+
+                    //If this a type member we need to construct a new type instance
+                    if (s.AssociatedType != null)
+                        cw.Emit(Op.Newtype, AddString(s.AssociatedType));
+                }
+
                 AddLinePragma(s);
                 PopVar(addr);    
             }
         }
 
-        private void CompileBindingPattern(ElaBinding s, LabelMap map)
+        private void CompileBindingPattern(ElaEquation s, LabelMap map)
         {
             var tuple = default(ElaTupleLiteral);
             var sys = -1;
 
             //If both pattern and init are tuples provide this tuple to pattern compiler
             //explicitely - in such a case a tuple won't be actually created.
-            if (s.InitExpression.Type == ElaNodeType.TupleLiteral && s.Pattern.Type == ElaNodeType.TuplePattern)
-                tuple = (ElaTupleLiteral)s.InitExpression;
+            if (s.Right.Type == ElaNodeType.TupleLiteral && s.Left.Type == ElaNodeType.TupleLiteral)
+                tuple = (ElaTupleLiteral)s.Right;
             else
             {
                 //If InitExpression is not a tuple we need to actually compile it and deconstruct
                 sys = AddVariable();
-                CompileStrictOrLazy(s.InitExpression, map, Hints.None);
+                CompileExpression(s.Right, map, Hints.None);
                 AddLinePragma(s);
                 PopVar(sys);
             }
@@ -72,7 +70,7 @@ namespace Ela.Compilation
             var exit = cw.DefineLabel();
 
             //Here we compile a pattern a generate a 'handling logic' that raises a MatchFailed exception
-            CompilePattern(sys, tuple, s.Pattern, map, next, s.VariableFlags, Hints.None);
+            CompilePattern(sys, s.Left, next);
             cw.Emit(Op.Br, exit);
             cw.MarkLabel(next);
             cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
@@ -81,10 +79,10 @@ namespace Ela.Compilation
         }
 
         //Validate correctness of a binding
-        private void ValidateBinding(ElaBinding s)
+        private void ValidateBinding(ElaEquation s)
         {
             //These errors are not critical and allow to continue compilation
-            if (s.InitExpression.Type == ElaNodeType.Builtin && String.IsNullOrEmpty(s.VariableName))
+            if (s.Right.Type == ElaNodeType.Builtin && s.Left.Type != ElaNodeType.NameReference)
                 AddError(ElaCompilerError.InvalidBuiltinBinding, s);
 
             if ((s.VariableFlags & ElaVariableFlags.Private) == ElaVariableFlags.Private && CurrentScope != globalScope)
@@ -93,11 +91,15 @@ namespace Ela.Compilation
 
         //Returns a variable from a local scope marked with NoInit flag
         //If such variable couldn't be found returns -1
-        private int GetNoInitVariable(ElaBinding s)
+        private int GetNoInitVariable(ElaEquation s)
         {
             ScopeVar var;
+            var name = s.Left.GetName();
+
+            if (s.IsFunction())
+                name = s.GetFunctionName();
             
-            if (CurrentScope.Locals.TryGetValue(s.VariableName, out var))
+            if (CurrentScope.Locals.TryGetValue(name, out var))
             {
                 //If it doesn't have a NoInit flag we are not good
                 if ((var.Flags & ElaVariableFlags.NoInit) != ElaVariableFlags.NoInit)
@@ -113,23 +115,28 @@ namespace Ela.Compilation
         //This method also calculates additional flags and metadata for variables.
         //If a given binding if defined by pattern matching then all variables from
         //patterns are traversed using AddPatternVariable method.
-        private void AddNoInitVariable(ElaBinding exp)
+        private void AddNoInitVariable(ElaEquation exp)
         {
             //This binding is not defined by PM
-            if (!String.IsNullOrEmpty(exp.VariableName))
+            if (exp.IsFunction())
+            {
+                var name = exp.GetFunctionName();
+                AddVariable(name, exp.Left, ElaVariableFlags.Function | ElaVariableFlags.NoInit, -1);
+            }
+            else if (exp.Left.Type == ElaNodeType.NameReference)
             {
                 var flags = exp.VariableFlags | ElaVariableFlags.NoInit;
                 var data = -1;
 
-                if (exp.InitExpression.Type == ElaNodeType.Builtin)
+                if (exp.Right.Type == ElaNodeType.Builtin)
                 {
                     //Adding required hints for a built-in
-                    data = (Int32)((ElaBuiltin)exp.InitExpression).Kind;
+                    data = (Int32)((ElaBuiltin)exp.Right).Kind;
                     flags |= ElaVariableFlags.Builtin;
                 }
-                else if (exp.InitExpression.Type == ElaNodeType.FunctionLiteral)
+                else if (exp.Right.Type == ElaNodeType.Lambda)
                 {                
-                    var fun = (ElaFunctionLiteral)exp.InitExpression;
+                    var fun = (ElaLambda)exp.Right;
                     flags |= ElaVariableFlags.Function;
 
                     //For an inline function logic is slightly different which is somewhat
@@ -141,77 +148,84 @@ namespace Ela.Compilation
                         inlineFuns.Add(new InlineFun(fun, CurrentScope));
                     }
                     else
-                        data = fun.ParameterCount;
+                        data = fun.GetParameterCount();
                 }
 
-                AddVariable(exp.VariableName, exp, flags, data);
+                AddVariable(exp.Left.GetName(), exp, flags, data);
             }
             else
-                AddPatternVariables(exp.Pattern);
+                AddPatternVariables(exp.Left);
         }
 
         //Adding all variables from pattern as NoInit's. This method recursively walks 
         //all patterns. Currently we don't associate any additional metadata or flags 
         //(except of NoInit) with variables inferred in such a way.
-        private void AddPatternVariables(ElaPattern pat)
+        private void AddPatternVariables(ElaExpression pat)
         {
             switch (pat.Type)
             {
-                case ElaNodeType.VariantPattern:
+                case ElaNodeType.VariantLiteral:
                     {
-                        var vp = (ElaVariantPattern)pat;
+                        var vp = (ElaVariantLiteral)pat;
 
-                        if (vp.Pattern != null)
-                            AddPatternVariables(vp.Pattern);
+                        if (vp.Expression != null)
+                            AddPatternVariables(vp.Expression);
                     }
                     break;
-                case ElaNodeType.IsPattern:
-                case ElaNodeType.UnitPattern: //Idle
+                case ElaNodeType.UnitLiteral: //Idle
                     break;
-                case ElaNodeType.AsPattern:
+                case ElaNodeType.As:
                     {
-                        var asPat = (ElaAsPattern)pat;
+                        var asPat = (ElaAs)pat;
                         AddVariable(asPat.Name, asPat, ElaVariableFlags.NoInit, -1);
-                        AddPatternVariables(asPat.Pattern);
+                        AddPatternVariables(asPat.Expression);
                     }
                     break;
-                case ElaNodeType.LiteralPattern: //Idle
+                case ElaNodeType.Primitive: //Idle
                     break;
-                case ElaNodeType.VariablePattern:
+                case ElaNodeType.NameReference:
                     {
-                        var vexp = (ElaVariablePattern)pat;
+                        var vexp = (ElaNameReference)pat;
                         AddVariable(vexp.Name, vexp, ElaVariableFlags.NoInit, -1);
                     }
                     break;
-                case ElaNodeType.RecordPattern:
+                case ElaNodeType.RecordLiteral:
                     {
-                        var rexp = (ElaRecordPattern)pat;
+                        var rexp = (ElaRecordLiteral)pat;
 
                         foreach (var e in rexp.Fields)
-                            if (e.Value != null)
-                                AddPatternVariables(e.Value);
+                            if (e.FieldValue != null)
+                                AddPatternVariables(e.FieldValue);
                     }
                     break;
-                case ElaNodeType.PatternGroup:
-                case ElaNodeType.TuplePattern:
+                case ElaNodeType.TupleLiteral:
                     {
-                        var texp = (ElaTuplePattern)pat;
+                        var texp = (ElaTupleLiteral)pat;
 
-                        foreach (var e in texp.Patterns)
+                        foreach (var e in texp.Parameters)
                             AddPatternVariables(e);
                     }
                     break;
-                case ElaNodeType.DefaultPattern: //Idle
+                case ElaNodeType.Placeholder: //Idle
                     break;
-                case ElaNodeType.HeadTailPattern:
+                case ElaNodeType.Juxtaposition:
                     {
-                        var hexp = (ElaHeadTailPattern)pat;
+                        var hexp = (ElaJuxtaposition)pat;
 
-                        foreach (var e in hexp.Patterns)
+                        foreach (var e in hexp.Parameters)
                             AddPatternVariables(e);
                     }
                     break;
-                case ElaNodeType.NilPattern: //Idle
+                case ElaNodeType.ListLiteral: //Idle
+                    {
+                        var l = (ElaListLiteral)pat;
+
+                        if (l.HasValues())
+                        {
+                            foreach (var e in l.Values)
+                                AddPatternVariables(e);
+                        }
+                    }
                     break;
             }
         }

@@ -243,9 +243,6 @@
   <data name="ExpectedDot" xml:space="preserve">
     <value>A member access operator '.' is expected.</value>
   </data>
-  <data name="ExpectedKeywordEt" xml:space="preserve">
-    <value>Expected keyword 'et'.</value>
-  </data>
   <data name="ExpectedKeywordFail" xml:space="preserve">
     <value>Expected keyword 'fail'.</value>
   </data>
@@ -419,5 +416,14 @@
   </data>
   <data name="InvalidFunctionSignature" xml:space="preserve">
     <value>Invalid function signature. A symbol '{0}' is unexpected.</value>
+  </data>
+  <data name="InvalidVariantLiteral" xml:space="preserve">
+    <value>Invalid variant literal.</value>
+  </data>
+  <data name="TypeMemberExpression" xml:space="preserve">
+    <value>An expression {0} is not valid as a type constructor.</value>
+  </data>
+  <data name="TypeMemberNoPatterns" xml:space="preserve">
+    <value>Type constructor {0} is not valid. Type constructors cannot be defined by pattern matching.</value>
   </data>
 </root>

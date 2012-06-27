@@ -70,7 +70,10 @@ namespace Ela.Runtime.ObjectModel
 
         public override string ToString(string format, IFormatProvider provider)
         {
-			return Tag;
+            if (Value.Ref is ElaUnit)
+                return Tag;
+            else
+                return Tag + " " + Value.ToString(format, provider);
 		}
 
         public string Tag { get; protected set; }

@@ -15,8 +15,8 @@ namespace Ela.Compilation
 
 			var addr = -1;
 
-			if (s.Pattern.Type == ElaNodeType.VariablePattern)
-				addr = AddVariable(((ElaVariablePattern)s.Pattern).Name, s.Pattern, ElaVariableFlags.None, -1);
+			if (s.Pattern.Type == ElaNodeType.NameReference)
+				addr = AddVariable(s.Pattern.GetName(), s.Pattern, ElaVariableFlags.None, -1);
 			else
 				addr = AddVariable();
 
@@ -39,18 +39,13 @@ namespace Ela.Compilation
             cw.Emit(Op.Tail);
             PopVar(0 | ((addr >> 8) + 1) << 8);
 
-			if (s.Pattern.Type != ElaNodeType.VariablePattern)
-				CompilePattern(addr, null, s.Pattern, map, iter, ElaVariableFlags.None, hints);
+			if (s.Pattern.Type != ElaNodeType.NameReference)
+				CompilePattern(addr, s.Pattern, iter);
 
 			if (s.Guard != null)
 			{
-				if (s.Guard.Type == ElaNodeType.OtherwiseGuard)
-					AddError(ElaCompilerError.ElseGuardNotValid, s.Guard);
-				else
-				{
-					CompileExpression(s.Guard, map, Hints.None);
-					cw.Emit(Op.Brfalse, iter);
-				}
+				CompileExpression(s.Guard, map, Hints.None);
+				cw.Emit(Op.Brfalse, iter);
 			}
 
 			if (s.Body != null)
@@ -108,24 +103,19 @@ namespace Ela.Compilation
             cw.Emit(Op.Tail);
             PopVar(tail);
 
-			if (s.Pattern.Type == ElaNodeType.VariablePattern)
+			if (s.Pattern.Type == ElaNodeType.NameReference)
 			{
-				var addr = AddVariable(((ElaVariablePattern)s.Pattern).Name, s.Pattern, ElaVariableFlags.None, -1);
+				var addr = AddVariable(s.Pattern.GetName(), s.Pattern, ElaVariableFlags.None, -1);
 				PushVar(head);
                 PopVar(addr);
 			}
 			else
-				CompilePattern(head, null, s.Pattern, map, iterLab, ElaVariableFlags.None, hints);
+				CompilePattern(head, s.Pattern, iterLab);
 
 			if (s.Guard != null)
 			{
-				if (s.Guard.Type == ElaNodeType.OtherwiseGuard)
-					AddError(ElaCompilerError.ElseGuardNotValid, s.Guard);
-				else
-				{
-					CompileExpression(s.Guard, map, Hints.None);
-					cw.Emit(Op.Brfalse, iterLab);
-				}
+				CompileExpression(s.Guard, map, Hints.None);
+				cw.Emit(Op.Brfalse, iterLab);
 			}
 
 			if (s.Body.Type == ElaNodeType.Generator)

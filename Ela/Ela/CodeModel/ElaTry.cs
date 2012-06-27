@@ -15,6 +15,11 @@ namespace Ela.CodeModel
 		{
 
 		}
+
+        internal override bool Safe()
+        {
+            return false;
+        }
 				
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{

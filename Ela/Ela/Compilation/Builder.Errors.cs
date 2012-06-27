@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using Ela.CodeModel;
 
 namespace Ela.Compilation
@@ -84,10 +85,10 @@ namespace Ela.Compilation
 
             if (str.IndexOf('\n') != -1 || str.Length > 40)
                 str = "\r\n    " + str + "\r\n";
-            else if (str.Length > 0 && str[0] != '\'' && str[0] != '"')
-                str = "'" + str + "'";
+            else if (str.Length > 0 && str[0] != '(' && str[0] != '"' && str[0] != '\'' && str[0] != '[')
+                str = "(" + str + ")";
 
-            return str.Length > 150 ? str.Substring(0, 150) : str;
+            return str.Length > 100 ? str.Substring(0, 100) : str;
         }
     }
 }
