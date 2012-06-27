@@ -7,6 +7,8 @@ namespace Ela.CodeModel
 {
 	public sealed class ElaListLiteral : ElaExpression
 	{
+        internal static readonly ElaListLiteral Empty = new ElaListLiteral();
+
 		internal ElaListLiteral(Token tok) : base(tok, ElaNodeType.ListLiteral)
 		{
 			
@@ -47,7 +49,7 @@ namespace Ela.CodeModel
 
         public bool HasValues()
         {
-            return _values != null;
+            return _values != null && _values.Count > 0;
         }
 		
 		private List<ElaExpression> _values;

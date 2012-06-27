@@ -17,12 +17,12 @@ namespace Ela.Runtime.Classes
                 if (!res.Success)
                     return Fail(instance, value, ctx);
 
-                var block = (ElaBlock)res.Expression;
+                var block = res.Program.TopLevel;
 
-                if (block.Expressions.Count != 1 || block.Expressions[0].Type != ElaNodeType.ListLiteral)
+                if (block.Equations.Count != 1 || block.Equations[0].Left.Type != ElaNodeType.ListLiteral)
                     return Fail(instance, value, ctx);
 
-                var lit = (ElaListLiteral)block.Expressions[0];
+                var lit = (ElaListLiteral)block.Equations[0].Left;
                 var list = BuildList(lit);
 
                 if (list != null)

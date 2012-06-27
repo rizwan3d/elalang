@@ -16,7 +16,7 @@ namespace Ela.Parsing
 
 		InvalidEscapeCode = 5,
 
-		// = 6,
+		InvalidVariantLiteral = 6,
 
 		InvalidFunctionDeclaration = 7,
 
@@ -140,7 +140,7 @@ namespace Ela.Parsing
 
 		ExpectedKeywordWhere = 152,
 
-		ExpectedKeywordEt = 153,
+		// = 153,
 
 		// = 154,
 

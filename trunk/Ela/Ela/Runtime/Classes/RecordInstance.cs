@@ -41,12 +41,12 @@ namespace Ela.Runtime.Classes
                 if (!res.Success)
                     return Fail(instance, value, ctx);
 
-                var block = (ElaBlock)res.Expression;
+                var block = res.Program.TopLevel;
 
-                if (block.Expressions.Count != 1 || block.Expressions[0].Type != ElaNodeType.RecordLiteral)
+                if (block.Equations.Count != 1 || block.Equations[0].Left.Type != ElaNodeType.RecordLiteral)
                     return Fail(instance, value, ctx);
 
-                var lit = (ElaRecordLiteral)block.Expressions[0];
+                var lit = (ElaRecordLiteral)block.Equations[0].Left;
                 var rec = BuildRecord(lit);
 
                 if (rec != null)

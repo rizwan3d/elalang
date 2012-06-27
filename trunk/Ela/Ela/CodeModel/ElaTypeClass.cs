@@ -24,46 +24,53 @@ namespace Ela.CodeModel
         
         internal override void ToString(StringBuilder sb, Fmt fmt)
         {
-            sb.Append("class ");
-            sb.Append(Name);
+            var and = this;
 
-            if (BuiltinName != null)
+            while (and != null)
             {
-                sb.Append("__internal ");
-                sb.Append(BuiltinName);
+                sb.Append("class ");
+                sb.Append(Name);
 
-                foreach (var s in Members)
+                if (BuiltinName != null)
                 {
-                    sb.Append(' ');
+                    sb.Append("__internal ");
+                    sb.Append(BuiltinName);
 
-                    if (Format.IsSymbolic(s.Name))
+                    foreach (var s in Members)
                     {
-                        sb.Append('(');
-                        sb.Append(s.Name);
-                        sb.Append(')');
-                    }
-                    else
-                        sb.Append(s.Name);
-                }
-            }
-            else
-            {
-                sb.AppendLine(" a");
-                sb.Append("  where ");
-                var c = 0;
+                        sb.Append(' ');
 
-                foreach (var s in Members)
+                        if (Format.IsSymbolic(s.Name))
+                        {
+                            sb.Append('(');
+                            sb.Append(s.Name);
+                            sb.Append(')');
+                        }
+                        else
+                            sb.Append(s.Name);
+                    }
+                }
+                else
                 {
-                    if (c++ > 0)
+                    sb.AppendLine(" a");
+                    sb.Append("  where ");
+                    var c = 0;
+
+                    foreach (var s in Members)
                     {
-                        sb.AppendLine();
-                        sb.Append("     et ");
+                        if (c++ > 0)
+                        {
+                            sb.AppendLine();
+                            sb.Append("     et ");
+                        }
+
+                        s.ToString(sb, default(Fmt));
                     }
-                    
-                    s.ToString(sb, default(Fmt));
+
+                    sb.AppendLine();
                 }
 
-                sb.AppendLine();
+                and = and.And;
             }
         }
 
@@ -72,5 +79,7 @@ namespace Ela.CodeModel
         public string BuiltinName { get; set; }
 
         public List<ElaClassMember> Members { get; set; }
+
+        public ElaTypeClass And { get; set; }
     }
 }

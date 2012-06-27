@@ -49,7 +49,7 @@ namespace Ela.CodeModel
 				return gen.Body;
 		}
 		
-		public ElaPattern Pattern { get; set; }
+		public ElaExpression Pattern { get; set; }
 
 		public ElaExpression Guard { get; set; }
 

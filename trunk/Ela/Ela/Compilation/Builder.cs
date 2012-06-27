@@ -46,7 +46,7 @@ namespace Ela.Compilation
 		}
 
         //Entry point
-		internal void CompileUnit(ElaExpression expr)
+		internal void CompileUnit(ElaProgram prog)
 		{
             frame.Layouts.Add(new MemoryLayout(0, 0, 1)); //top level layout
 			cw.StartFrame(0);
@@ -59,10 +59,9 @@ namespace Ela.Compilation
             IncludeArguments();
 			            
             var map = new LabelMap();
-            var block = (ElaBlock)expr;
 
             //Main compilation routine
-            CompileProgram(block.Expressions, map);
+            CompileProgram(prog, map);
             
             //Every Ela module should end with a Stop op code
 			cw.Emit(Op.Stop);
@@ -78,6 +77,11 @@ namespace Ela.Compilation
 
             switch (exp.Type)
             {
+                case ElaNodeType.As:
+                case ElaNodeType.TypeCheck:
+                case ElaNodeType.Equation:
+                    AddError(ElaCompilerError.InvalidExpression, exp, FormatNode(exp));
+                    break;
                 case ElaNodeType.Builtin:
                     {
                         var v = (ElaBuiltin)exp;
@@ -107,7 +111,7 @@ namespace Ela.Compilation
                 case ElaNodeType.VariantLiteral:
                     {
                         var v = (ElaVariantLiteral)exp;
-                        CompileVariant(v, null, map, hints);
+                        CompileVariant(v, v.Expression, map, hints);
                     }
                     break;
                 case ElaNodeType.LazyLiteral:
@@ -116,31 +120,19 @@ namespace Ela.Compilation
                         CompileLazy(v, map, hints);
                     }
                     break;
+                case ElaNodeType.LetBinding:
+                    {
+                        var v = (ElaLetBinding)exp;
+                        StartScope(false, v.Line, v.Column);
+                        WalkDeclarations(v.Equations, map, Hints.None);
+                        CompileExpression(v.Expression, map, hints);
+                        EndScope();
+                    }
+                    break;
                 case ElaNodeType.Try:
                     {
                         var s = (ElaTry)exp;
-
-                        var catchLab = cw.DefineLabel();
-                        var exitLab = cw.DefineLabel();
-
-                        AddLinePragma(s);
-                        cw.Emit(Op.Start, catchLab);
-
-                        var untail = (hints & Hints.Tail) == Hints.Tail ? hints ^ Hints.Tail : hints;
-                        CompileExpression(s.Expression, map, untail | Hints.Scope);
-
-                        cw.Emit(Op.Leave);
-                        cw.Emit(Op.Br, exitLab);
-                        cw.MarkLabel(catchLab);
-                        cw.Emit(Op.Leave);
-
-                        CompileMatch(s, null, map, Hints.Throw);
-
-                        cw.MarkLabel(exitLab);
-                        cw.Emit(Op.Nop);
-
-                        if ((hints & Hints.Left) == Hints.Left)
-                            AddValueNotUsed(s);
+                        CompileTryExpression(s, map, hints);
                     }
                     break;
                 case ElaNodeType.Comprehension:
@@ -164,27 +156,18 @@ namespace Ela.Compilation
                     break;
                 case ElaNodeType.Match:
                     {
-                        var match = (ElaMatch)exp;
-                        CompileMatch(match, match.Expression, map, hints);
+                        var n = (ElaMatch)exp;
+                        CompileMatchExpression(n, map, hints);
+                    }
+                    break;
+                case ElaNodeType.Lambda:
+                    {
+                        var f = (ElaLambda)exp;
+                        var pc = CompileLambda(f);
+                        exprData = new ExprData(DataKind.FunParams, pc);
 
                         if ((hints & Hints.Left) == Hints.Left)
                             AddValueNotUsed(exp);
-                    }
-                    break;
-                case ElaNodeType.FunctionLiteral:
-                    {
-                        var f = (ElaFunctionLiteral)exp;
-                        CompileFunction(f, FunFlag.None);
-                        exprData = new ExprData(DataKind.FunParams, f.ParameterCount);
-
-                        if ((hints & Hints.Left) == Hints.Left)
-                            AddValueNotUsed(exp);
-                    }
-                    break;
-                case ElaNodeType.Binding:
-                    {
-                        var b = (ElaBinding)exp;
-                        WalkDeclarations(b, map, hints);
                     }
                     break;
                 case ElaNodeType.Condition:
@@ -246,11 +229,11 @@ namespace Ela.Compilation
                         exprData = CompileList(p, map, hints);
                     }
                     break;
-                case ElaNodeType.VariableReference:
+                case ElaNodeType.NameReference:
                     {
-                        var v = (ElaVariableReference)exp;
+                        var v = (ElaNameReference)exp;
                         AddLinePragma(v);
-                        var scopeVar = GetVariable(v.VariableName, v.Line, v.Column);
+                        var scopeVar = GetVariable(v.Name, v.Line, v.Column);
 
                         PushVar(scopeVar);
 
@@ -276,44 +259,10 @@ namespace Ela.Compilation
                         }
                     }
                     break;
-                case ElaNodeType.FunctionCall:
+                case ElaNodeType.Juxtaposition:
                     {
-                        var v = (ElaFunctionCall)exp;
+                        var v = (ElaJuxtaposition)exp;
                         CompileFunctionCall(v, map, hints);
-
-                        if ((hints & Hints.Left) == Hints.Left)
-                            AddValueNotUsed(v);
-                    }
-                    break;
-                case ElaNodeType.Is:
-                    {
-                        var v = (ElaIs)exp;
-
-                        if ((hints & Hints.Scope) != Hints.Scope)
-                            StartScope(false, v.Line, v.Column);
-
-                        CompileExpression(v.Expression, map, Hints.None | Hints.Scope);
-                        var addr = AddVariable();
-                        PopVar(addr);
-                        var next = cw.DefineLabel();
-                        var exit = cw.DefineLabel();
-                        var err = cw.DefineLabel();
-
-                        AddLinePragma(v);
-                        cw.Emit(Op.Start, err);
-                        CompilePattern(addr, null, v.Pattern, map, next, ElaVariableFlags.None, hints);
-                        cw.Emit(Op.PushI1_1);
-                        cw.Emit(Op.Br, exit);
-                        cw.MarkLabel(err);
-
-                        cw.Emit(Op.Pop);
-                        cw.MarkLabel(next);
-                        cw.Emit(Op.PushI1_0);
-                        cw.MarkLabel(exit);
-                        cw.Emit(Op.Leave);
-
-                        if ((hints & Hints.Scope) != Hints.Scope)
-                            EndScope();
 
                         if ((hints & Hints.Left) == Hints.Left)
                             AddValueNotUsed(v);

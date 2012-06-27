@@ -53,12 +53,12 @@ namespace Ela.Runtime.Classes
                 if (!res.Success)
                     return Fail(instance, value, ctx);
 
-                var block = (ElaBlock)res.Expression;
+                var block = res.Program.TopLevel;
 
-                if (block.Expressions.Count != 1 || block.Expressions[0].Type != ElaNodeType.TupleLiteral)
+                if (block.Equations.Count != 1 || block.Equations[0].Left.Type != ElaNodeType.TupleLiteral)
                     return Fail(instance, value, ctx);
 
-                var lit = (ElaTupleLiteral)block.Expressions[0];
+                var lit = (ElaTupleLiteral)block.Equations[0].Left;
                 var tup = BuildTuple(lit);
 
                 if (tup != null)

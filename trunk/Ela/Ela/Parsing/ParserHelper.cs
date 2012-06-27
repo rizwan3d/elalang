@@ -8,11 +8,9 @@ namespace Ela.Parsing
 {
 	internal sealed partial class Parser
 	{
-		private static readonly ElaVariableReference hiddenVar = new ElaVariableReference { VariableName = "$0" };
-		private static readonly ElaVariablePattern hiddenPattern = new ElaVariablePattern { Name = "$0" };
-        private int oldKind = 0;
-
-		#region Methods
+        private static readonly ElaEquation unit = new ElaEquation();
+		private Stack<ElaEquation> bindings = new Stack<ElaEquation>(new ElaEquation[] { null });
+        
 		private bool RequireEndBlock()
 		{
 			if (la.kind == _EBLOCK)
@@ -21,7 +19,7 @@ namespace Ela.Parsing
 			if (la.kind == _PIPE)
 				return false;
 
-			if (la.kind == _ET || la.kind == _IN)
+			if (la.kind == _IN)
 			{
 				scanner.PopIndent();
 				return false;
@@ -43,77 +41,53 @@ namespace Ela.Parsing
             count++;
         }
 
-		private void SetObjectMetadata(ElaBinding varExp)
-		{
-			if (varExp.InitExpression != null)
-			{
-                if (varExp.InitExpression.Type == ElaNodeType.FunctionLiteral && varExp.VariableName != null)
-				{
-                    ((ElaFunctionLiteral)varExp.InitExpression).Name = varExp.VariableName;
-					varExp.VariableFlags |= ElaVariableFlags.Function;
-				}
-                else if ((varExp.InitExpression.Type < ElaNodeType.FunctionLiteral || varExp.InitExpression.Type == ElaNodeType.Primitive) && varExp.VariableName != null)
-					varExp.VariableFlags |= ElaVariableFlags.ObjectLiteral;
-			}
-		}
-
-
-        private bool CheckFend(ElaBinding bin)
+        private void ProcessBinding(ElaEquationSet block, ElaEquation bid, ElaExpression left, ElaExpression right, string type)
         {
-            var and = la.kind != _EBLOCK && la.kind != _IN && (la.kind != _ident || la.val != bin.VariableName);
+            bid.Left = left;
+            bid.Right = right;
 
-            if (!and)
+            if (bindings.Peek() == unit)
             {
-                oldKind = la.kind;
-                la.kind = _EBLOCK;
+                block.Equations.Add(bid);
+                return;
             }
 
-            return and;
-        }
+            var fName = default(String);
 
-
-        private void ProcessFunctionParameters(ElaFunctionLiteral mi, Token ot, ElaBinding varExp)
-        {
-            if (mi.Body.Entries.Count > 1)
+            if (right != null && left.Type == ElaNodeType.Juxtaposition && !left.Parens)
             {
-                var patterns = default(List<ElaPattern>);
-                var pars = 0;
+                var fc = (ElaJuxtaposition)left;
 
-                if (mi.Body.Entries[0].Pattern.Type != ElaNodeType.PatternGroup)
-                    pars = 1;
+                if (fc.Target.Type == ElaNodeType.NameReference)
+                    fName = fc.Target.GetName();
+            }
+
+            if (fName != null)
+            {
+                var lastB = bindings.Peek();
+
+                if (lastB != null && ((ElaJuxtaposition)lastB.Left).Target.GetName() == fName)
+                    lastB.Next = bid;
                 else
                 {
-                    patterns = ((ElaPatternGroup)mi.Body.Entries[0].Pattern).Patterns;
-                    pars = patterns.Count;
+                    bid.AssociatedType = type;
+                    block.Equations.Add(bid);
                 }
 
-                var tp = new ElaTupleLiteral(ot);
-
-                //for (var i = 0; i < pars; i++)
-                //    tp.Parameters.Add(new ElaVariableReference(ot) { VariableName = "$" + i });
-
-                for (var i = 0; i < pars; i++)
-                {
-                    if (patterns != null && patterns[i].Type == ElaNodeType.VariablePattern)
-                    {
-                        tp.Parameters.Add(new ElaVariableReference(ot)
-                        {
-                            VariableName = ((ElaVariablePattern)patterns[i]).Name
-                        });
-                    }
-                    else
-                        tp.Parameters.Add(new ElaVariableReference(ot) { VariableName = "$" + i });
-                }
-                
-                mi.Body.Expression = tp;
+                bindings.Pop();
+                bindings.Push(bid);
+            }
+            else
+            {
+                bid.AssociatedType = type;
+                block.Equations.Add(bid);
             }
         }
-
 
 		private ElaExpression GetOperatorFun(string op, ElaExpression left, ElaExpression right)
 		{
-            var fc = new ElaFunctionCall(t) {
-                Target = new ElaVariableReference(t) { VariableName = op }
+            var fc = new ElaJuxtaposition(t) {
+                Target = new ElaNameReference(t) { Name = op }
             };
 
             if (left != null)
@@ -130,28 +104,12 @@ namespace Ela.Parsing
 
 		private ElaExpression GetPrefixFun(ElaExpression funexp, ElaExpression par, bool flip)
 		{
-			var fc = new ElaFunctionCall(t) { Target = funexp };
+			var fc = new ElaJuxtaposition(t) { Target = funexp };
 			fc.Parameters.Add(par);
 			fc.FlipParameters = flip;
 			return fc;
 		}
 
-
-		private ElaExpression GetPartialFun(ElaExpression exp)
-		{
-			var m = new ElaMatch { Expression = hiddenVar };
-			
-            if (exp != null)
-                m.SetLinePragma(exp.Line, exp.Column);
-			
-            m.Entries.Add(new ElaMatchEntry { Expression = exp, Pattern = hiddenPattern });			
-			var ret = new ElaFunctionLiteral() { Body = m };
-			
-            if (exp != null)
-                ret.SetLinePragma(exp.Line, exp.Column);
-
-			return ret;
-		}
 
 		private ElaLiteralValue ParseInt(string val)
 		{
@@ -273,11 +231,7 @@ namespace Ela.Parsing
 			else
 				return false;
 		}
-		#endregion
 
-
-		#region Properties
-		public ElaExpression Expression { get; private set; }
-		#endregion
+		public ElaProgram Program { get; private set; }
 	}
 }

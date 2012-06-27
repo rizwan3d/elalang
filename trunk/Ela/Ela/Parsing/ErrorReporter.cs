@@ -52,7 +52,7 @@ namespace Ela.Parsing
 				case "SimpleExpr": return ElaParserError.InvalidSimpleExpression;
 				case "VariantLiteral": return ElaParserError.InvalidVariant;
 				case "Primitive": return ElaParserError.InvalidPrimitive;
-				case "VariableReference": return ElaParserError.InvalidVariableReference;
+				case "NameReference": return ElaParserError.InvalidVariableReference;
 				case "TupleLiteral": return ElaParserError.InvalidTuple;
 				case "GroupExpr": return ElaParserError.InvalidGrouping;
 				case "ArgumentReference": return ElaParserError.InvalidArgumentReference;
@@ -185,7 +185,6 @@ namespace Ela.Parsing
 				case Parser._FALSE: return ElaParserError.ExpectedBooleanToken;				
 				case Parser._FAIL: return ElaParserError.ExpectedKeywordFail;
 				case Parser._WHERE: return ElaParserError.ExpectedKeywordWhere;
-				case Parser._ET: return ElaParserError.ExpectedKeywordEt;
 				case Parser._COMPO: return ElaParserError.ExpectedComprehensionSlash;
 				default: return ElaParserError.ExpectedToken;
 			}

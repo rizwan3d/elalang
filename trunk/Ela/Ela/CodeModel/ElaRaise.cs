@@ -8,7 +8,7 @@ namespace Ela.CodeModel
 	{
 		internal ElaRaise(Token tok) : base(tok, ElaNodeType.Raise)
 		{
-			Flags = ElaExpressionFlags.ReturnsUnit;
+			
 		}
         
 		public ElaRaise() : this(null)

@@ -19,17 +19,17 @@ namespace Ela.Compilation
 
 		TypeAlreadyDeclared = 305,
 
-		PatternNotAllArgs = 306,
+		InvalidExpression = 306,
 
         ElseMissing = 307,
 
 		CastNotSupported = 308,
 
-		// = 309,
+		InvalidPattern = 309,
 
 		VariableDeclarationInitMissing = 310,
 
-		ElseGuardNotValid = 311,
+		// = 311,
 
 		MatchEntryEmptyNoGuard = 312,
 
@@ -66,5 +66,16 @@ namespace Ela.Compilation
         InvalidProgram = 328,
 
         TooManyErrors = 329,
+
+
+        PatternsTooFew = 330,
+
+        PatternsTooMany = 331,
+
+        InvalidMatchEntry = 332,
+
+        TypeMemberExpression = 333,
+
+        TypeMemberNoPatterns = 334
 	}
 }

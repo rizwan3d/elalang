@@ -29,8 +29,16 @@ namespace Ela.CodeModel
 		internal override void ToString(StringBuilder sb, Fmt fmt)
 		{
 			sb.Append(Tag);
+
+            if (Expression != null)
+            {
+                sb.Append(' ');
+                Format.PutInBraces(Expression, sb, default(Fmt));
+            }
 		}
 
 		public string Tag { get; set; }
+
+        public ElaExpression Expression { get; set; }
 	}
 }

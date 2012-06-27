@@ -25,14 +25,14 @@ type variant
 /* Typeable */
 class Typeable __internal Typeable cast
 
-let toInt    = cast 0
-let toLong   = cast 0L
-let toSingle = cast 0F
-let toDouble = cast 0D
-let toBool   = cast false
-let toChar   = cast '\0'
-let toList   = cast []
-let toString = cast ""
+toInt    = cast 0
+toLong   = cast 0L
+toSingle = cast 0F
+toDouble = cast 0D
+toBool   = cast false
+toChar   = cast '\0'
+toList   = cast []
+toString = cast ""
 
 instance Typeable bool //toInt
 
@@ -49,11 +49,11 @@ instance Typeable single //toDouble, toLong, toInt
 instance Typeable string //toList
 
 instance Typeable list
-  where cast ?string x = castString x
+  where cast (?string) x = castString x
 
-let private
-    castString (x::xs) = toString x ++ castString xs
-    castString [] = ""
+//private
+castString (x::xs) = toString x ++ castString xs
+castString [] = ""
 
 /* Eq */
 class Eq __internal Eq (==) (<>)
@@ -82,38 +82,38 @@ instance Eq module
 
 instance Eq tuple
   where x == y = x `eqTuple` y
-     et x <> y = not (x `eqTuple` y)
+        x <> y = not (x `eqTuple` y)
 
 instance Eq record
   where x == y = x `eqRecord` y
-     et x <> y = not (x `eqRecord` y)
+        x <> y = not (x `eqRecord` y)
 
 instance Eq list
   where x == y = x `eqList` y
-     et x <> y = not (x `eqList` y)
+        x <> y = not (x `eqList` y)
 
 instance Eq variant
   where x == y = tag x == tag y and untag x == untag y
-     et x <> y = tag x <> tag y or untag x <> untag y
+        x <> y = tag x <> tag y or untag x <> untag y
 
-let private
-  eqTuple tup1 tup2 = len == length tup2 and eq 0
-          where len = length tup1
-             et eq n | n < len = if tup1:n == tup2:n then eq (n+1) else false
-                     | else = true
+//private
+eqTuple tup1 tup2 = len == length tup2 and eq 0
+        where len = length tup1
+              eq n | n < len = if tup1:n == tup2:n then eq (n+1) else false
+                   | else = true
 
-let private
-  eqRecord rec1 rec2 = len == length rec2 and eq 0
-           where len = length rec1
-              et (!!) = __internal recfield
-              et eq n | n < len = if rec1!!n == rec2!!n and rec1:n == rec2:n then eq (n+1) else false
-                      | else = true
+//private
+eqRecord rec1 rec2 = len == length rec2 and eq 0
+         where len = length rec1
+               (!!) = __internal recfield
+               eq n | n < len = if rec1!!n == rec2!!n and rec1:n == rec2:n then eq (n+1) else false
+                    | else = true
 
-let private
-  eqList (x::xs) (y::ys) | x == y = xs `eqList` ys | else = false
-  eqList [] [] = true
-  eqList [] _ = false
-  eqList _ [] = false
+//private
+eqList (x::xs) (y::ys) | x == y = xs `eqList` ys | else = false
+eqList [] [] = true
+eqList [] _ = false
+eqList _ [] = false
 
 /* Ord */
 class Ord __internal Ord (>) (<) (>=) (<=)
@@ -132,17 +132,17 @@ instance Ord string
 
 instance Ord tuple
   where x<y = foldTuple (<) x y
-     et x>y = foldTuple (>) x y
-     et x<=y = foldTuple (<=) x y
-     et x>=y = foldTuple (>=) x y
+        x>y = foldTuple (>) x y
+        x<=y = foldTuple (<=) x y
+        x>=y = foldTuple (>=) x y
 
-let private 
-  foldTuple f tup1 tup2 | length tup2 <> len = fail "Tuples should be of the same length."
-                        | else = fold 0
-                        where len = length tup1
-                           et fold n | n == len - 1 = e
-                                     | else = if e then true else fold (n+1)
-                                     where e = tup1:n `f` tup2:n
+//private 
+foldTuple f tup1 tup2 | length tup2 <> len = fail "Tuples should be of the same length."
+                      | else = fold 0
+                      where len = length tup1
+                            fold n | n == len - 1 = e
+                                   | else = if e then true else fold (n+1)
+                                   where e = tup1:n `f` tup2:n
 
 /* Num */
 class Num __internal Num (+) (-) (*) (/) (**) (%) (--)
@@ -157,26 +157,26 @@ instance Num double
 
 instance Num tuple
   where (+) = joinTuple (+)
-     et x-y = joinTuple (-) x y
-     et x*y = joinTuple (*) x y
-     et x/y = joinTuple (/) x y
-     et x**y = joinTuple (**) x y
-     et x%y = joinTuple (%) x y
-     et x-- = mapTuple (--) x
+        x-y = joinTuple (-) x y
+        x*y = joinTuple (*) x y
+        x/y = joinTuple (/) x y
+        x**y = joinTuple (**) x y
+        x%y = joinTuple (%) x y
+        x-- = mapTuple (--) x
 
-let private 
-  mapTuple f tup = map 0
-            where len = length tup
-               et map n | n == len - 1 = e
-                        | else = e ++ map (n+1)
-                        where e = ( f (tup:n), )
+//private 
+mapTuple f tup = map 0
+          where len = length tup
+                map n | n == len - 1 = e
+                      | else = e ++ map (n+1)
+                      where e = ( f (tup:n), )
                          
-let private 
-  joinTuple f tup1 tup2 | length tup2 <> len = fail "Tuples should be of the same length." | else = join 0
-              where len = length tup1
-                 et join n | n == len - 1 = e
-                           | else = e ++ join (n+1)
-                           where e = (tup1:n `f` tup2:n, )
+//private 
+joinTuple f tup1 tup2 | length tup2 <> len = fail "Tuples should be of the same length." | else = join 0
+           where len = length tup1
+                 join n | n == len - 1 = e
+                        | else = e ++ join (n+1)
+                        where e = (tup1:n `f` tup2:n, )
 
 /* Bit */
 class Bit __internal Bit (&&&) (|||) (^^^) (~~~) (<<<) (>>>)
@@ -200,7 +200,7 @@ instance Enum char
 
 instance Enum tuple
   where succ = mapTuple succ
-     et pred = mapTuple pred
+        pred = mapTuple pred
 
 /* Seq */
 class Seq __internal Seq head tail isnil
@@ -222,7 +222,7 @@ instance Ix list
   where length xs = len 0 xs
                where len n [] = n
                      len n (x::xs) = len (n+1) xs
-     et xs:n = get 0 xs
+        xs:n = get 0 xs
                where get _ [] = raise IndexOutOfRange ("Index " ++ n ++ " is out of range.")
                      get i (x::xs) | i == n = x
                                    | else = get (i+1) xs
@@ -243,16 +243,16 @@ instance Cat list
                  where cat (x::xs) ys = cat xs (x::ys)
                        cat [] ys = ys
 
-let private
-  reverse xs = rev [] xs
-          where (:) = flip (::)
-             et rev z [] = z
-                rev z (x::xs) = rev (z:x) xs
+//private
+reverse xs = rev [] xs
+        where (:) = flip (::)
+              rev z [] = z
+              rev z (x::xs) = rev (z:x) xs
 
 /* Show */
 class Show __internal Show showf
 
-let show = showf ""
+show = showf ""
 
 instance Show int
 
@@ -277,7 +277,9 @@ instance Show fun
 instance Show module
 
 instance Show variant
-  where showf f x = if v is ?unit then tag x else tag x ++ " " ++ showf f v
+  where showf f x = match v with
+                          () = tag x
+                          _  = tag x ++ " " ++ showf f x
                     where v = untag x
 
 instance Show tuple
@@ -285,7 +287,7 @@ instance Show tuple
                     where tos n | n == len - 1 = e ++ (if len == 1 then "," else "")
                                 | else = e ++ "," ++ tos (n+1)
                                 where e = showf f (t:n) 
-                       et len = length t
+                          len = length t
 
 instance Show list
   where showf _ [] = "[]"
@@ -298,8 +300,8 @@ instance Show record
                     where tos n | n == len - 1 = fld
                                 | else = fld ++ "," ++ tos (n+1)
                                 where fld = t!!n ++ "=" ++ showf f (t:n)
-                       et len = length t
-                       et (!!) = __internal recfield
+                          len = length t
+                          (!!) = __internal recfield
 
 /* Read 
 class Read
@@ -317,45 +319,45 @@ let readTuple   = readf "" ?tuple
 let readRecord  = readf "" ?record */
 
 /* Misc operators */
-let not = __internal not
-let (::) = __internal cons
+not = __internal not
+(::) = __internal cons
 
 /* Function related operators and functions */
-let (>>) f g x = g (f x)
-let (<<) f g x = f (g x)
-let flip = __internal flip
-let curry f x y = f (x, y)
-let uncurry f (x, y) = f x y
-let curry3 f x y z = f (x, y, z)
-let uncurry3 f (x, y, z) = f x y z
+(>>) f g x = g (f x)
+(<<) f g x = f (g x)
+flip = __internal flip
+curry f x y = f (x, y)
+uncurry f (x, y) = f x y
+curry3 f x y z = f (x, y, z)
+uncurry3 f (x, y, z) = f x y z
 
 /* Tuple functions */
-let (=>) x y = (x, y)
-let swap (x, y) = (y, x)
-let swap3 (x, y, z) = (y, x, z)
-let fst (x,_) = x
-let snd (_,y) = y
-let fst3 (x,_,_) = x
-let snd3 (_,y,_) = y
+(=>) x y = (x, y)
+swap (x, y) = (y, x)
+swap3 (x, y, z) = (y, x, z)
+fst (x,_) = x
+snd (_,y) = y
+fst3 (x,_,_) = x
+snd3 (_,y,_) = y
 
 /* Complex behaviors */
-let getType = __internal typeinfo
-let force = __internal force
+getType = __internal typeinfo
+force = __internal force
 
 /* Variants */
-let tag   = __internal gettag
-let untag = __internal untag
+tag   = __internal gettag
+untag = __internal untag
 
 /* Combinators */
-let id x = x//I
-let const x _ = x//K
-let sub x y z = x z (y z)//S
-let fix f = f (& fix f)
-let on cmb f x y = f x `cmb` f y
+id x = x//I
+const x _ = x//K
+sub x y z = x z (y z)//S
+fix f = f (& fix f)
+on cmb f x y = f x `cmb` f y
 
 /* Misc */
-let f! = f()
-let (|>) = __internal fpipe
-let (<|) = __internal bpipe
-let until p f x | p x  = x  | else = until p f (f x)
-let compare x y | x == y = EQ | x < y = LT | else = GT
+f! = f()
+(|>) = __internal fpipe
+(<|) = __internal bpipe
+until p f x | p x  = x  | else = until p f (f x)
+compare x y | x == y = EQ | x < y = LT | else = GT

@@ -4,34 +4,32 @@ using Ela.Parsing;
 
 namespace Ela.CodeModel
 {
-    public sealed class ElaNewtype : ElaExpression
+    public sealed class ElaAs : ElaExpression
     {
-        internal ElaNewtype(Token tok): base(tok, ElaNodeType.Newtype)
+        internal ElaAs(Token t) : base(t, ElaNodeType.As)
         {
 
         }
-        
-        public ElaNewtype() : base(ElaNodeType.Newtype)
+
+        public ElaAs() : base(ElaNodeType.As)
         {
 
         }
-        
+
         internal override bool Safe()
         {
-            return true;
+            return Expression.Safe();
         }
 
         internal override void ToString(StringBuilder sb, Fmt fmt)
         {
-            sb.Append("type ");
+            Format.PutInBraces(Expression, sb, fmt);
+            sb.Append("@");
             sb.Append(Name);
-            sb.AppendLine();
         }
-
-        public bool HasBody { get; set; }
 
         public string Name { get; set; }
 
-        public ElaNewtype And { get; set; }
+        public ElaExpression Expression { get; set; }
     }
 }

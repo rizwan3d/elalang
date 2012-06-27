@@ -6,17 +6,11 @@ namespace Ela.Parsing
 {
 	public sealed class ParserResult : TranslationResult
 	{
-		#region Construction
-		internal ParserResult(ElaExpression expr, bool success, IEnumerable<ElaMessage> messages) :
-			base(success, messages)
+		internal ParserResult(ElaProgram prog, bool success, IEnumerable<ElaMessage> messages) : base(success, messages)
 		{
-			Expression = expr;
+			Program = prog;
 		}
-		#endregion
 
-
-		#region Properties
-		public ElaExpression Expression { get; private set; }
-		#endregion
+		public ElaProgram Program { get; private set; }
 	}
 }

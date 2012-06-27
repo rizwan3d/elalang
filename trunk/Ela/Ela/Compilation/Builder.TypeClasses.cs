@@ -7,11 +7,11 @@ namespace Ela.Compilation
     internal sealed partial class Builder
     {
         //The main method for class compilation
-        private void CompileClass(ElaTypeClass s, LabelMap map, Hints hints)
+        private void CompileClass(ElaTypeClass s, LabelMap map)
         {
             //We a special syntax for built-in classes and they are compiled separately
             if (s.BuiltinName != null)
-                CompileBuiltinClass(s, map, hints);
+                CompileBuiltinClass(s, map);
             else
             {
                 //Run through members and create global class functions (Newfunc)
@@ -42,14 +42,13 @@ namespace Ela.Compilation
             else
                 frame.InternalClasses.Add(s.Name, new ClassData(s.Members.ToArray()));
 
-            //A class declaration might be the last statement in a module
-            if ((hints & Hints.Left) != Hints.Left)
-                cw.Emit(Op.Pushunit);
+            if (s.And != null)
+                CompileClass(s.And, map);
         }
 
         //Built-in class compilation simply compiles an appropriate built-in and creates
         //an entry for a class as for a regular class
-        private void CompileBuiltinClass(ElaTypeClass s, LabelMap map, Hints hints)
+        private void CompileBuiltinClass(ElaTypeClass s, LabelMap map)
         {
             switch (s.BuiltinName)
             {

@@ -5,13 +5,13 @@ namespace Ela.Compilation
 {
     internal sealed class InlineFun
     {
-        internal InlineFun(ElaFunctionLiteral fun, Scope scope)
+        internal InlineFun(ElaExpression fun, Scope scope)
         {
             Literal = fun;
             Scope = scope;
         }
 
-        internal readonly ElaFunctionLiteral Literal;
+        internal readonly ElaExpression Literal;
         internal readonly Scope Scope;
     }
 }

@@ -5,16 +5,16 @@ using Ela.Parsing;
 
 namespace Ela.CodeModel
 {
-	public sealed class ElaFunctionCall : ElaExpression
+	public sealed class ElaJuxtaposition : ElaExpression
 	{
-		private static readonly char[] opChars = new char[] { '!', '%', '&', '*', '+', '-', '.', ':', '/', '<', '=', '>', '?', '@', '^', '|', '~', '"' };
+		private static readonly char[] opChars = new char[] { '!', '%', '&', '*', '+', '-', '.', ':', '/', '\\', '<', '=', '>', '?', '@', '^', '|', '~', '"' };
 
-		internal ElaFunctionCall(Token tok) : base(tok, ElaNodeType.FunctionCall)
+		internal ElaJuxtaposition(Token tok) : base(tok, ElaNodeType.Juxtaposition)
 		{
 			Parameters = new List<ElaExpression>();
 		}
         
-		public ElaFunctionCall() : this(null)
+		public ElaJuxtaposition() : this(null)
 		{
 			
 		}
@@ -36,7 +36,7 @@ namespace Ela.CodeModel
 			if (paren)
 				sb.Append('(');
 
-			if (Target.Type == ElaNodeType.VariableReference && Target.GetName().IndexOfAny(opChars) != -1 &&
+			if (Target.Type == ElaNodeType.NameReference && Target.GetName().IndexOfAny(opChars) != -1 &&
 				Parameters.Count == 2)
 			{
 				Parameters[0].ToString(sb, fmt);
