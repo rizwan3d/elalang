@@ -51,8 +51,8 @@ instance Typeable string //toList
 instance Typeable list
   where cast (?string) x = castString x
 
-//private
-castString (x::xs) = toString x ++ castString xs
+castString # private
+castString (x::xs) = showf "" x ++ castString xs
 castString [] = ""
 
 /* Eq */

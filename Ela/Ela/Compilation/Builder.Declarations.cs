@@ -18,6 +18,8 @@ namespace Ela.Compilation
                 CompileDeclaration(e, map, hints);
         }
         
+        //Compile all declarations including function bindings, name bindings and bindings
+        //defined by pattern matching.
         private void CompileDeclaration(ElaEquation s, LabelMap map, Hints hints)
         {
             //Check for some errors
@@ -32,7 +34,8 @@ namespace Ela.Compilation
 
                 //Compile expression and write it to a variable
                 if (fun)
-                    CompileFunction(s, FunFlag.None);
+                    CompileFunction(s, 
+                        (s.VariableFlags & ElaVariableFlags.Inline) == ElaVariableFlags.Inline ? FunFlag.Inline : FunFlag.None);
                 else
                 {
                     CompileExpression(s.Right, map, Hints.None);
@@ -117,16 +120,17 @@ namespace Ela.Compilation
         //patterns are traversed using AddPatternVariable method.
         private void AddNoInitVariable(ElaEquation exp)
         {
+            var flags = exp.VariableFlags | ElaVariableFlags.NoInit;
+            
             //This binding is not defined by PM
             if (exp.IsFunction())
             {
                 var name = exp.GetFunctionName();
-                AddVariable(name, exp.Left, ElaVariableFlags.Function | ElaVariableFlags.NoInit, -1);
+                AddVariable(name, exp.Left, flags | ElaVariableFlags.Function, -1);
             }
             else if (exp.Left.Type == ElaNodeType.NameReference)
             {
-                var flags = exp.VariableFlags | ElaVariableFlags.NoInit;
-                var data = -1;
+               var data = -1;
 
                 if (exp.Right.Type == ElaNodeType.Builtin)
                 {

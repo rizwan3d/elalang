@@ -32,6 +32,11 @@ namespace Ela.Parsing
 
 		InvalidIndentationUnexpectedSymbol = 13,
 
+        UnknownAttribute = 14,
+
+        InvalidAttribute = 15,
+
+        InvalidAttributeWhere = 16,
 
 
 		ExpectedToken = 100,
@@ -82,7 +87,7 @@ namespace Ela.Parsing
 
 		ExpectedKeywordLet = 123,
 
-		ExpectedKeywordPrivate = 124,
+		// = 124,
 
 		ExpectedKeywordOpen = 125,
 

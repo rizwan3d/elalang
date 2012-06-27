@@ -136,6 +136,7 @@
   <ItemGroup>
     <Compile Include="Builtins.cs" />
     <Compile Include="CodeModel\ElaAs.cs" />
+    <Compile Include="CodeModel\ElaHeader.cs" />
     <Compile Include="CodeModel\ElaLambda.cs" />
     <Compile Include="CodeModel\ElaLetBinding.cs" />
     <Compile Include="CodeModel\ElaProgram.cs" />

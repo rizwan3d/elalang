@@ -76,6 +76,8 @@ namespace Ela.Compilation
 
         TypeMemberExpression = 333,
 
-        TypeMemberNoPatterns = 334
+        TypeMemberNoPatterns = 334,
+
+        HeaderNotConnected = 335,
 	}
 }

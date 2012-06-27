@@ -19,7 +19,7 @@ namespace Ela.Compilation
 			1, //Cons
 			1, //Gen
 			1, //Tail
-			1, //Head
+			1, //Header
 			1, //Ret
 			1, //Concat
 			1, //Add

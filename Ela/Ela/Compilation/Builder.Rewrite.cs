@@ -49,6 +49,7 @@ namespace Ela.Compilation
         {
             var len = exps.Count;
             var list = new FastList<ElaEquation>(len);
+            var head = default(ElaHeader);
 
             //We walk through all expressions and create a new list of expression that contains
             //only elements that are not compiled by this routine
@@ -58,6 +59,19 @@ namespace Ela.Compilation
 
                 if (b.Right != null)
                 {
+                    //If a header is not null, we need to append some attributes to this binding
+                    if (head != null)
+                    {
+                        //We add attributes if this binding is either a function or a name binding.
+                        if (b.IsFunction() && b.GetFunctionName() == head.Name ||
+                            b.Left.Type == ElaNodeType.NameReference && b.Left.GetName() == head.Name)
+                            b.VariableFlags |= head.Attributes;
+                        else
+                            AddError(ElaCompilerError.HeaderNotConnected, head, FormatNode(head));
+
+                        head = null;
+                    }
+
                     //Forward declaration
                     AddNoInitVariable(b);
 
@@ -68,8 +82,25 @@ namespace Ela.Compilation
                     else
                         list.Add(b);
                 }
+                else if (b.Left.Type == ElaNodeType.Header)
+                {
+                    //One header can't follow another another
+                    if (head != null)
+                        AddError(ElaCompilerError.HeaderNotConnected, head, FormatNode(head));
+
+                    head = (ElaHeader)b.Left;
+                }
                 else
+                {
+                    //A header before an expression, that is not right
+                    if (head != null)
+                    {
+                        AddError(ElaCompilerError.HeaderNotConnected, head, FormatNode(head));
+                        head = null;
+                    }
+
                     list.Add(b); //The rest will be compiled later
+                }
             }
 
             return list;
