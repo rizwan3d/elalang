@@ -173,7 +173,6 @@ namespace Ela.Parsing
 				case Parser._ASAMP: return ElaParserError.ExpectedKeywordAsAmp;
 				case Parser._IS: return ElaParserError.ExpectedIsOperator;
 				case Parser._LET: return ElaParserError.ExpectedKeywordLet;
-				case Parser._PRIVATE: return ElaParserError.ExpectedKeywordPrivate;
 				case Parser._OPEN: return ElaParserError.ExpectedKeywordOpen;
 				case Parser._WITH: return ElaParserError.ExpectedKeywordWith;
 				case Parser._IFS: return ElaParserError.ExpectedKeywordIf;

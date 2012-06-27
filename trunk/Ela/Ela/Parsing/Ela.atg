@@ -85,7 +85,6 @@ TOKENS
 	ASAMP = "@".
 	IS = "is".	
 	LET = "let".
-	PRIVATE = "private".
 	OPEN = "open".	
 	WITH = "with".
 	IFS = "if".
@@ -121,14 +120,29 @@ PRODUCTIONS
 		)
 		[ As<ref exp> ].		
 		
+	Attribute<ref ElaExpression head> =
+	    (. 
+	        scanner.InjectBlock(); 
+	        var flags = ElaVariableFlags.None;
+	        
+	        if (head.Type != ElaNodeType.NameReference)
+	            AddError(ElaParserError.InvalidAttribute, head.ToString());
+	    .)
+	    "#" 
+	    ident (. flags = ProcessAttribute(t.val,flags); .) 
+	    { ident (. flags = ProcessAttribute(t.val,flags); .) } 
+	    EndBlock
+	    (.
+	        var h = new ElaHeader { Name = head.GetName(), Attributes = flags };
+	        h.SetLinePragma(head.Line, head.Column);
+	        head = h;
+	    .).
+		
 	VariantLiteral<out ElaExpression exp> = 
 		variantTok (. exp = new ElaVariantLiteral(t) { Tag = t.val }; .).
 		
 	SimpleExpr<out ElaExpression exp> = 
-		(. exp = null; .)
-		(	
-			VariableReference<out exp>
-		).
+		VariableReference<out exp>.
 		
 	Primitive<out ElaExpression exp> = 
 		(. exp = null; .)
@@ -144,7 +158,9 @@ PRODUCTIONS
 	VariableReference<out ElaExpression exp> =
 		(. exp = null; .)
 		(
-			ident (. exp = new ElaNameReference(t) { Name = t.val }; .)
+			(
+			    ident (. exp = new ElaNameReference(t) { Name = t.val }; .)
+			)
 			| "_" (. exp = new ElaPlaceholder(t); .)
 		).
 		
@@ -1091,11 +1107,15 @@ PRODUCTIONS
 	        [ 
 	            "=" Expr<out right> 
 	            | "|" Guard<out right>
+	            | Attribute<ref left>
 	        ]
 	        [
 	            (. var cb = default(ElaEquationSet); .)
 	            WhereBinding<out cb>
 	            (. 
+	                if (left.Type == ElaNodeType.Header)
+	                    AddError(ElaParserError.InvalidAttributeWhere);
+	            
 	                var letb = new ElaLetBinding();                    
                     if (cb != null) letb.SetLinePragma(cb.Line, cb.Column);                    
                     letb.Equations = cb;
@@ -1166,10 +1186,21 @@ PRODUCTIONS
 		).
 		
 	ImportName<out ElaImportedVariable imp> =
-		(. imp = new ElaImportedVariable(t); .)
+		(. 
+		    imp = new ElaImportedVariable(t); 
+		.)
 		(
-			[ "private" (. imp.Private = true; .) ]
 			ident (. imp.Name = imp.LocalName = t.val; .)
+			[ 
+			    ident 
+			    (. 
+			        if (imp.Name != "private")
+			            AddError(ElaParserError.UnknownAttribute, imp.Name);
+			        
+			        imp.Private = true;
+			        imp.Name = imp.LocalName = t.val; 
+			    .)
+			]
 			[ "=" ident (. imp.Name = t.val; .) ]
 		).
 		

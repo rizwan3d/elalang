@@ -129,6 +129,9 @@
   <data name="ElseMissing" xml:space="preserve">
     <value>A mandatory 'else' clause is missing. A conditional expression should be always terminated with an 'else' clause.</value>
   </data>
+  <data name="HeaderNotConnected" xml:space="preserve">
+    <value>A binding header {0} doesn't correspond to any binding. A header should always preceed a binding.</value>
+  </data>
   <data name="InvalidBuiltinBinding" xml:space="preserve">
     <value>Invalid binding for a built-in function implementation. Function head is missing.</value>
   </data>
@@ -200,6 +203,12 @@
   </data>
   <data name="TypeAlreadyDeclared" xml:space="preserve">
     <value>A module already defines a type '{0}'.</value>
+  </data>
+  <data name="TypeMemberExpression" xml:space="preserve">
+    <value>An expression {0} is not valid as a type constructor.</value>
+  </data>
+  <data name="TypeMemberNoPatterns" xml:space="preserve">
+    <value>Type constructor {0} is not valid. Type constructors cannot be defined by pattern matching.</value>
   </data>
   <data name="UndefinedName" xml:space="preserve">
     <value>A name '{0}' is not defined in a module or externally.</value>

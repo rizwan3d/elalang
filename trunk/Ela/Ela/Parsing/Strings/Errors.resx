@@ -162,9 +162,6 @@
   <data name="ExpectedKeywordOpen" xml:space="preserve">
     <value>Expected keyword 'open'.</value>
   </data>
-  <data name="ExpectedKeywordPrivate" xml:space="preserve">
-    <value>Expected keyword 'private'.</value>
-  </data>
   <data name="ExpectedKeywordRaise" xml:space="preserve">
     <value>Expected keyword 'raise'.</value>
   </data>
@@ -420,10 +417,13 @@
   <data name="InvalidVariantLiteral" xml:space="preserve">
     <value>Invalid variant literal.</value>
   </data>
-  <data name="TypeMemberExpression" xml:space="preserve">
-    <value>An expression {0} is not valid as a type constructor.</value>
+  <data name="InvalidAttribute" xml:space="preserve">
+    <value>Invalid attribute declaration. A head symbol ({0}) is not valid.</value>
   </data>
-  <data name="TypeMemberNoPatterns" xml:space="preserve">
-    <value>Type constructor {0} is not valid. Type constructors cannot be defined by pattern matching.</value>
+  <data name="UnknownAttribute" xml:space="preserve">
+    <value>Unknown attribute {0}.</value>
+  </data>
+  <data name="InvalidAttributeWhere" xml:space="preserve">
+    <value>Invalid attribute declaration. A 'where' clause is not valid here.</value>
   </data>
 </root>

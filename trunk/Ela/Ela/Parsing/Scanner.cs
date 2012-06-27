@@ -209,8 +209,8 @@ internal sealed class Scanner {
 	const char EOL = '\n';
 	const int eofSym = 0; /* pdt */
 	
-	const int maxT = 64;
-	const int noSym = 64;
+	const int maxT = 63;
+	const int noSym = 63;
 
 
 	public Buffer buffer; // scanner buffer
@@ -261,12 +261,12 @@ internal sealed class Scanner {
 		start[92] = 63; 
 		start[64] = 53; 
 		start[59] = 54; 
-		start[40] = 71; 
-		start[41] = 72; 
-		start[44] = 73; 
-		start[96] = 75; 
-		start[36] = 76; 
-		start[35] = 77; 
+		start[35] = 71; 
+		start[40] = 72; 
+		start[41] = 73; 
+		start[44] = 74; 
+		start[96] = 76; 
+		start[36] = 77; 
 		start[Buffer.EOF] = -1;
 
 	}
@@ -381,19 +381,18 @@ internal sealed class Scanner {
 			case "match": t.kind = 26; break;
 			case "is": t.kind = 28; break;
 			case "let": t.kind = 29; break;
-			case "private": t.kind = 30; break;
-			case "open": t.kind = 31; break;
-			case "with": t.kind = 32; break;
-			case "if": t.kind = 33; break;
-			case "else": t.kind = 34; break;
-			case "then": t.kind = 35; break;
-			case "raise": t.kind = 36; break;
-			case "try": t.kind = 37; break;
-			case "true": t.kind = 38; break;
-			case "false": t.kind = 39; break;
-			case "fail": t.kind = 40; break;
-			case "where": t.kind = 41; break;
-			case "qualified": t.kind = 42; break;
+			case "open": t.kind = 30; break;
+			case "with": t.kind = 31; break;
+			case "if": t.kind = 32; break;
+			case "else": t.kind = 33; break;
+			case "then": t.kind = 34; break;
+			case "raise": t.kind = 35; break;
+			case "try": t.kind = 36; break;
+			case "true": t.kind = 37; break;
+			case "false": t.kind = 38; break;
+			case "fail": t.kind = 39; break;
+			case "where": t.kind = 40; break;
+			case "qualified": t.kind = 41; break;
 			case "=": t.kind = 48; break;
 			case "..": t.kind = 49; break;
 			case "::": t.kind = 51; break;
@@ -403,9 +402,9 @@ internal sealed class Scanner {
 			case "&": t.kind = 57; break;
 			case "<-": t.kind = 58; break;
 			case "?": t.kind = 59; break;
-			case "class": t.kind = 61; break;
-			case "type": t.kind = 62; break;
-			case "instance": t.kind = 63; break;
+			case "class": t.kind = 60; break;
+			case "type": t.kind = 61; break;
+			case "instance": t.kind = 62; break;
 			default: break;
 		}
 	}
@@ -693,7 +692,7 @@ internal sealed class Scanner {
 			case 53:
 				{t.kind = 27; break;}
 			case 54:
-				{t.kind = 43; break;}
+				{t.kind = 42; break;}
 			case 55:
 				recEnd = pos; recKind = 3;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 55;}
@@ -783,26 +782,26 @@ internal sealed class Scanner {
 				else if (ch == 39) {AddCh(); goto case 3;}
 				else {t.kind = 6; break;}
 			case 71:
-				{t.kind = 45; break;}
+				{t.kind = 43; break;}
 			case 72:
-				{t.kind = 46; break;}
+				{t.kind = 45; break;}
 			case 73:
-				{t.kind = 47; break;}
+				{t.kind = 46; break;}
 			case 74:
-				{t.kind = 50; break;}
+				{t.kind = 47; break;}
 			case 75:
-				{t.kind = 54; break;}
+				{t.kind = 50; break;}
 			case 76:
-				{t.kind = 55; break;}
+				{t.kind = 54; break;}
 			case 77:
-				{t.kind = 60; break;}
+				{t.kind = 55; break;}
 			case 78:
 				recEnd = pos; recKind = 44;
 				if (ch == 39 || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 2;}
 				else {t.kind = 44; break;}
 			case 79:
 				recEnd = pos; recKind = 18;
-				if (ch == '&') {AddCh(); goto case 74;}
+				if (ch == '&') {AddCh(); goto case 75;}
 				else {t.kind = 18; break;}
 
 		}

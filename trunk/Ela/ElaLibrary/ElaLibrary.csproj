@@ -98,13 +98,49 @@
     <Compile Include="Wrapper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Ela\Ela.csproj">
+    <ProjectReference Include="..\Ela\Ela.csproj">
       <Project>{7BDF4A1E-DFFF-4AE5-BD2D-1B1F4BE84B1D}</Project>
       <Name>Ela</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="LibChangeList.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="_ela\cell.ela" />
+    <None Include="_ela\cell.eladoc" />
+    <None Include="_ela\char.ela" />
+    <None Include="_ela\char.eladoc" />
+    <None Include="_ela\collections\alist.ela" />
+    <None Include="_ela\collections\alist.eladoc" />
+    <None Include="_ela\collections\queue.ela" />
+    <None Include="_ela\collections\queue.eladoc" />
+    <None Include="_ela\console.ela" />
+    <None Include="_ela\console.eladoc" />
+    <None Include="_ela\core.ela" />
+    <None Include="_ela\core.eladoc" />
+    <None Include="_ela\datetime.ela" />
+    <None Include="_ela\datetime.eladoc" />
+    <None Include="_ela\format.ela" />
+    <None Include="_ela\format.eladoc" />
+    <None Include="_ela\imperative.ela" />
+    <None Include="_ela\imperative.eladoc" />
+    <None Include="_ela\io.ela" />
+    <None Include="_ela\io.eladoc" />
+    <None Include="_ela\number.ela" />
+    <None Include="_ela\number.eladoc" />
+    <None Include="_ela\prelude.ela" />
+    <None Include="_ela\prelude.eladoc" />
+    <None Include="_ela\record.ela" />
+    <None Include="_ela\record.eladoc" />
+    <None Include="_ela\reflect.ela" />
+    <None Include="_ela\reflect.eladoc" />
+    <None Include="_ela\string.ela" />
+    <None Include="_ela\string.eladoc" />
+    <None Include="_ela\test.ela" />
+    <None Include="_ela\test.eladoc" />
+    <None Include="_ela\thunk.ela" />
+    <None Include="_ela\thunk.eladoc" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

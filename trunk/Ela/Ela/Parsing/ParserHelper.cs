@@ -28,6 +28,19 @@ namespace Ela.Parsing
 			return true;
 		}
 
+        private ElaVariableFlags ProcessAttribute(string attribute, ElaVariableFlags flags)
+        {
+            if (attribute == "private")
+                return flags | ElaVariableFlags.Private;
+            else if (attribute == "inline")
+                return flags | ElaVariableFlags.Inline;
+            else
+            {
+                AddError(ElaParserError.UnknownAttribute, attribute);
+                return flags;
+            }
+        }
+
         private void BuildMask(ref int count, ref int mask, string val, string targ)
         {
             var flag = 0;
