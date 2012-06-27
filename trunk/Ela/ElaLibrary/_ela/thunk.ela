@@ -1,0 +1,23 @@
+/* 
+    Module thunk
+    Created in 2012 by Basil Voronkov
+*/
+let forceAll x | x is ?thunk = forceAll' (force x)
+               | x is ?list = forceList (force x)
+               | x is ?tuple = forceAll' x
+               | x is ?record = forceAll' x
+               | else = x
+               where forceAll' x | x is ?tuple or x is ?record = forceTuple x
+                                 | else = force x
+ 
+let forceList (x::xs) = forceAll x :: forceList xs
+    forceList [] = []
+    
+let forceRecord r = forceTuple r
+
+let forceTuple tup = force' 0
+       where len = length tup 
+          et force' i = if i == len - 1 then 
+                          forceAll (tup:i)
+                        else
+                          forceAll (tup:i) => force' (i+1)

@@ -1,0 +1,18 @@
+#file thunk.ela
+#title thunk
+This module contains useful functions that operate with thunks. 
+
+#members
+
+forceAll t
+Recursively forces a given value. For example, if a given value is a list of thunks all thunks in 
+a list will be forced. 
+
+forceRecord t
+Recursively forces a given record. 
+
+forceTuple t
+Recursively forces a given tuple. 
+
+forceList t
+Recursively forces a given list. 

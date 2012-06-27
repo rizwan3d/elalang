@@ -1,0 +1,272 @@
+/* 
+  Module core
+  Created in 2011-2012 by Basil Voronkov
+*/
+open qualified "Core"#elalib@cm 
+
+/* MATH */
+
+abs x | x >= 0 = x
+      | else   = --x
+
+exp x = cm.exp (force x)
+
+gcd 0 0 = fail "Core.gcd: gcd 0 0 is undefined"
+gcd x y = gcd' (abs x) (abs y)
+          where gcd' x 0 = x
+                gcd' x y = gcd' y (x % y)
+
+cos x = cm.cos (force x)
+
+sin x = cm.sin (force x)
+
+acos x = cm.acos (force x)
+
+asin x = cm.asin (force x)
+
+tan x = cm.tan (force x)
+
+quot x y = toLong x / toLong y
+
+lcm _ 0 = 0
+lcm 0 _ = 0
+lcm x y = abs ((x `quot` gcd x y) * y)
+
+floor x = cm.floor (force x)
+
+ceiling x = cm.ceiling (force x)
+
+atan x = cm.atan (force x)
+
+sqrt x = x ** 0.5
+
+truncate x = cm.truncate (force x)
+
+log x = cm.log (force x)
+
+even x = x % 2 == 0
+
+odd x = x % 2 <> 0
+
+maxValue x y | x >= y = x
+             | else   = y
+
+minValue x y | x <= y = x
+             | else   = y
+
+round x = cm.round (force x)
+
+rnd seed min max = cm.rnd (force seed) (force min) (force max)
+
+pi = cm.pi //Constant
+
+e = cm.e //Constant
+
+
+/* Basic */
+chr (?int)@x = toChar x
+
+ord (?char)@x = toInt x
+
+
+/* LIST FUNCTIONS */
+
+last (x::[]) = x
+last (_::xs) = last xs
+last []      = fail "Core.last: Empty list"
+
+init (x::[])   = []
+init (x::xs)   = x :: init xs
+init []        = fail "Core.init: Empty list"
+
+takeWhile f (x::xs) | f x  = x :: takeWhile f xs
+                    | else = []
+takeWhile f []             = []
+
+take 0 _       = []
+take n (x::xs) = x :: take (n - 1) xs
+take _ []      = []
+
+skip 0 xs      = xs
+skip n (_::xs) = skip (n - 1) xs
+skip _ []      = []
+
+map f (x::xs) = f x :: map f xs
+map _ []      = []
+
+map' f (x::xs) = f x :: (& map' f xs)
+map' _ []      = []
+
+filter p (x::xs) | p x  = x :: filter p xs
+                 | else = filter p xs
+filter _ []             = []
+
+filter' p (x::xs) | p x  = x :: (& filter' p xs)
+                  | else = filter' p xs
+filter' _ []             = []
+
+foldl f z (x::xs) = foldl f (f z x) xs
+foldl _ z []      = z
+
+foldr f z (x::xs) = f x (foldr f z xs)
+foldr _ z []      = z
+
+fold f xs = foldr f [] xs
+
+foldl' f z (x::xs) = foldl' f (& f z x) xs
+foldl' _ z []      = z
+
+foldr' f z (x::xs) = f x (& foldr' f z xs)
+foldr' _ z []      = z
+    
+fold' f xs = foldr' f [] xs
+
+concat (x::xs) = x ++ concat xs 
+concat []      = []
+
+concatMap f (x::xs) = f x :: concatMap f xs 
+concatMap _ []      = []
+
+sum xs = sum' 0 xs
+         where sum' s (x::xs) = sum' (s + x) xs
+               sum' s []      = s
+
+product xs = product' 1 xs
+             where product' p (x::xs) = product' (p * x) xs
+                   product' p []      = p
+
+minimum (x::xs) = minimum' x xs
+                  where minimum' v (x::xs) | x < v = minimum' x xs
+                                           | else  = minimum' v xs
+                        minimum' v []              = v
+
+maximum (x::xs) = maximum' x xs
+                  where maximum' v (x::xs) | x > v = maximum' x xs
+                                           | else  = maximum' v xs
+                        maximum' v []            = v
+
+reverse xs = foldl (flip (::)) [] xs
+
+zipWith z (x::xs) (y::ys) = z x y :: zipWith z xs ys
+zipWith _ _ _ = []
+
+zip =  zipWith (=>)
+
+zipWith3 z (a::as) (b::bs) (c::cs) =  z a b c :: zipWith3 z as bs cs
+zipWith3 _ _ _ _ = []
+
+zip3 =  zipWith3 (\x y z -> (x,y,z))
+
+any f (x::xs) | f x  = true
+              | else = any f xs
+any _ []             = false
+
+all f (x::xs) | f x  = all f xs
+              | else = false
+all _ []             = true
+
+splitAt 0 xs = ([],xs)
+splitAt _ [] = ([],[])
+splitAt n (x::xs) | n > 0 = (x::xs',xs2')
+                  | else = fail "Core.splitAt: negative argument"
+                            where (xs',xs2') = splitAt (n-1) xs
+
+span p [] = ([],[])
+span p (x::xs')@xs | p x  = (x::ys, zs)
+                   | else = ([],xs)
+                   where (ys,zs) = span p xs'
+
+breakList p xs = span (not << p) xs
+
+drop 0 xs              = xs
+drop _ []              = []
+drop n (_::xs) | n > 0 = drop (n-1) xs
+               | else  = fail "Core.drop: negative argument"
+
+dropWhile p [] = []
+dropWhile p (x::xs) | p x  = dropWhile p xs
+                    | else = x::xs
+
+index e lst = index' 0 lst
+              where index' n (x::xs) | x <> e = index' (n+1) xs
+                                     | else   = n
+                    index' n [] = n
+
+elem x = any (==x)
+
+notElem x = all (<>x)
+
+elemBy _  _ [] = false
+elemBy eq y (x::xs) = y `eq` x or elemBy eq y xs
+
+scanl f q (x::xs) = q :: scanl f (f q x) xs
+scanl _ q []      = q :: []
+
+scanr f q0 [] = q0::[]
+scanr f q0 (x::xs) = f x q :: qs
+                     where (q::_)@qs = scanr f q0 xs
+
+repeat x = x :: (& repeat x)
+
+cycle (head::tail) = head :: (& cycle' tail)
+                     where cycle' (x::xs) = x :: (& cycle' xs)
+                           cycle' []      = head :: (& cycle' tail)
+
+iterate f x = x :: (& iterate f (f x))
+
+replicate n x = take n (repeat x)
+
+deleteBy p x (y::ys) | p x y  = ys
+                     | else   = y :: deleteBy p x ys
+deleteBy _ _ []               = []
+
+delete = deleteBy (==)
+
+insertBy _   x [] = x::[]
+insertBy cmp x (y::ys')@ys = match cmp x y with
+                                   GT = y :: insertBy cmp x ys'
+                                   _  = x :: ys
+
+insert = insertBy compare
+
+nubBy eq xs = nubBy' xs []
+              where nubBy' [] _ = []
+                    nubBy' (y::ys) xs | elemBy eq y xs = nubBy' ys xs
+                                      | else           = y :: nubBy' ys (y::xs)
+
+nub = nubBy (==)
+
+intersperse e (x::[]) = x :: intersperse e []
+intersperse e (x::xs) = x :: e :: intersperse e xs
+intersperse _ []      = []
+
+transpose ([]::xs)      = transpose xs
+transpose ((x::xs)::ys) = (x :: [h \\ (h::_) <- ys]) :: transpose (xs :: [t \\ (_::t) <- ys])
+transpose []            = []
+
+intercalate xs xss = concat (intersperse xs xss)
+
+nonEmptySubsequences (x::xs) = (x::[]) :: fold f (nonEmptySubsequences xs)
+                               where f ys r = ys :: (x :: ys) :: r
+nonEmptySubsequences [] = []
+
+subsequences xs = [] :: nonEmptySubsequences xs 
+
+permutations [] = []
+permutations xs0  = xs0 :: perms xs0 []
+                    where perms [] _ = []
+                          perms (t::ts) is' = foldr interleave (perms ts (t::is')) (permutations is')
+                                              where interleave xs r         = zs where (_,zs) = interleave' id xs r 
+                                                    interleave' _ [] r      = (ts, r)
+                                                    interleave' f (y::ys) r = (y::us, f (t::y::us) :: zs)
+                                                                              where (us,zs) = interleave' (f << (y::)) ys r
+
+groupBy eq (x::xs) = (x::ys) :: groupBy eq zs
+                     where (ys,zs) = span (eq x) xs
+groupBy _  [] = []
+
+group = groupBy (==)
+
+intersectBy eq xs ys =  [x \\ x <- xs | any (eq x) ys]
+
+intersect = intersectBy (==) 

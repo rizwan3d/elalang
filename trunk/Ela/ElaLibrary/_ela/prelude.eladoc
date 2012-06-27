@@ -1,0 +1,595 @@
+#file prelude.ela
+#title prelude
+#category Ela Standard Library
+Prelude module is an initialization script that contains definitions of standard types, classes, 
+instances, basic combinators and operators. Prelude script is always executed before any Ela 
+program unless you explicitly tell Ela not to do so. 
+
+#members
+
+int
+A 32-bit signed integer number type.
+>> 42
+
+long
+A 64-bit singed integer number type.
+>> 42L
+
+single
+A 32-bit singed floating point number type.
+>> 12.2
+
+double
+A 64-bit singed floating point number type.
+>> 24.4
+
+bool
+A boolean type which can be created using two literal forms - `true` or `false`.
+>> true false
+
+char
+A single unicode character.
+>> 'a'
+
+string
+An immutable indexed array of unicode characters.
+>> "Hello, world!"
+
+list
+An immutable single linked list.
+>> [1,2,3,4,5]
+
+tuple
+An immutable indexed array of elements of any type.
+>> (1, 'c', "Hello", true)
+
+record
+A tuple with named elements.
+>> {x = 1, foo = "Foo"}
+
+module
+Used to represent an Ela module.
+
+unit
+This type has a single immutable instance and is used to represent a value that can be discarded.
+>> ()
+
+fun
+A function.
+>> \x -> \y -> x + y
+
+variant
+A polymorphic variant.
+>> Some 12
+
+thunk
+Represents a deferred calculation.
+>> & 2 + 2
+
+typeinfo
+Represents meta information about a type.
+
+object
+An object type.
+
+Eq
+Defines two basic comparison functions - equal `==` and not equal `<>`. Implementation of equality 
+functions is fully dependent from a particular instance however normally these functions would 
+test for structural, not reference equality.
+>>> [1,2,3] == [1,2,3]
+
+Ord
+Defines four comparison functions including: greater `>`, lesser `<`, greater or equal `>=` and 
+lesser or equal `<=`. Implementation of this class (along with `Num` and `Enum`) allows to use 
+a type in ranges.
+
+Num
+Defines basic numeric functions including: addition `+`, subtraction `-`, division `/`, 
+multiplication `*`, remainder `%`, power `**` and unary negation `--`.
+It is important to note the difference between binary subtraction and unary negation in Ela. 
+The code like so:
+>>> -2
+is in fact a partial application of a subtraction function, when negation should be written as:
+>>> --2
+Implementation of this class (along with `Ord` and `Enum`) allows to use a type in ranges.
+
+Bit
+Defines bit manipulation functions including: bitwise AND `&&&`, bitwise OR `|||`, bitwise 
+XOR `^^^`, bitwise negation `~~~`, left shift `<<<` and right shift `>>>`.
+
+Enum
+Defines two functions `succ` and `pred` that can be used to obtain a successor and a predecessor 
+of a given value. An implementation of `Enum` for integers is has the same effect as addition 
+and subtraction:
+>>> succ 12 == 12 + 1
+Implementation of this class (along with `Num` and `Ord`) allows to use a type in ranges.
+
+Seq
+Defines three functions that can be used to deconstruct a given sequence as a linked list. 
+A function `head` returns a head element of a sequence, a function `tail` strips a head and 
+returns the rest part of a sequence and a function `isNil` tests if a given sequence is nil.
+>>> tail [1,2,3]
+If an instance of this class is implemented for a particular type than it is possible to 
+deconstruct this type using head/tail pattern, e.g.:
+>> match xs with
+>>       x::xs = ...
+>>       [] = ...
+
+Ix
+Defines two functions that allow to work with a given sequence as with an indexed array. An 
+operator `:` obtains an element from a sequence with a given index:
+>>> let xs = (1,2,3)
+>>> xs:1
+Indices can be any type. Whether an index of a particular type is supported depends on a 
+specific implementation of this operator, e.g. records accept strings as indices:
+>>> let rec = {x=1, y=2, z=3}
+>>> rec:"y"
+Function `length` returns a length of a given sequence:
+>>> length rec
+If an instance of this class is implemented for a particular type than it is possible to 
+deconstruct this type using tuple pattern, e.g.:
+>> match tup with
+>>       (x,y,z) = ...
+
+Cat
+An operator `++` concatenates two entities and produces a new entity that includes elements from 
+both entities:
+>>> "First" ++ "Second"
+
+Show
+A function `showf` formats a given value to a string:
+>>> showf "" [1,2,3]
+A format string can be used to specify a format if this format is supported by a particular 
+implementation of `showf`:
+>>> showf ".##" 12.1234
+
+Typeable
+Defines a function `cast` that can be used to do type casting from one type to another. This 
+function accepts a value of a target type (to which casting should be done) as a first argument
+and a value to be type casted as a second argument.
+
+Eq int
+Implements equality functions for 32-bit integer type. This instance is automatically generated 
+by a compiler.
+
+Eq long
+Implements equality functions for 64-bit integer type. This instance is automatically generated 
+by a compiler.
+
+Eq single
+Implements equality functions for 32-bit floating point type. This instance is automatically 
+generated by a compiler.
+
+Eq double
+Implements equality functions for 32-bit floating point type. This instance is automatically 
+generated by a compiler.
+
+Eq bool
+Implements equality functions for a boolean type. This instance is automatically generated 
+by a compiler.
+
+Eq char
+Implements equality functions for a unicode character type. This instance is automatically 
+generated by a compiler.
+
+Eq string
+Implements equality functions for a string. This instance is automatically generated by a compiler.
+
+Eq unit
+Implements equality functions for a unit. This instance is automatically generated by a compiler.
+
+Eq typeinfo
+Implements equality functions for typeinfo. This instance is automatically generated by a compiler.
+
+Eq fun
+Implements equality functions for a function. This instance is automatically generated by a 
+compiler.
+
+Eq module
+Implements equality functions for a module. This instance is automatically generated by a compiler.
+
+Eq tuple
+Implements equality functions for a tuple.
+
+Eq record
+Implements equality functions for a record.
+
+Eq list
+Implements equality functions for a linked list.
+
+Eq variant
+Implements equality functions for a variant type.
+
+Ord int
+Implements comparison functions for a 32-bit integer number type. This instance is automatically 
+generated by a compiler.
+
+Ord long
+Implements comparison functions for a 64-bit integer number type. This instance is automatically 
+generated by a compiler.
+
+Ord single
+Implements comparison functions for a 32-bit floating point type. This instance is automatically 
+generated by a compiler.
+
+Ord double
+Implements comparison functions for a 64-bit floating point type. This instance is automatically 
+generated by a compiler.
+
+Ord char
+Implements comparison functions for a unicode character. This instance is automatically generated 
+by a compiler.
+
+Ord string
+Implements comparison functions for a string. This instance is automatically generated by a 
+compiler.
+
+Ord tuple
+Implements comparison functions for a tuple type.
+
+Num int
+Implements arithmetic functions for a 32-bit integer number type. This instance is automatically 
+generated by a compiler.
+
+Num long
+Implements arithmetic functions for a 64-bit integer number type. This instance is automatically 
+generated by a compiler.
+
+Num single
+Implements arithmetic functions for a 32-bit floating point type. This instance is automatically 
+generated by a compiler.
+
+Num double
+Implements arithmetic functions for a 64-bit floating point type. This instance is automatically 
+generated by a compiler.
+
+Num tuple
+Implements arithmetic functions for a tuple. All binary functions from `Num` class are treated by 
+this instance as `a->a`, where `a` is a tuple. Unlike other instances no implicit conversions are 
+done here. Tuples can be summed, multiplied, divided, etc. by other tuples only. 
+>>> (1,2) + (3,4)
+Also all binary functions in these instance require the tuples to be of the same length.
+
+Bit int
+Implements bitwise functions for a 32-bit integer number type. This instance is automatically 
+generated by a compiler.
+
+Bit long
+Implements bitwise functions for a 64-bit integer number type. This instance is automatically 
+generated by a compiler.
+
+Enum int
+Implements `succ` and `pred` functions for a 32-bit integer number type. This instance is 
+automatically generated by a compiler.
+
+Enum long
+Implements `succ` and `pred` functions for a 64-bit integer number type. This instance is 
+automatically generated by a compiler.
+
+Enum single
+Implements `succ` and `pred` functions for a 32-bit floating point number type. This instance is 
+automatically generated by a compiler.
+
+Enum double
+Implements `succ` and `pred` functions for a 64-bit floating point number type. This instance is 
+automatically generated by a compiler.
+
+Enum char
+Implements `succ` and `pred` functions for a unicode character. This instance is automatically 
+generated by a compiler.
+
+Enum tuple
+Implements `succ` and `pred` functions for a tuple. These functions are implemented by sequentially 
+applying `succ` and `pred` to all tuple elements - therefore they will only work on tuples that 
+contain enumerable types.
+>>> succ (1,2,'b')
+
+Seq list
+Implements functions `head`, `tail` and `isnil` for a linked list. This instance is automatically 
+generated by a compiler.
+
+Seq string
+Implements functions `head`, `tail` and `isnil` for a string. This instance is automatically 
+generated by a compiler. Applying a `head` to a string is equivalent to a substring that eliminates 
+the first character:
+>>> tail "Bar"
+A function `head` always returns a first character:
+>>> head "Bar"
+A empty string is considered to be a nil string:
+>>> isnil ""
+
+Ix tuple
+Implements an indexing and a `length` function for a tuple. Tuple only supports indices of integer 
+type. This instance is automatically generated by a compiler.
+
+Ix string
+Implements an indexing and a `length` function for a string. String only supports indices of 
+integer type. This instance is automatically generated by a compiler.
+
+Ix module
+Implements an indexing and a `length` function for a module. Module only supports indices of 
+string type. This instance is automatically generated by a compiler.
+
+Ix record
+Implements an indexing and a `length` function for a module. Record supports indices of type string 
+and integer. This instance is automatically generated by a compiler.
+
+Ix list
+Implements an indexing and a `length` function for a linked list. The complexity of both `:` and 
+`length` functions is O(n) is most of situations. Both `:` and `length` have to traverse a list. 
+A `length` function always has to traverse the whole list. Traversing obviously forces calculation 
+of a lazy list and trying to obtain a length of an infinite list would never terminate. However 
+both `:` and `length` never force calculation of list elements.
+
+Cat char
+Implements concatenation for two characters. The result of such concatenation is always a string:
+>>> 'a' ++ 'b'
+This instance is automatically generated by a compiler.
+
+Cat string
+Implements concatenation for two strings. This instance is automatically generated by a compiler.
+
+Cat tuple
+Implements concatenation for two tuples. The result is a new tuple that contains elements from 
+both tuples:
+>>> (1,2) ++ (3,4)
+This instance is automatically generated by a compiler.
+
+Cat record
+Implements concatenation for two records. The result is a new record that contains elements from 
+both records:
+>>> {x=1,y=2} ++ {name="Bar"}
+This instance is automatically generated by a compiler.
+
+Cat list
+Implements concatenation for two linked lists. This is an expensive operation that requires its 
+left operand to be traversed twice.
+>>> [1,2] ++ [3,4]
+A function `++` for linked lists is lazy on its right operand. If a right operand is a thunk than 
+a lazy list is created.
+
+Show int
+Implements `showf` function for a 32-bit integer. This instance is automatically generated by a 
+compiler.
+
+Show long
+Implements `showf` function for a 64-bit integer. This instance is automatically generated by a 
+compiler.
+
+Show single
+Implements `showf` function for a 32-bit float. This instance is automatically generated by a 
+compiler.
+
+Show double
+Implements `showf` function for a 64-bit double. This instance is automatically generated by a 
+compiler.
+
+Show char
+Implements `showf` function for a unicode character. This instance is automatically generated by 
+a compiler.
+
+Show bool
+Implements `showf` function for a boolean. This instance is automatically generated by a compiler.
+
+Show string
+Implements `showf` function for a string. This instance is automatically generated by a compiler.
+
+Show long
+Implements `showf` function for a unit. This instance is automatically generated by a compiler.
+
+Show typeinfo
+Implements `showf` function for a typeinfo. This instance is automatically generated by a compiler.
+
+Show fun
+Implements `showf` function for a function. This instance is automatically generated by a compiler.
+
+Show module
+Implements `showf` function for a module. This instance is automatically generated by a compiler.
+
+Show variant
+Implements `showf` function for a variant.
+
+Show tuple
+Implements `showf` function for a tuple.
+
+Show list
+Implements `showf` function for a list.
+
+Show record
+Implements `showf` function for a variant.
+
+Typable bool
+Implements type casting for a boolean. A boolean supports casting to a 32-bit integer. This 
+instance is automatically generated by a compiler.
+
+Typeable char
+Implements type casting for a unicode character. A char supports casting to a 32-bit integer and
+to a string. This instance is automatically generated by a compiler.
+
+Typeable double
+Implements type casting for a 64-bit floating point number. A 64-bit float supports casting to
+a 32-bit integer, to a 32-bit float and to 64-bit integer. This instance is automatically 
+generated by a compiler.
+
+Typeable int
+Implements type casting for a 32-bit integer number. A 32-bit integer supports casting to a
+64-bit integer, 32-bit float and 64-bit float. This instance is automatically generated by a 
+compiler.
+
+Typeable long
+Implements type casting for a 64-bit integer number. A 64-bit integer supports casting to a
+32-bit integer, 32-bit float and 64-bit float. This instance is automatically generated by a 
+compiler.
+
+Typeable single
+Implements type casting for a 32-bit floating point number. A 32-bit float supports casting to a
+64-bit float, 32-bit integer and 64-bit integer. This instance is automatically generated by a 
+compiler.
+
+Typeable string
+Implements type casting for a string. A string supports casting to a list. This instance is 
+automatically generated by a compiler.
+
+Typeable list
+Implements type casting for a linked list. A list supports casting to a string.
+
+toInt x
+Implements a helper function defined like `cast 0` for a type cast to a 32-bit integer.
+
+toLong x
+Implements a helper function defined like `cast 0L` for a type cast to a 64-bit integer.
+
+toSingle x
+Implements a helper function defined like `cast 0F` for a type cast to a 32-bit float.
+
+toDouble x
+Implements a helper function defined like `cast 0D` for a type cast to a 64-bit float.
+
+toBool x
+Implements a helper function defined like `cast false` for a type cast to a boolean.
+
+toChar x
+Implements a helper function defined like `cast '\0'` for a type cast to a unicode character.
+
+toString x
+Implements a helper function defined like `cast ""` for a type cast to a string.
+
+toList x
+Implements a helper function defined like `cast []` for a type cast to a linked list.
+
+show x
+Implements a helper function defined like `show ""` that can be used when a format string is 
+not needed.
+
+not b
+Performs a logical negation of its operand. 
+>>> not (12 > 3)
+
+:: e xs
+List construction operator. This operator is right associative. In order to construct a list a 
+rightmost part of an expression should always be a list. 
+>>> 1 :: 2 :: []
+This function is lazy on its both arguments. It doesn't force a left argument and if a right 
+argument is a thunk than a lazy list is constructed.
+
+>>
+Forward function composition operator. This function is defined like so:
+>> let (>>) f g x = g (f x)
+
+<<
+Backward function composition operator. This function is defined like so:
+>> let (<<) f g x = f (g x)
+
+flip fn
+Flips first two arguments in a function. A trivial implementation of this function is defined 
+like so:
+>> let flip f x y = f y x
+This function is generated by a compiler.
+
+curry
+Converts an uncurried function to a curried function. It works with functions for two arguments:
+>>> curry fst 2 3
+
+uncurry
+Converts an curried function to a uncurried function. It works with functions for two arguments: 
+>>> uncurry (%) (5,4)
+
+curry3
+Converts an uncurried function to a curried function. It works with functions for three arguments: 
+>>> curry3 fst3 1 2 3
+
+uncurry3
+Converts an curried function to a uncurried function. It works with functions for three arguments: 
+>>> uncurry3 (\x y z -> x + y + z) (5,4,3)
+
+=>
+Constructs a pair:
+>>> 12 => 24
+
+swap
+Swaps first and second elements in a tuple. This function will only work with a tuple of two 
+elements: 
+>>> swap (1,2)
+
+swap3
+Swaps first and second elements in a tuple. This function will only work with a tuple of element 
+elements: 
+>>> swap3 (1,2,3)
+
+fst
+Returns a first element in a tuple. This function will only work with a tuple of two elements: 
+>>> fst (1,2)
+
+snd
+Returns a second element in a tuple. This function will only work with a tuple of two elements: 
+>>> snd (1,2)
+
+fst3
+Returns a first element in a tuple. This function will only work with a tuple of three elements: 
+>>> fst3 (1,2,3)
+
+snd3
+Returns a second element in a tuple. This function will only work with a tuple of three elements: 
+>>> snd3 (1,2,3)
+
+getType x
+Returns type information for a given value:
+>>> getType 42
+This function is generated by a compiler.
+
+force x
+Forces a given expression if this is a thunk. Otherwise works as an identity function:
+>>> force 42
+This function forces thunks recursively. This function is generated by a compiler.
+
+tag x
+Returns a tag (as a string) of a given variant:
+>>> tag (Some 12)
+
+untag x
+Unwraps a value from a given variant:
+>>> untag (Some 12)
+
+id
+An identity function (I combinator from SKI calculus): 
+>>> id 42
+
+const
+Constant function (K combinator from SKI calculus). 
+
+sub
+Substitution function (S combinator from SKI calculus).
+
+fix
+Fix point combinator: 
+>> let factabs fact 0 = 1
+>>     factabs fact x = x * fact (x - 1)
+>> let res = (fix factabs) 5
+
+on
+A combinator that applies a function given as its first argument to result of application of a 
+second argument to a third 
+and of a second argument to a forth argument: 
+>> let (*) `on` f = \x y -> f x * f y
+
+until
+Function application like so: `until p f` yields the result of applying `f` until `p` holds: 
+>> until (<0) (-1) 10
+
+compare
+Compares two given values and returns `EQ` variant if they are equal, `LT` variant if first 
+argument is lesser than the second argument 
+and `GT` variant if first argument is greater than the second argument:
+>>> compare 12 34
+
+! f
+An application operator. It is defined like so:
+>> let f! = f()
+
+|> e f
+A redundant low priority application operator also known as _forward_ _pipe_. It has a normal 
+order and left association. This function implementation is generated by a compiler.
+
+<| f x
+A redundant low priority application operator also known as _backward_ _pipe_. This operator is 
+right associative and has applicative order. This function application is generated by a compiler.
