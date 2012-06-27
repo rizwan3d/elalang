@@ -1,0 +1,29 @@
+/* 
+    Module number
+    Created in 2012 by Basil Voronkov
+*/
+open qualified "Number"#elalib@rl
+
+let inf x = rl.inf (force x)
+
+let nan x = rl.nan (force x)
+
+let posInf x = rl.posInf (force x)
+
+let negInf x = rl.negInf (force x)
+
+let maxInt = rl.maxInt
+
+let minInt = rl.minInt
+
+let maxLong = rl.maxLong
+
+let minLong = rl.minLong
+
+let maxSingle = rl.maxSingle
+
+let minSingle = rl.minSingle
+
+let maxDouble = rl.maxDouble
+
+let minDouble = rl.minDouble

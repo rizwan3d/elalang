@@ -1,0 +1,363 @@
+/* 
+    Ela standard prelude module
+    Created in 2011-2012 by Basil Voronkov
+*/
+
+/* Built-in types */
+type int
+type long
+type single
+type double
+type bool
+type char
+type string
+type tuple
+type list
+type record
+type module
+type thunk
+type typeinfo
+type fun
+type unit
+type object
+type variant
+
+/* Typeable */
+class Typeable __internal Typeable cast
+
+toInt    = cast 0
+toLong   = cast 0L
+toSingle = cast 0F
+toDouble = cast 0D
+toBool   = cast false
+toChar   = cast '\0'
+toList   = cast []
+toString = cast ""
+
+instance Typeable bool //toInt
+
+instance Typeable char //toString, toInt
+
+instance Typeable double //toInt, toLong, toSingle
+
+instance Typeable int //toChar, toDouble, toLong, toSingle
+
+instance Typeable long //toDouble, toInt, toSingle
+
+instance Typeable single //toDouble, toLong, toInt
+
+instance Typeable string //toList
+
+instance Typeable list
+  where cast (?string) x = castString x
+
+//private
+castString (x::xs) = toString x ++ castString xs
+castString [] = ""
+
+/* Eq */
+class Eq __internal Eq (==) (<>)
+
+instance Eq int
+
+instance Eq char
+
+instance Eq bool
+
+instance Eq double
+
+instance Eq single
+
+instance Eq long
+
+instance Eq string
+
+instance Eq unit
+
+instance Eq typeinfo
+
+instance Eq fun
+
+instance Eq module
+
+instance Eq tuple
+  where x == y = x `eqTuple` y
+        x <> y = not (x `eqTuple` y)
+
+instance Eq record
+  where x == y = x `eqRecord` y
+        x <> y = not (x `eqRecord` y)
+
+instance Eq list
+  where x == y = x `eqList` y
+        x <> y = not (x `eqList` y)
+
+instance Eq variant
+  where x == y = tag x == tag y and untag x == untag y
+        x <> y = tag x <> tag y or untag x <> untag y
+
+//private
+eqTuple tup1 tup2 = len == length tup2 and eq 0
+        where len = length tup1
+              eq n | n < len = if tup1:n == tup2:n then eq (n+1) else false
+                   | else = true
+
+//private
+eqRecord rec1 rec2 = len == length rec2 and eq 0
+         where len = length rec1
+               (!!) = __internal recfield
+               eq n | n < len = if rec1!!n == rec2!!n and rec1:n == rec2:n then eq (n+1) else false
+                    | else = true
+
+//private
+eqList (x::xs) (y::ys) | x == y = xs `eqList` ys | else = false
+eqList [] [] = true
+eqList [] _ = false
+eqList _ [] = false
+
+/* Ord */
+class Ord __internal Ord (>) (<) (>=) (<=)
+
+instance Ord int
+
+instance Ord long
+
+instance Ord single
+
+instance Ord double
+
+instance Ord char
+
+instance Ord string
+
+instance Ord tuple
+  where x<y = foldTuple (<) x y
+        x>y = foldTuple (>) x y
+        x<=y = foldTuple (<=) x y
+        x>=y = foldTuple (>=) x y
+
+//private 
+foldTuple f tup1 tup2 | length tup2 <> len = fail "Tuples should be of the same length."
+                      | else = fold 0
+                      where len = length tup1
+                            fold n | n == len - 1 = e
+                                   | else = if e then true else fold (n+1)
+                                   where e = tup1:n `f` tup2:n
+
+/* Num */
+class Num __internal Num (+) (-) (*) (/) (**) (%) (--)
+
+instance Num int
+
+instance Num long
+
+instance Num single
+
+instance Num double
+
+instance Num tuple
+  where (+) = joinTuple (+)
+        x-y = joinTuple (-) x y
+        x*y = joinTuple (*) x y
+        x/y = joinTuple (/) x y
+        x**y = joinTuple (**) x y
+        x%y = joinTuple (%) x y
+        x-- = mapTuple (--) x
+
+//private 
+mapTuple f tup = map 0
+          where len = length tup
+                map n | n == len - 1 = e
+                      | else = e ++ map (n+1)
+                      where e = ( f (tup:n), )
+                         
+//private 
+joinTuple f tup1 tup2 | length tup2 <> len = fail "Tuples should be of the same length." | else = join 0
+           where len = length tup1
+                 join n | n == len - 1 = e
+                        | else = e ++ join (n+1)
+                        where e = (tup1:n `f` tup2:n, )
+
+/* Bit */
+class Bit __internal Bit (&&&) (|||) (^^^) (~~~) (<<<) (>>>)
+
+instance Bit int
+
+instance Bit long
+
+/* Enum */
+class Enum __internal Enum succ pred
+
+instance Enum int
+
+instance Enum long
+
+instance Enum double
+
+instance Enum single
+
+instance Enum char
+
+instance Enum tuple
+  where succ = mapTuple succ
+        pred = mapTuple pred
+
+/* Seq */
+class Seq __internal Seq head tail isnil
+
+instance Seq list
+
+instance Seq string
+
+/* Ix */
+class Ix __internal Ix (:) length
+
+instance Ix string
+
+instance Ix tuple
+
+instance Ix record
+
+instance Ix list
+  where length xs = len 0 xs
+               where len n [] = n
+                     len n (x::xs) = len (n+1) xs
+        xs:n = get 0 xs
+               where get _ [] = raise IndexOutOfRange ("Index " ++ n ++ " is out of range.")
+                     get i (x::xs) | i == n = x
+                                   | else = get (i+1) xs
+
+/* Cat */
+class Cat __internal Cat (++)
+
+instance Cat char
+
+instance Cat string
+
+instance Cat tuple
+
+instance Cat record
+
+instance Cat list
+  where xs++ys = cat (reverse xs) ys
+                 where cat (x::xs) ys = cat xs (x::ys)
+                       cat [] ys = ys
+
+//private
+reverse xs = rev [] xs
+        where (:) = flip (::)
+              rev z [] = z
+              rev z (x::xs) = rev (z:x) xs
+
+/* Show */
+class Show __internal Show showf
+
+show = showf ""
+
+instance Show int
+
+instance Show long
+
+instance Show single
+
+instance Show double
+
+instance Show char
+
+instance Show bool
+
+instance Show string
+
+instance Show unit
+
+instance Show typeinfo
+
+instance Show fun
+
+instance Show module
+
+instance Show variant
+  where showf f x = match v with
+                          () = tag x
+                          _  = tag x ++ " " ++ showf f x
+                    where v = untag x
+
+instance Show tuple
+  where showf f t = "(" ++ tos 0 ++ ")"
+                    where tos n | n == len - 1 = e ++ (if len == 1 then "," else "")
+                                | else = e ++ "," ++ tos (n+1)
+                                where e = showf f (t:n) 
+                          len = length t
+
+instance Show list
+  where showf _ [] = "[]"
+        showf f xs = "[" ++ tos xs ++ "]"
+                     where tos (x::[]) = showf f x
+                           tos (x::xs) = showf f x ++ "," ++ tos xs
+
+instance Show record
+  where showf f t = "{" ++ tos 0 ++ "}"
+                    where tos n | n == len - 1 = fld
+                                | else = fld ++ "," ++ tos (n+1)
+                                where fld = t!!n ++ "=" ++ showf f (t:n)
+                          len = length t
+                          (!!) = __internal recfield
+
+/* Read 
+class Read
+      readf (readf)
+
+
+let read = readf "" 
+let readInt     = readf "" ?int
+let readLong    = readf "" ?long
+let readSingle  = readf "" ?single
+let readDouble  = readf "" ?double
+let readBool    = readf "" ?bool
+let readList    = readf "" ?list
+let readTuple   = readf "" ?tuple
+let readRecord  = readf "" ?record */
+
+/* Misc operators */
+not = __internal not
+(::) = __internal cons
+
+/* Function related operators and functions */
+(>>) f g x = g (f x)
+(<<) f g x = f (g x)
+flip = __internal flip
+curry f x y = f (x, y)
+uncurry f (x, y) = f x y
+curry3 f x y z = f (x, y, z)
+uncurry3 f (x, y, z) = f x y z
+
+/* Tuple functions */
+(=>) x y = (x, y)
+swap (x, y) = (y, x)
+swap3 (x, y, z) = (y, x, z)
+fst (x,_) = x
+snd (_,y) = y
+fst3 (x,_,_) = x
+snd3 (_,y,_) = y
+
+/* Complex behaviors */
+getType = __internal typeinfo
+force = __internal force
+
+/* Variants */
+tag   = __internal gettag
+untag = __internal untag
+
+/* Combinators */
+id x = x//I
+const x _ = x//K
+sub x y z = x z (y z)//S
+fix f = f (& fix f)
+on cmb f x y = f x `cmb` f y
+
+/* Misc */
+f! = f()
+(|>) = __internal fpipe
+(<|) = __internal bpipe
+until p f x | p x  = x  | else = until p f (f x)
+compare x y | x == y = EQ | x < y = LT | else = GT

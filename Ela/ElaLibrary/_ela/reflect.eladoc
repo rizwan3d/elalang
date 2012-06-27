@@ -1,0 +1,52 @@
+#file reflect.ela
+#title reflect
+#category Ela Standard Library
+This module contains functions that extends Ela runtime reflection capabilities.
+
+#members
+
+funArgsCount
+Returns a number of arguments for a given function:
+>>> funArgsCount (\x y z -> x+y+z)
+This function always returns a number of arguments in a _literal_ _form_ - not an actual 
+number of arguments that a function can accept:
+>>> funArgsCount (\x -> \y -> \z -> x+y+z)
+
+funName
+Returns a name of a given function:
+>>> funName (<<)
+If a function name cannot be inferred, than a `<f>` string is returned (which is a function name
+"by default").
+
+funAppliedArgsCount
+Returns a number of applied arguments in a partially applied function:
+>>> let sum2 = (+2)
+>>> funAppliedArgsCount sum2
+
+funAppliedArgs
+Returns a list of applied arguments in a partially applied function:
+>>> let sub2 = (-2)
+>>> funAppliedArgs sub2
+
+moduleHandle
+Returns a handle of a given module:
+>>> moduleHandle prelude
+
+moduleName
+Returns a name of a given module:
+>>> moduleName prelude
+
+moduleExportList
+Returns a list of exports (bindings without `private` attribute) from a given module.
+
+moduleReferences
+Returns a list of module references for a given module.
+
+asmMainModule
+Returns a main (entry point) module of a currently executing assembly.
+
+asmModuleCount
+Returns a number of modules in a currently executing assembly.
+
+asmModules
+Returns a list of modules in a currently executing assembly.
