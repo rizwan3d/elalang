@@ -20,10 +20,10 @@ namespace Ela.CodeModel
         {
             return false;
         }
-				
-		internal override void ToString(StringBuilder sb, Fmt fmt)
+
+        internal override void ToString(StringBuilder sb, int indent)
 		{
-			base.ToString(sb, fmt, "try");
+			base.ToString(sb, indent, "try");
 		}
 	}
 }

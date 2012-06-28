@@ -21,18 +21,18 @@ namespace Ela.CodeModel
             return false;
         }
 
-        internal override void ToString(StringBuilder sb, Fmt fmt)
+        internal override void ToString(StringBuilder sb, int ident)
         {
             sb.Append('\\');
             
             foreach (var p in ((ElaJuxtaposition)Left).Parameters)
             {
-                Format.PutInBraces(p, sb, default(Fmt));
+                Format.PutInBraces(p, sb);
                 sb.Append(' ');
             }
 
             sb.Append("-> ");
-            Right.ToString(sb, default(Fmt));
+            Right.ToString(sb, 0);
         }
 
         internal int GetParameterCount()

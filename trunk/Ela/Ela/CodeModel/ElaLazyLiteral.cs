@@ -20,11 +20,11 @@ namespace Ela.CodeModel
         {
             return false;
         }
-		
-		internal override void ToString(StringBuilder sb, Fmt fmt)
+
+        internal override void ToString(StringBuilder sb, int ident)
 		{
 			sb.Append("(& ");
-            Expression.ToString(sb, fmt);
+            Expression.ToString(sb, 0);
 			sb.Append(')');
 		}
 

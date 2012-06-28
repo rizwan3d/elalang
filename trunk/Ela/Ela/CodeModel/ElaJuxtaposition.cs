@@ -28,36 +28,28 @@ namespace Ela.CodeModel
         {
             return false;
         }
-        
-        internal override void ToString(StringBuilder sb, Fmt fmt)
+
+        internal override void ToString(StringBuilder sb, int ident)
 		{
-			var paren = (fmt.Flags & FmtFlags.NoParen) != FmtFlags.NoParen && FlipParameters;
-
-			if (paren)
-				sb.Append('(');
-
 			if (Target.Type == ElaNodeType.NameReference && Target.GetName().IndexOfAny(opChars) != -1 &&
 				Parameters.Count == 2)
 			{
-				Parameters[0].ToString(sb, fmt);
+				Parameters[0].ToString(sb, 0);
 				sb.Append(' ');
 				sb.Append(Target.GetName());
 				sb.Append(' ');
-				Parameters[1].ToString(sb, fmt);
+				Parameters[1].ToString(sb, 0);
 			}
 			else
 			{
-				Format.PutInBraces(Target, sb, fmt);
+				Format.PutInBraces(Target, sb);
 
 				foreach (var p in Parameters)
 				{
 					sb.Append(' ');
-					Format.PutInBraces(p, sb, fmt);
+					Format.PutInBraces(p, sb);
 				}
 			}
-
-			if (paren)
-				sb.Append(')');
 		}
 		
         public ElaExpression Target { get; set; }

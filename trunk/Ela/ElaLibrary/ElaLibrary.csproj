@@ -20,7 +20,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -28,7 +28,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -107,40 +107,74 @@
     <Content Include="LibChangeList.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="_ela\cell.ela" />
-    <None Include="_ela\cell.eladoc" />
-    <None Include="_ela\char.ela" />
-    <None Include="_ela\char.eladoc" />
-    <None Include="_ela\collections\alist.ela" />
-    <None Include="_ela\collections\alist.eladoc" />
-    <None Include="_ela\collections\queue.ela" />
-    <None Include="_ela\collections\queue.eladoc" />
-    <None Include="_ela\console.ela" />
-    <None Include="_ela\console.eladoc" />
-    <None Include="_ela\core.ela" />
-    <None Include="_ela\core.eladoc" />
-    <None Include="_ela\datetime.ela" />
-    <None Include="_ela\datetime.eladoc" />
-    <None Include="_ela\format.ela" />
-    <None Include="_ela\format.eladoc" />
-    <None Include="_ela\imperative.ela" />
-    <None Include="_ela\imperative.eladoc" />
-    <None Include="_ela\io.ela" />
-    <None Include="_ela\io.eladoc" />
-    <None Include="_ela\number.ela" />
-    <None Include="_ela\number.eladoc" />
-    <None Include="_ela\prelude.ela" />
-    <None Include="_ela\prelude.eladoc" />
-    <None Include="_ela\record.ela" />
-    <None Include="_ela\record.eladoc" />
-    <None Include="_ela\reflect.ela" />
-    <None Include="_ela\reflect.eladoc" />
-    <None Include="_ela\string.ela" />
-    <None Include="_ela\string.eladoc" />
-    <None Include="_ela\test.ela" />
-    <None Include="_ela\test.eladoc" />
-    <None Include="_ela\thunk.ela" />
-    <None Include="_ela\thunk.eladoc" />
+    <Content Include="_ela\cell.ela" />
+    <Content Include="_ela\cell.eladoc">
+      <DependentUpon>cell.ela</DependentUpon>
+    </Content>
+    <Content Include="_ela\char.ela" />
+    <Content Include="_ela\char.eladoc">
+      <DependentUpon>char.ela</DependentUpon>
+    </Content>
+    <Content Include="_ela\collections\alist.ela" />
+    <Content Include="_ela\collections\alist.eladoc">
+      <DependentUpon>alist.ela</DependentUpon>
+    </Content>
+    <Content Include="_ela\collections\queue.ela" />
+    <Content Include="_ela\collections\queue.eladoc">
+      <DependentUpon>queue.ela</DependentUpon>
+    </Content>
+    <Content Include="_ela\console.ela" />
+    <Content Include="_ela\console.eladoc">
+      <DependentUpon>console.ela</DependentUpon>
+    </Content>
+    <Content Include="_ela\core.ela" />
+    <Content Include="_ela\core.eladoc">
+      <DependentUpon>core.ela</DependentUpon>
+    </Content>
+    <Content Include="_ela\datetime.ela" />
+    <Content Include="_ela\datetime.eladoc">
+      <DependentUpon>datetime.ela</DependentUpon>
+    </Content>
+    <Content Include="_ela\format.ela" />
+    <Content Include="_ela\format.eladoc">
+      <DependentUpon>format.ela</DependentUpon>
+    </Content>
+    <Content Include="_ela\imperative.ela" />
+    <Content Include="_ela\imperative.eladoc">
+      <DependentUpon>imperative.ela</DependentUpon>
+    </Content>
+    <Content Include="_ela\io.ela" />
+    <Content Include="_ela\io.eladoc">
+      <DependentUpon>io.ela</DependentUpon>
+    </Content>
+    <Content Include="_ela\number.ela" />
+    <Content Include="_ela\number.eladoc">
+      <DependentUpon>number.ela</DependentUpon>
+    </Content>
+    <Content Include="_ela\prelude.ela" />
+    <Content Include="_ela\prelude.eladoc">
+      <DependentUpon>prelude.ela</DependentUpon>
+    </Content>
+    <Content Include="_ela\record.ela" />
+    <Content Include="_ela\record.eladoc">
+      <DependentUpon>record.ela</DependentUpon>
+    </Content>
+    <Content Include="_ela\reflect.ela" />
+    <Content Include="_ela\reflect.eladoc">
+      <DependentUpon>reflect.ela</DependentUpon>
+    </Content>
+    <Content Include="_ela\string.ela" />
+    <Content Include="_ela\string.eladoc">
+      <DependentUpon>string.ela</DependentUpon>
+    </Content>
+    <Content Include="_ela\test.ela" />
+    <Content Include="_ela\test.eladoc">
+      <DependentUpon>test.ela</DependentUpon>
+    </Content>
+    <Content Include="_ela\thunk.ela" />
+    <Content Include="_ela\thunk.eladoc">
+      <DependentUpon>thunk.ela</DependentUpon>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -2,17 +2,17 @@
 using Ela.Library.General;
 //using Ela.Library.Collections;
 
-[assembly: ElaModule("Con", typeof(ConModule))]
-[assembly: ElaModule("Core", typeof(CoreModule))]
-[assembly: ElaModule("Format", typeof(FormatModule))]
-[assembly: ElaModule("Cell", typeof(CellModule))]
-[assembly: ElaModule("IO", typeof(IOModule))]
-[assembly: ElaModule("Char", typeof(CharModule))]
-[assembly: ElaModule("String", typeof(StringModule))]
-[assembly: ElaModule("Number", typeof(NumberModule))]
-[assembly: ElaModule("DateTime", typeof(DateTimeModule))]
-[assembly: ElaModule("Record", typeof(RecordModule))]
-[assembly: ElaModule("Reflect", typeof(ReflectModule))]
+[assembly: ElaModule("libCon", typeof(ConModule))]
+[assembly: ElaModule("libCore", typeof(CoreModule))]
+[assembly: ElaModule("libFormat", typeof(FormatModule))]
+[assembly: ElaModule("libCell", typeof(CellModule))]
+[assembly: ElaModule("libIO", typeof(IOModule))]
+[assembly: ElaModule("libChar", typeof(CharModule))]
+[assembly: ElaModule("libString", typeof(StringModule))]
+[assembly: ElaModule("libNumber", typeof(NumberModule))]
+[assembly: ElaModule("libDateTime", typeof(DateTimeModule))]
+[assembly: ElaModule("libRecord", typeof(RecordModule))]
+[assembly: ElaModule("libReflect", typeof(ReflectModule))]
 
 [assembly: ElaModule("experimental", typeof(Experimental))]
 [assembly: ElaModule("debug", typeof(DebugModule))]

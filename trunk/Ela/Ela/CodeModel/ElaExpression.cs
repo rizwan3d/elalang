@@ -41,11 +41,11 @@ namespace Ela.CodeModel
 		public override string ToString()
 		{
 			var sb = new StringBuilder();
-			ToString(sb, new Fmt());
+			ToString(sb, 0);
 			return sb.ToString();
 		}
         
-		internal abstract void ToString(StringBuilder sb, Fmt fmt);
+		internal abstract void ToString(StringBuilder sb, int ident);
 		
         public int Line { get; private set; }
 

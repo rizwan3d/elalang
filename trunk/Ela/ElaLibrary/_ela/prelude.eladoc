@@ -9,62 +9,62 @@ program unless you explicitly tell Ela not to do so.
 
 int
 A 32-bit signed integer number type.
->> 42
+>>42
 
 long
 A 64-bit singed integer number type.
->> 42L
+>>42L
 
 single
 A 32-bit singed floating point number type.
->> 12.2
+>>12.2
 
 double
 A 64-bit singed floating point number type.
->> 24.4
+>>24.4
 
 bool
 A boolean type which can be created using two literal forms - `true` or `false`.
->> true false
+>>true false
 
 char
 A single unicode character.
->> 'a'
+>>'a'
 
 string
 An immutable indexed array of unicode characters.
->> "Hello, world!"
+>>"Hello, world!"
 
 list
 An immutable single linked list.
->> [1,2,3,4,5]
+>>[1,2,3,4,5]
 
 tuple
 An immutable indexed array of elements of any type.
->> (1, 'c', "Hello", true)
+>>(1, 'c', "Hello", true)
 
 record
 A tuple with named elements.
->> {x = 1, foo = "Foo"}
+>>{x = 1, foo = "Foo"}
 
 module
 Used to represent an Ela module.
 
 unit
 This type has a single immutable instance and is used to represent a value that can be discarded.
->> ()
+>>()
 
 fun
 A function.
->> \x -> \y -> x + y
+>>\x -> \y -> x + y
 
 variant
 A polymorphic variant.
->> Some 12
+>>Some 12
 
 thunk
 Represents a deferred calculation.
->> & 2 + 2
+>>& 2 + 2
 
 typeinfo
 Represents meta information about a type.
@@ -76,7 +76,7 @@ Eq
 Defines two basic comparison functions - equal `==` and not equal `<>`. Implementation of equality 
 functions is fully dependent from a particular instance however normally these functions would 
 test for structural, not reference equality.
->>> [1,2,3] == [1,2,3]
+>>>[1,2,3] == [1,2,3]
 
 Ord
 Defines four comparison functions including: greater `>`, lesser `<`, greater or equal `>=` and 
@@ -88,9 +88,9 @@ Defines basic numeric functions including: addition `+`, subtraction `-`, divisi
 multiplication `*`, remainder `%`, power `**` and unary negation `--`.
 It is important to note the difference between binary subtraction and unary negation in Ela. 
 The code like so:
->>> -2
+>>>-2
 is in fact a partial application of a subtraction function, when negation should be written as:
->>> --2
+>>>--2
 Implementation of this class (along with `Ord` and `Enum`) allows to use a type in ranges.
 
 Bit
@@ -101,47 +101,47 @@ Enum
 Defines two functions `succ` and `pred` that can be used to obtain a successor and a predecessor 
 of a given value. An implementation of `Enum` for integers is has the same effect as addition 
 and subtraction:
->>> succ 12 == 12 + 1
+>>>succ 12 == 12 + 1
 Implementation of this class (along with `Num` and `Ord`) allows to use a type in ranges.
 
 Seq
 Defines three functions that can be used to deconstruct a given sequence as a linked list. 
 A function `head` returns a head element of a sequence, a function `tail` strips a head and 
 returns the rest part of a sequence and a function `isNil` tests if a given sequence is nil.
->>> tail [1,2,3]
+>>>tail [1,2,3]
 If an instance of this class is implemented for a particular type than it is possible to 
 deconstruct this type using head/tail pattern, e.g.:
->> match xs with
->>       x::xs = ...
->>       [] = ...
+>>match xs with
+>>      x::xs = ...
+>>      [] = ...
 
 Ix
 Defines two functions that allow to work with a given sequence as with an indexed array. An 
 operator `:` obtains an element from a sequence with a given index:
->>> let xs = (1,2,3)
->>> xs:1
+>>>xs = (1,2,3)
+>>>xs:1
 Indices can be any type. Whether an index of a particular type is supported depends on a 
 specific implementation of this operator, e.g. records accept strings as indices:
->>> let rec = {x=1, y=2, z=3}
->>> rec:"y"
+>>>rec = {x=1, y=2, z=3}
+>>>rec:"y"
 Function `length` returns a length of a given sequence:
->>> length rec
+>>>length rec
 If an instance of this class is implemented for a particular type than it is possible to 
 deconstruct this type using tuple pattern, e.g.:
->> match tup with
->>       (x,y,z) = ...
+>>match tup with
+>>      (x,y,z) = ...
 
 Cat
 An operator `++` concatenates two entities and produces a new entity that includes elements from 
 both entities:
->>> "First" ++ "Second"
+>>>"First" ++ "Second"
 
 Show
 A function `showf` formats a given value to a string:
->>> showf "" [1,2,3]
+>>>showf "" [1,2,3]
 A format string can be used to specify a format if this format is supported by a particular 
 implementation of `showf`:
->>> showf ".##" 12.1234
+>>>showf ".##" 12.1234
 
 Typeable
 Defines a function `cast` that can be used to do type casting from one type to another. This 
@@ -247,7 +247,7 @@ Num tuple
 Implements arithmetic functions for a tuple. All binary functions from `Num` class are treated by 
 this instance as `a->a`, where `a` is a tuple. Unlike other instances no implicit conversions are 
 done here. Tuples can be summed, multiplied, divided, etc. by other tuples only. 
->>> (1,2) + (3,4)
+>>>(1,2) + (3,4)
 Also all binary functions in these instance require the tuples to be of the same length.
 
 Bit int
@@ -282,7 +282,7 @@ Enum tuple
 Implements `succ` and `pred` functions for a tuple. These functions are implemented by sequentially 
 applying `succ` and `pred` to all tuple elements - therefore they will only work on tuples that 
 contain enumerable types.
->>> succ (1,2,'b')
+>>>succ (1,2,'b')
 
 Seq list
 Implements functions `head`, `tail` and `isnil` for a linked list. This instance is automatically 
@@ -292,11 +292,11 @@ Seq string
 Implements functions `head`, `tail` and `isnil` for a string. This instance is automatically 
 generated by a compiler. Applying a `head` to a string is equivalent to a substring that eliminates 
 the first character:
->>> tail "Bar"
+>>>tail "Bar"
 A function `head` always returns a first character:
->>> head "Bar"
+>>>head "Bar"
 A empty string is considered to be a nil string:
->>> isnil ""
+>>>isnil ""
 
 Ix tuple
 Implements an indexing and a `length` function for a tuple. Tuple only supports indices of integer 
@@ -323,7 +323,7 @@ both `:` and `length` never force calculation of list elements.
 
 Cat char
 Implements concatenation for two characters. The result of such concatenation is always a string:
->>> 'a' ++ 'b'
+>>>'a' ++ 'b'
 This instance is automatically generated by a compiler.
 
 Cat string
@@ -332,19 +332,19 @@ Implements concatenation for two strings. This instance is automatically generat
 Cat tuple
 Implements concatenation for two tuples. The result is a new tuple that contains elements from 
 both tuples:
->>> (1,2) ++ (3,4)
+>>>(1,2) ++ (3,4)
 This instance is automatically generated by a compiler.
 
 Cat record
 Implements concatenation for two records. The result is a new record that contains elements from 
 both records:
->>> {x=1,y=2} ++ {name="Bar"}
+>>>{x=1,y=2} ++ {name="Bar"}
 This instance is automatically generated by a compiler.
 
 Cat list
 Implements concatenation for two linked lists. This is an expensive operation that requires its 
 left operand to be traversed twice.
->>> [1,2] ++ [3,4]
+>>>[1,2] ++ [3,4]
 A function `++` for linked lists is lazy on its right operand. If a right operand is a thunk than 
 a lazy list is created.
 
@@ -463,96 +463,96 @@ not needed.
 
 not b
 Performs a logical negation of its operand. 
->>> not (12 > 3)
+>>>not (12 > 3)
 
 :: e xs
 List construction operator. This operator is right associative. In order to construct a list a 
 rightmost part of an expression should always be a list. 
->>> 1 :: 2 :: []
+>>>1 :: 2 :: []
 This function is lazy on its both arguments. It doesn't force a left argument and if a right 
 argument is a thunk than a lazy list is constructed.
 
 >>
 Forward function composition operator. This function is defined like so:
->> let (>>) f g x = g (f x)
+>>(>>) f g x = g (f x)
 
 <<
 Backward function composition operator. This function is defined like so:
->> let (<<) f g x = f (g x)
+>>(<<) f g x = f (g x)
 
 flip fn
 Flips first two arguments in a function. A trivial implementation of this function is defined 
 like so:
->> let flip f x y = f y x
+>>flip f x y = f y x
 This function is generated by a compiler.
 
 curry
 Converts an uncurried function to a curried function. It works with functions for two arguments:
->>> curry fst 2 3
+>>>curry fst 2 3
 
 uncurry
 Converts an curried function to a uncurried function. It works with functions for two arguments: 
->>> uncurry (%) (5,4)
+>>>uncurry (%) (5,4)
 
 curry3
 Converts an uncurried function to a curried function. It works with functions for three arguments: 
->>> curry3 fst3 1 2 3
+>>>curry3 fst3 1 2 3
 
 uncurry3
 Converts an curried function to a uncurried function. It works with functions for three arguments: 
->>> uncurry3 (\x y z -> x + y + z) (5,4,3)
+>>>uncurry3 (\x y z -> x + y + z) (5,4,3)
 
 =>
 Constructs a pair:
->>> 12 => 24
+>>>12 => 24
 
-swap
+swap x
 Swaps first and second elements in a tuple. This function will only work with a tuple of two 
 elements: 
->>> swap (1,2)
+>>>swap (1,2)
 
-swap3
+swap3 x
 Swaps first and second elements in a tuple. This function will only work with a tuple of element 
 elements: 
->>> swap3 (1,2,3)
+>>>swap3 (1,2,3)
 
-fst
+fst x
 Returns a first element in a tuple. This function will only work with a tuple of two elements: 
->>> fst (1,2)
+>>>fst (1,2)
 
-snd
+snd x
 Returns a second element in a tuple. This function will only work with a tuple of two elements: 
->>> snd (1,2)
+>>>snd (1,2)
 
-fst3
+fst3 x
 Returns a first element in a tuple. This function will only work with a tuple of three elements: 
->>> fst3 (1,2,3)
+>>>fst3 (1,2,3)
 
-snd3
+snd3 x
 Returns a second element in a tuple. This function will only work with a tuple of three elements: 
->>> snd3 (1,2,3)
+>>>snd3 (1,2,3)
 
 getType x
 Returns type information for a given value:
->>> getType 42
+>>>getType 42
 This function is generated by a compiler.
 
 force x
 Forces a given expression if this is a thunk. Otherwise works as an identity function:
->>> force 42
+>>>force 42
 This function forces thunks recursively. This function is generated by a compiler.
 
 tag x
 Returns a tag (as a string) of a given variant:
->>> tag (Some 12)
+>>>tag (Some 12)
 
 untag x
 Unwraps a value from a given variant:
->>> untag (Some 12)
+>>>untag (Some 12)
 
 id
 An identity function (I combinator from SKI calculus): 
->>> id 42
+>>>id 42
 
 const
 Constant function (K combinator from SKI calculus). 
@@ -562,29 +562,29 @@ Substitution function (S combinator from SKI calculus).
 
 fix
 Fix point combinator: 
->> let factabs fact 0 = 1
->>     factabs fact x = x * fact (x - 1)
->> let res = (fix factabs) 5
+>>factabs fact 0 = 1
+>>factabs fact x = x * fact (x - 1)
+>>res = (fix factabs) 5
 
 on
 A combinator that applies a function given as its first argument to result of application of a 
 second argument to a third 
 and of a second argument to a forth argument: 
->> let (*) `on` f = \x y -> f x * f y
+>>(*) `on` f = \x y -> f x * f y
 
 until
 Function application like so: `until p f` yields the result of applying `f` until `p` holds: 
->> until (<0) (-1) 10
+>>until (<0) (-1) 10
 
 compare
 Compares two given values and returns `EQ` variant if they are equal, `LT` variant if first 
 argument is lesser than the second argument 
 and `GT` variant if first argument is greater than the second argument:
->>> compare 12 34
+>>>compare 12 34
 
 ! f
 An application operator. It is defined like so:
->> let f! = f()
+>>f! = f()
 
 |> e f
 A redundant low priority application operator also known as _forward_ _pipe_. It has a normal 

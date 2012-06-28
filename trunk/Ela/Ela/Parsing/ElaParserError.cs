@@ -8,7 +8,7 @@ namespace Ela.Parsing
 
 		InvalidSyntax = 1,
 
-        InvalidFunName = 2,
+        // = 2,
 
 		InvalidIntegerSyntax = 3,
 
@@ -69,13 +69,13 @@ namespace Ela.Parsing
 
 		// = 114,
 
-		// = 115,
+		ExpectedKeywordType = 115,
 
 		ExpectedKeywordWith = 116,
 
-		ExpectedKeywordOn = 117,
+		ExpectedKeywordInstance = 117,
 
-		// = 118,
+		ExpectedKeywordClass = 118,
 
 		ExpectedKeywordMatch = 119,
 
@@ -91,9 +91,9 @@ namespace Ela.Parsing
 
 		ExpectedKeywordOpen = 125,
 
-		ExpectedKeywordCout = 126,
+		// = 126,
 
-		ExpectedKeywordTypeof = 127,
+		// = 127,
 
 		// = 128,
 
@@ -113,9 +113,9 @@ namespace Ela.Parsing
 
 		ExpectedKeywordElse = 136,
 
-		ExpectedKeywordThrow = 137,
+		// = 137,
 
-		ExpectedKeywordYield = 138,
+		// = 138,
 
 		// = 139,
 
@@ -125,13 +125,13 @@ namespace Ela.Parsing
 
 		ExpectedKeywordRaise = 142,
 
-		ExpectedKeywordCatch = 143,
+		// = 143,
 
 		// = 144,
 
 		// = 145,
 
-		ExpectedKeywordIgnore = 146,
+		// = 146,
 
 		ExpectedLambda = 147,
 
@@ -165,27 +165,27 @@ namespace Ela.Parsing
 
 		InvalidExpression = 203,
 
-		InvalidPattern = 204,
+		// = 204,
 
-		InvalidLiteralPattern = 205,
+		// = 205,
 
 		InvalidOperator = 206,
 
-		InvalidBindingPattern = 207,
+		// = 207,
 
-		InvalidGeneratorPattern = 208,
+		// = 208,
 
-		InvalidIsOperatorPattern = 209,
+		// = 209,
 
 		InvalidRoot = 210,
 
 		// = 211,
 
-		InvalidAssignment = 212,
+		// = 212,
 
 		InvalidIf = 213,
 
-		InvalidFunction = 214,
+		// = 214,
 
 		InvalidRaise = 215,
 
@@ -195,11 +195,11 @@ namespace Ela.Parsing
 
 		InvalidTry = 218,
 
-		// = 219,
+		InvalidClassInstance = 219,
 
-		// = 220,
+		InvalidNewType = 220,
 
-		// = 221,
+		InvalidTypeClass = 221,
 
 		// = 222,
 
@@ -215,33 +215,33 @@ namespace Ela.Parsing
 
 		InvalidMemberAccess = 228,
 
-		InvalidArgumentReference = 229,
+		// = 229,
 
-		InvalidBaseReference = 230,
+		// = 230,
 
 		InvalidMatch = 231,
 
-		InvalidMatchEntry = 232,
+		// = 232,
 
-		InvalidParenPattern = 233,
+		// = 233,
 
-		InvalidVariantPattern = 234,
+		// = 234,
 
-		InvalidFuncPattern = 235,
+		// = 235,
 
 		// = 236,
 
-		InvalidUnitPattern = 237,
+		// = 237,
 
-		InvalidDefaultPattern = 238,
+		// = 238,
 
-		InvalidRecordPattern = 239,
+		// = 239,
 
-		InvalidTuplePattern = 240,
+		// = 240,
 
-		InvalidConsPattern = 241,
+		// = 241,
 
-		InvalidListPattern = 242,
+		// = 242,
 
 		InvalidRecord = 243,
 
@@ -261,15 +261,15 @@ namespace Ela.Parsing
 
 		InvalidInclude = 251,
 
-		InvalidPipe = 252,
+        InvalidHeader = 252,
 
 		InvalidOr = 253,
 
 		InvalidAnd = 254,
 
-		// = 255,
+        InvalidAs = 255,
 
-		InvalidShift = 256,
+		// = 256,
 
 		// = 257,
 
@@ -277,7 +277,7 @@ namespace Ela.Parsing
 
 		// = 259,
 
-		InvalidCast = 260,
+		// = 260,
 
 		InvalidInfix = 261,
 

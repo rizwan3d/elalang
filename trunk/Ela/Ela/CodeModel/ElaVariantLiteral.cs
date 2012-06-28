@@ -25,15 +25,15 @@ namespace Ela.CodeModel
 		{
 			return Tag;
 		}
-        
-		internal override void ToString(StringBuilder sb, Fmt fmt)
+
+        internal override void ToString(StringBuilder sb, int ident)
 		{
 			sb.Append(Tag);
 
             if (Expression != null)
             {
                 sb.Append(' ');
-                Format.PutInBraces(Expression, sb, default(Fmt));
+                Format.PutInBraces(Expression, sb);
             }
 		}
 

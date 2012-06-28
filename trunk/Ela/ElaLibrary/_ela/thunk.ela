@@ -2,22 +2,20 @@
     Module thunk
     Created in 2012 by Basil Voronkov
 */
-let forceAll x | x is ?thunk = forceAll' (force x)
-               | x is ?list = forceList (force x)
-               | x is ?tuple = forceAll' x
-               | x is ?record = forceAll' x
-               | else = x
-               where forceAll' x | x is ?tuple or x is ?record = forceTuple x
-                                 | else = force x
- 
-let forceList (x::xs) = forceAll x :: forceList xs
-    forceList [] = []
-    
-let forceRecord r = forceTuple r
+forceAll (?thunk)@x  = forceAll (force x)
+forceAll (?list)@x   = forceList (force x)
+forceAll (?tuple)@x  = forceTuple x
+forceAll (?record)@x = forceTuple x
+forceAll x = force x
 
-let forceTuple tup = force' 0
+forceList (x::xs) = forceAll x :: forceList xs
+forceList [] = []
+    
+forceRecord r = forceTuple r
+
+forceTuple tup = force' 0
        where len = length tup 
-          et force' i = if i == len - 1 then 
-                          forceAll (tup:i)
+             force' i = if i == len - 1 then 
+                          (forceAll (tup:i),)
                         else
-                          forceAll (tup:i) => force' (i+1)
+                          (forceAll (tup:i),) ++ force' (i+1)

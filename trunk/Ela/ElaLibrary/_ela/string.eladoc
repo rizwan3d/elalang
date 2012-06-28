@@ -16,7 +16,7 @@ Strips all trailing and leading spaces from a given string.
 
 trimChars
 Strips all trailing and leading characters chz from a given string: 
->>> trimChars (':',';') ":Foo;"
+>>>trimChars (':',';') ":Foo;"
 
 trimStart
 Strips all leading spaces from a given string. 
@@ -26,21 +26,21 @@ Strips all trailing spaces from a given string.
 
 trimStartChars
 Strips all leading characters `chz` from a given string: 
->>> trimStartChars (':',';') ",;Foo"
+>>>trimStartChars (':',';') ",;Foo"
 
 trimEndChars
 Strips all trailing characters `chz` from a given string: 
->>> trimEndChars (':',';') "Foo;"
+>>>trimEndChars (':',';') "Foo;"
 
 indexOf
 Returns the first index (or `-1` if nothing was found) of an occurence of the string `search` 
 in the string `s`. In the example below `indexOf` will look for the string `"Ela"` inside 
 the string `"Language Ela"`: 
->>> indexOf "Ela" "Language Ela"
+>>>indexOf "Ela" "Language Ela"
 
 indexOfFrom
 Works like `indexOf`, but allows to specify an index at which to start the search: 
->>> indexOfFrom "Ela" 3 "Language Ela"
+>>>indexOfFrom "Ela" 3 "Language Ela"
 
 indexOfLast
 Works like `indexOf`, but returns an index of the last occurence of the first string in 
@@ -54,19 +54,19 @@ Returns `true` if a string `s` ends with a string `search`, otherwise returns `f
 
 replace
 Replaces a string `search` with a string `repl` in a string `s`: 
->>> replace "Ela" "ELA" "Ela compiler"
+>>>replace "Ela" "ELA" "Ela compiler"
 
 remove
 Removes a number of symbols `n` starting from the position `start` in a string `s`: 
->>> remove 0 4 "Ela compiler"
+>>>remove 0 4 "Ela compiler"
 
 substr
 Returns a substring from `s` starting at position `start` with the length `n`: 
->>> substr 0 3 "Ela compiler"
+>>>substr 0 3 "Ela compiler"
 
 split
 Splits a given string into a list using a sequence of separators specified as a first argument: 
->>> split (";",",") "Ela;Elide,ElaConsole"
+>>>split (";",",") "Ela;Elide,ElaConsole"
 
 insert
 Inserts a string `ins` at a position `idx` inside the string `s`. This function creates a 

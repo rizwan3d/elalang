@@ -27,35 +27,39 @@ namespace Ela.CodeModel
         {
             return Right == null ? Left.Safe() : Right.Safe();
         }
-		
-        internal override void ToString(StringBuilder sb, Fmt fmt)
-		{
-			ToString(sb, fmt, "let");
-		}
-        
-		internal void ToString(StringBuilder sb, Fmt fmt, string keyword)
-		{
-            if (fmt.Indent > 0)
-                sb.Append(' ', fmt.Indent);
+
+        internal void ToString(StringBuilder sb, int indent, bool omitFirstIndent)
+        {
+            if (indent > 0 && !omitFirstIndent)
+                sb.Append(' ', indent);
 
             var ln = sb.Length;
 
-            if (!Left.Parens)
-                Left.ToString(sb, fmt);
+            if (!Left.Parens || (Left.Type == ElaNodeType.NameReference && Format.IsSymbolic(Left.GetName())))
+                Left.ToString(sb, 0);
             else
             {
                 sb.Append('(');
-                Left.ToString(sb, fmt);
+                Left.ToString(sb, 0);
                 sb.Append(')');
             }
-
-            ln = sb.Length - ln;
 
             if (Right != null)
             {
                 sb.Append(" = ");
-                Right.ToString(sb, fmt);
+                Right.ToString(sb, indent + (sb.Length - ln));
             }
+
+            if (Next != null)
+            {
+                sb.AppendLine();
+                Next.ToString(sb, indent);
+            }
+        }
+
+        internal override void ToString(StringBuilder sb, int indent)
+		{
+            ToString(sb, indent, false);
 		}
 
         internal bool IsFunction()

@@ -197,9 +197,13 @@ namespace Ela.Compilation
                     if (first && firstSys.Length > i)
                         firstSys[i] = sysVar;
 
-                    CompilePattern(sysVar, p, failLab);
+                    
                 }
 
+                //Now compile patterns
+                for (var i = 0; i < len; i++)
+                    CompilePattern(firstSys[i], pars[i], failLab);
+                
                 first = false;
 
                 //Compile entry expression
@@ -514,7 +518,10 @@ namespace Ela.Compilation
                 //variable - these patterns are aware that they might accept -1 and it means that
                 //the value is already on the top of the stack.
                 if (!IsSimplePattern(fst))
+                {
                     sysVar2 = AddVariable();
+                    PopVar(sysVar2);
+                }
 
                 CompilePattern(sysVar2, fst, failLab);
 

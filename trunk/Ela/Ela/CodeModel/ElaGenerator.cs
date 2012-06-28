@@ -20,30 +20,32 @@ namespace Ela.CodeModel
         {
             return (Guard == null || Guard.Safe()) && Target != null && Target.Safe() && Body != null && Body.Safe(); 
         }
-		
-		internal override void ToString(StringBuilder sb, Fmt fmt)		
+
+        internal override void ToString(StringBuilder sb, int ident)		
 		{
 			var sbNew = new StringBuilder();
-			var sel = GetSelect(this, fmt, sbNew);
-			sb.Append(sel.ToString() + " \\\\ " + sbNew.ToString());
+			var sel = GetSelect(this, sbNew);
+            sel.ToString(sb, 0);
+            sb.Append(" \\\\ ");
+            sb.Append(sbNew);
 		}
         
-		private ElaExpression GetSelect(ElaGenerator gen, Fmt fmt, StringBuilder sb)
+		private ElaExpression GetSelect(ElaGenerator gen, StringBuilder sb)
 		{
-			sb.Append(gen.Pattern.ToString());
+			gen.Pattern.ToString(sb, 0);
 			sb.Append(" <- ");
-			sb.Append(gen.Target.ToString());
+			gen.Target.ToString(sb, 0);
 
 			if (Guard != null)
 			{
 				sb.Append(" | ");
-				gen.Guard.ToString(sb, fmt);
+				gen.Guard.ToString(sb, 0);
 			}
 
 			if (gen.Body.Type == ElaNodeType.Generator)
 			{
 				sb.Append(',');
-				return GetSelect((ElaGenerator)gen.Body, fmt, sb);
+				return GetSelect((ElaGenerator)gen.Body, sb);
 			}
 			else
 				return gen.Body;

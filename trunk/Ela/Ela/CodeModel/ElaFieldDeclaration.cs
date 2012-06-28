@@ -18,14 +18,14 @@ namespace Ela.CodeModel
         
         internal override bool Safe()
         {
-            return FieldValue != null && FieldValue.Safe();
+            return FieldValue.Safe();
         }
 		
-		internal override void ToString(StringBuilder sb, Fmt fmt)		
+		internal override void ToString(StringBuilder sb, int ident)		
 		{
 			sb.Append(FieldName);
 			sb.Append('=');
-			FieldValue.ToString(sb, fmt);
+			FieldValue.ToString(sb, 0);
 		}
 		
         public string FieldName { get; set; }

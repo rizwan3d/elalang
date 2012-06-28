@@ -138,9 +138,6 @@
   <data name="ExpectedKeywordAsAmp" xml:space="preserve">
     <value>Expected 'as' operator, e.g. 'expr@name'.</value>
   </data>
-  <data name="ExpectedKeywordCatch" xml:space="preserve">
-    <value>Expected keyword 'catch'.</value>
-  </data>
   <data name="ExpectedKeywordElse" xml:space="preserve">
     <value>A conditional expression (if/else) is missing a required 'else' clause.</value>
   </data>
@@ -186,29 +183,17 @@
   <data name="ExpectedToken" xml:space="preserve">
     <value>Invalid syntax. Expected: {0}.</value>
   </data>
-  <data name="InvalidAssignment" xml:space="preserve">
-    <value>Invalid assignment syntax.</value>
-  </data>
   <data name="InvalidEscapeCode" xml:space="preserve">
     <value>Invalid escape sequence in a string at position '{0}'.</value>
   </data>
   <data name="InvalidExpression" xml:space="preserve">
     <value>Invalid expression.</value>
   </data>
-  <data name="InvalidGeneratorPattern" xml:space="preserve">
-    <value>Invalid syntax for a pattern matching inside generator.</value>
-  </data>
   <data name="InvalidFunctionDeclaration" xml:space="preserve">
     <value>Invalid function declaration, function name '{0}' is invalid.</value>
   </data>
-  <data name="InvalidFunction" xml:space="preserve">
-    <value>Invalid function literal syntax.</value>
-  </data>
   <data name="InvalidIntegerSyntax" xml:space="preserve">
     <value>Invalid syntax of integer literal.</value>
-  </data>
-  <data name="InvalidIsOperatorPattern" xml:space="preserve">
-    <value>Invalid syntax for a pattern matching using 'is' operator.</value>
   </data>
   <data name="InvalidLiteral" xml:space="preserve">
     <value>Invalid syntax for a literal expression.</value>
@@ -253,25 +238,13 @@
     <value>Invalid list literal, a brace '[' or ']' is missing.</value>
   </data>
   <data name="InvalidAnd" xml:space="preserve">
-    <value>Invalid boolean 'and' expression.</value>
+    <value>Invalid logical 'and' expression.</value>
   </data>
   <data name="InvalidApplication" xml:space="preserve">
     <value>Invalid function application syntax.</value>
   </data>
-  <data name="InvalidArgumentReference" xml:space="preserve">
-    <value>Invalid argument syntax.</value>
-  </data>
-  <data name="InvalidBaseReference" xml:space="preserve">
-    <value>Invalid 'base' reference syntax.</value>
-  </data>
   <data name="InvalidBinding" xml:space="preserve">
-    <value>Invalid variable declaration syntax.</value>
-  </data>
-  <data name="InvalidBindingPattern" xml:space="preserve">
-    <value>Invalid syntax for a pattern matching inside variable binding.</value>
-  </data>
-  <data name="InvalidCast" xml:space="preserve">
-    <value>Invalid cast operation syntax.</value>
+    <value>Invalid name binding syntax.</value>
   </data>
   <data name="InvalidComp" xml:space="preserve">
     <value>Invalid function composition.</value>
@@ -282,14 +255,8 @@
   <data name="InvalidConsPattern" xml:space="preserve">
     <value>Invalid head/tail (e.g. 'x::xs') pattern syntax.</value>
   </data>
-  <data name="InvalidDefaultPattern" xml:space="preserve">
-    <value>Invalid default pattern syntax.</value>
-  </data>
   <data name="InvalidFail" xml:space="preserve">
     <value>Invalid syntax for a 'fail' expression.</value>
-  </data>
-  <data name="InvalidFuncPattern" xml:space="preserve">
-    <value>Invalid syntax for a pattern matching in a function definition.</value>
   </data>
   <data name="InvalidGrouping" xml:space="preserve">
     <value>Invalid grouping construct '( expr )'.</value>
@@ -301,7 +268,7 @@
     <value>Invalid syntax for a conditional if/else expression.</value>
   </data>
   <data name="InvalidInclude" xml:space="preserve">
-    <value>Invalid module include directive.</value>
+    <value>Invalid module open directive.</value>
   </data>
   <data name="InvalidInfix" xml:space="preserve">
     <value>Invalid infix function application syntax.</value>
@@ -315,32 +282,17 @@
   <data name="InvalidList" xml:space="preserve">
     <value>Invalid syntax for a list literal.</value>
   </data>
-  <data name="InvalidListPattern" xml:space="preserve">
-    <value>Invalid list pattern syntax.</value>
-  </data>
   <data name="InvalidMatch" xml:space="preserve">
     <value>Invalid syntax for a match expression.</value>
-  </data>
-  <data name="InvalidMatchEntry" xml:space="preserve">
-    <value>Invalid syntax for a match entry.</value>
   </data>
   <data name="InvalidMemberAccess" xml:space="preserve">
     <value>Invalid member access syntax.</value>
   </data>
   <data name="InvalidOr" xml:space="preserve">
-    <value>Invalid boolean 'or' expression.</value>
+    <value>Invalid logical 'or' expression.</value>
   </data>
   <data name="InvalidParamList" xml:space="preserve">
     <value>Invalid syntax for list or array literal.</value>
-  </data>
-  <data name="InvalidParenPattern" xml:space="preserve">
-    <value>Invalid 'grouping' pattern syntax.</value>
-  </data>
-  <data name="InvalidPattern" xml:space="preserve">
-    <value>Invalid pattern syntax.</value>
-  </data>
-  <data name="InvalidPipe" xml:space="preserve">
-    <value>Invalid 'pipe' operation syntax.</value>
   </data>
   <data name="InvalidRaise" xml:space="preserve">
     <value>Invalid syntax for a 'raise' expression.</value>
@@ -351,14 +303,8 @@
   <data name="InvalidRecord" xml:space="preserve">
     <value>Invalid record declaration syntax.</value>
   </data>
-  <data name="InvalidRecordPattern" xml:space="preserve">
-    <value>Invalid record pattern syntax.</value>
-  </data>
   <data name="InvalidSequence" xml:space="preserve">
     <value>Invalid sequencing operation syntax.</value>
-  </data>
-  <data name="InvalidShift" xml:space="preserve">
-    <value>Invalid bitwise shift expression syntax.</value>
   </data>
   <data name="InvalidSimpleExpression" xml:space="preserve">
     <value>Invalid syntax for an expression.</value>
@@ -366,23 +312,14 @@
   <data name="InvalidTuple" xml:space="preserve">
     <value>Invalid tuple literal.</value>
   </data>
-  <data name="InvalidTuplePattern" xml:space="preserve">
-    <value>Invalid tuple pattern syntax.</value>
-  </data>
-  <data name="InvalidUnitPattern" xml:space="preserve">
-    <value>Invalid unit pattern syntax.</value>
-  </data>
   <data name="InvalidVariableReference" xml:space="preserve">
     <value>Invalid syntax for a variable reference.</value>
   </data>
   <data name="InvalidVariant" xml:space="preserve">
     <value>Invalid syntax for a variant literal. A variant should start with a tag (e.g. `Some) optionally followed by a correct expression.</value>
   </data>
-  <data name="InvalidVariantPattern" xml:space="preserve">
-    <value>Invalid variant pattern syntax.</value>
-  </data>
   <data name="InvalidWhereBinding" xml:space="preserve">
-    <value>Invalid variable declaration through 'where' clause.</value>
+    <value>Invalid name binding in 'where' clause.</value>
   </data>
   <data name="ComprehensionOpInvalidOperand" xml:space="preserve">
     <value>Invalid right operand for the comprehension '@@' operator.</value>
@@ -405,9 +342,6 @@
   <data name="InvalidOperation" xml:space="preserve">
     <value>Invalid syntax for an operation.</value>
   </data>
-  <data name="InvalidFunName" xml:space="preserve">
-    <value>Invalid function name.</value>
-  </data>
   <data name="InvalidOperator" xml:space="preserve">
     <value>Invalid operator.</value>
   </data>
@@ -425,5 +359,29 @@
   </data>
   <data name="InvalidAttributeWhere" xml:space="preserve">
     <value>Invalid attribute declaration. A 'where' clause is not valid here.</value>
+  </data>
+  <data name="ExpectedKeywordClass" xml:space="preserve">
+    <value>Expected keyword 'class'.</value>
+  </data>
+  <data name="ExpectedKeywordInstance" xml:space="preserve">
+    <value>Expected keyword 'instance'.</value>
+  </data>
+  <data name="ExpectedKeywordType" xml:space="preserve">
+    <value>Expected keyword 'type'.</value>
+  </data>
+  <data name="InvalidAs" xml:space="preserve">
+    <value>Invalid syntax for 'as' pattern.</value>
+  </data>
+  <data name="InvalidClassInstance" xml:space="preserve">
+    <value>Invalid instance declaration.</value>
+  </data>
+  <data name="InvalidHeader" xml:space="preserve">
+    <value>Invalid binding header.</value>
+  </data>
+  <data name="InvalidNewType" xml:space="preserve">
+    <value>Invalid type declaration.</value>
+  </data>
+  <data name="InvalidTypeClass" xml:space="preserve">
+    <value>Invalid class declaration.</value>
   </data>
 </root>

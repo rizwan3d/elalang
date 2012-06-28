@@ -21,12 +21,13 @@ namespace Ela.CodeModel
             return false;
         }
 
-        internal override void ToString(StringBuilder sb, Fmt fmt)
+        internal override void ToString(StringBuilder sb, int indent)
         {
-            sb.Append("let ");
-            Equations.ToString(sb, fmt);
-            sb.Append(" in ");
-            Expression.ToString(sb, fmt);
+            Expression.ToString(sb, indent);
+            sb.AppendLine();
+            sb.Append(' ', indent);
+            sb.Append("where ");
+            Equations.ToString(sb, indent + 6);            
         }
 
         public ElaEquationSet Equations { get; set; }

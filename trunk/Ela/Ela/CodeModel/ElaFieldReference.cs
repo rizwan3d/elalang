@@ -6,34 +6,25 @@ namespace Ela.CodeModel
 {
 	public sealed class ElaFieldReference : ElaExpression
 	{
-		#region Construction
 		internal ElaFieldReference(Token tok) : base(tok, ElaNodeType.FieldReference)
 		{
 			
 		}
 
-
-		public ElaFieldReference() : this(null)
+        public ElaFieldReference() : this(null)
 		{
 			
 		}
-		#endregion
 
-
-		#region Methods
-		internal override void ToString(StringBuilder sb, Fmt fmt)		
+        internal override void ToString(StringBuilder sb, int ident)		
 		{
-            Format.PutInBraces(TargetObject, sb, fmt);
+            Format.PutInBraces(TargetObject, sb);
 			sb.Append('.');
 			sb.Append(FieldName);
 		}
-		#endregion
-
-
-		#region Properties
-		public string FieldName { get; set; }
+		
+        public string FieldName { get; set; }
 
 		public ElaExpression TargetObject { get; set; }
-		#endregion
 	}
 }

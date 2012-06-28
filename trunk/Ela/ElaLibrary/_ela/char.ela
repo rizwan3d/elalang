@@ -2,33 +2,33 @@
     Module char
     Created in 2012 by Basil Voronkov
 */
-open qualified "Char"#elalib@ch
+open qualified libChar#elalib@ch
 
-let lower c = ch.lower (force c)
+lower c = ch.lower (force c)
 
-let upper c = ch.upper (force c)
+upper c = ch.upper (force c)
 
-let isUpper c = ch.isUpper (force c)
+isUpper c = ch.isUpper (force c)
 
-let isLower c = ch.isLower (force c)
+isLower c = ch.isLower (force c)
 
-let isControl c = ch.isControl (force c)
+isControl c = ch.isControl (force c)
 
-let isDigit c = ch.isDigit (force c)
+isDigit c = ch.isDigit (force c)
 
-let isLetter c = ch.isLetter (force c)
+isLetter c = ch.isLetter (force c)
 
-let isNumber c = ch.isNumber (force c)
+isNumber c = ch.isNumber (force c)
 
-let isPunctuation c = ch.isPunctuation (force c)
+isPunctuation c = ch.isPunctuation (force c)
 
-let isSeparator c = ch.isSeparator (force c)
+isSeparator c = ch.isSeparator (force c)
 
-let isSurrogate c = ch.isSurrogate (force c)
+isSurrogate c = ch.isSurrogate (force c)
 
-let isSurrogatePair x y = ch.isSurrogatePair (force x) (force y)
+isSurrogatePair x y = ch.isSurrogatePair (force x) (force y)
 
-let isSymbol c = ch.isSymbol (force c)
+isSymbol c = ch.isSymbol (force c)
 
-let isWhiteSpace c = ch.isWhiteSpace (force c)
+isWhiteSpace c = ch.isWhiteSpace (force c)
 

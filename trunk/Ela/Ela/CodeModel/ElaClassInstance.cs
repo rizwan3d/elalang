@@ -21,8 +21,8 @@ namespace Ela.CodeModel
         {
             return true;
         }
-        
-        internal override void ToString(StringBuilder sb, Fmt fmt)
+
+        internal override void ToString(StringBuilder sb, int indent)
         {
             sb.Append("instance ");
 
@@ -36,8 +36,20 @@ namespace Ela.CodeModel
                 sb.Append(TypePrefix + ".");
             
             sb.Append(TypeName);
-            sb.AppendLine();            
-            Where.ToString(sb, new Fmt(2));
+            sb.AppendLine();
+
+            if (Where != null)
+            {
+                var kw = "  where ";
+                sb.Append(kw);
+                Where.ToString(sb, indent + kw.Length);
+            }
+
+            if (And != null)
+            {
+                sb.AppendLine();
+                And.ToString(sb, indent);
+            }
         }
         
         public string TypeClassPrefix { get; set; }

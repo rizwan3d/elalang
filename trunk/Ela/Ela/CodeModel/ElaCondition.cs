@@ -19,13 +19,19 @@ namespace Ela.CodeModel
 
         internal override bool Safe()
         {
-            return Condition.Safe() && True != null && True.Safe() && False != null && False.Safe();
+            return false;
         }
 
-		internal override void ToString(StringBuilder sb, Fmt fmt)
+        internal override void ToString(StringBuilder sb, int ident)
 		{
-            sb.Append("if " + Condition.ToString() + " then " + True.ToString() + " else " + 
-                (False ?? (Object)"<ERROR>").ToString());
+            sb.Append("if ");
+            Condition.ToString(sb, 0);
+            sb.Append(" then ");
+            True.ToString(sb, 0); 
+            sb.Append(" else ");
+
+            if (False != null)
+                False.ToString(sb, 0);
 		}
 		
         public ElaExpression Condition { get; set; }
