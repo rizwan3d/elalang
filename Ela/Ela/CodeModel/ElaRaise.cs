@@ -18,27 +18,28 @@ namespace Ela.CodeModel
 
         internal override bool Safe()
         {
-            return Expression == null || Expression.Safe();
+            return false;
         }
-		
-		internal override void ToString(StringBuilder sb, Fmt fmt)
+
+        internal override void ToString(StringBuilder sb, int ident)
 		{
 			if (ErrorCode == "Failure")
 			{
-				sb.Append("fail ");
-				Expression.ToString(sb, fmt);					
+				sb.Append("fail (");
+                Expression.ToString(sb, 0);
+                sb.Append(')');				
 			}
 			else
 			{
 				sb.Append("raise ");
 				sb.Append(ErrorCode);
-			
-				if (Expression != null)
-				{
-					sb.Append('(');
-					Expression.ToString(sb, fmt.Add(FmtFlags.NoParen));
-					sb.Append(')');
-				}
+
+                if (Expression != null)
+                {
+                    sb.Append('(');
+                    Expression.ToString(sb, 0);
+                    sb.Append(')');
+                }
 			}
 		}
 		

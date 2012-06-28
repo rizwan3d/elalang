@@ -21,15 +21,15 @@ namespace Ela.CodeModel
         {
             return Generator.Safe();
         }
-		
-		internal override void ToString(StringBuilder sb, Fmt fmt)
+
+        internal override void ToString(StringBuilder sb, int ident)
 		{
 			sb.Append('[');
 
 			if (Lazy)
 				sb.Append("& ");
 
-			Generator.ToString(sb, fmt);
+			Generator.ToString(sb, 0);
 			sb.Append(']');
 		}
 

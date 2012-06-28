@@ -97,6 +97,9 @@ TOKENS
 	FAIL = "fail".
 	WHERE = "where".
 	QUALIFIED = "qualified".
+	INSTANCE = "instance".
+	TYPE = "type".
+	CLASS = "class".
 	
 	EBLOCK = ";".
 	
@@ -1142,13 +1145,16 @@ PRODUCTIONS
 			SYNC OPEN
 			(. 
 				var inc = default(ElaModuleInclude); 
-				var par = default(ElaModuleInclude); 
 			.) 
-			IncludeStatElement<out inc> (. modInc = inc; par = inc; .)
-			{ IncludeStatElement<out inc> (. par.And = inc; par = inc; .) }
+			IncludeStatElement<out inc> (. modInc = inc; .)
+			{ IncludeStatElement<out inc> (. inc.And = modInc; modInc = inc; .) }
 			EndBlock
 			(.
-			    modInc.And = Program.Includes;
+			    if (modInc.And != null)
+			        modInc.And.And = Program.Includes;
+			    else
+			        modInc.And = Program.Includes;
+			    
 			    Program.Includes = modInc;
 			.)
 		).
@@ -1219,7 +1225,7 @@ PRODUCTIONS
 	        scanner.InjectBlock();
 	    .)
 	    (
-	        "class" 
+	        CLASS 
 	        (. 
 	            tc = new ElaTypeClass(t); 	            
 	            tc.And = Program.Classes;
@@ -1285,7 +1291,7 @@ PRODUCTIONS
     NewType = 
         (. scanner.InjectBlock(); .)
         (
-            "type" ident
+            TYPE ident
             (.
                 var nt = new ElaNewtype(t) { Name = t.val };                	            
 	            nt.And = Program.Types;
@@ -1321,17 +1327,11 @@ PRODUCTIONS
 	        var snd = default(String);
 	    .)
 	    (
-	        "instance"
+	        INSTANCE
 	        (.
-	            var ci = new ElaClassInstance(t);
-	            
-	            if (Program.Instances == null)
-	                Program.Instances = ci;
-	            else
-	            {
-	                Program.Instances.And = ci;
-	                Program.Instances = ci;
-	            }
+	            var ci = new ElaClassInstance(t);	            
+	            ci.And = Program.Instances;
+	            Program.Instances = ci;
 	        .)
 	        (ident|variantTok)  (. fst0 = t.val; .)
 	        [ "." (ident|variantTok) (. snd0 = t.val; .) ]

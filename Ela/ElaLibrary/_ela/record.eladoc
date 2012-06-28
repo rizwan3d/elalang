@@ -7,33 +7,33 @@ This module contains functions that operate with records.
 
 hasField
 Returns `true` if a record `rec` has a field `fld`, otherwise returns `false`:
->>> let rec = { foo = "Foo", bar = "Bar" }
->>> hasField "foo" rec
+>>>rec = { foo = "Foo", bar = "Bar" }
+>>>hasField "foo" rec
 
 addFields
 Concatenates two records. This function has the same effect as record concatenation operator: 
->>> addFields {y=2} {x=1}
+>>>addFields {y=2} {x=1}
 
 addField
 Adds a field `fld` with a value `val` to a record `red`. This function always creates a new 
 record:
->>> addField "z" 3 {x=1,y=2}
+>>>addField "z" 3 {x=1,y=2}
 
 removeFields
 Removes fields specified as a tuple `fields` from a record `rec`. This function always creates a 
 new record: 
->>> let rec = {x=1,y=2}
->>> removeFields ("y",) rec == {x=1}
+>>>rec' = {x=1,y=2}
+>>>removeFields ("y",) rec'
 
 removeField
 Removes a field `fld` from a record `rec`. This function always creates a new record:
->>> removeField "y" {x=1,y=2}
+>>>removeField "y" {x=1,y=2}
 
 changeField
 Changes a value of a field `fld` to `val` in a record `rec`. This function always creates a 
 new record:
->>> changeField "y" 42 {x=1,y=2}
+>>>changeField "y" 42 {x=1,y=2}
 
 fields
 Returns a list of fields in a given record:
->>> fields {x=1,y=2,z=3}
+>>>fields {x=1,y=2,z=3}

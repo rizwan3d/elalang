@@ -17,7 +17,7 @@ namespace Ela.CodeModel
 
         }
         
-        internal override void ToString(StringBuilder sb, Fmt fmt)
+        internal override void ToString(StringBuilder sb, int ident)
         {
             sb.Append(Name);
 

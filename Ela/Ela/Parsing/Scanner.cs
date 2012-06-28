@@ -393,18 +393,18 @@ internal sealed class Scanner {
 			case "fail": t.kind = 39; break;
 			case "where": t.kind = 40; break;
 			case "qualified": t.kind = 41; break;
-			case "=": t.kind = 48; break;
-			case "..": t.kind = 49; break;
-			case "::": t.kind = 51; break;
-			case "or": t.kind = 52; break;
-			case "and": t.kind = 53; break;
-			case "__internal": t.kind = 56; break;
-			case "&": t.kind = 57; break;
-			case "<-": t.kind = 58; break;
-			case "?": t.kind = 59; break;
-			case "class": t.kind = 60; break;
-			case "type": t.kind = 61; break;
-			case "instance": t.kind = 62; break;
+			case "instance": t.kind = 42; break;
+			case "type": t.kind = 43; break;
+			case "class": t.kind = 44; break;
+			case "=": t.kind = 51; break;
+			case "..": t.kind = 52; break;
+			case "::": t.kind = 54; break;
+			case "or": t.kind = 55; break;
+			case "and": t.kind = 56; break;
+			case "__internal": t.kind = 59; break;
+			case "&": t.kind = 60; break;
+			case "<-": t.kind = 61; break;
+			case "?": t.kind = 62; break;
 			default: break;
 		}
 	}
@@ -692,7 +692,7 @@ internal sealed class Scanner {
 			case 53:
 				{t.kind = 27; break;}
 			case 54:
-				{t.kind = 42; break;}
+				{t.kind = 45; break;}
 			case 55:
 				recEnd = pos; recKind = 3;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 55;}
@@ -782,23 +782,23 @@ internal sealed class Scanner {
 				else if (ch == 39) {AddCh(); goto case 3;}
 				else {t.kind = 6; break;}
 			case 71:
-				{t.kind = 43; break;}
-			case 72:
-				{t.kind = 45; break;}
-			case 73:
 				{t.kind = 46; break;}
+			case 72:
+				{t.kind = 48; break;}
+			case 73:
+				{t.kind = 49; break;}
 			case 74:
-				{t.kind = 47; break;}
-			case 75:
 				{t.kind = 50; break;}
+			case 75:
+				{t.kind = 53; break;}
 			case 76:
-				{t.kind = 54; break;}
+				{t.kind = 57; break;}
 			case 77:
-				{t.kind = 55; break;}
+				{t.kind = 58; break;}
 			case 78:
-				recEnd = pos; recKind = 44;
+				recEnd = pos; recKind = 47;
 				if (ch == 39 || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 2;}
-				else {t.kind = 44; break;}
+				else {t.kind = 47; break;}
 			case 79:
 				recEnd = pos; recKind = 18;
 				if (ch == '&') {AddCh(); goto case 75;}

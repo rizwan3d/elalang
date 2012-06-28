@@ -7,12 +7,12 @@ This module contains standard input and output functions.
 
 write
 Writes a given string to standard output: 
->> write "Hello, world!"
+>>write "Hello, world!"
 
 writen
 Writes a given string and a new line to standard output: 
->> writen "Hello, world!"
+>>writen "Hello, world!"
 
 readn ()
 Reads a line from standard input: 
->> let res = readn ()
+>>res = readn ()

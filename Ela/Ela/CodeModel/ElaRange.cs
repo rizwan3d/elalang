@@ -22,22 +22,22 @@ namespace Ela.CodeModel
                 (Second == null || Second.Safe()) &&
                 (Last == null || Last.Safe());
         }
-		
-		internal override void ToString(StringBuilder sb, Fmt fmt)
+
+        internal override void ToString(StringBuilder sb, int ident)
 		{
 			sb.Append('[');
-			First.ToString(sb, fmt);
+			First.ToString(sb, 0);
 
 			if (Second != null)
 			{
 				sb.Append(',');
-				Second.ToString(sb, fmt);
+				Second.ToString(sb, 0);
 			}
 
-			sb.Append("..");
+			sb.Append(" .. ");
 
 			if (Last != null)
-				Last.ToString(sb, fmt);
+				Last.ToString(sb, 0);
 
 			sb.Append(']');
 		}

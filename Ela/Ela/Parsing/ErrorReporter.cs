@@ -52,58 +52,23 @@ namespace Ela.Parsing
 				case "SimpleExpr": return ElaParserError.InvalidSimpleExpression;
 				case "VariantLiteral": return ElaParserError.InvalidVariant;
 				case "Primitive": return ElaParserError.InvalidPrimitive;
-				case "NameReference": return ElaParserError.InvalidVariableReference;
+                case "VariableReference": return ElaParserError.InvalidVariableReference;
 				case "TupleLiteral": return ElaParserError.InvalidTuple;
 				case "GroupExpr": return ElaParserError.InvalidGrouping;
-				case "ArgumentReference": return ElaParserError.InvalidArgumentReference;
-				case "BaseReference": return ElaParserError.InvalidBaseReference;
 				case "MatchExpr": return ElaParserError.InvalidMatch;
-				case "MatchEntry": return ElaParserError.InvalidMatchEntry;
 				case "Guard": return ElaParserError.InvalidGuard;
-				case "RootPattern": return ElaParserError.InvalidPattern;
-				case "ParenPattern": return ElaParserError.InvalidParenPattern;
-				case "VariantPattern": return ElaParserError.InvalidVariantPattern;
-				case "FuncPattern": return ElaParserError.InvalidFuncPattern;
-                case "FuncPattern2": return ElaParserError.InvalidFuncPattern;
-				case "SinglePattern": return ElaParserError.InvalidPattern;
-				case "AsPattern": return ElaParserError.InvalidPattern;
-				case "UnitPattern": return ElaParserError.InvalidUnitPattern;
-				case "DefaultPattern": return ElaParserError.InvalidDefaultPattern;
-				case "BindingPattern": return ElaParserError.InvalidBindingPattern;
-                case "GeneratorPattern": return ElaParserError.InvalidGeneratorPattern;
-				case "IsOperatorPattern": return ElaParserError.InvalidIsOperatorPattern;
-				case "IsPattern": return ElaParserError.InvalidPattern;
-                case "OrPattern": return ElaParserError.InvalidPattern;
-                case "IdentPattern": return ElaParserError.InvalidParamList;
-				case "RecordPattern": return ElaParserError.InvalidRecordPattern;
-				case "FieldPattern": return ElaParserError.InvalidRecordPattern;
-				case "TuplePattern": return ElaParserError.InvalidTuplePattern;
-				case "ConsPattern": return ElaParserError.InvalidConsPattern;
-				case "LiteralPattern": return ElaParserError.InvalidLiteralPattern;
-				case "ListPattern": return ElaParserError.InvalidListPattern;
-				case "RecordLiteral": return ElaParserError.InvalidRecord;
+                case "LambdaGuard": return ElaParserError.InvalidGuard;
+              	case "RecordLiteral": return ElaParserError.InvalidRecord;
 				case "RecordField": return ElaParserError.InvalidRecord;
 				case "RangeExpr": return ElaParserError.InvalidRange;
 				case "ListLiteral": return ElaParserError.InvalidList;
 				case "ParamList": return ElaParserError.InvalidParamList;
 				case "LetBinding": return ElaParserError.InvalidBinding;
-				case "RootLetBinding": return ElaParserError.InvalidBinding;
-				case "VariableAttributes": return ElaParserError.InvalidBinding;
 				case "WhereBinding": return ElaParserError.InvalidWhereBinding;
-				case "BindingBody": return ElaParserError.InvalidBinding;
-                case "BindingBodyOperator": return ElaParserError.InvalidBinding;
-                case "BindingBodyInit": return ElaParserError.InvalidBinding;
-                case "BindingBodyGuards": return ElaParserError.InvalidBinding;
-                case "InfixFunName": return ElaParserError.InvalidFunName;
-                case "InfixFunExpr": return ElaParserError.InvalidFunction;
-                case "InfixFunBodyExpr": return ElaParserError.InvalidFunction;
-                case "InfixFunBodyExprFirst": return ElaParserError.InvalidFunction;
-                case "InfixChildFunBodyExpr": return ElaParserError.InvalidFunction;				
-                case "FunName": return ElaParserError.InvalidFunName;
-                case "FunExpr": return ElaParserError.InvalidFunction;
-				case "FunBodyExpr": return ElaParserError.InvalidFunction;
-				case "ChildFunBodyExpr": return ElaParserError.InvalidFunction;
-				case "LambdaExpr": return ElaParserError.InvalidLambda;
+                case "Attribute": return ElaParserError.InvalidHeader;
+                case "As": return ElaParserError.InvalidAs;
+				
+                case "LambdaExpr": return ElaParserError.InvalidLambda;
 				case "IncludeStat": return ElaParserError.InvalidInclude;
                 case "IncludeStatElement": return ElaParserError.InvalidInclude;
                 case "ImportName": return ElaParserError.InvalidInclude;
@@ -112,12 +77,10 @@ namespace Ela.Parsing
 				case "RaiseExpr": return ElaParserError.InvalidRaise;
 				case "FailExpr": return ElaParserError.InvalidFail;
 				case "TryExpr": return ElaParserError.InvalidTry;
-				case "AssignExpr": return ElaParserError.InvalidAssignment;
-				case "BackwardPipeExpr": return ElaParserError.InvalidPipe;
-				case "ForwardPipeExpr": return ElaParserError.InvalidPipe;
 				case "OrExpr": return ElaParserError.InvalidOr;
 				case "AndExpr": return ElaParserError.InvalidAnd;
 				case "OpExpr1": return ElaParserError.InvalidOperation;
+                case "OpExpr1b": return ElaParserError.InvalidOperation;
                 case "OpExpr2": return ElaParserError.InvalidOperation;
                 case "OpExpr3": return ElaParserError.InvalidOperation;
                 case "OpExpr4": return ElaParserError.InvalidOperation;
@@ -125,7 +88,6 @@ namespace Ela.Parsing
                 case "OpExpr6": return ElaParserError.InvalidOperation;
                 case "OpExpr7": return ElaParserError.InvalidOperation;
                 case "OpExpr8": return ElaParserError.InvalidOperation;
-                case "CastExpr": return ElaParserError.InvalidCast;
 				case "InfixExpr": return ElaParserError.InvalidInfix;
 				case "Application": return ElaParserError.InvalidApplication;
 				case "AccessExpr": return ElaParserError.InvalidMemberAccess;
@@ -135,7 +97,7 @@ namespace Ela.Parsing
 				case "ComprehensionEntry": return ElaParserError.InvalidComprehension;
                 case "Expr": return ElaParserError.InvalidExpression;
 				case "EmbExpr": return ElaParserError.InvalidExpression;
-				case "DeclarationBlock": return ElaParserError.InvalidRoot;
+                case "TopLevel": return ElaParserError.InvalidRoot;
 				case "Ela": return ElaParserError.InvalidRoot;
 				default: return ElaParserError.InvalidProduction;
 			}
@@ -185,6 +147,10 @@ namespace Ela.Parsing
 				case Parser._FAIL: return ElaParserError.ExpectedKeywordFail;
 				case Parser._WHERE: return ElaParserError.ExpectedKeywordWhere;
 				case Parser._COMPO: return ElaParserError.ExpectedComprehensionSlash;
+                case Parser._INSTANCE: return ElaParserError.ExpectedKeywordInstance;
+                case Parser._CLASS: return ElaParserError.ExpectedKeywordClass;
+                case Parser._TYPE: return ElaParserError.ExpectedKeywordType;
+                
 				default: return ElaParserError.ExpectedToken;
 			}
 		}

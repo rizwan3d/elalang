@@ -2,12 +2,12 @@
     Module imperative
     Created in 2012 by Basil Voronkov
 */
-let rec f x = f x $ rec f
+rec f x = f x $ rec f
 
-let rec2 f x y = f x y $ rec2 f
+rec2 f x y = f x y $ rec2 f
 
-let each f (x::xs) = f x $ each f xs
-    each _ []      = ()
+each f (x::xs) = f x $ each f xs
+each _ []      = ()
 
-let loop f (x::xs) | f x = ()
-                   | else = loop f xs
+loop f (x::xs) | f x = ()
+               | else = loop f xs

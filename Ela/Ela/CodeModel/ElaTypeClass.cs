@@ -21,56 +21,55 @@ namespace Ela.CodeModel
         {
             return true;
         }
-        
-        internal override void ToString(StringBuilder sb, Fmt fmt)
+
+        internal override void ToString(StringBuilder sb, int ident)
         {
-            var and = this;
+            sb.Append("class ");
+            sb.Append(Name);
 
-            while (and != null)
+            if (BuiltinName != null)
             {
-                sb.Append("class ");
-                sb.Append(Name);
+                sb.Append(" __internal ");
+                sb.Append(BuiltinName);
 
-                if (BuiltinName != null)
+                foreach (var s in Members)
                 {
-                    sb.Append("__internal ");
-                    sb.Append(BuiltinName);
+                    sb.Append(' ');
 
-                    foreach (var s in Members)
+                    if (Format.IsSymbolic(s.Name))
                     {
-                        sb.Append(' ');
-
-                        if (Format.IsSymbolic(s.Name))
-                        {
-                            sb.Append('(');
-                            sb.Append(s.Name);
-                            sb.Append(')');
-                        }
-                        else
-                            sb.Append(s.Name);
+                        sb.Append('(');
+                        sb.Append(s.Name);
+                        sb.Append(')');
                     }
+                    else
+                        sb.Append(s.Name);
                 }
-                else
+            }
+            else
+            {
+                sb.AppendLine(" a");
+                sb.Append("  where ");
+                var c = 0;
+
+                foreach (var s in Members)
                 {
-                    sb.AppendLine(" a");
-                    sb.Append("  where ");
-                    var c = 0;
-
-                    foreach (var s in Members)
+                    if (c++ > 0)
                     {
-                        if (c++ > 0)
-                        {
-                            sb.AppendLine();
-                            sb.Append("     et ");
-                        }
-
-                        s.ToString(sb, default(Fmt));
+                        sb.AppendLine();
+                        sb.Append("         ");
                     }
 
-                    sb.AppendLine();
+                    s.ToString(sb, 0);
                 }
 
-                and = and.And;
+                sb.AppendLine();
+            }
+
+            if (And != null)
+            {
+                sb.AppendLine();
+                And.ToString(sb, ident);
             }
         }
 

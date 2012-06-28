@@ -21,9 +21,9 @@ namespace Ela.CodeModel
             return Expression.Safe();
         }
 
-        internal override void ToString(StringBuilder sb, Fmt fmt)
+        internal override void ToString(StringBuilder sb, int ident)
         {
-            Format.PutInBraces(Expression, sb, fmt);
+            Format.PutInBraces(Expression, sb);
             sb.Append("@");
             sb.Append(Name);
         }

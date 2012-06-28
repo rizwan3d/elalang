@@ -10,6 +10,9 @@ cell
 This type represents a reference cell. A reference cells acts as a wrapper for a given value 
 allowing to change this value in-place.
 
+ref
+A type constructor function, used to create a reference cell.
+
 Eq cell
 An implementation of equality functions for a reference cell. When two reference cells are tested 
 for equality (or inequality) the actual comparison is done against the values which are wrapped 
@@ -23,19 +26,19 @@ Changes a value inside a cell cl to a value x.
 
 valueof cl
 Unwraps a value from reference cell cl. For example, the following code evaluates to `12`: 
->>> let r = cell 10
->>> mutate ((valueof r) + 2) r $
->>>   valueof r
+>>>r = ref 10
+>>>mutate ((valueof r) + 2) r $
+>>> valueof r
 
 := c v
 An assignment operator for a reference cell which provides some syntax sugar for value mutation. 
 A code above is equivalent to: 
->> c |> mutate v
+>>c |> mutate v
 
 .+ c
 An unary increment operator. A code above is equivalent to: 
->> c |> mutate (valueof c + 1)
+>>c |> mutate (valueof c + 1)
 
 .- c
 An unary decrement operator. A code above is equivalent to: 
->> c |> mutate (valueof c - 1)
+>>c |> mutate (valueof c - 1)

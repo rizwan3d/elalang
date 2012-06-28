@@ -1,19 +1,20 @@
-open core record
+open core 
+open record
 
-let lookup _ [] = None
-    lookup k ((a,b)::xs) | k == a = Some b
-                         | else = lookup k xs
+lookup _ [] = None
+lookup k ((a,b)::xs) | k == a = Some b
+                     | else = lookup k xs
 
-let split = split' [] []
-            where split' xs1 xs2 [] = (xs1,xs2)
-                  split' xs1 xs2 ((a,b)::ys) = split' (a::xs1) (b::xs2) ys
+split = split' [] []
+        where split' xs1 xs2 [] = (xs1,xs2)
+              split' xs1 xs2 ((a,b)::ys) = split' (a::xs1) (b::xs2) ys
 
-let keys = map fst
+keys = map fst
 
-let values = map snd
+values = map snd
 
-let fromRecord rec = fromRec 0
-                     where len = length rec
-                        et keys = fields rec
-                        et fromRec n | n < len = (keys:n,rec:(keys:n)) :: fromRec (n+1)
-                                     | else = []
+fromRecord rec = fromRec 0
+                 where len = length rec
+                       keys = fields rec
+                       fromRec n | n < len = (keys:n,rec:(keys:n)) :: fromRec (n+1)
+                                 | else = []

@@ -2,40 +2,44 @@
     Module test
     Created in 2011-2012 by Basil Voronkov
 */
-open core reflect format@form
+open core 
+open reflect 
+open format@form
 
-let private
-  assert =
-    {
-        eq  = op' "eq"  (==),
-        neq = op' "neq" (<>),
-        gt  = op' "gt"  (>),
-        lt  = op' "lt"  (<),
-        gte = op' "gte" (>=),
-        lte = op' "lte" (<=),
-        eqt = op' "eqt" (==) true,
-        eqf = op' "eqf" (==) false
-    } 
-    where op' m op x y | op x y = ()
-                       | else   = raise AssertFailed m
+assert # private
+assert =
+  {
+      eq  = op' "eq"  (==),
+      neq = op' "neq" (<>),
+      gt  = op' "gt"  (>),
+      lt  = op' "lt"  (<),
+      gte = op' "gte" (>=),
+      lte = op' "lte" (<=),
+      eqt = op' "eqt" (==) true,
+      eqf = op' "eqf" (==) false
+  } 
+  where op' m op x y | op x y = ()
+                     | else   = raise AssertFailed m
 
-let private 
-  funData mod fun = (moduleName mod ++ "." ++ funName fun, fun)
+funData # private 
+funData mod fun = (moduleName mod ++ "." ++ funName fun, fun)
 
-let regFun fun xs = funData fun  :: xs
+regFun fun xs = funData fun :: xs
 
-let regFuns mod xs = xs ++ (vals |> filter (\x -> x is ?fun) |> map (funData mod))
-                     where vals = map (:"value") (moduleExportList mod)
+regFuns mod xs = xs ++ (vals |> filter isFun |> map (funData mod))
+                 where vals = map (:"value") (moduleExportList mod)
+                       isFun (?fun) = true
+                       isFun _ = false
 
-let run xs = (res, failed)
+run xs = (res, failed)
         where exec (n, f) = try (f assert $ n, true, "") with 
                                  AssertFailed m = (n, false, ": Assert failed: " ++ m)
                                  v              = (n, false, ": Error occured: " ++ untag v)
-           et count f xs = length <| filter f xs
-           et res = map exec xs
-           et failed = count (not << snd3) res
+              count f xs = length <| filter f xs
+              res = map exec xs
+              failed = count (not << snd3) res
               
-let report f prf (tests, failed) =
+report f prf (tests, failed) =
         out "Test session started" 
             (all' f tests 1 "")
             "Test session finished"
@@ -43,9 +47,9 @@ let report f prf (tests, failed) =
             (format "Successful tests: {0}" (length tests - failed))
             (format "Failed tests: {0}" failed)
         where out v = prf v $ out
-           et tag' true  = "Success "
+              tag' true  = "Success "
               tag' false = "FAILED "
-           et fmt' i (n, r, m) = format "{0}. {1}: {2} {3}\r\n" i n (tag' r) m
-           et all' _ [] _ s = s
-              all' f x::xs i s | f x  = (s ++ fmt' i x) |> all' f xs (i + 1)
-                               | else = all' f xs (i + 1) s
+              fmt' i (n, r, m) = format "{0}. {1}: {2} {3}\r\n" i n (tag' r) m
+              all' _ [] _ s = s
+              all' f (x::xs) i s | f x  = (s ++ fmt' i x) |> all' f xs (i + 1)
+                                 | else = all' f xs (i + 1) s

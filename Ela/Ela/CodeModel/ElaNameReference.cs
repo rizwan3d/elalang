@@ -26,10 +26,12 @@ namespace Ela.CodeModel
             return false;
         }
 
-		internal override void ToString(StringBuilder sb, Fmt fmt)
+        internal override void ToString(StringBuilder sb, int ident)
 		{
-			if (Name[0] != '$')
-				sb.Append(Name);
+            if (Format.IsSymbolic(Name))
+                sb.AppendFormat("({0})", Name);
+            else
+			    sb.Append(Name);
 		}
 
 		public string Name { get; set; }

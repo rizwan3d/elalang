@@ -2,7 +2,7 @@
   Module core
   Created in 2011-2012 by Basil Voronkov
 */
-open qualified "Core"#elalib@cm 
+open qualified libCore#elalib@cm 
 
 /* MATH */
 
@@ -150,7 +150,7 @@ reverse xs = foldl (flip (::)) [] xs
 zipWith z (x::xs) (y::ys) = z x y :: zipWith z xs ys
 zipWith _ _ _ = []
 
-zip =  zipWith (=>)
+zip = zipWith (\x y -> (x,y))
 
 zipWith3 z (a::as) (b::bs) (c::cs) =  z a b c :: zipWith3 z as bs cs
 zipWith3 _ _ _ _ = []

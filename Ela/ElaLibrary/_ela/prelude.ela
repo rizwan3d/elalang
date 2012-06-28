@@ -96,20 +96,20 @@ instance Eq variant
   where x == y = tag x == tag y and untag x == untag y
         x <> y = tag x <> tag y or untag x <> untag y
 
-//private
+eqTuple # private
 eqTuple tup1 tup2 = len == length tup2 and eq 0
         where len = length tup1
               eq n | n < len = if tup1:n == tup2:n then eq (n+1) else false
                    | else = true
 
-//private
+eqRecord # private
 eqRecord rec1 rec2 = len == length rec2 and eq 0
          where len = length rec1
                (!!) = __internal recfield
                eq n | n < len = if rec1!!n == rec2!!n and rec1:n == rec2:n then eq (n+1) else false
                     | else = true
 
-//private
+eqList # private
 eqList (x::xs) (y::ys) | x == y = xs `eqList` ys | else = false
 eqList [] [] = true
 eqList [] _ = false
@@ -164,14 +164,14 @@ instance Num tuple
         x%y = joinTuple (%) x y
         x-- = mapTuple (--) x
 
-//private 
+mapTuple # private 
 mapTuple f tup = map 0
           where len = length tup
                 map n | n == len - 1 = e
                       | else = e ++ map (n+1)
                       where e = ( f (tup:n), )
                          
-//private 
+joinTuple # private 
 joinTuple f tup1 tup2 | length tup2 <> len = fail "Tuples should be of the same length." | else = join 0
            where len = length tup1
                  join n | n == len - 1 = e
@@ -243,7 +243,7 @@ instance Cat list
                  where cat (x::xs) ys = cat xs (x::ys)
                        cat [] ys = ys
 
-//private
+reverse # private
 reverse xs = rev [] xs
         where (:) = flip (::)
               rev z [] = z
@@ -279,7 +279,7 @@ instance Show module
 instance Show variant
   where showf f x = match v with
                           () = tag x
-                          _  = tag x ++ " " ++ showf f x
+                          _  = tag x ++ " " ++ showf f v
                     where v = untag x
 
 instance Show tuple

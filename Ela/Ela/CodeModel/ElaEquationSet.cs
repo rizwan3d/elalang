@@ -14,19 +14,19 @@ namespace Ela.CodeModel
 
         internal override bool Safe()
         {
-            foreach (var e in Equations)
-                if (!e.Safe())
-                    return false;
-
-            return true;
+            return false;
         }
-		
-		internal override void ToString(StringBuilder sb, Fmt fmt)
+
+        internal override void ToString(StringBuilder sb, int indent)
 		{
+            var c = 0;
+
             foreach (var e in Equations)
             {
-                e.ToString(sb, fmt);
-                sb.AppendLine();
+                if (c++ > 0)
+                    sb.AppendLine();
+
+                e.ToString(sb, indent, c == 1);
             }
 		}
 		

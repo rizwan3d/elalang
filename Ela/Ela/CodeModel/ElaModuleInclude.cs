@@ -22,7 +22,7 @@ namespace Ela.CodeModel
             return true;
         }
 
-		internal override void ToString(StringBuilder sb, Fmt fmt)
+		internal override void ToString(StringBuilder sb, int indent)
 		{
 			sb.Append("open ");
 
@@ -47,6 +47,28 @@ namespace Ela.CodeModel
 				sb.Append('#');
 				sb.Append(DllName);
 			}
+
+            if (HasImportList)
+            {
+                sb.Append(" (");
+                var c = 0;
+
+                foreach (var v in _importList)
+                {
+                    if (c++ > 0)
+                        sb.Append(',');
+
+                    v.ToString(sb, 0);
+                }
+
+                sb.Append(")");
+            }
+
+            if (And != null)
+            {
+                sb.AppendLine();
+                And.ToString(sb, indent);
+            }
 		}
 
 		public string Name { get; set; }

@@ -9,9 +9,9 @@ format
 Takes a format string and returns a function for n-arguments (dependings on the format string), 
 which builds a new string by substituting format clauses with provided arguments. This function 
 implements .NET style format strings, e.g. `"{0} {1} {2}"`. 
->>> format "{0}={1}" "key" 42
+>>>format "{0}={1}" "key" 42
 It is also possible to specify formatting string for values:
->>> format "value is {0:#.#}" 12.11
+>>>format "value is {0:#.#}" 12.11
 Only types which implement `Show` class are accepted by this function. However all standard Ela 
 types have instances of `Show` class.
 

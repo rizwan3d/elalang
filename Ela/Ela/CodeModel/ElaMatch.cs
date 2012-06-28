@@ -24,21 +24,26 @@ namespace Ela.CodeModel
 
         internal override bool Safe()
         {
-            return Expression.Safe() && Entries.Safe();
+            return false;
         }
 
-		internal override void ToString(StringBuilder sb, Fmt fmt)
+        internal override void ToString(StringBuilder sb, int indent)
 		{
-            ToString(sb, fmt, "match");
+            ToString(sb, indent, "match");
 		}
 
-        internal void ToString(StringBuilder sb, Fmt fmt, string keyword)
+        internal void ToString(StringBuilder sb, int indent, string keyword)
         {
             sb.Append(keyword);
             sb.Append(' ');
-            Expression.ToString(sb, fmt);
-            sb.AppendLine(" with ");
-            Entries.ToString(sb, new Fmt(keyword.Length + 1));
+            Expression.ToString(sb, 0);
+            sb.Append(" with ");
+
+            foreach (var e in Entries.Equations)
+            {
+                sb.AppendLine();
+                e.ToString(sb, indent + keyword.Length + 1);
+            }
         }
 
 		public ElaExpression Expression { get; set; }

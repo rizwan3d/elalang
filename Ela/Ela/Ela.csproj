@@ -235,7 +235,6 @@
     <Compile Include="CodeModel\ElaOperator.cs" />
     <Compile Include="CodeModel\ElaCondition.cs" />
     <Compile Include="CodeModel\ElaExpression.cs" />
-    <Compile Include="CodeModel\ElaExpressionFlags.cs" />
     <Compile Include="CodeModel\ElaFieldReference.cs" />
     <Compile Include="CodeModel\ElaJuxtaposition.cs" />
     <Compile Include="CodeModel\ElaModuleInclude.cs" />

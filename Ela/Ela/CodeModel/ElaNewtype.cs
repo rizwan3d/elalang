@@ -21,11 +21,16 @@ namespace Ela.CodeModel
             return true;
         }
 
-        internal override void ToString(StringBuilder sb, Fmt fmt)
+        internal override void ToString(StringBuilder sb, int indent)
         {
             sb.Append("type ");
             sb.Append(Name);
-            sb.AppendLine();
+
+            if (And != null)
+            {
+                sb.AppendLine();
+                And.ToString(sb, indent);
+            }
         }
 
         public bool HasBody { get; set; }

@@ -3,38 +3,6 @@ using System.Text;
 
 namespace Ela.CodeModel
 {
-	internal struct Fmt
-	{
-		internal Fmt(int indent) : this(indent, FmtFlags.None)
-		{
-			
-		}
-
-		internal Fmt(int indent, FmtFlags flags)
-		{
-			Indent = indent;
-			Flags = flags;
-		}
-
-		internal Fmt Add(FmtFlags flag)
-		{
-			return new Fmt(Indent, Flags | flag);
-		}
-
-		internal readonly int Indent;
-		internal readonly FmtFlags Flags;
-	}
-
-
-	[Flags]
-	internal enum FmtFlags
-	{
-		None = 0x00,
-		NoParen = 0x001,
-		Paren = 0x002
-	}
-
-
 	internal static class Format
 	{
         private static readonly char[] ops = new char[] { '!', '%', '&', '*', '+', '-', '.', ':', '/', '\\', '<', '=', '>', '?', '@', '^', '|', '~' };
@@ -48,8 +16,8 @@ namespace Ela.CodeModel
 		{
 			switch (op)
 			{
-				case ElaOperator.BooleanAnd: return "&&";
-				case ElaOperator.BooleanOr: return "||";
+				case ElaOperator.BooleanAnd: return " and ";
+				case ElaOperator.BooleanOr: return " or ";
 				case ElaOperator.Sequence: return "$";
 				default:
 					return String.Empty;
@@ -65,7 +33,6 @@ namespace Ela.CodeModel
 				p.Type == ElaNodeType.ListLiteral ||
 				p.Type == ElaNodeType.RecordLiteral ||
 				p.Type == ElaNodeType.TupleLiteral ||
-				p.Type == ElaNodeType.LazyLiteral ||
 				p.Type == ElaNodeType.UnitLiteral;
 		}
 
@@ -75,35 +42,18 @@ namespace Ela.CodeModel
 				((ElaNameReference)p).Name[0] == '$';
 		}
         
-		public static void PutInBraces(ElaExpression e, StringBuilder sb, Fmt fmt)
+		public static void PutInBraces(ElaExpression e, StringBuilder sb)
 		{
 			var simple = IsSimpleExpression(e);
 
 			if (!simple)
 			{
 				sb.Append('(');
-				e.ToString(sb, fmt.Add(FmtFlags.NoParen));
+				e.ToString(sb, 0);
 				sb.Append(')');
 			}
 			else
-				e.ToString(sb, fmt);				
+				e.ToString(sb, 0);				
 		}
-
-        //public static void PutInBraces(ElaPattern e, StringBuilder sb, Fmt fmt)
-        //{
-        //    var complex = e.Type == ElaNodeType.HeadTailPattern ||
-        //        e.Type == ElaNodeType.VariantPattern ||
-        //        e.Type == ElaNodeType.AsPattern ||
-        //        e.Type == ElaNodeType.IsPattern;
-
-        //    if (complex)
-        //    {
-        //        sb.Append('(');
-        //        e.ToString(sb, fmt.Add(FmtFlags.NoParen));
-        //        sb.Append(')');
-        //    }
-        //    else
-        //        e.ToString(sb, fmt);
-        //}
 	}
 }

@@ -21,22 +21,13 @@ namespace Ela.CodeModel
             return Left.Safe() && Right.Safe();
         }
 
-		internal override void ToString(StringBuilder sb, Fmt fmt)
+        internal override void ToString(StringBuilder sb, int ident)
 		{
-            var paren = (Format.IsHiddenVar(Left) || Format.IsHiddenVar(Right)) &&
-				(fmt.Flags & FmtFlags.NoParen) != FmtFlags.NoParen;
-
-			if (paren)
-				sb.Append('(');
-
-			Left.ToString(sb, fmt);
+            Left.ToString(sb, 0);
 			sb.Append(' ');
 			sb.Append(Format.OperatorAsString(Operator));
 			sb.Append(' ');
-			Right.ToString(sb, fmt);
-		
-			if (paren)
-				sb.Append(')');
+			Right.ToString(sb, 0);
 		}
 		
         public ElaExpression Left { get; set; }
