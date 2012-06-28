@@ -10,9 +10,6 @@ namespace Ela.Compilation
         //Variables indexers
         private FastStack<Int32> counters = new FastStack<Int32>(); //Scope based index stack
         private int currentCounter; //Global indexer
-
-        //A dictionary of binding headers with attributes (created on demand)
-        private Dictionary<String,ElaVariableFlags> headers;
         
         //Flags used by GetVariable method
         [Flags]

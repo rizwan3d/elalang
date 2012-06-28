@@ -1,7 +1,8 @@
 /* 
-    Module thunk
-    Created in 2012 by Basil Voronkov
+  Module thunk
+  Created in 2012 by Basil Voronkov
 */
+
 forceAll (?thunk)@x  = forceAll (force x)
 forceAll (?list)@x   = forceList (force x)
 forceAll (?tuple)@x  = forceTuple x
@@ -15,7 +16,5 @@ forceRecord r = forceTuple r
 
 forceTuple tup = force' 0
        where len = length tup 
-             force' i = if i == len - 1 then 
-                          (forceAll (tup:i),)
-                        else
-                          (forceAll (tup:i),) ++ force' (i+1)
+             force' i | i == len - 1 = (forceAll (tup:i),)
+                      | else = (forceAll (tup:i),) ++ force' (i+1)

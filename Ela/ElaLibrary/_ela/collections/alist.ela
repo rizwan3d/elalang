@@ -1,5 +1,8 @@
-open core 
-open record
+/* 
+  Module alist
+  Created in 2012 by Basil Voronkov
+*/
+open core record
 
 lookup _ [] = None
 lookup k ((a,b)::xs) | k == a = Some b

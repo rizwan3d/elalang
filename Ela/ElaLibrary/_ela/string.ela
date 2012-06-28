@@ -1,6 +1,6 @@
 /* 
-    Module string
-    Created in 2012 by Basil Voronkov
+  Module string
+  Created in 2012 by Basil Voronkov
 */
 open qualified libString#elalib@str
 open thunk

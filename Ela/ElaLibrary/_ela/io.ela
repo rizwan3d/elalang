@@ -1,6 +1,6 @@
 /* 
-    "Dirty" io module
-    Created in 2012 by Basil Voronkov
+  "Dirty" io module
+  Created in 2012 by Basil Voronkov
 */
 open qualified libIO#elalib@io
 

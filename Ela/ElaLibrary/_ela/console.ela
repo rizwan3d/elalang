@@ -1,6 +1,6 @@
 /*
-    Module console
-    Created in 2012 by Basil Voronkov
+  Module console
+  Created in 2012 by Basil Voronkov
 */
 open qualified libCon#elalib@con
 
