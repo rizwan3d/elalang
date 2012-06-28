@@ -1,23 +1,23 @@
 /* 
-    Module datetime
-    Created in 2012 by Basil Voronkov
+  Module datetime
+  Created in 2012 by Basil Voronkov
 */
 open qualified libDateTime#elalib@dt 
 
 /* Construction */
 type datetime
-        where fromLong (?long)@x = DateTime x
-              fromTuple (y,m,d) = DateTime (dt.newDateTime y m d 0 0 0 0)
-              fromTuple (y,m,d,h,mm) = DateTime (dt.newDateTime y m d h mm 0 0)
-              fromTuple (y,m,d,h,mm,s,ms) = DateTime (dt.newDateTime y m d h mm s ms)
+     where fromTicks (?long)@x = DateTime x
+           fromTuple (y,m,d) = DateTime (dt.newDateTime y m d 0 0 0 0)
+           fromTuple (y,m,d,h,mm) = DateTime (dt.newDateTime y m d h mm 0 0)
+           fromTuple (y,m,d,h,mm,s,ms) = DateTime (dt.newDateTime y m d h mm s ms)
 
-now () = fromLong <| dt.now!
+now () = fromTicks <| dt.now!
 
-today () = fromLong <| dt.today!
+today () = fromTicks <| dt.today!
 
-maxDateTime = fromLong <| dt.maxDateTime
+maxDateTime = fromTicks <| dt.maxDateTime
 
-minDateTime = fromLong <| dt.minDateTime
+minDateTime = fromTicks <| dt.minDateTime
 
 /* Instances */
 instance Eq datetime
@@ -40,23 +40,23 @@ instance Typeable datetime
   where cast (?long) x = dt.ticks x
 
 /* Functions */
-add (DateTime x) (DateTime y) = fromLong <| dt.add x y
+add (DateTime x) (DateTime y) = fromTicks <| dt.add x y
 
-addTicks (DateTime x) (DateTime y) = fromLong <| dt.addTicks x y
+addTicks (DateTime x) (DateTime y) = fromTicks <| dt.addTicks x y
 
-addMilliseconds (DateTime x) (DateTime y) = fromLong <| dt.addMilliseconds x y
+addMilliseconds (DateTime x) (DateTime y) = fromTicks <| dt.addMilliseconds x y
 
-addSeconds (DateTime x) (DateTime y) = fromLong <| dt.addSeconds x y
+addSeconds (DateTime x) (DateTime y) = fromTicks <| dt.addSeconds x y
 
-addMinutes (DateTime x) (DateTime y) = fromLong <| dt.addMinutes x y
+addMinutes (DateTime x) (DateTime y) = fromTicks <| dt.addMinutes x y
 
-addHours (DateTime x) (DateTime y) = fromLong <| dt.addHours x y
+addHours (DateTime x) (DateTime y) = fromTicks <| dt.addHours x y
 
-addDays (DateTime x) (DateTime y) = fromLong <| dt.addDays x y
+addDays (DateTime x) (DateTime y) = fromTicks <| dt.addDays x y
 
-addMonths (DateTime x) (DateTime y) = fromLong <| dt.addMonths x y
+addMonths (DateTime x) (DateTime y) = fromTicks <| dt.addMonths x y
 
-addYears (DateTime x) (DateTime y) = fromLong <| dt.addYears x y
+addYears (DateTime x) (DateTime y) = fromTicks <| dt.addYears x y
 
 years (DateTime x) = dt.years x
 
@@ -78,7 +78,7 @@ dayOfWeek (DateTime x) = dt.dayOfWeek x
 
 dayOfYear (DateTime x) = dt.dayOfYear x
 
-date (DateTime x) = fromLong <| dt.date x
+date (DateTime x) = fromTicks <| dt.date x
 
 diff (DateTime x) (DateTime y) = dt.diff x y
 
@@ -88,4 +88,4 @@ diffMilliseconds x y = milliseconds (diffTicks x y)
 
 diffTicks (DateTime x) (DateTime y) = x - y
 
-parse fmt str = fromLong (dt.parse fmt str)
+parse fmt str = fromTicks (dt.parse fmt str)

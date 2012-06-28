@@ -1,16 +1,16 @@
 /* 
-    Module format
-    Created in 2012 by Basil Voronkov
+  Module format
+  Created in 2012 by Basil Voronkov
 */
 open console
 open qualified libFormat#elalib@fm
 
 format' # private 
-format' fun fmt xs n | n == 0 = fun (fm.format fmt show showf xs)
-                     | else = \x -> format' fun fmt (x::xs) (n-1)
+format' fun fstr xs n | n == 0 = fun (fm.format fstr showf xs)
+                      | else = \x -> format' fun fstr (x::xs) (n-1)
 
-printf fmt = format' write (force fmt) [] (fm.countArgs (force fmt))
+printf fstr = format' write (force fstr) [] (fm.countArgs (force fstr))
 
-printfn fmt = format' writen (force fmt) [] (fm.countArgs (force fmt))
+printfn fstr = format' writen (force fstr) [] (fm.countArgs (force fstr))
 
-format fmt = format' id (force fmt) [] (fm.countArgs (force fmt))
+formatStr fstr = format' id (force fstr) [] (fm.countArgs (force fstr))

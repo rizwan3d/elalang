@@ -1,6 +1,6 @@
 /* 
-    Module cell
-    Created in 2012 by Basil Voronkov
+  Module cell
+  Created in 2012 by Basil Voronkov
 */
 open qualified libCell#elalib@cl
 

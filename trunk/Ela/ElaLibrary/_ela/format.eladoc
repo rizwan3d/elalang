@@ -5,7 +5,7 @@ This module contains string formatting functions in .Net Framework String.Format
 
 #members
 
-format
+formatStr
 Takes a format string and returns a function for n-arguments (dependings on the format string), 
 which builds a new string by substituting format clauses with provided arguments. This function 
 implements .NET style format strings, e.g. `"{0} {1} {2}"`. 
@@ -16,8 +16,8 @@ Only types which implement `Show` class are accepted by this function. However a
 types have instances of `Show` class.
 
 printf
-Works like `format` function but instead of returning a result string prints it to console. 
+Works like `formatStr` function but instead of returning a result string prints it to console. 
 
 printfn
-Works like `format` function but instead of returning a result string prints it to console and 
+Works like `formatStr` function but instead of returning a result string prints it to console and 
 adds a new line. 

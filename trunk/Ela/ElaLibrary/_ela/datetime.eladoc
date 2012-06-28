@@ -9,8 +9,8 @@ datetime
 This type is used to represent date and time. An 64-bit integer is used for internal 
 representation.
 
-fromLong x
-Constructs a datetime instance from a 64-bit integer.
+fromTicks x
+Constructs a datetime instance from a ticks component represented as 64-bit integer.
 
 fromTuple x
 Constructs a datetime instance from a tuple that contains datetime components as 32-bit integers. The

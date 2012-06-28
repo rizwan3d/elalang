@@ -1,6 +1,6 @@
 /* 
-    Module imperative
-    Created in 2012 by Basil Voronkov
+  Module imperative
+  Created in 2012 by Basil Voronkov
 */
 rec f x = f x $ rec f
 

@@ -1,10 +1,10 @@
 /* 
-    Module test
-    Created in 2011-2012 by Basil Voronkov
+  Module test
+  Created in 2011-2012 by Basil Voronkov
 */
 open core 
 open reflect 
-open format@form
+open format
 
 assert # private
 assert =
@@ -43,9 +43,9 @@ report f prf (tests, failed) =
         out "Test session started" 
             (all' f tests 1 "")
             "Test session finished"
-            (format "Executed tests: {0}" (length tests))
-            (format "Successful tests: {0}" (length tests - failed))
-            (format "Failed tests: {0}" failed)
+            (formatStr "Executed tests: {0}" (length tests))
+            (formatStr "Successful tests: {0}" (length tests - failed))
+            (formatStr "Failed tests: {0}" failed)
         where out v = prf v $ out
               tag' true  = "Success "
               tag' false = "FAILED "

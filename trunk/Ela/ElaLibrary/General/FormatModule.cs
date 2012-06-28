@@ -15,38 +15,33 @@ namespace Ela.Library.General
 
         private sealed class FormatValue : IFormattable
         {
-            private readonly ElaFunction show;
             private readonly ElaFunction showf;
             private readonly ElaValue val;
 
-            public FormatValue(ElaFunction show, ElaFunction showf, ElaValue val)
+            public FormatValue(ElaFunction showf, ElaValue val)
             {
-                this.show = show;
                 this.showf = showf;
                 this.val = val;
             }
 
             public string ToString(string format, IFormatProvider formatProvider)
             {
-                if (String.IsNullOrEmpty(format))
-                    return show.Call(val).AsString();
-                else
-                    return showf.Call(new ElaValue(format), val).AsString();
+                return showf.Call(new ElaValue(format ?? String.Empty), val).AsString();
             }
         }
 
         public override void Initialize()
         {
             Add<String,Int32>("countArgs", CountArguments);
-            Add<String,ElaFunction,ElaFunction,IEnumerable<ElaValue>,String>("format", Format);
+            Add<String,ElaFunction,IEnumerable<ElaValue>,String>("format", Format);
         }
 
-        private string Format(string format, ElaFunction show, ElaFunction showf, IEnumerable<ElaValue> values)
+        private string Format(string format, ElaFunction showf, IEnumerable<ElaValue> values)
         {
             var objs = new List<Object>();
 
             foreach (var v in values)
-                objs.Insert(0, new FormatValue(show, showf, v));
+                objs.Insert(0, new FormatValue(showf, v));
 
             return String.Format(format, objs.ToArray());
         }

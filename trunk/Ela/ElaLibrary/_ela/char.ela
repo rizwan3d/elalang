@@ -1,6 +1,6 @@
 /* 
-    Module char
-    Created in 2012 by Basil Voronkov
+  Module char
+  Created in 2012 by Basil Voronkov
 */
 open qualified libChar#elalib@ch
 
