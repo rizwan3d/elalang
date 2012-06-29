@@ -1,44 +1,44 @@
 //Here we use console output for testing purposes
 //Module Console contains implementations of basic console functions such as
 //writen (write line), write (write), readn (read line)
-open Console
+open console
 
 //Definition of a simple named function
-let div1 x y = x / y
+div1 x y = x / y
 
 //Print the result of function application
-let _ = writen ("div1: " ++ (div1 12 3))
+_ = writen ("div1: " ++ show (div1 12 3))
 
 //The same function using anonymous function syntax
-let div2 = \x y -> x / y
+div2 = \x y -> x / y
 
 //Print, the result is the same
-let _ = writen ("div2: " ++ (div2 12 3))
+_ = writen ("div2: " ++ show (div2 12 3))
 
 //The same function using explicit nested lambdas
-let div3 = \x -> \y -> x / y
+div3 = \x -> \y -> x / y
 
 //Print, the result is the same
-let _ = writen ("div3: " ++ (div2 12 3))
+_ = writen ("div3: " ++ show (div2 12 3))
 
 //Implementation of a 'safe' division function that
 //doesn't fail if the divider is zero. This function is 
 //implemented using pattern matching. This function also
 //uses variants to 'wrap' results.
-let div4 x 0 = None //The divider is zero, just return None
-    div4 x y = Some (x / y)
+div4 x 0 = None //The divider is zero, just return None
+div4 x y = Some (x / y)
 
-let _ = writen ("div4: " ++ (div4 12 0)) //Division by zero
-let _ = writen ("div4: " ++ (div4 12 3)) //OK
+_ = writen ("div4: " ++ show (div4 12 0)) //Division by zero
+_ = writen ("div4: " ++ show (div4 12 3)) //OK
 
 //And this is how we can unpack the result from a Some|None variant
-let (Some res) = div4 12 3
-let _ = writen ("div4: " ++ res)
+(Some res) = div4 12 3
+_ = writen ("div4: " ++ show res)
 
 //You can define custom operators in the same way as functions.
 //Here is an example of our safe division implemented as operator.
-let x /. 0 = None
-    x /. y = Some (x / y)
+x /. 0 = None
+x /. y = Some (x / y)
 
-let _ = writen ("(/.): " ++ (12 /. 0)) //Prints None
-let _ = writen ("(/.): " ++ (12 /. 4)) //Prints Some 3
+_ = writen ("(/.): " ++ show (12 /. 0)) //Prints None
+_ = writen ("(/.): " ++ show (12 /. 4)) //Prints Some 3

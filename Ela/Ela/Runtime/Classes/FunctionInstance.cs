@@ -9,7 +9,7 @@ namespace Ela.Runtime.Classes
         {
             if (right.TypeId != ElaMachine.FUN)
             {
-                ctx.InvalidRightOperand(left, right, "equal");
+                ctx.InvalidOperand(left, right, "equal");
                 return false;
             }
 
@@ -22,7 +22,7 @@ namespace Ela.Runtime.Classes
         {
             if (right.TypeId != ElaMachine.FUN)
             {
-                ctx.InvalidRightOperand(left, right, "notequal");
+                ctx.InvalidOperand(left, right, "notequal");
                 return false;
             }
 

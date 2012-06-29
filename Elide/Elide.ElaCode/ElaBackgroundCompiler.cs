@@ -33,7 +33,7 @@ namespace Elide.ElaCode
                
                 try
                 {
-                    var compRes = comp.Compile(parRes.Expression, copt, new ExportVars());
+                    var compRes = comp.Compile(parRes.Program, copt, new ExportVars());
                     msg.AddRange(compRes.Messages.Where(m => m.Type != MessageType.Hint).Select(project));
                     unit = compRes.CodeFrame != null ? new CompiledUnit(doc, compRes.CodeFrame) : null;
                 }

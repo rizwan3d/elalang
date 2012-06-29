@@ -14,7 +14,7 @@ namespace Ela.Runtime.Classes
 
             if (right.TypeId != ElaMachine.REC)
             {
-                ctx.InvalidRightOperand(left, right, "concatenate");
+                ctx.InvalidOperand(left, right, "concatenate");
                 return Default();
             }
 

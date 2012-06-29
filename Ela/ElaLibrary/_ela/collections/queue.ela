@@ -15,7 +15,7 @@ instance Show queue
   where showf f q = "queue" ++ showf f (toList q)
 
 instance Typeable queue
-  where cast (?list) (Queue (f,b)) = f ++ reverse b
+  where cast (_ is list) (Queue (f,b)) = f ++ reverse b
 
 instance Cat queue
   where q1 ++ q2 = toList q1 ++ toList q2

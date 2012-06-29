@@ -40,17 +40,10 @@ namespace Ela.Runtime
 		}
 
 
-		public void InvalidRightOperand(ElaValue left, ElaValue right, string op)
+		public void InvalidOperand(ElaValue left, ElaValue right, string op)
 		{
-			Fail(ElaRuntimeError.RightOperand, right.ToString(), right.GetTypeName(),
+			Fail(ElaRuntimeError.InvalidOperand, right.ToString(), right.GetTypeName(),
 				left.ToString(), left.GetTypeName(), op);
-		}
-
-
-		public void InvalidLeftOperand(ElaValue left, ElaValue right, string op)
-		{
-			Fail(ElaRuntimeError.LeftOperand, left.ToString(), left.GetTypeName(), 
-				right.ToString(), right.GetTypeName(), op);
 		}
 
 

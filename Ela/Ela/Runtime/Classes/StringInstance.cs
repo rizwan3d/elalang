@@ -14,7 +14,7 @@ namespace Ela.Runtime.Classes
                 if (right.TypeId == ElaMachine.CHR)
                     return new ElaValue(left.DirectGetString() + right.ToString());
 
-                ctx.InvalidRightOperand(left, right, "concatenate");
+                ctx.InvalidOperand(left, right, "concatenate");
                 return Default();
             }
 
@@ -25,7 +25,7 @@ namespace Ela.Runtime.Classes
         {
             if (right.TypeId != ElaMachine.STR)
             {
-                ctx.InvalidRightOperand(left, right, "equal");
+                ctx.InvalidOperand(left, right, "equal");
                 return false;
             }
 
@@ -36,7 +36,7 @@ namespace Ela.Runtime.Classes
         {
             if (right.TypeId != ElaMachine.STR)
             {
-                ctx.InvalidRightOperand(left, right, "notequal");
+                ctx.InvalidOperand(left, right, "notequal");
                 return false;
             }
 
@@ -57,7 +57,7 @@ namespace Ela.Runtime.Classes
         {
             if (right.TypeId != ElaMachine.STR)
             {
-                ctx.InvalidRightOperand(left, right, "greater");
+                ctx.InvalidOperand(left, right, "greater");
                 return false;
             }
 
@@ -68,7 +68,7 @@ namespace Ela.Runtime.Classes
         {
             if (right.TypeId != ElaMachine.STR)
             {
-                ctx.InvalidRightOperand(left, right, "lesser");
+                ctx.InvalidOperand(left, right, "lesser");
                 return false;
             }
 
@@ -79,7 +79,7 @@ namespace Ela.Runtime.Classes
         {
             if (right.TypeId != ElaMachine.STR)
             {
-                ctx.InvalidRightOperand(left, right, "greaterequal");
+                ctx.InvalidOperand(left, right, "greaterequal");
                 return false;
             }
 
@@ -90,7 +90,7 @@ namespace Ela.Runtime.Classes
         {
             if (right.TypeId != ElaMachine.STR)
             {
-                ctx.InvalidRightOperand(left, right, "lesserequal");
+                ctx.InvalidOperand(left, right, "lesserequal");
                 return false;
             }
 

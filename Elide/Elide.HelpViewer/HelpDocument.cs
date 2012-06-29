@@ -9,11 +9,11 @@ namespace Elide.HelpViewer
         public HelpDocument(string title) : base(title)
         {
             _title = title;
-        }
-
-        public HelpDocument(FileInfo fileInfo, string title) : base(fileInfo)
+        }        
+        
+        public HelpDocument(FileInfo fileInfo) : base(fileInfo)
         {
-            _title = title;
+            _title = fileInfo.Name.Remove(fileInfo.Extension);
         }
 
         private string _title;

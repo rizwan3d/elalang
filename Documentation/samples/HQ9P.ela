@@ -1,23 +1,20 @@
-open Console
-open Imperative
-open Char
-open Cell
+open console imperative char cell
  
 //Implementation of HQ9+ interpreter
-let eval src = eval' (toList src)
+eval src = eval' (toList src)
       where eval' [] = ()
             eval' (x::xs) | be 'H' = h! $ eval' xs
                           | be 'Q' = q! $ eval' xs
                           | be '9' = n! $ eval' xs
                           | be '+' = p! $ eval' xs
                           | else = fail ("Unrecognized " ++ x)
-                          where ref = cell 0
-                            et be c = upper x == c
-                            et h () = writen "Hello, world!"
-                            et q () = writen src
-                            et p () = ref |> mutate (valueof ref + 1)
-                            et n () = bottles [99,98..1]
-                                 where bottles [] = ()
+                          where rf = ref 0
+                                be c = upper x == c
+                                h () = writen "Hello, world!"
+                                q () = writen src
+                                p () = rf |> mutate (valueof rf + 1)
+                                n () = bottles [99,98..1]
+                                  where bottles [] = ()
                                        bottles (x::xs) = rec write 
                                          x " bottles of beer of the wall\r\n"
                                          x " bottles of beer\r\n"
