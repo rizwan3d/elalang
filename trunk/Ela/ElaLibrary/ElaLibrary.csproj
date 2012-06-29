@@ -108,73 +108,22 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="_ela\cell.ela" />
-    <Content Include="_ela\cell.eladoc">
-      <DependentUpon>cell.ela</DependentUpon>
-    </Content>
     <Content Include="_ela\char.ela" />
-    <Content Include="_ela\char.eladoc">
-      <DependentUpon>char.ela</DependentUpon>
-    </Content>
     <Content Include="_ela\collections\alist.ela" />
-    <Content Include="_ela\collections\alist.eladoc">
-      <DependentUpon>alist.ela</DependentUpon>
-    </Content>
     <Content Include="_ela\collections\queue.ela" />
-    <Content Include="_ela\collections\queue.eladoc">
-      <DependentUpon>queue.ela</DependentUpon>
-    </Content>
     <Content Include="_ela\console.ela" />
-    <Content Include="_ela\console.eladoc">
-      <DependentUpon>console.ela</DependentUpon>
-    </Content>
     <Content Include="_ela\core.ela" />
-    <Content Include="_ela\core.eladoc">
-      <DependentUpon>core.ela</DependentUpon>
-    </Content>
     <Content Include="_ela\datetime.ela" />
-    <Content Include="_ela\datetime.eladoc">
-      <DependentUpon>datetime.ela</DependentUpon>
-    </Content>
     <Content Include="_ela\format.ela" />
-    <Content Include="_ela\format.eladoc">
-      <DependentUpon>format.ela</DependentUpon>
-    </Content>
     <Content Include="_ela\imperative.ela" />
-    <Content Include="_ela\imperative.eladoc">
-      <DependentUpon>imperative.ela</DependentUpon>
-    </Content>
     <Content Include="_ela\io.ela" />
-    <Content Include="_ela\io.eladoc">
-      <DependentUpon>io.ela</DependentUpon>
-    </Content>
     <Content Include="_ela\number.ela" />
-    <Content Include="_ela\number.eladoc">
-      <DependentUpon>number.ela</DependentUpon>
-    </Content>
     <Content Include="_ela\prelude.ela" />
-    <Content Include="_ela\prelude.eladoc">
-      <DependentUpon>prelude.ela</DependentUpon>
-    </Content>
     <Content Include="_ela\record.ela" />
-    <Content Include="_ela\record.eladoc">
-      <DependentUpon>record.ela</DependentUpon>
-    </Content>
     <Content Include="_ela\reflect.ela" />
-    <Content Include="_ela\reflect.eladoc">
-      <DependentUpon>reflect.ela</DependentUpon>
-    </Content>
     <Content Include="_ela\string.ela" />
-    <Content Include="_ela\string.eladoc">
-      <DependentUpon>string.ela</DependentUpon>
-    </Content>
     <Content Include="_ela\test.ela" />
-    <Content Include="_ela\test.eladoc">
-      <DependentUpon>test.ela</DependentUpon>
-    </Content>
     <Content Include="_ela\thunk.ela" />
-    <Content Include="_ela\thunk.eladoc">
-      <DependentUpon>thunk.ela</DependentUpon>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

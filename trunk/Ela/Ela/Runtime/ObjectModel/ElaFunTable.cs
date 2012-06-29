@@ -110,7 +110,7 @@ namespace Ela.Runtime.ObjectModel
             }
 
 
-            return sb.ToString();
+            return GetFunctionName() + ":" + sb.ToString();
         }
 
         public override string GetFunctionName()

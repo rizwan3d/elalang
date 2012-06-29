@@ -1,0 +1,60 @@
+﻿#title Modules
+#category Language Reference
+
+=Introduction
+This article discusses modules in Ela. 
+
+=Overview
+Modules in Ela are separate translation units. The only way to create a module is to create a separate .ela file. 
+Each .ela file is a module and every module is an .ela file. Therefore a program in Ela consists of at least one module. 
+The name of this module is the name of a file without an extension, e.g. file `core.ela` represents a module `core`. 
+
+=Referencing Modules
+Modules can be referenced using `open` and `import` statements. These statements can be appear only at top level. An `open`
+statement makes all names declared in a target module accessible without qualification, while an `import` statement requires to
+fully qualify all names with a module alias.
+An `import` statement has the following syntax: 
+>>import {path "."} module["#" dll]["@" alias] 
+>>     ["(" { [ "private" ] name [ "=" localName ] "," } ")" ]
+An `open` statement has the following syntax: 
+>>open {path "."} module["#" dll]["@" alias] 
+>>     ["(" { [ "private" ] name [ "=" localName ] "," } ")" ]
+A simplest form of this statement only includes a module name like so: 
+>>open core
+
+Ela linker will try to resolve the path of this module based on the lookup directories provided via configuration. //br
+If several modules define the same set of names they will shadow each other. If this is not a desired behavior you can 
+restrict automatic name import by using `import` statement instead of `open` statement:
+>>import core
+Now in order to reference a name from module you will have to qualify it with the module alias: 
+>>map = core.map
+>>(+) = prelude.(+)
+(You can also reference module fields through the module name even if module was reference using `open` statement. An `import`
+statement only disallows automatic import of names). //br
+It is possible to specify a relative path to the module as well using a dot-notation like so: 
+>>open code.samples.foo
+In this case Ela linker will look a module in a code\samples directory relative to all lookup directories. //br
+When opening foreign modules implemented in .NET it is required to specify a DLL name after the hash sign like so: 
+>>open string#elalib
+By default a module will have an alias that is equal to its name. You can however give a different alias to module like so: 
+>>open char@ch
+Now you can referencing names in the module Char through ch name. //br
+Also open directive supports an explicit import list like so: 
+>>import core ( private map, filter, foldl = fold )
+In code example above the following local names will be created: map with the provide modifier, filter with the public modifier 
+(so you will be able to reference it from another module) and fold, mapped to foldl from Core module. 
+
+=Export List
+By default all global bindings are included in the export list of a module. If you want to exclude some bindings from export 
+list you should add a private modifier to this bindings: 
+>>foo # private
+>>foo = Foo
+
+=First class Modules
+Modules in Ela are first-class values and can be treated as records. Consider the following example: 
+>>import core
+>>get f x = x:f
+>>
+>>_ = get "e" {e=core.e}
+>>_ = get "e" core
+

@@ -1,0 +1,47 @@
+﻿#title Operator Priority
+#category Language Reference
+
+=Introduction
+This article discusses operator priority and associativity in Ela. 
+
+=Operator Symbols
+In Ela operator identifiers can include only the following symbols: `!%&*+-.:/\<=>?@^|~`. Some of the symbols are already used by 
+language constructs. For example, it is not possible to define an operator `&` as soon as the one is already used to denote lazy lists 
+and lazy expressions. However it is possible to define an operator `&.`, etc. All standard arithmetic operators such as `+`, `-`, etc., 
+composition operators, application operators and so on are not syntax but functions defined in Prelude and therefore can be easily redefined. 
+
+=Reserved Operators
+The following combinations of operator symbols are reserved and cannot be used in custom operators: 
+|`& `|Lazy sections 
+|`->`|Lambda operator 
+|`|` |Guard 
+|`@ `|As-pattern 
+|`= `|Binding 
+|`\ `|Lambda operator 
+|`\\`|Comprehension operator 
+|`..`|Ranges
+
+=Priority and Associativity
+In Ela operator priority and associativity is controlled by the first symbols in operator identifier. The following table lists all operator 
+priorities in order, starting from the loose operators. A notation `{op}` is used to show that any number (zero or more) of trailing operator 
+symbols is allowed here. For example, priroty of operators `=|` and `=||` is the same. Operator Symbols Priority Associativity 
+|`=` |{op}| 1 |Left 
+|`|` |{op}| 1 |Left 
+|`&` |{op}| 1 |Left 
+|`<` |{op}| 1 |Left 
+|`>` |{op}| 1 |Left 
+|`<`|``|{op}| 2 |Right 
+|`^` |{op}| 3 |Left 
+|`:` |{op}| 4 |Right 
+|`+` |{op}| 5 |Left 
+|`-` |{op}| 5 |Left 
+|`*` |{op}| 6 |Left 
+|`/` |{op}| 6 |Left 
+|`% `|{op}| 6 |Left 
+|`<<`|{op}| 7 |Right 
+|`>>`|{op}| 8 |Left 
+|`~ `|{op}| 9 |Left 
+|`--`|{op}| 9 |Left 
+|`! `|{op}| 9 |Left 
+|`?` |{op}| 9 |Left 
+|`.` |{op}| 9 |Left 

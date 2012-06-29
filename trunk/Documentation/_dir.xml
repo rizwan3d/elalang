@@ -1,36 +1,43 @@
 ﻿<documentation>
   <folder name="Standard Library">
-    <doc name="Prelude" file="lib\Prelude.docxml" />
-    <doc name="Core" file="lib\CoreModule.docxml" />
-    <doc name="Imperative" file="lib\ImperativeModule.docxml" />
-    <doc name="Cell" file="lib\CellModule.docxml" />
-    <doc name="Char" file="lib\CharModule.docxml" />
-    <doc name="Console" file="lib\ConsoleModule.docxml" />
-    <doc name="IO" file="lib\IOModule.docxml" />
-    <doc name="Number" file="lib\NumberModule.docxml" />
-    <doc name="String" file="lib\StringModule.docxml" />
-    <doc name="Record" file="lib\RecordModule.docxml" />
-    <doc name="DateTime" file="lib\DateTimeModule.docxml" />
-    <doc name="Thunk" file="lib\ThunkModule.docxml" />
-    <doc name="Format" file="lib\FormatModule.docxml" />    
+    <folder name="Collections">
+      <doc name="alist" file="lib\collections\alist.htm"/>
+      <doc name="queue" file="lib\collections\queue.htm"/>
+    </folder>
+    <doc name="prelude" file="lib\prelude.htm" />
+    <doc name="core" file="lib\core.htm" />
+    <doc name="imperative" file="lib\imperative.htm" />
+    <doc name="cell" file="lib\cell.htm" />
+    <doc name="char" file="lib\char.htm" />
+    <doc name="console" file="lib\console.htm" />
+    <doc name="io" file="lib\io.htm" />
+    <doc name="number" file="lib\number.htm" />
+    <doc name="string" file="lib\string.htm" />
+    <doc name="record" file="lib\record.htm" />
+    <doc name="datetime" file="lib\datetime.htm" />
+    <doc name="thunk" file="lib\thunk.htm" />
+    <doc name="format" file="lib\format.htm" />    
+    <doc name="reflect" file="lib\reflect.htm" />
   </folder>
   <folder name="Language Reference">
-    <doc name="Bindings" file="Bindings.docxml"/>
-    <doc name="Functions" file="Functions.docxml"/>
-    <doc name="Primitive Types" file="PrimitiveTypes.docxml"/>
-    <doc name="Tuples" file="Tuples.docxml"/>
-    <doc name="Records" file="Records.docxml"/>
-    <doc name="Lists" file="Lists.docxml"/>
-    <doc name="Ranges" file="Ranges.docxml"/>
-    <doc name="Comprehensions" file="Comprehensions.docxml"/>
-    <doc name="Variants" file="Variants.docxml"/>
-    <doc name="Thunks" file="Thunks.docxml"/>
-    <doc name="Pattern Matching" file="PatternMatching.docxml"/>
-    <doc name="Exceptions" file="Exceptions.docxml"/>
-    <doc name="Modules" file="Modules.docxml"/>
-    <doc name="Operator Priority" file="OperatorPriority.docxml" />    
+    <doc name="Bindings" file="bindings.htm"/>
+    <doc name="Functions" file="functions.htm"/>
+    <doc name="Primitive Types" file="primitivetypes.htm"/>
+    <doc name="Tuples" file="tuples.htm"/>
+    <doc name="Records" file="records.htm"/>
+    <doc name="Lists" file="lists.htm"/>
+    <doc name="Ranges" file="ranges.htm"/>
+    <doc name="Comprehensions" file="comprehensions.htm"/>
+    <doc name="Variants" file="variants.htm"/>
+    <doc name="Lazy Evaluation" file="thunks.htm"/>
+    <doc name="Pattern Matching" file="patternmatching.htm"/>
+    <doc name="Exceptions" file="exceptions.htm"/>
+    <doc name="Modules" file="modules.htm"/>
+    <doc name="User Types" file="types.htm"/>
+    <doc name="Classes" file="classes.htm"/>
+    <doc name="Operator Priority" file="operatorpriority.htm" />    
   </folder>
-  <doc name="Ela and Haskell" file="ElaAndHaskell.docxml" />
-  <doc name="Ela Console" file="ElaConsole.docxml" />
-  <doc name="Embedding Ela" file="Embedding.docxml" />
+  <doc name="Ela and Haskell" file="elaandhaskell.htm" />
+  <doc name="Ela Console" file="elaconsole.htm" />
+  <doc name="Embedding Ela" file="embedding.htm" />
 </documentation>

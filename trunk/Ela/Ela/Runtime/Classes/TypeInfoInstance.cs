@@ -44,7 +44,6 @@ namespace Ela.Runtime.Classes
                 {
                     case "typeCode": return new ElaValue(ti.ReflectedTypeCode);
                     case "specName": return new ElaValue(ti.ReflectedTypeName);
-                    case "instances": return new ElaValue(new ElaTuple(ti.ReflectedInstances));
                     default:
                         ctx.IndexOutOfRange(key, value);
                         return Default();
@@ -58,7 +57,6 @@ namespace Ela.Runtime.Classes
                 {
                     case 0: return new ElaValue(ti.ReflectedTypeCode);
                     case 1: return new ElaValue(ti.ReflectedTypeName);
-                    case 2: return new ElaValue(new ElaTuple(ti.ReflectedInstances));
                     default:
                         ctx.IndexOutOfRange(key, value);
                         return Default();
