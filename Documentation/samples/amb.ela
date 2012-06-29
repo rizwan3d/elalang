@@ -1,0 +1,20 @@
+open core
+
+amb xs = x
+   where join (x::xs) = amb' x (join xs)
+         join [] = \_ -> Some ""
+         amb' [] _ _ = None
+         amb' (x::xs) n w | eq' w x and tag nx == "Some" = Some (x ++ " " ++ untag nx)
+                          | else = amb' xs n w
+                          where nx = n x
+                                eq' []@w x = true
+                                eq' w x    = last w == head x
+         (Some x) = (& join xs "")
+
+//If our amb operator is smart enough it should print 'that thing grows slowly'
+amb [
+       ["the","that","a"]
+      ,["frog","elephant","thing"]
+      ,["walked","treaded","grows"]
+      ,["slowly","quickly"]
+    ]

@@ -1,0 +1,29 @@
+open record
+
+//An implementation of ?. operator that is used to obtain
+//a provided field value from a record. This operator first
+//tries to look for this field in the given record and if a
+//field is not found it looks for the field in a 'base' (prototype)
+//record.
+rec ?. fld | hasField fld rec = rec:fld
+           | else             = rec.base ?. fld
+
+cls = {
+         base = []
+        ,sum  = \x y -> x + y //base implementation
+        ,sub  = \x y -> x - y
+        ,div  = \x y -> x / y
+        ,mul  = \x y -> x * y
+      }
+
+derived = {
+             base = cls
+            ,mod  = \x y -> x ** y
+            ,sum  = \x y -> x + y + y //override
+          }
+
+(
+   (derived?."sum") 3 2 //Here we call function derived.sum
+  ,(derived?."sub") 3 2 //Here we call function class.sub
+  ,(derived?."mod") 3 2 //Here we call function derived.mod
+  )
