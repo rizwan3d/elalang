@@ -3,10 +3,10 @@
   Created in 2012 by Basil Voronkov
 */
 
-forceAll (?thunk)@x  = forceAll (force x)
-forceAll (?list)@x   = forceList (force x)
-forceAll (?tuple)@x  = forceTuple x
-forceAll (?record)@x = forceTuple x
+forceAll (x is thunk)  = forceAll (force x)
+forceAll (x is list)   = forceList (force x)
+forceAll (x is tuple)  = forceTuple x
+forceAll (x is record) = forceTuple x
 forceAll x = force x
 
 forceList (x::xs) = forceAll x :: forceList xs

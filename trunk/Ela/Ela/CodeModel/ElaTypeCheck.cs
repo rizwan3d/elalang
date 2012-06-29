@@ -52,6 +52,8 @@ namespace Ela.CodeModel
 
         public string TypePrefix { get; set; }
 
+        public ElaExpression Expression { get; set; }
+
         private List<TraitInfo> _traits;
         public List<TraitInfo> Traits
         {

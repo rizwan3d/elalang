@@ -148,7 +148,7 @@
     <value>Invalid variable declaration syntax. All non-global variable declarations should have a required 'in' clause.</value>
   </data>
   <data name="ExpectedIsOperator" xml:space="preserve">
-    <value>Expected operator 'is'.</value>
+    <value>Expected keyword 'is'.</value>
   </data>
   <data name="ExpectedKeywordLet" xml:space="preserve">
     <value>Expected keyword 'let'.</value>
@@ -383,5 +383,8 @@
   </data>
   <data name="InvalidTypeClass" xml:space="preserve">
     <value>Invalid class declaration.</value>
+  </data>
+  <data name="InvalidTypeCheck" xml:space="preserve">
+    <value>Invalid syntax for a type check expression.</value>
   </data>
 </root>

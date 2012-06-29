@@ -370,6 +370,10 @@ namespace Ela.Compilation
                                 cw.Emit(Op.Brfalse, failLab);
                             }
                         }
+
+                        //Process a pattern in type check expression
+                        if (n.Expression != null)
+                            CompilePattern(sysVar, n.Expression, failLab);
                     }
                     break;
                 case ElaNodeType.ListLiteral:

@@ -49,7 +49,7 @@ instance Typeable single //toDouble, toLong, toInt
 instance Typeable string //toList
 
 instance Typeable list
-  where cast (?string) x = castString x
+  where cast (_ is string) x = castString x
 
 castString # private
 castString (x::xs) = showf "" x ++ castString xs
