@@ -1,0 +1,54 @@
+﻿#title User Types
+#category Language Reference
+
+=Introduction
+Ela provides a support for user defined types. The only way to declare a type is to use a `type` declaration. It has the following syntax:
+>type ident
+>   where expr = expr
+>        {expr = expr}
+A name of a type should be a valid Ela identifier (uppercase type names are not supported as long as they are not valid for identifiers). 
+Also this declaration has a mandatory `where` used for type constructors. 
+
+=Type Constructors
+A type declaration should have at least one type constructor. A type constructor can be a function or a regular name binding:
+>>>type foobar
+>>>  where foo x = Foo x
+>>>        bar x = Bar x
+>>>        empty = Empty
+In the code sample above we have created a custom type `foobar` that has two constructor functions (`foo` and `bar`) and a constructor
+binding `empty`. All this constructors are in fact global bindings and are exported in the same way as all other bindings. //br
+Now, with this declaration in place, we can create an instance of `foobar` type like so:
+>>>x = foo 12
+>>>show x
+By default a type name and a unique type code are used for serialization of a user type to string. This can be overrided however by implementing
+an instance for a `Show` class (see _Classes_ article for details).
+
+=Deconstruction
+Types are constructed using constructor functions. In order to deconstruct a type instance one can use pattern matching:
+>>>fooInst = foo 42
+>>>(Foo xx) = fooInst
+>>>xx
+
+=Name Conflicts
+Type names should be unique within the same module. However two different modules can defined types with the same name and this is completely
+legal. In fact types in Ela are not identified by their names but by their unique IDs which are generated during link phase. As a result one
+can easily declare a type that has the same name as one of Ela built-in types:
+>>type int
+>>  where void _ = ()
+Constructors for types are just regular Ela bindings therefore shadowing rules for them are exactly the same as for other bindings, e.g. if you
+open a module with a `foobar` type defined above and write a local definition of `foo` function, this definition will effectively shadow a `foo`
+constructor. You can however still use a `foo` constructor by qualifying it with a module alias like so:
+>>open foobarModule@fb
+>>fb.foo 12
+
+=Reflection
+In order to obtain type information of a value one can use a `getType` function defined in prelude:
+>>>getType (foo 12)
+This function returns an instance of `typeinfo` that contains two fields - `typeName` with the name of a type and `typeCode` with unique type code.//br
+It is also possible to check a type of a value using pattern matching like so:
+>>(x is foobar) = bar 42
+As long as type names are not unique it is allowed to use module aliases in such patterns, e.g.:
+>>open foobarModule@fb
+>>(x is fb.foobar) = bar42
+
+

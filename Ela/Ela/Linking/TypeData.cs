@@ -13,13 +13,10 @@ namespace Ela.Linking
         {
             TypeName = typeName;
             TypeCode = typeCode;
-            Instances = new FastList<String>();
         }
 
         public int TypeCode { get; private set; }
 
         public string TypeName { get; private set; }
-
-        public FastList<String> Instances { get; private set; }
     }
 }

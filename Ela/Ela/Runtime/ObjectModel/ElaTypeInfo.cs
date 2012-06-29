@@ -16,36 +16,7 @@ namespace Ela.Runtime.ObjectModel
 
         public override string ToString(string format, IFormatProvider formatProvider)
         {
-            var sbInst = new StringBuilder();
-            sbInst.Append('(');
-
-            if (ReflectedInstances != null)
-            {
-                var c = 0;
-                
-                foreach (var s in ReflectedInstances)
-                {
-                    if (c++ > 0)
-                        sbInst.Append(',');
-
-                    sbInst.Append(s);
-                }
-
-            }
-
-            sbInst.Append(')');
-            return String.Format("typeinfo {{ typeCode={0}, typeName={1}, instances={2} }}", ReflectedTypeCode, ReflectedTypeName, sbInst);
-        }
-
-        public bool HasInstance(string instance)
-        {
-            var ins = typeData.Instances;
-
-            for (var i = 0; i < ins.Count; i++)
-                if (ins[i] == instance)
-                    return true;
-
-            return false;
+            return String.Format("typeinfo {{ typeCode={0}, typeName={1} }}", ReflectedTypeCode, ReflectedTypeName);
         }
 
         public string ReflectedTypeName
@@ -56,11 +27,6 @@ namespace Ela.Runtime.ObjectModel
         public int ReflectedTypeCode
         {
             get { return typeData.TypeCode; }
-        }
-
-        public IEnumerable<String> ReflectedInstances
-        {
-            get { return typeData.Instances; }
         }
     }
 }
