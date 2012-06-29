@@ -173,6 +173,11 @@ namespace Ela.Compilation
                 var flags = vk.Flags;
                 var data = -1;
 
+                //This name requires qualified access, no need to stop compilation but
+                //we need to generate an appropriate error.
+                if ((flags & ElaVariableFlags.Qualified) == ElaVariableFlags.Qualified)
+                    AddError(ElaCompilerError.NameRequireQualified, line, col, name);
+
                 if (vk.Kind != ElaBuiltinKind.None)
                     data = (Int32)vk.Kind;
 

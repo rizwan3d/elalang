@@ -24,7 +24,10 @@ namespace Ela.CodeModel
 
 		internal override void ToString(StringBuilder sb, int indent)
 		{
-			sb.Append("open ");
+            if (RequireQualified)
+                sb.Append("import ");
+            else
+                sb.Append("open ");
 
 			for (var i = 0; i < Path.Count; i++)
 			{
@@ -77,7 +80,7 @@ namespace Ela.CodeModel
 
 		public string DllName { get; set; }
 
-        public bool RequireQuailified { get; set; }
+        public bool RequireQualified { get; set; }
 
 		public List<String> Path { get; private set; }
 

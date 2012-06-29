@@ -136,7 +136,7 @@ instance Ord tuple
         x<=y = foldTuple (<=) x y
         x>=y = foldTuple (>=) x y
 
-//private 
+foldTuple # private 
 foldTuple f tup1 tup2 | length tup2 <> len = fail "Tuples should be of the same length."
                       | else = fold 0
                       where len = length tup1

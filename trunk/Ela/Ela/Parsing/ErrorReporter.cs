@@ -151,6 +151,7 @@ namespace Ela.Parsing
                 case Parser._INSTANCE: return ElaParserError.ExpectedKeywordInstance;
                 case Parser._CLASS: return ElaParserError.ExpectedKeywordClass;
                 case Parser._TYPE: return ElaParserError.ExpectedKeywordType;
+                case Parser._IMPORT: return ElaParserError.ExpectedKeywordImport;
                 
 				default: return ElaParserError.ExpectedToken;
 			}

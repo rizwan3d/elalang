@@ -2,7 +2,7 @@
   "Dirty" io module
   Created in 2012 by Basil Voronkov
 */
-open qualified libIO#elalib@io
+import libIO#elalib@io
 
 readLines fun fl = io.readLines (force fun) (force fl)
 

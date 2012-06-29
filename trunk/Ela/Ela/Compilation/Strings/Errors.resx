@@ -177,6 +177,9 @@
   <data name="MemberNotAll" xml:space="preserve">
     <value>Not all of the members for class '{0}' are declared in instance '{1}'.</value>
   </data>
+  <data name="NameRequireQualified" xml:space="preserve">
+    <value>A name '{0}' requires a qualified access. Prefix it with the module alias.</value>
+  </data>
   <data name="NoHindingSameScope" xml:space="preserve">
     <value>A conflicting definition of '{0}'. Shadowing of names in the same lexical scope is not allowed.</value>
   </data>

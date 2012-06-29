@@ -27,7 +27,7 @@ namespace Ela.CodeModel
 
         NoInit = 1 << 9,
 
-        // = 1 << 10,
+        Qualified = 1 << 10,
 
         ClassFun = 1 << 11,
 

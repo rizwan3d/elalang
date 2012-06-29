@@ -2,7 +2,7 @@
   Module number
   Created in 2012 by Basil Voronkov
 */
-open qualified libNumber#elalib@rl
+import libNumber#elalib@rl
 
 inf x = rl.inf (force x)
 
