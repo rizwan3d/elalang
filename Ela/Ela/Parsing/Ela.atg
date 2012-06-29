@@ -836,7 +836,7 @@ PRODUCTIONS
 	EmbExpr<out ElaExpression exp> = 
 		(. exp = null; .)
 		(  
-			BinaryExpr<out exp>
+			BinaryExpr<out exp> [TypeCheckExpr<ref exp>]
 			| IfExpr<out exp>  
 			| LazyExpr<out exp>
 			| Builtin<out exp>	
@@ -844,9 +844,46 @@ PRODUCTIONS
 			| LetBinding<out exp>
 			| FailExpr<out exp>
 			| RaiseExpr<out exp>
-			| TypeCheckExpr<out exp>
 			| MatchExpr<out exp>
 			| TryExpr<out exp>
+		).
+	
+	TypeCheckExpr<ref ElaExpression pat> = 
+		IS
+		(. 
+			var eis = new ElaTypeCheck(t) { Expression = pat };
+			pat = eis; 			
+			var fst = default(String); 
+			var snd = default(String);
+		.)
+		(
+		    (
+			    (
+			        ident (. fst = t.val; .) [ "." ident (. snd = t.val; .) ]
+			        (. 
+			            if (fst != null && snd != null)
+			            {
+			                eis.TypePrefix = fst;
+			                eis.TypeName = snd; 
+			            }
+			            else
+			                eis.TypeName = fst;
+			        .)
+			    )
+			    |
+			    (
+			        "("
+			            { 
+			                (ident|variantTok) (. fst = t.val; snd = null; .) 
+			                [ "." (ident|variantTok) (. snd = t.val; .) ]
+			                (.
+			                    var ti = new TraitInfo(snd != null ? fst : null, snd != null ? snd : fst);
+			                    eis.Traits.Add(ti);
+			                .)			                
+			            }
+			        ")"
+			    )
+			)
 		).
 		
 	As<ref ElaExpression exp> =
@@ -954,44 +991,6 @@ PRODUCTIONS
 				]
 			)
 		].		
-	
-	TypeCheckExpr<out ElaExpression pat> = 
-		"?"
-		(. 
-			var eis = new ElaTypeCheck(t);
-			pat = eis; 			
-			var fst = default(String); 
-			var snd = default(String);
-		.)
-		(
-		    (
-			    (
-			        ident (. fst = t.val; .) [ "." ident (. snd = t.val; .) ]
-			        (. 
-			            if (fst != null && snd != null)
-			            {
-			                eis.TypePrefix = fst;
-			                eis.TypeName = snd; 
-			            }
-			            else
-			                eis.TypeName = fst;
-			        .)
-			    )
-			    |
-			    (
-			        "("
-			            { 
-			                (ident|variantTok) (. fst = t.val; snd = null; .) 
-			                [ "." (ident|variantTok) (. snd = t.val; .) ]
-			                (.
-			                    var ti = new TraitInfo(snd != null ? fst : null, snd != null ? snd : fst);
-			                    eis.Traits.Add(ti);
-			                .)			                
-			            }
-			        ")"
-			    )
-			)
-		).
 	
 	LambdaExpr<out ElaExpression exp> =
 		SYNC LAMBDA

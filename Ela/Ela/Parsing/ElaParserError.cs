@@ -165,7 +165,7 @@ namespace Ela.Parsing
 
 		InvalidExpression = 203,
 
-		// = 204,
+		InvalidTypeCheck = 204,
 
 		// = 205,
 

@@ -64,9 +64,9 @@ e = cm.e //Constant
 
 
 /* Basic */
-chr (?int)@x = toChar x
+chr (x is int)  = toChar x
 
-ord (?char)@x = toInt x
+ord (x is char) = toInt x
 
 
 /* LIST FUNCTIONS */

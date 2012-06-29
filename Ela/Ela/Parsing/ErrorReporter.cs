@@ -67,6 +67,7 @@ namespace Ela.Parsing
 				case "WhereBinding": return ElaParserError.InvalidWhereBinding;
                 case "Attribute": return ElaParserError.InvalidHeader;
                 case "As": return ElaParserError.InvalidAs;
+                case "TypeCheckExpr": return ElaParserError.InvalidTypeCheck;
 				
                 case "LambdaExpr": return ElaParserError.InvalidLambda;
 				case "IncludeStat": return ElaParserError.InvalidInclude;
