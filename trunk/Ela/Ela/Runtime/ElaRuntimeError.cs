@@ -20,13 +20,13 @@ namespace Ela.Runtime
 
         ExpectedFunction = 806,
 
-		LeftOperand = 807,
+		// = 807,
 
 		InvalidType = 808,
 
 		MatchFailed = 809,
 
-		RightOperand = 810,
+		InvalidOperand = 810,
 
 		OperationNotSupported = 811,
 

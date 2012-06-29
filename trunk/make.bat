@@ -26,7 +26,7 @@ copy c:\projects\elaplatform\ela\bin\ela.dll c:\ela-platform\ela\
 copy c:\projects\elaplatform\ela\bin\elac.exe c:\ela-platform\ela\
 copy c:\projects\elaplatform\ela\elaconsole\elac.exe.config c:\ela-platform\ela\
 copy c:\projects\elaplatform\ela\bin\elalib.dll c:\ela-platform\lib\
-copy c:\projects\elaplatform\ela\standardlibrary\code\*.ela c:\ela-platform\lib\
+xcopy c:\projects\elaplatform\ela\elalibrary\_ela\*.ela c:\ela-platform\lib\ /E
 
 @echo. 
 @echo 5. Copy Elide files
@@ -35,26 +35,30 @@ copy c:\projects\elaplatform\elide\bin\elide.exe c:\ela-platform\elide\
 copy c:\projects\elaplatform\elide\bin\elide.xml c:\ela-platform\elide\
 
 @echo. 
-@echo 6. Copy documentation files
-xcopy c:\projects\elaplatform\documentation\*.docxml c:\ela-platform\docs\ /E
-xcopy c:\projects\elaplatform\documentation\*.xml c:\ela-platform\docs\ /E
-xcopy c:\projects\elaplatform\documentation\*.ela c:\ela-platform\docs\ /E
+@echo 6. Generate documentation files
+xcopy c:\projects\elaplatform\documentation\_dir.xml c:\ela-platform\docs\
+eladoc c:\projects\elaplatform\documentation\ c:\ela-platform\docs\
 
 @echo.
-@echo 7. Copy change log files
+@echo 7. Copy code samples
+xcopy c:\projects\elaplatform\documentation\samples\_dir.xml c:\ela-platform\docs\samples\
+xcopy c:\projects\elaplatform\documentation\samples\*.ela c:\ela-platform\docs\samples\ /E
+
+@echo.
+@echo 8. Copy change log files
 copy c:\projects\elaplatform\ela\ela\changelist.txt c:\ela-platform\ela_log.txt
-copy c:\projects\elaplatform\ela\standardlibrary\elalibrary\libchangelist.txt c:\ela-platform\lib_log.txt
+copy c:\projects\elaplatform\ela\elalibrary\libchangelist.txt c:\ela-platform\lib_log.txt
 copy c:\projects\elaplatform\ela\elaconsole\consolechangelist.txt c:\ela-platform\elac_log.txt
 copy c:\projects\elaplatform\elide\elide.meta\elidechangelist.txt c:\ela-platform\elide_log.txt
 copy c:\projects\elaplatform\documentation\docschangelist.txt c:\ela-platform\docs_log.txt
 
 @echo.
-@echo 8. Clean
+@echo 9. Clean
 del c:\ela-platform\elide\ela.dll /Q
 
 @echo.
-@echo 9. Build version info
-set rn=2012.5
+@echo 10. Build version info
+set rn=2012.6
 for /f "delims=" %%a in ('pver.exe c:\ela-platform\lib_log.txt') do @set lib_v=%%a 
 for /f "delims=" %%a in ('pver.exe c:\ela-platform\ela_log.txt') do @set ela_v=%%a
 for /f "delims=" %%a in ('pver.exe c:\ela-platform\elac_log.txt') do @set elac_v=%%a 
@@ -62,7 +66,7 @@ for /f "delims=" %%a in ('pver.exe c:\ela-platform\elide_log.txt') do @set elide
 for /f "delims=" %%a in ('pver.exe c:\ela-platform\docs_log.txt') do @set docs_v=%%a 
 
 @echo.
-@echo 10. Generate Readme.htm
+@echo 11. Generate Readme.htm
 @echo ^<html^>^<head^>^<title^>Ela Platform Readme^</title^>^</head^> >> c:\ela-platform\readme.htm
 @echo ^<body^>^<h1^>Ela Platform Release %rn% ^</h1^>^<h3^>Contents of the directory:^</h3^> >> c:\ela-platform\readme.htm
 @echo ^<table border="1"^> >> c:\ela-platform\readme.htm

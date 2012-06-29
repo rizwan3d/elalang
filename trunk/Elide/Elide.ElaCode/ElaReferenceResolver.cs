@@ -105,7 +105,7 @@ namespace Elide.ElaCode
                 {
                     var elac = new ElaCompiler();
                     var copt = new BuildOptionsManager(App).CreateCompilerOptions();
-                    return elac.Compile(pres.Expression,
+                    return elac.Compile(pres.Program,
                         new CompilerOptions { IgnoreUndefined = true, NoWarnings = true, ShowHints = false, Prelude = copt.Prelude },
                         new ExportVars()
                         ).CodeFrame;

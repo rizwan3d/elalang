@@ -51,7 +51,13 @@ namespace Elide.ElaCode
                 var res = p.Parse(src);
 
                 if (res.Success)
-                    FindName(name, doc, res.Expression, list);
+                {
+                    FindName(name, doc, res.Program.Includes, list);
+                    FindName(name, doc, res.Program.Instances, list);
+                    FindName(name, doc, res.Program.Classes, list);
+                    FindName(name, doc, res.Program.Types, list);
+                    FindName(name, doc, res.Program.TopLevel, list);
+                }
             }
 
             return list;
@@ -62,15 +68,15 @@ namespace Elide.ElaCode
         {
             switch (expr.Type)
             {
-                case ElaNodeType.AsPattern:
+                case ElaNodeType.As:
                     {
-                        var a = (ElaAsPattern)expr;
+                        var a = (ElaAs)expr;
 
                         if (a.Name == name)
                             syms.Add(new SymbolLocation(doc, a.Line, a.Column));
 
-                        if (a.Pattern != null)
-                            FindName(name, doc, a.Pattern, syms);
+                        if (a.Expression != null)
+                            FindName(name, doc, a.Expression, syms);
                     }
                     break;
                 case ElaNodeType.Binary:
@@ -84,23 +90,17 @@ namespace Elide.ElaCode
                             FindName(name, doc, b.Right, syms);
                     }
                     break;
-                case ElaNodeType.Block:
+                case ElaNodeType.EquationSet:
                     {
-                        var b = (ElaBlock)expr;
+                        var b = (ElaEquationSet)expr;
 
-                        foreach (var e in b.Expressions)
+                        foreach (var e in b.Equations)
                             FindName(name, doc, e, syms);
                     }
                     break;
                 case ElaNodeType.Builtin:
                     break;
                 case ElaNodeType.Newtype:
-                    {
-                        var b = (ElaNewtype)expr;
-
-                        if (b.Body != null)
-                            FindName(name, doc, b.Body, syms);
-                    }
                     break;
                 case ElaNodeType.TypeClass:
                     {
@@ -109,6 +109,9 @@ namespace Elide.ElaCode
                         if (b.Members != null)
                             foreach (var m in b.Members)
                                 FindName(name, doc, m, syms);
+
+                        if (b.And != null)
+                            FindName(name, doc, b.And, syms);
                     }
                     break;
                 case ElaNodeType.ClassMember:
@@ -125,25 +128,34 @@ namespace Elide.ElaCode
 
                         if (b.Where != null)
                             FindName(name, doc, b.Where, syms);
-                    }
-                    break;
-                case ElaNodeType.Binding:
-                    {
-                        var b = (ElaBinding)expr;
-
-                        if (b.Pattern == null && b.VariableName == name)
-                            syms.Add(new SymbolLocation(doc, b.Line, b.Column));
-                        else if (b.Pattern != null)
-                            FindName(name, doc, b.Pattern, syms);
 
                         if (b.And != null)
                             FindName(name, doc, b.And, syms);
+                    }
+                    break;
+                case ElaNodeType.Equation:
+                    {
+                        var b = (ElaEquation)expr;
 
-                        if (b.In != null)
-                            FindName(name, doc, b.In, syms);
+                        if (b.Left != null)
+                            FindName(name, doc, b.Left, syms);
+                        
+                        if (b.Right != null)
+                            FindName(name, doc, b.Right, syms);
+                        
+                        if (b.Next != null)
+                            FindName(name, doc, b.Next, syms);
+                    }
+                    break;
+                case ElaNodeType.LetBinding:
+                    {
+                        var b = (ElaLetBinding)expr;
 
-                        if (b.InitExpression != null)
-                            FindName(name, doc, b.InitExpression, syms);
+                        if (b.Equations != null)
+                            FindName(name, doc, b.Equations, syms);
+
+                        if (b.Expression != null)
+                            FindName(name, doc, b.Expression, syms);
                     }
                     break;
                 case ElaNodeType.Comprehension:
@@ -168,7 +180,7 @@ namespace Elide.ElaCode
                             FindName(name, doc, c.False, syms);
                     }
                     break;
-                case ElaNodeType.DefaultPattern:
+                case ElaNodeType.Placeholder:
                     break;
                 case ElaNodeType.FieldDeclaration:
                     {
@@ -176,14 +188,6 @@ namespace Elide.ElaCode
 
                         if (f.FieldValue != null)
                             FindName(name, doc, f.FieldValue, syms);
-                    }
-                    break;
-                case ElaNodeType.FieldPattern:
-                    {
-                        var f = (ElaFieldPattern)expr;
-
-                        if (f.Value != null)
-                            FindName(name, doc, f.Value, syms);
                     }
                     break;
                 case ElaNodeType.FieldReference:
@@ -194,21 +198,24 @@ namespace Elide.ElaCode
                             FindName(name, doc, r.TargetObject, syms);
                     }
                     break;
-                case ElaNodeType.FunctionCall:
+                case ElaNodeType.Juxtaposition:
                     {
-                        var c = (ElaFunctionCall)expr;
+                        var c = (ElaJuxtaposition)expr;
                         FindName(name, doc, c.Target, syms);
 
                         foreach (var p in c.Parameters)
                             FindName(name, doc, p, syms);
                     }
                     break;
-                case ElaNodeType.FunctionLiteral:
+                case ElaNodeType.Lambda:
                     {
-                        var f = (ElaFunctionLiteral)expr;
+                        var f = (ElaLambda)expr;
 
-                        if (f.Body != null)
-                            FindName(name, doc, f.Body, syms);
+                        if (f.Left != null)
+                            FindName(name, doc, f.Left, syms);
+
+                        if (f.Right != null)
+                            FindName(name, doc, f.Right, syms);
                     }
                     break;
                 case ElaNodeType.Generator:
@@ -228,15 +235,6 @@ namespace Elide.ElaCode
                             FindName(name, doc, g.Body, syms);
                     }
                     break;
-                case ElaNodeType.HeadTailPattern:
-                    {
-                        var h = (ElaHeadTailPattern)expr;
-
-                        if (h.Patterns != null)
-                            foreach (var p in h.Patterns)
-                                FindName(name, doc, p, syms);
-                    }
-                    break;
                 case ElaNodeType.ImportedVariable:
                     {
                         var v = (ElaImportedVariable)expr;
@@ -245,18 +243,13 @@ namespace Elide.ElaCode
                             syms.Add(new SymbolLocation(doc, v.Line, v.Column));
                     }
                     break;
-                case ElaNodeType.Is:
+                case ElaNodeType.TypeCheck:
                     {
-                        var i = (ElaIs)expr;
-
-                        if (i.Pattern != null)
-                            FindName(name, doc, i.Pattern, syms);
+                        var i = (ElaTypeCheck)expr;
 
                         if (i.Expression != null)
                             FindName(name, doc, i.Expression, syms);
                     }
-                    break;
-                case ElaNodeType.IsPattern:
                     break;
                 case ElaNodeType.LazyLiteral:
                     {
@@ -275,8 +268,6 @@ namespace Elide.ElaCode
                                 FindName(name, doc, v, syms);
                     }
                     break;
-                case ElaNodeType.LiteralPattern:
-                    break;
                 case ElaNodeType.Match:
                     {
                         var m = (ElaMatch)expr;
@@ -285,25 +276,7 @@ namespace Elide.ElaCode
                             FindName(name, doc, m.Expression, syms);
 
                         if (m.Entries != null)
-                            foreach (var e in m.Entries)
-                                FindName(name, doc, e, syms);
-                    }
-                    break;
-                case ElaNodeType.MatchEntry:
-                    {
-                        var e = (ElaMatchEntry)expr;
-
-                        if (e.Pattern != null)
-                            FindName(name, doc, e.Pattern, syms);
-
-                        if (e.Guard != null)
-                            FindName(name, doc, e.Guard, syms);
-
-                        if (e.Where != null)
-                            FindName(name, doc, e.Where, syms);
-
-                        if (e.Expression != null)
-                            FindName(name, doc, e.Expression, syms);
+                            FindName(name, doc, m.Entries, syms);
                     }
                     break;
                 case ElaNodeType.ModuleInclude:
@@ -316,22 +289,10 @@ namespace Elide.ElaCode
                         if (m.HasImportList)
                             foreach (var i in m.ImportList)
                                 FindName(name, doc, i, syms);
-                    }
-                    break;
-                case ElaNodeType.NilPattern:
-                    break;
-                case ElaNodeType.OtherwiseGuard:
-                    break;
-                case ElaNodeType.PatternGroup:
-                    {
-                        var g = (ElaPatternGroup)expr;
 
-                        if (g.Patterns != null)
-                            foreach (var p in g.Patterns)
-                                FindName(name, doc, p, syms);
+                        if (m.And != null)
+                            FindName(name, doc, m.And, syms);
                     }
-                    break;
-                case ElaNodeType.Placeholder:
                     break;
                 case ElaNodeType.Primitive:
                     break;
@@ -366,15 +327,6 @@ namespace Elide.ElaCode
                                 FindName(name, doc, f, syms);
                     }
                     break;
-                case ElaNodeType.RecordPattern:
-                    {
-                        var r = (ElaRecordPattern)expr;
-
-                        if (r.Fields != null)
-                            foreach (var f in r.Fields)
-                                FindName(name, doc, f, syms);
-                    }
-                    break;
                 case ElaNodeType.Try:
                     {
                         var t = (ElaTry)expr;
@@ -383,8 +335,7 @@ namespace Elide.ElaCode
                             FindName(name, doc, t.Expression, syms);
 
                         if (t.Entries != null)
-                            foreach (var e in t.Entries)
-                                FindName(name, doc, e, syms);
+                            FindName(name, doc, t.Entries, syms);
                     }
                     break;
                 case ElaNodeType.TupleLiteral:
@@ -396,32 +347,11 @@ namespace Elide.ElaCode
                                 FindName(name, doc, p, syms);
                     }
                     break;
-                case ElaNodeType.TuplePattern:
+                case ElaNodeType.NameReference:
                     {
-                        var t = (ElaTuplePattern)expr;
+                        var r = (ElaNameReference)expr;
 
-                        if (t.Patterns != null)
-                            foreach (var p in t.Patterns)
-                                FindName(name, doc, p, syms);
-                    }
-                    break;
-                case ElaNodeType.UnitLiteral:
-                    break;
-                case ElaNodeType.UnitPattern:
-                    break;
-                case ElaNodeType.VariablePattern:
-                    {
-                        var v = (ElaVariablePattern)expr;
-
-                        if (v.Name == name)
-                            syms.Add(new SymbolLocation(doc, v.Line, v.Column));
-                    }
-                    break;
-                case ElaNodeType.VariableReference:
-                    {
-                        var r = (ElaVariableReference)expr;
-
-                        if (r.VariableName == name)
+                        if (r.Name == name)
                             syms.Add(new SymbolLocation(doc, r.Line, r.Column));
                     }
                     break;
@@ -431,17 +361,6 @@ namespace Elide.ElaCode
 
                         if (v.Tag == name)
                             syms.Add(new SymbolLocation(doc, v.Line, v.Column));
-                    }
-                    break;
-                case ElaNodeType.VariantPattern:
-                    {
-                        var v = (ElaVariantPattern)expr;
-
-                        if (v.Tag == name)
-                            syms.Add(new SymbolLocation(doc, v.Line, v.Column));
-
-                        if (v.Pattern != null)
-                            FindName(name, doc, v.Pattern, syms);
                     }
                     break;
             }

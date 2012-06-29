@@ -81,9 +81,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Template.xsl" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Images\Icon.bmp" />
   </ItemGroup>
   <ItemGroup>

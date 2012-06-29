@@ -1,32 +1,28 @@
 //Here we use console output for testing purposes
 //Module Console contains implementations of basic console functions such as
 //writen (write line), write (write), readn (read line)
-open Console
+open console
 
-//Tuples are flat sequences of values. They are convenient for grouping multiple values,
-//for example, when you want to return multiple values from a function. Here we create a
-//simple tuple with two elements in it.
-let tup1 = (1,2)
+//Tuples are sequences of values. They are convenient for grouping multiple values,
+//for example, when you want to return multiple values from a function. Here we create
+//simple tuples with two elements in it.
+tup1 = (1,2)
+tup2 = (1,2)
 
-let _ = writen ("tup1=" ++ tup1) //Prints tup1=(1,2)
+_ = writen ("tup1=" ++ show tup1) //Prints tup1=(1,2)
 
 //You can use standard fst and snd functions to deconstruct tuples
-let _ = writen ("fst=" ++ fst tup1) //Prints fst=1
+_ = writen ("fst=" ++ show (fst tup1)) //Prints fst=1
 
 //Tuples can also be deconstructed using pattern matching
-let (x,y) = tup1
+(x,y) = tup1
 
-let _ = writen ("x+y=" ++ (x+y)) //Prints x+y=3 
-
-//Tuples are always flat
-let tup2 = ((1,),(2,)) //The same as (1,2)
-
-let _ = writen ("tup2=" ++ tup2) //Prints tup2=(1,2)
+_ = writen ("x+y=" ++ show (x+y)) //Prints x+y=3 
 
 //Tuples are compared using structured equality
-let _ = writen ("Are these tuples equal? " ++ (tup1==tup2))
+_ = writen ("Are these tuples equal? " ++ show (tup1==tup2))
 
 //You can even perform arithmetic operations on tuples
-let tup3 = tup1 + tup2
+tup3 = tup1 + tup2
 
-let _ = writen ("tup3=" ++ tup3) //Prints tup3=(2,4)
+_ = writen ("tup3=" ++ show tup3) //Prints tup3=(2,4)

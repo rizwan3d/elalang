@@ -9,5 +9,5 @@
 //A more traditional way to do this is to call console IO functions explicitly which
 //is also possible in Ela:
 
-//open Console
+//open console
 //writen "Hello, world!"

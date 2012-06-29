@@ -404,7 +404,7 @@ namespace Ela.Compilation
                                 fc.SetLinePragma(nn.Line, nn.Column);
                                 fc.Parameters.Add(nn);
                                 fc.Parameters.Add(last);
-                                last = nn;
+                                last = fc;
                             }
 
                             //Now we can compile it as head/tail pattern

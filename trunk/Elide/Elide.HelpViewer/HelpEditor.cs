@@ -30,7 +30,7 @@ namespace Elide.HelpViewer
 
         public bool TestDocumentType(FileInfo fileInfo)
         {
-            return fileInfo != null && fileInfo.HasExtension("docxml");
+            return fileInfo != null && (fileInfo.HasExtension("htm") || fileInfo.HasExtension("html"));
         }
 
         public Document CreateDocument(string title)
@@ -41,16 +41,14 @@ namespace Elide.HelpViewer
 
         public Document OpenDocument(FileInfo fileInfo)
         {
-            var title = String.Empty;
-            control.SetContent(ReadFile(fileInfo, out title));
-            var doc = new HelpDocument(fileInfo, title);
+            control.SetContent(ReadFile(fileInfo));
+            var doc = new HelpDocument(fileInfo);
             return doc;
         }
 
         public void OpenDocument(Document doc)
         {
-            var _ = default(String);
-            control.SetContent(ReadFile(doc.FileInfo, out _)); 
+            control.SetContent(ReadFile(doc.FileInfo)); 
             OpenDocument(doc.FileInfo);
         }
 
@@ -69,60 +67,10 @@ namespace Elide.HelpViewer
             
         }
 
-        private string ReadFile(FileInfo file, out string title)
+        private string ReadFile(FileInfo file)
         {
             using (var sr = new StreamReader(file.OpenRead()))
-            {
-                var xml = new XmlDocument();
-                xml.LoadXml(sr.ReadToEnd());
-                title = xml.ChildNodes.OfType<XmlNode>().First(n => n.Name == "article").Attributes["title"].Value;
-                var xsl = new XslCompiledTransform();
-                
-                using (var xslReader = new StreamReader(typeof(HelpEditor).Assembly.GetManifestResourceStream("Elide.HelpViewer.Resources.Template.xsl")))
-                {
-                    var tpl = xslReader.ReadToEnd();
-                    xsl.Load(new XmlTextReader(new StringReader(tpl)));
-                }
-
-                var xsltArgs = new XsltArgumentList();
-                xsltArgs.AddExtensionObject("http://elalang.net/elide", this);
-
-                var sw = new StringWriter();
-                xsl.Transform(xml, xsltArgs, sw);
-                return sw.ToString();
-            }
-        }
-
-        public string Lex(string src, string lexerKey)
-        {
-            var lexer = App.GetService<ICodeLexerService>().GetLexer(lexerKey);
-            
-            if (lexer != null)
-            {
-                var tokens = lexer.Parse(src);
-
-                if (tokens != null)
-                {
-                    var sb = new StringBuilder(src);
-                    var offset = 0;
-
-                    tokens.ForEach(t =>
-                        {
-                            var span = String.Format("<span class='lexer_{0}'>", t.StyleKey);
-                            var endSpan = "</span>";
-                            sb.Insert(t.Position + offset, span);
-                            offset += span.Length;
-                            sb.Insert(t.Position + offset + t.Length, endSpan);
-                            offset += endSpan.Length;
-                        });
-
-                    return sb.ToString();
-                }
-
-                return src;
-            }
-            else
-                return src;
+                return sr.ReadToEnd();
         }
 
         public Image DocumentIcon
