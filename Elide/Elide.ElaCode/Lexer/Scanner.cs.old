@@ -202,8 +202,8 @@ internal sealed class UTF8Buffer: Buffer {
 internal sealed class Scanner {
 	const char EOL = '\n';
 	const int eofSym = 0; /* pdt */
-	const int maxT = 45;
-	const int noSym = 45;
+	const int maxT = 42;
+	const int noSym = 42;
 
 
 	public Buffer buffer; // scanner buffer
@@ -324,10 +324,10 @@ internal sealed class Scanner {
 			case "false": t.kind = 18; break;
 			case "let": t.kind = 22; break;
 			case "where": t.kind = 23; break;
-			case "et": t.kind = 24; break;
-			case "and": t.kind = 25; break;
-			case "or": t.kind = 26; break;
-			case "open": t.kind = 27; break;
+			case "and": t.kind = 24; break;
+			case "or": t.kind = 25; break;
+			case "open": t.kind = 26; break;
+			case "import": t.kind = 27; break;
 			case "in": t.kind = 28; break;
 			case "is": t.kind = 29; break;
 			case "if": t.kind = 30; break;
@@ -336,15 +336,12 @@ internal sealed class Scanner {
 			case "match": t.kind = 33; break;
 			case "try": t.kind = 34; break;
 			case "with": t.kind = 35; break;
-			case "inline": t.kind = 36; break;
-			case "private": t.kind = 37; break;
-			case "__internal": t.kind = 38; break;
-			case "qualified": t.kind = 39; break;
+			case "__internal": t.kind = 36; break;
+			case "class": t.kind = 37; break;
+			case "instance": t.kind = 38; break;
+			case "type": t.kind = 39; break;
 			case "raise": t.kind = 40; break;
 			case "fail": t.kind = 41; break;
-			case "instance": t.kind = 42; break;
-			case "class": t.kind = 43; break;
-			case "type": t.kind = 44; break;
 			default: break;
 		}
 	}
