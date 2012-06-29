@@ -21,7 +21,7 @@ internal sealed partial class Parser {
 	public const int _operatorTok = 7;
 	public const int _parenTok = 8;
 	public const int _NL = 9;
-	public const int maxT = 45;
+	public const int maxT = 42;
 
 	const bool T = true;
 	const bool x = false;
@@ -201,7 +201,7 @@ internal sealed partial class Parser {
 			Get();
 			break;
 		}
-		default: SynErr(46); break;
+		default: SynErr(43); break;
 		}
 	}
 
@@ -287,26 +287,14 @@ internal sealed partial class Parser {
 			Get();
 			break;
 		}
-		case 42: {
-			Get();
-			break;
-		}
-		case 43: {
-			Get();
-			break;
-		}
-		case 44: {
-			Get();
-			break;
-		}
-		default: SynErr(47); break;
+		default: SynErr(44); break;
 		}
 		Add(t.pos, t.val.Length, TextStyle.Style2); 
 	}
 
 	void Code() {
 		switch (la.kind) {
-		case 22: case 23: case 24: case 25: case 26: case 27: case 28: case 29: case 30: case 31: case 32: case 33: case 34: case 35: case 36: case 37: case 38: case 39: case 40: case 41: case 42: case 43: case 44: {
+		case 22: case 23: case 24: case 25: case 26: case 27: case 28: case 29: case 30: case 31: case 32: case 33: case 34: case 35: case 36: case 37: case 38: case 39: case 40: case 41: {
 			Keywords();
 			break;
 		}
@@ -330,7 +318,7 @@ internal sealed partial class Parser {
 			Get();
 			break;
 		}
-		default: SynErr(48); break;
+		default: SynErr(45); break;
 		}
 	}
 
@@ -353,11 +341,11 @@ internal sealed partial class Parser {
 	}
 	
 	static readonly bool[,] set = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
-		{x,T,T,T, T,T,T,T, T,T,T,x, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,x},
-		{x,T,T,T, T,T,T,T, T,x,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,x},
-		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,x},
-		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,x,x}
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{x,T,T,T, T,T,T,T, T,T,T,x, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x},
+		{x,T,T,T, T,T,T,T, T,x,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x},
+		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x},
+		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,x,x}
 
 	};
 } // end Parser
@@ -398,10 +386,10 @@ internal sealed class Errors {
 			case 21: s = "\"#\" expected"; break;
 			case 22: s = "\"let\" expected"; break;
 			case 23: s = "\"where\" expected"; break;
-			case 24: s = "\"et\" expected"; break;
-			case 25: s = "\"and\" expected"; break;
-			case 26: s = "\"or\" expected"; break;
-			case 27: s = "\"open\" expected"; break;
+			case 24: s = "\"and\" expected"; break;
+			case 25: s = "\"or\" expected"; break;
+			case 26: s = "\"open\" expected"; break;
+			case 27: s = "\"import\" expected"; break;
 			case 28: s = "\"in\" expected"; break;
 			case 29: s = "\"is\" expected"; break;
 			case 30: s = "\"if\" expected"; break;
@@ -410,19 +398,16 @@ internal sealed class Errors {
 			case 33: s = "\"match\" expected"; break;
 			case 34: s = "\"try\" expected"; break;
 			case 35: s = "\"with\" expected"; break;
-			case 36: s = "\"inline\" expected"; break;
-			case 37: s = "\"private\" expected"; break;
-			case 38: s = "\"__internal\" expected"; break;
-			case 39: s = "\"qualified\" expected"; break;
+			case 36: s = "\"__internal\" expected"; break;
+			case 37: s = "\"class\" expected"; break;
+			case 38: s = "\"instance\" expected"; break;
+			case 39: s = "\"type\" expected"; break;
 			case 40: s = "\"raise\" expected"; break;
 			case 41: s = "\"fail\" expected"; break;
-			case 42: s = "\"instance\" expected"; break;
-			case 43: s = "\"class\" expected"; break;
-			case 44: s = "\"type\" expected"; break;
-			case 45: s = "??? expected"; break;
-			case 46: s = "invalid Primary"; break;
-			case 47: s = "invalid Keywords"; break;
-			case 48: s = "invalid Code"; break;
+			case 42: s = "??? expected"; break;
+			case 43: s = "invalid Primary"; break;
+			case 44: s = "invalid Keywords"; break;
+			case 45: s = "invalid Code"; break;
 
 			default: s = "error " + n; break;
 		}
