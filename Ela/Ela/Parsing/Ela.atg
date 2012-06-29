@@ -96,10 +96,10 @@ TOKENS
 	FALSE = "false".
 	FAIL = "fail".
 	WHERE = "where".
-	QUALIFIED = "qualified".
 	INSTANCE = "instance".
 	TYPE = "type".
 	CLASS = "class".
+	IMPORT = "import".
 	
 	EBLOCK = ";".
 	
@@ -1138,37 +1138,30 @@ PRODUCTIONS
 	    ).
 	    
 	IncludeStat = 
-		(. var modInc = default(ElaModuleInclude); .)
+		(. var qual = false; .)
 		(
 			(. scanner.InjectBlock(); .)
-			SYNC OPEN
-			(. 
-				var inc = default(ElaModuleInclude); 
-			.) 
-			IncludeStatElement<out inc> (. modInc = inc; .)
-			{ IncludeStatElement<out inc> (. inc.And = modInc; modInc = inc; .) }
+			SYNC (OPEN|IMPORT (. qual=true; .))
+			IncludeStatElement<qual>
 			EndBlock
-			(.
-			    if (modInc.And != null)
-			        modInc.And.And = Program.Includes;
-			    else
-			        modInc.And = Program.Includes;
-			    
-			    Program.Includes = modInc;
-			.)
 		).
 	
-	IncludeStatElement<out ElaModuleInclude exp> =
-		(. exp = null; .)
-		(
-			(. var inc = new ElaModuleInclude(t); .)
-			[ QUALIFIED (. inc.RequireQuailified = true; .) ]
+	IncludeStatElement<bool qual> =
+	    (
+			(. var inc = new ElaModuleInclude(t) { RequireQualified=qual }; .)
 			Qualident<inc.Path>
 			(.
 				var name = inc.Path[inc.Path.Count - 1];				
 				inc.Path.RemoveAt(inc.Path.Count - 1);				
 				inc.Alias = inc.Name = name;
-				exp = inc;
+				
+				if (Program.Includes == null)
+				    Program.Includes = inc;
+				else
+				{
+				    inc.And = Program.Includes;
+				    Program.Includes = inc;
+				}
 			.)	
 			[
 				"#"
@@ -1188,7 +1181,8 @@ PRODUCTIONS
 					{ "," ImportName<out imp> (. inc.ImportList.Add(imp); .) }
 				")"
 			]
-		).
+		)
+		[ IncludeStatElement<qual> ].
 		
 	ImportName<out ElaImportedVariable imp> =
 		(. 
@@ -1253,7 +1247,6 @@ PRODUCTIONS
 	                    "where"
 	                    (
 	                        (ident (. nm=t.val; .) |Operators (. nm=t.val; .) | "(" (Operators|ident) (. nm=t.val; .) ")") 
-	                        "::"
 	                        (.
 	                            var count = 0;
 	                            var mask = 0;
@@ -1268,7 +1261,6 @@ PRODUCTIONS
 	                    )
 	                    { 
 	                        (ident (. nm=t.val; .) |Operators (. nm=t.val; .) | "(" (Operators|ident) (. nm=t.val; .) ")") 
-	                        "::"
 	                        (.
 	                            count = 0;
 	                            mask = 0;

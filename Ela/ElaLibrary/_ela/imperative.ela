@@ -2,6 +2,7 @@
   Module imperative
   Created in 2012 by Basil Voronkov
 */
+
 rec f x = f x $ rec f
 
 rec2 f x y = f x y $ rec2 f

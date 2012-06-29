@@ -2,7 +2,7 @@
   Module char
   Created in 2012 by Basil Voronkov
 */
-open qualified libChar#elalib@ch
+import libChar#elalib@ch
 
 lower c = ch.lower (force c)
 

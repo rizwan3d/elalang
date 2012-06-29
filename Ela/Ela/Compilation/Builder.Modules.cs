@@ -22,7 +22,7 @@ namespace Ela.Compilation
                 s.Path.ToArray(),    //path
                 s.Line,              //line
                 s.Column,            //col
-                s.RequireQuailified, //qualified
+                s.RequireQualified,  //qualified
                 modHandle,           //logical handle
                 s,                   //ElaExpression
                 true,                //add variable

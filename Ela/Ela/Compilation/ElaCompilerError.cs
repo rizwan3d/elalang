@@ -29,7 +29,7 @@ namespace Ela.Compilation
 
 		VariableDeclarationInitMissing = 310,
 
-		// = 311,
+		NameRequireQualified = 311,
 
 		MatchEntryEmptyNoGuard = 312,
 

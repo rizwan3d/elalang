@@ -1,3 +1,6 @@
+0.10.4.51:Change:Guards in function definition are not processed differently and are not a direct part of a match entry. Also an 'else' guard is now always required.
+0.10.4.50:Change:Syntax for type check pattern has changed. Now this pattern should be written as 'x is typeName' where x is any other pattern.
+0.10.4.49:Change:An 'is' expression is now decomissioned, instead a 'match' expression should be used.
 0.10.4.48:Change:EIL generator changed to correctly process new Pushloc and Poploc op codes.
 0.10.4.47:Change:Built-in 'nil' function is decomissioned.
 0.10.4.46:Change:Thunks are not forced recursively.

@@ -51,10 +51,10 @@ internal sealed partial class Parser {
 	public const int _FALSE = 38;
 	public const int _FAIL = 39;
 	public const int _WHERE = 40;
-	public const int _QUALIFIED = 41;
-	public const int _INSTANCE = 42;
-	public const int _TYPE = 43;
-	public const int _CLASS = 44;
+	public const int _INSTANCE = 41;
+	public const int _TYPE = 42;
+	public const int _CLASS = 43;
+	public const int _IMPORT = 44;
 	public const int _EBLOCK = 45;
 	public const int maxT = 62;
 
@@ -1289,40 +1289,33 @@ internal sealed partial class Parser {
 	}
 
 	void IncludeStat() {
-		var modInc = default(ElaModuleInclude); 
+		var qual = false; 
 		scanner.InjectBlock(); 
-		while (!(la.kind == 0 || la.kind == 30)) {SynErr(95); Get();}
-		Expect(30);
-		var inc = default(ElaModuleInclude); 
-		
-		IncludeStatElement(out inc);
-		modInc = inc; 
-		while (la.kind == 1 || la.kind == 5 || la.kind == 41) {
-			IncludeStatElement(out inc);
-			inc.And = modInc; modInc = inc; 
-		}
+		while (!(la.kind == 0 || la.kind == 30 || la.kind == 44)) {SynErr(95); Get();}
+		if (la.kind == 30) {
+			Get();
+		} else if (la.kind == 44) {
+			Get();
+			qual=true; 
+		} else SynErr(96);
+		IncludeStatElement(qual);
 		EndBlock();
-		if (modInc.And != null)
-		   modInc.And.And = Program.Includes;
-		else
-		    modInc.And = Program.Includes;
-		
-		Program.Includes = modInc;
-		
 	}
 
-	void IncludeStatElement(out ElaModuleInclude exp) {
-		exp = null; 
-		var inc = new ElaModuleInclude(t); 
-		if (la.kind == 41) {
-			Get();
-			inc.RequireQuailified = true; 
-		}
+	void IncludeStatElement(bool qual) {
+		var inc = new ElaModuleInclude(t) { RequireQualified=qual }; 
 		Qualident(inc.Path);
 		var name = inc.Path[inc.Path.Count - 1];				
 		inc.Path.RemoveAt(inc.Path.Count - 1);				
 		inc.Alias = inc.Name = name;
-		exp = inc;
+		
+		if (Program.Includes == null)
+		    Program.Includes = inc;
+		else
+		{
+		    inc.And = Program.Includes;
+		    Program.Includes = inc;
+		}
 		
 		if (la.kind == 46) {
 			Get();
@@ -1332,7 +1325,7 @@ internal sealed partial class Parser {
 			} else if (la.kind == 5) {
 				Get();
 				inc.DllName = ReadString(t.val); 
-			} else SynErr(96);
+			} else SynErr(97);
 		}
 		if (la.kind == 27) {
 			Get();
@@ -1351,6 +1344,9 @@ internal sealed partial class Parser {
 			}
 			Expect(49);
 		}
+		if (la.kind == 1 || la.kind == 5) {
+			IncludeStatElement(qual);
+		}
 	}
 
 	void Qualident(List<String> path ) {
@@ -1361,7 +1357,7 @@ internal sealed partial class Parser {
 		} else if (la.kind == 5) {
 			Get();
 			val = ReadString(t.val); 
-		} else SynErr(97);
+		} else SynErr(98);
 		path.Add(val); 
 		if (la.kind == 24) {
 			Get();
@@ -1394,7 +1390,7 @@ internal sealed partial class Parser {
 		var tc = default(ElaTypeClass);
 		scanner.InjectBlock();
 		
-		Expect(44);
+		Expect(43);
 		tc = new ElaTypeClass(t); 	            
 		tc.And = Program.Classes;
 		Program.Classes = tc;
@@ -1403,7 +1399,7 @@ internal sealed partial class Parser {
 			Get();
 		} else if (la.kind == 2) {
 			Get();
-		} else SynErr(98);
+		} else SynErr(99);
 		var nm = default(String);
 		tc.Name = t.val;
 		
@@ -1413,7 +1409,7 @@ internal sealed partial class Parser {
 				Get();
 			} else if (la.kind == 2) {
 				Get();
-			} else SynErr(99);
+			} else SynErr(100);
 			tc.BuiltinName = t.val; 
 			while (StartOf(16)) {
 				if (la.kind == 1) {
@@ -1428,7 +1424,7 @@ internal sealed partial class Parser {
 						Operators();
 					} else if (la.kind == 1) {
 						Get();
-					} else SynErr(100);
+					} else SynErr(101);
 					nm=t.val; 
 					Expect(49);
 				}
@@ -1452,11 +1448,10 @@ internal sealed partial class Parser {
 					Operators();
 				} else if (la.kind == 1) {
 					Get();
-				} else SynErr(101);
+				} else SynErr(102);
 				nm=t.val; 
 				Expect(49);
-			} else SynErr(102);
-			Expect(54);
+			} else SynErr(103);
 			var count = 0;
 			var mask = 0;
 			
@@ -1464,7 +1459,7 @@ internal sealed partial class Parser {
 				Get();
 			} else if (la.kind == 47) {
 				Get();
-			} else SynErr(103);
+			} else SynErr(104);
 			BuildMask(ref count, ref mask, t.val, targ); 
 			while (la.kind == 21) {
 				Get();
@@ -1472,7 +1467,7 @@ internal sealed partial class Parser {
 					Get();
 				} else if (la.kind == 47) {
 					Get();
-				} else SynErr(104);
+				} else SynErr(105);
 				BuildMask(ref count, ref mask, t.val, targ); 
 			}
 			tc.Members.Add(new ElaClassMember(t) { Name = nm, Arguments = count, Mask = mask });
@@ -1490,11 +1485,10 @@ internal sealed partial class Parser {
 						Operators();
 					} else if (la.kind == 1) {
 						Get();
-					} else SynErr(105);
+					} else SynErr(106);
 					nm=t.val; 
 					Expect(49);
 				}
-				Expect(54);
 				count = 0;
 				mask = 0;
 				
@@ -1502,7 +1496,7 @@ internal sealed partial class Parser {
 					Get();
 				} else if (la.kind == 47) {
 					Get();
-				} else SynErr(106);
+				} else SynErr(107);
 				BuildMask(ref count, ref mask, t.val, targ); 
 				while (la.kind == 21) {
 					Get();
@@ -1510,19 +1504,19 @@ internal sealed partial class Parser {
 						Get();
 					} else if (la.kind == 47) {
 						Get();
-					} else SynErr(107);
+					} else SynErr(108);
 					BuildMask(ref count, ref mask, t.val, targ); 
 				}
 				tc.Members.Add(new ElaClassMember(t) { Name = nm, Arguments = count, Mask = mask });
 				
 			}
-		} else SynErr(108);
+		} else SynErr(109);
 		EndBlock();
 	}
 
 	void NewType() {
 		scanner.InjectBlock(); 
-		Expect(43);
+		Expect(42);
 		Expect(1);
 		var nt = new ElaNewtype(t) { Name = t.val };                	            
 		nt.And = Program.Types;
@@ -1532,7 +1526,7 @@ internal sealed partial class Parser {
 			scanner.InjectBlock(); 
 			bindings.Push(null);
 			
-			while (!(la.kind == 0 || la.kind == 40)) {SynErr(109); Get();}
+			while (!(la.kind == 0 || la.kind == 40)) {SynErr(110); Get();}
 			Get();
 			scanner.InjectBlock(); 
 			Binding(Program.TopLevel,nt.Name);
@@ -1555,7 +1549,7 @@ internal sealed partial class Parser {
 		var fst = default(String);
 		var snd = default(String);
 		
-		Expect(42);
+		Expect(41);
 		var ci = new ElaClassInstance(t);	            
 		ci.And = Program.Instances;
 		Program.Instances = ci;
@@ -1564,7 +1558,7 @@ internal sealed partial class Parser {
 			Get();
 		} else if (la.kind == 2) {
 			Get();
-		} else SynErr(110);
+		} else SynErr(111);
 		fst0 = t.val; 
 		if (la.kind == 24) {
 			Get();
@@ -1572,7 +1566,7 @@ internal sealed partial class Parser {
 				Get();
 			} else if (la.kind == 2) {
 				Get();
-			} else SynErr(111);
+			} else SynErr(112);
 			snd0 = t.val; 
 		}
 		if (fst0 != null && snd0 != null)
@@ -1610,15 +1604,15 @@ internal sealed partial class Parser {
 		scanner.InjectBlock(); 
 		if (StartOf(1)) {
 			Binding(Program.TopLevel,null);
-		} else if (la.kind == 30) {
+		} else if (la.kind == 30 || la.kind == 44) {
 			IncludeStat();
-		} else if (la.kind == 44) {
-			TypeClass();
 		} else if (la.kind == 43) {
-			NewType();
+			TypeClass();
 		} else if (la.kind == 42) {
+			NewType();
+		} else if (la.kind == 41) {
 			ClassInstance();
-		} else SynErr(112);
+		} else SynErr(113);
 		EndBlock();
 		if (StartOf(17)) {
 			TopLevel();
@@ -1642,9 +1636,9 @@ internal sealed partial class Parser {
 	}
 	
 	static readonly bool[,] set = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,T,x, x,T,T,x, x,x,x,x, T,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,T,x, x,T,T,x, x,x,x,x, T,x,x,x, T,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
 		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,x,T,x, x,x,T,x, x,x,T,x, x,T,x,x, T,x,x,T, T,T,T,T, x,x,x,x, x,x,x,T, T,x,x,x, x,T,T,x, x,T,x,T, T,x,x,x},
-		{T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,x,T,x, x,x,T,x, x,x,T,x, x,T,T,x, T,x,x,T, T,T,T,T, T,x,x,x, x,x,x,T, T,x,x,x, x,T,T,x, x,T,x,T, T,x,x,x},
+		{T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,x,T,x, x,x,T,x, x,x,T,x, x,T,T,x, T,x,x,T, T,T,T,T, T,x,x,x, T,x,x,T, T,x,x,x, x,T,T,x, x,T,x,T, T,x,x,x},
 		{x,T,T,T, T,T,T,x, T,T,T,T, T,T,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, x,x,x,T, T,x,x,x, x,T,T,x, x,T,x,x, x,x,x,x},
 		{x,T,T,T, T,T,T,x, T,T,T,T, T,T,T,x, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, x,x,x,T, T,x,x,x, x,T,T,x, x,T,x,x, x,x,x,x},
 		{x,T,T,T, T,T,T,x, x,T,T,T, T,T,T,x, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, x,x,x,T, T,x,x,x, x,T,T,x, x,T,x,x, x,x,x,x},
@@ -1659,7 +1653,7 @@ internal sealed partial class Parser {
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,T, T,T,x,T, x,x,x,x, x,x,x,T, x,T,T,x, x,x,x,x, T,x,x,x, x,T,T,x, x,T,T,T, T,x,x,x, x,x,x,x, x,T,x,x},
 		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, x,x,x,T, T,x,x,x, x,T,T,x, x,T,x,x, x,x,x,x},
 		{x,T,x,x, x,x,x,T, T,T,T,T, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x},
-		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,x,T,x, x,x,T,x, x,x,T,x, x,T,T,x, T,x,x,T, T,T,T,T, x,x,T,T, T,x,x,T, T,x,x,x, x,T,T,x, x,T,x,T, T,x,x,x}
+		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,x,T,x, x,x,T,x, x,x,T,x, x,T,T,x, T,x,x,T, T,T,T,T, x,T,T,T, T,x,x,T, T,x,x,x, x,T,T,x, x,T,x,T, T,x,x,x}
 
 	};
 } // end Parser
@@ -1718,10 +1712,10 @@ internal sealed class Errors {
 			case 38: s = "FALSE expected"; break;
 			case 39: s = "FAIL expected"; break;
 			case 40: s = "WHERE expected"; break;
-			case 41: s = "QUALIFIED expected"; break;
-			case 42: s = "INSTANCE expected"; break;
-			case 43: s = "TYPE expected"; break;
-			case 44: s = "CLASS expected"; break;
+			case 41: s = "INSTANCE expected"; break;
+			case 42: s = "TYPE expected"; break;
+			case 43: s = "CLASS expected"; break;
+			case 44: s = "IMPORT expected"; break;
 			case 45: s = "EBLOCK expected"; break;
 			case 46: s = "\"#\" expected"; break;
 			case 47: s = "\"_\" expected"; break;
@@ -1773,9 +1767,9 @@ internal sealed class Errors {
 			case 93: s = "this symbol not expected in WhereBinding"; break;
 			case 94: s = "invalid Guard"; break;
 			case 95: s = "this symbol not expected in IncludeStat"; break;
-			case 96: s = "invalid IncludeStatElement"; break;
-			case 97: s = "invalid Qualident"; break;
-			case 98: s = "invalid TypeClass"; break;
+			case 96: s = "invalid IncludeStat"; break;
+			case 97: s = "invalid IncludeStatElement"; break;
+			case 98: s = "invalid Qualident"; break;
 			case 99: s = "invalid TypeClass"; break;
 			case 100: s = "invalid TypeClass"; break;
 			case 101: s = "invalid TypeClass"; break;
@@ -1786,10 +1780,11 @@ internal sealed class Errors {
 			case 106: s = "invalid TypeClass"; break;
 			case 107: s = "invalid TypeClass"; break;
 			case 108: s = "invalid TypeClass"; break;
-			case 109: s = "this symbol not expected in NewType"; break;
-			case 110: s = "invalid ClassInstance"; break;
+			case 109: s = "invalid TypeClass"; break;
+			case 110: s = "this symbol not expected in NewType"; break;
 			case 111: s = "invalid ClassInstance"; break;
-			case 112: s = "invalid TopLevel"; break;
+			case 112: s = "invalid ClassInstance"; break;
+			case 113: s = "invalid TopLevel"; break;
 
 			default: s = "error " + n; break;
 		}

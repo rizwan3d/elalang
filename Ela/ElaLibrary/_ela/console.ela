@@ -2,7 +2,7 @@
   Module console
   Created in 2012 by Basil Voronkov
 */
-open qualified libCon#elalib@con
+import libCon#elalib@con
 
 write x = con.write (show x)
 

@@ -387,4 +387,7 @@
   <data name="InvalidTypeCheck" xml:space="preserve">
     <value>Invalid syntax for a type check expression.</value>
   </data>
+  <data name="ExpectedKeywordImport" xml:space="preserve">
+    <value>Expected keyword 'import'.</value>
+  </data>
 </root>

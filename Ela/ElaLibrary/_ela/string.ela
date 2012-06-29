@@ -2,7 +2,7 @@
   Module string
   Created in 2012 by Basil Voronkov
 */
-open qualified libString#elalib@str
+import libString#elalib@str
 open thunk
 
 upper s = str.upper (force s)

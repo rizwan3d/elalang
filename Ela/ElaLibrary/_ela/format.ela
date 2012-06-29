@@ -3,7 +3,7 @@
   Created in 2012 by Basil Voronkov
 */
 open console
-open qualified libFormat#elalib@fm
+import libFormat#elalib@fm
 
 format' # private 
 format' fun fstr xs n | n == 0 = fun (fm.format fstr showf xs)

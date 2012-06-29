@@ -392,10 +392,10 @@ internal sealed class Scanner {
 			case "false": t.kind = 38; break;
 			case "fail": t.kind = 39; break;
 			case "where": t.kind = 40; break;
-			case "qualified": t.kind = 41; break;
-			case "instance": t.kind = 42; break;
-			case "type": t.kind = 43; break;
-			case "class": t.kind = 44; break;
+			case "instance": t.kind = 41; break;
+			case "type": t.kind = 42; break;
+			case "class": t.kind = 43; break;
+			case "import": t.kind = 44; break;
 			case "=": t.kind = 51; break;
 			case "..": t.kind = 52; break;
 			case "::": t.kind = 54; break;
