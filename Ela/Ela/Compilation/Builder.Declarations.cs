@@ -6,18 +6,6 @@ namespace Ela.Compilation
 {
 	internal sealed partial class Builder
     {
-        //Processes a binding or a chain of bindings.
-        private void WalkDeclarations(ElaEquationSet s, LabelMap map, Hints hints)
-        {
-            //Do the forward declaration
-            foreach (var e in s.Equations)
-                AddNoInitVariable(e);
-
-            //Compile
-            foreach (var e in s.Equations)
-                CompileDeclaration(e, map, hints);
-        }
-        
         //Compile all declarations including function bindings, name bindings and bindings
         //defined by pattern matching.
         private void CompileDeclaration(ElaEquation s, LabelMap map, Hints hints)

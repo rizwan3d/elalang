@@ -10,19 +10,19 @@ exception data is a string message, however it can be data of any type. One of t
 in Ela is `Failure`. Standard library generates only exceptions with `Failure` tag. 
 
 =Handling Exceptions
-Ela provides a support for structured exception handling in the same way as C-style language. A try/with expression 
+Ela provides a support for structured exception handling in the same way as C-style language. A `try/with` expression 
 is used to handle exceptions: 
 >>try 2 / 0 with
 >>    DivizionByZero = 0
-This expression has effectively the same syntax as match expression and support pattern matching with multiple clauses is well. 
-When expression that follows try keywords doesn't fail try/with returns a value of this expression. If it fails than an exception 
-is matched against patterns that follows with keyword. 
+This expression has effectively the same syntax as `match` expression and support pattern matching with multiple clauses is well. 
+When expression that follows try keywords doesn't fail, `try/with` returns a value of this expression. If it fails than an exception 
+is matched against patterns following `with` keyword. 
 
 =Generating Exceptions
-In order to generate exceptions one can use a raise statement. It has the following syntax: 
+In order to generate exceptions one can use a `raise` statement. It has the following syntax: 
 >>raise Tag expr
 An exception should include a variant tag (that denote a type of an exception) and exception data (which can be any expression). 
-Expression that is used to represent exception data is always evaluated in a strict manner. Example of `raise` statement: 
+Expression that is used to represent exception data is always evaluated in a strict manner. Example of a `raise` statement: 
 >>raise DivisionByZero "You cannot divide by zero!"
 There is also a shorter statement `fail` which always generates exceptions with tag `Failure`. This tag is commonly used in Ela code. 
 >>fail "Nil list!"

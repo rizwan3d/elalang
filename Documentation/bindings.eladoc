@@ -12,21 +12,21 @@ doesn't have a so called assignment operator. An operator `=` which you can see 
 used to bind an expression to a name: 
 >>x = 2
 >>x = 3 //Not a valid Ela code!
-However function definitions in Ela can have several bodies if a function is defined by pattern matching, e.g.:
+Function definitions however can have several bodies, if a function is defined by pattern matching, e.g.:
 >>x /. 0 = 0
 >>x /. y = x / y
-Here we implement a safe division operator that has a special entry for the case when a its second argument is zero.//br
-Another important difference from imperative languages is that order of bindings in Ela is not significant. This is valid for
-functions and for regular bindings as well. For example, the following code is valid:
+We have implemented a safe division operator that has a special entry for the case when a second argument is zero.//br
+Another important difference from imperative languages is that the order of bindings in Ela is not significant. This is true for
+functions and for all other bindings as well. For example, the following code is valid:
 >>fun x = x + y
 >>y = 12
 The order in which bindings are evaluated is implementation defined and you shouldn't rely on it in your code. However top level
-in Ela can also contain expressions and expression are always evaluated after all bindings:
+in Ela can also contain expressions, and expressions are always evaluated after all bindings:
 >>>fun x = x + y
 >>>fun 4
 >>>y = 12
-In the program above a result of evaluation `fun 4` is not ignored and a number 16 is return as a result of this program.//br
-Bindings in Ela like in many other languages have a lexical scoping. Global bindings in Ela module are by default included 
+In the program above a result of evaluation `fun 4` is not ignored and a number `16` is returned as a result of this program.//br
+Bindings in Ela like in many other languages have a lexical scoping. Global bindings in a module are by default included 
 in the export list and can be referenced from other modules. //br
 Another important thing to remember about bindings in Ela is that names used in bindings should never start with a capital letter. 
 The following code results in an error: 
@@ -38,50 +38,53 @@ Global bindings have the following syntax:
 >>pattern = expr
 >>
 >>//Guarded equations
->>pattern | guard1 = expr1 { | guardN = exprN }
->>        | else   = exprN
+>>pattern "|" guard  = expr { "|" guard = expr }
+>>        "|" "else" = expr
 The simple case of a pattern clause is an identifier however it can be any supported pattern: 
 >>x = 2
 >>(x::xs) = [1..10]
 >>(Foo x,(1,[y,z])) = (Foo 42,(1,[3,4]))
 >>_ = () //Here we simply ignore the value of right-hand expression
-One can also uses guards in bindings: 
+One can also use guards in bindings: 
 >>y = 0
 >>x | y > 0 = y
 >>  | else  = 0
 This code is equivalent to the following: 
 >>x = if y > 0 then y else 0
-An else clause is mandatory. The rest of the syntax is pretty similar to the one used in Haskell. //br
-Global bindings can only appear at the top level. It is a syntax error to use the binding syntax described here in local scopes. //br
-Also global bindings can have an optional header. A header is used to specify attributes (such as `private` or `qualified`) for a binding.
-The header is only valid for bindings where the left hand pattern is an identifier:
+An `else` clause is mandatory. The rest of the syntax is pretty similar to the one used in Haskell. //br
+Global bindings can only appear at top level. It is a syntax error to use the binding syntax described here in local scopes. //br
+Also bindings (global and local) can have an optional header. A header is used to specify attributes (such as `private` or `qualified`) 
+for a binding. The header is only valid for bindings where the head is an identifier:
 >>sum # private
 >>sum x y = x + y
 In the example below we have declared a global `sum` function and marked it as `private` (so it won't be included in the module export list).
 
 =Local Bindings
 Local bindings can be declared using two constructs - `let/in` and `where`. Binding made using `let/in` have the following syntax: 
->>let [attributes] pattern = expr1 in expr2
+>>"let" pattern = expr "in" expr
 >>
 >>//Guarded equations
->>let [attributes] pattern | guard1 = expr1 { | guardN = exprN }
->>                         | else   = exprN
->> in exprN
-The syntax is similar to the one used for global bindings except of mandatory `let` keyword and `in` clause. The `in` clause should contain an 
-expression in which (and only in which) the binding will be visible, e.g.: 
+>>"let" pattern "|" guard  = expr { "|" guard = expr }
+>>              "|" "else" = expr
+>> "in" expr
+The syntax is similar to the one used for global bindings except of a mandatory `let` keyword and `in` clause. The `in` clause should 
+contain an expression in which (and only in which) the binding will be visible, e.g.: 
 >>let x = 2 in x*2
 >>y = x //Error ELA302: Name 'x' is not defined
+Bindings done using `let/in` are effectively expressions and always yield a value - this value is a result of evaluation of an expression
+inside `in` clause.//br
 These bindings can appear both at top level and in local levels. //br
 Bindings done using `where` have the following syntax: 
->>expr1
->> where [attributes] pattern = expr2
+>>expr
+>> "where" pattern = expr
 >>
 >>//Guarded equations
->>exprN
->> where [attributes] pattern | guard1 = expr1 { | guardN = exprN }
->>                            | else   = exprN
-The syntax is similar to the `let` bindings however `where` bindings follow mathematical notation and are placed after an expression in which they 
-are used. Also a `where` clause should be indented further expression in which it is used (at least by one space).
+>>expr
+>> "where" pattern "|" guard  = expr { "|" guard = expr }
+>>                 "|" "else" = expr
+The syntax is similar to the `let` bindings however `where` bindings follow mathematical notation and are placed after an expression 
+in which they are used. Also a `where` clause should be indented further than an expression in which it is used (at least by one space).//br
+These bindings also always yield a value which is a value of evaluation of the expression preceeding `where` clause.//br
 A simple example of a `where` binding: 
 >>x 
 >> where x = 2
@@ -89,11 +92,11 @@ Which is completely equivalent to:
 >>let x = 2 in x
 
 =Mutually Recursive Bindings
-These are similar to and bindings in ML and allow to reference names before they are declared. Recursive bindings can be both top-level and local. They can be done through let and through where bindings. If you use attributes in your bindings they will be applied to all bindings in a chain. 
-As it was mentioned before all bindings in Ela mutually recursive - including local bindings and top level bindings. No additional keywords and 
-declaration constructs are required:
+As it was mentioned before, all bindings in Ela are mutually recursive - including local bindings and top level bindings. No additional 
+keywords or declaration constructs are required:
 >>take (x::xs) = x :: skip xs
 >>take []      = []
+>>
 >>skip (_::xs) = take xs 
 >>skip []      = []
 

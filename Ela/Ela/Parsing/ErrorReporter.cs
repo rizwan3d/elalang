@@ -80,6 +80,7 @@ namespace Ela.Parsing
 				case "TryExpr": return ElaParserError.InvalidTry;
 				case "OrExpr": return ElaParserError.InvalidOr;
 				case "AndExpr": return ElaParserError.InvalidAnd;
+                case "OpExpr0": return ElaParserError.InvalidOperation;
 				case "OpExpr1": return ElaParserError.InvalidOperation;
                 case "OpExpr1b": return ElaParserError.InvalidOperation;
                 case "OpExpr2": return ElaParserError.InvalidOperation;
@@ -114,6 +115,7 @@ namespace Ela.Parsing
 				case Parser._realTok: return ElaParserError.ExpectedRealToken;
 				case Parser._stringTok: return ElaParserError.ExpectedStringToken;
 				case Parser._charTok: return ElaParserError.ExpectedCharToken;
+                case Parser._operatorTok0:
                 case Parser._operatorTok1:
 				case Parser._operatorTok2:
 				case Parser._operatorTok3:
