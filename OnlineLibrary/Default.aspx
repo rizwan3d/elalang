@@ -85,6 +85,11 @@
         height:100%;
     }
     
+    body 
+    {
+        overflow:hidden;
+    }
+    
     h2
     {
         font-weight:bold;
@@ -119,8 +124,13 @@
         text-decoration:underline;
     }
     </style>
+    <script language="javascript">
+    function adjust() {
+      document.getElementById("cco").style.height = document.body.offsetHeight + "px"
+    }
+    </script>
 </head>
-<body style="margin:0px">
+<body style="margin:0px" onload="adjust()" onresize="adjust()">
     <%
         string xml = Server.MapPath("docs/_dir.xml");
         XmlDocument doc = new XmlDocument();
@@ -153,26 +163,26 @@
     %>
     <table cellpadding="0" cellspacing="0" style="width:100%;height:100%;">
         <tr>
-            <td style="width:50px;border-right:solid 1px darkgray;background-color:gray;vertical-align:top">
-                <img src="Label.aspx"/>
+            <td style="width:50px;border-right:solid 1px darkgray;background-color:gray;vertical-align:bottom;height:100%">
+                <img src="contents.png"/>
             </td>
             <td style="vertical-align:top">
-                <table>
-                    <tr>
-                         <td style="padding-left:20px;width:100%">
-                            <%= sb.ToString() %>
-                        </td>
-                        <td style="text-align:right;vertical-align:top;padding-right:10px;padding-top:20px;font-size:14pt;font-weight:bold;color:gray">
-                            <img src="logobig.png" style="width:221px;height:104px" align="absmiddle" />
-                            <div style="padding-top:5px;padding-right:10px">
-                                Documentation Library
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+                <div id="cco" style="overflow:auto;height:1000px">
+                  <table>
+                      <tr>
+                           <td style="padding-left:20px;width:100%">
+                              <%= sb.ToString() %>
+                          </td>
+                          <td style="text-align:right;vertical-align:top;padding-right:10px;padding-top:20px;font-size:14pt;font-weight:bold;color:gray">
+                              <img src="logobig.png" style="width:221px;height:104px" align="absmiddle" />
+                              <div style="padding-top:5px;padding-right:10px">
+                                  Documentation Library
+                              </div>
+                          </td>
+                      </tr>
+                  </table>
+                </div>
             </td>
-            
-           
         </tr>
     </table>
 </body>
