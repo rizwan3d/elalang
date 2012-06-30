@@ -390,4 +390,7 @@
   <data name="ExpectedKeywordImport" xml:space="preserve">
     <value>Expected keyword 'import'.</value>
   </data>
+  <data name="ExpectedPipe" xml:space="preserve">
+    <value>A guard entry is invalid, probably a required 'else' guard is missing.</value>
+  </data>
 </root>

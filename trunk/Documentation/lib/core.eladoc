@@ -90,7 +90,17 @@ for integer number.
 
 ord
 Converts a given char to an integer number. This function is equivalent to toInt function called 
-for char. 
+for char.
+
+sort xs
+Sorts a given list. This function implements a merge sort. It can sort an list with values of
+any type if their types have instances for `Ord` class.
+
+sortBy pred xs
+A generalization of a `sort` function that allows to specify a predicate.
+
+sort' xs
+Sorts a given list. This is a non-strict function, which implements a quicksort algorythm.
 
 last xs
 Returns the last element of a given list: 
@@ -204,6 +214,9 @@ splitAt n xs
 Splits a list `xs` at the index `n` and produces a tuple with two lists: 
 >>>splitAt 3 [1..5]
 This function throws a `Failure` if an `n` argument is less than zero. 
+
+split xs
+Splits a given list by half.
 
 span p xs
 Function `span`, applied to a predicate `p` and a list `xs`, returns a tuple where first element 

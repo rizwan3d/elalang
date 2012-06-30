@@ -345,15 +345,23 @@ namespace Ela.Compilation
                     {
                         var n = (ElaTypeCheck)exp;
 
+                        //Nothing is specified for type/class check, generate an error and break
+                        if (n.Traits == null || n.Traits.Count == 0)
+                        {
+                            AddError(ElaCompilerError.InvalidPattern, exp, FormatNode(exp));
+                            break;
+                        }
+
                         //This pattern can either check a specific type or a collection of traits.
-                        //Parser guarantees that these cases cannot overlap.
-                        if (!String.IsNullOrEmpty(n.TypeName))
+                        //Here we try to 'guess' if this a type or a trait. This logic is poor and might
+                        //result in an error if somebody wants to check a trait which name is lowercased.
+                        if (n.Traits.Count == 1 && !Char.IsUpper(n.Traits[0].Name[0]))
                         {
                             cw.Emit(Op.PushI4_0);
                             PushVar(sysVar);
                             cw.Emit(Op.Type);
                             cw.Emit(Op.Pushelem);
-                            EmitSpecName(n.TypePrefix, "$$" + n.TypeName, n, ElaCompilerError.UndefinedType);
+                            EmitSpecName(n.Traits[0].Prefix, "$$" + n.Traits[0].Name, n, ElaCompilerError.UndefinedType);
                             cw.Emit(Op.Cneq);
                             cw.Emit(Op.Brtrue, failLab);
                         }
