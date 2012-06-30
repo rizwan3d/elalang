@@ -6,7 +6,7 @@
     using (Font f = new Font("Verdana", 14, FontStyle.Bold))
     {
         g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-        g.FillRectangle(Brushes.Gray, new Rectangle(0, 0, 50, 1000));
+        g.FillRectangle(Brushes.Gray, new Rectangle(0, 0, 50, 130));
         string str = "Contents";
         
         SizeF sz = g.VisibleClipBounds.Size;
@@ -20,6 +20,6 @@
         //Reset the graphics object Transformations.
         g.ResetTransform();
 
-        bmp.Save(Response.OutputStream, System.Drawing.Imaging.ImageFormat.Bmp);        
+        bmp.Save(Response.OutputStream, System.Drawing.Imaging.ImageFormat.Png);        
     }
 %>
