@@ -19,7 +19,9 @@ namespace Ela.CodeModel
 
         internal override void ToString(StringBuilder sb, int ident)
         {
-            sb.Append('?');
+            Format.PutInBraces(Expression, sb);
+
+            sb.Append(" is");
 
             if (_traits != null)
             {
@@ -36,21 +38,7 @@ namespace Ela.CodeModel
 
                 sb.Append(')');
             }
-            else
-            {
-                if (TypePrefix != null)
-                {
-                    sb.Append(TypePrefix);
-                    sb.Append('.');
-                }
-
-                sb.Append(TypeName);
-            }
         }
-
-        public string TypeName { get; set; }
-
-        public string TypePrefix { get; set; }
 
         public ElaExpression Expression { get; set; }
 

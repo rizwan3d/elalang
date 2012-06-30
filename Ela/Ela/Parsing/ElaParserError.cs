@@ -55,7 +55,7 @@ namespace Ela.Parsing
 
 		ExpectedOperatorToken = 107,
 
-		// = 108,
+		ExpectedPipe = 108,
 
 		ExpectedBooleanToken = 109,
 

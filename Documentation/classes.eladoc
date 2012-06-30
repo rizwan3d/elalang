@@ -123,6 +123,6 @@ however they can perfectly coexist in different modules. Because of that it is a
 =Reflection
 It is possible to query which instances are supported by a given value using special pattern like so:
 >>match value with
->>      x is (Eq Num Car) = ...
+>>      x is Eq Num Car = ...
 Class names can be prefixed with module aliases inside this pattern as well.
 

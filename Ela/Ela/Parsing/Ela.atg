@@ -889,33 +889,14 @@ PRODUCTIONS
 			var snd = default(String);
 		.)
 		(
-		    (
-			    (
-			        ident (. fst = t.val; .) [ "." ident (. snd = t.val; .) ]
-			        (. 
-			            if (fst != null && snd != null)
-			            {
-			                eis.TypePrefix = fst;
-			                eis.TypeName = snd; 
-			            }
-			            else
-			                eis.TypeName = fst;
-			        .)
-			    )
-			    |
-			    (
-			        "("
-			            { 
-			                (ident|variantTok) (. fst = t.val; snd = null; .) 
-			                [ "." (ident|variantTok) (. snd = t.val; .) ]
-			                (.
-			                    var ti = new TraitInfo(snd != null ? fst : null, snd != null ? snd : fst);
-			                    eis.Traits.Add(ti);
-			                .)			                
-			            }
-			        ")"
-			    )
-			)
+		    { 
+                (ident|variantTok) (. fst = t.val; snd = null; .) 
+                [ "." (ident|variantTok) (. snd = t.val; .) ]
+                (.
+                    var ti = new TraitInfo(snd != null ? fst : null, snd != null ? snd : fst);
+                    eis.Traits.Add(ti);
+                .)			                
+            }
 		).
 		
 	As<ref ElaExpression exp> =

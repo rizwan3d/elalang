@@ -1,3 +1,6 @@
+0.1.3.18:New:A new sort' function added to core module (this is lazy sort function based on quicksort).
+0.1.3.17:New:A new function 'split' (a specialization of 'splitBy' that splits a given list by half) is added to 'core' module.
+0.1.3.16:New:Functions 'sort' and 'sortBy' (that implement merge sort) are added to 'core' module.
 0.1.3.15:Change:Now queue ('queue' module) is constructed using 'fromPair', 'fromList' functions and using an 'empty' constant.
 0.1.3.14:Change:Now datetime ('datetime' module) is constructed using 'fromTicks' and 'fromTuple' functions.
 0.1.3.13:Change:Now reference cells from 'cell' module are constructed using 'ref' function.
