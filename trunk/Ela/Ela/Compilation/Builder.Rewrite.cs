@@ -19,14 +19,19 @@ namespace Ela.Compilation
             ProcessExpressions(list, map);
         }
 
-        //Compiles a provided set of equations
+        //Compiles a provided set of equations. This method is to be used for local
+        //scopes only.
         private void CompileEquationSet(ElaEquationSet set, LabelMap map)
         {
             var list = RunForwardDeclaration(set.Equations, map);
             list = ProcessFunctions(list, map);
             list = ProcessBindings(list, map);
             list = ProcessPatternBindings(list, map);
-            ProcessExpressions(list, map);
+
+            //Expressions are not allowed in this context
+            if (list.Count > 0)
+                for (var i = 0; i < list.Count; i++)
+                    AddError(ElaCompilerError.InvalidExpression, list[i], FormatNode(list[i]));
         }
 
         //Type class declarations, modules includes and type declarations can be compiled in the first place.

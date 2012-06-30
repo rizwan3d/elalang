@@ -1,6 +1,6 @@
 ﻿<documentation>
   <folder name="Standard Library">
-    <folder name="Collections">
+    <folder name="collections">
       <doc name="alist" file="lib\collections\alist.htm"/>
       <doc name="queue" file="lib\collections\queue.htm"/>
     </folder>

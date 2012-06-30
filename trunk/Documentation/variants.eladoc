@@ -8,17 +8,20 @@ This article discusses a variant data type.
 Variants in Ela are somewhat similar to polymorphic variants in OCaml language. This is a pretty straightforward 
 data type. It allows you to attach a tag to a particular value like so: 
 >>x = Some 12
-Tags should always start with a capital letter (unlike variables which never start with a capital letter). //br
-Variants may be useful in cases when you want to associate additional information with value. For example, consider a safe division function: 
+Tags always should start with a capital letter (unlike variables which never start with a capital letter). //br
+Variants may be useful in cases when you want to associate additional information with value. //br
+For example, consider a safe division function: 
 >>x /. 0 = None
 >>x /. y = Some (x/y)
-This function is defined through pattern matching and returns variant None if a divider is zero, otherwise it returns a result 
-of division packed in a variant Some. //br
+This function is defined through pattern matching and returns variant `None` if a divider is zero, otherwise it returns a result 
+of division, packed in a variant `Some`. //br
 The literal form for variant has the following syntax: 
 >Tag [expr]
-For convenience expr clause is optional as you have seen in example above, however creating a variant like so None has exactly 
-the same effect as the following expression: None (). In other words a variant created without an argument automatically wraps a unit value. //br
-Also unlike OCaml language variant tags in Ela can't be attached to several values. For example the following code would result in an error: 
+For convenience `expr` clause is optional as you have seen in example above, however creating a variant like so: `None` has exactly 
+the same effect as the following expression: `None ()`. In other words a variant created without an argument automatically wraps 
+a unit value. //br
+Also unlike OCaml language variant tags in Ela can't be attached to several values. For example, the following code would 
+result in a compile time error: 
 >>v = Some 1 2
 In order to attach a variant tag to several values one can use tuples like so: 
 >>v = Some (1,2)

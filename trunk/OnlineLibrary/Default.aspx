@@ -77,10 +77,12 @@
 <head runat="server">
     <title>Ela Documentation Library</title>
     <style>
-    body,h1,h2,h3
+    body,h1,h2,h3,html
     {
         font-family:Segoe UI,Verdana,Arial;
         font-size:9pt;
+        width:100%;
+        height:100%;
     }
     
     h2
@@ -151,18 +153,26 @@
     %>
     <table cellpadding="0" cellspacing="0" style="width:100%;height:100%;">
         <tr>
-            <td style="width:50px;border-right:solid 1px darkgray;background-color:gray">
+            <td style="width:50px;border-right:solid 1px darkgray;background-color:gray;vertical-align:top">
+                <img src="Label.aspx"/>
+            </td>
+            <td style="vertical-align:top">
+                <table>
+                    <tr>
+                         <td style="padding-left:20px;width:100%">
+                            <%= sb.ToString() %>
+                        </td>
+                        <td style="text-align:right;vertical-align:top;padding-right:10px;padding-top:20px;font-size:14pt;font-weight:bold;color:gray">
+                            <img src="logobig.png" style="width:221px;height:104px" align="absmiddle" />
+                            <div style="padding-top:5px;padding-right:10px">
+                                Documentation Library
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
             
-            </td>
-            <td style="padding-left:20px">
-                <%= sb.ToString() %>
-            </td>
-            <td style="text-align:right;vertical-align:top;padding-right:10px;padding-top:20px;font-size:14pt;font-weight:bold;color:gray">
-                <img src="logobig.png" style="width:221px;height:104px" align="absmiddle" />
-                <div style="padding-top:5px;padding-right:10px">
-                    Documentation Library
-                </div>
-            </td>
+           
         </tr>
     </table>
 </body>

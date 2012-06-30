@@ -15,10 +15,10 @@ Here is an example of a simple range:
 >>[1..10]
 You can specify an optional step in a range: 
 >>[1,3..10]
-If the first element of a range is lesser than the last element of a range is mandatory: 
+If the first element of a range is lesser than the last element of a range, a step is mandatory: 
 >>[10,9..1]
 >>[10,7.. --10]
-Ranges can contain numeric types or tuples: 
+Ranges work with numeric types and tuples: 
 >>>[(1,2)..(5,10)]
 
 =Non-strict Ranges

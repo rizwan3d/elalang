@@ -5,7 +5,7 @@
 This article discusses primitive types in Ela. 
 
 =Booleans
-Booleans can be created using true and false literals: 
+Booleans can be created using `true` and `false` literals: 
 >>t = true
 >>f = false
 Unlike many other languages booleans in Ela don't support explicit conversion to/from integer numbers. //br
@@ -18,18 +18,18 @@ The following prelude functions returns booleans as a result: `not` (logical neg
 
 =Numeric types
 Ela has four numeric types - 32-bit integers, 64-bit integers, 32-bit floats and 64-bit floats. In the current 
-implementation all these types are mapped respectively to .NET Framework types `System.Int32`, `System.Int64`, `System.Single` 
+implementation all these types are mapped directly to .NET Framework types `System.Int32`, `System.Int64`, `System.Single` 
 and `System.Double`. All these types have their special literal syntax: 
 >>i = 42 //integer
 >>l = 42L //long
 >>f = 1.42 //float
->>d = 1.42 //double
+>>d = 1.42D //double
 Prelude defines multiple arithmetic functions such as `+` (addition), `-` (subtraction), `*` (multiplication), `/` (division), 
 `%` (remainder), `**` (power), `--` (unary negation). All these functions support implicit conversions between these types. 
 Once can also use bitwise operators from prelude with integer numbers: `&&&` (bitwise AND), `|||` (bitwise OR), `^^^` (bitwise XOR), 
 `<<<` (left shift), `>>>` (right shift) and `~~~` (bitwise not). 
 
-=Strings and chars
+=Strings and Chars
 Strings in Ela are unicode sequences of characters. In the current implementation they do map directly to the .NET Framework data 
 type `System.String`. Chars are unicode characters. 
 >>s = "Hello, world!"
@@ -43,7 +43,8 @@ Strings and chars can be compared using all standard prelude comparison operator
 `++` function from prelude. 
 
 =Unit
-Unit is a "replacement" for `null` in Ela. Many functional languages use a unit type instead of a null. Unit has its own literal in Ela: 
+Unit is a "replacement" for `null` in Ela. Many functional languages use a unit type instead of a `null`. Unit has 
+its own literal in Ela: 
 >>u = () //u now is unit
 Unlike `null` unit is an actual value. You can even apply functions to unit: 
 >>() == ()

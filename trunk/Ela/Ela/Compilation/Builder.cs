@@ -124,7 +124,7 @@ namespace Ela.Compilation
                     {
                         var v = (ElaLetBinding)exp;
                         StartScope(false, v.Line, v.Column);
-                        WalkDeclarations(v.Equations, map, Hints.None);
+                        CompileEquationSet(v.Equations, map);
                         CompileExpression(v.Expression, map, hints);
                         EndScope();
                     }
