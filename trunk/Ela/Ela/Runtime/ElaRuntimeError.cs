@@ -56,7 +56,7 @@ namespace Ela.Runtime
 
 		InvalidIndexType = 824,
 
-        Read = 825,
+        // = 825,
 
 		InvalidOp = 826,
 

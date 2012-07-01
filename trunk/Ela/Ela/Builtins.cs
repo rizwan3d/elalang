@@ -26,8 +26,7 @@ namespace Ela
                 case "untag": return ElaBuiltinKind.Untag;
                 
                 case "showf": return ElaBuiltinKind.Showf;
-                case "readf": return ElaBuiltinKind.Readf;
-
+                
                 case "recfield": return ElaBuiltinKind.RecField;
                 case "cast": return ElaBuiltinKind.Cast;
                 case "equal": return ElaBuiltinKind.Equal;

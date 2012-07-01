@@ -174,9 +174,6 @@
   <data name="PrivateVariable" xml:space="preserve">
     <value>The name '{0}' is declared as private and cannot be referenced.</value>
   </data>
-  <data name="Read" xml:space="preserve">
-    <value>Unable to read of a value of type '{0}' from a string '{1}'.</value>
-  </data>
   <data name="TooFewParams" xml:space="preserve">
     <value>Partial application of a function is not supported. Function is called from external context (e.g. Ela function from .NET code).</value>
   </data>

@@ -28,12 +28,6 @@ namespace Ela.Runtime
 		}
 
 
-        public void UnableRead(ElaValue val, string str)
-        {
-            Fail(ElaRuntimeError.Read, ((ElaTypeInfo)val.Ref).ReflectedTypeName, str);
-        }
-
-
 		public void DivideByZero(ElaValue value)
 		{
 			Fail(ElaRuntimeError.DivideByZero, value.ToString(), value.GetTypeName());

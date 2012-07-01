@@ -6,8 +6,6 @@ namespace Ela.Runtime.Classes
 {
     public class Class
     {
-        private ElaFunction read;
-
         private ElaFunction or;
         private ElaFunction and;
         private ElaFunction xor;
@@ -328,18 +326,6 @@ namespace Ela.Runtime.Classes
             return false;
         }
 
-        internal virtual ElaValue Parse(ElaValue instance, string format, string value, ExecutionContext ctx)
-        {
-            if (read != null)
-            {
-                ctx.SetDeffered(read, 2);
-                return Default();
-            }
-
-            ctx.NoOverload(instance.GetTypeName(), "read");
-            return Default();
-        }
-
         internal virtual ElaValue Head(ElaValue left, ExecutionContext ctx)
         {
             if (head != null)
@@ -492,10 +478,6 @@ namespace Ela.Runtime.Classes
                     break;
                 case ElaBuiltinKind.Showf:
                     show = fun;
-                    break;
-                
-                case ElaBuiltinKind.Readf:
-                    read = fun;
                     break;
             }            
         }

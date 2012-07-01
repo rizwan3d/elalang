@@ -96,13 +96,5 @@ namespace Ela.Runtime.Classes
 
             return left.I4 <= right.I4;
         }
-
-        internal override ElaValue Parse(ElaValue instance, string format, string value, ExecutionContext ctx)
-        {
-            if (String.IsNullOrEmpty(value))
-                return new ElaValue('\0');
-
-            return new ElaValue(value[0]);
-        }
     }
 }

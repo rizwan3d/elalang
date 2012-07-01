@@ -366,18 +366,5 @@ namespace Ela.Runtime.Classes
 
             return left.Ref.AsLong() <= right.Ref.AsLong();
         }
-
-        internal override ElaValue Parse(ElaValue instance, string format, string value, ExecutionContext ctx)
-        {
-            var res = 0L;
-
-            if (!Int64.TryParse(value, NumberStyles.Any, Culture.NumberFormat, out res))
-            {
-                ctx.UnableRead(instance, value);
-                return Default();
-            }
-
-            return new ElaValue(res);
-        }
     }
 }
