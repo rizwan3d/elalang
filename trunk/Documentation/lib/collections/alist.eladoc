@@ -22,6 +22,7 @@ split xs
 Splits an associative list into two lists - the first contains keys and the second contains values.
 Lists are returned as a pair:
 >>>split [(1,"foo"),(2,"bar")]
+This function requires a qualified access, e.g. `alist.split`.
 
 keys xs
 Returns a list of a keys of a given associative list:
@@ -34,3 +35,4 @@ Returns a list of a values of a given associative list:
 fromRecord rec
 Constructs an associative list from a given record:
 >>>fromRecord {x=1,y=2,z=3}
+This function requires a qualified access, e.g. `alist.fromRecord`.

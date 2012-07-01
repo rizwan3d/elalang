@@ -36,8 +36,7 @@ namespace Ela.Runtime.Classes
         private ElaFunction tail;
         private ElaFunction isnil;
         private ElaFunction show;
-        private ElaFunction cast;
-
+        
         internal Class()
         {
 
@@ -401,18 +400,6 @@ namespace Ela.Runtime.Classes
             }
         }
 
-        internal virtual ElaValue CastTo(ElaValue castTo, ElaValue value, ExecutionContext ctx)
-        {
-            if (cast != null)
-            {
-                ctx.SetDeffered(cast, 2);
-                return Default();
-            }
-
-            ctx.NoOverload(value.GetTypeName(), "cast");
-            return Default();
-        }
-
         protected ElaValue Default()
         {
             return new ElaValue(ElaObject.ElaInvalidObject.Instance);
@@ -506,10 +493,7 @@ namespace Ela.Runtime.Classes
                 case ElaBuiltinKind.Showf:
                     show = fun;
                     break;
-                case ElaBuiltinKind.Cast:
-                    cast = fun;
-                    break;
-
+                
                 case ElaBuiltinKind.Readf:
                     read = fun;
                     break;

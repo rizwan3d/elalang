@@ -6,18 +6,22 @@ import libDateTime#elalib@dt
 
 /* Construction */
 type datetime
-     where fromTicks (x is long) = DateTime x
-           fromTuple (y,m,d) = DateTime (dt.newDateTime y m d 0 0 0 0)
-           fromTuple (y,m,d,h,mm) = DateTime (dt.newDateTime y m d h mm 0 0)
-           fromTuple (y,m,d,h,mm,s,ms) = DateTime (dt.newDateTime y m d h mm s ms)
-
-now () = fromTicks <| dt.now!
-
-today () = fromTicks <| dt.today!
-
-maxDateTime = fromTicks <| dt.maxDateTime
-
-minDateTime = fromTicks <| dt.minDateTime
+      where 
+            fromTicks (x is long) = DateTime x
+     
+            fromTuple (y,m,d) = DateTime (dt.newDateTime y m d 0 0 0 0)
+            fromTuple (y,m,d,h,mm) = DateTime (dt.newDateTime y m d h mm 0 0)
+            fromTuple (y,m,d,h,mm,s,ms) = DateTime (dt.newDateTime y m d h mm s ms)
+     
+            now () = DateTime (dt.now!)
+           
+            today () = DateTime (dt.today!)
+           
+            min # qualified
+            min = DateTime dt.maxDateTime
+           
+            max # qualified
+            max = DateTime dt.maxDateTime
 
 /* Instances */
 instance Eq datetime
@@ -32,12 +36,6 @@ instance Ord datetime
 
 instance Show datetime
   where showf fmt (DateTime x) = dt.formatToString fmt x
-
-//instance Read datetime
-//  where readf fmt str = datetime (dt.parse fmt str)
-
-instance Typeable datetime
-  where cast (_ is long) x = dt.ticks x
 
 /* Functions */
 add (DateTime x) (DateTime y) = fromTicks <| dt.add x y

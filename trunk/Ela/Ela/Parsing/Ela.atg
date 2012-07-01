@@ -1081,11 +1081,11 @@ PRODUCTIONS
 	        scanner.InjectBlock();
 	    .)
 	    (
-	        Binding<block,null> EndBlock
+	        Binding<block,null> (. if (RequireEndBlock()) .) EndBlock
 	        {	            
 	            (. scanner.InjectBlock(); .)
 	            Binding<block,null>
-	            EndBlock
+	            (. if (RequireEndBlock()) .) EndBlock
 	        }
 	    ).	 
 	    

@@ -1,5 +1,7 @@
 ﻿using System;
 using Ela.Linking;
+using Ela.Runtime;
+using Ela.Runtime.ObjectModel;
 
 namespace Ela.Library.General
 {
@@ -27,7 +29,13 @@ namespace Ela.Library.General
             Add<Int32,Int32,Int32,Int32>("rnd", Rnd);
 			Add("pi", Math.PI);
 			Add("e", Math.E);
+            Add<String,ElaValue,ElaVariant>("createVariant", CreateVariant);
 		}
+
+        public ElaVariant CreateVariant(string tag, ElaValue val)
+        {
+            return new ElaVariant(tag, val);
+        }
 
 		public double Exp(double val)
 		{

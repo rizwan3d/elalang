@@ -383,25 +383,5 @@ namespace Ela.Runtime.Classes
 
             return new ElaValue(res);
         }
-
-        internal override ElaValue CastTo(ElaValue castTo, ElaValue value, ExecutionContext ctx)
-        {
-            switch (castTo.TypeCode)
-            {
-                case ElaTypeCode.Char:
-                    return new ElaValue((Char)value.I4);
-                case ElaTypeCode.Double:
-                    return new ElaValue((Double)value.I4);
-                case ElaTypeCode.Long:
-                    return new ElaValue((Int64)value.I4);
-                case ElaTypeCode.Single:
-                    return new ElaValue((Single)value.I4);
-                default:
-                    {
-                        ctx.ConversionFailed(value, castTo.GetTypeName());
-                        return Default();
-                    };
-            }
-        }
     }
 }

@@ -22,39 +22,6 @@ type unit
 type object
 type variant
 
-/* Typeable */
-class Typeable __internal Typeable cast
-
-toInt    = cast 0
-toLong   = cast 0L
-toSingle = cast 0F
-toDouble = cast 0D
-toBool   = cast false
-toChar   = cast '\0'
-toList   = cast []
-toString = cast ""
-
-instance Typeable bool //toInt
-
-instance Typeable char //toString, toInt
-
-instance Typeable double //toInt, toLong, toSingle
-
-instance Typeable int //toChar, toDouble, toLong, toSingle
-
-instance Typeable long //toDouble, toInt, toSingle
-
-instance Typeable single //toDouble, toLong, toInt
-
-instance Typeable string //toList
-
-instance Typeable list
-  where cast (_ is string) x = castString x
-
-castString # private
-castString (x::xs) = showf "" x ++ castString xs
-castString [] = ""
-
 /* Eq */
 class Eq __internal Eq (==) (<>)
 
@@ -303,20 +270,17 @@ instance Show record
                           len = length t
                           (!!) = __internal recfield
 
-/* Read 
-class Read
-      readf (readf)
+/* Cast functions */
+cast # private
+cast = __internal cast
 
-
-let read = readf "" 
-let readInt     = readf "" ?int
-let readLong    = readf "" ?long
-let readSingle  = readf "" ?single
-let readDouble  = readf "" ?double
-let readBool    = readf "" ?bool
-let readList    = readf "" ?list
-let readTuple   = readf "" ?tuple
-let readRecord  = readf "" ?record */
+toInt    = cast 1
+toLong   = cast 2
+toSingle = cast 3
+toDouble = cast 4
+toBool   = cast 5
+toChar   = cast 6
+toString = cast 7
 
 /* Misc operators */
 not = __internal not

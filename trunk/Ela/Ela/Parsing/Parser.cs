@@ -547,10 +547,12 @@ internal sealed partial class Parser {
 		scanner.InjectBlock();
 		
 		Binding(block,null);
+		if (RequireEndBlock()) 
 		EndBlock();
 		while (StartOf(1)) {
 			scanner.InjectBlock(); 
 			Binding(block,null);
+			if (RequireEndBlock()) 
 			EndBlock();
 		}
 	}

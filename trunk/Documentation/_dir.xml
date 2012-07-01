@@ -15,6 +15,7 @@
     <doc name="string" file="lib\string.htm" />
     <doc name="record" file="lib\record.htm" />
     <doc name="datetime" file="lib\datetime.htm" />
+    <doc name="variant" file="lib\variant.htm" />
     <doc name="thunk" file="lib\thunk.htm" />
     <doc name="format" file="lib\format.htm" />    
     <doc name="reflect" file="lib\reflect.htm" />
