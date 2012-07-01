@@ -78,14 +78,15 @@ namespace Ela.Compilation
                     }
 
                     //Forward declaration
-                    AddNoInitVariable(b);
-
-                    //This is a global binding that is initialized with a built-in. Or a 'safe'
-                    //expression (no variable references). It is perfectly safe to compile it right away. 
-                    if (b.Right.Type == ElaNodeType.Builtin || b.Safe())
-                        CompileDeclaration(b, map, Hints.Left);
-                    else
-                        list.Add(b);
+                    if (AddNoInitVariable(b))
+                    {
+                        //This is a global binding that is initialized with a built-in. Or a 'safe'
+                        //expression (no variable references). It is perfectly safe to compile it right away. 
+                        if (b.Right.Type == ElaNodeType.Builtin || b.Safe())
+                            CompileDeclaration(b, map, Hints.Left);
+                        else
+                            list.Add(b);
+                    }
                 }
                 else if (b.Left.Type == ElaNodeType.Header)
                 {

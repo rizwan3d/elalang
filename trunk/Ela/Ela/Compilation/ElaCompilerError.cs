@@ -79,5 +79,7 @@ namespace Ela.Compilation
         TypeMemberNoPatterns = 334,
 
         HeaderNotConnected = 335,
+
+        InvalidFunctionDeclaration = 336,
 	}
 }

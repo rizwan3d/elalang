@@ -129,6 +129,9 @@ map' f xs
 Maps a functions `f` to all elements of `xs` list and constructs a new list. This is a non-strict 
 function, it always constructs a lazy list. 
 
+count f xs
+Counts elements in a list `xs` that satisfy predicate `f`.
+
 filter p xs
 Returns all elements from a list `xs` that satisfy `p` predicate. 
 

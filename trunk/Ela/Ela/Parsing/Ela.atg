@@ -1113,12 +1113,12 @@ PRODUCTIONS
 		
 	Binding<ElaEquationSet block, string type> =
 	    (. 
-	        var bid = new ElaEquation(t);
+	        var bid = default(ElaEquation);
 	        var left = default(ElaExpression);
 	        var right = default(ElaExpression);
 	    .)
 	    (
-	        Expr<out left> 
+	        Expr<out left> (. bid = new ElaEquation(t); .)
 	        [ 
 	            "=" Expr<out right> 
 	            | "|" Guard<out right>

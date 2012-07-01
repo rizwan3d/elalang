@@ -106,7 +106,7 @@ namespace Ela.Compilation
         //This method also calculates additional flags and metadata for variables.
         //If a given binding if defined by pattern matching then all variables from
         //patterns are traversed using AddPatternVariable method.
-        private void AddNoInitVariable(ElaEquation exp)
+        private bool AddNoInitVariable(ElaEquation exp)
         {
             var flags = exp.VariableFlags | ElaVariableFlags.NoInit;
             
@@ -114,6 +114,13 @@ namespace Ela.Compilation
             if (exp.IsFunction())
             {
                 var name = exp.GetFunctionName();
+
+                if (name == null)
+                {
+                    AddError(ElaCompilerError.InvalidFunctionDeclaration, exp, FormatNode(exp.Left));
+                    return false;
+                }
+
                 AddVariable(name, exp.Left, flags | ElaVariableFlags.Function, -1);
             }
             else if (exp.Left.Type == ElaNodeType.NameReference)
@@ -147,6 +154,8 @@ namespace Ela.Compilation
             }
             else
                 AddPatternVariables(exp.Left);
+
+            return true;
         }
 
         //Adding all variables from pattern as NoInit's. This method recursively walks 

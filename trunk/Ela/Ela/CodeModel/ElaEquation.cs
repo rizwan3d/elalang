@@ -69,7 +69,12 @@ namespace Ela.CodeModel
 
         internal string GetFunctionName()
         {
-            return ((ElaJuxtaposition)Left).Target.GetName();
+            var t = ((ElaJuxtaposition)Left).Target;
+
+            if (t.Type == ElaNodeType.NameReference)
+                return t.GetName();
+            else
+                return null;
         }
 
         internal string GetLeftName()
