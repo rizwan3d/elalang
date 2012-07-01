@@ -9,23 +9,17 @@ namespace Ela.Linking
 {
 	public sealed class ObjectFileReader : ObjectFile
 	{
-		#region Construction
-		public ObjectFileReader(FileInfo file)
-			: base(file)
+		public ObjectFileReader(FileInfo file) : base(file)
 		{
 
 		}
-		#endregion
 
-
-		#region Methods
 		public CodeFrame Read()
 		{
 			using (var bw = new BinaryReader(File.OpenRead()))
 				return Read(bw);
 		}
-
-
+        
 		private CodeFrame Read(BinaryReader bw)
 		{
 			var frame = new CodeFrame();
@@ -98,7 +92,7 @@ namespace Ela.Linking
             c = bw.ReadInt32();
 
             for (var i = 0; i < c; i++)
-                frame.InternalTypes.Add(bw.ReadString(), -1);
+                frame.InternalTypes.Add(bw.ReadString(), bw.ReadInt32());
 
             c = bw.ReadInt32();
 
@@ -154,6 +148,5 @@ namespace Ela.Linking
 
 			return frame;
 		}
-		#endregion
 	}
 }

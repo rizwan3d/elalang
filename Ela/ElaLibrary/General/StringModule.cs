@@ -31,9 +31,10 @@ namespace Ela.Library.General
 			Add<String,String,Boolean>("endsWith", EndsWith);
 			Add<String,String,String,String>("replace", Replace);
 			Add<Int32,Int32,String,String>("remove", Remove);
-			Add<String[],String,ElaList>("split", Split);
+			Add<String,String,ElaList>("split", Split);
 			Add<Int32,Int32,String,String>("substr", Substring);
 			Add<Int32,String,String,String>("insert", Insert);
+            Add<ElaString,ElaList>("toList", ToList);
 		}
         
 		public string ToUpper(string val)
@@ -73,7 +74,7 @@ namespace Ela.Library.General
 
 		public string TrimEndChars(char[] cz, string val)
 		{
-			return val.TrimStart(cz);
+			return val.TrimEnd(cz);
 		}
         
 		public int IndexOf(string search, string str)
@@ -116,9 +117,9 @@ namespace Ela.Library.General
 			return str.Substring(start, length);
 		}
 
-		public ElaList Split(string[] seps, string str)
+		public ElaList Split(string sep, string str)
 		{
-			var arr = str.Split(seps, StringSplitOptions.RemoveEmptyEntries);
+			var arr = str.Split(new string[] { sep }, StringSplitOptions.RemoveEmptyEntries);
 			var list = ElaList.Empty;
 
 			for (var i = arr.Length - 1; i > -1; i--)
@@ -131,5 +132,10 @@ namespace Ela.Library.General
 		{
             return str.Insert(index, toInsert);
 		}
+
+        public ElaList ToList(ElaString str)
+        {
+            return str.ToList();
+        }
 	}
 }

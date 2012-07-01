@@ -508,7 +508,8 @@ namespace Ela.Compilation
                     if ((nam.VariableFlags & ElaVariableFlags.Builtin) != ElaVariableFlags.Builtin ||
                         ((ElaBuiltinKind)nam.Data) != ElaBuiltinKind.Cons)
                     {
-                        AddError(ElaCompilerError.InvalidPattern, call.Target, FormatNode(call.Target));
+                        if (!options.IgnoreUndefined)
+                            AddError(ElaCompilerError.InvalidPattern, call.Target, FormatNode(call.Target));
                         return;
                     }
                 }

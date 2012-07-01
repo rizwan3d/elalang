@@ -3,38 +3,41 @@
   Created in 2012 by Basil Voronkov
 */
 import libString#elalib@str
-open thunk
 
-upper s = str.upper (force s)
+upper (x is string) = str.upper x
+lower (x is string) = str.lower x
 
-lower s = str.lower (force s)
-
-trim s = str.trim (force s)
-
-trimChars chz s = str.trimChars (forceAll chz) (force s)
-
+trim (x is string) = str.trim x
+trimChars = collect str.trimChars []
 trimStart s = str.trimStart (force s)
-
+trimStartChars = collect str.trimStartChars []
 trimEnd s = str.trimEnd (force s)
+trimEndChars = collect str.trimEndChars []
 
-trimStartChars chz s = str.trimStartChars (forceAll chz) (force s)
+indexOf (search is string) (s is string) = str.indexOf search s
+indexOfFrom (search is string) (idx is int) (s is string) = str.indexOfFrom search idx s
 
-trimEndChars chz s = str.trimEndChars (forceAll chz) (force s)
+startsWith (search is string) (s is string) = str.startsWith search s
+endsWith (search is string) (s is string) = str.endsWith search s
 
-indexOf search s = str.indexOf (force search) (force s)
+replace (search is string) (repl is string) (s is string) = str.replace search repl s
 
-indexOfFrom search idx s = str.indexOfFrom (force search) (force idx) (force s)
+remove (start is int) (n is int) (s is string) = str.remove start n s
 
-startsWith search s = str.startsWith (force search) (force s)
+substr (start is int) (n is int) (s is string) = str.substr start n s
 
-endsWith search s = str.endsWith (force search) (force s)
+split (sep is string) (s is string) = str.split sep s
 
-replace search repl s = str.replace (force search) (force repl) (force s)
+insert (idx is int) (ins is string) (s is string) = str.insert idx ins s
 
-remove start n s = str.remove (force start) (force n) (force s)
+fromList # qualified
+fromList (x::xs) = x ++ fromList xs
+fromList [] = ""
 
-substr start n s = str.substr (force start) (force n) (force s)
+toList # qualified
+toList (x is string) = str.toList x
 
-split seps s = str.split (forceAll seps) (force s)
-
-insert idx ins s = str.insert (force idx) (force ins) (force s)
+//This function is used to collect chars in a list
+collect # private
+collect fn xs (x is char) = collect fn (x::xs)
+collect fn xs (x is string) = fn xs x

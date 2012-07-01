@@ -66,6 +66,9 @@ namespace Elide.ElaCode
 
         private void FindName(string name, CodeDocument doc, ElaExpression expr, List<SymbolLocation> syms)
         {
+            if (expr == null)
+                return;
+
             switch (expr.Type)
             {
                 case ElaNodeType.As:
