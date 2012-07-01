@@ -68,7 +68,6 @@ namespace Ela.Compilation
 			1, //Gettag
 			1, //Cast
             1, //Recfld
-            1, //Readf
             1, //Addmbr            
             1, //Traitch
 

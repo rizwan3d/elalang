@@ -38,8 +38,6 @@ namespace Ela.CodeModel
 
         Showf,
 
-        Readf,
-
         Cast,
         
         ForwardPipe,

@@ -399,53 +399,6 @@ namespace Ela.Runtime
                             }
                         }
                         break;
-                    case Op.Read:
-                        {
-                            var fmt = evalStack.Pop();
-                            right = evalStack.Pop();
-                            left = evalStack.Pop();
-
-                            if (left.TypeId == LAZ || right.TypeId == LAZ || fmt.TypeId == LAZ)
-                            {
-                                left = left.Ref.Force(left, ctx);
-                                right = right.Ref.Force(right, ctx);
-                                fmt = fmt.Ref.Force(fmt, ctx);
-                            }
-
-                            if (fmt.TypeId != STR)
-                            {
-                                InvalidType(fmt, thread, evalStack, TypeCodeFormat.GetShortForm(ElaTypeCode.String));
-                                goto SWITCH_MEM;
-                            }
-
-                            if (left.TypeId != STR)
-                            {
-                                InvalidType(left, thread, evalStack, TypeCodeFormat.GetShortForm(ElaTypeCode.String));
-                                goto SWITCH_MEM;
-                            }
-
-                            if (right.TypeId != TYP)
-                            {
-                                InvalidType(left, thread, evalStack, TypeCodeFormat.GetShortForm(ElaTypeCode.TypeInfo));
-                                goto SWITCH_MEM;
-                            }
-
-                            evalStack.Push(cls[((ElaTypeInfo)right.Ref).ReflectedTypeCode].Parse(right, fmt.DirectGetString(), left.DirectGetString(), ctx));
-
-                            if (ctx.Failed)
-                            {
-                                evalStack.PopVoid();
-                                evalStack.Push(left);
-
-                                if (ctx.Fun == null)
-                                    evalStack.Push(right);
-
-                                evalStack.Push(fmt);
-                                ExecuteFail(ctx.Error, thread, evalStack);
-                                goto SWITCH_MEM;
-                            }
-                        }
-                        break;
                     case Op.Reccons:
                         {
                             right = evalStack.Pop();

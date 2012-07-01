@@ -66,7 +66,6 @@ namespace Ela.Compilation
         Gettag,
         Cast,
         Recfld,
-        Read,
         Addmbr,                
         Traitch,
 

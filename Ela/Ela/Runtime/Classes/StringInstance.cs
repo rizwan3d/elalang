@@ -97,11 +97,6 @@ namespace Ela.Runtime.Classes
             return left.DirectGetString().CompareTo(right.DirectGetString()) <= 0;
         }
 
-        internal override ElaValue Parse(ElaValue instance, string format, string value, ExecutionContext ctx)
-        {
-            return new ElaValue(value);
-        }
-
         internal override ElaValue Head(ElaValue left, ExecutionContext ctx)
         {
             return new ElaValue(left.DirectGetString()[0]);

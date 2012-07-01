@@ -39,9 +39,6 @@ namespace Ela.Compilation
         {
             switch (kind)
             {
-                case ElaBuiltinKind.Readf:
-                    cw.Emit(Op.Read);
-                    break;
                 case ElaBuiltinKind.RecField:
                     cw.Emit(Op.Recfld);
                     break;
@@ -166,9 +163,6 @@ namespace Ela.Compilation
         //Determines the number of built-in parameters based on its kind.
         private int BuiltinParams(ElaBuiltinKind kind)
         {
-            if (kind == ElaBuiltinKind.Readf)
-                return 3;
-
             return kind >= ElaBuiltinKind.Showf ? 2 : 1;
         }
     }

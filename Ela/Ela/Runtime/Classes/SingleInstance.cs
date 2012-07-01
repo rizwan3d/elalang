@@ -272,18 +272,5 @@ namespace Ela.Runtime.Classes
 
             return left.DirectGetReal() <= right.DirectGetReal();
         }
-
-        internal override ElaValue Parse(ElaValue instance, string format, string value, ExecutionContext ctx)
-        {
-            var res = 0f;
-
-            if (!Single.TryParse(value, NumberStyles.Any, Culture.NumberFormat, out res))
-            {
-                ctx.UnableRead(instance, value);
-                return Default();
-            }
-
-            return new ElaValue(res);
-        }
     }
 }
