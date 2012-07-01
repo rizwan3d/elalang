@@ -297,4 +297,8 @@ group = groupBy (==)
 
 intersectBy eq xs ys =  [x \\ x <- xs | any (eq x) ys]
 
-intersect = intersectBy (==) 
+intersect = intersectBy (==)
+
+count f = count' 0
+  where count' n (x::xs) | f x = count (n+1) xs | else = count n xs
+        count' n [] = n

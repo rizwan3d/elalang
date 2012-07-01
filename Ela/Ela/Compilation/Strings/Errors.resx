@@ -144,6 +144,9 @@
   <data name="InvalidExpression" xml:space="preserve">
     <value>An expression '{0}' is not valid in this context.</value>
   </data>
+  <data name="InvalidFunctionDeclaration" xml:space="preserve">
+    <value>Invalid function declaration: {0}.</value>
+  </data>
   <data name="InvalidMatchEntry" xml:space="preserve">
     <value>Match entry {0} is invalid.</value>
   </data>

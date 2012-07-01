@@ -1239,11 +1239,12 @@ internal sealed partial class Parser {
 	}
 
 	void Binding(ElaEquationSet block, string type) {
-		var bid = new ElaEquation(t);
+		var bid = default(ElaEquation);
 		var left = default(ElaExpression);
 		var right = default(ElaExpression);
 		
 		Expr(out left);
+		bid = new ElaEquation(t); 
 		if (la.kind == 21 || la.kind == 47 || la.kind == 52) {
 			if (la.kind == 52) {
 				Get();
