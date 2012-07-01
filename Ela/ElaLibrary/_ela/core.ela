@@ -86,9 +86,14 @@ sortBy pred [] = []
 sort = sortBy (<=)
 
 //Lazy sort based on quick sort
-sort' [] = []
-sort' (x::xs) = sort' [& y \\ y <- xs | y < x ] 
-                ++ [x] ++ (& sort' [& y \\ y <- xs | y >= x])
+sort' x = qsort x []
+  where qsort [] y = y
+        qsort [x] y = x::y
+        qsort (x::xs) y = part xs [] [x] []  
+            where part [] l e g = qsort l (e ++ (& qsort g y))
+                  part (z::zs) l e g | z > x = part zs l e (z::g) 
+                                     | z < x = part zs (z::l) e g 
+                                     | else  = part zs l (z::e) g
 
 last (x::[]) = x
 last (_::xs) = last xs

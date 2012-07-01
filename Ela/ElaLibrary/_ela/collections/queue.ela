@@ -6,16 +6,19 @@ open core
 
 /* Construction */
 type queue
-  where fromPair (f,b) = Queue (f,b)
-        empty = fromPair ([],[])
+  where 
+        fromPair # private
+        fromPair (f,b) = Queue (f,b)
+        
+        fromList # qualified
         fromList xs = fromPair (reverse xs, [])
+        
+        empty # qualified
+        empty = fromPair ([],[])
 
 /* Instances */
 instance Show queue
   where showf f q = "queue" ++ showf f (toList q)
-
-instance Typeable queue
-  where cast (_ is list) (Queue (f,b)) = f ++ reverse b
 
 instance Cat queue
   where q1 ++ q2 = toList q1 ++ toList q2
@@ -35,6 +38,9 @@ instance Ix queue
         length (Queue (f,b)) = length f + length b
 
 /* Functions */
+toList # qualified
+toList (Queue (f,b)) = f ++ reverse b
+
 enqueue e (Queue (f,b)) = enq f b
       where enq [] b = fromPair ([e], b)
             enq f b  = fromPair (f, e::b)

@@ -9,16 +9,22 @@ queue
 An immutable queue that implements FIFO (first-in-first-out) container. This implementation of
 queue is based on a linked list and uses two linked lists for internal data representation.
 
-fromPair
-Creates a queue from a pair of lists:
->>>fromPair ([1,2],[3,4])
+empty
+This is a constant that returns an empty queue. This constant requires a qualified access, e.g. `queue.empty`.
+
+fromList
+Converts a given list to a queue:
+>>>fromList [1..10]
+This function requires a qualified access, e.g. `queue.fromList`.
+
+toList q
+Converts a given queue to a linked list.
+>>>toList <| fromList [1..5]
+This function requires a qualified access, e.g. `queue.toList`.
 
 Show queue
 Implements `showf` function for a queue. A queue is serialized to string in a similar manner as
 a linked list but with a `queue` prefix.
-
-Typeable queue
-Implements type casting function for a queue. A queue supports casting to a linked list.
 
 Cat queue
 Implements concatenation operator for a queue. Queues can be concatenated only with other queues.
@@ -35,13 +41,6 @@ queue in the same way as a linked list:
 Ix queue
 Implements functions `:` and `length` for a queue. This instance allows to pattern match queue using
 a tuple pattern.
-
-empty
-This is a constant that returns an empty queue.
-
-fromList
-Converts a given list to a queue:
->>>fromList [1..10]
 
 enqueue e qu
 Appends an elements to the beggining of a given queue and returns a new queue:

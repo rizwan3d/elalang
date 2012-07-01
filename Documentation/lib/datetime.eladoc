@@ -19,6 +19,12 @@ mimimum number of elements in a tuple is three (year, month, day):
 The maximum number of elements in a tuple is seven (year, month, day, hour, minute, second, millisecond):
 >>>fromTuple (2012,2,3,16,44,12,124)
 
+max
+Returns the maximum possible value for date and time. This constant requires a qualified access, e.g. `datetime.max`.
+
+min
+Returns the minimum possible value for date and time. This constant requires a qualified access, e.g. `datetime.min`.
+
 Eq datetime
 Implements equality functions for a datetime.
 
@@ -30,16 +36,6 @@ Implements `showf` function for a datetime. A format string is fully supported a
 to specify an output format for a datetime in .Net Framework `DateTime.ToString` fashion, e.g.:
 >>>showf "dd/MM/yyyy" <| now!
 By default a format string `dd/MM/yyyy HH:mm:ss` is used.
-
-Typeable datetime
-Implements type cast functions for a datetime. A datetime instance can be casted to a 64-bit 
-integer (long).
-
-maxDateTime
-Returns the maximum possible value for date and time. 
-
-minDateTime
-Returns the minimum possible value for date and time. 
 
 now ()
 Returns the current date and time. 

@@ -25,7 +25,7 @@ namespace Ela.CodeModel
 
         internal override bool Safe()
         {
-            return Right == null ? Left.Safe() : Right.Safe();
+            return Right == null && Left.Safe();
         }
 
         internal void ToString(StringBuilder sb, int indent, bool omitFirstIndent)
