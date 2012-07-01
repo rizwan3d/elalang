@@ -158,6 +158,7 @@
     <Compile Include="Compilation\TerminationException.cs" />
     <Compile Include="Compilation\InlineFun.cs" />
     <Compile Include="Compilation\InstanceData.cs" />
+    <Compile Include="SysConst.cs" />
     <Compile Include="Linking\TypeData.cs" />
     <Compile Include="Runtime\Classes\BooleanInstance.cs" />
     <Compile Include="Runtime\Classes\CharInstance.cs" />

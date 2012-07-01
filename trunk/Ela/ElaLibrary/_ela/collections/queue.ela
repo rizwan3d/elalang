@@ -9,10 +9,8 @@ type queue
   where 
         fromPair # private
         fromPair (f,b) = Queue (f,b)
-        
         fromList # qualified
         fromList xs = fromPair (reverse xs, [])
-        
         empty # qualified
         empty = fromPair ([],[])
 

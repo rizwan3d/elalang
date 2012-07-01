@@ -29,7 +29,7 @@ namespace Ela.Runtime.ObjectModel
             return Value;
         }
         
-        internal ElaList ToList()
+        public ElaList ToList()
         {
             var str = Value;
             var xs = ElaList.Empty;

@@ -1345,8 +1345,14 @@ namespace Ela.Runtime
                         {
                             right = evalStack.Peek();
 
-                            if (right.TypeId == LAZ && ((ElaLazy)right.Ref).Value.Ref != null)
+                            if (right.TypeId == LAZ)// && ((ElaLazy)right.Ref).Value.Ref != null)
                                 right = right.Ref.Force(right, ctx);
+
+                            if (ctx.Failed)
+                            {
+                                ExecuteThrow(thread, evalStack);
+                                break;
+                            }
 
                             evalStack.Replace(new ElaValue(new ElaTypeInfo(asm.Types[right.Ref.TypeId])));
                         }

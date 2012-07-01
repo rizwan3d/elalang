@@ -6,22 +6,17 @@ namespace Ela.Linking
 {
 	public sealed class ObjectFileWriter : ObjectFile
 	{
-		#region Construction
 		public ObjectFileWriter(FileInfo file) : base(file)
 		{
 
 		}
-		#endregion
-
-
-		#region Methods
-		public void Write(CodeFrame frame)
+		
+        public void Write(CodeFrame frame)
 		{
 			using (var bw = new BinaryWriter(File.OpenWrite()))
 				Write(frame, bw);
 		}
-
-
+        
 		private void Write(CodeFrame frame, BinaryWriter bw)
 		{
 			bw.Write(Version);
@@ -103,8 +98,15 @@ namespace Ela.Linking
             var types = frame.InternalTypes;
             bw.Write(types.Count);
 
-            foreach (var t in types.Keys) 
-                bw.Write(t);
+            foreach (var kv in types)
+            {
+                bw.Write(kv.Key);
+
+                if (kv.Value <= SysConst.MAX_TYP)
+                    bw.Write(kv.Value);
+                else
+                    bw.Write(-1);
+            }
 
             var classes = frame.InternalClasses;
             bw.Write(classes.Count);
@@ -167,6 +169,5 @@ namespace Ela.Linking
                 }
             }            
 		}
-		#endregion
 	}
 }

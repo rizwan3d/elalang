@@ -460,7 +460,7 @@ namespace Ela.Linking
 
             var ret = default(CodeFrame);
 
-            if (file != null && file == RootFile)
+            if (source == null && file != null && file == RootFile)
             {
                 if (!CheckRootFile(out ret))
                     return null;

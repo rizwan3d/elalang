@@ -20,10 +20,9 @@ record:
 >>>addField "z" 3 {x=1,y=2}
 
 removeFields
-Removes fields specified as a tuple `fields` from a record `rec`. This function always creates a 
-new record: 
->>>rec' = {x=1,y=2}
->>>removeFields ("y",) rec'
+Removes fields from a given record. This function accepts a variadic number of arguments: 
+>>>rec' = {x=1,y=2,z=3}
+>>>removeFields "y" "z" rec'
 
 removeField
 Removes a field `fld` from a record `rec`. This function always creates a new record:

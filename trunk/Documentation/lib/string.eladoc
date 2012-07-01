@@ -5,6 +5,15 @@ This module contains functions that operate with strings.
 
 #members
 
+toList str
+Converts a given string to a linked list. This function requires a qualified access, e.g.
+`string.toList`.
+
+fromList xs
+Converts a given list to a string. Only a list of chars, a list of string or a list of chars
+and strings can be transformed to a string using this function. This function also requires
+a qualified access, e.g. `string.fromList`.
+
 upper
 Converts a given string to uppercase. 
 
@@ -15,8 +24,9 @@ trim
 Strips all trailing and leading spaces from a given string. 
 
 trimChars
-Strips all trailing and leading characters chz from a given string: 
->>>trimChars (':',';') ":Foo;"
+Strips all trailing and leading characters from a given string. This function accepts variadic
+number of arguments:
+>>>trimChars ':' ';' ":Foo;"
 
 trimStart
 Strips all leading spaces from a given string. 
@@ -25,12 +35,14 @@ trimEnd
 Strips all trailing spaces from a given string. 
 
 trimStartChars
-Strips all leading characters `chz` from a given string: 
->>>trimStartChars (':',';') ",;Foo"
+Strips all leading characters from a given string. This function accepts variadic
+number of arguments:
+>>>trimStartChars ':' ';' ",;Foo"
 
 trimEndChars
-Strips all trailing characters `chz` from a given string: 
->>>trimEndChars (':',';') "Foo;"
+Strips all trailing characters from a given string. This function accepts variadic
+number of arguments:
+>>>trimEndChars ':' ';' "Foo;"
 
 indexOf
 Returns the first index (or `-1` if nothing was found) of an occurence of the string `search` 
@@ -65,8 +77,8 @@ Returns a substring from `s` starting at position `start` with the length `n`:
 >>>substr 0 3 "Ela compiler"
 
 split
-Splits a given string into a list using a sequence of separators specified as a first argument: 
->>>split (";",",") "Ela;Elide,ElaConsole"
+Splits a given string into a list using a separator, specified as a first argument: 
+>>>split ";" "Ela;Elide;ElaConsole"
 
 insert
 Inserts a string `ins` at a position `idx` inside the string `s`. This function creates a 

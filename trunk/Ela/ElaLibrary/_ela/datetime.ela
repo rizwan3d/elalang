@@ -8,18 +8,14 @@ import libDateTime#elalib@dt
 type datetime
       where 
             fromTicks (x is long) = DateTime x
-     
             fromTuple (y,m,d) = DateTime (dt.newDateTime y m d 0 0 0 0)
             fromTuple (y,m,d,h,mm) = DateTime (dt.newDateTime y m d h mm 0 0)
             fromTuple (y,m,d,h,mm,s,ms) = DateTime (dt.newDateTime y m d h mm s ms)
-     
             now () = DateTime (dt.now!)
-           
             today () = DateTime (dt.today!)
-           
+            parse (fmt is string) (str is string) = DateTime (dt.parse fmt str)
             min # qualified
             min = DateTime dt.maxDateTime
-           
             max # qualified
             max = DateTime dt.maxDateTime
 
@@ -35,7 +31,7 @@ instance Ord datetime
         (DateTime x) <= (DateTime y) = x <= y
 
 instance Show datetime
-  where showf fmt (DateTime x) = dt.formatToString fmt x
+  where showf fmt (DateTime x) = dt.formatToString (force fmt) x
 
 /* Functions */
 add (DateTime x) (DateTime y) = fromTicks <| dt.add x y
@@ -85,5 +81,3 @@ diffSeconds x y = seconds (diffTicks x y)
 diffMilliseconds x y = milliseconds (diffTicks x y)
 
 diffTicks (DateTime x) (DateTime y) = x - y
-
-parse fmt str = fromTicks (dt.parse fmt str)
