@@ -19,8 +19,7 @@ namespace Ela.Compilation
 		
         private CodeFrame frame; //Frame that is currently compiled
         private Scope globalScope; //Global scope for the current frame
-        private Dictionary<String,Int32> stringLookup;  //String table		
-        private FastList<InlineFun> inlineFuns; //Functions that can be inlined
+        private Dictionary<String,Int32> stringLookup;  //String table
                
         private ExportVars exports; //Exports for current module
 		
@@ -38,8 +37,7 @@ namespace Ela.Compilation
 			debug = options.GenerateDebugInfo;
 			opt = options.Optimize;
 
-			stringLookup = new Dictionary<String, Int32>();
-			inlineFuns = new FastList<InlineFun>();
+			stringLookup = new Dictionary<String,Int32>();
 
             ResumeIndexer();
             Success = true;			
@@ -53,7 +51,7 @@ namespace Ela.Compilation
 			
             //Only include prelude if is allowed and if we compiling frame from scratch (not resuming in interactive mode)
 			if (!String.IsNullOrEmpty(options.Prelude) && cw.Offset == 0)
-				IncludePrelude();
+				IncludePrelude(prog);
 
             //Always include arguments module
             IncludeArguments();

@@ -6,55 +6,6 @@ namespace Ela.Compilation
     //This part contains implementation of different function application techniques.
     internal sealed partial class Builder
     {
-        //Try to inline a function by compiling it in place. If a function cannot be
-        //inlined than it returns false and a caller emits a regular function call.
-        private bool TryCompileInlineCall(ElaJuxtaposition v, LabelMap map, Hints hints)
-        {
-            ////If we don't know what is to be called - don't inline
-            //if (v.Target.Type != ElaNodeType.NameReference)
-            //    return false;
-
-            //var name = v.Target.GetFunctionName();
-            //var sv = GetVariable(name, CurrentScope, GetFlags.NoError, v.Target.Line, v.Target.Column);
-
-            ////Only function literals with 'inline' attribute are accepted
-            //if ((sv.Flags & ElaVariableFlags.Function) != ElaVariableFlags.Function
-            //    || (sv.Flags & ElaVariableFlags.Inline) != ElaVariableFlags.Inline)
-            //    return false;
-
-            ////Here we make sure that this is not a direct recursion. Indirect recursion is
-            ////OK as soon as we inline only function literals, not just expressions.
-            //if (map.FunctionName == name)
-            //    return false;
-
-            ////This should be an impossible situation. Normally Data should contains an index
-            ////of InlineFun instance (with function data) in inlineFuns list.
-            //if (sv.Data < 0)
-            //    return false;
-
-            //var fun = inlineFuns[sv.Data];
-
-            ////For now we only inline functions within the same scope (or from global
-            ////scope). There may be a problem with a variable indexing when a function
-            ////from parent non-global scope captures a variable from local scope.
-            //if (fun.Scope != CurrentScope && fun.Scope != globalScope)
-            //    return false;
-
-            ////We only inline when an exact same number of arguments is provided (e.g. this is
-            ////not a partial application).
-            //if (v.Parameters.Count != fun.Literal.ParameterCount)
-            //    return false;
-
-            ////Compiling function in-place
-            //var oc = CurrentScope;
-            //CurrentScope = new Scope(false, fun.Scope);
-            //CompileFunction(fun.Literal, FunFlag.Inline);
-            //CurrentScope = oc;
-            //return true;
-
-            return false;
-        }
-        
         //Compiling a regular function call.
         private ExprData CompileFunctionCall(ElaJuxtaposition v, LabelMap map, Hints hints)
         {
@@ -109,9 +60,6 @@ namespace Ela.Compilation
                 cw.Emit(Op.Br, map.FunStart);
                 return ed;
             }
-
-            if (opt && TryCompileInlineCall(v, map, hints))
-                return ed;
 
             if (bf != null)
             {
@@ -173,7 +121,7 @@ namespace Ela.Compilation
             {
                 //Use a tail call if this function call is a tail expression and this function
                 //is not marked with 'inline' attribute.
-                if (i == v.Parameters.Count - 1 && tail && opt && !map.InlineFunction)
+                if (i == v.Parameters.Count - 1 && tail && opt)
                     cw.Emit(Op.Callt);
                 else
                     cw.Emit(Op.Call);

@@ -18,24 +18,29 @@ namespace Elide.ElaCode
             var par = new ElaParser();
             var parRes = par.Parse(source);
             var msg = new List<MessageItem>();
-            var unit = default(ICompiledUnit);
+            var unit = doc.Unit;
             Func<ElaMessage,MessageItem> project = m => new MessageItem(
                 m.Type == MessageType.Error ? MessageItemType.Error : MessageItemType.Warning, m.Message, doc, m.Line, m.Column);
 
             if (parRes.Success)
             {
                 var copt = new CompilerOptions();
-                //copt.NoWarnings = true;
+                
                 copt.ShowHints = false;
                 copt.GenerateDebugInfo = true;
                 copt.IgnoreUndefined = true;
+                
+                //TODO: hack, should be taken from options
+                copt.Prelude = "prelude";
                 var comp = new ElaCompiler();
                
                 try
                 {
                     var compRes = comp.Compile(parRes.Program, copt, new ExportVars());
                     msg.AddRange(compRes.Messages.Where(m => m.Type != MessageType.Hint).Select(project));
-                    unit = compRes.CodeFrame != null ? new CompiledUnit(doc, compRes.CodeFrame) : null;
+                    
+                    if (compRes.CodeFrame != null)
+                        unit = new CompiledUnit(doc, compRes.CodeFrame);
                 }
                 catch { }
             }

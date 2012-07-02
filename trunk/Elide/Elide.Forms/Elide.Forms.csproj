@@ -94,6 +94,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Bitmaps.cs" />
+    <Compile Include="BufferedGridView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="BufferedTreeView.cs">
       <SubType>Component</SubType>
     </Compile>

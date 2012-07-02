@@ -22,6 +22,7 @@ namespace Elide.TextWorkbench
             internal SearchScope Scope { get; set; }
             internal int LastStartPosition { get; set; }
             internal int LastEndPosition { get; set; }
+            internal int MaxPosition { get; set; }
             internal Document LastDocument { get; set; }
             internal List<Document> ScannedDocuments { get; set; }
             internal SearchManager SearchManager { get; set; }
@@ -56,6 +57,9 @@ namespace Elide.TextWorkbench
             sw.Start();
             var rootEditor = (ITextEditor)App.GetService<IEditorService>().GetEditor(doc.GetType()).Instance;
             rootEditor.BeginUndoAction();
+
+            var startPos = scope == SearchScope.Selection ? rootEditor.SelectionStart : 0;
+            var endPos = scope == SearchScope.Selection ? rootEditor.SelectionEnd : 0;
 
             for (;;)
             {
@@ -93,7 +97,9 @@ namespace Elide.TextWorkbench
                         items.Add(item);
                         return true;
                     }
-                }, true, lastSettings != null ? lastSettings.LastEndPosition : 0, null);
+                }, true, 
+                lastSettings != null ? lastSettings.LastEndPosition : startPos,
+                lastSettings != null ? lastSettings.MaxPosition : endPos, null);
 
                 if (!res)
                     break;
@@ -118,6 +124,9 @@ namespace Elide.TextWorkbench
             sw.Start();
             var sm = default(SearchManager);
             var status = "{0} element(s) found. Search took: {1:F2} s.";
+            var rootEditor = (ITextEditor)App.GetService<IEditorService>().GetEditor(doc.GetType()).Instance;
+            var startPos = scope == SearchScope.Selection ? rootEditor.SelectionStart : 0;
+            var endPos = scope == SearchScope.Selection ? rootEditor.SelectionEnd : 0;
 
             for(;;)
             {
@@ -140,7 +149,9 @@ namespace Elide.TextWorkbench
                             items.Add(item);
                             return true;
                         }                        
-                    }, true, lastSettings != null ? lastSettings.LastEndPosition : 0, sm);
+                    }, true, 
+                    lastSettings != null ? lastSettings.LastEndPosition : 0,
+                    lastSettings != null ? lastSettings.MaxPosition : endPos, sm);
 
                 if (!res)
                     break;
@@ -159,11 +170,19 @@ namespace Elide.TextWorkbench
 
         public void Search(string text, Document doc, SearchFlags flags, SearchScope scope)
         {
-            var sp = lastSettings != null ? lastSettings.LastEndPosition : 0;
-            Search(text, doc, flags, scope, sp);
+            if (lastSettings != null)
+                Search(text, doc, flags, scope, lastSettings.LastEndPosition, lastSettings.MaxPosition);
+            else
+            {
+                var rootEditor = (ITextEditor)App.GetService<IEditorService>().GetEditor(doc.GetType()).Instance;
+                var sp = scope == SearchScope.Selection ? rootEditor.SelectionStart : rootEditor.CaretPosition;
+                var ep = scope == SearchScope.Selection ? rootEditor.SelectionEnd : 0;
+                Search(text, doc, flags, scope, sp, ep);
+            }
+            
         }
 
-        public void Search(string text, Document doc, SearchFlags flags, SearchScope scope, int startPosition)
+        public void Search(string text, Document doc, SearchFlags flags, SearchScope scope, int startPosition, int endPosition)
         {
             if (lastSettings == null)
                 App.GetService<IStatusBarService>().ClearStatusString();
@@ -176,7 +195,7 @@ namespace Elide.TextWorkbench
                 if (sci != null)
                     sci.PutArrow(sci.GetLineFromPosition(r.StartPosition));
                 return true;
-            }, false, startPosition, null);
+            }, false, startPosition, endPosition, null);
             IsFinished(res);
         }
 
@@ -185,7 +204,7 @@ namespace Elide.TextWorkbench
             if (lastSettings != null)
             {
                 if (lastSettings.LastDocument.IsAlive)
-                    Search(lastSettings.Text, lastSettings.LastDocument, lastSettings.Flags, lastSettings.Scope, lastSettings.LastEndPosition);
+                    Search(lastSettings.Text, lastSettings.LastDocument, lastSettings.Flags, lastSettings.Scope, lastSettings.LastEndPosition, lastSettings.MaxPosition);
                 else
                     lastSettings = null;
             }
@@ -193,10 +212,18 @@ namespace Elide.TextWorkbench
 
         public void Replace(string textToFind, string textToReplace, Document doc, SearchFlags flags, SearchScope scope)
         {
-            Replace(textToFind, textToReplace, doc, flags, scope, 0);
+            if (lastSettings != null)
+                Replace(textToFind, textToReplace, doc, flags, scope, lastSettings.LastEndPosition, lastSettings.MaxPosition);
+            else
+            {
+                var rootEditor = (ITextEditor)App.GetService<IEditorService>().GetEditor(doc.GetType()).Instance;
+                var sp = scope == SearchScope.Selection ? rootEditor.SelectionStart : rootEditor.CaretPosition;
+                var ep = scope == SearchScope.Selection ? rootEditor.SelectionEnd : 0;
+                Replace(textToFind, textToReplace, doc, flags, scope, sp, ep);
+            }            
         }
             
-        public void Replace(string textToFind, string textToReplace, Document doc, SearchFlags flags, SearchScope scope, int startPosition)
+        public void Replace(string textToFind, string textToReplace, Document doc, SearchFlags flags, SearchScope scope, int startPosition, int endPosition)
         {
             var ed = App.Editor(doc.GetType()) as ITextEditor;
 
@@ -210,7 +237,7 @@ namespace Elide.TextWorkbench
                 lastSettings.LastEndPosition = lastSettings.LastStartPosition + lastSettings.TextToReplace.Length;
             }
 
-            Search(textToFind, doc, flags, scope, (d,r) => {
+            var res = Search(textToFind, doc, flags, scope, (d,r) => {
                 var editor = (ITextEditor)App.GetService<IEditorService>().GetEditor(d.GetType()).Instance;
                 
                 var docServ = App.GetService<IDocumentService>();
@@ -226,7 +253,8 @@ namespace Elide.TextWorkbench
                 if (sci != null)
                     sci.PutArrow(sci.GetLineFromPosition(r.StartPosition));
                 return true;
-            }, false, lastSettings != null ? lastSettings.LastEndPosition : startPosition, null);
+            }, false, lastSettings != null ? lastSettings.LastEndPosition : startPosition, endPosition, null);
+            IsFinished(res);
         }
 
         public bool CanContinueSearch()
@@ -234,25 +262,16 @@ namespace Elide.TextWorkbench
             return lastSettings != null;
         }
         
-        private bool Search(string textToFind, Document doc, SearchFlags flags, SearchScope scope, Func<Document,SearchResult,Boolean> foundAction, bool silent, int startPosition, SearchManager sm)
+        private bool Search(string textToFind, Document doc, SearchFlags flags, SearchScope scope, Func<Document,SearchResult,Boolean> foundAction, bool silent, 
+            int startPosition, int endPosition, SearchManager sm)
         {
             lastSettings = null;            
             var editor = (ITextEditor)App.Editor(doc.GetType());            
             sm = sm ?? new SearchManager(editor.GetContent(doc));
             
             var sp = startPosition;
-            var ep = 0;
-
-            if (scope == SearchScope.Selection)
-            {
-                if (sp == 0)
-                    sp = editor.SelectionStart;
-
-                ep = editor.SelectionEnd;
-            }
-            else if (scope == SearchScope.Current && sp == 0)
-                sp = editor.CaretPosition;
-
+            var ep = endPosition;
+            
             var res = sm.Search(flags, textToFind, sp, ep);
 
             if (res.Found)
@@ -264,6 +283,7 @@ namespace Elide.TextWorkbench
                     Scope = scope,
                     LastEndPosition = res.EndPosition,
                     LastDocument = doc,
+                    MaxPosition = ep,
                     SearchManager = silent ? sm : null
                 };
 
@@ -296,7 +316,7 @@ namespace Elide.TextWorkbench
                     if (silent)
                         sm = new SearchManager(editor.GetContent(newDoc));
 
-                    return Search(textToFind, newDoc, flags, scope, foundAction, silent, 0, sm);
+                    return Search(textToFind, newDoc, flags, scope, foundAction, silent, 0, 0, sm);
                 }
 
                 return false;

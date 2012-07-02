@@ -38,6 +38,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.chars = new System.Windows.Forms.CheckBox();
             this.charsBox = new System.Windows.Forms.TextBox();
+            this.exportList = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // braces
@@ -112,7 +113,7 @@
             // 
             this.space.AutoSize = true;
             this.space.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.space.Location = new System.Drawing.Point(15, 154);
+            this.space.Location = new System.Drawing.Point(15, 173);
             this.space.Name = "space";
             this.space.Size = new System.Drawing.Size(223, 17);
             this.space.TabIndex = 18;
@@ -134,7 +135,7 @@
             // 
             this.chars.AutoSize = true;
             this.chars.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.chars.Location = new System.Drawing.Point(15, 173);
+            this.chars.Location = new System.Drawing.Point(15, 192);
             this.chars.Name = "chars";
             this.chars.Size = new System.Drawing.Size(350, 17);
             this.chars.TabIndex = 19;
@@ -144,16 +145,29 @@
             // 
             // charsBox
             // 
-            this.charsBox.Location = new System.Drawing.Point(15, 192);
+            this.charsBox.Location = new System.Drawing.Point(15, 211);
             this.charsBox.Name = "charsBox";
             this.charsBox.Size = new System.Drawing.Size(350, 20);
             this.charsBox.TabIndex = 20;
             this.charsBox.TextChanged += new System.EventHandler(this.charsBox_TextChanged);
             // 
+            // exportList
+            // 
+            this.exportList.AutoSize = true;
+            this.exportList.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            this.exportList.Location = new System.Drawing.Point(15, 154);
+            this.exportList.Name = "exportList";
+            this.exportList.Size = new System.Drawing.Size(236, 17);
+            this.exportList.TabIndex = 21;
+            this.exportList.Text = "&List module export list on entering dot (.)";
+            this.exportList.UseVisualStyleBackColor = true;
+            this.exportList.CheckedChanged += new System.EventHandler(this.CheckedChanged);
+            // 
             // ElaEditorConfigPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.exportList);
             this.Controls.Add(this.charsBox);
             this.Controls.Add(this.chars);
             this.Controls.Add(this.space);
@@ -184,5 +198,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox chars;
         private System.Windows.Forms.TextBox charsBox;
+        private System.Windows.Forms.CheckBox exportList;
     }
 }

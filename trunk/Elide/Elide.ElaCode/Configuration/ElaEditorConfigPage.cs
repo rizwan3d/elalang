@@ -26,6 +26,7 @@ namespace Elide.ElaCode.Configuration
             space.Checked = cfg.ShowAutocompleteOnSpace;
             chars.Checked = cfg.ShowAutocompleteOnChars;
             charsBox.Text = cfg.AutocompleteChars;
+            exportList.Checked = cfg.ShowAutocompleteOnModule;
             noevents = false;
         }
 
@@ -44,6 +45,7 @@ namespace Elide.ElaCode.Configuration
             cfg.HighlightErrors = highlight.Checked;
             cfg.ShowAutocompleteOnSpace = space.Checked;
             cfg.ShowAutocompleteOnChars = chars.Checked;
+            cfg.ShowAutocompleteOnModule = exportList.Checked;
         }
 
         private void charsBox_TextChanged(object sender, EventArgs e)

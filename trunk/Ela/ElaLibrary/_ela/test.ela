@@ -17,7 +17,7 @@ assert =
       eqf = op' "eqf" (==) false
   } 
   where op' m op x y | op x y = ()
-                     | else   = raise AssertFailed m
+                     | else   = raise AssertFailed (formatStr "{0} for {1} and {2}" m x y)
 
 funData # private 
 funData mod fun = (moduleName mod ++ "." ++ funName fun, fun)
@@ -36,7 +36,7 @@ run xs = (res, failed)
               count f xs = length <| filter f xs
               res = map exec xs
               failed = count (not << snd3) res
-              
+
 report f prf (tests, failed) =
         out "Test session started" 
             (all' f tests 1 "")
@@ -47,7 +47,7 @@ report f prf (tests, failed) =
         where out v = prf v $ out
               tag' true  = "Success "
               tag' false = "FAILED "
-              fmt' i (n, r, m) = format "{0}. {1}: {2} {3}\r\n" i n (tag' r) m
+              fmt' i (n, r, m) = formatStr "{0}. {1}: {2} {3}\r\n" i n (tag' r) m
               all' _ [] _ s = s
               all' f (x::xs) i s | f x  = (s ++ fmt' i x) |> all' f xs (i + 1)
                                  | else = all' f xs (i + 1) s

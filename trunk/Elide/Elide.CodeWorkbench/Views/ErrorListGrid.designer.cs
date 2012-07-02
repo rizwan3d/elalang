@@ -30,7 +30,7 @@
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.grid = new System.Windows.Forms.DataGridView();
+            this.grid = new Elide.Forms.BufferedGridView();
             this.Image = new System.Windows.Forms.DataGridViewImageColumn();
             this.Number = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -146,7 +146,7 @@
 
         #endregion
 
-        private System.Windows.Forms.DataGridView grid;
+        private Elide.Forms.BufferedGridView grid;
         private System.Windows.Forms.DataGridViewImageColumn Image;
         private System.Windows.Forms.DataGridViewTextBoxColumn Number;
         private System.Windows.Forms.DataGridViewTextBoxColumn Description;

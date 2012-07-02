@@ -1,0 +1,72 @@
+fromLiteral {eq} = 
+  let tup = ('E', 'l', 'a') in
+    eq (length tup) 3 
+  $ eq (tup:0) 'E' 
+  $ eq (tup:1) 'l'
+  $ eq (tup:2) 'a'
+
+fromLiteral2 {eq} =
+  let tup = ("Ela",) in
+  eq (length tup) 1 $ eq (tup:0) "Ela"
+
+equals {eqt} =
+    eqt (t1 == t2)
+  $ eqt (t1 <> t3)
+  $ eqt (t2 <> t3)
+  $ eqt (t3 == (3,4))
+        where t1 = (1,2)
+              t2 = (1,2)
+              t3 = (3,4)
+
+compare {eqt,eqf} =
+    eqf (t1 > t2)
+  $ eqt (t1 < t2)
+  $ eqt (t1 <= t2)
+  $ eqt (t3 > t2)
+  $ eqt (t3 >= t2)
+  $ eqt (t2 >= (3,4))    
+        where t1 = (1,2)
+              t2 = (3,4)
+              t3 = (5,6)
+
+simpleMath {eq} =
+    eq ((1,2)+(2,3)) (3,5)
+  $ eq ((4,5)-(2,1)) (2,4)
+  $ eq ((8,2)*(2,5)) (16,10)
+  $ eq ((4,16)/(2,8)) (2,2)
+  $ eq ((2,3)**(2,3)) (4,27)
+  $ eq ((10,5)%(3,3)) (1,2)
+
+unary {eq} =
+    eq (--(2,1)) (--2,--1)
+  $ eq (--(21,4.2)) (--21,--4.2)
+
+succPred {eq} =
+    eq (succ (1,2)) (2,3)
+  $ eq (succ (42.42, 'b')) (43.42, 'c')
+  $ eq (pred (3,4)) (2,3)
+  $ eq (pred (12.1,'B')) (11.1, 'A')
+    
+concat {eq,eqt} =
+    eq (t1++t2) (1,2,3,4,5,6)
+  $ eq (t2++t1) (4,5,6,1,2,3)
+  where t1 = (1,2,3)
+        t2 = (4,5,6)
+
+lengthTest {eq} = 
+    eq (length t1) 3
+  $ eq (length t2) 1
+  where t1 = (1,2,3)
+        t2 = (1,)
+
+fstSndTest {eq} =
+    eq (fst t) 1 
+  $ eq (snd t) 2
+  $ eq (fst3 t2) 10
+  $ eq (snd3 t2) 20
+  where t = (1,2)
+        t2 = (10,20,30)
+
+typeCheck {eqt} =
+  let tup  = (0,) in
+  eqt (match tup with _ is tuple = true; _ = false;;)

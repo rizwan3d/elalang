@@ -9,7 +9,7 @@ namespace Ela.Compilation
 	{
         //Main method used to compile functions. Can compile regular named functions, 
         //named functions in-place (FunFlag.Inline) and type constructors (FunFlag.Newtype).
-		private void CompileFunction(ElaEquation dec, FunFlag flag)
+		private void CompileFunction(ElaEquation dec)
 		{
             var fc = (ElaJuxtaposition)dec.Left;
 			var pars = fc.Parameters.Count;
@@ -17,23 +17,15 @@ namespace Ela.Compilation
             //Target can be null in a case of an anonymous function (lambda)
             var name = fc.Target != null ? fc.Target.GetName() : String.Empty;
 
-            //Don't generate debug info when a function is compiled inline.
-			if (flag != FunFlag.Inline)
-				StartFun(name, pars);
-
+            StartFun(name, pars);
 			var funSkipLabel = Label.Empty;
-
 			var map = new LabelMap();
 			var startLabel = cw.DefineLabel();
 
             //Functions are always compiled in place, e.g. when met. Therefore a 'goto'
-            //instruction is emitted to skip through function definition. This instruction
-            //is obviously not needed when a function is inlined.
-            if (flag != FunFlag.Inline)
-			{
-				funSkipLabel = cw.DefineLabel();
-				cw.Emit(Op.Br, funSkipLabel);
-			}
+            //instruction is emitted to skip through function definition.
+            funSkipLabel = cw.DefineLabel();
+	        cw.Emit(Op.Br, funSkipLabel);
 
             //FunStart label is needed for tail recursive calls when we emit a 'goto' 
             //instead of an actual function call.
@@ -43,19 +35,14 @@ namespace Ela.Compilation
 			map.FunctionName = name;
 			map.FunctionParameters = pars;
 			map.FunctionScope = CurrentScope;
-			map.InlineFunction = flag == FunFlag.Inline;
+			
+            cw.MarkLabel(startLabel);
 
-            //No need in jump label for an inlined function.
-			if (flag != FunFlag.Inline)
-				cw.MarkLabel(startLabel);
+            //We start a real (VM based) lexical scope for a function.
+			StartScope(true, dec.Right.Line, dec.Right.Column);
 
-            //We start a real (VM based) lexical scope for a regular function,
-            //and a compiler processed lexical scope for inlined function.
-			StartScope(flag != FunFlag.Inline, dec.Right.Line, dec.Right.Column);
-
-            //StartSection create a real lexical scope - not needed when inlined.
-			if (flag != FunFlag.Inline)
-				StartSection();
+            //StartSection create a real lexical scope.
+			StartSection();
 
             //If this a 'type member' function we can specify a tail hint because
             //it could cause a generation of Callt when we need to construct a type
@@ -66,30 +53,26 @@ namespace Ela.Compilation
             var address = cw.Offset;
             CompileFunctionMatch(pars, dec, map, hints);
 
-            //This logic created a function (by finally emitting Newfun).
-            //Obviously not needed for inlined function.
-			if (flag != FunFlag.Inline)
-			{
-				var funHandle = frame.Layouts.Count;
-				var ss = EndFun(funHandle);
-				frame.Layouts.Add(new MemoryLayout(currentCounter, ss, address));
-				EndScope();
-				EndSection();
+            //This logic creates a function (by finally emitting Newfun).
+			var funHandle = frame.Layouts.Count;
+			var ss = EndFun(funHandle);
+			frame.Layouts.Add(new MemoryLayout(currentCounter, ss, address));
+			EndScope();
+			EndSection();
 
-                //For a type constructor function the last instruction
-                //in a function should be a Newtype op code.
-                if (dec.AssociatedType != null)
-                    cw.Emit(Op.Newtype, AddString(dec.AssociatedType));
+            //For a type constructor function the last instruction
+            //in a function should be a Newtype op code.
+            if (dec.AssociatedType != null)
+                cw.Emit(Op.Newtype, AddString(dec.AssociatedType));
 
-				cw.Emit(Op.Ret);
-				cw.MarkLabel(funSkipLabel);
+			cw.Emit(Op.Ret);
+			cw.MarkLabel(funSkipLabel);
 
-				AddLinePragma(dec);
+			AddLinePragma(dec);
 
-                //Function is constructed
-				cw.Emit(Op.PushI4, pars);
-				cw.Emit(Op.Newfun, funHandle);
-			}
+            //Function is constructed
+			cw.Emit(Op.PushI4, pars);
+			cw.Emit(Op.Newfun, funHandle);
 		}
 
         //Used to compile an anonymous function (lambda). This function returns a number of parameters 

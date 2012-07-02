@@ -72,7 +72,7 @@ namespace Elide.ElaCode
                 new MessageItem(
                     m.Type == MessageType.Error ? MessageItemType.Error : (m.Type == MessageType.Warning ? MessageItemType.Warning : MessageItemType.Information),
                     String.Format("ELA{0}: {1}", m.Code, m.Message),
-                    doc,
+                    m.File == null || !m.File.Exists ? doc : new VirtualDocument(m.File),
                     m.Line,
                     m.Column) { 
                     Tag = m.Code 

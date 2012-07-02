@@ -1,0 +1,17 @@
+open test console core@cr datetime
+open basictests funtests rangetests listtests tupletests recordtests
+     varianttests comprehensiontests thunktests matchtests
+
+_ = [] 
+    |> regFuns basictests
+    |> regFuns funtests
+    |> regFuns rangetests
+    |> regFuns listtests
+    |> regFuns tupletests
+    |> regFuns recordtests
+    |> regFuns varianttests
+    |> regFuns comprehensiontests
+    |> regFuns thunktests
+    |> regFuns matchtests
+    |> run
+    |> report (\_ -> true) writen

@@ -15,7 +15,6 @@ namespace Ela.Compilation
             ProcessInstances(prog, map);
             list = ProcessFunctions(list, map);
             list = ProcessBindings(list, map);
-            list = ProcessPatternBindings(list, map);
             ProcessExpressions(list, map);
         }
 
@@ -26,7 +25,6 @@ namespace Ela.Compilation
             var list = RunForwardDeclaration(set.Equations, map);
             list = ProcessFunctions(list, map);
             list = ProcessBindings(list, map);
-            list = ProcessPatternBindings(list, map);
 
             //Expressions are not allowed in this context
             if (list.Count > 0)
@@ -149,31 +147,9 @@ namespace Ela.Compilation
             return list;
         }
 
-        //This step is to compile the rest of global bindings except of bindings defined by pattern
-        //matching. This is the first stage when laziness can be enforce - e.g. compiler would create thunks
-        //when needed.
+        //This step is to compile all global bindings, including regular bindings and bindings defined
+        //by pattern matching.
         private FastList<ElaEquation> ProcessBindings(FastList<ElaEquation> exps, LabelMap map)
-        {
-            var len = exps.Count;
-            var list = new FastList<ElaEquation>(len);
-
-            for (var i = 0; i < len; i++)
-            {
-                var b = exps[i];
-
-                //We still only process bindings without pattern matching and only global bindings
-                if (b.Right != null && b.Left.Type == ElaNodeType.NameReference)
-                    CompileDeclaration(b, map, Hints.Left);
-                else
-                    list.Add(b);
-            }
-
-            return list;
-        }
-
-        //This step is to compile global bindings defined by pattern matching - we do not enforce
-        //thunks here and in some cases execution of such code may result in 'BottomReached' run-time error.
-        private FastList<ElaEquation> ProcessPatternBindings(FastList<ElaEquation> exps, LabelMap map)
         {
             var len = exps.Count;
             var list = new FastList<ElaEquation>(len);
@@ -185,7 +161,7 @@ namespace Ela.Compilation
                 if (b.Right != null)
                 {
                     //Type constructors cannot be defined by PM
-                    if (b.AssociatedType != null)
+                    if (b.Left.Type != ElaNodeType.NameReference && b.AssociatedType != null)
                         AddError(ElaCompilerError.TypeMemberNoPatterns, b, FormatNode(b));
 
                     CompileDeclaration(b, map, Hints.Left);
