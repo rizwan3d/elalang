@@ -22,8 +22,7 @@ namespace Ela.Compilation
 
                 //Compile expression and write it to a variable
                 if (fun)
-                    CompileFunction(s, 
-                        (s.VariableFlags & ElaVariableFlags.Inline) == ElaVariableFlags.Inline ? FunFlag.Inline : FunFlag.None);
+                    CompileFunction(s);
                 else
                 {
                     CompileExpression(s.Right, map, Hints.None);
@@ -40,21 +39,12 @@ namespace Ela.Compilation
 
         private void CompileBindingPattern(ElaEquation s, LabelMap map)
         {
-            var tuple = default(ElaTupleLiteral);
-            var sys = -1;
-
-            //If both pattern and init are tuples provide this tuple to pattern compiler
-            //explicitely - in such a case a tuple won't be actually created.
-            if (s.Right.Type == ElaNodeType.TupleLiteral && s.Left.Type == ElaNodeType.TupleLiteral)
-                tuple = (ElaTupleLiteral)s.Right;
-            else
-            {
-                //If InitExpression is not a tuple we need to actually compile it and deconstruct
-                sys = AddVariable();
-                CompileExpression(s.Right, map, Hints.None);
-                AddLinePragma(s);
-                PopVar(sys);
-            }
+            //Compile a right hand expression. Currently it is always compiled, event if right-hand
+            //and both left-hand are tuples (however an optimization can be applied in such a case).
+            var sys = AddVariable();
+            CompileExpression(s.Right, map, Hints.None);
+            AddLinePragma(s);
+            PopVar(sys);
 
             //Labels needed for pattern compilation
             var next = cw.DefineLabel();
@@ -108,7 +98,8 @@ namespace Ela.Compilation
         //patterns are traversed using AddPatternVariable method.
         private bool AddNoInitVariable(ElaEquation exp)
         {
-            var flags = exp.VariableFlags | ElaVariableFlags.NoInit;
+            var flags = exp.VariableFlags | ElaVariableFlags.NoInit | 
+                (exp.AssociatedType != null ? ElaVariableFlags.TypeFun : ElaVariableFlags.None);
             
             //This binding is not defined by PM
             if (exp.IsFunction())
@@ -137,17 +128,7 @@ namespace Ela.Compilation
                 {                
                     var fun = (ElaLambda)exp.Right;
                     flags |= ElaVariableFlags.Function;
-
-                    //For an inline function logic is slightly different which is somewhat
-                    //ugly at the moment. Instead of function arguments 'data' contains a
-                    //unique ID of an inline function in 'inlineFuns' array.
-                    if ((flags & ElaVariableFlags.Inline) == ElaVariableFlags.Inline)
-                    {
-                        data = inlineFuns.Count;
-                        inlineFuns.Add(new InlineFun(fun, CurrentScope));
-                    }
-                    else
-                        data = fun.GetParameterCount();
+                    data = fun.GetParameterCount();
                 }
 
                 AddVariable(exp.Left.GetName(), exp, flags, data);

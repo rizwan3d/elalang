@@ -32,8 +32,6 @@ namespace Ela.Parsing
         {
             if (attribute == "private")
                 return flags | ElaVariableFlags.Private;
-            else if (attribute == "inline")
-                return flags | ElaVariableFlags.Inline;
             else if (attribute == "qualified")
                 return flags | ElaVariableFlags.Qualified;
             else

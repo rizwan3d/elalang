@@ -8,6 +8,7 @@ using Elide.CodeEditor;
 using Elide.Core;
 using Elide.Scintilla;
 using Elide.ElaCode.ObjectModel;
+using System.Text;
 
 namespace Elide.ElaCode
 {
@@ -52,6 +53,12 @@ namespace Elide.ElaCode
             if (TestIfComments(pos, true) || TestIfComments(pos - 1, false))
                 return;
 
+            if (sci.CurrentPosition > 0 && sci.CharAt(sci.CurrentPosition - 1) == '.')
+            {
+                ListModuleMembers(doc, pos - 2);
+                return;
+            }
+
             var names = default(List<AutocompleteSymbol>);
 
             if (doc.Unit != null)
@@ -79,8 +86,7 @@ namespace Elide.ElaCode
                                     f.Set(ElaVariableFlags.Module) ? AutocompleteSymbolType.Module :
                                     f.Set(ElaVariableFlags.TypeFun) ? AutocompleteSymbolType.Type :
                                     f.Set(ElaVariableFlags.ClassFun) ? AutocompleteSymbolType.Member :
-                                        AutocompleteSymbolType.Variable);
-                                
+                                        AutocompleteSymbolType.Variable);                                
                             })
                         .ToList();
                 }
@@ -117,6 +123,63 @@ namespace Elide.ElaCode
             app.GetService<IAutocompleteService>().ShowAutocomplete(keywords);
         }
 
+        private void ListModuleMembers(CodeDocument doc, int pos)
+        {
+            var sym = GetNameInfo(pos, doc);
+            var unit = doc != null ? doc.Unit : null;
+            var frame = unit != null ? ((CompiledUnit)unit).CodeFrame : null;
+
+            if (sym != null && ((ElaVariableFlags)sym.Flags).Set(ElaVariableFlags.Module)
+                && frame != null && frame.References.ContainsKey(sym.Name))
+            {
+                var mod = frame.References[sym.Name];
+                var rr = new ElaReferenceResolver { App = app };
+                var refUnit = rr.Resolve(new Reference(new CompiledUnit(doc, frame), mod));
+
+                if (refUnit != null)
+                {
+                    var sb = new StringBuilder();
+                    var list = new List<AutocompleteSymbol>();
+
+                    foreach (var cn in ((CompiledUnit)refUnit).CodeFrame.GlobalScope.EnumerateVars()
+                        .Where(v => !v.Value.VariableFlags.Set(ElaVariableFlags.Module) 
+                            && !v.Value.VariableFlags.Set(ElaVariableFlags.Private)
+                            && v.Key[0] != '$'))
+                    {
+                        list.Add(new AutocompleteSymbol(cn.Key,
+                            cn.Value.VariableFlags.Set(ElaVariableFlags.Module) ? AutocompleteSymbolType.Module :
+                            cn.Value.VariableFlags.Set(ElaVariableFlags.TypeFun) ? AutocompleteSymbolType.Type :
+                            cn.Value.VariableFlags.Set(ElaVariableFlags.ClassFun) ? AutocompleteSymbolType.Member :
+                                AutocompleteSymbolType.Variable));
+                    }
+
+                    list = list.OrderBy(c => c.Name).ToList();
+                    app.GetService<IAutocompleteService>().ShowAutocomplete(list);
+                }
+            }
+        }
+
+        private VarSym GetNameInfo(int position, CodeDocument doc)
+        {
+            var word = sci.GetWordAt(position) ?? GetOperator(position, 0);
+            var frame = doc != null ? doc.Unit : null;
+
+            if (word != null && frame != null)
+            {
+                var dr = new DebugReader(((CompiledUnit)frame).CodeFrame.Symbols);
+                var lineNum = sci.GetLineFromPosition(position);
+                var colNum = sci.GetColumnFromPosition(position);
+
+                var ln = dr.FindClosestLineSym(lineNum + 1, colNum + 1);
+                var scope = default(ScopeSym);
+
+                if (ln != null && (scope = (dr.FindScopeSym(lineNum + 1, colNum + 1) ?? dr.GetScopeSymByIndex(0))) != null)
+                    return LookVar(dr, ln.Offset, scope.Index, word);
+            }
+
+            return null;
+        }
+
         private AutocompleteSymbol Snippet(string text)
         {
             return new AutocompleteSymbol(text, AutocompleteSymbolType.Snippet);
@@ -134,6 +197,40 @@ namespace Elide.ElaCode
                 list.AddRange(LookVars(dr, offset, scope.ParentIndex));
 
             return list;
+        }
+
+        private VarSym LookVar(DebugReader dr, int offset, int scopeIndex, string var)
+        {
+            var scope = dr.GetScopeSymByIndex(scopeIndex);
+
+            foreach (var vs in dr.FindVarSyms(offset, scope))
+                if (vs.Name == var)
+                    return vs;
+
+            if (scope.Index != 0)
+                return LookVar(dr, offset, scope.ParentIndex, var);
+            else
+                return null;
+        }
+
+        private string GetOperator(int position, int mov)
+        {
+            var c = sci.CharAt(position);
+
+            if (c == ' ' || c == '\r' || c == '\n' || c == '\0')
+                return String.Empty;
+
+            var ret = String.Empty;
+
+            if (mov == 0 || mov == 1)
+                ret += GetOperator(position - 1, 1);
+
+            ret += c;
+
+            if (mov == 0 || mov == 2)
+                ret += GetOperator(position + 1, 2);
+
+            return ret;
         }
     }
 }

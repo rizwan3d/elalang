@@ -37,7 +37,7 @@ namespace Elide.Scintilla
                 var pf = new TextToFind();
                 pf.lpstrText = (IntPtr)pt;
                 pf.chrg.Min = startPosition;
-                pf.chrg.Max = endPosition <= 0 ? scintilla.Ref.Send(Sci.SCI_GETTEXTLENGTH) : endPosition;
+                pf.chrg.Max = endPosition <= 0 ? startPosition + scintilla.Ref.Send(Sci.SCI_GETTEXTLENGTH) : endPosition;
 
                 var res = RunSearch(flags, ref pf);
 

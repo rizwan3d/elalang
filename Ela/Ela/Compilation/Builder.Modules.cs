@@ -94,7 +94,7 @@ namespace Ela.Compilation
         }
 
         //Includes Prelude module
-        private void IncludePrelude()
+        private void IncludePrelude(ElaProgram prog)
         {
             IncludeModule(
                 options.Prelude, //alias
@@ -105,7 +105,7 @@ namespace Ela.Compilation
                 0,               //col
                 false,           //qualified
                 0,               //logical handle
-                null,            //ElaExpression
+                prog.TopLevel,   //ElaExpression
                 true,            //add variable
                 true);           //NoPrelude
         }

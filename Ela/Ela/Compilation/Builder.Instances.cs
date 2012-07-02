@@ -212,7 +212,7 @@ namespace Ela.Compilation
             else if (s.GetArgumentNumber() < args)
                 EtaExpand(s, map, args);
             else
-                CompileFunction(s, FunFlag.None);
+                CompileFunction(s);
 
             AddLinePragma(s);
 
@@ -246,7 +246,7 @@ namespace Ela.Compilation
             if (exp.Type != ElaNodeType.Equation)
                 CompileExpression(exp, map, Hints.None);
             else
-                CompileFunction((ElaEquation)exp, FunFlag.None);
+                CompileFunction((ElaEquation)exp);
 
             //Functions are curried so generate a call for each argument
             for (var i = 0; i < args; i++)

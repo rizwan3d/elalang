@@ -190,7 +190,6 @@
     <Compile Include="Compilation\ElaCompilerWarning.cs" />
     <Compile Include="Compilation\ExportVarData.cs" />
     <Compile Include="Compilation\ExprData.cs" />
-    <Compile Include="Compilation\FunFlag.cs" />
     <Compile Include="Compilation\IElaCompiler.cs" />
     <Compile Include="Compilation\ExportVars.cs" />
     <Compile Include="Compilation\LateBoundSymbol.cs" />

@@ -23,7 +23,7 @@ namespace Ela.CodeModel
 
         Builtin = 1 << 7,
 
-        Inline = 1 << 8,
+        // = 1 << 8,
 
         NoInit = 1 << 9,
 

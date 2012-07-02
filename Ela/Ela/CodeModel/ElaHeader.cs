@@ -29,8 +29,8 @@ namespace Ela.CodeModel
             if ((Attributes & ElaVariableFlags.Private) == ElaVariableFlags.Private)
                 sb.Append("private ");
 
-            if ((Attributes & ElaVariableFlags.Inline) == ElaVariableFlags.Inline)
-                sb.Append("inline ");
+            if ((Attributes & ElaVariableFlags.Qualified) == ElaVariableFlags.Qualified)
+                sb.Append("qualified ");
         }
 
         public string Name { get; set; }

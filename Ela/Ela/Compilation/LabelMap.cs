@@ -24,8 +24,6 @@ namespace Ela.Compilation
 		#region Properties
 		internal Label FunStart { get; set; }
 
-		internal bool InlineFunction { get; set; }
-
 		internal string FunctionName { get; set; }
 
         internal string BuiltinName { get; set; }

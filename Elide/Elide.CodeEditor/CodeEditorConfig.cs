@@ -11,7 +11,8 @@ namespace Elide.CodeEditor
             EnableBackgroundCompilation = true;
             EnableFolding = true;
             HighlightErrors = true;
-            AutocompleteChars = "([.";
+            AutocompleteChars = "([";
+            ShowAutocompleteOnModule = true;
         }
 
         public bool EnableBackgroundCompilation { get; set; }
@@ -25,6 +26,8 @@ namespace Elide.CodeEditor
         public bool ShowAutocompleteOnSpace { get; set; }
 
         public bool ShowAutocompleteOnChars { get; set; }
+
+        public bool ShowAutocompleteOnModule { get; set; }
 
         public string AutocompleteChars { get; set; }
     }

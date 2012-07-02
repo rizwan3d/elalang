@@ -42,6 +42,7 @@ namespace Elide.CodeEditor
             var cfg = GetConfig();
 
             if ((e.KeyChar == ' ' && cfg.ShowAutocompleteOnSpace) ||
+                (e.KeyChar == '.' && cfg.ShowAutocompleteOnModule) ||
                 (cfg.ShowAutocompleteOnChars && cfg.AutocompleteChars != null && cfg.AutocompleteChars.IndexOf(e.KeyChar) != -1))
                 ShowAutocomplete(GetScintilla().CaretPosition - 1);
         }
