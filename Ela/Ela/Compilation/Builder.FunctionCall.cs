@@ -75,8 +75,7 @@ namespace Ela.Compilation
                     if (len != pars)
                     {
                         AddLinePragma(bf);
-                        map.BuiltinName = bf.Name;
-                        CompileBuiltin(kind, v.Target, map);
+                        CompileBuiltin(kind, v.Target, map, bf.Name);
 
                         if (v.FlipParameters)
                             cw.Emit(Op.Flip);

@@ -19,12 +19,13 @@ namespace Ela.Compilation
             else
             {
                 var addr = GetNoInitVariable(s);
-
+                
                 //Compile expression and write it to a variable
                 if (fun)
                     CompileFunction(s);
                 else
                 {
+                    map.BindingName = s.Left.GetName();
                     CompileExpression(s.Right, map, Hints.None);
 
                     //If this a type member we need to construct a new type instance

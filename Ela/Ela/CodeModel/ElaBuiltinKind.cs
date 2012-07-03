@@ -8,8 +8,6 @@ namespace Ela.CodeModel
 
         Not,
 
-        Flip,
-
         Force,
 
         Length,

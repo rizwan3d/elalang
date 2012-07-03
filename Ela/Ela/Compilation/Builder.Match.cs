@@ -202,7 +202,8 @@ namespace Ela.Compilation
 
                 //Now compile patterns
                 for (var i = 0; i < len; i++)
-                    CompilePattern(firstSys[i], pars[i], failLab);
+                    if (firstSys.Length > i && pars.Count > i)
+                        CompilePattern(firstSys[i], pars[i], failLab);
                 
                 first = false;
 

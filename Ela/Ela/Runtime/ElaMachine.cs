@@ -1259,7 +1259,7 @@ namespace Ela.Runtime
                         {
                             var funObj = evalStack.Peek().Ref;
 
-                            if (callStack.Peek().Thunk != null || funObj.TypeId == LAZ)// || funObj.IsExternFun())
+                            if (callStack.Peek().Thunk != null || !funObj.CanTailCall())
                             {
                                 if (Call(evalStack.Pop().Ref, thread, evalStack, CallFlag.None))
                                     goto SWITCH_MEM;

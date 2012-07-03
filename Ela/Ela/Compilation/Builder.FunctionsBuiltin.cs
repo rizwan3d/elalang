@@ -9,7 +9,7 @@ namespace Ela.Compilation
     {
         //Compiles built-in as function in place. It is compiled in such a manner each time
         //it is referenced. But normally its body is just one or two op codes, so this is not a problem.
-        private void CompileBuiltin(ElaBuiltinKind kind, ElaExpression exp, LabelMap map)
+        private void CompileBuiltin(ElaBuiltinKind kind, ElaExpression exp, LabelMap map, string name)
         {
             StartSection();
 
@@ -19,8 +19,9 @@ namespace Ela.Compilation
             var funSkipLabel = cw.DefineLabel();
             cw.Emit(Op.Br, funSkipLabel);
             var address = cw.Offset;
-            pdb.StartFunction(map.BuiltinName, address, pars);
+            pdb.StartFunction(name, address, pars);
 
+            AddLinePragma(exp);
             //Gets the actual code for built-in
             CompileBuiltinInline(kind, exp, map, Hints.None);
 
@@ -87,9 +88,6 @@ namespace Ela.Compilation
                     break;
                 case ElaBuiltinKind.Not:
                     cw.Emit(Op.Not);
-                    break;
-                case ElaBuiltinKind.Flip:
-                    cw.Emit(Op.Flip);
                     break;
                 case ElaBuiltinKind.Showf:
                     cw.Emit(Op.Show);

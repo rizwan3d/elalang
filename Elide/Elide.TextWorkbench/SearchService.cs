@@ -58,7 +58,8 @@ namespace Elide.TextWorkbench
             var rootEditor = (ITextEditor)App.GetService<IEditorService>().GetEditor(doc.GetType()).Instance;
             rootEditor.BeginUndoAction();
 
-            var startPos = scope == SearchScope.Selection ? rootEditor.SelectionStart : 0;
+            var startPos = scope == SearchScope.Selection ? rootEditor.SelectionStart :
+                scope == SearchScope.Current ? rootEditor.CaretPosition : 0;
             var endPos = scope == SearchScope.Selection ? rootEditor.SelectionEnd : 0;
 
             for (;;)
@@ -125,7 +126,8 @@ namespace Elide.TextWorkbench
             var sm = default(SearchManager);
             var status = "{0} element(s) found. Search took: {1:F2} s.";
             var rootEditor = (ITextEditor)App.GetService<IEditorService>().GetEditor(doc.GetType()).Instance;
-            var startPos = scope == SearchScope.Selection ? rootEditor.SelectionStart : 0;
+            var startPos = scope == SearchScope.Selection ? rootEditor.SelectionStart :
+                scope == SearchScope.Current ? rootEditor.CaretPosition : 0;
             var endPos = scope == SearchScope.Selection ? rootEditor.SelectionEnd : 0;
 
             for(;;)
@@ -175,7 +177,8 @@ namespace Elide.TextWorkbench
             else
             {
                 var rootEditor = (ITextEditor)App.GetService<IEditorService>().GetEditor(doc.GetType()).Instance;
-                var sp = scope == SearchScope.Selection ? rootEditor.SelectionStart : rootEditor.CaretPosition;
+                var sp = scope == SearchScope.Selection ? rootEditor.SelectionStart : 
+                    scope == SearchScope.Current ? rootEditor.CaretPosition : 0;
                 var ep = scope == SearchScope.Selection ? rootEditor.SelectionEnd : 0;
                 Search(text, doc, flags, scope, sp, ep);
             }
@@ -217,7 +220,8 @@ namespace Elide.TextWorkbench
             else
             {
                 var rootEditor = (ITextEditor)App.GetService<IEditorService>().GetEditor(doc.GetType()).Instance;
-                var sp = scope == SearchScope.Selection ? rootEditor.SelectionStart : rootEditor.CaretPosition;
+                var sp = scope == SearchScope.Selection ? rootEditor.SelectionStart : 
+                    scope == SearchScope.Current ? rootEditor.CaretPosition : 0;
                 var ep = scope == SearchScope.Selection ? rootEditor.SelectionEnd : 0;
                 Replace(textToFind, textToReplace, doc, flags, scope, sp, ep);
             }            

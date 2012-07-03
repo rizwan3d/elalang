@@ -19,6 +19,8 @@ namespace Ela.Library.General
             Add<ElaFunction,String>("funName", FunName);
             Add<ElaFunction,Int32>("funAppliedArgsCount", FunAppliedArgsCount);
             Add<ElaFunction,ElaList>("funAppliedArgs", FunAppliedArgs);
+            Add<ElaFunction,Int32>("funHandle", FunHandle);
+            Add<ElaFunction,ElaModule>("funModule", FunModule);
             Add<ElaModule,Int32>("moduleHandle", ModuleHandle);
             Add<ElaModule,String>("moduleName", ModuleName);
             Add<ElaModule,ElaList>("moduleExportList", ModuleNames);
@@ -26,6 +28,16 @@ namespace Ela.Library.General
             Add<ElaModule,Int32>("asmModuleCount", AssemblyModuleCount);
             Add<ElaModule,ElaList>("asmModules", AssemblyModules);
             Add<ElaModule,ElaModule>("asmMainModule", AssemblyMainModule);
+        }
+
+        public ElaModule FunModule(ElaFunction fun)
+        {
+            return fun.GetFunctionModule();
+        }
+
+        public int FunHandle(ElaFunction fun)
+        {
+            return fun.Handle;
         }
 
         public int FunArgsCount(ElaFunction fun)

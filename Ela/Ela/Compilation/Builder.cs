@@ -83,7 +83,7 @@ namespace Ela.Compilation
                 case ElaNodeType.Builtin:
                     {
                         var v = (ElaBuiltin)exp;
-                        CompileBuiltin(v.Kind, v, map);
+                        CompileBuiltin(v.Kind, v, map, map.BindingName);
 
                         if ((hints & Hints.Left) == Hints.Left)
                             AddValueNotUsed(exp);

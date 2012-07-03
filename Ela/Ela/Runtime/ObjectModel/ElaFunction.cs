@@ -280,6 +280,11 @@ namespace Ela.Runtime.ObjectModel
             };
         }
 
+        internal override bool CanTailCall()
+        {
+            return Captures != null;
+        }
+
         internal ElaFunction CloneFast()
 		{
 			var pars = new ElaValue[Parameters.Length];
@@ -375,11 +380,16 @@ namespace Ela.Runtime.ObjectModel
 			return funName;
 		}
 
+        public ElaModule GetFunctionModule()
+        {
+            return new ElaModule(ModuleHandle, vm);
+        }
+
 		internal ElaMachine Machine { get { return vm; } }
 
-		internal int Handle { get; private set; }
+		public int Handle { get; private set; }
 
-		internal int ModuleHandle { get; private set; }
+		public int ModuleHandle { get; private set; }
 
 		internal FastList<ElaValue[]> Captures { get; private set; }
 		

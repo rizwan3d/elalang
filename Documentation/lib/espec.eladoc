@@ -1,0 +1,19 @@
+#file espec.ela
+#title espec
+#category Ela Standard Library
+
+Module `espec` is an implementation of a domain specific language (DSL) that can be used
+to write test specifications in a form close to natural language.//br
+This module contains special functions (_words_) that can be used to compose test specifications.
+It also provides functions for registering tests, executing them and formatting tests results
+to a string.
+
+=Concept
+The idea behind `espec` is to provide an ability to write a test specification in a natural way.
+It is partially inspired by rspec for Ruby and similar libraries for F#. However because of Ela's
+dynamic nature and flexible syntax the DSL provided by `espec` is considerably more expressive.//br
+Presenting a test through a test specification rather than a "unit test" functions with asserts
+introduces a completely different approach to testing. A specification of a test doesn't actually
+perform any calculations
+
+#members

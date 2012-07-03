@@ -52,6 +52,11 @@ namespace Ela.Runtime.ObjectModel
         {
             return "[" + GetTypeName() + ":" + TypeId + "]";
         }
+
+        internal virtual bool CanTailCall()
+        {
+            return false;
+        }
         
 		protected ElaValue Default()
 		{

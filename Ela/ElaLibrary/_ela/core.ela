@@ -11,7 +11,7 @@ abs x | x >= 0 = x
 
 exp x = cm.exp (force x)
 
-gcd 0 0 = fail "Core.gcd: gcd 0 0 is undefined"
+gcd 0 0 = fail "core.gcd: gcd 0 0 is undefined"
 gcd x y = gcd' (abs x) (abs y)
           where gcd' x 0 = x
                 gcd' x y = gcd' y (x % y)
@@ -97,11 +97,11 @@ sort' x = qsort x []
 
 last (x::[]) = x
 last (_::xs) = last xs
-last []      = fail "Core.last: Empty list"
+last []      = fail "core.last: Empty list"
 
 init (x::[])   = []
 init (x::xs)   = x :: init xs
-init []        = fail "Core.init: Empty list"
+init []        = fail "core.init: Empty list"
 
 takeWhile f (x::xs) | f x  = x :: takeWhile f xs
                     | else = []
@@ -192,7 +192,7 @@ all _ []             = true
 splitAt 0 xs = ([],xs)
 splitAt _ [] = ([],[])
 splitAt n (x::xs) | n > 0 = (x::xs',xs2')
-                  | else = fail "Core.splitAt: negative argument"
+                  | else = fail "core.splitAt: negative argument"
                             where (xs',xs2') = splitAt (n-1) xs
 
 split xs = go xs xs 
@@ -209,7 +209,7 @@ breakList p xs = span (not << p) xs
 drop 0 xs              = xs
 drop _ []              = []
 drop n (_::xs) | n > 0 = drop (n-1) xs
-               | else  = fail "Core.drop: negative argument"
+               | else  = fail "core.drop: negative argument"
 
 dropWhile p [] = []
 dropWhile p (x::xs) | p x  = dropWhile p xs
