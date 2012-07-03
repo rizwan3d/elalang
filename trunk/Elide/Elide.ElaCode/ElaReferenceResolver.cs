@@ -7,11 +7,13 @@ using Ela.Parsing;
 using Elide.CodeEditor.Infrastructure;
 using Elide.Core;
 using Elide.ElaCode.ObjectModel;
+using Elide.Environment;
 
 namespace Elide.ElaCode
 {
     public sealed class ElaReferenceResolver : IReferenceResolver<Reference>
     {
+        public static ExtendedOption NoBuild = new ExtendedOption(0x02, true);
         private LinkerOptions opts;
         private DirectoryInfo dir;
 
@@ -84,6 +86,8 @@ namespace Elide.ElaCode
 
                 if (fi != null)
                 {
+                    if (options.Set(NoBuild.Code))
+                        return new CompiledUnit(new VirtualDocument(fi), null);
                     if (!bin)
                         frame = Build(mod, fi);
                     else

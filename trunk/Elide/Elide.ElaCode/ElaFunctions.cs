@@ -118,5 +118,15 @@ namespace Elide.ElaCode
             var am = new AutocompleteManager(app, sci);
             am.DoComplete(position, app.Document() as CodeDocument);
         }
+
+        //TODO: not done
+        public void GotoDefinition()
+        {
+            var am = new AutocompleteManager(app, sci);
+            var fi = am.FindModule(sci.CurrentPosition, app.Document() as CodeDocument);
+
+            if (fi != null)
+                app.GetService<IDocumentNavigatorService>().Navigate(new VirtualDocument(fi), 0, 0, false);
+        }
     }
 }

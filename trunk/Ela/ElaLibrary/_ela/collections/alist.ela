@@ -2,7 +2,7 @@
   Module alist
   Created in 2012 by Basil Voronkov
 */
-open core record
+open list record
 
 lookup _ [] = None
 lookup k ((a,b)::xs) | k == a = Some b

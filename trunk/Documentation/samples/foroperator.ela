@@ -6,5 +6,5 @@ for act n | n > 0 = act n $ for act (n-1)
           | else  = ()
 
 //In this example we print numbers from 10 to 1 to console using
-//writen function from Con module
+//writen function from console module
 for writen 10

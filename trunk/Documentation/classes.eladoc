@@ -1,4 +1,4 @@
-﻿#title Classes
+#title Classes
 #category Language Reference
 
 =Introduction
@@ -6,31 +6,34 @@ A concept of _classes_ in Ela is similar to the concept of _typeclasses_ in Hask
 A _class_ in Ela is a class of operations and can be seen as an abstraction over types. Without classes a particular operation 
 (such as `x + y`) would have a meaning only for a specific type (e.g. integer) which would result in a huge amount of 
 boilerplate code - imagine that you will have to implement all arithmetic operations for each numeric type in the language.
-That is the reason why many languages provide a support for _function_ _overloading_. Classes in Ela can described as a way
-to implement overloading in a dynamic environment - but in a more structured and organized way than a typical approach
-to overloading in imperative languages. As soon as classes feature dynamic, not static dispatch, they may be more properly 
-compared with "object based" overloading in object oriented languages where a function is selected in run-time based on the
-type of its first argument (which is usually implicitly passed to this function as `this` reference). Classes in Ela _do_ _not_
-_provide_ _a_ _support_ _for_ _object_ _oriented_ _programming_ and are in fact more flexible, however the core approach is 
+That is the reason why many languages provide a support for _function overloading_. Classes in Ela can described as a way
+to implement overloading in a dynamic environment - but in a more structured and organized way than 
+in imperative languages. As soon as classes feature dynamic, not static dispatch, they may be more properly 
+compared with "object based" overloading in object oriented languages, where a function is selected at run time based on the
+type of its first argument (which is usually implicitly passed to this function as `this` reference). Classes in Ela 
+do not provide a support for object oriented programming and are in fact more flexible, however the core approach is 
 essentially the same.//br
 Most of basic prelude functions in Ela are in fact class members. For example, a function `+` is defined as a member of `Num` 
 class. This is still a global function that is not different from regular Ela functions. However runtime environment allows 
-for this function to have separate implementations. A required "overload" is determined upon a runtime type (which is important
+for this function to have separate implementations. A required "overload" is determined upon a _run time type_ (which is important
 to understand for those who are familiar with _typeclasses_ concept in Haskell as long as this is major difference).//br
+
+=Classes and Interfaces
 Classes in Ela can be compared with interfaces in object oriented languages (such as C#) as they do share with interfaces a
 number of peculiarities. A class (as well as an interface) doesn't provide an implementation of its members. Also a single type can
 implement instances for several classes. //br
-However unlike object oriented language where you have to implement all interfaces at the point when you define your type and 
+However unlike object oriented languages, where you have to implement all interfaces at the point when you define your type, and 
 you cannot implement interfaces for the types that are already defined, declaration of a type and declaration of a class instance 
 in Ela may not be done at the same time. For example, you can easily write instances for built-in Ela types.//br
 Another important difference is that unlike interfaces classes are used to define _global_ bindings. A class member in Ela is 
 effectively a global function that is not different from other functions - it is curried and is a first class value:
 >>>class Foo a
 >>>  where foo _->a
+>>>
 >>>foo
 Dispatch rules are also different. Ela provides a support for only single parameter classes, however this parameter can appear 
 at any place in a function signature.//br
-In the example above we have defined a function `foo` that accepts any value as its first argument. Now we can define an instance 
+In the example above we have defined a function `foo`, that accepts any value as its first argument. Now we can define an instance 
 of this class like so:
 >>>instance Foo int
 >>>  where foo _ a = Foo a
@@ -84,7 +87,7 @@ of a class. If this is not the case, than a compile time error is generated.//br
 Let's implement an instance for a class `Car` from a previous section. //br
 A `Car` class defines a `drive` function that can be used to accellerate our car to a specific speed. However all cars have certain 
 speed limits and if a limit is reach than this function would return a `SpeedLimit` variant.//br
-Taking that, we can first write a "test drive" function for a car like so://br
+Taking that, we can first write a "test drive" function for a car like so:
 >>>testDrive n car = 
 >>>   match drive n car with
 >>>         Speed x = x :: testDrive (n+1) car

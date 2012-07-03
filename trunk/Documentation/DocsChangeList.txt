@@ -1,3 +1,6 @@
+0.1.3.12:New:An article 'read' about a new module is added.
+0.1.3.11:Change:Article 'core' is now split into two articles - 'math' and 'list'.
+0.1.3.10:Change:Article 'core' is updated according to the module changes.
 0.1.3.9:New:Articles 'classes' about classes and class instances in Ela is added.
 0.1.3.8:New:Article 'Types' about user types in Ela is added.
 0.1.3.7:New:Article 'espec' about a module of the same name is added.

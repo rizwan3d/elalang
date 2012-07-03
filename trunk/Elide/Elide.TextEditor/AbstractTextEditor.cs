@@ -434,12 +434,18 @@ namespace Elide.TextEditor
         void ITextEditor.SelectText(int start, int length)
         {
             sci.Select(start, length, SelectionFlags.MakeOnlySelection | SelectionFlags.ScrollToCaret);
+
+            if (sci.CanSelect)
+                sci.Select();
         }
         
         void ITextEditor.SelectText(int line, int col, int length)
         {
             var pos = sci.GetPositionByColumn(line, col);
             sci.Select(pos, length, SelectionFlags.MakeOnlySelection | SelectionFlags.ScrollToCaret);
+            
+            if (sci.CanSelect)
+                sci.Select();
         }
 
         void ITextEditor.ReplaceText(int start, int end, string text)

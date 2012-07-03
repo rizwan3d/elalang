@@ -1,25 +1,27 @@
-﻿<documentation>
+<documentation>
   <folder name="Standard Library">
     <folder name="collections">
       <doc name="alist" file="lib\collections\alist.htm"/>
       <doc name="queue" file="lib\collections\queue.htm"/>
     </folder>
     <doc name="prelude" file="lib\prelude.htm" />
-    <doc name="core" file="lib\core.htm" />
-    <doc name="imperative" file="lib\imperative.htm" />
-    <doc name="cell" file="lib\cell.htm" />
+    <doc name="math" file="lib\math.htm" />
+    <doc name="list" file="lib\list.htm" />
     <doc name="char" file="lib\char.htm" />
-    <doc name="console" file="lib\console.htm" />
-    <doc name="io" file="lib\io.htm" />
     <doc name="number" file="lib\number.htm" />
     <doc name="string" file="lib\string.htm" />
     <doc name="record" file="lib\record.htm" />
     <doc name="datetime" file="lib\datetime.htm" />
     <doc name="variant" file="lib\variant.htm" />
     <doc name="thunk" file="lib\thunk.htm" />
-    <doc name="format" file="lib\format.htm" />    
+    <doc name="format" file="lib\format.htm" />
     <doc name="reflect" file="lib\reflect.htm" />
-    <doc name="espec" file="lib\espec.htm"/>
+    <doc name="read" file="lib\read.htm" />
+    <doc name="espec" file="lib\espec.htm" />
+    <doc name="cell" file="lib\cell.htm" />
+    <doc name="io" file="lib\io.htm" />
+    <doc name="console" file="lib\console.htm" />    
+    <doc name="imperative" file="lib\imperative.htm" />
   </folder>
   <folder name="Language Reference">
     <doc name="Bindings" file="bindings.htm"/>

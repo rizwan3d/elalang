@@ -1,5 +1,5 @@
 //Here we use console output for testing purposes
-//Module Console contains implementations of basic console functions such as
+//Module console contains implementations of basic console functions such as
 //writen (write line), write (write), readn (read line)
 open console
 

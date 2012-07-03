@@ -2,7 +2,7 @@
   Module queue
   Created in 2012 by Basil Voronkov
 */
-open core
+open list
 
 /* Construction */
 type queue

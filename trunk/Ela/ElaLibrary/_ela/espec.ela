@@ -1,8 +1,8 @@
-﻿/*
+/*
   Module espec
   Created in 2012 by Basil Voronkov
 */
-open reflect variant core format
+open reflect variant list format
 
 /* Words */
 test = test_sg []
