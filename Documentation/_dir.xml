@@ -19,6 +19,7 @@
     <doc name="thunk" file="lib\thunk.htm" />
     <doc name="format" file="lib\format.htm" />    
     <doc name="reflect" file="lib\reflect.htm" />
+    <doc name="espec" file="lib\espec.htm"/>
   </folder>
   <folder name="Language Reference">
     <doc name="Bindings" file="bindings.htm"/>
