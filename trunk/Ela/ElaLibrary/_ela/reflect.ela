@@ -12,6 +12,10 @@ funAppliedArgsCount x = reflect.funAppliedArgsCount (force x)
 
 funAppliedArgs x = reflect.funAppliedArgs (force x)
 
+funHandle x = reflect.funHandle (force x)
+
+funModule x = reflect.funModule (force x)
+
 moduleHandle x = reflect.moduleHandle (force x)
 
 moduleName x = reflect.moduleName (force x)

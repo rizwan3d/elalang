@@ -24,11 +24,11 @@ namespace Ela.Compilation
 		#region Properties
 		internal Label FunStart { get; set; }
 
+        internal string BindingName { get; set; }
+
 		internal string FunctionName { get; set; }
 
-        internal string BuiltinName { get; set; }
-
-		internal int FunctionParameters { get; set; }
+        internal int FunctionParameters { get; set; }
 
 		internal Scope FunctionScope { get; set; }
 		#endregion

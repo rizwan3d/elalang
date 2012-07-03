@@ -15,7 +15,8 @@ namespace Ela.Runtime.Classes
 
             var f1 = (ElaFunction)left.Ref;
             var f2 = (ElaFunction)left.Ref;
-            return f1.Handle == f2.Handle && f1.AppliedParameters == f2.AppliedParameters && f1.AppliedParameters == 0;
+            return f1 == f2 || (f1.Handle == f2.Handle && f1.ModuleHandle == f2.ModuleHandle && 
+                f1.AppliedParameters == f2.AppliedParameters && f1.AppliedParameters == 0);
         }
 
         internal override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -28,7 +29,8 @@ namespace Ela.Runtime.Classes
 
             var f1 = (ElaFunction)left.Ref;
             var f2 = (ElaFunction)left.Ref;
-            return f1.Handle != f2.Handle || f1.AppliedParameters != f2.AppliedParameters || f1.AppliedParameters != 0;
+            return f1.Handle != f2.Handle || f1.ModuleHandle != f2.ModuleHandle || 
+                f1.AppliedParameters != f2.AppliedParameters || f1.AppliedParameters != 0;
         }
     }
 }

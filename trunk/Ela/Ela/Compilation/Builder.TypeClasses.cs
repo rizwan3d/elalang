@@ -119,7 +119,8 @@ namespace Ela.Compilation
             }
 
             var m = s.Members[memIndex];
-            CompileBuiltin(kind, m, map);
+            CompileBuiltin(kind, m, map, m.Name);
+            AddLinePragma(m);
             PopVar(AddVariable(m.Name, m, flags, (Int32)kind));
         }
     }

@@ -27,10 +27,10 @@ namespace Elide.ElaCode
                 var posLine = sci.GetPositionFromLine(line);
                 var colEnd = sci.GetLineEndColumn(line);
                 var style = sci.GetStyleAt(posLine);
-                var cmt = style == TextStyle.MultilineStyle1 || style == TextStyle.MultilineStyle2;
+                var cmt = style == TextStyle.MultilineStyle1 || style == TextStyle.MultilineStyle2 ||
+                    style == TextStyle.Style6 || style == TextStyle.Style7;
 
-                var ln = sci.GetLine(line).Text.Substring(li);
-                var hasLet = li == 0 && !cmt;//(ln.StartsWith("class") || ln.StartsWith("instance") || ln.StartsWith("type")) && !cmt;
+                var hasLet = li == 0 && !cmt;
                 
                 if ((li == 0 || colEnd == li) && lastStart > -1 && line - lastStart > 1 && !cmt)
                 {

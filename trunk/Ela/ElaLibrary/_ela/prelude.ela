@@ -289,7 +289,7 @@ not = __internal not
 /* Function related operators and functions */
 (>>) f g x = g (f x)
 (<<) f g x = f (g x)
-flip = __internal flip
+flip f x y = f y x
 curry f x y = f (x, y)
 uncurry f (x, y) = f x y
 curry3 f x y z = f (x, y, z)

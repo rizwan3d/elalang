@@ -1,0 +1,133 @@
+﻿/*
+  Module espec
+  Created in 2012 by Basil Voronkov
+*/
+open reflect variant core format
+
+/* Words */
+given t xs x EndOfTest = Test t :: Given x :: reverse xs
+given t xs x EspecDo  = given_apply t xs x (tagIt EspecDo)
+given t xs x EspecApply = given_apply t xs x (tagIt EspecApply)
+given t xs x (EspecPredicate pred) = given_pred t xs x pred
+given t xs x EspecOther = given_other t xs x ()
+given t xs x err = fail (formatStr "Unexpected word: {0}." (word err))
+  where word (w is fun) = funName w
+        word (EspecPredicate (n,_)) = n
+        word (EspecFun (n,_)) = n
+        word EspecDo = "do"
+        word EspecApply = "apply"
+        word EspecOther = "other"
+        word x = show x
+
+given_other # private
+given_other t xs x _ newX = given t (Other newX :: xs) x
+
+given_apply # private
+given_apply t xs givx tit fn 
+    | maxN == 0 = given t (tit (fn,[]) :: xs) givx
+    | else = given_apply_for 1 [] fn
+  where args = funArgsCount fn - funAppliedArgsCount fn
+        maxN | args > 0 = args - 1 | else = 0
+        given_apply_for n ys fn x 
+          | n < maxN = given_apply_for (n+1) (x::ys) fn
+          | else = given t (tit (fn,x::ys) :: xs) givx
+
+given_pred # private
+given_pred t xs x pred fn arg = given t (val::xs) x
+  where val = EspecPredicate (pred,fn,arg)
+
+test (nm is string) fn = fn nm []
+
+should = EspecPredicate ("should", id)
+shouldn't = EspecPredicate ("shouldn't", not)
+be = EspecFun ("be", ==)
+lesser = EspecFun ("lesser", <)
+greater = EspecFun ("greater", >)
+lesserEqual = EspecFun ("lesserEqual", <=)
+greaterEqual = EspecFun ("greaterEqual", >=)
+contain = EspecFun ("contain", flip elem)
+do = EspecDo
+apply = EspecApply
+
+other = EspecOther
+
+/* Execution */
+exec # private
+exec z [] = z
+exec z (x::xs) = exec (eval z x) xs
+  where eval (_,lst) (Test n) = () => Test n :: lst
+        eval (_,lst) (Given x) = x => Given x :: lst
+        eval (_,lst) (Other x) = x => Other x :: lst
+        eval (x,lst) (EspecDo (fn,args)) = 
+            res => Do (funName fn, args, res) :: lst
+            where res = evalFun fn (x :: reverse args)
+        eval (x,lst) (EspecApply (fn,args)) = 
+            res => Apply (funName fn, args, res) :: lst
+            where res = evalFun fn (args ++ [x])
+        eval (x,lst) (EspecPredicate ((nm,pred),EspecFun (fnm,fn),arg)) = 
+            x => Pred (nm,fnm,arg,res) :: lst
+            where res = evalPred pred fn x arg
+        evalFun fn (x::xs) = evalFun (fn x) xs
+        evalFun fn _ = fn
+        evalPred p fn x y = try test p fn x y with e = Error e
+        test p fn x y | p (fn x y) = Success | else = Failed x
+
+execTests # private
+execTests (x::xs) = (reverse <| snd (exec init x)) :: execTests xs
+execTests [] = []
+
+run = reverse << execTests
+
+/* Registration */
+addTest fn xs = fn EndOfTest :: xs
+
+addTests mod xs = foldl (flip (::)) xs funs
+  where funs = map (\f -> f EndOfTest) <| 
+          filter (same given) <| map (:"value") <| moduleExportList mod
+
+init # private
+init = ((),[])
+
+same # private
+same (f is fun) (g is fun) = 
+  funModule f == funModule g and funHandle f == funHandle g
+same _ _ = false
+
+/* Format result as string */
+stat # private
+stat f e [] = (f,e)
+stat f e (Pred (_,_,_,Failed)::xs) = stat (f+1) e xs
+stat f e (Pred (_,_,_,Error)::xs) = stat f (e+1) xs
+stat f e (_::xs) = stat f e xs
+
+report # private
+report xs = (f, e, report_stat f e xs)
+  where (f,e) = stat 0 0 xs
+
+report_stat # private
+report_stat _ _ [] = ""
+report_stat f e (x::xs) = formatStr "{0}\r\n{1}" (item x) (report_stat f e xs)
+  where item (Test n) = formatStr "\r\nTest \"{0}\" (failed {1}, errors {2}):" n f e
+        item (Given x) = formatStr "  given {0}" x
+        item (Other x) = formatStr "  other {0}" x
+        item (Pred (nm,fnm,val,res)) = formatStr "    {0} {1} {2} -> {3}" nm fnm val (result res)
+        item (Do (fn,args,res)) = formatStr "    do {0}{1} -> {2}" fn (itemDo args) res
+        item (Apply (fn,args,res)) = formatStr "    apply {0}{1} -> {2}" fn (itemDo args) res
+        itemDo [] = ""
+        itemDo (y::ys) = formatStr " {0}{1}" (ystr y) (itemDo ys)
+          where ystr (y is fun) = funName y 
+                ystr y = show y
+        result Success = "success"
+        result (Error m) = formatStr "error: {0}" (untag m)
+        result (Failed x) = formatStr "failed (got {0})" x
+
+formatGen # private
+formatGen n fc str [] = (n,fc,str)
+formatGen n fc str (x::xs) = formatGen (n+1) failed (str++r) xs
+  where (f,e,r) = report x
+        failed | f+e>0 = fc + 1 | else = fc
+
+formatResult xs = 
+    formatStr "Test session started.\r\n{0}\r\nTotal tests:{1} Failed: {2}" 
+              str n f
+    where (n,f,str) = formatGen 0 0 "" xs

@@ -12,6 +12,15 @@ This function always returns a number of arguments in a _literal_ _form_ - not a
 number of arguments that a function can accept:
 >>>funArgsCount (\x -> \y -> \z -> x+y+z)
 
+funHandle 
+Returns a handle of a given function.
+>>>funHandle id
+
+funModule
+Returns a module where a given function is defined. (This function returns a value of type
+`module`).
+>>>funModule id
+
 funName
 Returns a name of a given function:
 >>>funName (<<)
@@ -20,12 +29,12 @@ If a function name cannot be inferred, than a `<f>` string is returned (which is
 
 funAppliedArgsCount
 Returns a number of applied arguments in a partially applied function:
->>>let sum2 = (+2)
+>>>sum2 = (+2)
 >>>funAppliedArgsCount sum2
 
 funAppliedArgs
 Returns a list of applied arguments in a partially applied function:
->>>let sub2 = (-2)
+>>>sub2 = (-2)
 >>>funAppliedArgs sub2
 
 moduleHandle
