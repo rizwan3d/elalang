@@ -1,7 +1,7 @@
 open console imperative char cell
  
 //Implementation of HQ9+ interpreter
-eval src = eval' (toList src)
+eval src = eval' src
       where eval' [] = ()
             eval' (x::xs) | be 'H' = h! $ eval' xs
                           | be 'Q' = q! $ eval' xs
@@ -12,14 +12,14 @@ eval src = eval' (toList src)
                                 be c = upper x == c
                                 h () = writen "Hello, world!"
                                 q () = writen src
-                                p () = rf |> mutate (valueof rf + 1)
+                                p () = rf.+
                                 n () = bottles [99,98..1]
                                   where bottles [] = ()
-                                       bottles (x::xs) = rec write 
-                                         x " bottles of beer of the wall\r\n"
-                                         x " bottles of beer\r\n"
-                                         "Take one down, pass it around\r\n"
-                                         $ bottles xs
+                                        bottles (x::xs) = rec write 
+                                          x " bottles of beer of the wall\r\n"
+                                          x " bottles of beer\r\n"
+                                          "Take one down, pass it around\r\n"
+                                          $ bottles xs
 
 //Let's evaluate the main program in HQ9+ 
 eval "HQ9+"

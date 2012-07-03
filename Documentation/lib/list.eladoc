@@ -1,96 +1,9 @@
-#file core.ela
-#title core
+#file list.ela
+#title list
 #category Ela Standard Library
-Core module contains multiple important functions including math functions, functions to work 
-with lists, etc. 
+This module contains multiple functions to work with lists. 
 
 #members
-
-abs
-Returns an absolute value of a given number. 
-
-exp
-Returns e raised to a specified power. 
-
-gcd x y
-Returns the greatest common divisor for the two given arguments. 
-
-cos
-Returns the cosine of the specified angle. 
-
-sin
-Returns the sine of the specified angle. 
-
-acos
-Returns the angle whose cosine is the specified number. 
-
-asin
-Returns the angle whose sine is the specified number. 
-
-tan
-Returns the tangent of the specified angle. 
-
-quot
-Calculates the quotinent of two given integers. 
-
-lcm x y
-Calculates the least common multiple of two given arguments. 
-
-floor
-Returns the largest integer less than or equal to the specified number: 
->>>floor 12.6
-
-ceiling
-Returns the smallest integer greater than or equal to the specified number: 
->>>ceiling 12.01
-
-atan
-Returns the angle whose tangent is the specified number. 
-
-sqrt
-Returns the square root of a specified number. 
-
-truncate
-Calculates the integral part of a specified number. 
-
-log
-Returns the natural (base e) logarithm of a specified number. 
-
-even
-Returns true if the specified number is even, otherwise returns false. 
-
-odd
-Returns true if the specified number is odd, otherwise returns false. 
-
-maxValue
-Returns x if x is greater or equal to y, otherwise returns y. 
-
-minValue
-Returns x if x is lesser or equal to y, otherwise returns y. 
-
-round
-Rounds a number to a nearest integer: 
->>>round 41.6
-
-rnd
-A randomize function. It returns a pseudo random number which is equal or greater to `min` and 
-equal or lesser than `max`. This is actually a pure function as it will always return the same 
-value for the same seed.
-
-pi
-Represents the ratio of the circumference of a circle to its diameter, specified by the constant, 
-pi. 
-
-e
-Represents the natural logarithmic base, specified by the constant, e. 
-
-chr
-Converts a given integer number to a char. This function is equivalent to toChar function called 
-for integer number. 
-
-ord
-Converts a given char to an integer number. This function is equivalent to toInt function called 
-for char.
 
 sort xs
 Sorts a given list. This function implements a merge sort. It can sort an list with values of

@@ -1,4 +1,4 @@
-open test console core@cr datetime
+open test console
 open basictests funtests rangetests listtests tupletests recordtests
      varianttests comprehensiontests thunktests matchtests
 

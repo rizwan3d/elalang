@@ -9,6 +9,7 @@ using Elide.Core;
 using Elide.Scintilla;
 using Elide.ElaCode.ObjectModel;
 using System.Text;
+using System.IO;
 
 namespace Elide.ElaCode
 {
@@ -121,6 +122,26 @@ namespace Elide.ElaCode
                 keywords.AddRange(names);
 
             app.GetService<IAutocompleteService>().ShowAutocomplete(keywords);
+        }
+
+        public FileInfo FindModule(int pos, CodeDocument doc)
+        {
+            var sym = GetNameInfo(pos, doc);
+            var unit = doc != null ? doc.Unit : null;
+            var frame = unit != null ? ((CompiledUnit)unit).CodeFrame : null;
+
+            if (sym != null && ((ElaVariableFlags)sym.Flags).Set(ElaVariableFlags.Module)
+                && frame != null && frame.References.ContainsKey(sym.Name))
+            {
+                var mod = frame.References[sym.Name];
+                var rr = new ElaReferenceResolver { App = app };
+                var refUnit = rr.Resolve(new Reference(new CompiledUnit(doc, frame), mod), ElaReferenceResolver.NoBuild);
+
+                if (refUnit != null)
+                    return ((CompiledUnit)refUnit).Document.FileInfo;
+            }
+
+            return null;
         }
 
         private void ListModuleMembers(CodeDocument doc, int pos)

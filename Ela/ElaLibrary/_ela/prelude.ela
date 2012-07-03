@@ -289,6 +289,9 @@ not = __internal not
 /* Function related operators and functions */
 (>>) f g x = g (f x)
 (<<) f g x = f (g x)
+f! = f()
+(|>) = __internal fpipe
+(<|) = __internal bpipe
 flip f x y = f y x
 curry f x y = f (x, y)
 uncurry f (x, y) = f x y
@@ -320,8 +323,7 @@ fix f = f (& fix f)
 on cmb f x y = f x `cmb` f y
 
 /* Misc */
-f! = f()
-(|>) = __internal fpipe
-(<|) = __internal bpipe
 until p f x | p x  = x  | else = until p f (f x)
 compare x y | x == y = EQ | x < y = LT | else = GT
+even x = x % 2 == 0
+odd x = x % 2 <> 0

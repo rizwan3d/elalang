@@ -1,75 +1,7 @@
-/* 
-  Module core
+﻿/* 
+  Module list
   Created in 2011-2012 by Basil Voronkov
 */
-import libCore#elalib@cm 
-
-/* MATH */
-
-abs x | x >= 0 = x
-      | else   = --x
-
-exp x = cm.exp (force x)
-
-gcd 0 0 = fail "core.gcd: gcd 0 0 is undefined"
-gcd x y = gcd' (abs x) (abs y)
-          where gcd' x 0 = x
-                gcd' x y = gcd' y (x % y)
-
-cos x = cm.cos (force x)
-
-sin x = cm.sin (force x)
-
-acos x = cm.acos (force x)
-
-asin x = cm.asin (force x)
-
-tan x = cm.tan (force x)
-
-quot x y = toLong x / toLong y
-
-lcm _ 0 = 0
-lcm 0 _ = 0
-lcm x y = abs ((x `quot` gcd x y) * y)
-
-floor x = cm.floor (force x)
-
-ceiling x = cm.ceiling (force x)
-
-atan x = cm.atan (force x)
-
-sqrt x = x ** 0.5
-
-truncate x = cm.truncate (force x)
-
-log x = cm.log (force x)
-
-even x = x % 2 == 0
-
-odd x = x % 2 <> 0
-
-maxValue x y | x >= y = x
-             | else   = y
-
-minValue x y | x <= y = x
-             | else   = y
-
-round x = cm.round (force x)
-
-rnd seed min max = cm.rnd (force seed) (force min) (force max)
-
-pi = cm.pi //Constant
-
-e = cm.e //Constant
-
-
-/* Basic */
-chr (x is int)  = toChar x
-
-ord (x is char) = toInt x
-
-
-/* LIST FUNCTIONS */
 
 //Strict sort based on merge sort
 mergeBy # private
@@ -97,11 +29,11 @@ sort' x = qsort x []
 
 last (x::[]) = x
 last (_::xs) = last xs
-last []      = fail "core.last: Empty list"
+last []      = fail "list.last: Empty list"
 
 init (x::[])   = []
 init (x::xs)   = x :: init xs
-init []        = fail "core.init: Empty list"
+init []        = fail "list.init: Empty list"
 
 takeWhile f (x::xs) | f x  = x :: takeWhile f xs
                     | else = []
@@ -192,7 +124,7 @@ all _ []             = true
 splitAt 0 xs = ([],xs)
 splitAt _ [] = ([],[])
 splitAt n (x::xs) | n > 0 = (x::xs',xs2')
-                  | else = fail "core.splitAt: negative argument"
+                  | else = fail "list.splitAt: negative argument"
                             where (xs',xs2') = splitAt (n-1) xs
 
 split xs = go xs xs 
@@ -209,7 +141,7 @@ breakList p xs = span (not << p) xs
 drop 0 xs              = xs
 drop _ []              = []
 drop n (_::xs) | n > 0 = drop (n-1) xs
-               | else  = fail "core.drop: negative argument"
+               | else  = fail "list.drop: negative argument"
 
 dropWhile p [] = []
 dropWhile p (x::xs) | p x  = dropWhile p xs

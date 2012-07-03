@@ -1,0 +1,57 @@
+﻿/* 
+  Module math
+  Created in 2011-2012 by Basil Voronkov
+*/
+import libCore#elalib@cm 
+
+abs x | x >= 0 = x
+      | else   = --x
+
+exp x = cm.exp (force x)
+
+gcd 0 0 = fail "core.gcd: gcd 0 0 is undefined"
+gcd x y = gcd' (abs x) (abs y)
+          where gcd' x 0 = x
+                gcd' x y = gcd' y (x % y)
+
+cos x = cm.cos (force x)
+
+sin x = cm.sin (force x)
+
+acos x = cm.acos (force x)
+
+asin x = cm.asin (force x)
+
+tan x = cm.tan (force x)
+
+quot x y = toLong x / toLong y
+
+lcm _ 0 = 0
+lcm 0 _ = 0
+lcm x y = abs ((x `quot` gcd x y) * y)
+
+floor x = cm.floor (force x)
+
+ceiling x = cm.ceiling (force x)
+
+atan x = cm.atan (force x)
+
+sqrt x = x ** 0.5
+
+truncate x = cm.truncate (force x)
+
+log x = cm.log (force x)
+
+maxValue x y | x >= y = x
+             | else   = y
+
+minValue x y | x <= y = x
+             | else   = y
+
+round x = cm.round (force x)
+
+rnd seed min max = cm.rnd (force seed) (force min) (force max)
+
+pi = cm.pi //Constant
+
+e = cm.e //Constant

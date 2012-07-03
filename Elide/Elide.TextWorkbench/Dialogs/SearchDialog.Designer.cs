@@ -291,9 +291,10 @@
             this.MaximumSize = new System.Drawing.Size(1200, 327);
             this.MinimumSize = new System.Drawing.Size(396, 327);
             this.Name = "SearchDialog";
+            this.ShowInTaskbar = false;
             this.Text = "Find and Replace";
-            this.Load += new System.EventHandler(this.SearchDialog_Load);
             this.Activated += new System.EventHandler(this.SearchDialog_Activated);
+            this.Load += new System.EventHandler(this.SearchDialog_Load);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.SearchDialog_KeyUp);
             this.optionsGroup.ResumeLayout(false);
             this.optionsGroup.PerformLayout();

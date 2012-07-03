@@ -26,7 +26,7 @@ namespace Ela.Library.General
             Add("maxDouble", new ElaValue(Double.MaxValue));
             Add("minDouble", new ElaValue(Double.MinValue));
         }
-        
+
         public bool IsInfinity(ElaValue val)
         {
             return

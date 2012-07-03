@@ -88,6 +88,7 @@
     <Compile Include="General\Experimental.cs" />
     <Compile Include="General\FormatModule.cs" />
     <Compile Include="General\IOModule.cs" />
+    <Compile Include="General\ReadModule.cs" />
     <Compile Include="General\RecordModule.cs" />
     <Compile Include="General\ReflectModule.cs" />
     <Compile Include="Modules.cs" />
@@ -112,7 +113,6 @@
     <Content Include="_ela\collections\alist.ela" />
     <Content Include="_ela\collections\queue.ela" />
     <Content Include="_ela\console.ela" />
-    <Content Include="_ela\core.ela" />
     <Content Include="_ela\datetime.ela" />
     <Content Include="_ela\format.ela" />
     <Content Include="_ela\imperative.ela" />
@@ -126,6 +126,10 @@
     <Content Include="_ela\thunk.ela" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="_ela\espec.ela" />
+    <None Include="_ela\list.ela" />
+    <None Include="_ela\math.ela" />
+    <None Include="_ela\read.ela" />
     <None Include="_ela\variant.ela" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -15,12 +15,16 @@ namespace Elide.ElaCode.ObjectModel
         internal CompiledUnit(Document doc, CodeFrame codeFrame)
         {
             CodeFrame = codeFrame;
-            Globals = ExtractNames(codeFrame).ToList();
             Document = doc;
-            Classes = codeFrame.Classes.Select(kv => new TypeClass(kv.Key, kv.Value)).ToList();
-            Instances = codeFrame.Instances.Select(i => new TypeClassInstance(i.Class, i.Type));
-            Types = codeFrame.Types.Select(s => new UserType(s));
-            References = codeFrame.References.Where(r => !r.Key.StartsWith("$__")).Select(r => new Reference(this, r.Value)).ToList();
+
+            if (codeFrame != null)
+            {
+                Globals = ExtractNames(codeFrame).ToList();
+                Classes = codeFrame.Classes.Select(kv => new TypeClass(kv.Key, kv.Value)).ToList();
+                Instances = codeFrame.Instances.Select(i => new TypeClassInstance(i.Class, i.Type));
+                Types = codeFrame.Types.Select(s => new UserType(s));
+                References = codeFrame.References.Where(r => !r.Key.StartsWith("$__")).Select(r => new Reference(this, r.Value)).ToList();
+            }
         }
 
         private IEnumerable<CodeName> ExtractNames(CodeFrame codeFrame)

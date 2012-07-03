@@ -2,7 +2,7 @@
   Module test
   Created in 2011-2012 by Basil Voronkov
 */
-open core reflect format
+open list reflect format
 
 assert # private
 assert =
