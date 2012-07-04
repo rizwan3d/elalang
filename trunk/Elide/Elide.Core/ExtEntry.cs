@@ -17,6 +17,11 @@ namespace Elide.Core
             Children = children;
         }
 
+        public Nullable<T> ElementNullable<T>(string key) where T : struct
+        {
+            return Element<Nullable<T>>(key, null);
+        }
+
         public T Element<T>(string key)
         {
             return Element<T>(key, default(T));

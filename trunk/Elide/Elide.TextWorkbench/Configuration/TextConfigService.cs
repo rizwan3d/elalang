@@ -19,7 +19,16 @@ namespace Elide.TextWorkbench.Configuration
         {
             base.Initialize(app);
             var con = App.Config<TextEditorsConfig>();
-            Configs.Where(c => !con.Configs.ContainsKey(c.Key)).ForEach(c => con.Configs.Add(c.Key, new TextConfig()));
+            Configs
+                .Where(c => !con.Configs.ContainsKey(c.Key))
+                .ForEach(c => con.Configs.Add(c.Key,
+                    new TextConfig
+                    {
+                        UseTabs = c.UseTabs,
+                        IndentMode = c.IndentMode,
+                        TabSize = c.TabSize,
+                        IndentSize = c.IndentSize
+                    }));
         }
 
         public override TextConfig GetConfig(string key)
