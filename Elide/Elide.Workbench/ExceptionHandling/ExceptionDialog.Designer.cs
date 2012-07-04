@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExceptionDialog));
             this.headerPanel = new System.Windows.Forms.Panel();
+            this.iconBox = new System.Windows.Forms.PictureBox();
             this.headerLabel = new System.Windows.Forms.Label();
             this.messageLabel = new System.Windows.Forms.Label();
             this.messageTextLabel = new System.Windows.Forms.Label();
@@ -37,7 +38,6 @@
             this.detailsTextBox = new System.Windows.Forms.TextBox();
             this.closeButton = new System.Windows.Forms.Button();
             this.emailCheck = new System.Windows.Forms.CheckBox();
-            this.iconBox = new System.Windows.Forms.PictureBox();
             this.headerPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.iconBox)).BeginInit();
             this.SuspendLayout();
@@ -52,6 +52,15 @@
             this.headerPanel.Name = "headerPanel";
             this.headerPanel.Size = new System.Drawing.Size(458, 45);
             this.headerPanel.TabIndex = 0;
+            // 
+            // iconBox
+            // 
+            this.iconBox.Image = ((System.Drawing.Image)(resources.GetObject("iconBox.Image")));
+            this.iconBox.Location = new System.Drawing.Point(8, 7);
+            this.iconBox.Name = "iconBox";
+            this.iconBox.Size = new System.Drawing.Size(35, 32);
+            this.iconBox.TabIndex = 7;
+            this.iconBox.TabStop = false;
             // 
             // headerLabel
             // 
@@ -117,8 +126,6 @@
             // emailCheck
             // 
             this.emailCheck.AutoSize = true;
-            this.emailCheck.Checked = true;
-            this.emailCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.emailCheck.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.emailCheck.Location = new System.Drawing.Point(12, 200);
             this.emailCheck.Name = "emailCheck";
@@ -126,15 +133,7 @@
             this.emailCheck.TabIndex = 6;
             this.emailCheck.Text = "Send an email with error dump to program developer";
             this.emailCheck.UseVisualStyleBackColor = true;
-            // 
-            // iconBox
-            // 
-            this.iconBox.Image = ((System.Drawing.Image)(resources.GetObject("iconBox.Image")));
-            this.iconBox.Location = new System.Drawing.Point(8, 7);
-            this.iconBox.Name = "iconBox";
-            this.iconBox.Size = new System.Drawing.Size(35, 32);
-            this.iconBox.TabIndex = 7;
-            this.iconBox.TabStop = false;
+            this.emailCheck.Visible = false;
             // 
             // ExceptionDialog
             // 

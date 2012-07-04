@@ -39,8 +39,8 @@
             this.linkLayout2 = new System.Windows.Forms.FlowLayoutPanel();
             this.docLink = new System.Windows.Forms.LinkLabel();
             this.codeSamplesLink = new System.Windows.Forms.LinkLabel();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.book = new System.Windows.Forms.LinkLabel();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.documentationLabel = new System.Windows.Forms.Label();
             this.linkLayout3 = new System.Windows.Forms.FlowLayoutPanel();
             this.homepageLink = new System.Windows.Forms.LinkLabel();
@@ -49,6 +49,7 @@
             this.groupLink = new System.Windows.Forms.LinkLabel();
             this.onlineConsoleLink = new System.Windows.Forms.LinkLabel();
             this.resourcesLabel = new System.Windows.Forms.Label();
+            this.whatsNewLink = new System.Windows.Forms.LinkLabel();
             this.panel.SuspendLayout();
             this.linkLayout1.SuspendLayout();
             this.linkLayout2.SuspendLayout();
@@ -149,6 +150,7 @@
             // 
             // linkLayout2
             // 
+            this.linkLayout2.Controls.Add(this.whatsNewLink);
             this.linkLayout2.Controls.Add(this.docLink);
             this.linkLayout2.Controls.Add(this.codeSamplesLink);
             this.linkLayout2.Controls.Add(this.book);
@@ -161,7 +163,7 @@
             // 
             this.docLink.AutoSize = true;
             this.docLink.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.docLink.Location = new System.Drawing.Point(3, 0);
+            this.docLink.Location = new System.Drawing.Point(3, 18);
             this.docLink.Name = "docLink";
             this.docLink.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.docLink.Size = new System.Drawing.Size(124, 18);
@@ -175,7 +177,7 @@
             this.codeSamplesLink.AutoSize = true;
             this.linkLayout2.SetFlowBreak(this.codeSamplesLink, true);
             this.codeSamplesLink.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.codeSamplesLink.Location = new System.Drawing.Point(3, 18);
+            this.codeSamplesLink.Location = new System.Drawing.Point(3, 36);
             this.codeSamplesLink.Name = "codeSamplesLink";
             this.codeSamplesLink.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.codeSamplesLink.Size = new System.Drawing.Size(126, 18);
@@ -183,6 +185,19 @@
             this.codeSamplesLink.TabStop = true;
             this.codeSamplesLink.Text = "Code samples directory";
             this.codeSamplesLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.codeSamplesLink_LinkClicked);
+            // 
+            // book
+            // 
+            this.book.AutoSize = true;
+            this.book.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            this.book.Location = new System.Drawing.Point(3, 54);
+            this.book.Name = "book";
+            this.book.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
+            this.book.Size = new System.Drawing.Size(86, 18);
+            this.book.TabIndex = 3;
+            this.book.TabStop = true;
+            this.book.Text = "Book about Ela";
+            this.book.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.book_LinkClicked);
             // 
             // linkLabel1
             // 
@@ -197,19 +212,6 @@
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "CodeProject article";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-            // 
-            // book
-            // 
-            this.book.AutoSize = true;
-            this.book.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.book.Location = new System.Drawing.Point(3, 36);
-            this.book.Name = "book";
-            this.book.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
-            this.book.Size = new System.Drawing.Size(86, 18);
-            this.book.TabIndex = 3;
-            this.book.TabStop = true;
-            this.book.Text = "Book about Ela";
-            this.book.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.book_LinkClicked);
             // 
             // documentationLabel
             // 
@@ -314,6 +316,19 @@
             this.resourcesLabel.TabIndex = 7;
             this.resourcesLabel.Text = "Useful resources";
             // 
+            // whatsNewLink
+            // 
+            this.whatsNewLink.AutoSize = true;
+            this.whatsNewLink.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            this.whatsNewLink.Location = new System.Drawing.Point(3, 0);
+            this.whatsNewLink.Name = "whatsNewLink";
+            this.whatsNewLink.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
+            this.whatsNewLink.Size = new System.Drawing.Size(147, 18);
+            this.whatsNewLink.TabIndex = 4;
+            this.whatsNewLink.TabStop = true;
+            this.whatsNewLink.Text = "What\'s new in this release?";
+            this.whatsNewLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.whatsNewLink_LinkClicked);
+            // 
             // WelcomePageView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -367,5 +382,6 @@
         private System.Windows.Forms.LinkLabel groupLink;
         private System.Windows.Forms.LinkLabel onlineConsoleLink;
         private System.Windows.Forms.Label resourcesLabel;
+        private System.Windows.Forms.LinkLabel whatsNewLink;
     }
 }
