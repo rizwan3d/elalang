@@ -1,5 +1,5 @@
 #summary Getting started with Ela
-#labels Featured
+#labels Featured,Deprecated
 
 == Introduction ==
 
