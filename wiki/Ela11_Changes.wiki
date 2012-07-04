@@ -197,3 +197,18 @@ x = 3
 }}}
 
 In Ela 0.11 however this code would be compiled without warnings and would yield a number `2`.
+
+
+== Naming ==
+In Ela 0.10 it was possible to use uppercase identifiers for module names. The following code was valid:
+{{{
+open Core
+Core.map
+}}}
+However uppercase identifiers in Ela are reserved for variant tags and modules in Ela are first class values. It could lead to\
+a non-obvious code like so:
+{{{
+fun Core
+}}}
+What is going on here? Are we applying `fun` function to a variant or to a module reference?//br
+In Ela 0.11 use of uppercase identifiers for module names in disallowed.
