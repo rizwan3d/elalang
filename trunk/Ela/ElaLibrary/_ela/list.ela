@@ -1,4 +1,4 @@
-﻿/* 
+/* 
   Module list
   Created in 2011-2012 by Basil Voronkov
 */
@@ -12,7 +12,7 @@ mergeBy pred [] ys = ys
 
 sortBy pred [x] = [x]
 sortBy pred xs = mergeBy pred (sortBy pred xs1) (sortBy pred xs2)
-                 where (xs1,xs2) = split xs
+                 where (xs1,xs2) = splitHalf xs
 sortBy pred [] = []
 
 sort = sortBy (<=)
@@ -127,7 +127,7 @@ splitAt n (x::xs) | n > 0 = (x::xs',xs2')
                   | else = fail "list.splitAt: negative argument"
                             where (xs',xs2') = splitAt (n-1) xs
 
-split xs = go xs xs 
+splitHalf xs = go xs xs 
       where go (x::xs) (_::_::zs) = (x::us,vs) where (us,vs) = go xs zs
             go xs _ = ([],xs)
 

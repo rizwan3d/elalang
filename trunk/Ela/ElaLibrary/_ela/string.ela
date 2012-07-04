@@ -16,6 +16,7 @@ trimEndChars = collect str.trimEndChars []
 
 indexOf (search is string) (s is string) = str.indexOf search s
 indexOfFrom (search is string) (idx is int) (s is string) = str.indexOfFrom search idx s
+indexOfLast (search is string) (s is string) = str.indexOfLast search s
 
 startsWith (search is string) (s is string) = str.startsWith search s
 endsWith (search is string) (s is string) = str.endsWith search s
