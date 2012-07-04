@@ -67,6 +67,12 @@ namespace Elide.WelcomePage
             App.OpenView("CodeSamples");
         }
 
+        private void whatsNewLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var fi = new FileInfo(Path.Combine(App.GetService<IPathService>().GetPath(PlatformPath.Docs), "whatsnew.htm"));
+            App.GetService<IFileService>().OpenFile(fi);            
+        }
+
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             OpenLink("http://www.codeproject.com/Articles/158068/Ela-functional-programming-language");

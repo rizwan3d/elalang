@@ -105,9 +105,12 @@ namespace Ela.Compilation
         //A main method to add named variables.
         private int AddVariable(string name, ElaExpression exp, ElaVariableFlags flags, int data)
         {
-            //Hiding in the same scope is not allowed
-            if (CurrentScope.Locals.ContainsKey(name))
+            //Hiding is allowed in parameter list
+            if ((flags & ElaVariableFlags.Parameter) == ElaVariableFlags.Parameter)
+                CurrentScope.Locals.Remove(name);
+            else if (CurrentScope.Locals.ContainsKey(name))
             {
+                //But for other cases hiding in the same scope is not allowed
                 CurrentScope.Locals.Remove(name);
                 AddError(ElaCompilerError.NoHindingSameScope, exp, name);
             }

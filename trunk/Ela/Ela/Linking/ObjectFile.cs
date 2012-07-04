@@ -5,20 +5,15 @@ namespace Ela.Linking
 {
 	public abstract class ObjectFile
 	{
-		#region Construction
-		private const int VERSION = 22;
+		private const int VERSION = 23;
 
 		protected ObjectFile(FileInfo file)
 		{
 			File = file;
 		}
-		#endregion
 
-
-		#region Properties
 		public FileInfo File { get; private set; }
 
 		public int Version { get { return VERSION; } }
-		#endregion
 	}
 }

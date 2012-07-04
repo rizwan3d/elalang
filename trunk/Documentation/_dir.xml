@@ -41,6 +41,7 @@
     <doc name="Classes" file="classes.htm"/>
     <doc name="Operator Priority" file="operatorpriority.htm" />    
   </folder>
+  <doc name="What's new?" file="whatsnew.htm" />
   <doc name="Ela and Haskell" file="elaandhaskell.htm" />
   <doc name="Ela Console" file="elaconsole.htm" />
   <doc name="Embedding Ela" file="embedding.htm" />
