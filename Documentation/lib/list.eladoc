@@ -13,7 +13,7 @@ sortBy pred xs
 A generalization of a `sort` function that allows to specify a predicate.
 
 sort' xs
-Sorts a given list. This is a non-strict function, which implements a quicksort algorythm.
+Sorts a given list. This is a non-strict function, which implements a quicksort algorithm.
 
 last xs
 Returns the last element of a given list: 
@@ -131,7 +131,7 @@ Splits a list `xs` at the index `n` and produces a tuple with two lists:
 >>>splitAt 3 [1..5]
 This function throws a `Failure` if an `n` argument is less than zero. 
 
-split xs
+splitHalf xs
 Splits a given list by half.
 
 span p xs
