@@ -1,5 +1,5 @@
 #summary Ela 0.9 to Ela 0.10 migration
-#labels Featured,Phase-Design,Phase-Implementation
+#labels Phase-Design,Phase-Implementation
 
 == Introduction ==
 
