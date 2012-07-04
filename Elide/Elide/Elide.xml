@@ -145,7 +145,7 @@
     <textConfigs>
         <add key="PlainText" display="Plain Text Editor" />
         <add key="EilCode" display="EIL Code Editor"  />
-        <add key="ElaCode" display="Ela Code Editor" options="RestrictTabs,RestrictWordWrap" />
+        <add key="ElaCode" display="Ela Code Editor" options="RestrictTabs,RestrictWordWrap" indentMode="Smart" />
     </textConfigs>
     
     <views>

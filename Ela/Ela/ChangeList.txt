@@ -1,3 +1,5 @@
+0.11.0.0:Release:Release of Ela 0.11.0.0.
+0.10.4.65:Change:Use of uppercase identifiers for module names is now disallowed.
 0.10.4.64:Change:Now instead of a single 'open' directive for referencing modules two directives can be used: 'open' (similar to previous open directive) and 'import' (the same as 'open qualified').
 0.10.4.63:Change:Now 'qualified' and 'private' and no longer keywords.
 0.10.4.62:New:A new attribute 'qualified' is added - it requires to reference a name only by qualifying it with a module alias.

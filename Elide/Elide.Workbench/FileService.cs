@@ -240,6 +240,9 @@ namespace Elide.Workbench
 
             var ctl = (Control)editor.Instance.Control;
 
+            if (ctl.CanSelect)
+                ctl.Select();
+
             if (WB.Form.DocumentPanel.Controls.Count == 0 || WB.Form.DocumentPanel.Controls[0] != ctl)
             {
                 ctl.Dock = DockStyle.Fill;

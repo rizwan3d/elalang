@@ -28,10 +28,58 @@ namespace Elide.ElaCode
 
             var sci = GetScintilla();
             sci.SetWordChars("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'_");
+            sci.SmartIndentRequired += SmartIndentRequired;
             folding = new FoldingManager(sci);            
             ElaFuns = new ElaFunctions(App, sci);
         }
 
+        private void SmartIndentRequired(object sender, EventArgs e)
+        {
+            var sci = GetScintilla();
+            var ln = sci.GetLine(sci.CurrentLine - 1).Text.ToUpper();
+
+            if (ln.TrimStart().StartsWith("|"))
+            {
+                if (!ln.TrimStart(' ', '|').StartsWith("ELSE"))
+                {
+                    var indent = ln.IndexOf("|");
+                    sci.SetLineIndentation(sci.CurrentLine, indent);
+                    sci.CaretPosition = sci.GetPositionByColumn(sci.CurrentLine, indent);
+                }
+            }
+            else if (ln.TrimEnd('\r','\n',' ','\0').EndsWith("="))
+            {
+                var indent = sci.GetLineIndentation(sci.CurrentLine - 1) + 2;
+                sci.SetLineIndentation(sci.CurrentLine, indent);
+                sci.CaretPosition = sci.GetPositionByColumn(sci.CurrentLine, indent);
+            }
+            else
+            {
+                var idx = ln.IndexOf("|");
+
+                if (idx != -1 && ln.IndexOf("=") > idx && ln.IndexOf("|", idx + 1) == -1)
+                {
+                    sci.SetLineIndentation(sci.CurrentLine, idx);
+                    sci.CaretPosition = sci.GetPositionByColumn(sci.CurrentLine, idx);
+                }
+            }
+        }
+
+        private void Indent()
+        {
+            var sci = GetScintilla();
+            sci.ExecCommand(2329);//NewLine
+            var ln = sci.GetLine(sci.CurrentLine - 1).Text.ToUpper();
+            var indent = 0;
+
+            if (ln.TrimStart().StartsWith("WHERE"))
+                indent = sci.GetLineIndentation(sci.CurrentLine - 1) + 6;
+            else
+                indent = sci.GetLineIndentation(sci.CurrentLine - 1);
+
+            sci.SetLineIndentation(sci.CurrentLine, indent);
+            sci.CaretPosition = sci.GetPositionByColumn(sci.CurrentLine, indent);
+        }
 
         protected override void BuildAuxMenus(IMenuBuilder<MenuStrip> builder)
         {
@@ -60,8 +108,10 @@ namespace Elide.ElaCode
                     .Item("&Toggle Outlining Expansion", "Ctrl+M", () => sci.ToggleFold(sci.CurrentLine))
                     .Item("&Collapse to Definitions", sci.CollapseAllFold)
                     .Item("&Expand All Code", "Ctrl+Shift+M", sci.ExpandAllFold)
+                    .CloseMenu()
+                .Menu("&Indentantion")
+                    .Item("&New Line with Indent", "Ctrl+Enter", Indent)
                     .CloseMenu();
-
         }
 
         protected override void BuildAuxContextMenu(IMenuBuilder<ContextMenuStrip> builder)
