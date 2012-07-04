@@ -126,11 +126,13 @@ namespace Ela.Compilation
                     flags |= ElaVariableFlags.Builtin;
                 }
                 else if (exp.Right.Type == ElaNodeType.Lambda)
-                {                
+                {
                     var fun = (ElaLambda)exp.Right;
                     flags |= ElaVariableFlags.Function;
                     data = fun.GetParameterCount();
                 }
+                else if (exp.Right.IsLiteral())
+                    flags |= ElaVariableFlags.ObjectLiteral;
 
                 AddVariable(exp.Left.GetName(), exp, flags, data);
             }

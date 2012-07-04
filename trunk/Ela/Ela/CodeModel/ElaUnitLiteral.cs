@@ -14,7 +14,12 @@ namespace Ela.CodeModel
 		public ElaUnitLiteral() : this(null)
 		{
 
-		}
+        }
+
+        internal override bool IsLiteral()
+        {
+            return true;
+        }
         
         internal override bool Safe()
         {

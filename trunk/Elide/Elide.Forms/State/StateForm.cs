@@ -30,32 +30,36 @@ namespace Elide.Forms.State
 
         private void LoadState()
         {
-            var ser = new BinarySerializer();
-            var stat = ser.Deserialize(StateFileName) as Dictionary<String,Object>;
-
-            if (stat != null)
+            try
             {
-                var w = (Int32)stat["Width"];
-                var h = (Int32)stat["Height"];
+                var ser = new BinarySerializer();
+                var stat = ser.Deserialize(StateFileName) as Dictionary<String, Object>;
 
-                if (w > MinimumSize.Width)
-                    Width = w;
-
-                if (h > MinimumSize.Height)
-                    Height = h;
-
-                var x = (Int32)stat["X"];
-                var y = (Int32)stat["Y"];
-
-                if (x > 0 && y > 0)
-                    Location = new Point(x, y);
-
-                foreach (var p in GetType().GetProperties())
+                if (stat != null)
                 {
-                    if (Attribute.IsDefined(p, typeof(StateItemAttribute)))
-                        p.SetValue(this, stat[p.Name], null);
+                    var w = (Int32)stat["Width"];
+                    var h = (Int32)stat["Height"];
+
+                    if (w > MinimumSize.Width)
+                        Width = w;
+
+                    if (h > MinimumSize.Height)
+                        Height = h;
+
+                    var x = (Int32)stat["X"];
+                    var y = (Int32)stat["Y"];
+
+                    if (x > 0 && y > 0)
+                        Location = new Point(x, y);
+
+                    foreach (var p in GetType().GetProperties())
+                    {
+                        if (Attribute.IsDefined(p, typeof(StateItemAttribute)))
+                            p.SetValue(this, stat[p.Name], null);
+                    }
                 }
             }
+            catch { }
         }
 
         private void SaveState()

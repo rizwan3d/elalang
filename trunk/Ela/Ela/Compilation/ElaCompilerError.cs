@@ -23,7 +23,7 @@ namespace Ela.Compilation
 
         ElseMissing = 307,
 
-		CastNotSupported = 308,
+		// = 308,
 
 		InvalidPattern = 309,
 
@@ -31,7 +31,7 @@ namespace Ela.Compilation
 
 		NameRequireQualified = 311,
 
-		MatchEntryEmptyNoGuard = 312,
+		// = 312,
 
         PrivateOnlyGlobal = 313,
 
@@ -39,7 +39,7 @@ namespace Ela.Compilation
 
         InvalidBuiltinBinding = 315,
 
-		BindingsAndRestrictedGlobal = 316,
+		// = 316,
 
         ClassAlreadyDeclared = 317,
 

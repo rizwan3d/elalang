@@ -19,7 +19,7 @@ namespace Ela.Compilation
 		
 		FunctionInvalidType = 405,
 
-		FunctionImplicitPartial = 406,
+		// = 406,
 
         BottomValue = 407,
 	}

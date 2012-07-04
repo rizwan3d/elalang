@@ -120,11 +120,8 @@
   <data name="BottomValue" xml:space="preserve">
     <value>An expression '{0}' is executed in a strict manner and references a name before it's actual assignment.</value>
   </data>
-  <data name="FunctionImplicitPartial" xml:space="preserve">
-    <value>Function is partially applied during composition. This is odd for the composition semantics. Consider rewriting this code.</value>
-  </data>
   <data name="FunctionInvalidType" xml:space="preserve">
-    <value>An object bound to the referenced name doesn't support call operation.</value>
+    <value>An expression {0} doesn't evaluate to a function reference.</value>
   </data>
   <data name="MatchEntryAlwaysFail" xml:space="preserve">
     <value>Pattern '{0}' will never match.</value>

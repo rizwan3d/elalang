@@ -46,6 +46,11 @@ namespace Ela.CodeModel
 		}
         
 		internal abstract void ToString(StringBuilder sb, int ident);
+
+        internal virtual bool IsLiteral()
+        {
+            return false;
+        }
 		
         public int Line { get; private set; }
 
