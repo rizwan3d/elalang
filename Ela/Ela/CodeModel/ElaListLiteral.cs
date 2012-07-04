@@ -18,6 +18,11 @@ namespace Ela.CodeModel
 		{
 			
 		}
+
+        internal override bool IsLiteral()
+        {
+            return true;
+        }
         
         internal override bool Safe()
         {

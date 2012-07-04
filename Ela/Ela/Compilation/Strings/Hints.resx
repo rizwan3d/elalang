@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AddElse" xml:space="preserve">
-    <value>Add an 'else' clause to the conditional expression like so: 'let x | y &gt; 0 = y | else = 0' or 'if y &gt; 0 then y else 0'.</value>
+    <value>Add an 'else' clause to the conditional expression like so: 'x | y &gt; 0 = y | else = 0' or 'if y &gt; 0 then y else 0'.</value>
   </data>
   <data name="MatchEntryNotReachable" xml:space="preserve">
     <value>Consider reordering match entries. Less specific patterns should be moved after more specific patterns.</value>
   </data>
   <data name="UseIgnoreToPop" xml:space="preserve">
-    <value>Use 'let _ = ...' expression to disable warning, e.g. 'let_ = x'.</value>
+    <value>Use '_ = ...' expression to disable warning, e.g. '_ = x'.</value>
   </data>
   <data name="UseThunk" xml:space="preserve">
     <value>Consider explicitly marking an expression as a thunk, e.g. '(&amp; {0})'.</value>

@@ -21,6 +21,11 @@ namespace Ela.CodeModel
             return true;
         }
 
+        internal override bool IsLiteral()
+        {
+            return true;
+        }
+
         internal override void ToString(StringBuilder sb, int ident)
 		{
 			sb.Append(Value);

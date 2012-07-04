@@ -22,7 +22,8 @@ namespace Elide.Workbench
         public MainForm()
         {
             InitializeComponent();
-            MainSplitterDistance = 450;
+            _outputPanelSize = 200;
+            _toolPanelSize = 300;
         }
 
         internal void Initialize(IApp app)
@@ -232,13 +233,13 @@ namespace Elide.Workbench
 
             if (outputsBar.SelectedIndex == -1)
             {
-                MainSplitterDistance = mainSplit.SplitterDistance;
-                mainSplit.SplitterDistance = rh - mainSplit.Panel2MinSize;
+                _outputPanelSize = mainSplit.Panel2.Height;
+                mainSplit.SetPanel2Size(mainSplit.Panel2MinSize);
                 mainSplit.IsSplitterFixed = true;
             }
             else
             {
-                mainSplit.SplitterDistance = MainSplitterDistance;
+                mainSplit.SetPanel2Size(_outputPanelSize);
                 var inf = (ViewInfo)outputsBar.SelectedTag;
                 var view = App.GetService<IViewService>().GetView(inf.Key);
                 var ctl = (Control)view.Control;
@@ -246,7 +247,7 @@ namespace Elide.Workbench
                 mainSplit.Panel2.Controls.Add(ctl);
                 ctl.BringToFront();
                 mainSplit.IsSplitterFixed = false;
-                view.Activate();      
+                view.Activate();
             }
         }
 
@@ -322,19 +323,20 @@ namespace Elide.Workbench
         }
 
         #region State
-        private int _mainSplitterDistance;
+        private int _outputPanelSize;
         [StateItem]
-        public int MainSplitterDistance
+        public int OutputPanelSize
         {
-            get { return mainSplit.IsSplitterFixed ? _mainSplitterDistance : mainSplit.SplitterDistance; }
-            set { _mainSplitterDistance = value; }
+            get { return mainSplit.IsSplitterFixed ? _outputPanelSize : mainSplit.Panel2.Height; }
+            set {  _outputPanelSize = value;  }
         }
 
+        private int _toolPanelSize;
         [StateItem]
-        public int ToolSplitterDistance
+        public int ToolPanelSize
         {
-            get { return toolDock.SplitterDistance; }
-            set { toolDock.SplitterDistance = value; }
+            get { return toolDock.IsSplitterFixed ? _toolPanelSize : toolDock.Panel2.Width; }
+            set { _toolPanelSize = value; }
         }
 
         [StateItem]

@@ -25,7 +25,12 @@ namespace Ela.CodeModel
 		protected ElaRecordLiteral(ElaNodeType type) : base(type)
 		{
 			Fields = new List<ElaFieldDeclaration>();
-		}
+        }
+
+        internal override bool IsLiteral()
+        {
+            return true;
+        }
 		
 		internal override bool Safe()
         {

@@ -24,7 +24,12 @@ namespace Ela.CodeModel
 		internal override string GetName()
 		{
 			return Tag;
-		}
+        }
+
+        internal override bool IsLiteral()
+        {
+            return true;
+        }
 
         internal override void ToString(StringBuilder sb, int ident)
 		{

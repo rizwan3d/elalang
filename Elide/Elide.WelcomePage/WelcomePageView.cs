@@ -49,7 +49,7 @@ namespace Elide.WelcomePage
         {
             App.GetService<IFileService>().NewFile("ElaCode");
             var editor = (ITextEditor)App.Editor();
-            editor.SetContent(App.Document(), "open Core\r\n\r\nmap (*2) [1,3..42]");
+            editor.SetContent(App.Document(), "open list\r\n\r\nmap (*2) [1,3..42]");
         }
 
         private void onlineConsoleLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

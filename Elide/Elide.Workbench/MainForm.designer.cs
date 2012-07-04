@@ -73,7 +73,7 @@ namespace Elide.Workbench
             this.mainSplit.Panel2.Controls.Add(this.outputsBar);
             this.mainSplit.Panel2MinSize = 19;
             this.mainSplit.Size = new System.Drawing.Size(947, 604);
-            this.mainSplit.SplitterDistance = 454;
+            this.mainSplit.SplitterDistance = 456;
             this.mainSplit.TabIndex = 2;
             // 
             // toolDock
@@ -90,7 +90,7 @@ namespace Elide.Workbench
             // toolDock.Panel2
             // 
             this.toolDock.Panel2.Controls.Add(this.toolWindow);
-            this.toolDock.Size = new System.Drawing.Size(947, 454);
+            this.toolDock.Size = new System.Drawing.Size(947, 456);
             this.toolDock.SplitterDistance = 697;
             this.toolDock.TabIndex = 3;
             // 
@@ -106,7 +106,7 @@ namespace Elide.Workbench
             this.documentContainer.Overtype = false;
             this.documentContainer.Padding = new System.Windows.Forms.Padding(1, 21, 1, 1);
             this.documentContainer.SelectedDocumentFunc = null;
-            this.documentContainer.Size = new System.Drawing.Size(697, 454);
+            this.documentContainer.Size = new System.Drawing.Size(697, 456);
             this.documentContainer.TabIndex = 0;
             this.documentContainer.Text = "documentContainer1";
             this.documentContainer.UserDocumentSelect += new System.EventHandler<Elide.Forms.ObjectEventArgs>(this.documentContainer_UserDocumentSelect);
@@ -119,7 +119,7 @@ namespace Elide.Workbench
             this.docPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.docPanel.Location = new System.Drawing.Point(1, 21);
             this.docPanel.Name = "docPanel";
-            this.docPanel.Size = new System.Drawing.Size(695, 432);
+            this.docPanel.Size = new System.Drawing.Size(695, 434);
             this.docPanel.TabIndex = 0;
             // 
             // toolWindow
@@ -128,7 +128,7 @@ namespace Elide.Workbench
             this.toolWindow.Location = new System.Drawing.Point(0, 0);
             this.toolWindow.Name = "toolWindow";
             this.toolWindow.SelectedIndex = -1;
-            this.toolWindow.Size = new System.Drawing.Size(246, 454);
+            this.toolWindow.Size = new System.Drawing.Size(246, 456);
             this.toolWindow.TabIndex = 0;
             this.toolWindow.SelectedIndexChanged += new System.EventHandler<Elide.Forms.SwitchBarEventArgs>(this.toolWindow_SelectedIndexChanged);
             // 

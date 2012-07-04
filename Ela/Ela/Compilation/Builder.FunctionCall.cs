@@ -112,7 +112,7 @@ namespace Ela.Compilation
             //It means that we are trying to call "not a function". Ela is a dynamic language, still it's worth to generate
             //a warning in such a case.
             if (ed.Type == DataKind.VarType)
-                AddWarning(ElaCompilerWarning.FunctionInvalidType, v);
+                AddWarning(ElaCompilerWarning.FunctionInvalidType, v.Target, FormatNode(v.Target));
 
             AddLinePragma(v);
 

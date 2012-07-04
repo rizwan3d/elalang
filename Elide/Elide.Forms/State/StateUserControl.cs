@@ -30,17 +30,21 @@ namespace Elide.Forms.State
 
         private void LoadState()
         {
-            var ser = new BinarySerializer();
-            var stat = ser.Deserialize(StateFileName) as Dictionary<String, Object>;
-
-            if (stat != null)
+            try
             {
-                foreach (var p in GetType().GetProperties())
+                var ser = new BinarySerializer();
+                var stat = ser.Deserialize(StateFileName) as Dictionary<String, Object>;
+
+                if (stat != null)
                 {
-                    if (Attribute.IsDefined(p, typeof(StateItemAttribute)))
-                        p.SetValue(this, stat[p.Name], null);
+                    foreach (var p in GetType().GetProperties())
+                    {
+                        if (Attribute.IsDefined(p, typeof(StateItemAttribute)))
+                            p.SetValue(this, stat[p.Name], null);
+                    }
                 }
             }
+            catch { }
         }
 
         private void SaveState()
