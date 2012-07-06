@@ -24,26 +24,36 @@ namespace ElaConsole.Options
 			key = key.Trim();
 			var pi = default(PropertyInfo);
 
-			if (!properties.TryGetValue(key, out pi))
-				throw new ElaOptionException(key, ElaOptionError.UnknownOption);
+            //This is an argument
+            if (key.Length > 0 && key[0] == '-' && properties.TryGetValue("arg", out pi) &&
+                pi.PropertyType == typeof(List<ElaArg>))
+            {
+                var list = (List<ElaArg>)pi.GetValue(cls, null);
+                list.Add(new ElaArg(key.TrimStart('-'), value));
+            }
+            else
+            {
+                if (!properties.TryGetValue(key, out pi))
+                    throw new ElaOptionException(key, ElaOptionError.UnknownOption);
 
-			if (pi.PropertyType == typeof(List<String>))
-			{
-				var list = (List<String>)pi.GetValue(cls, null);
-				list.Add(value.Trim(' ', '"'));
-			}
-			else
-			{
-				var obj = value == null ? true : ChangeType(value, pi.PropertyType);
+                if (pi.PropertyType == typeof(List<String>))
+                {
+                    var list = (List<String>)pi.GetValue(cls, null);
+                    list.Add(value.Trim(' ', '"'));
+                }
+                else
+                {
+                    var obj = value == null ? true : ChangeType(value, pi.PropertyType);
 
-				if (value == null && pi.PropertyType != typeof(Boolean))
-					throw new ElaOptionException(key, ElaOptionError.InvalidFormat);
+                    if (value == null && pi.PropertyType != typeof(Boolean))
+                        throw new ElaOptionException(key, ElaOptionError.InvalidFormat);
 
-				if (value is String)
-					value = value.Trim(' ', '"');
+                    if (value is String)
+                        value = value.Trim(' ', '"');
 
-				pi.SetValue(cls, obj, null);
-			}
+                    pi.SetValue(cls, obj, null);
+                }
+            }
 		}
 
 

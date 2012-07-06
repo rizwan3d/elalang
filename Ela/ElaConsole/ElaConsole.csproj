@@ -124,6 +124,7 @@
     <None Include="elac.exe.config" />
     <Compile Include="IndentHelper.cs" />
     <Compile Include="InteractiveCommands.cs" />
+    <Compile Include="Options\ElaArg.cs" />
     <Compile Include="Options\ElaOptionError.cs" />
     <Compile Include="Options\ElaOptionException.cs" />
     <Compile Include="Options\CommandLineOption.cs" />

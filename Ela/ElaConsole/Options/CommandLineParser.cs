@@ -6,18 +6,14 @@ namespace ElaConsole.Options
 {
 	internal sealed class CommandLineParser
 	{
-		#region Construction
 		private ElaOptions cls;
 		
 		internal CommandLineParser(ElaOptions cls)
 		{
 			this.cls = cls;
 		}
-		#endregion
-
-
-		#region Methods
-		internal void Parse(string[] args)
+		
+        internal void Parse(string[] args)
 		{
 			var index = 0;
 
@@ -29,8 +25,7 @@ namespace ElaConsole.Options
 
 			ParseOptions(args, index);
 		}
-
-
+        
 		private void ParseOptions(string[] args, int index)
 		{
 			var opt = String.Empty;
@@ -61,6 +56,5 @@ namespace ElaConsole.Options
 			if (opt.Length != 0)
 				OptionMap<ElaOptions>.SetOption(opt.Substring(1), null, cls);
 		}
-		#endregion
 	}
 }
