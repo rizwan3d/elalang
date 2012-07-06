@@ -10,7 +10,7 @@ namespace ElaConsole.Options
 		public ElaOptions()
 		{
 			ReferencePaths = new List<String>();
-			Arguments = new List<String>();
+			Arguments = new List<ElaArg>();
 		}
 		#endregion
 
@@ -56,7 +56,7 @@ namespace ElaConsole.Options
 		public string OutputFile { get; set; }
 
 		[CommandLineOption("arg")]
-		public List<String> Arguments { get; private set; }
+		public List<ElaArg> Arguments { get; private set; }
 		#endregion
 
 

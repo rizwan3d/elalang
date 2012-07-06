@@ -42,10 +42,11 @@ Syntax: elac [filename] [options]
 			will use the original file name and path and change its
 			extension to .elaobj.
 
--arg			An argument that will be passed directly to the Ela
-			executable. All arguments are passed as strings and can
-			be accessed through a tuple named $args. You can 
-			specify this switch multiple times.
+--argName <argValue>	An argument that will be passed directly to the
+			Ela executable, e.g. '--x 42'. An argName can be 
+			any valid Ela indentifier. An argValue is always 
+			interpreted by Ela console as string. You can specify 
+			this switch multiple times.
 			
 
 		*** Compiler Options ***

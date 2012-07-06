@@ -1,3 +1,4 @@
+0.9.5.1:New:Now console supports named arguments (which can be provided through command line switch, using double dash, e.g. '--argName argValue').
 0.9.5.0:Release:Release of 0.9.5.0.
 0.9.4.1:Fix:Now Ela Console doesn't crush in a case of internal Ela VM error, but prints an error message.
 0.9.4.0:Release:Release of 0.9.4.0.

@@ -273,10 +273,7 @@ namespace ElaConsole
 					new FileInfo(fileName));
 				
 				if (opt.Arguments.Count > 0)
-                {
-                    var tup = CompileArguments();
-                    linker.AddArgument("args", tup);
-                }
+                    CompileArguments(linker);
                         
 				res = linker.Build();
 			}
@@ -309,10 +306,7 @@ namespace ElaConsole
                 linker = new ElaIncrementalLinker(CreateLinkerOptions(), CreateCompilerOptions());
 				
                 if (opt.Arguments.Count > 0)
-                {
-                    var tup = CompileArguments();
-                    linker.AddArgument("args", tup);
-                }
+                    CompileArguments(linker);
             }
 
 			linker.SetSource(source);
@@ -392,14 +386,10 @@ namespace ElaConsole
 		}
 
 
-		private static ElaTuple CompileArguments()
+		private static void CompileArguments(ElaIncrementalLinker linker)
 		{
-			var arr = new ElaValue[opt.Arguments.Count];
-
 			for (var i = 0; i < opt.Arguments.Count; i++)
-				arr[i] = new ElaValue(opt.Arguments[i]);
-
-			return new ElaTuple(arr);
+                linker.AddArgument(opt.Arguments[i].Name, opt.Arguments[i].Value);
 		}
 
 
