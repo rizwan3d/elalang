@@ -15,7 +15,7 @@ using System.Collections.Generic;
 
 namespace ElaConsole
 {
-	internal static class Program
+    internal static class Program
 	{
 		#region Construction
 		private const int R_OK = 0;
