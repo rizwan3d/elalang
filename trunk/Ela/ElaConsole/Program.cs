@@ -36,6 +36,12 @@ namespace ElaConsole
             if (!ReadOptions(args))
 				return R_ERR;
 
+            if (opt.ShowVersion)
+            {
+                Console.WriteLine("Ela {0}", ElaVersionInfo.Version);
+                return R_OK;
+            }
+
 			helper = new MessageHelper(opt);
 			helper.PrintLogo();
 		

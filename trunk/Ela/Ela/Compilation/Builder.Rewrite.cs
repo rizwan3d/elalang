@@ -80,7 +80,7 @@ namespace Ela.Compilation
                     {
                         //This is a global binding that is initialized with a built-in. Or a 'safe'
                         //expression (no variable references). It is perfectly safe to compile it right away. 
-                        if (b.Right.Type == ElaNodeType.Builtin || b.Safe())
+                        if (b.Right.Type == ElaNodeType.Builtin || b.Right.Safe())
                             CompileDeclaration(b, map, Hints.Left);
                         else
                             list.Add(b);

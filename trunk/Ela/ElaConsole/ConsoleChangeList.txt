@@ -1,3 +1,6 @@
+0.9.5.4:New:Now a help screen contains information about Ela Console and Ela version.
+0.9.5.3:New:A new interactive command #eval that can eval a given file is added.
+0.9.5.2:New:A new switch -version (or -v) is added. It prints Ela version and quits.
 0.9.5.1:New:Now console supports named arguments (which can be provided through command line switch, using double dash, e.g. '--argName argValue').
 0.9.5.0:Release:Release of 0.9.5.0.
 0.9.4.1:Fix:Now Ela Console doesn't crush in a case of internal Ela VM error, but prints an error message.

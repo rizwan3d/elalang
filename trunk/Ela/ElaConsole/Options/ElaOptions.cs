@@ -16,6 +16,9 @@ namespace ElaConsole.Options
 
 
 		#region Console Options
+        [CommandLineOption("version", "v")]
+        public bool ShowVersion { get; set; }
+
 		[CommandLineOption("prompt")]
 		public string Prompt { get; set; }
 		
