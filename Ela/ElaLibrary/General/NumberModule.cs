@@ -21,15 +21,30 @@ namespace Ela.Library.General
             Add<Double,Boolean>("negInfDouble", IsNegativeInfinityDouble);
             Add<Single,Boolean>("nanSingle", IsNanSingle);
             Add<Double,Boolean>("nanDouble", IsNanDouble);
-            
-            Add("maxInt", new ElaValue(Int32.MaxValue));
-            Add("minInt", new ElaValue(Int32.MinValue));
-            Add("maxLong", new ElaValue(Int64.MaxValue));
-            Add("minLong", new ElaValue(Int64.MinValue));
-            Add("maxSingle", new ElaValue(Single.MaxValue));
-            Add("minSingle", new ElaValue(Single.MinValue));
-            Add("maxDouble", new ElaValue(Double.MaxValue));
-            Add("minDouble", new ElaValue(Double.MinValue));
+            Add<Double,Double>("floor", Floor);
+            Add<Double,Double>("ceiling", Ceiling);
+            Add<Double,Double>("round", Round);
+            Add<Double,Int64>("truncate", Truncate);
+        }
+
+        public double Round(double x)
+        {
+            return Math.Round(x);
+        }
+
+        public long Truncate(double x)
+        {
+            return (Int64)Math.Truncate(x);
+        }
+
+        public double Floor(double val)
+        {
+            return Math.Floor(val);
+        }
+
+        public double Ceiling(double val)
+        {
+            return Math.Ceiling(val);
         }
 
         public bool IsInfinitySingle(float val)

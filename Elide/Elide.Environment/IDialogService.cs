@@ -9,6 +9,8 @@ namespace Elide.Environment
     {
         FileInfo ShowSaveDialog(string fileName);
 
+        FileInfo ShowSaveDialog(string fileName, string initialDirectory);
+
         IEnumerable<FileInfo> ShowOpenDialog(bool multiple);
 
         bool? ShowPromptDialog(string text, params object[] args);

@@ -10,32 +10,48 @@ class Float a where
   posInf a
   negInf a
 
+class Fractional a where
+  round a
+  truncate a
+  ceiling a
+  floor a
+
 instance Float single
   where
-    inf x = rl.infSingle (force x)
-    nan x = rl.nanSingle (force x)
-    posInf x = rl.posInfSingle (force x)
-    negInf x = rl.negInfSingle (force x)
+    inf    = rl.infSingle
+    nan    = rl.nanSingle
+    posInf = rl.posInfSingle
+    negInf = rl.negInfSingle
 
 instance Float double
   where
-    inf x = rl.infDouble (force x)
-    nan x = rl.nanDouble (force x)
-    posInf x = rl.posInfDouble (force x)
-    negInf x = rl.negInfDouble (force x)
+    inf    = rl.infDouble
+    nan    = rl.nanDouble
+    posInf = rl.posInfDouble
+    negInf = rl.negInfDouble
 
-maxInt = rl.maxInt
+instance Fractional single
+  where
+    round    = rl.round
+    truncate = rl.truncate
+    ceiling  = rl.ceiling
+    floor    = rl.floor
 
-minInt = rl.minInt
+instance Fractional double
+  where
+    round    = rl.round
+    truncate = rl.truncate
+    ceiling  = rl.ceiling
+    floor    = rl.floor
 
-maxLong = rl.maxLong
+maxInt = 0x7fffffff
+minInt = maxInt + 1
 
-minLong = rl.minLong
+maxLong = 0x7fffffffffffffffL
+minLong = maxLong + 1
 
-maxSingle = rl.maxSingle
+maxSingle = 3.402823E+38f
+minSingle = --3.402823E+38f
 
-minSingle = rl.minSingle
-
-maxDouble = rl.maxDouble
-
-minDouble = rl.minDouble
+maxDouble = 1.7976931348623157E+308D
+minDouble = --1.7976931348623157E+308D

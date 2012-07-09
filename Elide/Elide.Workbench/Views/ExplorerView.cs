@@ -211,6 +211,8 @@ namespace Elide.Workbench.Views
             return builder
                 .Item("Refresh", () => control.Refresh(false))
                 .Separator()
+                .Item("Create File", CreateFile, () => treeView.SelectedNode != null && 
+                    (treeView.SelectedNode.Tag is DirectoryInfo || treeView.SelectedNode.Tag is FileExplorerConfig.FavoriteFolder))
                 .Item("Add to Favorite Folders", AddToFavorites, () => treeView.SelectedNode != null && treeView.SelectedNode.Tag is DirectoryInfo)
                 .Item("Remove", RemoveFromFavorites, () => treeView.SelectedNode != null && treeView.SelectedNode.Tag is FileExplorerConfig.FavoriteFolder)
                 .Item("Filter", null, SetFilter, () => treeView.SelectedNode != null && treeView.SelectedNode.Tag is DirectoryInfo, () =>
@@ -288,6 +290,43 @@ namespace Elide.Workbench.Views
                     BuildTreeView(cfg);
                 }
              }
+        }
+
+        private void CreateFile()
+        {
+            if (treeView.SelectedNode != null)
+            {
+                var n = treeView.SelectedNode;
+                var di = n.Tag as DirectoryInfo;
+
+                if (di == null)
+                {
+                    var fv = n.Tag as FileExplorerConfig.FavoriteFolder;
+
+                    if (fv == null || fv.Directory == null)
+                        return;
+
+                    di = new DirectoryInfo(fv.Directory);
+                }
+                                
+                var fi = App.GetService<IDialogService>().ShowSaveDialog(null, di.FullName);
+
+                if (fi != null)
+                {
+                    try 
+                    { 
+                        fi.CreateText().Dispose();
+                        App.GetService<IFileService>().OpenFile(fi);
+
+                        control.TreeView.RefreshNode(n);
+                        n.Expand();
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
         }
   
         private void SetFilter()

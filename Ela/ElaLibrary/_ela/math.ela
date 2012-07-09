@@ -33,15 +33,9 @@ lcm _ 0 = 0
 lcm 0 _ = 0
 lcm x y = abs ((x `quot` gcd x y) * y)
 
-floor x = cm.floor (force x)
-
-ceiling x = cm.ceiling (force x)
-
 atan x = cm.atan (force x)
 
 sqrt x = x ** 0.5
-
-truncate x = cm.truncate (force x)
 
 log x = cm.log (force x)
 
@@ -50,8 +44,6 @@ maxValue x y | x >= y = x
 
 minValue x y | x <= y = x
              | else   = y
-
-round x = cm.round (force x)
 
 rnd seed min max = cm.rnd (force seed) (force min) (force max)
 

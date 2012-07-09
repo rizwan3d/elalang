@@ -20,13 +20,9 @@ namespace Ela.Library.General
 			Add<Double,Double>("acos", Acos);
 			Add<Double,Double>("asin", Asin);
 			Add<Double,Double>("tan", Tan);
-			Add<Double,Double>("floor", Floor);
-			Add<Double,Double>("ceiling", Ceiling);
 			Add<Double,Double>("atan", Atan);
-			Add<Double,Double>("truncate", Truncate);
 			Add<Double,Double>("log", Log);
-			Add<Double,Double>("round", Round);
-            Add<Int32,Int32,Int32,Int32>("rnd", Rnd);
+			Add<Int32,Int32,Int32,Int32>("rnd", Rnd);
 			Add("pi", Math.PI);
 			Add("e", Math.E);
             Add<String,ElaValue,ElaVariant>("createVariant", CreateVariant);
@@ -72,35 +68,15 @@ namespace Ela.Library.General
 		{
 			return Math.Tan(val);
 		}
-        
-		public double Floor(double val)
-		{
-			return Math.Floor(val);
-		}
-        
-		public double Ceiling(double val)
-		{
-			return Math.Ceiling(val);
-		}
-        
+              
 		public double Atan(double val)
 		{
 			return Math.Atan(val);
 		}
         
-		public double Truncate(double x)
-		{
-			return Math.Truncate(x);
-		}
-        
 		public double Log(double x)
 		{
 			return Math.Log(x);
-		}
-        
-		public double Round(double x)
-		{
-			return Math.Round(x);
 		}
         
         public int Rnd(int seed, int min, int max)
