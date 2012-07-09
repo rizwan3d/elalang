@@ -1,3 +1,4 @@
+0.11.0.2:Change:Parse error handling was enhanced for class, instance and type declarations.
 0.11.0.1:Change:Now Ela compiler generates a 'BottomValue' warning.
 0.11.0.0:Release:Release of Ela 0.11.0.0.
 0.10.4.65:Change:Use of uppercase identifiers for module names is now disallowed.

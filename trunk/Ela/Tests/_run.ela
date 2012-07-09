@@ -2,6 +2,11 @@ open test console
 open basictests funtests rangetests listtests tupletests recordtests
      varianttests comprehensiontests thunktests matchtests
 
+//Just to run all std lib modules
+open cell char datetime espec format imperative io list
+     math number read record reflect string thunk variant
+     collections.alist collections.queue
+
 _ = [] 
     |> regFuns basictests
     |> regFuns funtests
