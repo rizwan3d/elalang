@@ -31,9 +31,16 @@ split (sep is string) (s is string) = str.split sep s
 
 insert (idx is int) (ins is string) (s is string) = str.insert idx ins s
 
+/*
 fromList # qualified
 fromList (x::xs) = x ++ fromList xs
 fromList [] = ""
+*/
+
+fromList # qualified
+fromList xs = str.fromList (trav xs)
+  where trav (x::xs) = force x :: trav xs
+        trav [] = []
 
 toList # qualified
 toList (x is string) = str.toList x

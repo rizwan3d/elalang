@@ -35,6 +35,7 @@ namespace Ela.Library.General
 			Add<Int32,Int32,String,String>("substr", Substring);
 			Add<Int32,String,String,String>("insert", Insert);
             Add<ElaString,ElaList>("toList", ToList);
+            Add<ElaList,String>("fromList", FromStringList);
 		}
         
 		public string ToUpper(string val)
@@ -136,6 +137,16 @@ namespace Ela.Library.General
         public ElaList ToList(ElaString str)
         {
             return str.ToList();
+        }
+
+        public string FromStringList(ElaList lst)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var v in lst)
+                sb.Append(v.AsString());
+
+            return sb.ToString();
         }
 	}
 }
