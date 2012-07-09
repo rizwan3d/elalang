@@ -90,7 +90,7 @@ namespace ElaConsole
 					vr = Environment.Version.ToString();
 
                 var bit = IntPtr.Size == 4 ? "32" : "64";
-				Console.WriteLine("Ela version {0}", typeof(ElaParser).Assembly.GetName().Version);
+                Console.WriteLine("Ela version {0}", ElaVersionInfo.Version);
 				Console.WriteLine("Running {0} {1} {2}-bit ({3})", rt, vr, bit, Environment.OSVersion);
 				Console.WriteLine();
 			}
@@ -142,7 +142,9 @@ namespace ElaConsole
 		{
 			using (var sr = new StreamReader(typeof(MessageHelper).Assembly.
 				GetManifestResourceStream("ElaConsole.Properties.Help.txt")))
-				Console.WriteLine(sr.ReadToEnd());
+				Console.WriteLine(sr.ReadToEnd()
+                    .Replace("%VERSION%", Const.Version)
+                    .Replace("%ELA%", ElaVersionInfo.Version.ToString()));
 		}
 
 

@@ -1,4 +1,6 @@
-﻿Ela Console Options and Commands Reference
+﻿Ela Console %VERSION%, Ela %ELA%
+
+Ela Console Options and Commands Reference
 
 
 		COMMAND LINE OPTIONS
@@ -8,6 +10,8 @@ Syntax: elac [filename] [options]
 			
 
 		*** General Options ***
+
+-version or -v          Prints Ela version and quits.
 			
 -prompt <string>	Use an alternative prompt (by default "ela").
 
@@ -101,6 +105,9 @@ the elac.config file.
 #clear			Clears the console window.
 
 #reset			Resets the state of interactive console.
+
+#eval <file>            Evals a specified file in the current 
+                        interactive session.          
 
 #exit			Exit Ela Console.
 			

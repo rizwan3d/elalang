@@ -18,7 +18,12 @@ namespace Ela.Compilation
                 CompileBindingPattern(s, map);
             else
             {
-                var addr = GetNoInitVariable(s);
+                var nm = default(String);
+                var addr = GetNoInitVariable(s, out nm);
+
+                //Now, when do initialization, when can remove NoInit flags.
+                if (addr != -1)
+                    CurrentScope.RemoveFlags(nm, ElaVariableFlags.NoInit);
                 
                 //Compile expression and write it to a variable
                 if (fun)
@@ -38,6 +43,7 @@ namespace Ela.Compilation
             }
         }
 
+        //Compiles a binding defined by pattern matching.
         private void CompileBindingPattern(ElaEquation s, LabelMap map)
         {
             //Compile a right hand expression. Currently it is always compiled, event if right-hand
@@ -73,10 +79,10 @@ namespace Ela.Compilation
 
         //Returns a variable from a local scope marked with NoInit flag
         //If such variable couldn't be found returns -1
-        private int GetNoInitVariable(ElaEquation s)
+        private int GetNoInitVariable(ElaEquation s, out string name)
         {
             ScopeVar var;
-            var name = s.Left.GetName();
+            name = s.Left.GetName();
 
             if (s.IsFunction())
                 name = s.GetFunctionName();

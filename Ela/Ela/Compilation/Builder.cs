@@ -22,6 +22,7 @@ namespace Ela.Compilation
         private Dictionary<String,Int32> stringLookup;  //String table
                
         private ExportVars exports; //Exports for current module
+        private bool noInits; //True to generate warnings for NoInit vars
 		
         //globalScope is not empty (e.g. new Scope()) only if we are resuming in interactive mode
 		internal Builder(CodeFrame frame, ElaCompiler comp, ExportVars exportVars, Scope globalScope)
@@ -238,12 +239,21 @@ namespace Ela.Compilation
                         if ((hints & Hints.Left) == Hints.Left)
                             AddValueNotUsed(v);
 
+                        //Add some hints if we know how this name is initialized
                         if ((scopeVar.VariableFlags & ElaVariableFlags.Function) == ElaVariableFlags.Function)
                             exprData = new ExprData(DataKind.FunParams, scopeVar.Data);
                         else if ((scopeVar.VariableFlags & ElaVariableFlags.ObjectLiteral) == ElaVariableFlags.ObjectLiteral)
                             exprData = new ExprData(DataKind.VarType, (Int32)ElaVariableFlags.ObjectLiteral);
                         else if ((scopeVar.VariableFlags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin)
                             exprData = new ExprData(DataKind.Builtin, scopeVar.Data);
+
+                        //Generate a warning if a name is not initialized
+                        if ((scopeVar.Flags & ElaVariableFlags.NoInit) == ElaVariableFlags.NoInit && 
+                            (scopeVar.Address & Byte.MaxValue) == 0)
+                        {
+                            AddWarning(ElaCompilerWarning.BottomValue, v, FormatNode(v));
+                            AddHint(ElaCompilerHint.UseThunk, v, v);
+                        }
                     }
                     break;
                 case ElaNodeType.Placeholder:
