@@ -39,22 +39,11 @@ Calculates the quotinent of two given integers.
 lcm x y
 Calculates the least common multiple of two given arguments. 
 
-floor
-Returns the largest integer less than or equal to the specified number: 
->>>floor 12.6
-
-ceiling
-Returns the smallest integer greater than or equal to the specified number: 
->>>ceiling 12.01
-
 atan
 Returns the angle whose tangent is the specified number. 
 
 sqrt
 Returns the square root of a specified number. 
-
-truncate
-Calculates the integral part of a specified number. 
 
 log
 Returns the natural (base e) logarithm of a specified number. 
@@ -64,10 +53,6 @@ Returns x if x is greater or equal to y, otherwise returns y.
 
 minValue
 Returns x if x is lesser or equal to y, otherwise returns y. 
-
-round
-Rounds a number to a nearest integer: 
->>>round 41.6
 
 rnd
 A randomize function. It returns a pseudo random number which is equal or greater to `min` and 

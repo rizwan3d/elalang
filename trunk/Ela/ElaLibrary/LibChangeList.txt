@@ -1,3 +1,5 @@
+0.1.4.6:New:A new 'Fractional' class is added to 'number' module. This class has instances for double and single and contains function 'ceiling', 'floor', 'round' and 'truncate'.
+0.1.4.5:Change:Function 'ceiling', 'floor', 'round' and 'truncate' are removed from 'math' module.
 0.1.4.4:Change:Now 'number' modules defines a class 'Float' and instances 'Float single' and 'Float double'. Functions 'inf', 'nan', etc. are moved to this class.
 0.1.4.3:New:A new 'signum' function added to 'math' module.
 0.1.4.2:New:A new 'evaled' function that can be used to test if a given value in unevaluated thunk, is added to 'thunk' module.

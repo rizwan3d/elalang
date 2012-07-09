@@ -26,8 +26,19 @@ namespace Elide.Workbench
         
         public FileInfo ShowSaveDialog(string fileName)
         {
+            return ShowSaveDialog(fileName, null);
+        }
+
+        public FileInfo ShowSaveDialog(string fileName, string initialDirectory)
+        {
             InitializeDialogs();
-            saveDialog.FileName = fileName;
+            
+            if (fileName != null)
+                saveDialog.FileName = fileName;
+
+            if (initialDirectory != null)
+                saveDialog.InitialDirectory = initialDirectory;
+
             var res = saveDialog.ShowDialog(WB.Form);
             return res == DialogResult.OK ? new FileInfo(saveDialog.FileName) : null;
         }
