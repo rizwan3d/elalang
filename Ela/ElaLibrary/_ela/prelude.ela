@@ -15,7 +15,6 @@ type tuple
 type list
 type record
 type module
-type thunk
 type typeinfo
 type fun
 type unit
@@ -123,13 +122,13 @@ instance Num single
 instance Num double
 
 instance Num tuple
-  where (+) = joinTuple (+)
-        x-y = joinTuple (-) x y
-        x*y = joinTuple (*) x y
-        x/y = joinTuple (/) x y
-        x**y = joinTuple (**) x y
-        x%y = joinTuple (%) x y
-        x-- = mapTuple (--) x
+  where (+)  = joinTuple (+)
+        (-)  = joinTuple (-)
+        (*)  = joinTuple (*)
+        (/)  = joinTuple (/)
+        (**) = joinTuple (**)
+        (%)  = joinTuple (%)
+        (--) = mapTuple  (--)
 
 mapTuple # private 
 mapTuple f tup = map 0

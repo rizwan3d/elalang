@@ -6,7 +6,11 @@ This module provides trigonometic, logarithmic, and other common mathematical fu
 #members
 
 abs
-Returns an absolute value of a given number. 
+Returns an absolute value of a given number.
+
+signum
+Returns a sign of a given number.
+>>>signum (--2)
 
 exp
 Returns e raised to a specified power. 

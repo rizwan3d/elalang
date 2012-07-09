@@ -4,13 +4,25 @@
 */
 import libNumber#elalib@rl
 
-inf x = rl.inf (force x)
+class Float a where 
+  inf a
+  nan a
+  posInf a
+  negInf a
 
-nan x = rl.nan (force x)
+instance Float single
+  where
+    inf x = rl.infSingle (force x)
+    nan x = rl.nanSingle (force x)
+    posInf x = rl.posInfSingle (force x)
+    negInf x = rl.negInfSingle (force x)
 
-posInf x = rl.posInf (force x)
-
-negInf x = rl.negInf (force x)
+instance Float double
+  where
+    inf x = rl.infDouble (force x)
+    nan x = rl.nanDouble (force x)
+    posInf x = rl.posInfDouble (force x)
+    negInf x = rl.negInfDouble (force x)
 
 maxInt = rl.maxInt
 

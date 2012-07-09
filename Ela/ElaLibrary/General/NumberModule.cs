@@ -13,10 +13,15 @@ namespace Ela.Library.General
         
         public override void Initialize()
         {
-            Add<ElaValue,Boolean>("inf", IsInfinity);
-            Add<ElaValue,Boolean>("nan", IsNan);
-            Add<ElaValue,Boolean>("posInf", IsPositiveInfinity);
-            Add<ElaValue,Boolean>("negInf", IsNegativeInfinity);
+            Add<Single,Boolean>("infSingle", IsInfinitySingle);
+            Add<Double,Boolean>("infDouble", IsInfinityDouble);
+            Add<Single,Boolean>("posInfSingle", IsPositiveInfinitySingle);
+            Add<Double,Boolean>("posInfDouble", IsPositiveInfinityDouble);
+            Add<Single,Boolean>("negInfSingle", IsNegativeInfinitySingle);
+            Add<Double,Boolean>("negInfDouble", IsNegativeInfinityDouble);
+            Add<Single,Boolean>("nanSingle", IsNanSingle);
+            Add<Double,Boolean>("nanDouble", IsNanDouble);
+            
             Add("maxInt", new ElaValue(Int32.MaxValue));
             Add("minInt", new ElaValue(Int32.MinValue));
             Add("maxLong", new ElaValue(Int64.MaxValue));
@@ -27,36 +32,44 @@ namespace Ela.Library.General
             Add("minDouble", new ElaValue(Double.MinValue));
         }
 
-        public bool IsInfinity(ElaValue val)
+        public bool IsInfinitySingle(float val)
         {
-            return
-                val.TypeCode == ElaTypeCode.Double ? Double.IsInfinity((Double)val.AsObject()) :
-                val.TypeCode == ElaTypeCode.Single ? Single.IsInfinity((Single)val.AsObject()) :
-                false;
+            return Single.IsInfinity(val);
+        }
+
+        public bool IsInfinityDouble(double val)
+        {
+            return Double.IsInfinity(val);
+        }
+
+        public bool IsNegativeInfinitySingle(float val)
+        {
+            return Single.IsNegativeInfinity(val);
+        }
+
+        public bool IsNegativeInfinityDouble(double val)
+        {
+            return Double.IsNegativeInfinity(val);
+        }
+
+        public bool IsPositiveInfinitySingle(float val)
+        {
+            return Single.IsPositiveInfinity(val);
+        }
+
+        public bool IsPositiveInfinityDouble(double val)
+        {
+            return Double.IsPositiveInfinity(val);
         }
         
-        public bool IsNan(ElaValue val)
+        public bool IsNanSingle(float val)
         {
-            return
-                val.TypeCode == ElaTypeCode.Double ? Double.IsNaN((Double)val.AsObject()) :
-                val.TypeCode == ElaTypeCode.Single ? Single.IsNaN((Single)val.AsObject()) :
-                false;
+            return Single.IsNaN(val);
         }
-        
-        public bool IsNegativeInfinity(ElaValue val)
+
+        public bool IsNanDouble(double val)
         {
-            return
-                val.TypeCode == ElaTypeCode.Double ? Double.IsNegativeInfinity((Double)val.AsObject()) :
-                val.TypeCode == ElaTypeCode.Single ? Single.IsNegativeInfinity((Single)val.AsObject()) :
-                false;
-        }
-        
-        public bool IsPositiveInfinity(ElaValue val)
-        {
-            return
-                val.TypeCode == ElaTypeCode.Double ? Double.IsPositiveInfinity((Double)val.AsObject()) :
-                val.TypeCode == ElaTypeCode.Single ? Single.IsPositiveInfinity((Single)val.AsObject()) :
-                false;
+            return Double.IsNaN(val);
         }
     }
 }

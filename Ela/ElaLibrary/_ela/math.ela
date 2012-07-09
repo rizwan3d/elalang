@@ -1,4 +1,4 @@
-﻿/* 
+/* 
   Module math
   Created in 2011-2012 by Basil Voronkov
 */
@@ -6,6 +6,9 @@ import libCore#elalib@cm
 
 abs x | x >= 0 = x
       | else   = --x
+
+signum 0 = 0
+signum x | x < 0 = --1 | else = 1
 
 exp x = cm.exp (force x)
 
@@ -24,7 +27,7 @@ asin x = cm.asin (force x)
 
 tan x = cm.tan (force x)
 
-quot x y = toLong x / toLong y
+quot x y = toLong (x / y)
 
 lcm _ 0 = 0
 lcm 0 _ = 0

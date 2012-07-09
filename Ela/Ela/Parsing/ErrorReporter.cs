@@ -68,6 +68,9 @@ namespace Ela.Parsing
                 case "Attribute": return ElaParserError.InvalidHeader;
                 case "As": return ElaParserError.InvalidAs;
                 case "TypeCheckExpr": return ElaParserError.InvalidTypeCheck;
+                case "TypeClass": return ElaParserError.InvalidTypeClass;
+                case "Instance": return ElaParserError.InvalidClassInstance;
+                case "NewType": return ElaParserError.InvalidNewType;
 				
                 case "LambdaExpr": return ElaParserError.InvalidLambda;
 				case "IncludeStat": return ElaParserError.InvalidInclude;

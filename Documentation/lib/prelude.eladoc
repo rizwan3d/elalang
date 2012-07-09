@@ -62,10 +62,6 @@ variant
 A polymorphic variant.
 >>Some 12
 
-thunk
-Represents a deferred calculation.
->>& 2 + 2
-
 typeinfo
 Represents meta information about a type.
 

@@ -2,16 +2,18 @@
   Module thunk
   Created in 2012 by Basil Voronkov
 */
+import libCore#elalib@core
 
-forceAll (x is thunk)  = forceAll (force x)
+evaled = core.evaled
+
 forceAll (x is list)   = forceList (force x)
 forceAll (x is tuple)  = forceTuple x
 forceAll (x is record) = forceTuple x
-forceAll x = force x
+forceAll x | evaled x = x | else = forceAll (force x)
 
 forceList (x::xs) = forceAll x :: forceList xs
 forceList [] = []
-    
+
 forceRecord r = forceTuple r
 
 forceTuple tup = force' 0

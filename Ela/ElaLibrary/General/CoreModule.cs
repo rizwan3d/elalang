@@ -30,7 +30,13 @@ namespace Ela.Library.General
 			Add("pi", Math.PI);
 			Add("e", Math.E);
             Add<String,ElaValue,ElaVariant>("createVariant", CreateVariant);
-		}
+            Add<ElaValue,Boolean>("evaled", IsEvaled);
+        }
+
+        public bool IsEvaled(ElaValue obj)
+        {
+            return obj.Is<ElaLazy>();
+        }
 
         public ElaVariant CreateVariant(string tag, ElaValue val)
         {
