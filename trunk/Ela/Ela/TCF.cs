@@ -2,26 +2,26 @@
 
 namespace Ela
 {
-	public static class TypeCodeFormat
+	public static class TCF
 	{
-		private const string ERR = "INVALID";
-		private const string CHAR = "char";
-		private const string INT = "int";
-		private const string LONG = "long";
-		private const string SINGLE = "single";
-		private const string DOUBLE = "double";
-		private const string STRING = "string";
-		private const string BOOL = "bool";
-		private const string RECORD = "record";
-		private const string TUPLE = "tuple";
-		private const string LIST = "list";
-		private const string FUN = "fun";
-		private const string UNIT = "unit";
-		private const string MOD = "module";
-		private const string OBJ = "object";
-		private const string LAZ = "thunk";
-		private const string VAR = "variant";
-        private const string TYP = "typeinfo";
+		internal const string ERR = "INVALID";
+		internal const string CHAR = "char";
+		internal const string INT = "int";
+		internal const string LONG = "long";
+		internal const string SINGLE = "single";
+		internal const string DOUBLE = "double";
+		internal const string STRING = "string";
+		internal const string BOOL = "bool";
+		internal const string RECORD = "record";
+		internal const string TUPLE = "tuple";
+		internal const string LIST = "list";
+		internal const string FUN = "fun";
+		internal const string UNIT = "unit";
+		internal const string MOD = "module";
+		internal const string OBJ = "object";
+		internal const string LAZ = "thunk";
+		internal const string VAR = "variant";
+        internal const string TYP = "typeinfo";
 		
         public static ElaTypeCode GetTypeCode(string type)
         {

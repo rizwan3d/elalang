@@ -16,11 +16,15 @@ namespace Ela.Runtime
 
 
 		#region Methods
-        public void NoOverload(string type, string function)
+        public void NoOverload(string expected, string got, string function)
         {
-            Fail(ElaRuntimeError.NoOverload, function, type);
+            Fail(ElaRuntimeError.NoOverload, function, expected, got);
         }
 
+        public void NoOverload(string got, string function)
+        {
+            NoOverload("?", got, function);
+        }
 
 		public void InvalidFormat(string format, ElaValue value)
 		{
@@ -31,13 +35,6 @@ namespace Ela.Runtime
 		public void DivideByZero(ElaValue value)
 		{
 			Fail(ElaRuntimeError.DivideByZero, value.ToString(), value.GetTypeName());
-		}
-
-
-		public void InvalidOperand(ElaValue left, ElaValue right, string op)
-		{
-			Fail(ElaRuntimeError.InvalidOperand, right.ToString(), right.GetTypeName(),
-				left.ToString(), left.GetTypeName(), op);
 		}
 
 

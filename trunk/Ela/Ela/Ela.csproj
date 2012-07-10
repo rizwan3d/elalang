@@ -337,7 +337,7 @@
     <Compile Include="Runtime\ObjectModel\ElaRecord.cs" />
     <Compile Include="Runtime\ObjectModel\ElaTuple.cs" />
     <Compile Include="Runtime\ObjectModel\ElaUserType.cs" />
-    <Compile Include="TypeCodeFormat.cs" />
+    <Compile Include="TCF.cs" />
     <Compile Include="Runtime\ObjectModel\ElaVariant.cs" />
     <Compile Include="Runtime\ElaValue.cs" />
     <Compile Include="Runtime\ObjectModel\ElaTypeInfo.cs" />

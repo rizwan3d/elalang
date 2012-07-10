@@ -9,7 +9,7 @@ namespace Ela.Runtime.Classes
         {
             if (right.TypeId != ElaMachine.BYT)
             {
-                ctx.InvalidOperand(left, right, "equal");
+                NoOverloadBinary(TCF.BOOL, right, "equal", ctx);
                 return false;
             }
 
@@ -20,7 +20,7 @@ namespace Ela.Runtime.Classes
         {
             if (right.TypeId != ElaMachine.BYT)
             {
-                ctx.InvalidOperand(left, right, "notequal");
+                NoOverloadBinary(TCF.BOOL, right, "notequal", ctx);
                 return false;
             }
 

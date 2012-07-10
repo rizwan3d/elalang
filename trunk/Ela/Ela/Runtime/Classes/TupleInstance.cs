@@ -14,7 +14,7 @@ namespace Ela.Runtime.Classes
 
             if (right.TypeId != ElaMachine.TUP)
             {
-                ctx.InvalidOperand(left, right, "concatenate");
+                NoOverloadBinary(TCF.TUPLE, right, "concatenate", ctx);
                 return Default();
             }
 

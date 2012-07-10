@@ -4,7 +4,7 @@ namespace Ela.Linking
 {
     internal sealed class TypeData
     {
-        public TypeData(ElaTypeCode typeCode) : this((Int32)typeCode, TypeCodeFormat.GetShortForm(typeCode))
+        public TypeData(ElaTypeCode typeCode) : this((Int32)typeCode, TCF.GetShortForm(typeCode))
         {
             
         }

@@ -26,7 +26,7 @@ namespace Ela.Runtime
 
 		MatchFailed = 809,
 
-		InvalidOperand = 810,
+		// = 810,
 
 		OperationNotSupported = 811,
 

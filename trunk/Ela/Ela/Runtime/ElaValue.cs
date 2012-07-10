@@ -342,7 +342,7 @@ namespace Ela.Runtime
         
 		private InvalidCastException InvalidCast(System.Type target)
 		{
-            return new InvalidCastException(Strings.GetMessage("InvalidCast", TypeCodeFormat.GetShortForm(TypeCode), 
+            return new InvalidCastException(Strings.GetMessage("InvalidCast", TCF.GetShortForm(TypeCode), 
                 target.Name));
 		}
 		#endregion

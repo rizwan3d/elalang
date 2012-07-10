@@ -6,6 +6,8 @@ namespace Ela.CodeModel
     {
         None,
 
+        Recip,
+
         Not,
 
         Force,

@@ -41,6 +41,11 @@ namespace Ela.Runtime.Classes
 
         }
 
+        protected void NoOverloadBinary(string exp, ElaValue got, string fun, ExecutionContext ctx)
+        {
+            ctx.NoOverload(exp + "->" + exp + "->*", exp + "->" + got.GetTypeName() + "->*", fun);
+        }
+
         internal virtual ElaValue BitwiseOr(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if (or != null)
@@ -199,6 +204,12 @@ namespace Ela.Runtime.Classes
         {
             if (add != null)
             {
+                //if (left.TypeId != right.TypeId)
+                //{
+                //    NoOverloadBinary(left.GetTypeName(), right, "add", ctx);
+                //    return Default();
+                //}
+
                 ctx.SetDeffered(add, 2);
                 return Default();
             }

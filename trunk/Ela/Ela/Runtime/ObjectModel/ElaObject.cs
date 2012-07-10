@@ -65,7 +65,7 @@ namespace Ela.Runtime.ObjectModel
         
 		protected internal virtual string GetTypeName()
 		{
-			return TypeCodeFormat.GetShortForm((ElaTypeCode)TypeId);
+			return TCF.GetShortForm((ElaTypeCode)TypeId);
 		}
 
         internal virtual bool True(ElaValue @this, ExecutionContext ctx)

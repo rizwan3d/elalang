@@ -35,7 +35,7 @@ namespace Ela.Runtime.ObjectModel
                 }
                 else
                 {
-                    ctx.InvalidOperand(left, right, "quot");
+                    ctx.NoOverload(left.GetTypeName() + "->" + left.GetTypeName() + "->*", left.GetTypeName() + "->" + right.GetTypeName() + "->*", "quot");
                     return Default();
                 }
             }

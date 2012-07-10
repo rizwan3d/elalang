@@ -77,10 +77,25 @@ instance Integral int long
     div x y   = genericDiv x y
     quot x y  = x `genericQuot` y
 
-instance Absolute int long single double
+instance Absolute int
   where 
-    abs = genericAbs
-    signum = genericSignum
+    abs x | x >= 0 = x | else = --x
+    signum x | x < 0 = --1 | else = 1
+
+instance Absolute long
+  where 
+    abs x | x >= 0 = x | else = --x
+    signum x | x < 0 = --1L | else = 1L
+
+instance Absolute single
+  where 
+    abs x | x >= 0 = x | else = --x
+    signum x | x < 0 = --1f | else = 1f
+
+instance Absolute double
+  where 
+    abs x | x >= 0 = x | else = --x
+    signum x | x < 0 = --1d | else = 1d
 
 instance Transcendental single double
   where
@@ -107,15 +122,6 @@ genericDiv x y
   | else = r
   where r = x `genericQuot` y
 
-genericAbs x 
-  | x >= 0 = x
-  | else   = --x
-
-genericSignum 0 = 0
-genericSignum x 
-  | x < 0 = --1 
-  | else = 1
-
 gcd 0 0 = fail "core.gcd: gcd 0 0 is undefined"
 gcd x y = gcd' (abs x) (abs y)
           where gcd' x 0 = x
@@ -126,9 +132,3 @@ lcm 0 _ = 0
 lcm x y = abs ((x `quot` gcd x y) * y)
 
 sqrt x = x ** 0.5
-
-maxValue x y | x >= y = x
-             | else   = y
-
-minValue x y | x <= y = x
-             | else   = y

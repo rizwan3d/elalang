@@ -11,12 +11,13 @@ namespace Ela.Runtime.ObjectModel
         private readonly int mask;
         private int curType;
 
-        internal ElaFunTable(string name, int mask, int pars, int curType) : base(pars)
+        internal ElaFunTable(string name, int mask, int pars, int curType, ElaMachine vm) : base(pars)
         {
             this.name = name;
             this.mask = mask;
             this.curType = curType;
             base.table = true;
+            base.Machine = vm;
             funs = new Dictionary<Int32,ElaFunction>();
         }
 
@@ -42,7 +43,10 @@ namespace Ela.Runtime.ObjectModel
             {
                 if (bit && val.TypeId != curType)
                 {
-                    ctx.NoOverload(val.Ref.GetTypeName(), name);
+                    if (funs.ContainsKey(curType))
+                        ctx.NoOverload(ToStringWithType(curType, null, AppliedParameters), ToStringWithType(curType, val.TypeId, AppliedParameters), name);
+                    else
+                        ctx.NoOverload(val.GetTypeName(), name);
                     return null;
                 }
             }
@@ -53,7 +57,10 @@ namespace Ela.Runtime.ObjectModel
 
                 if (!funs.TryGetValue(curType, out ret))
                 {
-                    ctx.NoOverload(val.Ref.GetTypeName(), name);
+                    if (funs.ContainsKey(curType))
+                        ctx.NoOverload(ToStringWithType(curType, null, AppliedParameters), ToStringWithType(curType, val.TypeId, AppliedParameters), name);
+                    else
+                        ctx.NoOverload(val.GetTypeName(), name); 
                     return null;
                 }
 
@@ -104,7 +111,7 @@ namespace Ela.Runtime.ObjectModel
 
         public override ElaFunction Clone()
         {
-            var f = new ElaFunTable(name, mask, Parameters.Length + 1, curType);
+            var f = new ElaFunTable(name, mask, Parameters.Length + 1, curType, Machine);
             f.funs = funs;
             return base.CloneFast(f);
         }
@@ -129,6 +136,32 @@ namespace Ela.Runtime.ObjectModel
             sb.Append("->*");
             return GetFunctionName() + ":" + sb.ToString();
         }
+
+        private string ToStringWithType(int type, int? cur, int arg)
+        {
+            var sb = new StringBuilder();
+            var tn = base.Machine.Assembly.Types[type].TypeName;
+            var curn = cur != null ? base.Machine.Assembly.Types[cur.Value].TypeName : null;
+
+            for (var i = 0; i < Parameters.Length + 1; i++)
+            {
+                if (i > 0)
+                    sb.Append("->");
+
+                var m = (1 << i);
+
+                if (i == arg && curn != null)
+                    sb.Append(curn);
+                else if ((mask & m) == m)
+                    sb.Append(tn);
+                else
+                    sb.Append('*');
+            }
+
+            sb.Append("->*");
+            return sb.ToString();
+        }
+
 
         public override string GetFunctionName()
         {

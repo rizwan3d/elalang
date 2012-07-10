@@ -14,7 +14,7 @@ namespace Ela.Runtime.Classes
                 if (right.TypeId == ElaMachine.STR)
                     return new ElaValue(left.ToString() + right.DirectGetString());
 
-                ctx.InvalidOperand(left, right, "concatenate");
+                NoOverloadBinary(TCF.CHAR, right, "concatenate", ctx);
                 return Default();
             }
 
@@ -35,7 +35,7 @@ namespace Ela.Runtime.Classes
         {
             if (right.TypeId != ElaMachine.CHR)
             {
-                ctx.InvalidOperand(left, right, "equal");
+                NoOverloadBinary(TCF.CHAR, right, "equal", ctx);
                 return false;
             }
 
@@ -46,7 +46,7 @@ namespace Ela.Runtime.Classes
         {
             if (right.TypeId != ElaMachine.CHR)
             {
-                ctx.InvalidOperand(left, right, "notequal");
+                NoOverloadBinary(TCF.CHAR, right, "notequal", ctx);
                 return false;
             }
 
@@ -57,7 +57,7 @@ namespace Ela.Runtime.Classes
         {
             if (right.TypeId != ElaMachine.CHR)
             {
-                ctx.InvalidOperand(left, right, "greater");
+                NoOverloadBinary(TCF.CHAR, right, "greater", ctx);
                 return false;
             }
 
@@ -68,7 +68,7 @@ namespace Ela.Runtime.Classes
         {
             if (right.TypeId != ElaMachine.CHR)
             {
-                ctx.InvalidOperand(left, right, "lesser");
+                NoOverloadBinary(TCF.CHAR, right, "lesser", ctx);
                 return false;
             }
 
@@ -79,7 +79,7 @@ namespace Ela.Runtime.Classes
         {
             if (right.TypeId != ElaMachine.CHR)
             {
-                ctx.InvalidOperand(left, right, "greaterequal");
+                NoOverloadBinary(TCF.CHAR, right, "greaterequal", ctx);
                 return false;
             }
 
@@ -90,7 +90,7 @@ namespace Ela.Runtime.Classes
         {
             if (right.TypeId != ElaMachine.CHR)
             {
-                ctx.InvalidOperand(left, right, "lesserequal");
+                NoOverloadBinary(TCF.CHAR, right, "lesserequal", ctx);
                 return false;
             }
 
