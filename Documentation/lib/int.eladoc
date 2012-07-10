@@ -1,0 +1,16 @@
+#file int.ela
+#title int
+#category Ela Standard Library
+This module contains constants for a 32-bit integer type. It is usually referenced through
+`number` module.
+
+#members
+
+max
+Returns a maximum value for a 32-bit integer. This constant requires a qualified access.
+
+min
+Returns a mimimum value for a 32-bit integer. This constant requires a qualified access.
+
+zero
+Returns a zero value. This constant requires a qualified access.

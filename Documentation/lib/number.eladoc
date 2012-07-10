@@ -1,7 +1,8 @@
 #file number.ela
 #title number
 #category Ela Standard Library
-This module contains useful functions and constants for numeric types. 
+This module contains major numeric classes and instances. It also imports modules
+`int`, `long`, `single` and `double`.
 
 #members
 
@@ -20,6 +21,20 @@ greater than or equal to the specified number).
 >>>ceiling 12.01
 Instances of this class should be provided by all fractional numbers.
 
+Integral
+Defines two integer division functions - `quot`, which is an integer division, truncated
+towards zero, and `div`, which is an integer division, truncated towards negative
+infinity.
+>>>(--5) `div` 2
+
+Absolute
+Defines functions for the types with a notion of an absolute value. Function `abs` returns
+an absolute value of a given value, and function `signum` returns a sign of a given value.
+>>>signum (--2)
+
+Transcendental
+Represents a class for numbers supporting elementary transcendental functions.
+
 Float single
 Implements functions from `Float` class for a 32-bit floating point number.
 
@@ -32,26 +47,69 @@ Implements functions from `Fractional` class for a 32-bit floating point number.
 Fractional double
 Implements functions from `Fractional` class for a 64-bit floating point number.
 
-maxInt
-A maximum value for a integer. 
+Integral int
+Implements functions from `Integral` class for a 32-bit integer number.
 
-minInt
-A minimum value for a integer. 
+Integral long
+Implements functions from `Integral` class for a 64-bit integer number.
 
-maxLong
-A maximum value for a long integer. 
+Absolute int
+Implements functions from `Absolute` class for a 32-bit integer number.
 
-minLong
-A mimimum value for a long integer. 
+Absolute long
+Implements functions from `Absolute` class for a 64-bit integer number.
 
-maxSingle
-A maximum value for a 32-bit float. 
+Absolute single
+Implements functions from `Absolute` class for a 32-bit floating point number.
 
-minSingle
-A minimum value for a 32-bit float. 
+Absolute double
+Implements functions from `Absolute` class for a 64-bit floating point number.
 
-maxDouble
-A maximum value for a 64-bit float. 
+Transcendental single
+Implements functions from `Transcendental` class for a 32-bit floating point number.
 
-minDouble
-A minimum value for a 64-bit float.
+Transcendental double
+Implements functions from `Transcendental` class for a 64-bit floating point number.
+
+int
+A reference to the `int` module.
+
+long
+A reference to the `long` module.
+
+single
+A reference to the `single` module.
+
+double
+A reference to the `double` module.
+
+genericQuot
+A generic integer division truncated towards zero that works for both 32-bit integers 
+and 64-bit integers.
+
+genericDiv
+A generic integer division truncated towards negative infinity that works for both
+32-bit integers and 64-bit integers.
+
+genericAbs
+A generic absolute value function that works with any numbers that have instances for
+`Additive` and `Ord` classes.
+
+genericSignum x
+A generic `signum` function that works with any numbers that have instances for
+`Additive` and `Ord` classes.
+
+gcd x y
+Returns the greatest common divisor for the two given arguments. 
+
+lcm x y
+Calculates the least common multiple of two given arguments. 
+
+sqrt
+Returns the square root of a specified number. 
+
+maxValue
+Returns `x` if `x` is greater or equal to `y`, otherwise returns y. 
+
+minValue
+Returns `x` if `x` is lesser or equal to `y`, otherwise returns `y`. 

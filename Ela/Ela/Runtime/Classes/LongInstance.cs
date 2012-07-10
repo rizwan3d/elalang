@@ -201,15 +201,7 @@ namespace Ela.Runtime.Classes
                 if (right.TypeId == ElaMachine.REA)
                     return new ElaValue(left.Ref.AsLong() / right.DirectGetReal());
                 else if (right.TypeId == ElaMachine.INT)
-                {
-                    if (right.I4 == 0)
-                    {
-                        ctx.DivideByZero(left);
-                        return Default();
-                    }
-
-                    return new ElaValue(left.Ref.AsLong() / right.I4);
-                }
+                    return new ElaValue((Double)left.Ref.AsLong() / right.I4);
                 else if (right.TypeId == ElaMachine.DBL)
                     return new ElaValue(left.Ref.AsLong() / right.Ref.AsDouble());
                 else
@@ -219,13 +211,7 @@ namespace Ela.Runtime.Classes
                 }
             }
 
-            if (right.Ref.AsLong() == 0)
-            {
-                ctx.DivideByZero(left);
-                return Default();
-            }
-
-            return new ElaValue(left.Ref.AsLong() / right.Ref.AsLong());
+            return new ElaValue((Double)left.Ref.AsLong() / right.Ref.AsLong());
         }
 
         internal override ElaValue Remainder(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -260,6 +246,38 @@ namespace Ela.Runtime.Classes
             }
 
             return new ElaValue(left.Ref.AsLong() % right.Ref.AsLong());
+        }
+
+        internal static ElaValue Modulus(long x, long y, ExecutionContext ctx)
+        {
+            if (y == 0)
+            {
+                ctx.DivideByZero(new ElaValue(x));
+                return Default();
+            }
+
+            var r = x % y;
+            return x < 0 && y > 0 || x > 0 && y < 0 ? new ElaValue(r + y) : new ElaValue(r);
+        }
+
+        internal override ElaValue Modulus(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            if (right.TypeId != ElaMachine.LNG)
+            {
+                if (right.TypeId == ElaMachine.REA)
+                    return SingleInstance.Modulus(left.Ref.AsLong(), right.DirectGetReal(), ctx);
+                else if (right.TypeId == ElaMachine.INT)
+                    return Modulus(left.Ref.AsLong(), right.I4, ctx);
+                else if (right.TypeId == ElaMachine.DBL)
+                    return DoubleInstance.Modulus(left.Ref.AsLong(), right.Ref.AsDouble(), ctx);
+                else
+                {
+                    ctx.InvalidOperand(left, right, "remainder");
+                    return Default();
+                }
+            }
+
+            return Modulus(left.Ref.AsLong(), right.Ref.AsLong(), ctx);
         }
         
         internal override ElaValue Power(ElaValue left, ElaValue right, ExecutionContext ctx)

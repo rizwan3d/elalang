@@ -141,7 +141,7 @@ namespace Ela.Runtime.Classes
 
             return new ElaValue(left.DirectGetReal() / right.DirectGetReal());
         }
-
+                
         internal override ElaValue Remainder(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if (right.TypeId != ElaMachine.REA)
@@ -166,6 +166,32 @@ namespace Ela.Runtime.Classes
             }
 
             return new ElaValue(left.DirectGetReal() % right.DirectGetReal());
+        }
+
+        internal static ElaValue Modulus(float x, float y, ExecutionContext ctx)
+        {
+            var r = x % y;
+            return x < 0 && y > 0 || x > 0 && y < 0 ? new ElaValue(r + y) : new ElaValue(r);
+        }
+
+        internal override ElaValue Modulus(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            if (right.TypeId != ElaMachine.REA)
+            {
+                if (right.TypeId == ElaMachine.INT)
+                    return Modulus(left.DirectGetReal(), right.I4, ctx);
+                else if (right.TypeId == ElaMachine.LNG)
+                    return Modulus(left.DirectGetReal(), right.Ref.AsLong(), ctx);
+                else if (right.TypeId == ElaMachine.DBL)
+                    return DoubleInstance.Modulus(left.DirectGetReal(), right.Ref.AsDouble(), ctx);
+                else
+                {
+                    ctx.InvalidOperand(left, right, "remainder");
+                    return Default();
+                }
+            }
+
+            return Modulus(left.DirectGetReal(), right.DirectGetReal(), ctx);
         }
         
         internal override ElaValue Power(ElaValue left, ElaValue right, ExecutionContext ctx)

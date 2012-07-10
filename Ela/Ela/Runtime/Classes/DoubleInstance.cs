@@ -267,6 +267,32 @@ namespace Ela.Runtime.Classes
 
             return new ElaValue(Math.Pow(left.Ref.AsDouble(), right.Ref.AsDouble()));
         }
+
+        internal static ElaValue Modulus(double x, double y, ExecutionContext ctx)
+        {
+            var r = x % y;
+            return x < 0 && y > 0 || x > 0 && y < 0 ? new ElaValue(r + y) : new ElaValue(r);
+        }
+
+        internal override ElaValue Modulus(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            if (right.TypeId != ElaMachine.REA)
+            {
+                if (right.TypeId == ElaMachine.INT)
+                    return Modulus(left.Ref.AsDouble(), right.I4, ctx);
+                else if (right.TypeId == ElaMachine.LNG)
+                    return Modulus(left.Ref.AsDouble(), right.Ref.AsLong(), ctx);
+                else if (right.TypeId == ElaMachine.REA)
+                    return DoubleInstance.Modulus(left.Ref.AsDouble(), right.DirectGetReal(), ctx);
+                else
+                {
+                    ctx.InvalidOperand(left, right, "remainder");
+                    return Default();
+                }
+            }
+
+            return Modulus(left.Ref.AsDouble(), right.Ref.AsDouble(), ctx);
+        }
         
         internal override ElaValue Negate(ElaValue value, ExecutionContext ctx)
         {

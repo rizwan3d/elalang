@@ -1,0 +1,33 @@
+/*
+  Module tuple
+  Created in 2012 by Basil Voronkov
+*/
+instance Additive tuple
+  where (+)  = join (+)
+        (-)  = join (-)
+        --x  = zero (length x) - x
+
+zero # private
+zero 1 = (0,)
+zero 2 = (0,0)
+zero 3 = (0,0,0)
+zero n | n == 1 = (0,) | else = (0,) ++ zero (n-1)
+
+mapTuple # private 
+mapTuple f tup = map 0
+          where len = length tup
+                map n | n == len - 1 = e
+                      | else = e ++ map (n+1)
+                      where e = ( f (tup:n), )
+
+join # private
+join f (x,) (a,) = (x+a,)
+join f (x,y) (a,b) = (x+a, y+b)
+join f (x,y,z) (a,b,c) = (x+a,y+b,z+c)
+join f t1 t2 
+  | len <> length t2 = "Tuples should be of the same length." 
+  | else = fold 0
+  where len = length t1
+        fold n | n == len - 1 = st
+               | else = st ++ fold (n+1)
+               where st = (t1:n `f` t2:n,)

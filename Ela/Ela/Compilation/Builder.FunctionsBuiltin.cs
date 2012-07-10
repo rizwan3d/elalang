@@ -101,6 +101,9 @@ namespace Ela.Compilation
                 case ElaBuiltinKind.Divide:
                     cw.Emit(Op.Div);
                     break;
+                case ElaBuiltinKind.Quot:
+                    cw.Emit(Op.Quot);
+                    break;
                 case ElaBuiltinKind.Multiply:
                     cw.Emit(Op.Mul);
                     break;
@@ -109,6 +112,9 @@ namespace Ela.Compilation
                     break;
                 case ElaBuiltinKind.Remainder:
                     cw.Emit(Op.Rem);
+                    break;
+                case ElaBuiltinKind.Modulus:
+                    cw.Emit(Op.Mod);
                     break;
                 case ElaBuiltinKind.Subtract:
                     cw.Emit(Op.Sub);

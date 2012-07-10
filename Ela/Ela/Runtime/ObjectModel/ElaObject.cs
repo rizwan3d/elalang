@@ -79,6 +79,12 @@ namespace Ela.Runtime.ObjectModel
             ctx.NoOperator(@this, "false");
             return false;
         }
+
+        internal virtual ElaValue Quot(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            ctx.NoOperator(left, "quot");
+            return Default();
+        }
     	
 		protected internal virtual ElaValue Tail(ExecutionContext ctx)
 		{

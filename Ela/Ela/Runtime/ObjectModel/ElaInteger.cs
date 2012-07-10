@@ -10,5 +10,37 @@ namespace Ela.Runtime.ObjectModel
 		{
 			
 		}
+
+        internal override ElaValue Quot(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            if (right.TypeId != ElaMachine.INT)
+            {
+                if (right.TypeId == ElaMachine.LNG)
+                {
+                    var r = right.Ref.AsLong();
+
+                    if (r == 0)
+                    {
+                        ctx.DivideByZero(left);
+                        return Default();
+                    }
+
+                    return new ElaValue(left.I4 / r);
+                }
+                else
+                {
+                    ctx.InvalidOperand(left, right, "quot");
+                    return Default();
+                }
+            }
+
+            if (right.I4 == 0)
+            {
+                ctx.DivideByZero(left);
+                return Default();
+            }
+
+            return new ElaValue(left.I4 / right.I4);
+        }
 	}
 }

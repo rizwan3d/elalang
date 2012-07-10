@@ -41,6 +41,7 @@ TOKENS
 	stringTok = "\"" { stringChar
 					| "\\\"" | "\\\\" | "\\0" | "\\b" | "\\n" | "\\r" | "\\t" | "\\'"
 					| "\\u" hexDigit hexDigit hexDigit hexDigit
+					| "\\x" digit digit digit digit digit
 					}  
 				"\""
 				| "<[" {verbatimChar} "]>".
@@ -48,6 +49,7 @@ TOKENS
 	charTok = 	"'" ( char
 					| "\\\"" | "\\\\" | "\\0" | "\\b" | "\\n" | "\\r" | "\\t" | "\\'"
 					| "\\u" hexDigit hexDigit hexDigit hexDigit
+					| "\\x" digit digit digit digit digit
 					)  
 				"'".
 				
@@ -1329,6 +1331,9 @@ PRODUCTIONS
 	        var snd0 = default(String);
 	        var fst = default(String);
 	        var snd = default(String);
+	        var block = default(ElaEquationSet);
+	        var ot = t;
+	        var list = default(List<ElaClassInstance>);
 	    .)
 	    (
 	        INSTANCE
@@ -1336,6 +1341,7 @@ PRODUCTIONS
 	            var ci = new ElaClassInstance(t);	            
 	            ci.And = Program.Instances;
 	            Program.Instances = ci;
+	            ot = t;
 	        .)
 	        (ident|variantTok)  (. fst0 = t.val; .)
 	        [ "." (ident|variantTok) (. snd0 = t.val; .) ]
@@ -1360,15 +1366,58 @@ PRODUCTIONS
 	            }
 	            else
 	                ci.TypeName = fst;
-	            
-	            var block = default(ElaEquationSet);
 	        .)
+	        {
+	            (.
+	                if (list == null)
+	                {
+	                    list = new List<ElaClassInstance>();
+	                    list.Add(ci);
+	                }
+	                
+	                ci = new ElaClassInstance();	   
+	                
+	                if (fst0 != null && snd0 != null)
+	                {
+	                    ci.TypeClassPrefix = fst0;
+	                    ci.TypeClassName = snd0;
+	                }
+	                else
+	                    ci.TypeClassName = fst0;	                
+	                         
+	                ci.SetLinePragma(ot.line, ot.col);
+	                ci.And = Program.Instances;
+	                Program.Instances = ci;
+	                list.Add(ci);
+	            .)
+	            (
+	                ident  (. fst = t.val; .)
+	                [ "." ident (. snd = t.val; .) ]
+	            )
+	            (. 	            
+	                if (fst != null && snd != null)
+	                {
+	                    ci.TypePrefix = fst;
+	                    ci.TypeName = snd;
+	                }
+	                else
+	                    ci.TypeName = fst;
+	            .)
+	        }
 	        [
 	            WhereBinding<out block>
-	            (. ci.Where = block; .)
+	            (. 
+	                if (list == null)
+	                    ci.Where = block; 
+	                else
+	                {
+	                    for (var i = 0; i < list.Count; i++)
+	                        list[i].Where = block;
+	                }
+	            .)
 	        ]
 	    ).
-		
+	    		
 	TopLevel =
 	    (. scanner.InjectBlock(); .)
 	    (

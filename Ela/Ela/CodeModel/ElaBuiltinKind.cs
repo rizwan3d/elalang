@@ -51,7 +51,11 @@ namespace Ela.CodeModel
 
         Divide,
 
+        Quot,
+
         Remainder,
+
+        Modulus,
 
         Power,
 

@@ -1,0 +1,12 @@
+#file tuple.ela
+#title tuple
+#category Ela Standard Library
+This module contains instances and functions for a tuple data type
+
+#members
+
+Additive tuple
+Implements basic mathematical functions, including addition, subtraction and negation,
+for a tuple.
+>>>(1,2) + (3,4)
+Also all binary functions in this instance require the tuples to be of the same length.

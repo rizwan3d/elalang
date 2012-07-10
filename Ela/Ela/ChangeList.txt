@@ -1,3 +1,9 @@
+0.11.0.8:Fix:Members of user defined classes didn't correctly work with thunks.
+0.11.0.7:New:Now it is possible to define instances for several types at once, e.g. 'Class type1 type2'.
+0.11.0.6:Fix:An implementation of 'show' function for class member functions is corrected.
+0.11.0.5:Fix:A bug fixed in compilation logic of class members - signature could be interpreted incorrectly.
+0.11.0.4:Fix:A bug fixed when applying class member function which definition has a different number of arguments in a signature than implementations.
+0.11.0.3:Change:Now parser can recognize escape sequences in the form \xNNNNN where NNNNN is an 5 digit integer number.
 0.11.0.2:Change:Parse error handling was enhanced for class, instance and type declarations.
 0.11.0.1:Change:Now Ela compiler generates a 'BottomValue' warning.
 0.11.0.0:Release:Release of Ela 0.11.0.0.

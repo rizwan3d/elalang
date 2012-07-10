@@ -28,9 +28,9 @@ namespace ElaConsole
 		private static MessageHelper helper;
 		private static StringBuilder codeLines;
 		#endregion
-
-
-		#region Methods
+      
+        
+        #region Methods
         private static int Main(string[] args) 
 		{
             if (!ReadOptions(args))
