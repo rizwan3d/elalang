@@ -1,4 +1,4 @@
-﻿#title Ranges
+#title Ranges
 #category Language Reference
 
 =Introduction
@@ -18,8 +18,6 @@ You can specify an optional step in a range:
 If the first element of a range is lesser than the last element of a range, a step is mandatory: 
 >>[10,9..1]
 >>[10,7.. --10]
-Ranges work with numeric types and tuples: 
->>>[(1,2)..(5,10)]
 
 =Non-strict Ranges
 It is possible to construct non-strict ranges (such as infinite lists). In this case the last element in range should be omitted: 

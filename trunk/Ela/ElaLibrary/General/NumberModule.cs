@@ -25,8 +25,122 @@ namespace Ela.Library.General
             Add<Double,Double>("ceiling", Ceiling);
             Add<Double,Double>("round", Round);
             Add<Double,Int64>("truncate", Truncate);
+
+            Add<Double,Double>("exp", Exp);
+            Add<Double,Double>("cos", Cos);
+            Add<Double,Double>("sin", Sin);
+            Add<Double,Double>("log", Log);
+            Add<Double,Double,Double>("logBase", LogBase);
+            Add<Double,Double>("tan", Tan);
+            Add<Double,Double>("acos", Acos);
+            Add<Double,Double>("asin", Asin);
+            Add<Double,Double>("atan", Atan);
+            Add<Double,Double>("cosh", Cosh);
+            Add<Double,Double>("sinh", Sinh);
+            Add<Double,Double>("tanh", Tanh);
+            Add<Double,Double>("acosh", Acosh);
+            Add<Double,Double>("asinh", Asinh);
+            Add<Double,Double>("atanh", Atanh);
         }
 
+        public double Exp(double val)
+        {
+            return Math.Exp(val);
+        }
+
+        public double Cos(double val)
+        {
+            return Math.Cos(val);
+        }
+
+        public double Sin(double val)
+        {
+            return Math.Sin(val);
+        }
+
+        public double Tan(double val)
+        {
+            return Math.Tan(val);
+        }
+
+        public double Log(double x)
+        {
+            return Math.Log(x);
+        }
+
+        public double LogBase(double x, double y)
+        {
+            return Math.Log(x, y);
+        }
+
+        public double Acos(double val)
+        {
+            return Math.Acos(val);
+        }
+
+        public double Asin(double val)
+        {
+            return Math.Asin(val);
+        }
+
+        public double Atan(double val)
+        {
+            return Math.Atan(val);
+        }
+
+        public double Cosh(double val)
+        {
+            return Math.Cosh(val);
+        }
+
+        public double Sinh(double val)
+        {
+            return Math.Sinh(val);
+        }
+
+        public double Tanh(double val)
+        {
+            return Math.Tanh(val);
+        }
+
+        public double Acosh(double x)
+        {
+            if (x < 1.0) 
+                throw new ElaRuntimeException("OutOfRange", "Invalid range.");
+
+            return Math.Log(x + Math.Sqrt(x * x - 1));
+        }
+
+        public double Asinh(double xx)
+        {
+            double x;
+            int sign;
+            
+            if (xx == 0.0) 
+                return xx;
+            
+            if (xx < 0.0)
+            {
+                sign = -1;
+                x = -xx;
+            }
+            else
+            {
+                sign = 1;
+                x = xx;
+            }
+            
+            return sign * Math.Log(x + Math.Sqrt(x * x + 1));
+        }
+
+        public double Atanh(double x)
+        {
+            if (x > 1.0 || x < -1.0)
+                throw new ElaRuntimeException("OutOfRange", "Invalid range.");
+
+            return 0.5 * Math.Log((1.0 + x) / (1.0 - x));
+        }
+        
         public double Round(double x)
         {
             return Math.Round(x);

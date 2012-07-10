@@ -1,0 +1,24 @@
+#file single.ela
+#title single
+#category Ela Standard Library
+This module contains constants for 64-bit floating point type. It is usually referenced through
+`number` module.
+
+#members
+
+max
+Returns a maximum value for a 64-bit float. This constant requires a qualified access.
+
+min
+Returns a mimimum value for a 64-bit float. This constant requires a qualified access.
+
+zero
+Returns a zero value. This constant requires a qualified access.
+
+pi
+Represents the ratio of the circumference of a circle to its diameter, specified by the constant, 
+pi. This constant requires a qualified access.
+
+e
+Represents the natural logarithmic base, specified by the constant, e. This constant requires 
+a qualified access.

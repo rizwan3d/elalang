@@ -7,7 +7,6 @@ namespace Ela.Parsing
 {
 	internal static class EscapeCodeParser
 	{
-		#region Methods
 		internal static int Parse(ref string str)
 		{
 			var buffer = str.ToCharArray(1, str.Length - 2);
@@ -59,8 +58,7 @@ namespace Ela.Parsing
 										var ns = new String(buffer, i + 1, 4);
 										var ci = 0;
 										
-										if (!Int32.TryParse(ns, NumberStyles.HexNumber,
-										    Thread.CurrentThread.CurrentCulture.NumberFormat, out ci))
+										if (!Int32.TryParse(ns, NumberStyles.HexNumber, Culture.NumberFormat, out ci))
 											return i;
 										else
 										{
@@ -71,7 +69,26 @@ namespace Ela.Parsing
 									else
 										return i;
 								}
-								break;
+                                break;
+                            case 'x':
+                                {
+                                    if (i + 4 < len)
+                                    {
+                                        var ns = new String(buffer, i + 1, 5);
+                                        var ci = 0;
+
+                                        if (!Int32.TryParse(ns, NumberStyles.Integer, Culture.NumberFormat, out ci))
+                                            return i;
+                                        else
+                                        {
+                                            sb.Append((Char)ci);
+                                            i += 5;
+                                        }
+                                    }
+                                    else
+                                        return i;
+                                }
+                                break;
 							default:
 								return i;
 						}
@@ -86,6 +103,5 @@ namespace Ela.Parsing
 			str = sb.ToString();
 			return 0;
 		}
-		#endregion
 	}
 }

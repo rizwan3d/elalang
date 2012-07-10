@@ -23,15 +23,24 @@ namespace Ela.Runtime.ObjectModel
         internal ElaFunction GetFunction(ElaValue val, ExecutionContext ctx)
         {
             var m = 1 << AppliedParameters;
+            var bit = (mask & m) == m;
+            
+            if (bit && val.TypeId == ElaMachine.LAZ)
+            {
+                val = val.Ref.Force(val, ctx);
+
+                if (ctx.Failed)
+                    return null;
+            }
 
             if (curType == 0)
             {
-                if ((mask & m) == m)
+                if (bit)
                     curType = val.TypeId;
             }
             else
             {
-                if ((mask & m) == m && val.TypeId != curType)
+                if (bit && val.TypeId != curType)
                 {
                     ctx.NoOverload(val.Ref.GetTypeName(), name);
                     return null;
@@ -50,7 +59,15 @@ namespace Ela.Runtime.ObjectModel
 
                 ret = ret.CloneFast();
                 ret.AppliedParameters = AppliedParameters;
-                ret.Parameters = Parameters;
+                
+                if (ret.Parameters.Length != Parameters.Length)
+                {
+                    for (var i = 0; i < AppliedParameters; i++)
+                        ret.Parameters[i] = Parameters[i];
+                }
+                else
+                    ret.Parameters = Parameters;
+
                 return ret;
             }
 
@@ -109,7 +126,7 @@ namespace Ela.Runtime.ObjectModel
                     sb.Append('*');
             }
 
-
+            sb.Append("->*");
             return GetFunctionName() + ":" + sb.ToString();
         }
 

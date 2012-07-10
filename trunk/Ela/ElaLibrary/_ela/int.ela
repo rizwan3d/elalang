@@ -1,0 +1,12 @@
+/*
+  Module int
+  Created int 2012 by Basil Voronkov
+*/
+max # qualified
+max = 0x7fffffffffffffffL
+
+min # qualified
+min = max + 1
+
+zero # qualified
+zero = 0

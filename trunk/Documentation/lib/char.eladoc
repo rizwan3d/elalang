@@ -1,9 +1,23 @@
 #file char.ela
 #title char
 #category Ela Standard Library
-This module contains functions that operate with unicode characters. 
+This module contains functions and instances for a unicode character. 
 
 #members
+
+Additive char
+Implements basic mathematical functions, including addition, subtraction and negation,
+for a unicode character.
+
+max
+Returns a maximum value for a char. This constant requires a fully qualified access.
+
+min
+Returns a minimum value for a char. This constant requires a fully qualified access.
+
+zero
+Returns a zero char. This constant requires a fully qualified access. It returns the
+same value as `min` constant.
 
 lower
 Transforms a given char to lowercase. 

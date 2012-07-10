@@ -24,6 +24,7 @@ namespace Ela.Runtime.Classes
         private ElaFunction mul;
         private ElaFunction div;
         private ElaFunction rem;
+        private ElaFunction mod;
         private ElaFunction pow;
         private ElaFunction neg;
         private ElaFunction gt;
@@ -254,6 +255,18 @@ namespace Ela.Runtime.Classes
             return Default();
         }
 
+        internal virtual ElaValue Modulus(ElaValue left, ElaValue right, ExecutionContext ctx)
+        {
+            if (mod != null)
+            {
+                ctx.SetDeffered(mod, 2);
+                return Default();
+            }
+
+            ctx.NoOverload(left.GetTypeName(), "modulus");
+            return Default();
+        }
+
         internal virtual ElaValue Power(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if (pow != null)
@@ -386,7 +399,7 @@ namespace Ela.Runtime.Classes
             }
         }
 
-        protected ElaValue Default()
+        protected static ElaValue Default()
         {
             return new ElaValue(ElaObject.ElaInvalidObject.Instance);
         }
@@ -478,6 +491,9 @@ namespace Ela.Runtime.Classes
                     break;
                 case ElaBuiltinKind.Showf:
                     show = fun;
+                    break;
+                case ElaBuiltinKind.Modulus:
+                    mod = fun;
                     break;
             }            
         }

@@ -4,6 +4,20 @@
 */
 import libChar#elalib@ch
 
+max # qualified
+max = '\x65535'
+
+min # qualified
+min = '\0'
+
+zero # qualified
+zero = min
+
+instance Additive char
+  where x+y = toChar (toInt x + toInt y)
+        x-y = toChar (toInt x - toInt y)
+        --x = zero - x
+
 lower (c is char) = ch.lower c
 upper (c is char) = ch.upper c
 
@@ -21,5 +35,4 @@ isWhiteSpace (c is char) = ch.isWhiteSpace c
 
 isSurrogate (c is char) = ch.isSurrogate c
 isSurrogatePair (x is char) (y is char) = ch.isSurrogatePair x y
-
 

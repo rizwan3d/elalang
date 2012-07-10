@@ -1565,11 +1565,15 @@ internal sealed partial class Parser {
 		var snd0 = default(String);
 		var fst = default(String);
 		var snd = default(String);
+		var block = default(ElaEquationSet);
+		var ot = t;
+		var list = default(List<ElaClassInstance>);
 		
 		Expect(42);
 		var ci = new ElaClassInstance(t);	            
 		ci.And = Program.Instances;
 		Program.Instances = ci;
+		ot = t;
 		
 		if (la.kind == 1) {
 			Get();
@@ -1609,11 +1613,54 @@ internal sealed partial class Parser {
 		else
 		    ci.TypeName = fst;
 		
-		var block = default(ElaEquationSet);
-		
+		while (la.kind == 1) {
+			if (list == null)
+			{
+			    list = new List<ElaClassInstance>();
+			    list.Add(ci);
+			}
+			
+			ci = new ElaClassInstance();	   
+			
+			if (fst0 != null && snd0 != null)
+			{
+			    ci.TypeClassPrefix = fst0;
+			    ci.TypeClassName = snd0;
+			}
+			else
+			    ci.TypeClassName = fst0;	                
+			         
+			ci.SetLinePragma(ot.line, ot.col);
+			ci.And = Program.Instances;
+			Program.Instances = ci;
+			list.Add(ci);
+			
+			Get();
+			fst = t.val; 
+			if (la.kind == 25) {
+				Get();
+				Expect(1);
+				snd = t.val; 
+			}
+			if (fst != null && snd != null)
+			{
+			    ci.TypePrefix = fst;
+			    ci.TypeName = snd;
+			}
+			else
+			    ci.TypeName = fst;
+			
+		}
 		if (la.kind == 41) {
 			WhereBinding(out block);
-			ci.Where = block; 
+			if (list == null)
+			   ci.Where = block; 
+			else
+			{
+			    for (var i = 0; i < list.Count; i++)
+			        list[i].Where = block;
+			}
+			
 		}
 	}
 

@@ -25,7 +25,9 @@ namespace Ela.Compilation
 			1, //Add
 			1, //Mul
 			1, //Div
+            1, //Quot
 			1, //Rem
+            1, //Mod
 			1, //Pow
 			1, //Sub
 			1, //Shr

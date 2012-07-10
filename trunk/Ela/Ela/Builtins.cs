@@ -38,7 +38,9 @@ namespace Ela
                 case "subtract": return ElaBuiltinKind.Subtract;
                 case "multiply": return ElaBuiltinKind.Multiply;
                 case "divide": return ElaBuiltinKind.Divide;
+                case "quot": return ElaBuiltinKind.Quot;
                 case "remainder": return ElaBuiltinKind.Remainder;
+                case "modulus": return ElaBuiltinKind.Modulus;
                 case "power": return ElaBuiltinKind.Power;
                 case "negate": return ElaBuiltinKind.Negate;
                 case "bitwiseand": return ElaBuiltinKind.BitwiseAnd;

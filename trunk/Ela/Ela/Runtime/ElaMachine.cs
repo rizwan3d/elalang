@@ -836,6 +836,26 @@ namespace Ela.Runtime
                             goto SWITCH_MEM;
                         }
                         break;
+                    case Op.Quot:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+
+                        if (left.Ref.TypeId == LAZ || right.Ref.TypeId == LAZ)
+                        {
+                            left = left.Ref.Force(left, ctx);
+                            right = right.Ref.Force(right, ctx);
+                        }
+
+                        evalStack.Replace(left.Ref.Quot(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
                     case Op.Mul:
                         left = evalStack.Pop();
                         right = evalStack.Peek();
@@ -887,6 +907,26 @@ namespace Ela.Runtime
                         }
 
                         evalStack.Replace(cls[left.TypeId].Remainder(left, right, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.Mod:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+
+                        if (left.Ref.TypeId == LAZ || right.Ref.TypeId == LAZ)
+                        {
+                            left = left.Ref.Force(left, ctx);
+                            right = right.Ref.Force(right, ctx);
+                        }
+
+                        evalStack.Replace(cls[left.TypeId].Modulus(left, right, ctx));
 
                         if (ctx.Failed)
                         {

@@ -4,6 +4,16 @@
 */
 import libNumber#elalib@rl
 
+import int@locInt
+       long@locLong
+       single@locSingle
+       double@locDouble
+
+int = locInt
+long = locLong
+single = locSingle
+double = locDouble
+
 class Float a where 
   inf a
   nan a
@@ -16,42 +26,109 @@ class Fractional a where
   ceiling a
   floor a
 
+class Integral a where
+  div a->_
+  quot a->_
+
+class Absolute a where
+  abs a
+  signum a
+
+class Transcendental a where
+  exp a
+  log a
+  logBase a->_
+  sin a
+  tan a
+  cos a
+  asin a
+  atan a
+  acos a
+  sinh a
+  tanh a
+  cosh a
+  asinh a
+  atanh a
+  acosh a
+
 instance Float single
   where
-    inf    = rl.infSingle
-    nan    = rl.nanSingle
-    posInf = rl.posInfSingle
-    negInf = rl.negInfSingle
+    inf       = rl.infSingle
+    nan       = rl.nanSingle
+    posInf    = rl.posInfSingle
+    negInf    = rl.negInfSingle
 
 instance Float double
   where
-    inf    = rl.infDouble
-    nan    = rl.nanDouble
-    posInf = rl.posInfDouble
-    negInf = rl.negInfDouble
+    inf       = rl.infDouble
+    nan       = rl.nanDouble
+    posInf    = rl.posInfDouble
+    negInf    = rl.negInfDouble
 
-instance Fractional single
+instance Fractional single double
   where
-    round    = rl.round
-    truncate = rl.truncate
-    ceiling  = rl.ceiling
-    floor    = rl.floor
+    round     = rl.round
+    truncate  = rl.truncate
+    ceiling   = rl.ceiling
+    floor     = rl.floor
 
-instance Fractional double
+instance Integral int long
   where
-    round    = rl.round
-    truncate = rl.truncate
-    ceiling  = rl.ceiling
-    floor    = rl.floor
+    div x y   = genericDiv x y
+    quot x y  = x `genericQout` y
 
-maxInt = 0x7fffffff
-minInt = maxInt + 1
+instance Absolute int long single double
+  where 
+    abs = genericAbs
+    signum = genericSignum
 
-maxLong = 0x7fffffffffffffffL
-minLong = maxLong + 1
+instance Transcendental single double
+  where
+    exp x       = rl.exp (force x)
+    cos x       = rl.cos (force x)
+    sin x       = rl.sin (force x)
+    log x       = rl.log (force x)
+    logBase x y = rl.logBase (force x) (force y)
+    tan x       = rl.tan (force x)
+    acos x      = rl.acos (force x)
+    asin x      = rl.asin (force x)
+    atan x      = rl.atan (force x)
+    cosh x      = rl.cosh (force x)
+    sinh x      = rl.sinh (force x)
+    tanh x      = rl.tanh (force x)
+    acosh x     = rl.acosh (force x)
+    asinh x     = rl.asinh (force x)
+    atanh x     = rl.atanh (force x)
 
-maxSingle = 3.402823E+38f
-minSingle = --3.402823E+38f
+genericQout = __internal quot
 
-maxDouble = 1.7976931348623157E+308D
-minDouble = --1.7976931348623157E+308D
+genericDiv x y
+  | r < 0 and r*y <> x = r - 1
+  | else = r
+  where r = x `genericQout` y
+
+genericAbs x 
+  | x >= 0 = x
+  | else   = --x
+
+genericSignum 0 = 0
+genericSignum x 
+  | x < 0 = --1 
+  | else = 1
+
+gcd 0 0 = fail "core.gcd: gcd 0 0 is undefined"
+gcd x y = gcd' (abs x) (abs y)
+          where gcd' x 0 = x
+                gcd' x y = gcd' y (x % y)
+
+lcm _ 0 = 0
+lcm 0 _ = 0
+lcm x y = abs ((x `quot` gcd x y) * y)
+
+sqrt x = x ** 0.5
+
+maxValue x y | x >= y = x
+             | else   = y
+
+minValue x y | x <= y = x
+             | else   = y

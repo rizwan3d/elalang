@@ -24,8 +24,8 @@ namespace Ela.Compilation
                         AddError(ElaCompilerError.InvalidMemberSignature, m, m.Name);
 
                     var addr = AddVariable(m.Name, m, ElaVariableFlags.ClassFun, m.Arguments);
-                    cw.Emit(Op.PushI4, m.Mask);
                     cw.Emit(Op.PushI4, m.Arguments);
+                    cw.Emit(Op.PushI4, m.Mask);
                     cw.Emit(Op.Newfunc, AddString(m.Name));
                     PopVar(addr);
                 }
@@ -65,14 +65,19 @@ namespace Ela.Compilation
                     CompileBuiltinMember(ElaBuiltinKind.GreaterEqual, s, 2, map);
                     CompileBuiltinMember(ElaBuiltinKind.LesserEqual, s, 3, map);
                     break;
-                case "Num":
+                case "Additive":
                     CompileBuiltinMember(ElaBuiltinKind.Add, s, 0, map);
                     CompileBuiltinMember(ElaBuiltinKind.Subtract, s, 1, map);
-                    CompileBuiltinMember(ElaBuiltinKind.Multiply, s, 2, map);
-                    CompileBuiltinMember(ElaBuiltinKind.Divide, s, 3, map);
-                    CompileBuiltinMember(ElaBuiltinKind.Power, s, 4, map);
-                    CompileBuiltinMember(ElaBuiltinKind.Remainder, s, 5, map);
-                    CompileBuiltinMember(ElaBuiltinKind.Negate, s, 6, map);
+                    CompileBuiltinMember(ElaBuiltinKind.Negate, s, 2, map);
+                    break;
+                case "Ring":
+                    CompileBuiltinMember(ElaBuiltinKind.Multiply, s, 0, map);
+                    CompileBuiltinMember(ElaBuiltinKind.Power, s, 1, map);                    
+                    break;
+                case "Field":
+                    CompileBuiltinMember(ElaBuiltinKind.Divide, s, 0, map);
+                    CompileBuiltinMember(ElaBuiltinKind.Modulus, s, 1, map);
+                    CompileBuiltinMember(ElaBuiltinKind.Remainder, s, 2, map);
                     break;
                 case "Bit":
                     CompileBuiltinMember(ElaBuiltinKind.BitwiseAnd, s, 0, map);

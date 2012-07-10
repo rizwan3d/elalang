@@ -1,3 +1,10 @@
+0.1.4.7:New:A new 'random' article is added about 'random' module.
+0.1.4.6:Change:Article 'prelude' is changed according to the module changes.
+0.1.4.5:Change:Article 'math' is decomissioned.
+0.1.4.4:Change:Article 'char' is changes according to the module changes.
+0.1.4.3:Change:Article about 'thunk' module is changed according to the module changes.
+0.1.4.2:New:New articles 'int', 'long', 'single' and 'double' about corresponding modules are added.
+0.1.4.1:Change:Article'number' module is changed according to the module changes.
 0.1.4.0:Release:Release of 0.1.4.0.
 0.1.3.13:New:A document What's new that contains platform changes overview is added.
 0.1.3.12:New:An article 'read' about a new module is added.
