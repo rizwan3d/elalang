@@ -75,7 +75,7 @@ instance Fractional single double
 instance Integral int long
   where
     div x y   = genericDiv x y
-    quot x y  = x `genericQout` y
+    quot x y  = x `genericQuot` y
 
 instance Absolute int long single double
   where 
@@ -100,12 +100,12 @@ instance Transcendental single double
     asinh x     = rl.asinh (force x)
     atanh x     = rl.atanh (force x)
 
-genericQout = __internal quot
+genericQuot = __internal quot
 
 genericDiv x y
   | r < 0 and r*y <> x = r - 1
   | else = r
-  where r = x `genericQout` y
+  where r = x `genericQuot` y
 
 genericAbs x 
   | x >= 0 = x
