@@ -76,8 +76,11 @@ namespace Ela.Compilation
                     break;
                 case "Field":
                     CompileBuiltinMember(ElaBuiltinKind.Divide, s, 0, map);
-                    CompileBuiltinMember(ElaBuiltinKind.Modulus, s, 1, map);
-                    CompileBuiltinMember(ElaBuiltinKind.Remainder, s, 2, map);
+                    CompileBuiltinMember(ElaBuiltinKind.Recip, s, 1, map);
+                    break;
+                case "Modulo":
+                    CompileBuiltinMember(ElaBuiltinKind.Modulus, s, 0, map);
+                    CompileBuiltinMember(ElaBuiltinKind.Remainder, s, 1, map);
                     break;
                 case "Bit":
                     CompileBuiltinMember(ElaBuiltinKind.BitwiseAnd, s, 0, map);

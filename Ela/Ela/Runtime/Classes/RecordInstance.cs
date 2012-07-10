@@ -14,7 +14,7 @@ namespace Ela.Runtime.Classes
 
             if (right.TypeId != ElaMachine.REC)
             {
-                ctx.InvalidOperand(left, right, "concatenate");
+                NoOverloadBinary(TCF.RECORD, right, "concatenate", ctx);
                 return Default();
             }
 

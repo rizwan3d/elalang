@@ -9,7 +9,7 @@ namespace Ela.Runtime.Classes
         {
             if (right.TypeId != ElaMachine.FUN)
             {
-                ctx.InvalidOperand(left, right, "equal");
+                NoOverloadBinary(TCF.FUN, right, "equal", ctx);
                 return false;
             }
 
@@ -23,7 +23,7 @@ namespace Ela.Runtime.Classes
         {
             if (right.TypeId != ElaMachine.FUN)
             {
-                ctx.InvalidOperand(left, right, "notequal");
+                NoOverloadBinary(TCF.FUN, right, "notequal", ctx);
                 return false;
             }
 

@@ -373,7 +373,7 @@ namespace Ela.Runtime
 
                             if (left.TypeId != STR)
                             {
-                                InvalidType(left, thread, evalStack, TypeCodeFormat.GetShortForm(ElaTypeCode.String));
+                                InvalidType(left, thread, evalStack, TCF.GetShortForm(ElaTypeCode.String));
                                 goto SWITCH_MEM;
                             }
 
@@ -418,7 +418,7 @@ namespace Ela.Runtime
                                 right = right.Ref.Force(right, ctx);
                             }
                             if (left.TypeId != REC)
-                                ctx.InvalidType(TypeCodeFormat.GetShortForm(ElaTypeCode.Record), left);
+                                ctx.InvalidType(TCF.GetShortForm(ElaTypeCode.Record), left);
 
                             if (!ctx.Failed)
                                 evalStack.Push(((ElaRecord)left.Ref).GetKey(right, ctx));
@@ -1187,7 +1187,7 @@ namespace Ela.Runtime
                         break;
                     case Op.Newfunc:
                         {
-                            var fn = new ElaFunTable(frame.Strings[opd], evalStack.Pop().I4, evalStack.Pop().I4, 0);
+                            var fn = new ElaFunTable(frame.Strings[opd], evalStack.Pop().I4, evalStack.Pop().I4, 0, this);
                             evalStack.Push(new ElaValue(fn));
                         }
                         break;
@@ -1199,7 +1199,7 @@ namespace Ela.Runtime
 
                             if (right.TypeId != FUN)
                             {
-                                InvalidType(right, thread, evalStack, TypeCodeFormat.GetShortForm(ElaTypeCode.Function));
+                                InvalidType(right, thread, evalStack, TCF.GetShortForm(ElaTypeCode.Function));
                                 goto SWITCH_MEM;
                             }
 
@@ -1274,7 +1274,7 @@ namespace Ela.Runtime
                             if (right.TypeId != FUN)
                             {
                                 evalStack.PopVoid();
-                                ExecuteFail(new ElaError(ElaRuntimeError.ExpectedFunction, TypeCodeFormat.GetShortForm(right.TypeCode)), thread, evalStack);
+                                ExecuteFail(new ElaError(ElaRuntimeError.ExpectedFunction, TCF.GetShortForm(right.TypeCode)), thread, evalStack);
                                 goto SWITCH_MEM;
                             }
 
@@ -1503,7 +1503,7 @@ namespace Ela.Runtime
         {
             if (codeValue.TypeId != INT)
             {
-                InvalidType(codeValue, thread, stack, TypeCodeFormat.GetShortForm(ElaTypeCode.Integer));
+                InvalidType(codeValue, thread, stack, TCF.GetShortForm(ElaTypeCode.Integer));
                 return new ElaValue(ElaObject.ElaInvalidObject.Instance);
             }
 
@@ -1567,7 +1567,7 @@ namespace Ela.Runtime
             else if (code == BYT && value.TypeId == LNG)
                 return new ElaValue(value.Ref.AsLong() == 1);
 
-            ctx.ConversionFailed(value, TypeCodeFormat.GetShortForm((ElaTypeCode)code));
+            ctx.ConversionFailed(value, TCF.GetShortForm((ElaTypeCode)code));
             return new ElaValue(ElaObject.ElaInvalidObject.Instance);
         }
 

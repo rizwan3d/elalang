@@ -1230,11 +1230,17 @@ internal sealed partial class Parser {
 	void WhereBinding(out ElaEquationSet block) {
 		scanner.InjectBlock(); 
 		bindings.Push(null);
+		var skip = false;
 		
 		while (!(la.kind == 0 || la.kind == 41)) {SynErr(94); Get();}
 		Expect(41);
+		if (la.kind == 46) {
+			EndBlock();
+			skip=true; 
+		}
 		BindingChain(out block);
 		bindings.Pop(); 
+		if (!skip) 
 		EndBlock();
 	}
 
@@ -1542,9 +1548,14 @@ internal sealed partial class Parser {
 		if (la.kind == 41) {
 			scanner.InjectBlock(); 
 			bindings.Push(null);
+			var skip = false;
 			
 			while (!(la.kind == 0 || la.kind == 41)) {SynErr(111); Get();}
 			Get();
+			if (la.kind == 46) {
+				EndBlock();
+				skip=true; 
+			}
 			scanner.InjectBlock(); 
 			Binding(Program.TopLevel,nt.Name);
 			EndBlock();
@@ -1554,6 +1565,7 @@ internal sealed partial class Parser {
 				EndBlock();
 			}
 			bindings.Pop(); 
+			if (!skip) 
 			EndBlock();
 			nt.HasBody = true; 
 		}

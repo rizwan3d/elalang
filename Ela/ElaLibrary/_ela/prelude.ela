@@ -132,7 +132,7 @@ instance Ring single
 instance Ring double
 
 /* Num */
-class Field __internal Field (/) mod rem
+class Field __internal Field (/) recip
 
 instance Field int
 
@@ -141,6 +141,17 @@ instance Field long
 instance Field single
 
 instance Field double
+
+/* Modulo */
+class Modulo __internal Modulo mod rem
+
+instance Modulo int
+
+instance Modulo long
+
+instance Modulo single
+
+instance Modulo double
 
 (%) = rem
 
@@ -328,8 +339,12 @@ sub x y z = x z (y z)//S
 fix f = f (& fix f)
 on cmb f x y = f x `cmb` f y
 
+/* Ord */
+compare x y | x == y = EQ | x < y = LT | else = GT
+maxValue x y | x >= y = x | else   = y
+minValue x y | x <= y = x | else   = y
+
 /* Misc */
 until p f x | p x  = x | else = until p f (f x)
-compare x y | x == y = EQ | x < y = LT | else = GT
 even x = x % 2 == 0
 odd x = x % 2 <> 0

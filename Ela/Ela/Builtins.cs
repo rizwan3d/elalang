@@ -13,6 +13,7 @@ namespace Ela
                 case "fpipe": return ElaBuiltinKind.ForwardPipe;
                 case "bpipe": return ElaBuiltinKind.BackwardPipe;
                 case "not": return ElaBuiltinKind.Not;
+                case "recip": return ElaBuiltinKind.Recip;
                 case "force": return ElaBuiltinKind.Force;
                 case "length": return ElaBuiltinKind.Length;
                 case "typeinfo": return ElaBuiltinKind.Type;

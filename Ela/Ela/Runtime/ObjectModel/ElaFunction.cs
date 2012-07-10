@@ -387,7 +387,11 @@ namespace Ela.Runtime.ObjectModel
             return new ElaModule(ModuleHandle, vm);
         }
 
-		internal ElaMachine Machine { get { return vm; } }
+		internal ElaMachine Machine 
+        { 
+            get { return vm; }
+            set { vm = value; }
+        }
 
 		public int Handle { get; private set; }
 

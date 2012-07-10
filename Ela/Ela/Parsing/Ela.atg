@@ -1053,11 +1053,12 @@ PRODUCTIONS
 		(. 
 		    scanner.InjectBlock(); 
 		    bindings.Push(null);
+		    var skip = false;
 		.) 
-		SYNC WHERE 
+		SYNC WHERE [EndBlock (. skip=true; .)]
 		BindingChain<out block> 
 		(. bindings.Pop(); .)
-		EndBlock.
+		(. if (!skip) .) EndBlock.
 		
 	LetBinding<out ElaExpression exp> = 
 	    (. exp = null; .)
@@ -1307,8 +1308,9 @@ PRODUCTIONS
                 (. 
 	                scanner.InjectBlock(); 
 	                bindings.Push(null);
+	                var skip = false;
 	            .) 
-                SYNC WHERE 
+                SYNC WHERE [EndBlock (. skip=true; .)]
 		        (. scanner.InjectBlock(); .)
 		        (
 	                Binding<Program.TopLevel,nt.Name> EndBlock
@@ -1319,7 +1321,7 @@ PRODUCTIONS
 	                }
 	            )		        
 		        (. bindings.Pop(); .)
-		        EndBlock
+		        (. if (!skip) .) EndBlock
                 (. nt.HasBody = true; .)
 		    ]
 		    EndBlock      

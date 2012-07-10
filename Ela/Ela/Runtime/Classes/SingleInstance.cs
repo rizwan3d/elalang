@@ -28,7 +28,7 @@ namespace Ela.Runtime.Classes
                     return left.DirectGetReal() == right.Ref.AsDouble();
                 else
                 {
-                    ctx.InvalidOperand(left, right, "equal");
+                    NoOverloadBinary(TCF.SINGLE, right, "equal", ctx);
                     return false;
                 }
             }
@@ -48,7 +48,7 @@ namespace Ela.Runtime.Classes
                     return left.DirectGetReal() != right.Ref.AsDouble();
                 else
                 {
-                    ctx.InvalidOperand(left, right, "notequal");
+                    NoOverloadBinary(TCF.SINGLE, right, "notequal", ctx);
                     return false;
                 }
             }
@@ -68,7 +68,7 @@ namespace Ela.Runtime.Classes
                     return new ElaValue(left.DirectGetReal() + right.Ref.AsDouble());
                 else
                 {
-                    ctx.InvalidOperand(left, right, "add");
+                    NoOverloadBinary(TCF.SINGLE, right, "add", ctx);
                     return Default();
                 }
             }
@@ -88,7 +88,7 @@ namespace Ela.Runtime.Classes
                     return new ElaValue(left.DirectGetReal() - right.Ref.AsDouble());
                 else
                 {
-                    ctx.InvalidOperand(left, right, "subtract");
+                    NoOverloadBinary(TCF.SINGLE, right, "subtract", ctx);
                     return Default();
                 }
             }
@@ -108,7 +108,7 @@ namespace Ela.Runtime.Classes
                     return new ElaValue(left.DirectGetReal() * right.Ref.AsDouble());
                 else
                 {
-                    ctx.InvalidOperand(left, right, "multiply");
+                    NoOverloadBinary(TCF.SINGLE, right, "multiply", ctx);
                     return Default();
                 }
             }
@@ -128,7 +128,7 @@ namespace Ela.Runtime.Classes
                     return new ElaValue(left.DirectGetReal() / right.Ref.AsDouble());
                 else
                 {
-                    ctx.InvalidOperand(left, right, "divide");
+                    NoOverloadBinary(TCF.SINGLE, right, "divide", ctx);
                     return Default();
                 }
             }
@@ -154,7 +154,7 @@ namespace Ela.Runtime.Classes
                     return new ElaValue(left.DirectGetReal() % right.Ref.AsDouble());
                 else
                 {
-                    ctx.InvalidOperand(left, right, "remainder");
+                    NoOverloadBinary(TCF.SINGLE, right, "remainder", ctx);
                     return Default();
                 }
             }
@@ -186,7 +186,7 @@ namespace Ela.Runtime.Classes
                     return DoubleInstance.Modulus(left.DirectGetReal(), right.Ref.AsDouble(), ctx);
                 else
                 {
-                    ctx.InvalidOperand(left, right, "remainder");
+                    NoOverloadBinary(TCF.SINGLE, right, "modulus", ctx);
                     return Default();
                 }
             }
@@ -206,7 +206,7 @@ namespace Ela.Runtime.Classes
                     return new ElaValue(Math.Pow(left.DirectGetReal(), right.Ref.AsDouble()));
                 else
                 {
-                    ctx.InvalidOperand(left, right, "power");
+                    NoOverloadBinary(TCF.SINGLE, right, "power", ctx);
                     return Default();
                 }
             }
@@ -231,7 +231,7 @@ namespace Ela.Runtime.Classes
                     return left.DirectGetReal() > right.Ref.AsDouble();
                 else
                 {
-                    ctx.InvalidOperand(left, right, "greater");
+                    NoOverloadBinary(TCF.SINGLE, right, "greater", ctx);
                     return false;
                 }
             }
@@ -251,7 +251,7 @@ namespace Ela.Runtime.Classes
                     return left.DirectGetReal() < right.Ref.AsDouble();
                 else
                 {
-                    ctx.InvalidOperand(left, right, "lesser");
+                    NoOverloadBinary(TCF.SINGLE, right, "lesser", ctx);
                     return false;
                 }
             }
@@ -271,7 +271,7 @@ namespace Ela.Runtime.Classes
                     return left.DirectGetReal() >= right.Ref.AsDouble();
                 else
                 {
-                    ctx.InvalidOperand(left, right, "greaterequal");
+                    NoOverloadBinary(TCF.SINGLE, right, "greaterequal", ctx);
                     return false;
                 }
             }
@@ -291,7 +291,7 @@ namespace Ela.Runtime.Classes
                     return left.DirectGetReal() <= right.Ref.AsDouble();
                 else
                 {
-                    ctx.InvalidOperand(left, right, "lesserequal");
+                    NoOverloadBinary(TCF.SINGLE, right, "lesserequal", ctx);
                     return false;
                 }
             }

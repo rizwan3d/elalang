@@ -153,9 +153,6 @@
   <data name="InvalidOp" xml:space="preserve">
     <value>A value '{0}' of type '{1}' doesn't support operation '{2}'.</value>
   </data>
-  <data name="InvalidOperand" xml:space="preserve">
-    <value>The value '{0}' of type '{1}' is not a valid operand for the value '{2}' of type '{3}' in an operation '{4}'.</value>
-  </data>
   <data name="InvalidParameterType" xml:space="preserve">
     <value>Invalid type for the function parameter. Expected '{0}', got '{1}'.</value>
   </data>
@@ -166,7 +163,7 @@
     <value>Match failed. None of the patterns were successful.</value>
   </data>
   <data name="NoOverload" xml:space="preserve">
-    <value>Function '{0}' is not implemented for '{1}'.</value>
+    <value>Function '{0}' is not implemented for the given argument list. Expected '{1}', got '{2}'.</value>
   </data>
   <data name="OperationNotSupported" xml:space="preserve">
     <value>This operation is not supported by the object of type '{0}'.</value>

@@ -1,5 +1,6 @@
-0.1.4.12:Change:Module `math` is decomissioned. Function `rnd` is moved to the new `random` module.
-0.1.4.11:Change:Functions `gcd`, `lcd`, `sqrt`, `minValue`, `maxValue` are moved from `math` module to `number` module.
+0.1.4.13:Change:Module `math` is decomissioned. Function `rnd` is moved to the new `random` module.
+0.1.4.12:Change:Functions `minValue`, `maxValue` are moved from `math` module to prelude.
+0.1.4.11:Change:Functions `gcd`, `lcd`, `sqrt` are moved from `math` module to `number` module.
 0.1.4.10:New:Constants 'min', 'max' and 'zero' are added to 'char' module.
 0.1.4.9:New:Now 'number' module imports modules 'int', 'long', 'single' and 'double' and exposes them as constants of the same name.
 0.1.4.8:New:Modules 'int', 'long', 'single', 'double' are added. These modules contains constants 'max' and 'min' (maximum and minumum value of a corresponding numeric data type).

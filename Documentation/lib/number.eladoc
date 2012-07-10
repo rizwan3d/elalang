@@ -91,14 +91,6 @@ genericDiv
 A generic integer division truncated towards negative infinity that works for both
 32-bit integers and 64-bit integers.
 
-genericAbs
-A generic absolute value function that works with any numbers that have instances for
-`Additive` and `Ord` classes.
-
-genericSignum x
-A generic `signum` function that works with any numbers that have instances for
-`Additive` and `Ord` classes.
-
 gcd x y
 Returns the greatest common divisor for the two given arguments. 
 
@@ -107,9 +99,3 @@ Calculates the least common multiple of two given arguments.
 
 sqrt
 Returns the square root of a specified number. 
-
-maxValue
-Returns `x` if `x` is greater or equal to `y`, otherwise returns y. 
-
-minValue
-Returns `x` if `x` is lesser or equal to `y`, otherwise returns `y`. 

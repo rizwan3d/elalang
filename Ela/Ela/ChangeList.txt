@@ -1,3 +1,10 @@
+0.11.0.15:Change:Layout rules for instance and type are now more flexible.
+0.11.0.14:Change:Error messages for overloads failures are greatly improved.
+0.11.0.13:Fix:It was impossible to call overloaded Ela functions from .NET because of a bug.
+0.11.0.12:New:A new built-in function 'recip' is added.
+0.11.0.11:Change:Now op code 'Div' always does a real division, previos behaviour is implemented for integer numbers through 'Quot' op code.
+0.11.0.10:New:A new op code 'Quot' and a corresponding built-in function is added.
+0.11.0.9:New:A new op code 'Mod' and a corresponding built-in function is added.
 0.11.0.8:Fix:Members of user defined classes didn't correctly work with thunks.
 0.11.0.7:New:Now it is possible to define instances for several types at once, e.g. 'Class type1 type2'.
 0.11.0.6:Fix:An implementation of 'show' function for class member functions is corrected.

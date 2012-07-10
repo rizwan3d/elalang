@@ -16,7 +16,7 @@ namespace Ela.Compilation
             //A body may be null only if this is a built-in type
             if (!v.HasBody)
             {
-                tc = (Int32)TypeCodeFormat.GetTypeCode(v.Name);
+                tc = (Int32)TCF.GetTypeCode(v.Name);
 
                 //OK, type is no built-in, this cannot work
                 if (tc == 0)
