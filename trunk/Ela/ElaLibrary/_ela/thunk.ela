@@ -14,6 +14,9 @@ forceAll x | evaled x = x | else = forceAll (force x)
 forceList (x::xs) = forceAll x :: forceList xs
 forceList [] = []
 
+forceOnlyList (x::xs) = x :: forceOnlyList xs
+forceOnlyList [] = []
+
 forceRecord r = forceTuple r
 
 forceTuple tup = force' 0

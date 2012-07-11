@@ -7,15 +7,23 @@ namespace Ela.Linking
 {
 	public sealed class LinkerOptions
 	{
-		#region Construction
 		public LinkerOptions()
 		{
 			CodeBase = new CodeBase();
-		}
-		#endregion
+        }
 
-
-        #region Methods
+        public static LinkerOptions Default()
+        {
+            return new LinkerOptions
+            {
+                WarningsAsErrors = false,
+                NoWarnings = false,
+                SkipTimeStampCheck = false,
+                ForceRecompile = false,
+                CodeBase = new CodeBase()
+            };
+        }
+		
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -27,13 +35,8 @@ namespace Ela.Linking
             sb.AppendFormat("LookupStartupDirectory={0}", CodeBase.LookupStartupDirectory);
             return sb.ToString();
         }
-        #endregion
-
-
-        #region Properties
+        
         public CodeBase CodeBase { get; private set; }
-
-		public string StandardLibrary { get; set; }
 
 		public bool ForceRecompile { get; set; }
 
@@ -42,6 +45,5 @@ namespace Ela.Linking
 		public bool NoWarnings { get; set; }
 
 		public bool WarningsAsErrors { get; set; }
-		#endregion
 	}
 }

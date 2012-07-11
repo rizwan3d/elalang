@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Ela.Compilation;
 using Ela.Runtime;
 using Ela.Runtime.Classes;
+using System.IO;
 
 namespace Ela.Linking
 {
@@ -90,9 +91,10 @@ namespace Ela.Linking
 		}
 
 
-		internal int AddModule(string name, CodeFrame module, bool qual, int logicHandle)
+		internal int AddModule(FileInfo fi, CodeFrame module, bool qual, int logicHandle)
 		{
 			var hdl = 0;
+            var name = fi.FullName.ToUpper();
 
 			if (!moduleMap.TryGetValue(name, out hdl))
 			{
@@ -171,7 +173,10 @@ namespace Ela.Linking
 		{
 			foreach (var kv in moduleMap)
                 if (kv.Value == handle)
-                    return kv.Key;
+                {
+                    var fi = new FileInfo(kv.Key);
+                    return fi.Name.Replace(fi.Extension, String.Empty).ToLower();
+                }
 
             return null;
 		}

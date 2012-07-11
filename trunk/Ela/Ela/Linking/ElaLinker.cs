@@ -33,11 +33,11 @@ namespace Ela.Linking
 		internal static readonly string MemoryFile = "memory";
         private static readonly ModuleReference argModuleRef = new ModuleReference("$Args");
 		private Dictionary<String,Dictionary<String,ElaModuleAttribute>> foreignModules;
+        private Dictionary<String,FileInfo> foreignModulesFiles;
 		private FastList<DirectoryInfo> dirs;
 		private ArgumentModule argModule;
         private CodeFrame argModuleFrame;
-		private bool stdLoaded;
-        
+		
 		public ElaLinker(LinkerOptions linkerOptions, CompilerOptions compOptions, FileInfo rootFile)
 		{
 			dirs = new FastList<DirectoryInfo>();
@@ -53,6 +53,7 @@ namespace Ela.Linking
 			Assembly = new CodeAssembly();
 			Success = true;
 			foreignModules = new Dictionary<String,Dictionary<String,ElaModuleAttribute>>();
+            foreignModulesFiles = new Dictionary<String,FileInfo>();
 		}
 		#endregion
 
@@ -92,7 +93,14 @@ namespace Ela.Linking
             var frame = default(CodeFrame);
             var hdl = -1;
 
-            if (mod.ModuleName == ARG_MODULE)
+            if (mod.ModuleName == "lang" && mod.Path.Length == 0 && mod.DllName == null)
+            {
+                var lm = new LangModule();
+                lm.Initialize();
+                frame = lm.Compile();
+                hdl = Assembly.AddModule(new FileInfo("lang"), frame, false, mod.LogicalHandle);
+            }
+            else if (mod.ModuleName == ARG_MODULE)
             {
                 if (argModule == null)
                     argModule = new ArgumentModule();
@@ -101,19 +109,13 @@ namespace Ela.Linking
                     argModuleFrame = argModule.Compile();
 
                 frame = argModuleFrame;
-                hdl = Assembly.AddModule(mod.ToString(), argModuleFrame, false, mod.LogicalHandle);
+                hdl = Assembly.AddModule(new FileInfo("args"), argModuleFrame, false, mod.LogicalHandle);
             }
             else
             {
-                LoadStdLib();
-
                 if ((frame = Assembly.GetModule(mod.ToString(), out hdl)) == null)
                 {
-                    if (mod.DllName == null && stdLoaded && (frame = TryLoadStandardModule(mod, out hdl)) != null)
-                    {
-
-                    }
-                    else if (mod.DllName != null)
+                    if (mod.DllName != null)
                         frame = ResolveDll(mod, out hdl);
                     else
                     {
@@ -266,37 +268,12 @@ namespace Ela.Linking
 		}
 
 
-		private void LoadStdLib()
-		{
-			if (!stdLoaded && !String.IsNullOrEmpty(LinkerOptions.StandardLibrary))
-			{
-				var mod = new ModuleReference(null, null, LinkerOptions.StandardLibrary, null, 0, 0, false, 0) { IsStandardLibrary = true };
-				var fi = default(FileInfo);
-				LoadAssemblyFile(mod, out fi);
-				stdLoaded = true;
-			}
-		}
-
-
-		private CodeFrame TryLoadStandardModule(ModuleReference mod, out int hdl)
-		{
-			var dict = default(Dictionary<String,ElaModuleAttribute>);
-			var attr = default(ElaModuleAttribute);
-            hdl = -1;
-
-			if (foreignModules.TryGetValue("$", out dict) && dict.TryGetValue(mod.ModuleName, out attr))
-				return LoadModule(mod, attr, new FileInfo(LinkerOptions.StandardLibrary), out hdl);
-			else
-				return null;
-		}
-
-
 		internal int RegisterFrame(ModuleReference mod, CodeFrame frame, FileInfo fi, bool reload, int logicHandle)
 		{
             if (frame != null)
             {
                 frame.File = fi;
-                var hdl =  Assembly.AddModule(mod.ToString(), frame, mod.RequireQuailified, logicHandle);
+                var hdl =  Assembly.AddModule(fi, frame, mod.RequireQuailified, logicHandle);
                 ProcessTypeAndClasses(frame, reload, hdl);
                 return hdl;
             }
@@ -319,8 +296,13 @@ namespace Ela.Linking
 
 			if (foreignModules.TryGetValue(mod.DllName, out dict) || LoadAssemblyFile(mod, out fi))
 			{
-				if (dict == null)
-					dict = foreignModules[mod.DllName];
+                if (dict == null)
+                {
+                    dict = foreignModules[mod.DllName];
+                    foreignModulesFiles.Add(mod.DllName, fi);
+                }
+                else
+                    fi = foreignModulesFiles[mod.DllName];
 
 				var attr = default(ElaModuleAttribute);
 
@@ -397,7 +379,7 @@ namespace Ela.Linking
 						dict.Add(a.ModuleName, a);
 				}
 
-                foreignModules.Add(mod.IsStandardLibrary ? "$" : mod.DllName, dict);
+                foreignModules.Add(mod.DllName, dict);
 			}
 
 			return true;
@@ -456,7 +438,7 @@ namespace Ela.Linking
             CodeFrame frame, Scope scope)
         {
             if (Assembly.ModuleCount == 0)
-                Assembly.AddModule(mod.ToString(), frame, mod.RequireQuailified, mod.LogicalHandle);
+                Assembly.AddModule(file, frame, mod.RequireQuailified, mod.LogicalHandle);
 
             var ret = default(CodeFrame);
 

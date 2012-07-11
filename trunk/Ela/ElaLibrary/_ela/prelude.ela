@@ -2,6 +2,7 @@
   Ela standard prelude module
   Created in 2011-2012 by Basil Voronkov
 */
+import lang
 
 /* Built-in types */
 type int
@@ -97,18 +98,20 @@ instance Ord char
 instance Ord string
 
 instance Ord tuple
-  where x<y = foldTuple (<) x y
-        x>y = foldTuple (>) x y
-        x<=y = foldTuple (<=) x y
-        x>=y = foldTuple (>=) x y
+  where x<y = tupleAny (<) x y
+        x>y = tupleAny (>) x y
+        x<=y = tupleAny (<=) x y
+        x>=y = tupleAny (>=) x y
 
-foldTuple # private 
-foldTuple f tup1 tup2 | length tup2 <> len = fail "Tuples should be of the same length."
-                      | else = fold 0
-                      where len = length tup1
-                            fold n | n == len - 1 = e
-                                   | else = if e then true else fold (n+1)
-                                   where e = tup1:n `f` tup2:n
+tupleAny # private 
+tupleAny f tup1 tup2 
+  | length tup2 <> len = fail "Tuples should be of the same length."
+  | else = fold 0
+  where len = length tup1
+        fold n | n == len - 1 = e
+               | else = if e then true else fold (n+1)
+               where e = tup1:n `f` tup2:n
+
 /* Additive */
 class Additive __internal Additive (+) (-) (--)
 
@@ -175,17 +178,6 @@ instance Enum single
 
 instance Enum char
 
-instance Enum tuple
-  where succ = mapTuple succ
-        pred = mapTuple pred
-
-mapTuple # private 
-mapTuple f tup = map 0
-          where len = length tup
-                map n | n == len - 1 = e
-                      | else = e ++ map (n+1)
-                      where e = ( f (tup:n), )
-
 /* Seq */
 class Seq __internal Seq head tail isnil
 
@@ -228,7 +220,7 @@ instance Cat list
                        cat [] ys = ys
 
 reverse # private
-reverse xs = rev [] xs
+reverse xs = if lang.__isLazyList xs then rev [] xs else lang.__reverseList xs
         where (:) = flip (::)
               rev z [] = z
               rev z (x::xs) = rev (z:x) xs
@@ -267,22 +259,22 @@ instance Show variant
                     where v = untag x
 
 instance Show tuple
-  where showf f t = "(" ++ tos 0 ++ ")"
-                    where tos n | n == len - 1 = e ++ (if len == 1 then "," else "")
-                                | else = e ++ "," ++ tos (n+1)
+  where showf f t = lang.__stringFromList ("(" :: tos 0 ++ ")")
+                    where tos n | n == len - 1 = [e, (if len == 1 then ",)" else ")")]
+                                | else = e :: "," :: tos (n+1)
                                 where e = showf f (t:n) 
                           len = length t
 
 instance Show list
   where showf _ [] = "[]"
-        showf f xs = "[" ++ tos xs ++ "]"
-                     where tos (x::[]) = showf f x
-                           tos (x::xs) = showf f x ++ "," ++ tos xs
+        showf f xs = lang.__stringFromList ("[" :: tos xs)
+                     where tos (x::[]) = [showf f x, "]"]
+                           tos (x::xs) = showf f x :: "," :: tos xs
 
 instance Show record
-  where showf f t = "{" ++ tos 0 ++ "}"
-                    where tos n | n == len - 1 = fld
-                                | else = fld ++ "," ++ tos (n+1)
+  where showf f t = lang.__stringFromList ("{" :: tos 0)
+                    where tos n | n == len - 1 = [fld, "}"]
+                                | else = fld :: "," :: tos (n+1)
                                 where fld = t!!n ++ "=" ++ showf f (t:n)
                           len = length t
                           (!!) = __internal recfield

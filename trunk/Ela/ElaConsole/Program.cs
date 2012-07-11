@@ -420,8 +420,7 @@ namespace ElaConsole
 					ForceRecompile = opt.ForceRecompile,
 					SkipTimeStampCheck = opt.SkipTimeStampCheck,
 					WarningsAsErrors = opt.LinkerWarningsAsErrors,
-					NoWarnings = opt.LinkerNoWarnings,
-					StandardLibrary = opt.StandardLibrary
+					NoWarnings = opt.LinkerNoWarnings
 				}; 
 			linkOpt.CodeBase.LookupStartupDirectory = !opt.IgnoreStartupDirectory;
 

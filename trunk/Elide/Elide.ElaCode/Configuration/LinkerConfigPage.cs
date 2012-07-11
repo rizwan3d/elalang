@@ -68,7 +68,6 @@ namespace Elide.ElaCode.Configuration
             skipCheck.Checked = c.SkipTimeStampCheck;
             lookup.Checked = c.LookupStartupDirectory;
 
-            libBox.Text = c.StandardLibrary;
             c.Directories.ForEach(d => dirList.Items.Add(d));
             noevents = false;
         }
@@ -78,14 +77,6 @@ namespace Elide.ElaCode.Configuration
             var c = GetConfig();
             c.Directories.Clear();
             dirList.Items.OfType<String>().ForEach(i => c.Directories.Add(i));
-        }
-
-        private void libBox_TextChanged(object sender, EventArgs e)
-        {
-            if (noevents)
-                return;
-
-            GetConfig().StandardLibrary = libBox.Text;
         }
 
         private void CheckedChanged(object sender, EventArgs e)

@@ -75,8 +75,6 @@ or -r <path>		referenced modules. You can specify this switch
 -recompile		Force linker to recompile all files even if there is an
 or -rc			object file available.
 
--stdLib			A name of the standard library DLL (e.g. "elalib").
-
 -skipDir		Don't look for referenced modules in the startup
 			directory.
 			

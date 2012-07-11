@@ -1250,8 +1250,7 @@ namespace Ela.Runtime
                         break;
                     case Op.Newmod:
                         {
-                            var str = frame.Strings[opd];
-                            i4 = asm.GetModuleHandle(str);
+                            i4 = frame.HandleMap[opd];
                             evalStack.Push(new ElaValue(new ElaModule(i4, this)));
                         }
                         break;
@@ -1388,7 +1387,7 @@ namespace Ela.Runtime
                         {
                             right = evalStack.Peek();
 
-                            if (right.TypeId == LAZ)// && ((ElaLazy)right.Ref).Value.Ref != null)
+                            if (right.TypeId == LAZ)
                                 right = right.Ref.Force(right, ctx);
 
                             if (ctx.Failed)
@@ -1448,8 +1447,7 @@ namespace Ela.Runtime
                         return evalStack.Count > 0 ? evalStack.Pop() : new ElaValue(ElaUnit.Instance);
                     case Op.Runmod:
                         {
-                            var mn = frame.Strings[opd];
-                            var hdl = asm.GetModuleHandle(mn);
+                            var hdl = frame.HandleMap[opd];
 
                             if (modules[hdl] == null)
                             {
