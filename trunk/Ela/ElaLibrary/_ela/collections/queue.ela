@@ -52,5 +52,3 @@ dequeue (Queue (f,b)) = deq f b
 peek (Queue (f,b)) = peek' f b
       where peek' [] [] = fail "Empty queue."
             peek' (x::_) _ = x
-
-fromPair([1,2],[])
