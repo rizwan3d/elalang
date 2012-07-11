@@ -1,3 +1,5 @@
+0.11.0.20:Change:Behavior of op codes Newmod and Runmod was changed and optimized.
+0.11.0.19:Change:A 'standard library' settings of a linker is decomissioned.
 0.11.0.18:Fix:It was impossible to implement a class from a module referenced using 'import' directive (not 'open' directive).
 0.11.0.17:Change:Built-in class enum is decomissioned. Instead new classes 'Additive', 'Ring', 'Field' and 'Modulo' are introduced.
 0.11.0.16:New:Now Ela supports negative numeric literals. Negatives should start with '--' (instead of '-').

@@ -11,7 +11,6 @@ namespace Elide.ElaCode.Configuration
         {
             Directories = new List<String>();
             LookupStartupDirectory = true;
-            StandardLibrary = "elalib";
             Directories.Add(@"%root%\lib");
         }
 
@@ -32,8 +31,6 @@ namespace Elide.ElaCode.Configuration
         
         public bool SkipTimeStampCheck { get; set; }
         
-        public string StandardLibrary { get; set; }
-
         public bool WarningsAsErrors { get; set; }
     }
 }

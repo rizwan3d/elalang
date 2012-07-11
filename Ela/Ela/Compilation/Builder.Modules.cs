@@ -71,7 +71,7 @@ namespace Ela.Compilation
             if (exp != null)
                 AddLinePragma(exp);
 
-            var modIndex = AddString(modRef.ToString());
+            var modIndex = frame.HandleMap.Count - 1;
             cw.Emit(Op.Runmod, modIndex);
             var addr = -1;
 

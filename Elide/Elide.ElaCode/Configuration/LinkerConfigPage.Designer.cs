@@ -30,8 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             this.optionsLabel = new System.Windows.Forms.Label();
-            this.libLabel = new System.Windows.Forms.Label();
-            this.libBox = new System.Windows.Forms.TextBox();
             this.dirLabel = new System.Windows.Forms.Label();
             this.dirList = new System.Windows.Forms.ListBox();
             this.dirInputText = new System.Windows.Forms.TextBox();
@@ -59,31 +57,11 @@
             this.optionsLabel.TabIndex = 0;
             this.optionsLabel.Text = "&Options:";
             // 
-            // libLabel
-            // 
-            this.libLabel.AutoSize = true;
-            this.libLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
-            this.libLabel.Location = new System.Drawing.Point(12, 130);
-            this.libLabel.Name = "libLabel";
-            this.libLabel.Size = new System.Drawing.Size(96, 13);
-            this.libLabel.TabIndex = 2;
-            this.libLabel.Text = "&Standard Library:";
-            // 
-            // libBox
-            // 
-            this.libBox.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.libBox.Location = new System.Drawing.Point(15, 146);
-            this.libBox.Margin = new System.Windows.Forms.Padding(0);
-            this.libBox.Name = "libBox";
-            this.libBox.Size = new System.Drawing.Size(446, 22);
-            this.libBox.TabIndex = 3;
-            this.libBox.TextChanged += new System.EventHandler(this.libBox_TextChanged);
-            // 
             // dirLabel
             // 
             this.dirLabel.AutoSize = true;
             this.dirLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
-            this.dirLabel.Location = new System.Drawing.Point(12, 178);
+            this.dirLabel.Location = new System.Drawing.Point(12, 128);
             this.dirLabel.Name = "dirLabel";
             this.dirLabel.Size = new System.Drawing.Size(152, 13);
             this.dirLabel.TabIndex = 4;
@@ -95,7 +73,7 @@
             this.dirList.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.dirList.FormattingEnabled = true;
             this.dirList.IntegralHeight = false;
-            this.dirList.Location = new System.Drawing.Point(15, 194);
+            this.dirList.Location = new System.Drawing.Point(15, 144);
             this.dirList.Name = "dirList";
             this.dirList.Size = new System.Drawing.Size(446, 91);
             this.dirList.TabIndex = 5;
@@ -107,7 +85,7 @@
             this.dirInputText.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.FileSystemDirectories;
             this.dirInputText.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.errorProvider.SetIconPadding(this.dirInputText, -20);
-            this.dirInputText.Location = new System.Drawing.Point(144, 293);
+            this.dirInputText.Location = new System.Drawing.Point(144, 243);
             this.dirInputText.Margin = new System.Windows.Forms.Padding(0);
             this.dirInputText.Name = "dirInputText";
             this.dirInputText.Size = new System.Drawing.Size(286, 22);
@@ -119,7 +97,7 @@
             // 
             this.add.Enabled = false;
             this.add.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.add.Location = new System.Drawing.Point(78, 292);
+            this.add.Location = new System.Drawing.Point(78, 242);
             this.add.Name = "add";
             this.add.Size = new System.Drawing.Size(60, 24);
             this.add.TabIndex = 7;
@@ -130,7 +108,7 @@
             // folder
             // 
             this.folder.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.folder.Location = new System.Drawing.Point(436, 292);
+            this.folder.Location = new System.Drawing.Point(436, 242);
             this.folder.Name = "folder";
             this.folder.Size = new System.Drawing.Size(25, 24);
             this.folder.TabIndex = 8;
@@ -142,7 +120,7 @@
             // 
             this.remove.Enabled = false;
             this.remove.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.remove.Location = new System.Drawing.Point(15, 292);
+            this.remove.Location = new System.Drawing.Point(15, 242);
             this.remove.Name = "remove";
             this.remove.Size = new System.Drawing.Size(60, 24);
             this.remove.TabIndex = 9;
@@ -158,7 +136,7 @@
             // macroLabel
             // 
             this.macroLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.macroLabel.Location = new System.Drawing.Point(15, 320);
+            this.macroLabel.Location = new System.Drawing.Point(15, 270);
             this.macroLabel.Name = "macroLabel";
             this.macroLabel.Size = new System.Drawing.Size(446, 30);
             this.macroLabel.TabIndex = 10;
@@ -239,8 +217,6 @@
             this.Controls.Add(this.dirInputText);
             this.Controls.Add(this.dirList);
             this.Controls.Add(this.dirLabel);
-            this.Controls.Add(this.libBox);
-            this.Controls.Add(this.libLabel);
             this.Controls.Add(this.optionsLabel);
             this.Name = "LinkerConfigPage";
             this.Size = new System.Drawing.Size(473, 367);
@@ -254,8 +230,6 @@
         #endregion
 
         private System.Windows.Forms.Label optionsLabel;
-        private System.Windows.Forms.Label libLabel;
-        private System.Windows.Forms.TextBox libBox;
         private System.Windows.Forms.Label dirLabel;
         private System.Windows.Forms.ListBox dirList;
         private System.Windows.Forms.TextBox dirInputText;

@@ -1,3 +1,5 @@
+0.1.4.9:Change:Article 'thunk' updated according to the module changes.
+0.1.4.8:Change:Article 'tuple' updated according to the module changes.
 0.1.4.7:New:A new 'random' article is added about 'random' module.
 0.1.4.6:Change:Article 'prelude' is changed according to the module changes.
 0.1.4.5:Change:Article 'math' is decomissioned.

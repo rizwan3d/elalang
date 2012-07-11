@@ -18,10 +18,14 @@ Recursively forces a given value. For example, if a given value is a list of thu
 a list will be forced. 
 
 forceRecord t
-Recursively forces a given record. 
+Recursively forces a given record, including all its elements. 
 
 forceTuple t
-Recursively forces a given tuple. 
+Recursively forces a given tuple, including all its elements.
 
 forceList t
-Recursively forces a given list. 
+Recursively forces a given list, including all list elements.
+
+forceOnlyList t
+Forces a given but doesn't force calculation of its elements.
+

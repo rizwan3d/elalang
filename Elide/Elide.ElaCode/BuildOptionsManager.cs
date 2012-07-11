@@ -29,7 +29,6 @@ namespace Elide.ElaCode
             opt.CodeBase.LookupStartupDirectory = c.LookupStartupDirectory;
             opt.ForceRecompile = c.ForceRecompile;
             opt.NoWarnings = c.NoWarnings;
-            opt.StandardLibrary = c.StandardLibrary;
             opt.WarningsAsErrors = c.WarningsAsErrors;
             opt.SkipTimeStampCheck = c.SkipTimeStampCheck;
             return opt;

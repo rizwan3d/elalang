@@ -1,3 +1,11 @@
+0.1.4.26:New:Function 'any' added to 'tuple' module.
+0.1.4.25:New:Functions 'fold' and 'join' added to 'tuple' module.
+0.1.4.24:New:A function 'toList' added to 'tuple' module.
+0.1.4.23:Change:An instance Enum tuple is moved from prelude to 'tuple' module.
+0.1.4.22:Change:Implementation of Show for list, tuple and string is optimized.
+0.1.4.21:Change:Implementation of 'fromList' function in 'string' module is optimized.
+0.1.4.20:New:A new 'fromList' function is added to 'tuple' module.
+0.1.4.19:New:A new 'forceOnlyList' function is added to 'thunk' module.
 0.1.4.18:New:A new 'Transcendental' class is added to 'number' module with instances for single and double.
 0.1.4.17:New:A new 'Absolute' class is added to 'number' module with instances for int, long, single and double.
 0.1.4.16:New:A new 'Integral' class is added to 'number' module with instances for int and long.

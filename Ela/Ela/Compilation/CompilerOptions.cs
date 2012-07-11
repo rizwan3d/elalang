@@ -5,15 +5,11 @@ namespace Ela.Compilation
 {
 	public sealed class CompilerOptions
 	{
-		#region Construction
 		public CompilerOptions()
 		{
 
 		}
-		#endregion
-
-
-		#region Methods
+		
         public static CompilerOptions Default()
         {
             return new CompilerOptions
@@ -46,10 +42,7 @@ namespace Ela.Compilation
 
             return sb.ToString();
         }
-		#endregion
-
-
-		#region Properties
+		
 		public bool WarningsAsErrors { get; set; }
 
 		public bool NoWarnings { get; set; }
@@ -63,6 +56,5 @@ namespace Ela.Compilation
 		public string Prelude { get; set; }
 
         public bool IgnoreUndefined { get; set; }
-		#endregion
 	}
 }
