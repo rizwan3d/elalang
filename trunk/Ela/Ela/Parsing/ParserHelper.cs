@@ -132,6 +132,12 @@ namespace Ela.Parsing
 
 		private ElaLiteralValue ParseInt(string val, bool negate)
 		{
+            if (val.StartsWith("--"))
+            {
+                val = val.Substring(2);
+                negate = true;
+            }
+
 			if (TrimLast(ref val, 'l', 'L'))
 			{
 				var res = default(Int64);
@@ -192,6 +198,12 @@ namespace Ela.Parsing
 
 		private ElaLiteralValue ParseReal(string val, bool negate)
 		{
+            if (val.StartsWith("--"))
+            {
+                val = val.Substring(2);
+                negate = true;
+            }
+
             if (TrimLast(ref val, 'd', 'D'))
 			{
 				var res = default(Double);
