@@ -23,7 +23,8 @@ namespace Elide.ElaCode
             try
             {
                 var em = new ElaMachine(asm.Assembly);
-                return em.Run().ReturnValue.AsObject();
+                var res = em.Run().ReturnValue;
+                return em.PrintValue(res);
             }
             catch (ElaCodeException ex)
             {

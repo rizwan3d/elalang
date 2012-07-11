@@ -1,3 +1,8 @@
+0.1.4.18:New:A new 'Transcendental' class is added to 'number' module with instances for single and double.
+0.1.4.17:New:A new 'Absolute' class is added to 'number' module with instances for int, long, single and double.
+0.1.4.16:New:A new 'Integral' class is added to 'number' module with instances for int and long.
+0.1.4.15:New:Classes 'Additive', 'Ring', 'Field' and 'Modulo' are added to prelude (they replace a 'Num' class).
+0.1.4.14:Change:Class 'Num' removed from prelude.
 0.1.4.13:Change:Module `math` is decomissioned. Function `rnd` is moved to the new `random` module.
 0.1.4.12:Change:Functions `minValue`, `maxValue` are moved from `math` module to prelude.
 0.1.4.11:Change:Functions `gcd`, `lcd`, `sqrt` are moved from `math` module to `number` module.

@@ -1,3 +1,6 @@
+0.11.0.18:Fix:It was impossible to implement a class from a module referenced using 'import' directive (not 'open' directive).
+0.11.0.17:Change:Built-in class enum is decomissioned. Instead new classes 'Additive', 'Ring', 'Field' and 'Modulo' are introduced.
+0.11.0.16:New:Now Ela supports negative numeric literals. Negatives should start with '--' (instead of '-').
 0.11.0.15:Change:Layout rules for instance and type are now more flexible.
 0.11.0.14:Change:Error messages for overloads failures are greatly improved.
 0.11.0.13:Fix:It was impossible to call overloaded Ela functions from .NET because of a bug.

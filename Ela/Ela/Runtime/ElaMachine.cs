@@ -1363,7 +1363,10 @@ namespace Ela.Runtime
                     case Op.Newtype:
                         {
                             var tid = asm.Types[thread.Module.InternalTypes[frame.Strings[opd]]];
-                            evalStack.Replace(new ElaValue(new ElaUserType(tid.TypeName, tid.TypeCode, evalStack.Peek())));
+                            right = evalStack.Peek();
+
+                            if (right.TypeId != tid.TypeCode)
+                                evalStack.Replace(new ElaValue(new ElaUserType(tid.TypeName, tid.TypeCode, right)));
                         }
                         break;
                     case Op.Traitch:

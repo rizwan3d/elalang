@@ -5,13 +5,13 @@ namespace Ela.CodeModel
 	public struct ElaLiteralValue : IEquatable<ElaLiteralValue>
 	{
 		private Conv data;
-		private string str;
+		private object objval;
 
 		public ElaLiteralValue(int val)
 		{
 			data = new Conv();
 			data.I4_1 = val;
-			str = null;
+			objval = null;
 			LiteralType = ElaTypeCode.Integer;
 		}
 
@@ -19,22 +19,22 @@ namespace Ela.CodeModel
 		{
 			data = new Conv();
 			data.R4 = val;
-			str = null;
+			objval = null;
 			LiteralType = ElaTypeCode.Single;
 		}
         
 		public ElaLiteralValue(string val)
 		{
 			data = new Conv();
-			str = val;
+			objval = val;
 			LiteralType = ElaTypeCode.String;
-		}
+        }
         
 		public ElaLiteralValue(bool val)
 		{
 			data = new Conv();
 			data.I4_1 = val ? 1 : 0;
-			str = null;
+			objval = null;
 			LiteralType = ElaTypeCode.Boolean;
 		}
 
@@ -42,7 +42,7 @@ namespace Ela.CodeModel
 		{
 			data = new Conv();
 			data.I4_1 = (Int32)val;
-			str = null;
+			objval = null;
 			LiteralType = ElaTypeCode.Char;	
 		}
 
@@ -50,7 +50,7 @@ namespace Ela.CodeModel
 		{
 			data = new Conv();
 			data.I8 = val;
-			str = null;
+			objval = null;
 			LiteralType = ElaTypeCode.Long;	
 		}
 
@@ -58,14 +58,14 @@ namespace Ela.CodeModel
 		{
 			data = new Conv();
 			data.R8 = val;
-			str = null;
+			objval = null;
 			LiteralType = ElaTypeCode.Double;	
 		}
 
 		public ElaLiteralValue(ElaTypeCode type)
 		{
 			data = new Conv();
-			str = null;
+			objval = null;
 			LiteralType = type;			
 		}
 
@@ -101,7 +101,7 @@ namespace Ela.CodeModel
 
 		public string AsString()
 		{
-			return str;
+			return (String)objval;
 		}
 
 		internal Conv GetData()

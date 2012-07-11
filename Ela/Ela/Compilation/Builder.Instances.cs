@@ -70,7 +70,7 @@ namespace Ela.Compilation
                         if (!err)
                         {
                             classMembers.Remove(name);
-                            CompileInstanceMember(b, map, s.TypePrefix, s.TypeName);
+                            CompileInstanceMember(s.TypeClassName, s.TypeClassPrefix, b, map, s.TypePrefix, s.TypeName);
                         }
                     }
 
@@ -187,12 +187,23 @@ namespace Ela.Compilation
             }
         }
 
-        //Compile an instance member.
-        private void CompileInstanceMember(ElaEquation s, LabelMap map, string currentTypePrefix, string currentType)
+        //Compile an instance member. Argument classPrefix is null if a class is not prefixed, otherwise 
+        //it should be used to lookup class members.
+        private void CompileInstanceMember(string className, string classPrefix, ElaEquation s, LabelMap map, 
+            string currentTypePrefix, string currentType)
         {
             //Obtain a 'table' function of a class
             var name = s.GetLeftName();
-            var btVar = GetVariable(name, s.Line, s.Column);
+            var btVar = default(ScopeVar);
+
+            if (classPrefix == null)
+                btVar = GetVariable(name, CurrentScope, GetFlags.NoError, s.Line, s.Column);
+            else
+                btVar = FindByPrefix(classPrefix, name);
+
+            if (btVar.IsEmpty())
+                AddError(ElaCompilerError.MemberInvalid, s, name, className);
+            
             var builtin = (btVar.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin;
             var args = 0;
 

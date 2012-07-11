@@ -19,6 +19,9 @@ CHARACTERS
 	op3 = "!%&*+-.:/\\=>?@^~".
 	op4 = "!%&*+.:/\\<=>?@^|~".
 	op5 = "!%&*+-./\\<=>?@^|~".
+	
+	op6 = "!%&*+.:/\\<=?@^|~".
+	
 
 TOKENS
 	ident = lcase { letter | digit | "'" }
@@ -27,15 +30,15 @@ TOKENS
 	
 	variantTok = ucase { letter | digit | "'" }.
 				
-	intTok = ( digit { digit } | digit { digit } CONTEXT ("." notDigit) | 
+	intTok = ["--"] ( digit { digit } | digit { digit } CONTEXT ("." notDigit) | 
 			( "0x" | "0X" ) hexDigit { hexDigit } ) [ "L" | "l" ].
 			
-	realTok = "." digit { digit } [ ( "e" | "E") [ "+" | "-" ] digit { digit } ] [ "D" | "d" | "F" | "f" ] 
-			| digit { digit } 
+	realTok = ["--"] "." digit { digit } [ ( "e" | "E") [ "+" | "-" ] digit { digit } ] [ "D" | "d" | "F" | "f"| "M" | "m" ] 
+			| ["--"] digit { digit } 
 			( 
 				"." digit { digit } 
-				[ ( "e" | "E" ) ["+" | "-" ] digit { digit } ] [ "D" | "d" | "F" | "f" ] 
-				| ( "e" | "E") ["+" | "-" ] digit { digit } [ "D" | "d" | "F" | "f" ]  | "D" | "d" | "F" | "f"
+				[ ( "e" | "E" ) ["+" | "-" ] digit { digit } ] [ "D" | "d" | "F" | "f"| "M" | "m" ] 
+				| ( "e" | "E") ["+" | "-" ] digit { digit } [ "D" | "d" | "F" | "f" | "M" | "m" ]  | "D" | "d" | "F" | "f"| "M" | "m"
 			).		
 			
 	stringTok = "\"" { stringChar
@@ -63,7 +66,10 @@ TOKENS
 	operatorTok3 = "::" { op }.
 	operatorTok4 = (
 		"+" { op }
-		| "-" [ op4 { op } ]
+		| "-" [
+		        op4 op { op }
+		        | op6 { op }
+		    ]
 		).
 	operatorTok5 = ("*"|"/"|"%") { op }.		
 	operatorTok6 = "<<" { op }.

@@ -169,5 +169,35 @@ namespace Ela.Compilation
             cw.Emit(Op.Pushext, mod.LogicalHandle | fieldSv.Address << 8);
             return true;
         }
+
+        //A generic method used to loop a prefixed var in a module.
+        private ScopeVar FindByPrefix(string prefix, string var)
+        {
+            var sv = GetVariable(prefix, CurrentScope, GetFlags.NoError, 0, 0);
+            var mod = default(ModuleReference);
+            
+            //Looks like a target object is not a module
+            if ((sv.Flags & ElaVariableFlags.Module) != ElaVariableFlags.Module || 
+                !frame.References.TryGetValue(prefix, out mod))
+                return ScopeVar.Empty;
+
+            var fieldSv = default(ScopeVar);
+
+            //We have such a reference but looks like it couldn't be obtained
+            //We don't need to handle this situation here, it is already reported by a linker
+            if (refs[mod.LogicalHandle] == null)
+                return ScopeVar.Empty;
+
+            //No such name, now captured statically
+            if (!refs[mod.LogicalHandle].GlobalScope.Locals.TryGetValue(var, out fieldSv) &&
+                !options.IgnoreUndefined)
+                return ScopeVar.Empty;
+
+            //Name is private, now captured statically
+            if ((fieldSv.VariableFlags & ElaVariableFlags.Private) == ElaVariableFlags.Private)
+                return ScopeVar.Empty;
+
+            return new ScopeVar(fieldSv.Flags|ElaVariableFlags.External, mod.LogicalHandle | fieldSv.Address << 8, fieldSv.Data);
+        }
     }
 }
