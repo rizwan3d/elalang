@@ -40,7 +40,16 @@ namespace Ela.Runtime
 
 		internal FastStack<CallPoint> CallStack { get; private set; }
 
-        internal int Offset;
+        int o;
+        internal int Offset
+        {
+            get { return o; }
+            set
+            {
+
+                o = value;
+            }
+        }
 
 		internal CodeFrame Module { get; private set; }
 
