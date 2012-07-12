@@ -4,7 +4,8 @@ open basictests funtests rangetests listtests tupletests recordtests
 
 //Just to run all std lib modules
 open cell char datetime espec format imperative io list
-     math number read record reflect string thunk variant
+     number read record reflect string thunk variant
+     int long single double tuple
      collections.alist collections.queue
 
 _ = [] 

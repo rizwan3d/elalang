@@ -1027,16 +1027,16 @@ internal sealed partial class Parser {
 			LazyExpr(out exp);
 			break;
 		}
+		case 30: {
+			LetBinding(out exp);
+			break;
+		}
 		case 60: {
 			Builtin(out exp);
 			break;
 		}
 		case 23: {
 			LambdaExpr(out exp);
-			break;
-		}
-		case 30: {
-			LetBinding(out exp);
 			break;
 		}
 		case 40: {
@@ -1097,6 +1097,23 @@ internal sealed partial class Parser {
 		
 	}
 
+	void LetBinding(out ElaExpression exp) {
+		exp = null; 
+		while (!(la.kind == 0 || la.kind == 30)) {SynErr(89); Get();}
+		Expect(30);
+		var bid = new ElaLetBinding(t);
+		var block = default(ElaEquationSet);
+		var cexp = default(ElaExpression);
+		exp = bid;
+		
+		BindingChain(out block);
+		Expect(26);
+		Expr(out cexp);
+		bid.Equations = block;
+		bid.Expression = cexp;
+		
+	}
+
 	void Builtin(out ElaExpression exp) {
 		Expect(60);
 		Expect(1);
@@ -1104,7 +1121,7 @@ internal sealed partial class Parser {
 	}
 
 	void LambdaExpr(out ElaExpression exp) {
-		while (!(la.kind == 0 || la.kind == 23)) {SynErr(89); Get();}
+		while (!(la.kind == 0 || la.kind == 23)) {SynErr(90); Get();}
 		Expect(23);
 		var lambda = new ElaLambda(t);
 		exp = lambda;
@@ -1118,26 +1135,9 @@ internal sealed partial class Parser {
 		} else if (la.kind == 21) {
 			Get();
 			LambdaGuard(out right);
-		} else SynErr(90);
+		} else SynErr(91);
 		lambda.Left = left;
 		lambda.Right = right;
-		
-	}
-
-	void LetBinding(out ElaExpression exp) {
-		exp = null; 
-		while (!(la.kind == 0 || la.kind == 30)) {SynErr(91); Get();}
-		Expect(30);
-		var bid = new ElaLetBinding(t);
-		var block = default(ElaEquationSet);
-		var cexp = default(ElaExpression);
-		exp = bid;
-		
-		BindingChain(out block);
-		Expect(26);
-		Expr(out cexp);
-		bid.Equations = block;
-		bid.Expression = cexp;
 		
 	}
 
@@ -1837,9 +1837,9 @@ internal sealed class Errors {
 			case 86: s = "invalid AccessExpr"; break;
 			case 87: s = "invalid EmbExpr"; break;
 			case 88: s = "invalid TypeCheckExpr"; break;
-			case 89: s = "this symbol not expected in LambdaExpr"; break;
-			case 90: s = "invalid LambdaExpr"; break;
-			case 91: s = "this symbol not expected in LetBinding"; break;
+			case 89: s = "this symbol not expected in LetBinding"; break;
+			case 90: s = "this symbol not expected in LambdaExpr"; break;
+			case 91: s = "invalid LambdaExpr"; break;
 			case 92: s = "invalid RaiseExpr"; break;
 			case 93: s = "invalid LambdaGuard"; break;
 			case 94: s = "this symbol not expected in WhereBinding"; break;

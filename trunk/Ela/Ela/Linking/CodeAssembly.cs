@@ -175,7 +175,9 @@ namespace Ela.Linking
                 if (kv.Value == handle)
                 {
                     var fi = new FileInfo(kv.Key);
-                    return fi.Name.Replace(fi.Extension, String.Empty).ToLower();
+                    return fi.Extension.Length > 0 ?
+                        fi.Name.Replace(fi.Extension, String.Empty).ToLower()
+                        : fi.Name.ToLower();
                 }
 
             return null;

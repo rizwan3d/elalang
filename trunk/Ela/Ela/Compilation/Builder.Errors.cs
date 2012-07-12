@@ -84,7 +84,7 @@ namespace Ela.Compilation
             var str = exp.ToString();
 
             if (str.IndexOf('\n') != -1 || str.Length > 40)
-                str = "\r\n    " + str + "\r\n";
+                str = "->\r\n    " + str + "\r\n";
             else if (str.Length > 0 && str[0] != '(' && str[0] != '"' && str[0] != '\'' && str[0] != '[')
                 str = "(" + str + ")";
 

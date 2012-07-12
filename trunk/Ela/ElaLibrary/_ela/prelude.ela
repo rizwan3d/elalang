@@ -256,31 +256,32 @@ instance Show fun
 
 instance Show module
 
-instance Show variant
-  where showf f x = match v with
-                          () = tag x
-                          _  = tag x ++ " " ++ showf f v
-                    where v = untag x
+instance Show variant where 
+  showf f x = match v with
+                    () = tag x
+                    _  = tag x ++ " " ++ showf f v
+              where v = untag x
 
-instance Show tuple
-  where showf f t = lang.__stringFromList ("(" :: tos 0 ++ ")")
-                    where tos n | n == len - 1 = [e, (if len == 1 then ",)" else ")")]
-                                | else = e :: "," :: tos (n+1)
-                                where e = showf f (t:n) 
-                          len = length t
+instance Show tuple where 
+  showf f t = lang.__stringFromList ("(" :: tos 0)
+    where len = length t
+          tos n | n == len - 1 = [e, (if len == 1 then ",)" else ")")]
+                | else = e :: "," :: tos (n+1)
+                where e = showf f (t:n) 
 
-instance Show list
-  where showf _ [] = "[]"
-        showf f xs = lang.__stringFromList ("[" :: tos xs)
-                     where tos (x::[]) = [showf f x, "]"]
-                           tos (x::xs) = showf f x :: "," :: tos xs
 
-instance Show record
-  where showf f t = lang.__stringFromList ("{" :: tos 0)
-                    where tos n | n == len - 1 = [fld, "}"]
-                                | else = fld :: "," :: tos (n+1)
-                                where fld = t!!n ++ "=" ++ showf f (t:n)
-                          len = length t
+instance Show list where 
+  showf _ [] = "[]"
+  showf f xs = lang.__stringFromList ("[" :: tos xs)
+    where tos (x::[]) = [showf f x, "]"]
+          tos (x::xs) = showf f x :: "," :: tos xs
+
+instance Show record where 
+  showf f t = lang.__stringFromList ("{" :: tos 0)
+    where len = length t
+          tos n | n == len - 1 = [fld, "}"]
+                | else = fld :: "," :: tos (n+1)
+                where fld = t!!n ++ "=" ++ showf f (t:n)
 
 /* Cast functions */
 toInt    = cast 1
