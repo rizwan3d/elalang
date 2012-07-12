@@ -90,6 +90,11 @@ namespace Ela.Runtime.ObjectModel
 			return new ElaValue(this);
 		}
 
+        public bool Evaled
+        {
+            get { return Function == null; }
+        }
+
 		internal ElaFunction Function;
 
 		private ElaValue _value;

@@ -14,6 +14,12 @@ namespace Ela.Linking
             Add<ElaList,ElaTuple>("__tupleFromList", TupleFromList);
             Add<ElaList,Boolean>("__isLazyList", IsLazyList);
             Add<ElaList,ElaList>("__reverseList", ReverseList);
+            Add<ElaList,Int32>("__listLength", ListLength);
+        }
+
+        public int ListLength(ElaList lst)
+        {
+            return lst.GetLength();
         }
 
         public bool IsLazyList(ElaList lst)
