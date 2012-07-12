@@ -53,6 +53,13 @@ any f t = m 0
             | f (t:n) = true
             | else = m (n+1)
 
+all # qualified
+all f t = m 0
+  where len = length t
+        m n | n == len = true
+            | f (t:n) = m (n+1)
+            | else = false
+
 zero # private
 zero 1 = (0,)
 zero 2 = (0,0)

@@ -30,7 +30,7 @@ namespace Ela.Linking
 		private const string DLLEXT = ".dll";
         internal const string ARG_MODULE = "$___ARGS___";
 
-		internal static readonly string MemoryFile = "memory";
+		internal static readonly FileInfo MemoryFile = new FileInfo("memory");
         private static readonly ModuleReference argModuleRef = new ModuleReference("$Args");
 		private Dictionary<String,Dictionary<String,ElaModuleAttribute>> foreignModules;
         private Dictionary<String,FileInfo> foreignModulesFiles;
@@ -70,25 +70,25 @@ namespace Ela.Linking
 
 		public virtual LinkerResult Build()
 		{
-			var mod = new ModuleReference(Path.GetFileNameWithoutExtension(RootFile != null ? RootFile.Name : MemoryFile));
-			var frame = Build(mod, RootFile);
+			var mod = new ModuleReference(Path.GetFileNameWithoutExtension(SafeRootFileName));
+            var frame = Build(null, mod, SafeRootFile);
 			RegisterFrame(new ModuleReference(
-                Path.GetFileNameWithoutExtension(RootFile.Name)), frame, RootFile, false, -1);
+                Path.GetFileNameWithoutExtension(SafeRootFileName)), frame, SafeRootFile, false, -1);
 			return new LinkerResult(Assembly, Success, Messages);
 		}
 
 
         public virtual LinkerResult Build(string source)
 		{
-			var mod = new ModuleReference(Path.GetFileNameWithoutExtension(RootFile != null ? RootFile.Name : MemoryFile));
-            var frame = Build(mod, null, source, null, null);
+			var mod = new ModuleReference(Path.GetFileNameWithoutExtension(SafeRootFileName));
+            var frame = Build(null, mod, SafeRootFile, source, null, null);
 			RegisterFrame(new ModuleReference(
-                Path.GetFileNameWithoutExtension(RootFile.Name)), frame, RootFile, false, -1);
+                Path.GetFileNameWithoutExtension(SafeRootFileName)), frame, SafeRootFile, false, -1);
 			return new LinkerResult(Assembly, Success, Messages);
 		}
 
 		
-		internal CodeFrame ResolveModule(ModuleReference mod, ExportVars exportVars)
+		internal CodeFrame ResolveModule(FileInfo parentFile, ModuleReference mod, ExportVars exportVars)
 		{
             var frame = default(CodeFrame);
             var hdl = -1;
@@ -128,12 +128,12 @@ namespace Ela.Linking
                         {
                             if (!bin)
                             {
-                                frame = Build(mod, fi);
+                                frame = Build(parentFile, mod, fi);
                                 hdl = RegisterFrame(mod, frame, fi, false, mod.LogicalHandle);
                             }
                             else
                             {
-                                frame = ReadObjectFile(mod, fi);
+                                frame = ReadObjectFile(parentFile, mod, fi);
                                 hdl = RegisterFrame(mod, frame, fi, false, mod.LogicalHandle);
                             }
                         }
@@ -238,7 +238,7 @@ namespace Ela.Linking
         }
 
 
-		private CodeFrame ReadObjectFile(ModuleReference mod, FileInfo fi)
+		private CodeFrame ReadObjectFile(FileInfo parentFile, ModuleReference mod, FileInfo fi)
 		{
 			var obj = new ObjectFileReader(fi);
 			
@@ -251,7 +251,7 @@ namespace Ela.Linking
                 foreach (var r in frame.References)
                 {
                     if (mod == null || !mod.NoPrelude || CompilerOptions.Prelude != r.Value.ModuleName)
-                        ResolveModule(r.Value, exportVars);
+                        ResolveModule(fi, r.Value, exportVars);
                 }
 
                 CheckBinaryConsistency(frame, mod, fi, exportVars);
@@ -259,7 +259,8 @@ namespace Ela.Linking
 			}
 			catch (ElaException ex)
 			{
-				AddError(ElaLinkerError.ObjectFileReadFailed, fi, 
+				AddError(ElaLinkerError.ObjectFileReadFailed, 
+                    parentFile ?? fi, 
                     mod != null ? mod.Line : 0, 
                     mod != null ? mod.Column : 0, 
                     fi.Name, ex.Message);
@@ -389,6 +390,7 @@ namespace Ela.Linking
 		private CodeFrame LoadModule(ModuleReference mod, ElaModuleAttribute attr, FileInfo fi, out int hdl)
 		{
 			var obj = default(ForeignModule);
+            fi = new FileInfo(fi.FullName + "#" + mod.ModuleName);
             hdl = -1;
 
 			try
@@ -428,13 +430,13 @@ namespace Ela.Linking
 		}
 
 
-		private CodeFrame Build(ModuleReference mod, FileInfo file)
+		private CodeFrame Build(FileInfo parentFile, ModuleReference mod, FileInfo file)
 		{
-			return Build(mod, file, null, null, null);
+			return Build(parentFile, mod, file, null, null, null);
 		}
 
 
-        internal CodeFrame Build(ModuleReference mod, FileInfo file, string source,
+        internal CodeFrame Build(FileInfo parentFile, ModuleReference mod, FileInfo file, string source,
             CodeFrame frame, Scope scope)
         {
             if (Assembly.ModuleCount == 0)
@@ -442,14 +444,13 @@ namespace Ela.Linking
 
             var ret = default(CodeFrame);
 
+            //Check if an entry module is already precompiled
             if (source == null && file != null && file == RootFile)
             {
                 if (!CheckRootFile(out ret))
                     return null;
                 else if (ret != null)
                     return ret;
-
-                file = RootFile;
             }
 
             var pRes = Parse(file, source);
@@ -462,7 +463,7 @@ namespace Ela.Linking
                 if (cRes.Success)
                 {
                     if (ret.Symbols != null)
-                        ret.Symbols.File = file != null ? file : RootFile;
+                        ret.Symbols.File = file != null ? file : SafeRootFile;
 
                     return ret;
                 }
@@ -470,13 +471,12 @@ namespace Ela.Linking
                     ret = null;
             }
 
-            if (file != RootFile)
+            if (parentFile != null)
                 AddError(ElaLinkerError.ModuleLinkFailed,
-                    RootFile,
-                    mod != null ? mod.Line : 0,
-                    mod != null ? mod.Column : 0,
-                    Path.GetFileNameWithoutExtension(file != null ? file.Name :
-                        RootFile != null ? RootFile.Name : "<" + MemoryFile + ">"));
+                    parentFile,
+                    mod.Line,
+                    mod.Column,
+                    Path.GetFileNameWithoutExtension(file.Name));
             return ret;
         }
 
@@ -494,7 +494,7 @@ namespace Ela.Linking
                 fnObj.Exists && (fnSrc.Exists && fnSrc.LastWriteTime <= fnObj.LastWriteTime) ||
                 !fnSrc.Exists)
             {
-                frame = ReadObjectFile(null, fnObj);
+                frame = ReadObjectFile(null, null, fnObj);
                 return true;
             }
             
@@ -520,10 +520,10 @@ namespace Ela.Linking
 			}
 
             var exportVars = CreateExportVars(file);
-			elac.ModuleInclude += (o, e) => e.Frame = ResolveModule(e.Module, exportVars);
+			elac.ModuleInclude += (o, e) => e.Frame = ResolveModule(file, e.Module, exportVars);
 			var res = frame != null ? elac.Compile(prog, CompilerOptions, exportVars, frame, scope) :
 				elac.Compile(prog, opts, exportVars);
-			AddMessages(res.Messages, file == null ? RootFile : file);
+			AddMessages(res.Messages, file);
 			return res;
 		}
 
@@ -532,7 +532,7 @@ namespace Ela.Linking
 		{
 			var elap = new ElaParser();
 			var res = source != null ? elap.Parse(source) : elap.Parse(file);
-			AddMessages(res.Messages, file == null ? RootFile : file);
+			AddMessages(res.Messages, file);
 			return res;
 		}
 
@@ -655,6 +655,16 @@ namespace Ela.Linking
 		internal CodeAssembly Assembly { get; set; }
 
 		internal bool Success { get; set; }
+
+        protected FileInfo SafeRootFile
+        {
+            get { return RootFile ?? MemoryFile; }
+        }
+
+        protected string SafeRootFileName
+        {
+            get { return RootFile != null ? RootFile.Name : MemoryFile.Name; }
+        }
 		#endregion
 
 

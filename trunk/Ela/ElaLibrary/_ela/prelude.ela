@@ -72,7 +72,6 @@ eqTuple tup1 tup2 = len == length tup2 and eq 0
 eqRecord # private
 eqRecord rec1 rec2 = len == length rec2 and eq 0
          where len = length rec1
-               (!!) = __internal recfield
                eq n | n < len = if rec1!!n == rec2!!n and rec1:n == rec2:n then eq (n+1) else false
                     | else = true
 
@@ -277,12 +276,8 @@ instance Show record
                                 | else = fld :: "," :: tos (n+1)
                                 where fld = t!!n ++ "=" ++ showf f (t:n)
                           len = length t
-                          (!!) = __internal recfield
 
 /* Cast functions */
-cast # private
-cast = __internal cast
-
 toInt    = cast 1
 toLong   = cast 2
 toSingle = cast 3
@@ -340,3 +335,10 @@ minValue x y | x <= y = x | else   = y
 until p f x | p x  = x | else = until p f (f x)
 even x = x % 2 == 0
 odd x = x % 2 <> 0
+
+/* Privates */
+cast # private
+cast = __internal cast
+
+(!!) # private
+(!!) = __internal recfield
