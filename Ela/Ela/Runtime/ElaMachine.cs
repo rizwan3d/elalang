@@ -1393,7 +1393,7 @@ namespace Ela.Runtime
                             if (ctx.Failed)
                             {
                                 ExecuteThrow(thread, evalStack);
-                                break;
+                                goto SWITCH_MEM;
                             }
 
                             evalStack.Replace(new ElaValue(new ElaTypeInfo(asm.Types[right.Ref.TypeId])));

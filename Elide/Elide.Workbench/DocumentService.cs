@@ -54,7 +54,7 @@ namespace Elide.Workbench
         [MethodImpl(MethodImplOptions.Synchronized)]
         public Document GetOpenedDocument(FileInfo fileInfo)
         {
-            return documents.FirstOrDefault(d => d.FileInfo != null && d.FileInfo.ToString() == fileInfo.ToString());
+            return documents.FirstOrDefault(d => d.FileInfo != null && d.FileInfo.FullName == fileInfo.FullName);
         }
 
         private void CreateWatcher(Document doc)

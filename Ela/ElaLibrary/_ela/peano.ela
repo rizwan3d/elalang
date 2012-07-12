@@ -1,0 +1,96 @@
+/*
+  Module peano
+  Created by Basil Voronkov in 2012
+*/
+open string
+
+/* Construction */
+type peano where
+  zero # qualified
+  zero = Zero
+  one # qualified
+  one = Succ zero
+  infinity # qualified
+  infinity = inf zero 
+    where inf a = inc (& inf a)
+  min # qualified
+  min = zero
+  max # qualified
+  max = infinity
+  inc # private
+  inc a = Succ a
+  fromIntegral # qualified
+  fromIntegral a = from a
+    where from 0 = zero
+          from n = inc (& from (n-1))
+
+/* Instances */
+instance Show peano where 
+  showf _ p = string.fromList ("peano(" :: show p)
+    where 
+      show Zero = ["0)"]
+      show (Succ a) = "1+" :: show a
+
+instance Eq peano where
+  (==) = comp (==)
+  (<>) = comp (<>)
+
+instance Ord peano where
+  (>) = comp (>)
+  (<) = comp (<)
+  (>=) = comp (>=)
+  (<=) = comp (<=)
+
+instance Enum peano where
+  succ a = a + one
+  pred a = a - one
+
+instance Additive peano where
+  x+y = add x y
+  x-y = subtract x y
+  --x = zero - x
+
+instance Ring peano where
+  x*y  = multiply x y
+  x**y = power x y
+
+/* Functions */
+listLength [] = zero
+listLength (x::xs) = add one (& listLength xs)
+
+toIntegral # qualified
+toIntegral = count 0L
+  where 
+    count n Zero = n
+    count n (Succ v) = count (n+1) v
+
+(?) = fromIntegral
+
+add Zero b = b
+add (Succ a) b = inc (& add a b)
+
+subtract Zero Zero = Zero
+subtract Zero b = fail "Peano: out of range!"
+subtract b Zero = b
+subtract (Succ a) (Succ b) = (& subtract a b)
+
+multiply Zero _ = zero
+multiply _ Zero = zero
+multiply (Succ x) y = add y (& multiply x y)
+
+power b Zero = one
+power b e = p e one
+  where p Zero r = r
+        p n r = p (n `subtract` one) (r `multiply` b)
+
+toIntegral2 # private
+toIntegral2 a b = toInt 0L 0L a b
+  where
+    toInt x y Zero Zero = (x,y)
+    toInt x y Zero _ = (x,y+1)
+    toInt x y _ Zero = (x+1,y)
+    toInt x y (Succ a) (Succ b) = toInt (x+1) (y+1) a b
+
+comp # private
+comp f a b = x `f` y 
+  where (x,y) = toIntegral2 a b

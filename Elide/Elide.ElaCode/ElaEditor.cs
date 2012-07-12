@@ -36,18 +36,23 @@ namespace Elide.ElaCode
         private void SmartIndentRequired(object sender, EventArgs e)
         {
             var sci = GetScintilla();
-            var ln = sci.GetLine(sci.CurrentLine - 1).Text.ToUpper();
+            var ln = sci.GetLine(sci.CurrentLine - 1).Text;
 
             if (ln.TrimStart().StartsWith("|"))
             {
-                if (!ln.TrimStart(' ', '|').StartsWith("ELSE"))
+                if (!ln.TrimStart(' ', '|').StartsWith("else"))
                 {
                     var indent = ln.IndexOf("|");
                     sci.SetLineIndentation(sci.CurrentLine, indent);
                     sci.CaretPosition = sci.GetPositionByColumn(sci.CurrentLine, indent);
                 }
+
+                return;
             }
-            else if (ln.TrimEnd('\r','\n',' ','\0').EndsWith("="))
+
+            var trimEnd = ln.TrimEnd('\r', '\n', ' ', '\0');
+
+            if (trimEnd.EndsWith("=") || trimEnd.EndsWith("where"))
             {
                 var indent = sci.GetLineIndentation(sci.CurrentLine - 1) + 2;
                 sci.SetLineIndentation(sci.CurrentLine, indent);

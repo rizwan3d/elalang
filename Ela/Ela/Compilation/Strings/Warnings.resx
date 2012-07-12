@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BottomValue" xml:space="preserve">
-    <value>An expression '{0}' is executed in a strict manner and references a name before it's actual assignment.</value>
+    <value>An expression '{0}' is executed in a strict manner and references a name before it's actual initialization.</value>
   </data>
   <data name="FunctionInvalidType" xml:space="preserve">
     <value>An expression {0} doesn't evaluate to a function reference.</value>
