@@ -511,7 +511,6 @@ namespace Ela.Compilation
                     {
                         if (!options.IgnoreUndefined)
                             AddError(ElaCompilerError.InvalidPattern, call.Target, FormatNode(call.Target));
-                        return;
                     }
                 }
 

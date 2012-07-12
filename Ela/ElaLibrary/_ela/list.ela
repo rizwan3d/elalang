@@ -5,14 +5,15 @@
 
 //Strict sort based on merge sort
 mergeBy # private
-mergeBy pred (x::xs) (y::ys) | pred x y = x :: mergeBy pred xs (y::ys) 
-                             | else = y :: mergeBy pred (x::xs) ys
+mergeBy pred (x::xs) (y::ys) 
+  | pred x y = x :: mergeBy pred xs (y::ys)
+  | else = y :: mergeBy pred (x::xs) ys
 mergeBy pred xs [] = xs
 mergeBy pred [] ys = ys
 
 sortBy pred [x] = [x]
 sortBy pred xs = mergeBy pred (sortBy pred xs1) (sortBy pred xs2)
-                 where (xs1,xs2) = splitHalf xs
+  where (xs1,xs2) = splitHalf xs
 sortBy pred [] = []
 
 sort = sortBy (<=)
@@ -22,10 +23,10 @@ sort' x = qsort x []
   where qsort [] y = y
         qsort [x] y = x::y
         qsort (x::xs) y = part xs [] [x] []  
-            where part [] l e g = qsort l (e ++ (& qsort g y))
-                  part (z::zs) l e g | z > x = part zs l e (z::g) 
-                                     | z < x = part zs (z::l) e g 
-                                     | else  = part zs l (z::e) g
+          where part [] l e g = qsort l (e ++ (& qsort g y))
+                part (z::zs) l e g | z > x = part zs l e (z::g) 
+                                   | z < x = part zs (z::l) e g 
+                                   | else  = part zs l (z::e) g
 
 last (x::[]) = x
 last (_::xs) = last xs
@@ -37,7 +38,7 @@ init []        = fail "list.init: Empty list"
 
 takeWhile f (x::xs) | f x  = x :: takeWhile f xs
                     | else = []
-takeWhile f []             = []
+takeWhile f [] = []
 
 take 0 _       = []
 take n (x::xs) = x :: take (n - 1) xs
@@ -55,17 +56,17 @@ map' _ []      = []
 
 filter p (x::xs) | p x  = x :: filter p xs
                  | else = filter p xs
-filter _ []             = []
+filter _ [] = []
 
 filter' p (x::xs) | p x  = x :: (& filter' p xs)
                   | else = filter' p xs
-filter' _ []             = []
+filter' _ [] = []
 
 foldl f z (x::xs) = foldl f (f z x) xs
-foldl _ z []      = z
+foldl _ z [] = z
 
 foldr f z (x::xs) = f x (foldr f z xs)
-foldr _ z []      = z
+foldr _ z [] = z
 
 fold f xs = foldr f [] xs
 
@@ -84,22 +85,22 @@ concatMap f (x::xs) = f x :: concatMap f xs
 concatMap _ []      = []
 
 sum xs = sum' 0 xs
-         where sum' s (x::xs) = sum' (s + x) xs
-               sum' s []      = s
+  where sum' s (x::xs) = sum' (s + x) xs
+        sum' s [] = s
 
 product xs = product' 1 xs
-             where product' p (x::xs) = product' (p * x) xs
-                   product' p []      = p
+  where product' p (x::xs) = product' (p * x) xs
+        product' p []      = p
 
 minimum (x::xs) = minimum' x xs
-                  where minimum' v (x::xs) | x < v = minimum' x xs
-                                           | else  = minimum' v xs
-                        minimum' v []              = v
+  where minimum' v (x::xs) | x < v = minimum' x xs
+                           | else  = minimum' v xs
+        minimum' v [] = v
 
 maximum (x::xs) = maximum' x xs
-                  where maximum' v (x::xs) | x > v = maximum' x xs
-                                           | else  = maximum' v xs
-                        maximum' v []            = v
+  where maximum' v (x::xs) | x > v = maximum' x xs
+                           | else  = maximum' v xs
+        maximum' v [] = v
 
 reverse xs = foldl (flip (::)) [] xs
 
@@ -125,11 +126,11 @@ splitAt 0 xs = ([],xs)
 splitAt _ [] = ([],[])
 splitAt n (x::xs) | n > 0 = (x::xs',xs2')
                   | else = fail "list.splitAt: negative argument"
-                            where (xs',xs2') = splitAt (n-1) xs
+                  where (xs',xs2') = splitAt (n-1) xs
 
 splitHalf xs = go xs xs 
-      where go (x::xs) (_::_::zs) = (x::us,vs) where (us,vs) = go xs zs
-            go xs _ = ([],xs)
+  where go (x::xs) (_::_::zs) = (x::us,vs) where (us,vs) = go xs zs
+        go xs _ = ([],xs)
 
 span p [] = ([],[])
 span p (x::xs')@xs | p x  = (x::ys, zs)
@@ -148,9 +149,9 @@ dropWhile p (x::xs) | p x  = dropWhile p xs
                     | else = x::xs
 
 index e lst = index' 0 lst
-              where index' n (x::xs) | x <> e = index' (n+1) xs
-                                     | else   = n
-                    index' n [] = n
+  where index' n (x::xs) | x <> e = index' (n+1) xs
+                         | else   = n
+        index' n [] = n
 
 elem x = any (==x)
 
@@ -164,13 +165,13 @@ scanl _ q []      = q :: []
 
 scanr f q0 [] = q0::[]
 scanr f q0 (x::xs) = f x q :: qs
-                     where (q::_)@qs = scanr f q0 xs
+  where (q::_)@qs = scanr f q0 xs
 
 repeat x = x :: (& repeat x)
 
 cycle (head::tail) = head :: (& cycle' tail)
-                     where cycle' (x::xs) = x :: (& cycle' xs)
-                           cycle' []      = head :: (& cycle' tail)
+  where cycle' (x::xs) = x :: (& cycle' xs)
+        cycle' []      = head :: (& cycle' tail)
 
 iterate f x = x :: (& iterate f (f x))
 
@@ -178,21 +179,22 @@ replicate n x = take n (repeat x)
 
 deleteBy p x (y::ys) | p x y  = ys
                      | else   = y :: deleteBy p x ys
-deleteBy _ _ []               = []
+deleteBy _ _ [] = []
 
 delete = deleteBy (==)
 
 insertBy _   x [] = x::[]
-insertBy cmp x (y::ys')@ys = match cmp x y with
-                                   GT = y :: insertBy cmp x ys'
-                                   _  = x :: ys
+insertBy cmp x (y::ys')@ys = 
+  match cmp x y with
+        GT = y :: insertBy cmp x ys'
+        _  = x :: ys
 
 insert = insertBy compare
 
 nubBy eq xs = nubBy' xs []
-              where nubBy' [] _ = []
-                    nubBy' (y::ys) xs | elemBy eq y xs = nubBy' ys xs
-                                      | else           = y :: nubBy' ys (y::xs)
+  where nubBy' [] _ = []
+        nubBy' (y::ys) xs | elemBy eq y xs = nubBy' ys xs
+                          | else = y :: nubBy' ys (y::xs)
 
 nub = nubBy (==)
 
@@ -214,12 +216,12 @@ subsequences xs = [] :: nonEmptySubsequences xs
 
 permutations [] = []
 permutations xs0  = xs0 :: perms xs0 []
-                    where perms [] _ = []
-                          perms (t::ts) is' = foldr interleave (perms ts (t::is')) (permutations is')
-                                              where interleave xs r         = zs where (_,zs) = interleave' id xs r 
-                                                    interleave' _ [] r      = (ts, r)
-                                                    interleave' f (y::ys) r = (y::us, f (t::y::us) :: zs)
-                                                                              where (us,zs) = interleave' (f << (y::)) ys r
+  where perms [] _ = []
+        perms (t::ts) is' = foldr interleave (perms ts (t::is')) (permutations is')
+          where interleave xs r    = zs where (_,zs) = interleave' id xs r 
+                interleave' _ [] r = (ts, r)
+                interleave' f (y::ys) r = (y::us, f (t::y::us) :: zs)
+                  where (us,zs) = interleave' (f << (y::)) ys r
 
 groupBy eq (x::xs) = (x::ys) :: groupBy eq zs
                      where (ys,zs) = span (eq x) xs
