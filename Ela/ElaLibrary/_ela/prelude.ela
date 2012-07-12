@@ -194,13 +194,16 @@ instance Ix tuple
 instance Ix record
 
 instance Ix list
-  where length xs = len 0 xs
-               where len n [] = n
-                     len n (x::xs) = len (n+1) xs
-        xs:n = get 0 xs
-               where get _ [] = raise IndexOutOfRange ("Index " ++ n ++ " is out of range.")
-                     get i (x::xs) | i == n = x
-                                   | else = get (i+1) xs
+  where 
+    length xs
+      | lang.__isLazyList xs = len 0 xs
+      | else = lang.__listLength xs
+      where len n [] = n
+            len n (x::xs) = len (n+1) xs
+    xs:n = get 0 xs
+      where get _ [] = raise IndexOutOfRange ("Index " ++ n ++ " is out of range.")
+            get i (x::xs) | i == n = x
+                          | else = get (i+1) xs
 
 /* Cat */
 class Cat __internal Cat (++)
@@ -219,10 +222,12 @@ instance Cat list
                        cat [] ys = ys
 
 reverse # private
-reverse xs = if lang.__isLazyList xs then rev [] xs else lang.__reverseList xs
-        where (:) = flip (::)
-              rev z [] = z
-              rev z (x::xs) = rev (z:x) xs
+reverse xs 
+  | lang.__isLazyList xs = rev [] xs 
+  | else = lang.__reverseList xs
+  where (:) = flip (::)
+        rev z [] = z
+        rev z (x::xs) = rev (z:x) xs
 
 /* Show */
 class Show __internal Show showf

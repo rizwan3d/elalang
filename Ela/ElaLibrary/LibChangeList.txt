@@ -1,3 +1,6 @@
+0.1.4.30:New:A new 'lazyList' function added to 'thunk' module.
+0.1.4.29:Change:Implementation of 'forceThunk' from 'thunk' module is optimized.
+0.1.4.28:Change:Implementation of Ix list ('length' function) is optimized.
 0.1.4.27:New:Function 'field' added to 'record' module.
 0.1.4.26:New:Functions 'any' and 'all' are added to 'tuple' module.
 0.1.4.25:New:Functions 'fold' and 'join' added to 'tuple' module.

@@ -2,24 +2,30 @@
   Module thunk
   Created in 2012 by Basil Voronkov
 */
-import libCore#elalib@core
+import libCore#elalib@core lang
 
 evaled = core.evaled
+
+lazyList = lang.__isLazyList
 
 forceAll (x is list)   = forceList (force x)
 forceAll (x is tuple)  = forceTuple x
 forceAll (x is record) = forceTuple x
-forceAll x | evaled x = x | else = forceAll (force x)
+forceAll x | evaled x = force x | else = forceAll (force x)
 
 forceList (x::xs) = forceAll x :: forceList xs
 forceList [] = []
 
-forceOnlyList (x::xs) = x :: forceOnlyList xs
-forceOnlyList [] = []
+forceOnlyList xs | lang.__isLazyList xs = force xs | else = xs
+  where
+    force (x::xs) = x :: force xs
+    force [] = []
 
 forceRecord r = forceTuple r
 
-forceTuple tup = force' 0
-       where len = length tup 
-             force' i | i == len - 1 = (forceAll (tup:i),)
-                      | else = (forceAll (tup:i),) ++ force' (i+1)
+forceTuple (x,y) = (forceAll x,forceAll y)
+forceTuple (x,y,z) = (forceAll y,forceAll y,forceAll z)
+forceTuple tup = lang.__tupleFromList (force 0)
+  where len = length tup 
+        force i | i == len = []
+                | else = forceAll (tup:i) :: force (i+1)

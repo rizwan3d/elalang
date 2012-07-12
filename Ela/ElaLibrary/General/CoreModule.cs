@@ -22,7 +22,7 @@ namespace Ela.Library.General
 
         public bool IsEvaled(ElaValue obj)
         {
-            return obj.Is<ElaLazy>();
+            return !obj.Is<ElaLazy>() || obj.As<ElaLazy>().Evaled;
         }
 
         public ElaVariant CreateVariant(string tag, ElaValue val)
