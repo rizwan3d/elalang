@@ -28,7 +28,6 @@ namespace Ela.Linking
 		where P : IElaParser, new() where C : IElaCompiler, new()
 	{
 		#region Construction
-		private static readonly string memoryFile = "$memory";
 		private string source;
 		private Dictionary<String,ExportVars> exportMap = new Dictionary<String,ExportVars>();
 		
@@ -51,7 +50,7 @@ namespace Ela.Linking
 		{
 			Messages.Clear();
 			Success = true;
-			var mod = new ModuleReference(Path.GetFileNameWithoutExtension(RootFile != null ? RootFile.Name : MemoryFile));
+			var mod = new ModuleReference(Path.GetFileNameWithoutExtension(SafeRootFileName));
 			var frame = default(CodeFrame);
 			var scope = default(Scope);
 			var scratch = true;
@@ -64,8 +63,8 @@ namespace Ela.Linking
 				scratch = false;
 			}
 
-			frame = Build(mod, RootFile, source, frame, scope);			
-			RegisterFrame(mod, frame, RootFile, !scratch, -1);
+            frame = Build(null, mod, SafeRootFile, source, frame, scope);			
+			RegisterFrame(mod, frame, SafeRootFile, !scratch, -1);
 
 			if (Success)
 				Assembly.RefreshRootModule(frame);
@@ -79,7 +78,7 @@ namespace Ela.Linking
         protected override ExportVars CreateExportVars(FileInfo fi)
         {
             var vars = default(ExportVars);
-            var key = fi == null ? memoryFile : fi.ToString();
+            var key = fi == null ? MemoryFile.Name : fi.ToString();
 
             if (!exportMap.TryGetValue(key, out vars))
             {

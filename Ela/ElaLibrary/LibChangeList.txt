@@ -1,4 +1,5 @@
-0.1.4.26:New:Function 'any' added to 'tuple' module.
+0.1.4.27:New:Function 'field' added to 'record' module.
+0.1.4.26:New:Functions 'any' and 'all' are added to 'tuple' module.
 0.1.4.25:New:Functions 'fold' and 'join' added to 'tuple' module.
 0.1.4.24:New:A function 'toList' added to 'tuple' module.
 0.1.4.23:Change:An instance Enum tuple is moved from prelude to 'tuple' module.

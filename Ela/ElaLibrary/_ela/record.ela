@@ -14,6 +14,9 @@ removeField (fld is string) (rec is record) = r.removeField fld rec
 
 changeField (fld is string) val (rec is record) = r.changeField fld val rec
 
+field n rec = rec `rf` n
+  where rf = __internal recfield
+
 fields (rec is record) = r.fields rec
 
 //This function is used to collect field names
