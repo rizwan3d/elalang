@@ -306,6 +306,12 @@ namespace Ela.Runtime.Classes
         {
             if (gt != null)
             {
+                //if (left.TypeId != right.TypeId)
+                //{
+                //    NoOverloadBinary(left.GetTypeName(), right, "greater", ctx);
+                //    return false;
+                //}
+                
                 ctx.SetDeffered(gt, 2);
                 return false;
             }

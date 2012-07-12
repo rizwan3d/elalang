@@ -21,11 +21,17 @@ namespace Ela.Runtime.ObjectModel
 
         internal override string GetTag(ExecutionContext ctx)
         {
+            if (Value.TypeId == ElaMachine.LAZ)
+                Value = Value.Ref.Force(Value, ctx);
+
             return Value.Ref.GetTag(ctx);
         }
 
         internal override ElaValue Untag(ExecutionContext ctx)
         {
+            if (Value.TypeId == ElaMachine.LAZ)
+                Value = Value.Ref.Force(Value, ctx);
+
             return Value.Ref.Untag(ctx);
         }
 

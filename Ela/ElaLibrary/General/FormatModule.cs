@@ -38,7 +38,7 @@ namespace Ela.Library.General
 
         private string Format(string format, ElaFunction showf, IEnumerable<ElaValue> values)
         {
-            var objs = new List<Object>();
+            var objs = new List<Object>(10);
 
             foreach (var v in values)
                 objs.Insert(0, new FormatValue(showf, v));

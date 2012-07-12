@@ -52,7 +52,7 @@ lazyCompare {eqt,eqf} =
         thunk2 = (& add 2 3)
              where add x y = x + y
 
-lazyMath {eq} =
+lazyMath {eq,neq} =
     eq (thunk1 + 2) 6
   $ eq (thunk1 - 2) 2
   $ eq (thunk1 * 3) 12
@@ -62,7 +62,7 @@ lazyMath {eq} =
   $ eq (thunk2 + 2) 7
   $ eq (thunk2 - 2) 3
   $ eq (thunk2 * 3) 15
-  $ eq (thunk2 / 2) 2
+  $ neq (thunk2 / 2) 2
   $ eq (thunk2 ** 2) 25
   $ eq (thunk2 % 2) 1
   where thunk1 = (& 2 + 2)

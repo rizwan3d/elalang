@@ -879,9 +879,9 @@ PRODUCTIONS
 			BinaryExpr<out exp> [TypeCheckExpr<ref exp>]
 			| IfExpr<out exp>  
 			| LazyExpr<out exp>
+			| LetBinding<out exp>			
 			| Builtin<out exp>	
 			| LambdaExpr<out exp>
-			| LetBinding<out exp>
 			| FailExpr<out exp>
 			| RaiseExpr<out exp>
 			| MatchExpr<out exp>
@@ -923,7 +923,7 @@ PRODUCTIONS
 	Expr<out ElaExpression exp> = 
 		(. exp = null; .)
 		( 
-			EmbExpr<out exp>
+			EmbExpr<out exp>			
 		).
 		
 	Builtin<out ElaExpression exp> = 

@@ -36,15 +36,15 @@ map f tup = lang.__tupleFromList (m 0)
         | else = f (tup:n) :: m (n+1)
 
 join # qualified
-join f (x,) (a,) = (x+a,)
-join f (x,y) (a,b) = (x+a, y+b)
-join f (x,y,z) (a,b,c) = (x+a,y+b,z+c)
+join f (x,) (a,) = (x `f` a,)
+join f (x,y) (a,b) = (x `f` a, y `f` b)
+join f (x,y,z) (a,b,c) = (x `f` a,y `f` b,z `f` c)
 join f t1 t2 
   | len <> length t2 = fail "Tuples should be of the same length." 
   | else = lang.__tupleFromList (fold 0)
   where len = length t1
         fold n | n == len = []
-               | else = t1:n `f` t2:n :: fold (n+1)
+               | else = (t1:n `f` t2:n) :: fold (n+1)
 
 any # qualified
 any f t = m 0

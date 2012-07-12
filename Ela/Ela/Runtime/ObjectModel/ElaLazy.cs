@@ -12,14 +12,34 @@ namespace Ela.Runtime.ObjectModel
 
 		internal ElaValue Force()
 		{
-			if (Value.Ref == null)
-			{
-				Value = Function.CallWithThrow(
-					Function.LastParameter.Ref != null ? Function.LastParameter :
-					new ElaValue(ElaUnit.Instance));
-			}
+            if (Value.Ref == null)
+            {
+                var fun = Function;
 
-			return Value;
+                while (fun != null)
+                {
+                    Value = fun.CallWithThrow(
+                        fun.LastParameter.Ref != null ? fun.LastParameter :
+                        new ElaValue(ElaUnit.Instance));
+
+                    if (Value.Ref is ElaLazy)
+                    {
+                        var la = (ElaLazy)Value.Ref;
+
+                        if (la.Value.Ref == null && la.Function != null)
+                            fun = la.Function;
+                        else
+                        {
+                            Value = la.Value;
+                            fun = null;
+                        }
+                    }
+                    else
+                        fun = null;
+                }
+            }
+
+            return Value;
 		}
         
 		internal override ElaValue Force(ElaValue @this, ExecutionContext ctx)

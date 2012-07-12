@@ -50,7 +50,7 @@ compare2 {eqt,eqf} =
   $ eqf ('e' <= 'E')
   $ eqt ('e' >= 'E')
     
-simpleMath {eq,gt,lt} =
+simpleMath {eq,neq,gt,lt} =
     eq (2 + 2) 4 
   $ eq (2 - 2) 0 
   $ lt (12.4 - .4 - 12.0) .001
@@ -58,7 +58,7 @@ simpleMath {eq,gt,lt} =
   $ eq (2 * 2) 4 
   $ gt (12.0 * 65.3) 771.0
   $ eq (24 / 2) 12 
-  $ eq (25 / 2) 12 
+  $ neq (25 / 2) 12 
   $ gt (25f / 2.0) 12.0 
   $ eq (25 % 2) 1 
   $ eq (23.456 % 12.2) 11.256

@@ -145,7 +145,7 @@
     <value>Expected keyword 'if'.</value>
   </data>
   <data name="ExpectedKeywordIn" xml:space="preserve">
-    <value>Invalid variable declaration syntax. All non-global variable declarations should have a required 'in' clause.</value>
+    <value>Invalid binding syntax. All non-global bindings through 'let/in' should have a required 'in' clause.</value>
   </data>
   <data name="ExpectedIsOperator" xml:space="preserve">
     <value>Expected keyword 'is'.</value>
