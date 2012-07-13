@@ -9,7 +9,7 @@ namespace Ela.Runtime.ObjectModel
         private Dictionary<Int32,ElaFunction> funs;
         private readonly string name;
         private readonly int mask;
-        private int curType;
+        private readonly int curType;
 
         internal ElaFunTable(string name, int mask, int pars, int curType, ElaMachine vm) : base(pars)
         {
@@ -25,6 +25,7 @@ namespace Ela.Runtime.ObjectModel
         {
             var m = 1 << AppliedParameters;
             var bit = (mask & m) == m;
+            var ct = curType;
             
             if (bit && val.TypeId == ElaMachine.LAZ)
             {
@@ -34,17 +35,17 @@ namespace Ela.Runtime.ObjectModel
                     return null;
             }
 
-            if (curType == 0)
+            if (ct == 0)
             {
                 if (bit)
-                    curType = val.TypeId;
+                    ct = val.TypeId;
             }
             else
             {
-                if (bit && val.TypeId != curType)
+                if (bit && val.TypeId != ct)
                 {
-                    if (funs.ContainsKey(curType))
-                        ctx.NoOverload(ToStringWithType(curType, null, AppliedParameters), ToStringWithType(curType, val.TypeId, AppliedParameters), name);
+                    if (funs.ContainsKey(ct))
+                        ctx.NoOverload(ToStringWithType(ct, null, AppliedParameters), ToStringWithType(ct, val.TypeId, AppliedParameters), name);
                     else
                         ctx.NoOverload(val.GetTypeName(), name);
                     return null;
@@ -55,10 +56,10 @@ namespace Ela.Runtime.ObjectModel
             {
                 var ret = default(ElaFunction);
 
-                if (!funs.TryGetValue(curType, out ret))
+                if (!funs.TryGetValue(ct, out ret))
                 {
-                    if (funs.ContainsKey(curType))
-                        ctx.NoOverload(ToStringWithType(curType, null, AppliedParameters), ToStringWithType(curType, val.TypeId, AppliedParameters), name);
+                    if (funs.ContainsKey(ct))
+                        ctx.NoOverload(ToStringWithType(ct, null, AppliedParameters), ToStringWithType(ct, val.TypeId, AppliedParameters), name);
                     else
                         ctx.NoOverload(val.GetTypeName(), name); 
                     return null;
@@ -78,7 +79,9 @@ namespace Ela.Runtime.ObjectModel
                 return ret;
             }
 
-            return this;
+            var f = new ElaFunTable(name, mask, Parameters.Length + 1, ct, Machine);
+            f.funs = funs;
+            return base.CloneFast(f);
         }
 
         public override ElaValue Call(params ElaValue[] args)
@@ -111,9 +114,7 @@ namespace Ela.Runtime.ObjectModel
 
         public override ElaFunction Clone()
         {
-            var f = new ElaFunTable(name, mask, Parameters.Length + 1, curType, Machine);
-            f.funs = funs;
-            return base.CloneFast(f);
+            return this;
         }
 
         public override string ToString(string format, IFormatProvider provider)

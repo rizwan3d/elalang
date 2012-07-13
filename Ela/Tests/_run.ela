@@ -1,4 +1,4 @@
-open test console
+open test console 
 open basictests funtests rangetests listtests tupletests recordtests
      varianttests comprehensiontests thunktests matchtests
 
@@ -21,3 +21,5 @@ _ = []
     |> regFuns matchtests
     |> run
     |> report (\_ -> true) writen
+
+toInt 'A'

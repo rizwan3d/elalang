@@ -1,3 +1,4 @@
+0.11.0.25:Fix:A bug fixed in resolving of member function for user defined classes; during function resolution a function object could be mutated without prior cloning.
 0.11.0.24:New:A support for lazy tuple patterns was implemented.
 0.11.0.23:Fix:Evaluation of recursive thunks with high level of nesting could result in a stack overflow.
 0.11.0.22:Fix:A bug fixed in compilation logic of instance members for custom classes. Using a partially applied function as an instance member could result in a VM crush.
