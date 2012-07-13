@@ -66,7 +66,6 @@ namespace Ela.Compilation
         Untag,
         Skiphtag,
         Gettag,
-        Cast,
         Recfld,
         Addmbr,                
         Traitch,

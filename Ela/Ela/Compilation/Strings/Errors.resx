@@ -141,6 +141,9 @@
   <data name="InvalidFunctionDeclaration" xml:space="preserve">
     <value>Invalid function declaration: {0}.</value>
   </data>
+  <data name="InvalidLazyPattern" xml:space="preserve">
+    <value>A lazy pattern {0} is not supported.</value>
+  </data>
   <data name="InvalidMatchEntry" xml:space="preserve">
     <value>Match entry {0} is invalid.</value>
   </data>

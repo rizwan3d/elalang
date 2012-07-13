@@ -68,7 +68,6 @@ namespace Ela.Compilation
 			0, //Untag
 			0, //Skiphtag
 			0, //Gettag
-			-1, //Cast
             -1, //Recfld
             -3, //Addmbr            
             -1, //Traitch

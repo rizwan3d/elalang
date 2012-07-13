@@ -1089,32 +1089,6 @@ namespace Ela.Runtime
                             goto SWITCH_MEM;
                         }
                         break;
-                    case Op.Cast:
-                        {
-                            left = evalStack.Pop();
-                            right = evalStack.Pop();
-
-                            if (left.TypeId == LAZ || right.TypeId == LAZ)
-                            {
-                                left = left.Ref.Force(left, ctx);
-                                right = right.Ref.Force(right, ctx);
-                            }
-
-                            if (!ctx.Failed)
-                            {
-                                evalStack.Push(Cast(left, right, thread, evalStack, ctx));
-
-                                if (!ctx.Failed)
-                                    break;
-
-                                evalStack.PopVoid();
-                            }
-
-                            evalStack.Push(right);
-                            evalStack.Push(left);
-                            ExecuteThrow(thread, evalStack);
-                            goto SWITCH_MEM;
-                        }
                     case Op.Not:
                         right = evalStack.Peek();
                         right = right.Ref.Force(right, ctx);
@@ -1500,78 +1474,6 @@ namespace Ela.Runtime
 
 
         #region Operations
-        private ElaValue Cast(ElaValue codeValue, ElaValue value, WorkerThread thread, EvalStack stack, ExecutionContext ctx)
-        {
-            if (codeValue.TypeId != INT)
-            {
-                InvalidType(codeValue, thread, stack, TCF.GetShortForm(ElaTypeCode.Integer));
-                return new ElaValue(ElaObject.ElaInvalidObject.Instance);
-            }
-
-            var code = codeValue.I4;
-
-            if (code == value.TypeId)
-                return value;
-
-            if (value.Ref is ElaUserType)
-            {
-                var ut = (ElaUserType)value.Ref;
-
-                if (ut.Value.TypeId == code)
-                    return ut.Value;
-            }
-
-            if (code == CHR && value.TypeId == INT)
-                return new ElaValue((Char)value.I4);
-
-            else if (code == INT && value.TypeId == LNG)
-                return new ElaValue((Int32)value.Ref.AsLong());
-            else if (code == INT && value.TypeId == REA)
-                return new ElaValue((Int32)value.DirectGetReal());
-            else if (code == INT && value.TypeId == DBL)
-                return new ElaValue((Int32)value.Ref.AsDouble());
-            else if (code == INT && value.TypeId == CHR)
-                return new ElaValue(value.I4);
-            else if (code == INT && value.TypeId == BYT)
-                return new ElaValue(value.I4);
-
-            else if (code == REA && value.TypeId == INT)
-                return new ElaValue((Single)value.I4);
-            else if (code == REA && value.TypeId == LNG)
-                return new ElaValue((Single)value.Ref.AsLong());
-            else if (code == REA && value.TypeId == DBL)
-                return new ElaValue((Single)value.Ref.AsDouble());
-
-            else if (code == LNG && value.TypeId == INT)
-                return new ElaValue((Int64)value.I4);
-            else if (code == LNG && value.TypeId == REA)
-                return new ElaValue((Int64)value.DirectGetReal());
-            else if (code == LNG && value.TypeId == DBL)
-                return new ElaValue((Int64)value.Ref.AsDouble());
-            else if (code == LNG && value.TypeId == CHR)
-                return new ElaValue((Int64)value.I4);
-            else if (code == INT && value.TypeId == BYT)
-                return new ElaValue((Int64)value.I4);
-
-            else if (code == DBL && value.TypeId == INT)
-                return new ElaValue((Double)value.I4);
-            else if (code == DBL && value.TypeId == LNG)
-                return new ElaValue((Double)value.Ref.AsLong());
-            else if (code == DBL && value.TypeId == REA)
-                return new ElaValue((Double)value.DirectGetReal());
-
-            else if (code == STR && value.TypeId == CHR)
-                return new ElaValue(((Char)value.I4).ToString());
-
-            else if (code == BYT && value.TypeId == INT)
-                return new ElaValue(value.I4 == 1);
-            else if (code == BYT && value.TypeId == LNG)
-                return new ElaValue(value.Ref.AsLong() == 1);
-
-            ctx.ConversionFailed(value, TCF.GetShortForm((ElaTypeCode)code));
-            return new ElaValue(ElaObject.ElaInvalidObject.Instance);
-        }
-
         internal ElaValue CallPartial(ElaFunction fun, ElaValue arg)
         {
             if (fun.AppliedParameters < fun.Parameters.Length)
@@ -1801,9 +1703,17 @@ namespace Ela.Runtime
                 thread.Context.Failed = false;
                 var t = thread.Context.Thunk;
                 thread.Context.Thunk = null;
+                var fn = t.Function;
                 thread.Offset--;
-                Call(t.Function, thread, stack, CallFlag.AllParams);
-                thread.CallStack.Peek().Thunk = t;
+
+                if (fn != null)
+                {
+                    Call(t.Function, thread, stack, CallFlag.AllParams);
+                    thread.CallStack.Peek().Thunk = t;
+                }
+                else
+                    stack.Push(t.Value);
+
                 return;
             }
             else if (thread.Context.Fun != null)

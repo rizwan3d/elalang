@@ -2,7 +2,7 @@
   Module peano
   Created by Basil Voronkov in 2012
 */
-open string
+open string number list
 
 /* Construction */
 type peano where
@@ -19,6 +19,10 @@ type peano where
   max = infinity
   inc # private
   inc a = Succ a
+  fromInt # qualified
+  fromInt a = fromIntegral a
+  fromLong # qualified
+  fromLong a = fromIntegral a
   fromIntegral # qualified
   fromIntegral a = from a
     where from 0 = zero
@@ -54,15 +58,36 @@ instance Ring peano where
   x*y  = multiply x y
   x**y = power x y
 
+instance Field peano where
+  x/y = fst (divideMod x y)
+
+instance Modulo peano where
+  mod x y = snd (divideMod x y)
+  rem x y = snd (divideMod x y)
+
+instance Integral peano where
+  div x y = fst (divideMod x y)
+  quot x y = fst (divideMod x y)
+
+instance Absolute peano where
+  abs = id
+  signum Zero = zero
+  signum (Succ _) = one
+
+instance IntLike peano where
+  toInt = toIntegral 0
+
+instance LongLike peano where
+  toLong = toIntegral 0L
+
+instance ListLike peano where
+  toList = list 0
+    where list n Zero = [n]
+          list n (Succ a) = n :: (& list (n+1) a)
+
 /* Functions */
 listLength [] = zero
 listLength (x::xs) = add one (& listLength xs)
-
-toIntegral # qualified
-toIntegral = count 0L
-  where 
-    count n Zero = n
-    count n (Succ v) = count (n+1) v
 
 (?) = fromIntegral
 
@@ -72,7 +97,11 @@ add (Succ a) b = inc (& add a b)
 subtract Zero Zero = Zero
 subtract Zero b = fail "Peano: out of range!"
 subtract b Zero = b
-subtract (Succ a) (Succ b) = (& subtract a b)
+subtract (Succ a) (Succ b) = & subtract a b
+
+subtractNeg Zero y = (false, y)
+subtractNeg x Zero = (true, x)
+subtractNeg (Succ x) (Succ y) = & subtractNeg x y
 
 multiply Zero _ = zero
 multiply _ Zero = zero
@@ -82,6 +111,11 @@ power b Zero = one
 power b e = p e one
   where p Zero r = r
         p n r = p (n `subtract` one) (r `multiply` b)
+
+divideMod x y 
+  | neg  = (zero,x)
+  | else = let &(q,r) = & divideMod d y in (inc q,r)
+  where (neg,d) = subtractNeg y x
 
 toIntegral2 # private
 toIntegral2 a b = toInt 0L 0L a b
@@ -94,3 +128,7 @@ toIntegral2 a b = toInt 0L 0L a b
 comp # private
 comp f a b = x `f` y 
   where (x,y) = toIntegral2 a b
+
+toIntegral # private
+toIntegral n Zero = n
+toIntegral n (Succ v) = toIntegral (n+1) v

@@ -134,7 +134,7 @@ instance Ring single
 instance Ring double
 
 /* Num */
-class Field __internal Field (/) recip
+class Field __internal Field (/)
 
 instance Field int
 
@@ -283,14 +283,49 @@ instance Show record where
                 | else = fld :: "," :: tos (n+1)
                 where fld = t!!n ++ "=" ++ showf f (t:n)
 
-/* Cast functions */
-toInt    = cast 1
-toLong   = cast 2
-toSingle = cast 3
-toDouble = cast 4
-toBool   = cast 5
-toChar   = cast 6
-toString = cast 7
+/* xLike */
+class IntLike a where
+  toInt a
+
+class LongLike a where
+  toLong a
+
+class SingleLike a where
+  toSingle a
+
+class DoubleLike a where
+  toDouble a
+
+class BoolLike a where
+  toBool a
+
+class CharLike a where
+  toChar a
+
+class StringLike a where
+  toString a
+
+instance IntLike int long single double char bool where
+  toInt = lang.__toInt
+
+instance LongLike long int single double char bool where
+  toLong = lang.__toLong
+
+instance SingleLike single double long int where
+  toSingle = lang.__toSingle
+
+instance DoubleLike double single long int where
+  toDouble = lang.__toDouble
+
+instance CharLike char int where
+  toChar = lang.__toChar
+
+instance BoolLike bool int long where
+  toBool = lang.__toBool
+
+instance StringLike string char where
+  toString = lang.__toString
+
 
 /* Misc operators */
 not = __internal not

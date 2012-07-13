@@ -1265,7 +1265,7 @@ internal sealed partial class Parser {
 		if (la.kind == 41) {
 			var cb = default(ElaEquationSet); 
 			WhereBinding(out cb);
-			if (left.Type == ElaNodeType.Header)
+			if (left != null && left.Type == ElaNodeType.Header)
 			   AddError(ElaParserError.InvalidAttributeWhere);
 			
 			    var letb = new ElaLetBinding();                    

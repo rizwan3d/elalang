@@ -13,7 +13,6 @@ namespace Ela
                 case "fpipe": return ElaBuiltinKind.ForwardPipe;
                 case "bpipe": return ElaBuiltinKind.BackwardPipe;
                 case "not": return ElaBuiltinKind.Not;
-                case "recip": return ElaBuiltinKind.Recip;
                 case "force": return ElaBuiltinKind.Force;
                 case "length": return ElaBuiltinKind.Length;
                 case "typeinfo": return ElaBuiltinKind.Type;
@@ -28,7 +27,6 @@ namespace Ela
                 case "showf": return ElaBuiltinKind.Showf;
                 
                 case "recfield": return ElaBuiltinKind.RecField;
-                case "cast": return ElaBuiltinKind.Cast;
                 case "equal": return ElaBuiltinKind.Equal;
                 case "notequal": return ElaBuiltinKind.NotEqual;
                 case "greaterequal": return ElaBuiltinKind.GreaterEqual;

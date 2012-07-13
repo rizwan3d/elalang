@@ -2,6 +2,8 @@
   Module list
   Created in 2011-2012 by Basil Voronkov
 */
+class ListLike a where
+  toList a
 
 //Strict sort based on merge sort
 mergeBy # private

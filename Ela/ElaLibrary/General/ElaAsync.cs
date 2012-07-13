@@ -39,13 +39,6 @@ namespace Ela.Library.General
 		#endregion
 
 
-		#region Operations
-		protected override string Show(ElaValue @this, ShowInfo info, Ela.Runtime.ExecutionContext ctx)
-		{
-			return "[" + TYPENAME + "]";
-		}
-		#endregion
-
 
 		#region Properties
 		internal ST.Thread Thread { get; set; }

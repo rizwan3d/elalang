@@ -6,8 +6,6 @@ namespace Ela.CodeModel
     {
         None,
 
-        Recip,
-
         Not,
 
         Force,
@@ -38,8 +36,6 @@ namespace Ela.CodeModel
 
         Showf,
 
-        Cast,
-        
         ForwardPipe,
 
         BackwardPipe,

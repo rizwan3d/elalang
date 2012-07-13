@@ -9,13 +9,15 @@ namespace Ela.Compilation
         public readonly ElaBuiltinKind Kind;
         public readonly int ModuleHandle;
         public readonly int Address;
+        public readonly int Data;
 
-        internal ExportVarData(ElaBuiltinKind kind, ElaVariableFlags flags, int moduleHandle, int address)
+        internal ExportVarData(ElaBuiltinKind kind, ElaVariableFlags flags, int data, int moduleHandle, int address)
         {
             Kind = kind;
             ModuleHandle = moduleHandle;
             Address = address;
             Flags = flags;
+            Data = data;
         }
     }
 }

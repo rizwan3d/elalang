@@ -13,10 +13,10 @@ namespace Ela.Compilation
             variables = new Dictionary<String,ExportVarData>();
         }
         
-        public void AddVariable(string name, ElaBuiltinKind kind, ElaVariableFlags flags, int moduleHandle, int address)
+        public void AddVariable(string name, ElaBuiltinKind kind, ElaVariableFlags flags, int data, int moduleHandle, int address)
         {
             variables.Remove(name);
-            variables.Add(name, new ExportVarData(kind, flags, moduleHandle, address));
+            variables.Add(name, new ExportVarData(kind, flags, data, moduleHandle, address));
         }
 
         public bool FindVariable(string name, out ExportVarData data)

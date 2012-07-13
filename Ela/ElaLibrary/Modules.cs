@@ -20,7 +20,7 @@ using Ela.Library.General;
 //[assembly: ElaModule("StringBuilder", typeof(StringBuilderModule))]
 //[assembly: ElaModule("Guid", typeof(GuidModule))]
 //[assembly: ElaModule("Shell", typeof(ShellModule))]
-//[assembly: ElaModule("Async", typeof(AsyncModule))]
+//[assembly: ElaModule("async", typeof(AsyncModule))]
 
 //[assembly: ElaModule("MutableMap", typeof(MutableMapModule))]
 //[assembly: ElaModule("Map", typeof(MapModule))]

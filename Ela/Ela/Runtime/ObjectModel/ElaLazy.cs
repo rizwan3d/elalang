@@ -67,7 +67,24 @@ namespace Ela.Runtime.ObjectModel
                 return Default();
             }
 
-			return Value.Ref.Force(Value, ctx);
+            if (Value.Ref is ElaLazy)
+            {                
+                var val = Value;
+
+                while (val.TypeId == ElaMachine.LAZ)
+                {
+                    var la = (ElaLazy)val.Ref;
+
+                    if (la.Value.Ref != null)
+                        val = la.Value;
+                    else
+                        return Value.Ref.Force(Value, ctx);
+                }
+
+                return Value = val;
+            }
+
+            return Value;
 		}
 
         public override string ToString(string format, IFormatProvider provider)
@@ -123,8 +140,8 @@ namespace Ela.Runtime.ObjectModel
 			get { return _value; }
 			set
 			{
-				Function = null;
-				_value = value;
+                _value = value;
+				Function = null;				
 			}
 		}
 	}
