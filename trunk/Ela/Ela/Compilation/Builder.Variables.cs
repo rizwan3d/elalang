@@ -174,15 +174,12 @@ namespace Ela.Compilation
             if (exports.FindVariable(name, out vk))
             {
                 var flags = vk.Flags;
-                var data = -1;
+                var data = vk.Data;
 
                 //This name requires qualified access, no need to stop compilation but
                 //we need to generate an appropriate error.
                 if ((flags & ElaVariableFlags.Qualified) == ElaVariableFlags.Qualified)
                     AddError(ElaCompilerError.NameRequireQualified, line, col, name);
-
-                if (vk.Kind != ElaBuiltinKind.None)
-                    data = (Int32)vk.Kind;
 
                 //All externals are added to the list of 'latebounds'. These names are then verified by a linker.
                 //This verification is used only when a module is deserialized from an object file.

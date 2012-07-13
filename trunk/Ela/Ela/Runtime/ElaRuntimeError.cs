@@ -10,7 +10,7 @@ namespace Ela.Runtime
 
 		CallFailed = 801,
 
-		ConversionFailed = 802,
+		// = 802,
 
 		DivideByZero = 803,
 

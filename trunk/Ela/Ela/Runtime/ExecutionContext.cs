@@ -38,19 +38,6 @@ namespace Ela.Runtime
 		}
 
 
-		public void ConversionFailed(ElaValue source, string targetType)
-		{
-			ConversionFailed(source, targetType, Strings.GetMessage("NotSupported"));
-		}
-
-
-		public void ConversionFailed(ElaValue source, string targetType, string reason)
-		{
-			Fail(ElaRuntimeError.ConversionFailed, source.ToString(), source.GetTypeName(),
-                targetType, reason);
-		}
-
-
 		public void InvalidIndexType(ElaValue index)
 		{
 			Fail(ElaRuntimeError.InvalidIndexType, index.GetTypeName());

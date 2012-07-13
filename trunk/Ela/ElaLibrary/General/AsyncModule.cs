@@ -43,7 +43,15 @@ namespace Ela.Library.General
 			Add<ElaAsync,Boolean>("hasValue", HasValue);
 			Add<Int32,ElaAsync,ElaUnit>("wait", Wait);
 			Add<ElaFunction,ElaUnit>("sync", Sync);
+            Add<Int32,ElaUnit>("sleep", Sleep);
 		}
+
+
+        public ElaUnit Sleep(int ms)
+        {
+            Thread.Sleep(ms);
+            return ElaUnit.Instance;
+        }
 
 
 		public ElaAsync RunAsync(ElaFunction fun)
@@ -60,7 +68,7 @@ namespace Ela.Library.General
 				return obj.Return;
 			else
 			{
-				Wait(5000, obj);
+				Wait(Int32.MaxValue, obj);
 
 				if (!HasValue(obj))
 					throw new ElaRuntimeException("AsyncNoValue", "Unable to obtain a value of an async computation.");
@@ -83,7 +91,7 @@ namespace Ela.Library.General
 
 			if (th != null)
 			{
-				if (th.Join(timeout))
+                if (th.Join(timeout))
 				{
                     lock (syncRoot)
                     {

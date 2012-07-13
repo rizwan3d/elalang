@@ -205,6 +205,7 @@ namespace Ela.Linking
                     exportVars.AddVariable(kv.Key, 
                         (sv.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin ? (ElaBuiltinKind)sv.Data : ElaBuiltinKind.None,
                         sv.Flags,
+                        sv.Data,
                         logicHandle, sv.Address);
             }
 

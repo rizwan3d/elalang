@@ -1,13 +1,16 @@
-0.11.0.21:Fix:A bug fixed in 'getType' function from prelude that could crash VM when trying to obtain a type of a thunk.
-0.11.0.20:Change:Now linker generates more accurate file locations for 'module link failed' error.
-0.11.0.19:Change:Behavior of op codes Newmod and Runmod was changed and optimized.
-0.11.0.18:Change:A 'standard library' settings of a linker is decomissioned.
-0.11.0.17:Fix:It was impossible to implement a class from a module referenced using 'import' directive (not 'open' directive).
-0.11.0.16:Change:Built-in class enum is decomissioned. Instead new classes 'Additive', 'Ring', 'Field' and 'Modulo' are introduced.
-0.11.0.15:Change:Layout rules for instance and type are now more flexible.
-0.11.0.14:Change:Error messages for overloads failures are greatly improved.
-0.11.0.13:Fix:It was impossible to call overloaded Ela functions from .NET because of a bug.
-0.11.0.12:New:A new built-in function 'recip' is added.
+0.11.0.24:New:A support for lazy tuple patterns was implemented.
+0.11.0.23:Fix:Evaluation of recursive thunks with high level of nesting could result in a stack overflow.
+0.11.0.22:Fix:A bug fixed in compilation logic of instance members for custom classes. Using a partially applied function as an instance member could result in a VM crush.
+0.11.0.21:Change:Op code 'Cast' is decomissioned along with the corresponding built-in. Now toInt, toLong, etc. prelude functions are members of classes IntLike, LongLike, etc.
+0.11.0.20:Fix:A bug fixed in 'getType' function from prelude that could crash VM when trying to obtain a type of a thunk.
+0.11.0.19:Change:Now linker generates more accurate file locations for 'module link failed' error.
+0.11.0.18:Change:Behavior of op codes Newmod and Runmod was changed and optimized.
+0.11.0.17:Change:A 'standard library' settings of a linker is decomissioned.
+0.11.0.16:Fix:It was impossible to implement a class from a module referenced using 'import' directive (not 'open' directive).
+0.11.0.15:Change:Built-in class enum is decomissioned. Instead new classes 'Additive', 'Ring', 'Field' and 'Modulo' are introduced.
+0.11.0.14:Change:Layout rules for instance and type are now more flexible.
+0.11.0.13:Change:Error messages for overloads failures are greatly improved.
+0.11.0.12:Fix:It was impossible to call overloaded Ela functions from .NET because of a bug.
 0.11.0.11:Change:Now op code 'Div' always does a real division, previos behaviour is implemented for integer numbers through 'Quot' op code.
 0.11.0.10:New:A new op code 'Quot' and a corresponding built-in function is added.
 0.11.0.9:New:A new op code 'Mod' and a corresponding built-in function is added.

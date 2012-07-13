@@ -1,3 +1,4 @@
+0.1.4.31:New:A new 'peano' module is added.
 0.1.4.30:New:A new 'lazyList' function added to 'thunk' module.
 0.1.4.29:Change:Implementation of 'forceThunk' from 'thunk' module is optimized.
 0.1.4.28:Change:Implementation of Ix list ('length' function) is optimized.

@@ -40,10 +40,6 @@ namespace Ela.Compilation
         {
             switch (kind)
             {
-                case ElaBuiltinKind.Recip:
-                    cw.Emit(Op.PushR4, new Conv { R4 = 1 }.I4_1);
-                    cw.Emit(Op.Div);
-                    break;
                 case ElaBuiltinKind.RecField:
                     cw.Emit(Op.Recfld);
                     break;
@@ -53,9 +49,6 @@ namespace Ela.Compilation
                     break;
                 case ElaBuiltinKind.BackwardPipe:
                     cw.Emit(Op.Call);
-                    break;
-                case ElaBuiltinKind.Cast:
-                    cw.Emit(Op.Cast);
                     break;
                 case ElaBuiltinKind.Gettag:
                     cw.Emit(Op.Gettag);

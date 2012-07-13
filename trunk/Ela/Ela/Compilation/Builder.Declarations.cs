@@ -155,6 +155,15 @@ namespace Ela.Compilation
         {
             switch (pat.Type)
             {
+                case ElaNodeType.LazyLiteral:
+                    {
+                        //Not all forms of lazy patterns are supported,
+                        //but it is easier to process them anyways. Errors will be caught
+                        //during pattern compilation.
+                        var vp = (ElaLazyLiteral)pat;
+                        AddPatternVariables(vp.Expression);
+                    }
+                    break;
                 case ElaNodeType.VariantLiteral:
                     {
                         var vp = (ElaVariantLiteral)pat;

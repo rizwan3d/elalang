@@ -5,9 +5,8 @@ This module contains functions that operate with strings.
 
 #members
 
-toList s
-Converts a given string to a linked list. This function requires a qualified access, e.g.
-`string.toList`.
+ListLike string
+Converts a given string to a linked list.
 
 fromList xs
 Converts a given list to a string. Only a list of chars, a list of string or a list of chars

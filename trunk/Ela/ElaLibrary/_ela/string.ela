@@ -3,7 +3,10 @@
   Created in 2012 by Basil Voronkov
 */
 import libString#elalib@str
-import lang
+import list lang
+
+instance list.ListLike string
+  where toList x = str.toList x
 
 upper (x is string) = str.upper x
 lower (x is string) = str.lower x
@@ -36,9 +39,6 @@ fromList # qualified
 fromList xs = lang.__stringFromList (trav xs)
   where trav (x::xs) = force x :: trav xs
         trav [] = []
-
-toList # qualified
-toList (x is string) = str.toList x
 
 //This function is used to collect chars in a list
 collect # private

@@ -236,6 +236,17 @@ namespace Ela.Compilation
 
             switch (exp.Type)
             {
+                case ElaNodeType.LazyLiteral:
+                    {
+                        var n = (ElaLazyLiteral)exp;
+
+                        //Currently we support only lazy tuple patterns
+                        if (n.Expression.Type == ElaNodeType.TupleLiteral)
+                            CompileLazyTuplePattern(sysVar, (ElaTupleLiteral)n.Expression, failLab);
+                        else
+                            AddError(ElaCompilerError.InvalidLazyPattern, exp, FormatNode(exp));
+                    }
+                    break;
                 case ElaNodeType.NameReference:
                     {
                         //Irrefutable pattern, always binds expression to a name
@@ -551,6 +562,50 @@ namespace Ela.Compilation
                 }
 
                 CompilePattern(sysVar2, snd, failLab);
+            }
+        }
+
+        //With a lazy tuple pattern an equation like so: '(x,y) = exp' is semantically transformed 
+        //into '(x,y) = (&fst exp,&snd exp)', but as long as we now have two tuples of the same
+        //length on both sides there is no need to create any of them - so we just assign variables
+        //with generated thunks.
+        private void CompileLazyTuplePattern(int sysVar, ElaTupleLiteral tuple, Label failLab)
+        {
+            var len = tuple.Parameters.Count;
+
+            for (var i = 0; i < len; i++)
+            {
+                var e = tuple.Parameters[i];
+
+                //Compile the first part of the thunk function
+                Label funSkipLabel;
+                int address;
+                LabelMap newMap;
+                CompileLazyExpressionHeader(e.Line, e.Column, out funSkipLabel, out address, out newMap);
+
+                //Here we compile a thunk body that obtains a tuple element
+                //Here we have to manually patch an address because we refer
+                //to a captured variable that doesn't belong to this function scope.
+                var a = (sysVar & Byte.MaxValue) + 1 | (sysVar << 8) >> 8;
+                PushVar(a);
+                //Check for length in order to generate "nice" error instead of IndexOutOfRange.
+                //We have to do for each element because they may be evaluated independently.
+                cw.Emit(Op.Len);
+                cw.Emit(Op.PushI4, len);
+                cw.Emit(Op.Cneq);
+                cw.Emit(Op.Brtrue, failLab);
+                //Obtain an element
+                if (i == 0) cw.Emit(Op.PushI4_0); else cw.Emit(Op.PushI4, i);
+                PushVar(a);
+                cw.Emit(Op.Pushelem);
+
+                //Compile thunk epilog, create a new thunk object
+                CompileLazyExpressionEpilog(address, funSkipLabel);
+
+                //Move on to the nested pattern
+                var newSys = AddVariable();
+                PopVar(newSys);
+                CompilePattern(newSys, e, failLab);
             }
         }
 

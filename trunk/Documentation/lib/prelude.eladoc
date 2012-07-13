@@ -92,8 +92,7 @@ Defines functions of a (not necessarily commutative) ring, including multiplicat
 power `**`.
 
 Field
-Defines functions from a commutative division ring, including real division `/` and multiplicative
-inverse.
+Defines a function from a commutative division ring.
 
 Modulo
 Defines a modulus function (`mod`) and a remainder function (`rem).
@@ -147,6 +146,115 @@ A function `showf` formats a given value to a string:
 A format string can be used to specify a format if this format is supported by a particular 
 implementation of `showf`:
 >>>showf ".##" 12.1234
+
+IntLike
+Defines a `toInt` type cast function.
+
+LongLike
+Defines a `toLong` type cast function.
+
+SingleLike
+Defines a `toSingle` type cast function.
+
+DoubleLike
+Defines a `toDouble` type cast function.
+
+BoolLike
+Defines a `toBool` type cast function.
+
+CharLike
+Defines a `toChar` type cast function.
+
+StringLike
+Defines a `toString` type cast function.
+
+IntLike int
+This instance is provided so that `toInt` applied to an `int` would be equivalent to an identity
+function.
+
+IntLike long
+Implements a type cast of a 64-bit integer to a 32-bit integer.
+
+IntLike single
+Implements a type cast of a 32-bit float to a 32-bit integer.
+
+IntLike double
+Implements a type cast of a 64-bit float to a 32-bit integer.
+
+IntLike bool
+Implements a type cast of a boolean to a 32-bit integer.
+
+IntLike char
+Implements a type cast of a unicode character to a 32-bit integer.
+
+LongLike long
+This instance is provided so that `toLong` applied to a `long` would be equivalent to an identity
+function.
+
+LongLike int
+Implements a type cast of a 32-bit integer to a 64-bit integer.
+
+LongLike single
+Implements a type cast of a 32-bit float to a 64-bit integer.
+
+LongLike double
+Implements a type cast of a 64-bit float to a 64-bit integer.
+
+LongLike bool
+Implements a type cast of a boolean to a 64-bit integer.
+
+LongLike char
+Implements a type cast of a unicode character to a 64-bit integer.
+
+SingleLike single
+This instance is provided so that `toSingle` applied to a `single` would be equivalent to an identity
+function.
+
+SingleLike int
+Implements a type cast of a 32-bit integer to a 32-bit float.
+
+SingleLike long
+Implements a type cast of a 64-bit integer to a 32-bit float.
+
+SingleLike double
+Implements a type cast of a 64-bit float to a 32-bit float.
+
+DoubleLike double
+This instance is provided so that `toDouble` applied to a `double` would be equivalent to an identity
+function.
+
+DoubleLike int
+Implements a type cast of a 32-bit integer to a 64-bit float.
+
+DoubleLike long
+Implements a type cast of a 64-bit integer to a 64-bit float.
+
+DoubleLike single
+Implements a type cast of a 32-bit float to a 64-bit float.
+
+BoolLike bool
+This instance is provided so that `toBool` applied to a `bool` would be equivalent to an identity
+function.
+
+BoolLike int
+Implements a type cast of a 32-bit integer to a boolean.
+
+BoolLike long
+Implements a type cast of a 64-bit integer to a boolean.
+
+CharLike char
+This instance is provided so that `toChar` applied to a `char` would be equivalent to an identity
+function.
+
+CharLike int
+Implements a type cast of a 32-bit integer to a unicode character.
+
+StringLike string
+This instance is provided so that `toString` applied to a `string` would be equivalent to an identity
+function.
+
+StringLike char
+Implements a type cast of a unicode character to a string.
 
 Eq int
 Implements equality functions for 32-bit integer type. This instance is automatically generated 
@@ -424,32 +532,6 @@ Implements `showf` function for a variant.
 % x y
 An alias for a remainder (`rem`) function from `Modulo` class:
 >>>12.2 % 3.0
-
-toInt x
-Casts a given value to a 32-bit integer. Values of types `long`, `single`, `double`, `char` and
-`bool` can be converted to an integer using this function.
-
-toLong x
-Casts a given value to a 64-bit integer. Values of types `int`, `single`, `double`, `char` and
-`bool` can be converted to an 64-bit integer using this function.
-
-toSingle x
-Casts a given value to a 32-bit float. Values of types `int`, `double` and `long`
-can be converted to an 32-bit float using this function.
-
-toDouble x
-Casts a given value to a 64-bit float. Values of types `int`, `long` and `single`
-can be converted to an 64-bit float using this function.
-
-toBool x
-Casts a given value to a boolean. Values of types `int` and `long` can be converted to an boolean 
-using this function.
-
-toChar x
-Casts a given value to a char. Values of types `int` can be converted to a char using this function.
-
-toString x
-Casts a given value to a string. Values of types `char` can be converted to a string using this function.
 
 show x
 Implements a helper function defined like `show ""` that can be used when a format string is 
