@@ -19,7 +19,7 @@ namespace Ela.CodeModel
 
 		LazyLiteral = 6,
 
-		VariantLiteral = 7,
+		// = 7,
 		
 		
 
@@ -77,6 +77,8 @@ namespace Ela.CodeModel
 
         ClassMember,
 
-        Newtype
+        Newtype,
+
+        Constructor
 	}
 }

@@ -164,14 +164,6 @@ namespace Ela.Compilation
                         AddPatternVariables(vp.Expression);
                     }
                     break;
-                case ElaNodeType.VariantLiteral:
-                    {
-                        var vp = (ElaVariantLiteral)pat;
-
-                        if (vp.Expression != null)
-                            AddPatternVariables(vp.Expression);
-                    }
-                    break;
                 case ElaNodeType.UnitLiteral: //Idle
                     break;
                 case ElaNodeType.As:

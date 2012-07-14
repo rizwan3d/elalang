@@ -22,7 +22,6 @@ namespace Ela
                 case "tail": return ElaBuiltinKind.Tail;
                 case "isnil": return ElaBuiltinKind.IsNil;
                 case "gettag": return ElaBuiltinKind.Gettag;
-                case "untag": return ElaBuiltinKind.Untag;
                 
                 case "showf": return ElaBuiltinKind.Showf;
                 

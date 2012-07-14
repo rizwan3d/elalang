@@ -65,24 +65,23 @@ namespace Ela.Compilation
 			1, //Succ
 			1, //Pred
 			1, //Show
-			1, //Untag
-			1, //Skiphtag
 			1, //Gettag
             1, //Recfld
             1, //Addmbr            
             1, //Traitch
-
-            5, //Newtype
-            5, //Reccons
+            1, //Skiptag
+			1, //Newtype
+            
+            5, //Untag
+			5, //Reccons
 			5, //Tupcons
+            5, //Ctorid
             5, //Typeid
             5, //Classid
             5, //Newfunc
             5, //Newmod
 			5, //Pushext
-            5, //Skiptag
-			5, //Newvar
-			5, //Newrec
+            5, //Newrec
 			5, //Newtup
 			5, //Failwith
 			5, //Start

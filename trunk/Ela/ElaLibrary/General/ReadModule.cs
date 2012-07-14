@@ -107,15 +107,6 @@ namespace Ela.Library.General
                     }
                 case ElaNodeType.UnitLiteral:
                     return new ElaValue(ElaUnit.Instance);
-                case ElaNodeType.VariantLiteral:
-                    {
-                        var n = (ElaVariantLiteral)exp;
-                        
-                        if (n.Expression != null)
-                            return new ElaValue(new ElaVariant(n.Tag, Read(n.Expression, str)));
-                        else
-                            return new ElaValue(new ElaVariant(n.Tag));
-                    }
                 default:
                     throw Fail(str);
             }

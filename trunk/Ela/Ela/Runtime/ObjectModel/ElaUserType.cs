@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Ela.Linking;
 
 namespace Ela.Runtime.ObjectModel
 {
     public sealed class ElaUserType : ElaObject
     {
         private readonly string typeName;
+        private readonly int tag;
 
-        internal ElaUserType(string typeName, int typeCode, ElaValue value) : base((ElaTypeCode)typeCode)
+        internal ElaUserType(string typeName, int typeCode, int tag, ElaValue value) : base((ElaTypeCode)typeCode)
         {
             this.typeName = typeName;
-            Value = value;
+            this.tag = tag;
+
+            if (value.TypeId != ElaMachine.UNI)
+                Values = ((ElaTuple)value.Ref).Values;
         }
 
         protected internal override string GetTypeName()
@@ -19,22 +24,23 @@ namespace Ela.Runtime.ObjectModel
             return typeName;
         }
 
-        internal override string GetTag(ExecutionContext ctx)
+        internal override int GetTag(ExecutionContext ctx)
         {
-            if (Value.TypeId == ElaMachine.LAZ)
-                Value = Value.Ref.Force(Value, ctx);
-
-            return Value.Ref.GetTag(ctx);
+            return tag;
         }
 
-        internal override ElaValue Untag(ExecutionContext ctx)
+        internal override ElaValue Untag(CodeAssembly asm, ExecutionContext ctx, int index)
         {
-            if (Value.TypeId == ElaMachine.LAZ)
-                Value = Value.Ref.Force(Value, ctx);
+            if ((Values == null && index > 0) || index >= Values.Length)
+            {
+                ctx.Fail(new ElaError(ElaRuntimeError.InvalidTypeArgument,
+                    asm.Constructors[tag], typeName, index + 1));
+                return Default();
+            }
 
-            return Value.Ref.Untag(ctx);
+            return Values == null ? new ElaValue(ElaUnit.Instance) : Values[index];
         }
 
-        internal ElaValue Value { get; private set; }
+        internal ElaValue[] Values { get; private set; }
     }
 }

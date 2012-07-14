@@ -159,6 +159,9 @@
   <data name="InvalidQualident" xml:space="preserve">
     <value>An expression '{0}' is invalid in this context. A module alias is expected.</value>
   </data>
+  <data name="InvalidTypeDefinition" xml:space="preserve">
+    <value>Invalid type definition. Type name qualification is only allowed in 'data' declarations.</value>
+  </data>
   <data name="InvalidVariant" xml:space="preserve">
     <value>Invalid variant declaration '{0}'. Only one value can be tagged. Use tuples to tag several values.</value>
   </data>

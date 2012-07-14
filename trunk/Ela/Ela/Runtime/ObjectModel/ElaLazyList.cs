@@ -43,7 +43,7 @@ namespace Ela.Runtime.ObjectModel
 
                 if (InternalNext == null)
                 {
-                    ctx.Fail("InvalidLazyList", "Invalid lazy list definition.");
+                    ctx.Fail("Invalid lazy list definition.");
                     return Default();
                 }
 

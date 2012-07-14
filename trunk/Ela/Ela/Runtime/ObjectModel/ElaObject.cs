@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Ela.Linking;
 
 namespace Ela.Runtime.ObjectModel
 {
@@ -115,12 +116,13 @@ namespace Ela.Runtime.ObjectModel
 			return @this;
 		}
         
-		internal virtual string GetTag(ExecutionContext ctx)
+		internal virtual int GetTag(ExecutionContext ctx)
 		{
-			return String.Empty;
+            ctx.NoOperator(new ElaValue(this), "tag");
+            return -1;
 		}
         
-		internal virtual ElaValue Untag(ExecutionContext ctx)
+		internal virtual ElaValue Untag(CodeAssembly asm, ExecutionContext ctx, int index)
         {
 			ctx.NoOperator(new ElaValue(this), "untag");
 			return Default();

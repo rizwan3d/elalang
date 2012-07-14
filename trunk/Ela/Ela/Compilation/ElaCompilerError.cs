@@ -31,7 +31,7 @@ namespace Ela.Compilation
 
 		NameRequireQualified = 311,
 
-		// = 312,
+		InvalidTypeDefinition = 312,
 
         PrivateOnlyGlobal = 313,
 

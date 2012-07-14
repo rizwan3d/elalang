@@ -42,7 +42,7 @@ namespace Ela
 
 		Lazy = 16,
 
-		Variant = 17,
+		__Reserved2 = 17,
 
         TypeInfo = 18
 	}

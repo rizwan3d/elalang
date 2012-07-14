@@ -124,5 +124,44 @@ namespace Ela.Compilation
             cw.Emit(Op.Newfun, funHandle);
             return parLen;
         }
+
+        //Generates the first part of the code needed to create a simple argument function. After
+        //calling this method one should compile an expression that will become a function body.
+        private void CompileFunctionProlog(string name, int pars, int line, int col, out Label funSkipLabel, out int address, out LabelMap newMap)
+        {
+            if (name != null)
+                StartFun(name, pars);
+
+            StartSection();
+            StartScope(true, line, col);
+            cw.StartFrame(pars);
+            funSkipLabel = cw.DefineLabel();
+            cw.Emit(Op.Br, funSkipLabel);
+            address = cw.Offset;
+            newMap = new LabelMap();
+            newMap.FunctionScope = CurrentScope;
+            newMap.FunctionParameters = pars;
+        }
+
+        //Generates the last past of a simple function by emitting Ret, initializing function and creating
+        //a new function through Newfun. This method should be called right after compiling an expression
+        //that should be a body of a function.
+        private void CompileFunctionEpilog(string name, int pars, int address, Label funSkipLabel)
+        {
+            cw.Emit(Op.Ret);
+            var ff = 0;
+
+            if (name != null)
+                ff = EndFun(frame.Layouts.Count);
+            else
+                ff = cw.FinishFrame();
+
+            frame.Layouts.Add(new MemoryLayout(currentCounter, ff, address));
+            EndSection();
+            EndScope();
+            cw.MarkLabel(funSkipLabel);
+            cw.Emit(Op.PushI4, pars);
+            cw.Emit(Op.Newfun, frame.Layouts.Count - 1);
+        }
 	}
 }

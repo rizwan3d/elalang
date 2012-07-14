@@ -20,7 +20,7 @@ namespace Ela.Runtime
 
         ExpectedFunction = 806,
 
-		// = 807,
+		InvalidTypeArgument = 807,
 
 		InvalidType = 808,
 

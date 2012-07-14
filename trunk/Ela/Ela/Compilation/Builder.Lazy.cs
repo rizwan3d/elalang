@@ -32,42 +32,13 @@ namespace Ela.Compilation
             Label funSkipLabel;
             int address;
             LabelMap newMap;
-            
-            CompileLazyExpressionHeader(exp.Line, exp.Column, out funSkipLabel, out address, out newMap);            
+
+            CompileFunctionProlog(null, 1, exp.Line, exp.Column, out funSkipLabel, out address, out newMap);            
             var ed = CompileExpression(exp, newMap, Hints.Scope | Hints.FunBody);
-            CompileLazyExpressionEpilog(address, funSkipLabel);
+            CompileFunctionEpilog(null, 1, address, funSkipLabel);
+            cw.Emit(Op.Newlazy);
             
             return ed;
-        }
-
-        //Generates the first part of the code needed to create a one argument function (used by a thunk). After
-        //calling this method one should compile an expression that will become a method body.
-        private void CompileLazyExpressionHeader(int line, int col, out Label funSkipLabel, out int address, out LabelMap newMap)
-        {
-            StartSection();
-            StartScope(true, line, col);
-            cw.StartFrame(1);
-            funSkipLabel = cw.DefineLabel();
-            cw.Emit(Op.Br, funSkipLabel);
-            address = cw.Offset;
-            newMap = new LabelMap();
-            newMap.FunctionScope = CurrentScope;
-            newMap.FunctionParameters = 1;
-        }
-
-        //Generates the last past of a single argument function by emitting Ret, initializing function and creating
-        //a new lazy object through Newlazy. This method should be called right after compiling an expression
-        //that should be a body of a function.
-        private void CompileLazyExpressionEpilog(int address, Label funSkipLabel)
-        {
-            cw.Emit(Op.Ret);
-            frame.Layouts.Add(new MemoryLayout(currentCounter, cw.FinishFrame(), address));
-            EndSection();
-            EndScope();
-            cw.MarkLabel(funSkipLabel);
-            cw.Emit(Op.PushI4, 1);
-            cw.Emit(Op.Newfun, frame.Layouts.Count - 1);
-            cw.Emit(Op.Newlazy);
         }
 
         //This methods tries to optimize lazy section. It would only work when a lazy

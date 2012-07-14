@@ -32,6 +32,7 @@ namespace Ela.Compilation
             _internalClasses = new ClassMap();
             InternalInstances = new FastList<InstanceData>();
             LateBounds = new FastList<LateBoundSymbol>();
+            InternalConstructors = new Dictionary<String,Int32>();
        	}
 		#endregion
 
@@ -67,6 +68,7 @@ namespace Ela.Compilation
             copy._internalClasses = new ClassMap(_internalClasses);
             copy.InternalInstances = InternalInstances.Clone();
             copy.LateBounds = LateBounds.Clone();
+            copy.InternalConstructors = new Dictionary<String,Int32>(InternalConstructors);
          	return copy;
 		}
 
@@ -124,6 +126,8 @@ namespace Ela.Compilation
         internal FastList<String> Strings { get; private set; }
 
         internal Dictionary<String,Int32> InternalTypes { get; private set; }
+
+        internal Dictionary<String,Int32> InternalConstructors { get; private set; }
 
         private ClassMap _internalClasses;
         internal Dictionary<String,ClassData> InternalClasses

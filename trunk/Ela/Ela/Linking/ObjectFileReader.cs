@@ -119,6 +119,11 @@ namespace Ela.Linking
             for (var i = 0; i < c; i++)
                 frame.InternalInstances.Add(new InstanceData(bw.ReadString(), bw.ReadString(), bw.ReadInt32(), bw.ReadInt32(), bw.ReadInt32(), bw.ReadInt32()));
 
+            c = bw.ReadInt32();
+
+            for (var i = 0; i < c; i++)
+                frame.InternalConstructors.Add(bw.ReadString(), -1);
+
             var di = bw.ReadBoolean();
 
             if (di)

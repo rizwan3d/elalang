@@ -171,10 +171,11 @@ namespace Ela.Compilation
         }
 
         //A generic method used to loop a prefixed var in a module.
-        private ScopeVar FindByPrefix(string prefix, string var)
+        private ScopeVar FindByPrefix(string prefix, string var, out CodeFrame fr)
         {
             var sv = GetVariable(prefix, CurrentScope, GetFlags.NoError, 0, 0);
             var mod = default(ModuleReference);
+            fr = null;
             
             //Looks like a target object is not a module
             if ((sv.Flags & ElaVariableFlags.Module) != ElaVariableFlags.Module || 
@@ -185,7 +186,9 @@ namespace Ela.Compilation
 
             //We have such a reference but looks like it couldn't be obtained
             //We don't need to handle this situation here, it is already reported by a linker
-            if (refs[mod.LogicalHandle] == null)
+            fr = refs[mod.LogicalHandle];
+
+            if (fr == null)
                 return ScopeVar.Empty;
 
             //No such name, now captured statically

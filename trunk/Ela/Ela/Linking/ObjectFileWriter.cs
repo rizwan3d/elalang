@@ -139,6 +139,12 @@ namespace Ela.Linking
                 bw.Write(it.Column);
             }
 
+            var ctors = frame.InternalConstructors;
+            bw.Write(ctors.Count);
+
+            foreach (var kv in frame.InternalConstructors)
+                bw.Write(kv.Key);
+
             var di = frame.Symbols != null;
             bw.Write(di); //Contains debug info
 

@@ -53,9 +53,6 @@ namespace Ela.Compilation
                 case ElaBuiltinKind.Gettag:
                     cw.Emit(Op.Gettag);
                     break;
-                case ElaBuiltinKind.Untag:
-                    cw.Emit(Op.Untag);
-                    break;
                 case ElaBuiltinKind.Head:
                     cw.Emit(Op.Head);
                     break;

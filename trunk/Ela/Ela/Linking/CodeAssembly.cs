@@ -34,6 +34,7 @@ namespace Ela.Linking
 			moduleMap = new Dictionary<String,Int32>();
             quals = new FastList<Boolean>();
             Instances = new Dictionary<Int64,Byte>();
+            Constructors = new FastList<String>();
             Types = new FastList<TypeData>
                 {
                     new TypeData(ElaTypeCode.None),
@@ -53,7 +54,7 @@ namespace Ela.Linking
                     new TypeData(ElaTypeCode.Object),
                     new TypeData(ElaTypeCode.Module),
                     new TypeData(ElaTypeCode.Lazy),
-                    new TypeData(ElaTypeCode.Variant),
+                    new TypeData(ElaTypeCode.__Reserved2),
                     new TypeData(ElaTypeCode.TypeInfo)
                 };
             Cls = new FastList<Class>();
@@ -77,7 +78,7 @@ namespace Ela.Linking
                     new Class(), //OBJ
                     new ModuleInstance(), //MOD
                     new Class(), //LAZ
-                    new Class(), //VAR
+                    new Class(), //RES2
                     new TypeInfoInstance(), //TYP
                 });
 		}
@@ -219,8 +220,10 @@ namespace Ela.Linking
         internal int ClassIndexer { get; set; }
 
         internal Dictionary<Int64,Byte> Instances { get; private set; }
-        
+
         internal FastList<TypeData> Types { get; private set; }
+
+        internal FastList<String> Constructors { get; private set; }
 
         internal FastList<Class> Cls { get; private set; }
 		#endregion

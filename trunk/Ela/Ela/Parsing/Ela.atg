@@ -8,6 +8,7 @@ CHARACTERS
 	letter = 'A' .. 'Z' + 'a' .. 'z' + '_'.
 	ucase = 'A' .. 'Z'.
 	lcase = 'a' .. 'z'.
+	mixcase = ucase + lcase.
 	digit = "0123456789".
 	notDigit = ANY - digit.
 	hexDigit = digit + "ABCDEFabcdef".
@@ -24,11 +25,9 @@ CHARACTERS
 	
 
 TOKENS
-	ident = lcase { letter | digit | "'" }
+	ident = mixcase { letter | digit | "'" }
 			| "_" ("'"|letter) { letter | digit | "'" }
 			| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ].	
-	
-	variantTok = ucase { letter | digit | "'" }.
 				
 	intTok = ( digit { digit } | digit { digit } CONTEXT ("." notDigit) | 
 			( "0x" | "0X" ) hexDigit { hexDigit } ) [ "L" | "l" ].
@@ -110,6 +109,7 @@ TOKENS
 	TYPE = "type".
 	CLASS = "class".
 	IMPORT = "import".
+	DATA = "data".
 	
 	EBLOCK = ";".
 	
@@ -129,7 +129,6 @@ PRODUCTIONS
 			| ListLiteral<out exp>
 			| TupleLiteral<out exp>
 			| SimpleExpr<out exp>
-			| VariantLiteral<out exp>
 		)
 		[ As<ref exp> ].		
 		
@@ -150,9 +149,6 @@ PRODUCTIONS
 	        h.SetLinePragma(head.Line, head.Column);
 	        head = h;
 	    .).
-		
-	VariantLiteral<out ElaExpression exp> = 
-		variantTok (. exp = new ElaVariantLiteral(t) { Tag = t.val }; .).
 		
 	SimpleExpr<out ElaExpression exp> = 
 		VariableReference<out exp>.
@@ -799,10 +795,7 @@ PRODUCTIONS
 		).
 			
 	Application<out ElaExpression exp> = 
-		(. 
-		    exp = null; 
-		    var variant = false;
-		.)
+		(. exp = null; .)
 		(
 			AccessExpr<out exp>
 			(. 
@@ -815,18 +808,8 @@ PRODUCTIONS
 				(. 
 					if (mi == null)
 					{
-					    if (variant)
-					        AddError(ElaParserError.InvalidVariantLiteral);
-						if (exp.Type == ElaNodeType.VariantLiteral)
-						{
-						    ((ElaVariantLiteral)exp).Expression = cexp;
-						    variant = true;
-						}
-						else
-						{
-						    mi = new ElaJuxtaposition(ot) { Target = exp };
-						    exp = mi; 
-						}
+					    mi = new ElaJuxtaposition(ot) { Target = exp };
+						exp = mi;
 					}
 				
 				    if (mi != null)
@@ -883,7 +866,6 @@ PRODUCTIONS
 			| Builtin<out exp>	
 			| LambdaExpr<out exp>
 			| FailExpr<out exp>
-			| RaiseExpr<out exp>
 			| MatchExpr<out exp>
 			| TryExpr<out exp>
 		).
@@ -898,8 +880,8 @@ PRODUCTIONS
 		.)
 		(
 		    { 
-                (ident|variantTok) (. fst = t.val; snd = null; .) 
-                [ "." (ident|variantTok) (. snd = t.val; .) ]
+                ident (. fst = t.val; snd = null; .) 
+                [ "." ident (. snd = t.val; .) ]
                 (.
                     var ti = new TraitInfo(snd != null ? fst : null, snd != null ? snd : fst);
                     eis.Traits.Add(ti);
@@ -942,21 +924,6 @@ PRODUCTIONS
 				exp = lazy;
 			.)
 		).
-    
-	RaiseExpr<out ElaExpression exp> = 
-		RAISE
-		(. 
-			var r = new ElaRaise(t);
-			exp = r;
-			var cexp = default(ElaExpression); 
-			var code = String.Empty;
-		.)		
-		variantTok (. code = t.val; .)
-		(Expr<out cexp>|  )
-		(. 
-			r.ErrorCode = code;
-			r.Expression = cexp; 
-		.).
 		
 	FailExpr<out ElaExpression exp> = 
 		FAIL
@@ -968,7 +935,6 @@ PRODUCTIONS
 		Expr<out cexp>
 		(. 
 			r.Expression = cexp; 
-			r.ErrorCode = "Failure"; 
 		.).	
 		
 	ComprehensionExpr<ElaExpression sel, out ElaComprehension exp> =
@@ -1246,14 +1212,14 @@ PRODUCTIONS
 	            tc.And = Program.Classes;
 	            Program.Classes = tc;
 	        .)
-	        (ident|variantTok)
+	        ident
 	        (. 
 	            var nm = default(String);
 	            tc.Name = t.val;
 	        .)
 	        (
 	            (
-	                "__internal" (ident|variantTok) (. tc.BuiltinName = t.val; .)
+	                "__internal" ident (. tc.BuiltinName = t.val; .)
 	                { 
 	                    (ident (. nm=t.val; .) |Operators (. nm=t.val; .) | "(" (Operators|ident) (. nm=t.val; .) ")") 
 	                    (. 
@@ -1302,33 +1268,37 @@ PRODUCTIONS
 	    ).
 	    
     NewType = 
-        (. scanner.InjectBlock(); .)
+        (. 
+            scanner.InjectBlock(); 
+            var ns0 = default(String);
+            var ns1 = default(String);
+            var extends = false;
+        .)
         (
-            TYPE ident
+            (TYPE|DATA (. extends=true; .)) ident (. ns0 = t.val; .) [ "." ident (. ns1 = t.val; .)]
             (.
-                var nt = new ElaNewtype(t) { Name = t.val };                	            
+                var nt = new ElaNewtype(t) { Name = ns1 ?? ns0, Prefix = ns1==null?null:ns0, Extends = extends };                	            
 	            nt.And = Program.Types;
 	            Program.Types = nt;
             .)
             [
+                (. var cexp = default(ElaExpression); .)
+                "="                
+                ident 
                 (. 
-	                scanner.InjectBlock(); 
-	                bindings.Push(null);
-	                var skip = false;
-	            .) 
-                SYNC WHERE [EndBlock (. skip=true; .)]
-		        (. scanner.InjectBlock(); .)
-		        (
-	                Binding<Program.TopLevel,nt.Name> EndBlock
-	                {	            
-	                    (. scanner.InjectBlock(); .)
-	                    Binding<Program.TopLevel,nt.Name>
-	                    EndBlock
-	                }
-	            )		        
-		        (. bindings.Pop(); .)
-		        (. if (!skip) .) EndBlock
-                (. nt.HasBody = true; .)
+                    var c = new ElaConstructor(t) { Name = t.val };
+                    nt.Constructors.Add(c); 
+                .)
+                { Literal<out cexp> (. c.Expressions.Add(cexp); .) }
+                {
+                    "|"
+                    ident 
+                    (. 
+                        c = new ElaConstructor(t) { Name = t.val };
+                        nt.Constructors.Add(c); 
+                    .)
+                    { Literal<out cexp> (. c.Expressions.Add(cexp); .) }
+                }
 		    ]
 		    EndBlock      
         ).
@@ -1351,8 +1321,8 @@ PRODUCTIONS
 	            Program.Instances = ci;
 	            ot = t;
 	        .)
-	        (ident|variantTok)  (. fst0 = t.val; .)
-	        [ "." (ident|variantTok) (. snd0 = t.val; .) ]
+	        ident  (. fst0 = t.val; .)
+	        [ "." ident (. snd0 = t.val; .) ]
 	        (.	                
 	            if (fst0 != null && snd0 != null)
 	            {

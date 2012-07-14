@@ -156,6 +156,9 @@
   <data name="InvalidType" xml:space="preserve">
     <value>Invalid type. Expected: '{0}', got: '{1}'.</value>
   </data>
+  <data name="InvalidTypeArgument" xml:space="preserve">
+    <value>A constructor '{0}' of type '{1}' doesn't have '{2}' arguments.</value>
+  </data>
   <data name="MatchFailed" xml:space="preserve">
     <value>Match failed. None of the patterns were successful.</value>
   </data>
