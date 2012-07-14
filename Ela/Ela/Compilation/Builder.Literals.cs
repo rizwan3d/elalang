@@ -140,24 +140,5 @@ namespace Ela.Compilation
 
             return new ExprData(DataKind.VarType, -1);
         }
-
-        //Compiles variant literal which can be recognized by parser as variant literal
-        //as well as a function application
-        private ExprData CompileVariant(ElaVariantLiteral v, ElaExpression arg, LabelMap map, Hints hints)
-        {
-            //A variant literal doesn't explicitly tag a value (it means that it tags a unit).
-            if (arg == null)
-                cw.Emit(Op.Pushunit);
-            else
-                CompileExpression(arg, map, Hints.None);
-
-            AddLinePragma(v);
-            cw.Emit(Op.Newvar, AddString(v.Tag));
-
-            if ((hints & Hints.Left) == Hints.Left)
-                AddValueNotUsed(v);
-
-            return new ExprData(DataKind.VarType, -1);
-        }
     }
 }

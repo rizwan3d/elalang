@@ -146,6 +146,7 @@ namespace Ela.Linking
             Add<ElaList,Boolean>("__isLazyList", IsLazyList);
             Add<ElaList,ElaList>("__reverseList", ReverseList);
             Add<ElaList,Int32>("__listLength", ListLength);
+            Add<ElaUserType,ElaValue>("__unwrap", Unwrap);
 
             Add("__toInt", new ToInt());
             Add("__toLong", new ToLong());
@@ -154,6 +155,14 @@ namespace Ela.Linking
             Add("__toChar", new ToChar());
             Add("__toBool", new ToBool());
             Add("__toString", new ToStr());
+        }
+
+        public ElaValue Unwrap(ElaUserType type)
+        {
+            if (type.Values == null)
+                return new ElaValue(ElaUnit.Instance);
+            else
+                return new ElaValue(new ElaTuple(type.Values));
         }
 
         public int ListLength(ElaList lst)

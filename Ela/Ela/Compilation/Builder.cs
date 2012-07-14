@@ -106,12 +106,6 @@ namespace Ela.Compilation
                             AddValueNotUsed(r);
                     }
                     break;
-                case ElaNodeType.VariantLiteral:
-                    {
-                        var v = (ElaVariantLiteral)exp;
-                        CompileVariant(v, v.Expression, map, hints);
-                    }
-                    break;
                 case ElaNodeType.LazyLiteral:
                     {
                         var v = (ElaLazyLiteral)exp;
@@ -177,13 +171,7 @@ namespace Ela.Compilation
                 case ElaNodeType.Raise:
                     {
                         var s = (ElaRaise)exp;
-
-                        if (s.Expression != null)
-                            CompileExpression(s.Expression, map, Hints.None);
-                        else
-                            cw.Emit(Op.Pushstr_0);
-
-                        cw.Emit(Op.Pushstr, AddString(s.ErrorCode));
+                        CompileExpression(s.Expression, map, Hints.None);
                         AddLinePragma(s);
                         cw.Emit(Op.Throw);
                     }

@@ -17,7 +17,7 @@ namespace Ela.Runtime.ObjectModel
 
 			protected internal override ElaValue Tail(ExecutionContext ctx)
 			{
-				ctx.Fail("NilList", "List is nil.");
+				ctx.Fail("List is nil.");
 				return Default();
 			}
 		}

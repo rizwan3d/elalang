@@ -199,7 +199,10 @@ namespace Ela.Compilation
             if (classPrefix == null)
                 btVar = GetVariable(name, CurrentScope, GetFlags.NoError, s.Line, s.Column);
             else
-                btVar = FindByPrefix(classPrefix, name);
+            {
+                var fr = default(CodeFrame);
+                btVar = FindByPrefix(classPrefix, name, out fr);
+            }
 
             if (btVar.IsEmpty())
                 AddError(ElaCompilerError.MemberInvalid, s, name, className);
@@ -299,8 +302,7 @@ namespace Ela.Compilation
                         tc == ElaTypeCode.Module ||
                         tc == ElaTypeCode.Tuple ||
                         tc == ElaTypeCode.Record ||
-                        tc == ElaTypeCode.List ||
-                        tc == ElaTypeCode.Variant;
+                        tc == ElaTypeCode.List;
                 case "Ord":
                     return
                         tc == ElaTypeCode.Integer ||

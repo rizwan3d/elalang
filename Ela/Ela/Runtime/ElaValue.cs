@@ -208,8 +208,6 @@ namespace Ela.Runtime
                 return (ElaRecord)Ref;
             else if (ti == typeof(ElaTuple) && TypeId == ElaMachine.TUP)
                 return (ElaTuple)Ref;
-            else if (ti == typeof(ElaVariant) && TypeId == ElaMachine.VAR)
-                return (ElaVariant)Ref;
             else if (ti == typeof(ElaFunction) && TypeId == ElaMachine.FUN)
                 return (ElaFunction)Ref;
             else if (ti == typeof(ElaModule) && TypeId == ElaMachine.MOD)

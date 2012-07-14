@@ -23,27 +23,10 @@ namespace Ela.CodeModel
 
         internal override void ToString(StringBuilder sb, int ident)
 		{
-			if (ErrorCode == "Failure")
-			{
-				sb.Append("fail (");
-                Expression.ToString(sb, 0);
-                sb.Append(')');				
-			}
-			else
-			{
-				sb.Append("raise ");
-				sb.Append(ErrorCode);
-
-                if (Expression != null)
-                {
-                    sb.Append('(');
-                    Expression.ToString(sb, 0);
-                    sb.Append(')');
-                }
-			}
+			sb.Append("fail (");
+            Expression.ToString(sb, 0);
+            sb.Append(')');
 		}
-		
-		public string ErrorCode { get; set; }
 
         public ElaExpression Expression { get; set; }
 	}

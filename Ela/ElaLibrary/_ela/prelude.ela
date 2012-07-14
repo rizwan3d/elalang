@@ -20,7 +20,6 @@ type typeinfo
 type fun
 type unit
 type object
-type variant
 
 /* Eq */
 class Eq __internal Eq (==) (<>)
@@ -58,10 +57,6 @@ instance Eq record
 instance Eq list
   where x == y = x `eqList` y
         x <> y = not (x `eqList` y)
-
-instance Eq variant
-  where x == y = tag x == tag y and untag x == untag y
-        x <> y = tag x <> tag y or untag x <> untag y
 
 eqTuple # private
 eqTuple tup1 tup2 = len == length tup2 and eq 0
@@ -201,7 +196,7 @@ instance Ix list
       where len n [] = n
             len n (x::xs) = len (n+1) xs
     xs:n = get 0 xs
-      where get _ [] = raise IndexOutOfRange ("Index " ++ n ++ " is out of range.")
+      where get _ [] = fail ("Index " ++ n ++ " is out of range.")
             get i (x::xs) | i == n = x
                           | else = get (i+1) xs
 
@@ -255,12 +250,6 @@ instance Show typeinfo
 instance Show fun
 
 instance Show module
-
-instance Show variant where 
-  showf f x = match v with
-                    () = tag x
-                    _  = tag x ++ " " ++ showf f v
-              where v = untag x
 
 instance Show tuple where 
   showf f t = lang.__stringFromList ("(" :: tos 0)
@@ -358,7 +347,7 @@ force = __internal force
 
 /* Variants */
 tag   = __internal gettag
-untag = __internal untag
+untag = lang.__unwrap
 
 /* Combinators */
 id x = x//I
@@ -368,7 +357,9 @@ fix f = f (& fix f)
 on cmb f x y = f x `cmb` f y
 
 /* Ord */
-compare x y | x == y = EQ | x < y = LT | else = GT
+type ordering = EQ | LT | GT
+
+//compare x y | x == y = EQ | x < y = LT | else = GT
 maxValue x y | x >= y = x | else   = y
 minValue x y | x <= y = x | else   = y
 

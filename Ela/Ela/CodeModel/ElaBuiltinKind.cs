@@ -26,8 +26,6 @@ namespace Ela.CodeModel
 
         Gettag,
 
-        Untag,
-
         Negate,
 
         BitwiseNot,

@@ -57,7 +57,7 @@ namespace Ela.Compilation
 			-1, //LazyCall
 			-1, //Call
 			-1, //Callt
-			-2, //Throw
+			-1, //Throw
 			-1, //Rethrow
 			0, //Force
 			0, //Type
@@ -65,24 +65,23 @@ namespace Ela.Compilation
 			0, //Succ
 			0, //Pred
 			-1, //Show
-			0, //Untag
-			0, //Skiphtag
 			0, //Gettag
             -1, //Recfld
             -3, //Addmbr            
             -1, //Traitch
-
-            0, //Newtype
-            -2, //Reccons
+            -2, //Skiptag
+			-2, //Newtype
+            
+            0, //Untag
+			-2, //Reccons
 			-1, //Tupcons
+            1, //Ctorid
             1, //Typeid
             1, //Classid
             -1, //Newfunc
             1, //Newmod
 			1, //Pushext
-            0, //Skiptag
-			0, //Newvar
-			1, //Newrec
+            1, //Newrec
 			1, //Newtup
 			0, //Failwith
 			0, //Start

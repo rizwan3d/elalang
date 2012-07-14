@@ -173,6 +173,13 @@ namespace Ela.Linking
                 Assembly.ClassIndexer++;
             }
 
+            foreach (var k in new List<String>(frame.InternalConstructors.Keys))
+            {
+                var c = Assembly.Constructors.Count;
+                frame.InternalConstructors[k] = c;
+                Assembly.Constructors.Add(k);
+            }
+
             foreach (var id in frame.InternalInstances)
             {
                 var typeModule = Assembly.GetModule(id.TypeModuleId == -1 ? hdl : frame.HandleMap[id.TypeModuleId]);

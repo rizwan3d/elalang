@@ -49,7 +49,7 @@ namespace Ela.Runtime
         internal const int OBJ = (Int32)ElaTypeCode.Object;
         internal const int MOD = (Int32)ElaTypeCode.Module;
         internal const int LAZ = (Int32)ElaTypeCode.Lazy;
-        internal const int VAR = (Int32)ElaTypeCode.Variant;
+        internal const int RES2 = (Int32)ElaTypeCode.__Reserved2;
         internal const int TYP = (Int32)ElaTypeCode.TypeInfo;
 
         private Class[] cls;
@@ -555,7 +555,7 @@ namespace Ela.Runtime
                         if (right.TypeId == LAZ)
                             right = right.Ref.Force(right, ctx);
 
-                        evalStack.Replace(right.Ref.Untag(ctx));
+                        evalStack.Replace(right.Ref.Untag(asm, ctx, opd));
 
                         if (ctx.Failed)
                         {
@@ -570,7 +570,7 @@ namespace Ela.Runtime
                         if (right.TypeId == LAZ)
                             right = right.Ref.Force(right, ctx);
 
-                        evalStack.Replace(new ElaValue(right.Ref.GetTag(ctx)));
+                        evalStack.Replace(new ElaValue(asm.Constructors[right.Ref.GetTag(ctx)]));
 
                         if (ctx.Failed)
                         {
@@ -582,39 +582,14 @@ namespace Ela.Runtime
                     #endregion
 
                     #region Goto Operations
-                    case Op.Skiphtag:
-                        right = evalStack.Pop();
-
-                        if (right.TypeId == LAZ)
-                            right = right.Ref.Force(right, ctx);
-
-                        if (!String.IsNullOrEmpty(right.Ref.GetTag(ctx)))
-                        {
-                            if (ctx.Failed)
-                            {
-                                evalStack.Push(right);
-                                ExecuteThrow(thread, evalStack);
-                                goto SWITCH_MEM;
-                            }
-
-                            thread.Offset++;
-                            break;
-                        }
-
-                        if (ctx.Failed)
-                        {
-                            evalStack.Push(right);
-                            ExecuteThrow(thread, evalStack);
-                            goto SWITCH_MEM;
-                        }
-                        break;
                     case Op.Skiptag:
+                        left = evalStack.Pop();
                         right = evalStack.Pop();
 
                         if (right.TypeId == LAZ)
                             right = right.Ref.Force(right, ctx);
 
-                        if (frame.Strings[opd] == right.Ref.GetTag(ctx))
+                        if (left.I4 == right.Ref.GetTag(ctx))
                         {
                             thread.Offset++;
                             break;
@@ -623,6 +598,7 @@ namespace Ela.Runtime
                         if (ctx.Failed)
                         {
                             evalStack.Push(right);
+                            evalStack.Push(left);
                             ExecuteThrow(thread, evalStack);
                             goto SWITCH_MEM;
                         }
@@ -1144,10 +1120,6 @@ namespace Ela.Runtime
                     #endregion
 
                     #region CreateNew Operations
-                    case Op.Newvar:
-                        right = evalStack.Peek();
-                        evalStack.Replace(new ElaValue(new ElaVariant(frame.Strings[opd], right)));
-                        break;
                     case Op.Newlazy:
                         evalStack.Push(new ElaValue(new ElaLazy((ElaFunction)evalStack.Pop().Ref)));
                         break;
@@ -1335,11 +1307,11 @@ namespace Ela.Runtime
                         break;
                     case Op.Newtype:
                         {
-                            var tid = asm.Types[thread.Module.InternalTypes[frame.Strings[opd]]];
-                            right = evalStack.Peek();
-
-                            if (right.TypeId != tid.TypeCode)
-                                evalStack.Replace(new ElaValue(new ElaUserType(tid.TypeName, tid.TypeCode, right)));
+                            var tid = evalStack.Pop().I4;
+                            left = evalStack.Pop();
+                            right = evalStack.Pop();
+                            var t = asm.Types[tid];                            
+                            evalStack.Push(new ElaValue(new ElaUserType(t.TypeName, t.TypeCode, left.I4, right)));
                         }
                         break;
                     case Op.Traitch:
@@ -1350,6 +1322,9 @@ namespace Ela.Runtime
                             long tc = (Int64)right.TypeId << 32;
                             evalStack.Push(Assembly.Instances.ContainsKey(cc | tc));
                         }
+                        break;
+                    case Op.Ctorid:
+                        evalStack.Push(thread.Module.InternalConstructors[frame.Strings[opd]]);
                         break;
                     case Op.Typeid:
                         evalStack.Push(thread.Module.InternalTypes[frame.Strings[opd]]);
@@ -1375,19 +1350,16 @@ namespace Ela.Runtime
                         break;
                     case Op.Throw:
                         {
-                            left = evalStack.Pop();
                             right = evalStack.Pop();
-                            var code = left.ToString();
                             var msg = right.ToString();
 
                             if (ctx.Failed)
                             {
                                 evalStack.Push(right);
-                                evalStack.Push(left);
                                 ExecuteThrow(thread, evalStack);
                             }
                             else
-                                ExecuteFail(new ElaError(code, msg), thread, evalStack);
+                                ExecuteFail(new ElaError(msg), thread, evalStack);
 
                             goto SWITCH_MEM;
                         }
@@ -1663,12 +1635,6 @@ namespace Ela.Runtime
 
                 stack.Push(funObj.Call(arr));
             }
-            catch (ElaRuntimeException ex)
-            {
-                thread.LastException = ex;
-                ExecuteFail(new ElaError(ex.Category, ex.Message), thread, stack);
-                return true;
-            }
             catch (Exception ex)
             {
                 thread.LastException = ex;
@@ -1811,7 +1777,7 @@ namespace Ela.Runtime
                     fi = nfi;
             }
 
-            return new ElaCodeException(err.FullMessage.Replace("\0", ""), err.Code, fi, cs.Line, cs.Column, cs, err, ex);
+            return new ElaCodeException(err.Message.Replace("\0", ""), err.Code, fi, cs.Line, cs.Column, cs, err, ex);
         }
 
 

@@ -136,6 +136,7 @@
   <ItemGroup>
     <Compile Include="Builtins.cs" />
     <Compile Include="CodeModel\ElaAs.cs" />
+    <Compile Include="CodeModel\ElaConstructor.cs" />
     <Compile Include="CodeModel\ElaHeader.cs" />
     <Compile Include="CodeModel\ElaLambda.cs" />
     <Compile Include="CodeModel\ElaLetBinding.cs" />
@@ -177,7 +178,6 @@
     <Compile Include="CodeModel\ElaRange.cs" />
     <Compile Include="CodeModel\ElaTypeClass.cs" />
     <Compile Include="CodeModel\ElaUnitLiteral.cs" />
-    <Compile Include="CodeModel\ElaVariantLiteral.cs" />
     <Compile Include="CodeModel\Format.cs" />
     <Compile Include="Compilation\Builder.Declarations.cs" />
     <Compile Include="Compilation\Builder.Generators.cs" />
@@ -339,7 +339,6 @@
     <Compile Include="Runtime\ObjectModel\ElaTuple.cs" />
     <Compile Include="Runtime\ObjectModel\ElaUserType.cs" />
     <Compile Include="TCF.cs" />
-    <Compile Include="Runtime\ObjectModel\ElaVariant.cs" />
     <Compile Include="Runtime\ElaValue.cs" />
     <Compile Include="Runtime\ObjectModel\ElaTypeInfo.cs" />
     <Compile Include="Runtime\Strings.cs" />

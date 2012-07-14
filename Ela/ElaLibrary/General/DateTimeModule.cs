@@ -40,7 +40,7 @@ namespace Ela.Library.General
 			Add<Int64,Int32>("seconds", Seconds);
 			Add<Int64,Int32>("milliseconds", Milliseconds);
 			Add<Int64,Int64>("ticks", Ticks);
-			Add<Int64,ElaVariant>("dayOfWeek", GetDayOfWeek);
+			Add<Int64,String>("dayOfWeek", GetDayOfWeek);
 			Add<Int64,Int32>("dayOfYear", GetDayOfYear);
 			Add<Int64,Int64>("date", GetDate);
 			Add<String,String,Int64>("parse", Parse);
@@ -167,20 +167,20 @@ namespace Ela.Library.General
 		}
 
 
-		public ElaVariant GetDayOfWeek(long val)
+		public string GetDayOfWeek(long val)
 		{
 			var dw = new DateTime(val).DayOfWeek;
 
 			switch (dw)
 			{
-				case DayOfWeek.Friday: return new ElaVariant("Fri");
-				case DayOfWeek.Monday: return new ElaVariant("Mon");
-				case DayOfWeek.Saturday: return new ElaVariant("Sat");
-				case DayOfWeek.Sunday: return new ElaVariant("Sun");
-				case DayOfWeek.Thursday: return new ElaVariant("Thu");
-				case DayOfWeek.Tuesday: return new ElaVariant("Tue");
-				case DayOfWeek.Wednesday: return new ElaVariant("Wed");
-				default: return ElaVariant.None();
+				case DayOfWeek.Friday: return "Fri";
+				case DayOfWeek.Monday: return "Mon";
+				case DayOfWeek.Saturday: return "Sat";
+				case DayOfWeek.Sunday: return "Sun";
+				case DayOfWeek.Thursday: return "Thu";
+				case DayOfWeek.Tuesday: return "Tue";
+				case DayOfWeek.Wednesday: return "Wed";
+				default: return String.Empty;
 			}
 		}
 
