@@ -71,7 +71,9 @@ namespace Ela.Compilation
             1, //Traitch
             1, //Skiptag
 			1, //Newtype
-            
+            1, //Ctype            
+            1, //Ctypei
+
             5, //Untag
 			5, //Reccons
 			5, //Tupcons

@@ -2,16 +2,17 @@
   Module alist
   Created in 2012 by Basil Voronkov
 */
-open list record
+open core list record
 
 lookup _ [] = None
-lookup k ((a,b)::xs) | k == a = Some b
-                     | else = lookup k xs
+lookup k ((a,b)::xs) 
+  | k == a = Some b
+  | else = lookup k xs
 
 split # qualified
 split = split' [] []
-        where split' xs1 xs2 [] = (xs1,xs2)
-              split' xs1 xs2 ((a,b)::ys) = split' (a::xs1) (b::xs2) ys
+  where split' xs1 xs2 [] = (xs1,xs2)
+        split' xs1 xs2 ((a,b)::ys) = split' (a::xs1) (b::xs2) ys
 
 keys = map fst
 
@@ -19,7 +20,7 @@ values = map snd
 
 fromRecord # qualified
 fromRecord rec = fromRec 0
-                 where len = length rec
-                       keys = fields rec
-                       fromRec n | n < len = (keys:n,rec:(keys:n)) :: fromRec (n+1)
-                                 | else = []
+  where len = length rec
+        keys = fields rec
+        fromRec n | n < len = (keys:n,rec:(keys:n)) :: fromRec (n+1)
+                  | else = []

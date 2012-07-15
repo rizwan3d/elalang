@@ -247,21 +247,55 @@ namespace Ela.Compilation
                             AddError(ElaCompilerError.InvalidLazyPattern, exp, FormatNode(exp));
                     }
                     break;
+                case ElaNodeType.FieldReference:
+                    {
+                        //We treat this expression as a constructor with a module alias
+                        var n = (ElaFieldReference)exp;
+                        var fn = n.FieldName;
+                        var alias = n.TargetObject.GetName();
+                        PushVar(sysVar);
+
+                        if (n.TargetObject.Type != ElaNodeType.NameReference)
+                            AddError(ElaCompilerError.InvalidPattern, n, FormatNode(n));
+                        else
+                            EmitSpecName(alias, "$$$$" + fn, n, ElaCompilerError.UndefinedName);
+
+                        cw.Emit(Op.Skiptag);
+                        cw.Emit(Op.Br, failLab);
+                    }
+                    break;
                 case ElaNodeType.NameReference:
                     {
-                        //Irrefutable pattern, always binds expression to a name
+                        //Irrefutable pattern, always binds expression to a name, unless it is 
+                        //a constructor pattern
                         var n = (ElaNameReference)exp;
-                        var newV = false;
-                        var addr = AddMatchVariable(n.Name, n, out newV);
-                        
-                        //This is a valid situation, it means that the value is
-                        //already on the top of the stack.
-                        if (sysVar > -1 && newV)
-                            PushVar(sysVar);
 
-                        //The binding is already done, so just idle.
-                        if (newV)
-                            PopVar(addr);
+                        if (n.Uppercase) //This is a constructor
+                        {
+                            if (sysVar != -1)
+                                PushVar(sysVar); 
+                            
+                            EmitSpecName(null, "$$$$" + n.Name, n, ElaCompilerError.UndefinedName);
+            
+                            //This op codes skips one offset if an expression
+                            //on the top of the stack has a specified tag.
+                            cw.Emit(Op.Skiptag);
+                            cw.Emit(Op.Br, failLab);
+                        }
+                        else
+                        {
+                            var newV = false;
+                            var addr = AddMatchVariable(n.Name, n, out newV);
+
+                            //This is a valid situation, it means that the value is
+                            //already on the top of the stack.
+                            if (sysVar > -1 && newV)
+                                PushVar(sysVar);
+
+                            //The binding is already done, so just idle.
+                            if (newV)
+                                PopVar(addr);
+                        }
                     }
                     break;
                 case ElaNodeType.UnitLiteral:
@@ -530,29 +564,24 @@ namespace Ela.Compilation
             cw.Emit(Op.Skiptag);
             cw.Emit(Op.Br, failLab); //We will skip this if tags are equal
 
-            //A constructor pattern can be in a form 'Cons _'. In this case
-            //we don't care about a value (even if its not present).
-            if (call.Parameters[0].Type != ElaNodeType.Placeholder)
+            for (var i = 0; i < call.Parameters.Count; i++)
             {
-                for (var i = 0; i < call.Parameters.Count; i++)
+                PushVar(sysVar);
+                cw.Emit(Op.Untag, i); //Unwrap it
+                                
+                //Now we need to create a new system variable to hold
+                //an unwrapped value.
+                var sysVar2 = -1;
+                var p = call.Parameters[i];
+                
+                //Don't do redundant bindings for simple patterns
+                if (!IsSimplePattern(p))
                 {
-                    PushVar(sysVar);
-                    cw.Emit(Op.Untag, i); //Unwrap it
-                                    
-                    //Now we need to create a new system variable to hold
-                    //an unwrapped value.
-                    var sysVar2 = -1;
-                    var p = call.Parameters[i];
-                    
-                    //Don't do redundant bindings for simple patterns
-                    if (!IsSimplePattern(p))
-                    {
-                        sysVar2 = AddVariable();
-                        PopVar(sysVar2);
-                    }
-
-                    CompilePattern(sysVar2, p, failLab);
+                    sysVar2 = AddVariable();
+                    PopVar(sysVar2);
                 }
+
+                CompilePattern(sysVar2, p, failLab);
             }
         }
 

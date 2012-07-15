@@ -120,6 +120,9 @@
   <data name="ClassAlreadyDeclared" xml:space="preserve">
     <value>A module already defines a class '{0}'.</value>
   </data>
+  <data name="DuplicateTypeParameter" xml:space="preserve">
+    <value>Duplicate type parameter '{0}' in a definition of type '{1}'.</value>
+  </data>
   <data name="ElseMissing" xml:space="preserve">
     <value>A mandatory 'else' clause is missing. A conditional expression should be always terminated with an 'else' clause.</value>
   </data>
@@ -134,6 +137,12 @@
   </data>
   <data name="InvalidBuiltinClassDefinition" xml:space="preserve">
     <value>Invalid definition of a built-in class '{0}'.</value>
+  </data>
+  <data name="InvalidConstructor" xml:space="preserve">
+    <value>Invalid constructor declaration {0}.</value>
+  </data>
+  <data name="InvalidConstructorParameter" xml:space="preserve">
+    <value>Invalid parameter {0} for a constructor '{1}'.</value>
   </data>
   <data name="InvalidExpression" xml:space="preserve">
     <value>An expression '{0}' is not valid in this context.</value>
@@ -221,8 +230,5 @@
   </data>
   <data name="UnknownClass" xml:space="preserve">
     <value>Unknown class '{0}'.</value>
-  </data>
-  <data name="VariableDeclarationInitMissing" xml:space="preserve">
-    <value>Names cannot be declared without initialization.</value>
   </data>
 </root>

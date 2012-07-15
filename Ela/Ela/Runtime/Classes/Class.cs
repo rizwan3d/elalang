@@ -50,6 +50,12 @@ namespace Ela.Runtime.Classes
         {
             if (or != null)
             {
+                if (left.TypeId != right.TypeId)
+                {
+                    NoOverloadBinary(left.GetTypeName(), right, "bitwiseor", ctx);
+                    return Default();
+                }
+
                 ctx.SetDeffered(or, 2);
                 return Default();
             }
@@ -62,6 +68,12 @@ namespace Ela.Runtime.Classes
         {
             if (and != null)
             {
+                if (left.TypeId != right.TypeId)
+                {
+                    NoOverloadBinary(left.GetTypeName(), right, "bitwiseand", ctx);
+                    return Default();
+                }
+
                 ctx.SetDeffered(and, 2);
                 return Default();
             }
@@ -74,6 +86,12 @@ namespace Ela.Runtime.Classes
         {
             if (xor != null)
             {
+                if (left.TypeId != right.TypeId)
+                {
+                    NoOverloadBinary(left.GetTypeName(), right, "bitwisexor", ctx);
+                    return Default();
+                }
+
                 ctx.SetDeffered(xor, 2);
                 return Default();
             }
@@ -86,6 +104,12 @@ namespace Ela.Runtime.Classes
         {
             if (not != null)
             {
+                if (left.TypeId != right.TypeId)
+                {
+                    NoOverloadBinary(left.GetTypeName(), right, "bitwisenot", ctx);
+                    return Default();
+                }
+
                 ctx.SetDeffered(not, 1);
                 return Default();
             }
@@ -158,6 +182,12 @@ namespace Ela.Runtime.Classes
         {
             if (eq != null)
             {
+                if (left.TypeId != right.TypeId)
+                {
+                    NoOverloadBinary(left.GetTypeName(), right, "equal", ctx);
+                    return Default();
+                }
+
                 ctx.SetDeffered(eq, 2);
                 return false;
             }
@@ -169,6 +199,12 @@ namespace Ela.Runtime.Classes
         {
             if (neq != null)
             {
+                if (left.TypeId != right.TypeId)
+                {
+                    NoOverloadBinary(left.GetTypeName(), right, "notequal", ctx);
+                    return Default();
+                }
+
                 ctx.SetDeffered(neq, 2);
                 return false;
             }
@@ -204,11 +240,11 @@ namespace Ela.Runtime.Classes
         {
             if (add != null)
             {
-                //if (left.TypeId != right.TypeId)
-                //{
-                //    NoOverloadBinary(left.GetTypeName(), right, "add", ctx);
-                //    return Default();
-                //}
+                if (left.TypeId != right.TypeId)
+                {
+                    NoOverloadBinary(left.GetTypeName(), right, "add", ctx);
+                    return Default();
+                }
 
                 ctx.SetDeffered(add, 2);
                 return Default();
@@ -222,6 +258,12 @@ namespace Ela.Runtime.Classes
         {
             if (sub != null)
             {
+                if (left.TypeId != right.TypeId)
+                {
+                    NoOverloadBinary(left.GetTypeName(), right, "subtract", ctx);
+                    return Default();
+                }
+
                 ctx.SetDeffered(sub, 2);
                 return Default();
             }
@@ -234,6 +276,12 @@ namespace Ela.Runtime.Classes
         {
             if (mul != null)
             {
+                if (left.TypeId != right.TypeId)
+                {
+                    NoOverloadBinary(left.GetTypeName(), right, "multiply", ctx);
+                    return Default();
+                }
+
                 ctx.SetDeffered(mul, 2);
                 return Default();
             }
@@ -246,6 +294,12 @@ namespace Ela.Runtime.Classes
         {
             if (div != null)
             {
+                if (left.TypeId != right.TypeId)
+                {
+                    NoOverloadBinary(left.GetTypeName(), right, "divide", ctx);
+                    return Default();
+                }
+
                 ctx.SetDeffered(div, 2);
                 return Default();
             }
@@ -258,6 +312,12 @@ namespace Ela.Runtime.Classes
         {
             if (rem != null)
             {
+                if (left.TypeId != right.TypeId)
+                {
+                    NoOverloadBinary(left.GetTypeName(), right, "remainder", ctx);
+                    return Default();
+                }
+
                 ctx.SetDeffered(rem, 2);
                 return Default();
             }
@@ -270,6 +330,12 @@ namespace Ela.Runtime.Classes
         {
             if (mod != null)
             {
+                if (left.TypeId != right.TypeId)
+                {
+                    NoOverloadBinary(left.GetTypeName(), right, "modulus", ctx);
+                    return Default();
+                }
+
                 ctx.SetDeffered(mod, 2);
                 return Default();
             }
@@ -282,6 +348,12 @@ namespace Ela.Runtime.Classes
         {
             if (pow != null)
             {
+                if (left.TypeId != right.TypeId)
+                {
+                    NoOverloadBinary(left.GetTypeName(), right, "power", ctx);
+                    return Default();
+                }
+
                 ctx.SetDeffered(pow, 2);
                 return Default();
             }
@@ -306,11 +378,11 @@ namespace Ela.Runtime.Classes
         {
             if (gt != null)
             {
-                //if (left.TypeId != right.TypeId)
-                //{
-                //    NoOverloadBinary(left.GetTypeName(), right, "greater", ctx);
-                //    return false;
-                //}
+                if (left.TypeId != right.TypeId)
+                {
+                    NoOverloadBinary(left.GetTypeName(), right, "greater", ctx);
+                    return false;
+                }
                 
                 ctx.SetDeffered(gt, 2);
                 return false;
@@ -324,6 +396,12 @@ namespace Ela.Runtime.Classes
         {
             if (lt != null)
             {
+                if (left.TypeId != right.TypeId)
+                {
+                    NoOverloadBinary(left.GetTypeName(), right, "lesser", ctx);
+                    return Default();
+                }
+
                 ctx.SetDeffered(lt, 2);
                 return false;
             }
@@ -336,6 +414,12 @@ namespace Ela.Runtime.Classes
         {
             if (gteq != null)
             {
+                if (left.TypeId != right.TypeId)
+                {
+                    NoOverloadBinary(left.GetTypeName(), right, "greaterequal", ctx);
+                    return Default();
+                }
+
                 ctx.SetDeffered(gteq, 2);
                 return false;
             }
@@ -348,6 +432,12 @@ namespace Ela.Runtime.Classes
         {
             if (lteq != null)
             {
+                if (left.TypeId != right.TypeId)
+                {
+                    NoOverloadBinary(left.GetTypeName(), right, "lesserequal", ctx);
+                    return Default();
+                }
+
                 ctx.SetDeffered(lteq, 2);
                 return false;
             }

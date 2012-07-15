@@ -31,14 +31,14 @@ namespace Ela.Runtime.ObjectModel
 
         internal override ElaValue Untag(CodeAssembly asm, ExecutionContext ctx, int index)
         {
-            if ((Values == null && index > 0) || index >= Values.Length)
+            if (Values == null || index >= Values.Length)
             {
                 ctx.Fail(new ElaError(ElaRuntimeError.InvalidTypeArgument,
                     asm.Constructors[tag], typeName, index + 1));
                 return Default();
             }
 
-            return Values == null ? new ElaValue(ElaUnit.Instance) : Values[index];
+            return Values[index];
         }
 
         internal ElaValue[] Values { get; private set; }

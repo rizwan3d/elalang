@@ -8,7 +8,6 @@ CHARACTERS
 	letter = 'A' .. 'Z' + 'a' .. 'z' + '_'.
 	ucase = 'A' .. 'Z'.
 	lcase = 'a' .. 'z'.
-	mixcase = ucase + lcase.
 	digit = "0123456789".
 	notDigit = ANY - digit.
 	hexDigit = digit + "ABCDEFabcdef".
@@ -25,10 +24,12 @@ CHARACTERS
 	
 
 TOKENS
-	ident = mixcase { letter | digit | "'" }
+	ident = lcase { letter | digit | "'" }
 			| "_" ("'"|letter) { letter | digit | "'" }
 			| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ].	
-				
+    
+	variantTok = ucase { letter | digit | "'" }.
+	
 	intTok = ( digit { digit } | digit { digit } CONTEXT ("." notDigit) | 
 			( "0x" | "0X" ) hexDigit { hexDigit } ) [ "L" | "l" ].
 			
@@ -169,6 +170,7 @@ PRODUCTIONS
 		(
 			(
 			    ident (. exp = new ElaNameReference(t) { Name = t.val }; .)
+			    | variantTok (. exp = new ElaNameReference(t) { Name = t.val, Uppercase = true }; .)
 			)
 			| "_" (. exp = new ElaPlaceholder(t); .)
 		).
@@ -831,8 +833,7 @@ PRODUCTIONS
 				)
 				|
 				(
-					ident
-					(. exp = new ElaFieldReference(t) { FieldName = t.val, TargetObject = exp }; .)
+					(ident|variantTok) (. exp = new ElaFieldReference(t) { FieldName = t.val, TargetObject = exp }; .)					
 				)
 			)			
 		}.	
@@ -880,8 +881,8 @@ PRODUCTIONS
 		.)
 		(
 		    { 
-                ident (. fst = t.val; snd = null; .) 
-                [ "." ident (. snd = t.val; .) ]
+                (ident|variantTok) (. fst = t.val; snd = null; .) 
+                [ "." (ident|variantTok) (. snd = t.val; .) ]
                 (.
                     var ti = new TraitInfo(snd != null ? fst : null, snd != null ? snd : fst);
                     eis.Traits.Add(ti);
@@ -1212,14 +1213,14 @@ PRODUCTIONS
 	            tc.And = Program.Classes;
 	            Program.Classes = tc;
 	        .)
-	        ident
+	        variantTok
 	        (. 
 	            var nm = default(String);
 	            tc.Name = t.val;
 	        .)
 	        (
 	            (
-	                "__internal" ident (. tc.BuiltinName = t.val; .)
+	                "__internal" variantTok (. tc.BuiltinName = t.val; .)
 	                { 
 	                    (ident (. nm=t.val; .) |Operators (. nm=t.val; .) | "(" (Operators|ident) (. nm=t.val; .) ")") 
 	                    (. 
@@ -1281,23 +1282,16 @@ PRODUCTIONS
 	            nt.And = Program.Types;
 	            Program.Types = nt;
             .)
+            {
+                ident (. nt.TypeParams.Add(t.val); .)  
+            }
             [
                 (. var cexp = default(ElaExpression); .)
-                "="                
-                ident 
-                (. 
-                    var c = new ElaConstructor(t) { Name = t.val };
-                    nt.Constructors.Add(c); 
-                .)
-                { Literal<out cexp> (. c.Expressions.Add(cexp); .) }
-                {
-                    "|"
-                    ident 
-                    (. 
-                        c = new ElaConstructor(t) { Name = t.val };
-                        nt.Constructors.Add(c); 
-                    .)
-                    { Literal<out cexp> (. c.Expressions.Add(cexp); .) }
+                "="
+                OpExpr0<out cexp> (. nt.Constructors.Add(cexp); .)
+                { 
+                    "|" OpExpr0<out cexp> 
+                    (. nt.Constructors.Add(cexp); .)
                 }
 		    ]
 		    EndBlock      
@@ -1305,8 +1299,6 @@ PRODUCTIONS
         
 	ClassInstance = 
 	    (. 
-	        var fst0 = default(String);
-	        var snd0 = default(String);
 	        var fst = default(String);
 	        var snd = default(String);
 	        var block = default(ElaEquationSet);
@@ -1321,19 +1313,12 @@ PRODUCTIONS
 	            Program.Instances = ci;
 	            ot = t;
 	        .)
-	        ident  (. fst0 = t.val; .)
-	        [ "." ident (. snd0 = t.val; .) ]
-	        (.	                
-	            if (fst0 != null && snd0 != null)
-	            {
-	                ci.TypeClassPrefix = fst0;
-	                ci.TypeClassName = snd0;
-	            }
-	            else
-	                ci.TypeClassName = fst0;
-	        .)
 	        (
-	            ident  (. fst = t.val; .)
+	            ident (. ci.TypeClassPrefix=t.val; .) "." variantTok (. ci.TypeClassName=t.val; .)
+	            | variantTok (. ci.TypeClassName=t.val; .)
+	        )
+	        (
+	            ident (. fst = t.val; .)
 	            [ "." ident (. snd = t.val; .) ]
 	        )
 	        (. 	            
@@ -1353,16 +1338,7 @@ PRODUCTIONS
 	                    list.Add(ci);
 	                }
 	                
-	                ci = new ElaClassInstance();	   
-	                
-	                if (fst0 != null && snd0 != null)
-	                {
-	                    ci.TypeClassPrefix = fst0;
-	                    ci.TypeClassName = snd0;
-	                }
-	                else
-	                    ci.TypeClassName = fst0;	                
-	                         
+	                ci = new ElaClassInstance { TypeClassPrefix = ci.TypeClassPrefix, TypeClassName = ci.TypeClassName };
 	                ci.SetLinePragma(ot.line, ot.col);
 	                ci.And = Program.Instances;
 	                Program.Instances = ci;

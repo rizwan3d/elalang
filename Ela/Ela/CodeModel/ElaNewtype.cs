@@ -9,7 +9,7 @@ namespace Ela.CodeModel
     {
         internal ElaNewtype(Token tok): base(tok, ElaNodeType.Newtype)
         {
-            Constructors = new List<ElaConstructor>();
+            Constructors = new List<ElaExpression>();
         }
         
         public ElaNewtype() : this(null)
@@ -44,11 +44,16 @@ namespace Ela.CodeModel
             }
         }
 
-        public List<ElaConstructor> Constructors { get; private set; }
+        public List<ElaExpression> Constructors { get; private set; }
 
         public bool HasBody
         {
             get { return Constructors.Count > 0; }
+        }
+
+        public bool HasTypeParams
+        {
+            get { return _typeParams != null; }
         }
 
         public string Name { get; set; }
@@ -56,6 +61,15 @@ namespace Ela.CodeModel
         public string Prefix { get; set; }
 
         public bool Extends { get; set; }
+
+        private List<String> _typeParams;
+        public List<String> TypeParams
+        {
+            get
+            {
+                return _typeParams ?? (_typeParams = new List<String>());
+            }
+        }
 
         public ElaNewtype And { get; set; }
     }

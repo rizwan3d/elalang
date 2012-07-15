@@ -1032,6 +1032,16 @@ namespace Ela.Runtime
                             goto SWITCH_MEM;
                         }
                         break;
+                    case Op.Ctype:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+                        evalStack.Replace(left.TypeId == right.TypeId || left.TypeId == LAZ || right.TypeId == LAZ);
+                        break;
+                    case Op.Ctypei:
+                        i4 = evalStack.Pop().I4;
+                        right = evalStack.Peek();
+                        evalStack.Replace(right.TypeId == i4 || right.TypeId == LAZ);
+                        break;
                     #endregion
 
                     #region Unary Operations

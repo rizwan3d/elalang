@@ -131,10 +131,6 @@ instance Ring double
 /* Num */
 class Field __internal Field (/)
 
-instance Field int
-
-instance Field long
-
 instance Field single
 
 instance Field double
@@ -347,7 +343,7 @@ force = __internal force
 
 /* Variants */
 tag   = __internal gettag
-untag = lang.__unwrap
+untag x = lang.__unwrap (force x)
 
 /* Combinators */
 id x = x//I

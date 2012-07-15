@@ -69,6 +69,8 @@ namespace Ela.Compilation
         Traitch,
         Skiptag,
         Newtype,
+        Ctype,        
+        Ctypei,
         
         Untag,
         Reccons,
