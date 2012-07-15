@@ -135,6 +135,42 @@ namespace Ela.Compilation
             return GetVariable(name, CurrentScope, GetFlags.None, line, col);
         }
 
+
+        //Main method to query a variable that starts to search a variable in
+        //the current scope.
+        private ScopeVar GetGlobalVariable(string name, GetFlags flags, int line, int col)
+        {
+            var cur = CurrentScope;
+            var shift = 0;
+            var var = ScopeVar.Empty;
+
+            //Rolls the scopes to find global
+            while (cur.Parent != null)
+            {
+                if (cur.Function)
+                    shift++;
+
+                cur = cur.Parent;
+            }
+
+            if (globalScope.Locals.TryGetValue(name, out var))
+            {
+                var.Address = shift | var.Address << 8;
+                return var;
+            }
+            
+            //If this flag is set we don't need to go further
+            if ((flags & GetFlags.Local) == GetFlags.Local)
+            {
+                if (!options.IgnoreUndefined && (flags & GetFlags.NoError) != GetFlags.NoError)
+                    AddError(ElaCompilerError.UndefinedName, line, col, name);
+
+                return ScopeVar.Empty;
+            }
+
+            return GetExternVariable(name, flags, line, col);
+        }
+
         //This method allows to specify a scope from which to start search.
         private ScopeVar GetVariable(string name, Scope startScope, GetFlags getFlags, int line, int col)
         {
@@ -168,6 +204,12 @@ namespace Ela.Compilation
                 return ScopeVar.Empty;
             }
 
+            return GetExternVariable(name, getFlags, line, col);
+        }
+
+        //Directily searches a name in an export list.
+        private ScopeVar GetExternVariable(string name, GetFlags getFlags, int line, int col)
+        {
             var vk = default(ExportVarData);
 
             //Looks for variable in export list

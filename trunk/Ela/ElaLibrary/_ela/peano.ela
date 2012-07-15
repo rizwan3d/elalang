@@ -5,28 +5,28 @@
 open string number list
 
 /* Construction */
-type peano where
-  zero # qualified
-  zero = Zero
-  one # qualified
-  one = Succ zero
-  infinity # qualified
-  infinity = inf zero 
-    where inf a = inc (& inf a)
-  min # qualified
-  min = zero
-  max # qualified
-  max = infinity
-  inc # private
-  inc a = Succ a
-  fromInt # qualified
-  fromInt a = fromIntegral a
-  fromLong # qualified
-  fromLong a = fromIntegral a
-  fromIntegral # qualified
-  fromIntegral a = from a
-    where from 0 = zero
-          from n = inc (& from (n-1))
+type peano = Zero | Succ peano
+
+one # qualified
+one = Succ Zero
+
+infinity # qualified
+infinity = inf Zero 
+  where inf a = Succ (& inf a)
+
+min # qualified
+min = Zero
+max # qualified
+max = infinity
+
+fromInt # qualified
+fromInt a = fromIntegral a
+fromLong # qualified
+fromLong a = fromIntegral a
+fromIntegral # qualified
+fromIntegral a = from a
+  where from 0 = Zero
+        from n = Succ (& from (n-1))
 
 /* Instances */
 instance Show peano where 
@@ -52,14 +52,11 @@ instance Enum peano where
 instance Additive peano where
   x+y = add x y
   x-y = subtract x y
-  --x = zero - x
+  --x = Zero - x
 
 instance Ring peano where
   x*y  = multiply x y
   x**y = power x y
-
-instance Field peano where
-  x/y = fst (divideMod x y)
 
 instance Modulo peano where
   mod x y = snd (divideMod x y)
@@ -71,7 +68,7 @@ instance Integral peano where
 
 instance Absolute peano where
   abs = id
-  signum Zero = zero
+  signum Zero = Zero
   signum (Succ _) = one
 
 instance IntLike peano where
@@ -86,13 +83,13 @@ instance ListLike peano where
           list n (Succ a) = n :: (& list (n+1) a)
 
 /* Functions */
-listLength [] = zero
+listLength [] = Zero
 listLength (x::xs) = add one (& listLength xs)
 
 (?) = fromIntegral
 
 add Zero b = b
-add (Succ a) b = inc (& add a b)
+add (Succ a) b = Succ (& add a b)
 
 subtract Zero Zero = Zero
 subtract Zero b = fail "Peano: out of range!"
@@ -103,8 +100,8 @@ subtractNeg Zero y = (false, y)
 subtractNeg x Zero = (true, x)
 subtractNeg (Succ x) (Succ y) = & subtractNeg x y
 
-multiply Zero _ = zero
-multiply _ Zero = zero
+multiply Zero _ = Zero
+multiply _ Zero = Zero
 multiply (Succ x) y = add y (& multiply x y)
 
 power b Zero = one
@@ -113,8 +110,8 @@ power b e = p e one
         p n r = p (n `subtract` one) (r `multiply` b)
 
 divideMod x y 
-  | neg  = (zero,x)
-  | else = let &(q,r) = & divideMod d y in (inc q,r)
+  | neg  = (Zero,x)
+  | else = let &(q,r) = & divideMod d y in (Succ q,r)
   where (neg,d) = subtractNeg y x
 
 toIntegral2 # private

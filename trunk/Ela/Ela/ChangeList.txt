@@ -1,3 +1,16 @@
+0.11.0.38:Change:Implicit number conversions are limited to conversions only between integer types and only between floats.
+0.11.0.37:Change:Most of built-in classes now defines functions in the form 'a->a' (used to be 'a->_').
+0.11.0.36:New:Now when compiling patterns a compiler verifies that a constructor symbol is declared prior to use.
+0.11.0.35:New:New op codes 'CType' and 'CTypes' that can be used for lazy type tag checking are added.
+0.11.0.34:New:Now it is possible to declare (and pattern match) constructors in infix, postfix and prefix forms.
+0.11.0.33:Change:An implementation of 'Gettag' op code is change according to the changes in constructor symbols processing.
+0.11.0.32:New:A new 'data' declaration that allows to extend an existing type is added.
+0.11.0.31:Change:Now all constructors have to be declared prior to use.
+0.11.0.30:Change:A 'type' declaration is changed and is not similar to Haskell's (algebraic type). It is possible to specify type constraints and type parameters.
+0.11.0.29:Change:A 'variant' data type is completely decomissioned, including all related op codes and literals.
+0.11.0.28:Change:An op code 'Conv' is decomissioned (all conversions are now implemented using regular functions).
+0.11.0.27:Change:An op code 'Skiphtag' is decomissioned (it wasn't emitted by a compiler anyway).
+0.11.0.26:Change:An op code 'Untag' is decomissioned (now it is implemented through regular function).
 0.11.0.25:Fix:A bug fixed in resolving of member function for user defined classes; during function resolution a function object could be mutated without prior cloning.
 0.11.0.24:New:A support for lazy tuple patterns was implemented.
 0.11.0.23:Fix:Evaluation of recursive thunks with high level of nesting could result in a stack overflow.

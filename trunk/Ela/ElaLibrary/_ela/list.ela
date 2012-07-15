@@ -2,6 +2,8 @@
   Module list
   Created in 2011-2012 by Basil Voronkov
 */
+open core
+
 class ListLike a where
   toList a
 

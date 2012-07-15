@@ -77,8 +77,6 @@ namespace Ela.CodeModel
 
         ClassMember,
 
-        Newtype,
-
-        Constructor
+        Newtype
 	}
 }

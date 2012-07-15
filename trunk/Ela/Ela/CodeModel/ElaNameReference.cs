@@ -35,5 +35,7 @@ namespace Ela.CodeModel
 		}
 
 		public string Name { get; set; }
+
+        public bool Uppercase { get; set; }
 	}
 }

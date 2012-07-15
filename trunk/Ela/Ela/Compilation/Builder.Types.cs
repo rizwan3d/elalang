@@ -44,6 +44,22 @@ namespace Ela.Compilation
                     frame.InternalTypes.Add(v.Name, tc);
 
                 AddLinePragma(v);
+                var typeParams = new Dictionary<String,Int32>();
+
+                //Type definition has type parameters that can be used by constructors
+                if (v.HasTypeParams)
+                {
+                    for (var i = 0; i < v.TypeParams.Count; i++)
+                    {
+                        var p = v.TypeParams[i];
+
+                        //Type parameters should be unique identifiers
+                        if (typeParams.ContainsKey(p))
+                            AddError(ElaCompilerError.DuplicateTypeParameter, v, p, v.Name);
+                        else
+                            typeParams.Add(p, 0);
+                    }
+                }
 
                 //Add a type var for a non built-in type
                 if (v.HasBody)
@@ -59,7 +75,7 @@ namespace Ela.Compilation
                     for (var i = 0; i < v.Constructors.Count; i++)
                     {
                         var c = v.Constructors[i];
-                        CompileConstructor(sca, c);
+                        CompileConstructor(typeParams, sca, c);
                     }
                 }
                 else
@@ -72,36 +88,80 @@ namespace Ela.Compilation
 
         //Generic compilation logic for a constructor, compiles both functions and constants.
         //Parameter sca is an address of variable that contains real type ID.
-        private void CompileConstructor(int sca, ElaConstructor c)
+        private void CompileConstructor(Dictionary<String,Int32> typeParams, int sca, ElaExpression exp)
         {
-            if (c.Expressions.Count > 0)
-                CompileConstructorFunction(c, sca);
-            else
+            //Constructor name
+            var name = String.Empty;
+
+            switch (exp.Type)
             {
-                AddLinePragma(c);
-                cw.Emit(Op.Pushunit);
-                cw.Emit(Op.Ctorid, AddString(c.Name));
-                PushVar(sca);
-                cw.Emit(Op.Newtype);
-                var a = AddVariable(c.Name, c, ElaVariableFlags.TypeFun, -1);
-                PopVar(a);
+                case ElaNodeType.NameReference:
+                    {
+                        var n = (ElaNameReference)exp;
+                        name = n.Name;
+
+                        if (!n.Uppercase)
+                            AddError(ElaCompilerError.InvalidConstructor, n, FormatNode(n));
+                        else
+                            CompileConstructorConstant(n, sca);
+                    }
+                    break;
+                case ElaNodeType.Juxtaposition:
+                    {
+                        var n = (ElaJuxtaposition)exp;
+
+                        if (n.Target.Type == ElaNodeType.NameReference)
+                        {
+                            var m = (ElaNameReference)n.Target;
+                            name = m.Name;
+
+                            if (m.Uppercase || (Format.IsSymbolic(m.Name) && n.Parameters.Count <= 2))
+                            {
+                                CompileConstructorFunction(typeParams, m.Name, n, sca);
+                                break;
+                            }   
+                        }
+
+                        AddError(ElaCompilerError.InvalidConstructor, exp, FormatNode(exp));
+                    }
+                    break;
+                default:
+                    AddError(ElaCompilerError.InvalidConstructor, exp, FormatNode(exp));
+                    break;
             }
 
-            var ab = AddVariable("$$$$" + c.Name, c, ElaVariableFlags.None, -1);
-            cw.Emit(Op.Ctorid, AddString(c.Name));
+            var ab = AddVariable("$$$$" + name, exp, ElaVariableFlags.None, -1);
+            cw.Emit(Op.Ctorid, AddString(name));
             PopVar(ab);
-            frame.InternalConstructors.Add(c.Name, -1);
+            frame.InternalConstructors.Add(name, -1);
+        }
+
+        //Compiles a simple parameterless constructor
+        private void CompileConstructorConstant(ElaNameReference exp, int sca)
+        {
+            AddLinePragma(exp);
+            cw.Emit(Op.Pushunit);
+            cw.Emit(Op.Ctorid, AddString(exp.Name));
+            PushVar(sca);
+            cw.Emit(Op.Newtype);
+            var a = AddVariable(exp.Name, exp, ElaVariableFlags.TypeFun, -1);
+            PopVar(a);
         }
 
         //Compiles a type constructor
-        private void CompileConstructorFunction(ElaConstructor cons, int sca)
+        private void CompileConstructorFunction(Dictionary<String,Int32> dict, string name, ElaJuxtaposition juxta, int sca)
         {
             Label funSkipLabel;
             int address;
             LabelMap newMap;
-            var len = cons.Expressions.Count;
+            var len = juxta.Parameters.Count;
+            var typeParams = new Dictionary<String,Int32>();
 
-            CompileFunctionProlog(cons.Name, len, cons.Line, cons.Column, out funSkipLabel, out address, out newMap);
+            foreach (var kv in dict)
+                typeParams.Add(kv.Key, -1);
+
+            AddLinePragma(juxta);
+            CompileFunctionProlog(name, len, juxta.Line, juxta.Column, out funSkipLabel, out address, out newMap);
 
             //Compile function body
             var failLab = cw.DefineLabel();
@@ -111,14 +171,55 @@ namespace Ela.Compilation
             
             for (var i = 0; i < len; i++)
             {
+                var ce = juxta.Parameters[i];
                 sys[i] = AddVariable();
                 PopVar(sys[i]);
 
-                var ce = cons.Expressions[i];
+                if (ce.Type == ElaNodeType.NameReference)
+                {
+                    var n = (ElaNameReference)ce;
+                    var checkVar = default(Int32);
 
-                if (ce.Type != ElaNodeType.NameReference &&
-                    ce.Type != ElaNodeType.Placeholder)                    
-                    CompilePattern(sys[i], ce, failLab);
+                    //First we check if a given name is a type parameter. If it is
+                    //we consider it to be a direct type name
+                    if (!typeParams.TryGetValue(n.Name, out checkVar))
+                    {
+                        PushVar(sys[i]);
+                        EmitSpecName(null, "$$" + n.Name, n, ElaCompilerError.UndefinedType);
+                        cw.Emit(Op.Ctypei);
+                        cw.Emit(Op.Brfalse, failLab);
+                    }
+                    else
+                    {
+                        //If this is the first occurence of a variable we only need to memorize
+                        //its address, otherwise we need to check its type.
+                        if (checkVar == -1)
+                            typeParams[n.Name] = sys[i];
+                        else
+                        {
+                            PushVar(checkVar);
+                            PushVar(sys[i]);
+                            cw.Emit(Op.Ctype);
+                            cw.Emit(Op.Brfalse, failLab);
+                        }
+                    }
+                }
+                else if (ce.Type == ElaNodeType.FieldReference)
+                {
+                    //A type can be also prefixed with a module alias. We process this case here
+                    var n = (ElaFieldReference)ce;
+
+                    if (n.TargetObject.Type != ElaNodeType.NameReference)
+                        AddError(ElaCompilerError.InvalidConstructorParameter, juxta, FormatNode(ce), name);
+
+                    PushVar(sys[i]);
+                    EmitSpecName(n.TargetObject.GetName(), "$$" + n.FieldName, n, ElaCompilerError.UndefinedType);
+                    cw.Emit(Op.Ctypei);
+                    cw.Emit(Op.Brfalse, failLab);
+                }
+                else
+                    AddError(ElaCompilerError.InvalidConstructorParameter, juxta, FormatNode(ce), name);                
+                
             }
 
             cw.Emit(Op.Br, succLab);
@@ -138,13 +239,13 @@ namespace Ela.Compilation
                 cw.Emit(Op.Tupcons, i);
             }
 
-            cw.Emit(Op.Ctorid, AddString(cons.Name));
+            cw.Emit(Op.Ctorid, AddString(name));
             //Refering to captured name, need to recode its address
             PushVar((Byte.MaxValue & sca) + 1 | (sca << 8) >> 8);
             cw.Emit(Op.Newtype);
 
-            CompileFunctionEpilog(cons.Name, len, address, funSkipLabel);
-            var a = AddVariable(cons.Name, cons, ElaVariableFlags.TypeFun, -1);
+            CompileFunctionEpilog(name, len, address, funSkipLabel);
+            var a = AddVariable(name, juxta, ElaVariableFlags.TypeFun, -1);
             PopVar(a);
         }
     }

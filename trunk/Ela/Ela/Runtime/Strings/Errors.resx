@@ -148,7 +148,7 @@
     <value>Indices of type '{0}' are not supported.</value>
   </data>
   <data name="InvalidOp" xml:space="preserve">
-    <value>A value '{0}' of type '{1}' doesn't support operation '{2}'.</value>
+    <value>A value of type '{0}' doesn't support operation '{1}'.</value>
   </data>
   <data name="InvalidParameterType" xml:space="preserve">
     <value>Invalid type for the function parameter. Expected '{0}', got '{1}'.</value>

@@ -27,7 +27,7 @@ namespace Ela.Compilation
 
 		InvalidPattern = 309,
 
-		VariableDeclarationInitMissing = 310,
+		DuplicateTypeParameter = 310,
 
 		NameRequireQualified = 311,
 
@@ -35,11 +35,11 @@ namespace Ela.Compilation
 
         PrivateOnlyGlobal = 313,
 
-		InvalidVariant = 314,
+		InvalidConstructorParameter = 314,
 
         InvalidBuiltinBinding = 315,
 
-		// = 316,
+		InvalidConstructor = 316,
 
         ClassAlreadyDeclared = 317,
 

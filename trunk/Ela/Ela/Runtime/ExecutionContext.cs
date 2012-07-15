@@ -57,7 +57,7 @@ namespace Ela.Runtime
 
 		public void NoOperator(ElaValue value, string op)
 		{
-			Fail(ElaRuntimeError.InvalidOp, value, value.GetTypeName(), op);
+			Fail(ElaRuntimeError.InvalidOp, value.GetTypeName(), op);
 		}
 
 

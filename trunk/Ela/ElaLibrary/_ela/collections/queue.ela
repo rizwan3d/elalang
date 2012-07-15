@@ -5,14 +5,7 @@
 open list
 
 /* Construction */
-type queue
-  where 
-        fromPair # private
-        fromPair (f,b) = Queue (f,b)
-        fromList # qualified
-        fromList xs = fromPair (reverse xs, [])
-        empty # qualified
-        empty = fromPair ([],[])
+type queue = Queue list list
 
 /* Instances */
 instance Show queue
@@ -28,27 +21,33 @@ instance Eq queue
 instance Seq queue
   where head = peek
         tail = dequeue
-        isnil (Queue ([],[])) = true
+        isnil (Queue [] []) = true
         isnil _ = false
 
 instance Ix queue
   where q : i = toList q : i
-        length (Queue (f,b)) = length f + length b
+        length (Queue f b) = length f + length b
+
+instance ListLike queue where
+  toList (Queue f b) = f ++ reverse b
 
 /* Functions */
-toList # qualified
-toList (Queue (f,b)) = f ++ reverse b
+fromList # qualified
+fromList xs = Queue (reverse xs) []
 
-enqueue e (Queue (f,b)) = enq f b
-      where enq [] b = fromPair ([e], b)
-            enq f b  = fromPair (f, e::b)
+empty # qualified
+empty = Queue [] []
 
-dequeue (Queue (f,b)) = deq f b
-      where deq [] [] = fail "Empty queue."
+enqueue e (Queue f b) = enq f b
+      where enq [] b = Queue [e] b
+            enq f b  = Queue f (e::b)
+
+dequeue (Queue f b) = deq f b
+      where deq [] [] = fail "queue: Empty queue."
             deq (_::[]) [] = empty
-            deq (_::[]) ys = fromPair (reverse ys, [])
-            deq xs ys = fromPair (tail xs,ys)
+            deq (_::[]) ys = Queue (reverse ys) []
+            deq xs ys = Queue (tail xs) ys
 
-peek (Queue (f,b)) = peek' f b
-      where peek' [] [] = fail "Empty queue."
+peek (Queue f b) = peek' f b
+      where peek' [] [] = fail "queue: Empty queue."
             peek' (x::_) _ = x
