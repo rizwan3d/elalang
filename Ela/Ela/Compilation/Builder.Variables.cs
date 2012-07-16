@@ -28,7 +28,7 @@ namespace Ela.Compilation
 
         //This method should be used always instead of direct emitting Pushvar/Pushloc op codes.
         //It first checks if a given variable is an external and in such a case generates
-        //a different op code. For locals it uses PushVar(int) to generate an appropriate op code.
+        //a different op typeId. For locals it uses PushVar(int) to generate an appropriate op typeId.
         private void PushVar(ScopeVar sv)
         {
             if ((sv.Flags & ElaVariableFlags.External) == ElaVariableFlags.External)
@@ -56,7 +56,7 @@ namespace Ela.Compilation
                 cw.Emit(Op.Popvar, address);
         }
 
-        //This method is used to generate Push* op code for a special name prefixed by $$ or $$$.
+        //This method is used to generate Push* op typeId for a special name prefixed by $$ or $$$.
         //Such names are used for hidden variables that contains unique codes of types and classes.
         //This method can emit a qualified name (with a module prefix) as well as a short name.
         //It also generates an appropriate error if a name is not found.

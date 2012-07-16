@@ -61,7 +61,7 @@ namespace Ela.Compilation
 			EndSection();
 
             //For a type constructor function the last instruction
-            //in a function should be a Newtype op code.
+            //in a function should be a Newtype op typeId.
             if (dec.AssociatedType != null)
                 cw.Emit(Op.Newtype, AddString(dec.AssociatedType));
 
@@ -125,7 +125,7 @@ namespace Ela.Compilation
             return parLen;
         }
 
-        //Generates the first part of the code needed to create a simple argument function. After
+        //Generates the first part of the typeId needed to create a simple argument function. After
         //calling this method one should compile an expression that will become a function body.
         private void CompileFunctionProlog(string name, int pars, int line, int col, out Label funSkipLabel, out int address, out LabelMap newMap)
         {

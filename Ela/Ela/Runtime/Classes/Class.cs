@@ -160,7 +160,8 @@ namespace Ela.Runtime.Classes
                 return false;
             }
 
-            return left.Ref == right.Ref;
+            ctx.NoOverload(left.GetTypeName(), "equal");
+            return false;
         }
 
         internal virtual bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -177,7 +178,8 @@ namespace Ela.Runtime.Classes
                 return false;
             }
 
-            return left.Ref != right.Ref;
+            ctx.NoOverload(left.GetTypeName(), "notequal");
+            return false;
         }
 
         internal virtual ElaValue GetLength(ElaValue value, ExecutionContext ctx)
@@ -458,20 +460,8 @@ namespace Ela.Runtime.Classes
                 return String.Empty;
             }
 
-            if (value.Ref is ElaUserType)
-            {
-                return ((ElaUserType)value.Ref).ToString(format, Culture.NumberFormat);
-            }
-
-            try
-            {
-                return value.ToString(format, Culture.NumberFormat);
-            }
-            catch (Exception)
-            {
-                ctx.InvalidFormat(format, value);
-                return String.Empty;
-            }
+            ctx.NoOverload(value.GetTypeName(), "showf");
+            return String.Empty;
         }
 
         protected static ElaValue Default()

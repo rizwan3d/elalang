@@ -61,7 +61,7 @@ namespace Ela.Compilation
             //Main compilation routine
             CompileProgram(prog, map);
             
-            //Every Ela module should end with a Stop op code
+            //Every Ela module should end with a Stop op typeId
 			cw.Emit(Op.Stop);
 			cw.CompileOpList();
 

@@ -62,7 +62,7 @@ namespace Ela.Compilation
         //Main method for type compilation
         private void CompileTypeBody(ElaNewtype v, LabelMap map)
         {
-            //We need to obtain type code for a type
+            //We need to obtain type typeId for a type
             var tc = -1;
             var sca = -1;
             var hd = default(ElaNewtype);

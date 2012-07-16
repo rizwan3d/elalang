@@ -9,9 +9,11 @@ namespace Ela.Compilation
         //The main method for class compilation
         private void CompileClass(ElaTypeClass s, LabelMap map)
         {
+            var tc = TypeClass.None;
+
             //We a special syntax for built-in classes and they are compiled separately
             if (s.BuiltinName != null)
-                CompileBuiltinClass(s, map);
+                tc = CompileBuiltinClass(s, map);
             else
             {
                 //Run through members and create global class functions (Newfunc)
@@ -32,7 +34,7 @@ namespace Ela.Compilation
             }
 
             //We create a special variable that will be initialized with a global unique ID of this class
-            var sa = AddVariable("$$$" + s.Name, s, ElaVariableFlags.None, -1);
+            var sa = AddVariable("$$$" + s.Name, s, ElaVariableFlags.None, (Int32)tc);
             cw.Emit(Op.Classid, AddString(s.Name));
             PopVar(sa);
 
@@ -48,37 +50,39 @@ namespace Ela.Compilation
 
         //Built-in class compilation simply compiles an appropriate built-in and creates
         //an entry for a class as for a regular class
-        private void CompileBuiltinClass(ElaTypeClass s, LabelMap map)
+        private TypeClass CompileBuiltinClass(ElaTypeClass s, LabelMap map)
         {
-            switch (s.BuiltinName)
+            var tc = TypeClassHelper.GetTypeClass(s.BuiltinName);
+
+            switch (tc)
             {
-                case "Eq":
+                case TypeClass.Eq:
                     CompileBuiltinMember(ElaBuiltinKind.Equal, s, 0, map);
                     CompileBuiltinMember(ElaBuiltinKind.NotEqual, s, 1, map);
                     break;
-                case "Ord":
+                case TypeClass.Ord:
                     CompileBuiltinMember(ElaBuiltinKind.Greater, s, 0, map);
                     CompileBuiltinMember(ElaBuiltinKind.Lesser, s, 1, map);
                     CompileBuiltinMember(ElaBuiltinKind.GreaterEqual, s, 2, map);
                     CompileBuiltinMember(ElaBuiltinKind.LesserEqual, s, 3, map);
                     break;
-                case "Additive":
+                case TypeClass.Additive:
                     CompileBuiltinMember(ElaBuiltinKind.Add, s, 0, map);
                     CompileBuiltinMember(ElaBuiltinKind.Subtract, s, 1, map);
                     CompileBuiltinMember(ElaBuiltinKind.Negate, s, 2, map);
                     break;
-                case "Ring":
+                case TypeClass.Ring:
                     CompileBuiltinMember(ElaBuiltinKind.Multiply, s, 0, map);
                     CompileBuiltinMember(ElaBuiltinKind.Power, s, 1, map);                    
                     break;
-                case "Field":
+                case TypeClass.Field:
                     CompileBuiltinMember(ElaBuiltinKind.Divide, s, 0, map);
                     break;
-                case "Modulo":
+                case TypeClass.Modulo:
                     CompileBuiltinMember(ElaBuiltinKind.Modulus, s, 0, map);
                     CompileBuiltinMember(ElaBuiltinKind.Remainder, s, 1, map);
                     break;
-                case "Bit":
+                case TypeClass.Bit:
                     CompileBuiltinMember(ElaBuiltinKind.BitwiseAnd, s, 0, map);
                     CompileBuiltinMember(ElaBuiltinKind.BitwiseOr, s, 1, map);
                     CompileBuiltinMember(ElaBuiltinKind.BitwiseXor, s, 2, map);
@@ -86,25 +90,27 @@ namespace Ela.Compilation
                     CompileBuiltinMember(ElaBuiltinKind.ShiftLeft, s, 4, map);
                     CompileBuiltinMember(ElaBuiltinKind.ShiftRight, s, 5, map);
                     break;
-                case "Seq":
+                case TypeClass.Seq:
                     CompileBuiltinMember(ElaBuiltinKind.Head, s, 0, map);
                     CompileBuiltinMember(ElaBuiltinKind.Tail, s, 1, map);
                     CompileBuiltinMember(ElaBuiltinKind.IsNil, s, 2, map);
                     break;
-                case "Ix":
+                case TypeClass.Ix:
                     CompileBuiltinMember(ElaBuiltinKind.Get, s, 0, map);
                     CompileBuiltinMember(ElaBuiltinKind.Length, s, 1, map);
                     break;
-                case "Cat":
+                case TypeClass.Cat:
                     CompileBuiltinMember(ElaBuiltinKind.Concat, s, 0, map);
                     break;
-                case "Show":
+                case TypeClass.Show:
                     CompileBuiltinMember(ElaBuiltinKind.Showf, s, 0, map);
                     break;
                 default:
                     AddError(ElaCompilerError.InvalidBuiltinClass, s, s.BuiltinName);
                     break;
             }
+
+            return tc;
         }
 
         //Validates a built-in class definition and compile a built-in member

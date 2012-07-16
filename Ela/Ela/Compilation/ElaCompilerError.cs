@@ -91,5 +91,7 @@ namespace Ela.Compilation
         SuccNotFound = 340,
 
         TypeHeaderNotConnected = 341,
+
+        UnableAutoGenerateInstance = 342,
 	}
 }

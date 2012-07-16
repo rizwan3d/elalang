@@ -22,7 +22,7 @@ namespace Ela.Compilation
             pdb.StartFunction(name, address, pars);
 
             AddLinePragma(exp);
-            //Gets the actual code for built-in
+            //Gets the actual typeId for built-in
             CompileBuiltinInline(kind, exp, map, Hints.None);
 
             cw.Emit(Op.Ret);

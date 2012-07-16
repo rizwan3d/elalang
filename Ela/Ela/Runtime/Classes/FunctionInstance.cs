@@ -5,6 +5,11 @@ namespace Ela.Runtime.Classes
 {
     internal sealed class FunctionInstance : Class
     {
+        internal override string Showf(string format, ElaValue value, ExecutionContext ctx)
+        {
+            return value.ToString(format, Culture.NumberFormat);
+        }
+
         internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if (right.TypeId != ElaMachine.FUN)

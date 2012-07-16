@@ -6,6 +6,11 @@ namespace Ela.Runtime.Classes
 {
     internal sealed class LongInstance : Class
     {
+        internal override string Showf(string format, ElaValue value, ExecutionContext ctx)
+        {
+            return value.ToString(format, Culture.NumberFormat);
+        }
+
         internal override ElaValue BitwiseAnd(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if (right.TypeId != ElaMachine.LNG)

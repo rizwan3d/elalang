@@ -128,8 +128,8 @@ namespace Ela.Compilation
         }
 
         //Checks if a field reference is actually an exported name prefixed by a module
-        //and if so emits a direct Pushexit op code. If this is not the case returns false
-        //and the code gets compiled as a regular field reference.
+        //and if so emits a direct Pushexit op typeId. If this is not the case returns false
+        //and the typeId gets compiled as a regular field reference.
         private bool TryOptimizeFieldReference(ElaFieldReference p)
         {
             if (p.TargetObject.Type != ElaNodeType.NameReference)

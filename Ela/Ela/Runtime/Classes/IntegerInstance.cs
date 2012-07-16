@@ -6,6 +6,11 @@ namespace Ela.Runtime.Classes
 {
     internal sealed class IntegerInstance : Class
     {
+        internal override string Showf(string format, ElaValue value, ExecutionContext ctx)
+        {
+            return value.ToString(format, Culture.NumberFormat);
+        }
+
         internal override ElaValue BitwiseNot(ElaValue @this, ExecutionContext ctx)
         {
             return new ElaValue(~@this.I4);

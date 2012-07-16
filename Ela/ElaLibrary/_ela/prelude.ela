@@ -357,6 +357,39 @@ until p f x | p x  = x | else = until p f (f x)
 even x = x % 2 == 0
 odd x = x % 2 <> 0
 
+/* Functions used for automatic instance generation */
+genericEq # infrastructure
+genericEq a b = tag a == tag b and untag a == untag b
+
+genericNeq # infrastructure
+genericNeq a b = tag a <> tag b or untag a <> untag b
+
+genericGt # infrastructure
+genericGt a b = untag a > untag b and tag a >= tag b
+
+genericLt # infrastructure
+genericLt a b = tag a < tag b or untag a < untag b
+
+genericGtEq # infrastructure
+genericGtEq a b = tag a >= tag b and untag a >= untag b
+
+genericLtEq # infrastructure
+genericLtEq a b = tag a <= tag b or untag a <= untag b
+
+genericShow # infrastructure
+genericShow f a 
+  | lang.__isInfix lang a = showf f (u:0) ++ " " ++ tag a ++ " " ++ showf f (u:1)
+  | else = lang.__stringFromList (tag a :: v)
+  where u = untag a 
+        v = match u with () = []; _  = " " :: showParamList f u
+
+showParamList # private
+showParamList f t = tos 0
+  where len = length t
+        tos n | n == len - 1 = [e]
+              | else = e :: " " :: tos (n+1)
+              where e = showf f (t:n) 
+
 /* Privates */
 (!!) # private
 (!!) = __internal recfield

@@ -570,7 +570,9 @@ namespace Ela.Runtime
                         if (right.TypeId == LAZ)
                             right = right.Ref.Force(right, ctx);
 
-                        evalStack.Replace(new ElaValue(asm.Constructors[right.Ref.GetTag(ctx)]));
+                        i4 = right.Ref.GetTag(ctx);
+
+                        evalStack.Replace(new ElaValue(i4 < 0 ? String.Empty : asm.Constructors[i4]));
 
                         if (ctx.Failed)
                         {
@@ -1653,22 +1655,20 @@ namespace Ela.Runtime
                 thread.Context.Fun = null;
                 var args = thread.Context.DefferedArgs;
 
+                if (f.Parameters.Length + 1 - f.AppliedParameters > args)
+                {
+                    f.Parameters[f.AppliedParameters] = stack.Pop();
+                    f.AppliedParameters++;
+                    stack.Push(new ElaValue(f));
+                }
+
                 if (args == 1)
                     f.LastParameter = stack.Pop();
                 if (args == 2)
                 {
-                    f.Parameters[0] = stack.Pop();
-                    f.AppliedParameters = 1;
+                    f.Parameters[f.AppliedParameters] = stack.Pop();
+                    f.AppliedParameters += 1;
                     f.LastParameter = stack.Pop();
-                }
-
-                if (f.Parameters.Length + 1 > args)
-                {
-                    f.Parameters[f.AppliedParameters] = f.LastParameter;
-                    f.LastParameter = default(ElaValue);
-                    f.AppliedParameters++;
-                    stack.Push(new ElaValue(f));
-                    return;
                 }
 
                 Call(f, thread, stack, CallFlag.AllParams);
