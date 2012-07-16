@@ -143,12 +143,6 @@ tupex {eq} =
   where fun (x,y) = x+y
         val = (& (1,2))
 
-lazyVariant {eqt} =
-  match v with
-        Foo 12 = eqt true
-        _      = eqt false
-  where v = (& Foo 12)
-
 tupleEq1 {eqt,eqf} = 
     eqt (tup1 <> tup2)
   $ eqf (tup3 <> tup4)

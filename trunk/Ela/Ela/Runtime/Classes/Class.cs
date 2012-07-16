@@ -13,8 +13,6 @@ namespace Ela.Runtime.Classes
         private ElaFunction shr;
         private ElaFunction shl;
         private ElaFunction cat;
-        private ElaFunction succ;
-        private ElaFunction pred;
         private ElaFunction eq;
         private ElaFunction neq;
         private ElaFunction len;
@@ -104,12 +102,6 @@ namespace Ela.Runtime.Classes
         {
             if (not != null)
             {
-                if (left.TypeId != right.TypeId)
-                {
-                    NoOverloadBinary(left.GetTypeName(), right, "bitwisenot", ctx);
-                    return Default();
-                }
-
                 ctx.SetDeffered(not, 1);
                 return Default();
             }
@@ -154,30 +146,6 @@ namespace Ela.Runtime.Classes
             return Default();
         }
 
-        internal virtual ElaValue Successor(ElaValue @this, ExecutionContext ctx)
-        {
-            if (succ != null)
-            {
-                ctx.SetDeffered(succ, 1);
-                return Default();
-            }
-
-            ctx.NoOverload(@this.GetTypeName(), "succ");
-            return Default();
-        }
-
-        internal virtual ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
-        {
-            if (pred != null)
-            {
-                ctx.SetDeffered(pred, 1);
-                return Default();
-            }
-
-            ctx.NoOverload(@this.GetTypeName(), "pred");
-            return Default();
-        }
-
         internal virtual bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if (eq != null)
@@ -185,7 +153,7 @@ namespace Ela.Runtime.Classes
                 if (left.TypeId != right.TypeId)
                 {
                     NoOverloadBinary(left.GetTypeName(), right, "equal", ctx);
-                    return Default();
+                    return false;
                 }
 
                 ctx.SetDeffered(eq, 2);
@@ -202,7 +170,7 @@ namespace Ela.Runtime.Classes
                 if (left.TypeId != right.TypeId)
                 {
                     NoOverloadBinary(left.GetTypeName(), right, "notequal", ctx);
-                    return Default();
+                    return false;
                 }
 
                 ctx.SetDeffered(neq, 2);
@@ -399,7 +367,7 @@ namespace Ela.Runtime.Classes
                 if (left.TypeId != right.TypeId)
                 {
                     NoOverloadBinary(left.GetTypeName(), right, "lesser", ctx);
-                    return Default();
+                    return false;
                 }
 
                 ctx.SetDeffered(lt, 2);
@@ -417,7 +385,7 @@ namespace Ela.Runtime.Classes
                 if (left.TypeId != right.TypeId)
                 {
                     NoOverloadBinary(left.GetTypeName(), right, "greaterequal", ctx);
-                    return Default();
+                    return false;
                 }
 
                 ctx.SetDeffered(gteq, 2);
@@ -435,7 +403,7 @@ namespace Ela.Runtime.Classes
                 if (left.TypeId != right.TypeId)
                 {
                     NoOverloadBinary(left.GetTypeName(), right, "lesserequal", ctx);
-                    return Default();
+                    return false;
                 }
 
                 ctx.SetDeffered(lteq, 2);
@@ -535,12 +503,6 @@ namespace Ela.Runtime.Classes
                     break;
                 case ElaBuiltinKind.Concat:
                     cat = fun;
-                    break;
-                case ElaBuiltinKind.Succ:
-                    succ = fun;
-                    break;
-                case ElaBuiltinKind.Pred:
-                    pred = fun;
                     break;
                 case ElaBuiltinKind.Equal:
                     eq = fun;

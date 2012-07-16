@@ -1510,15 +1510,25 @@ internal sealed partial class Parser {
 			Get();
 			nt.TypeParams.Add(t.val); 
 		}
-		if (la.kind == 53) {
-			var cexp = default(ElaExpression); 
-			Get();
-			OpExpr0(out cexp);
-			nt.Constructors.Add(cexp); 
-			while (la.kind == 21) {
+		if (la.kind == 48 || la.kind == 53) {
+			if (la.kind == 53) {
+				var cexp = default(ElaExpression); 
 				Get();
 				OpExpr0(out cexp);
 				nt.Constructors.Add(cexp); 
+				while (la.kind == 21) {
+					Get();
+					OpExpr0(out cexp);
+					nt.Constructors.Add(cexp); 
+				}
+			} else {
+				Get();
+				Expect(1);
+				nt.Flags = ProcessAttribute(t.val,nt.Flags); 
+				while (la.kind == 1) {
+					Get();
+					nt.Flags = ProcessAttribute(t.val,nt.Flags); 
+				}
 			}
 		}
 		EndBlock();

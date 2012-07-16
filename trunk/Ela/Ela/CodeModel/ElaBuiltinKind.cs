@@ -12,12 +12,6 @@ namespace Ela.CodeModel
 
         Length,
 
-        Type,
-
-        Succ,
-
-        Pred,
-
         Head,
 
         Tail,
@@ -31,7 +25,6 @@ namespace Ela.CodeModel
         BitwiseNot,
 
         
-
         Showf,
 
         ForwardPipe,

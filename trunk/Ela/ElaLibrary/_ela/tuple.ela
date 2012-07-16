@@ -2,7 +2,7 @@
   Module tuple
   Created in 2012 by Basil Voronkov
 */
-open thunk
+open thunk list
 import lang
 
 /* Instances */
@@ -11,25 +11,31 @@ instance Additive tuple
         (-)  = join (-)
         --x  = zero (length x) - x
 
-instance Enum tuple
-  where succ = map succ
-        pred = map pred
+instance Enum tuple where 
+  succ = map succ
+  pred = map pred
+  enumFrom fst snd = gen fst (snd-fst)
+    where gen e s = e :: (& gen (e+s) s)
+  enumFromTo max fst snd = gen [] max fst (snd-fst)
+    where gen xs max e s 
+            | e > max = reverse xs
+            | else = gen (e::xs) max (e+s) s
+
+instance ListLike tuple where
+  toList t = tol 0
+    where
+      len = length t
+      tol n | n == len = []
+            | else = t:n :: tol (n+1)
 
 /* Functions */
 fromList # qualified
 fromList xs = lang.__tupleFromList ys
-  where ys | lang.__isLazyList xs = forceOnlyList xs
+  where ys | lazyList xs = forceOnlyList xs
            | else = xs
 
-toList # qualified
-toList t = tol 0
-  where
-    len = length t
-    tol n | n == len = []
-          | else = t:n :: tol (n+1)
-
 map # qualified
-map f tup = lang.__tupleFromList (m 0)
+map f tup = fromList (m 0)
   where 
     len = length tup
     m n | n == len = []
@@ -40,8 +46,8 @@ join f (x,) (a,) = (x `f` a,)
 join f (x,y) (a,b) = (x `f` a, y `f` b)
 join f (x,y,z) (a,b,c) = (x `f` a,y `f` b,z `f` c)
 join f t1 t2 
-  | len <> length t2 = fail "Tuples should be of the same length." 
-  | else = lang.__tupleFromList (fold 0)
+  | len <> length t2 = fail "tuple: Tuples should be of the same length." 
+  | else = fromList (fold 0)
   where len = length t1
         fold n | n == len = []
                | else = (t1:n `f` t2:n) :: fold (n+1)
@@ -64,5 +70,7 @@ zero # private
 zero 1 = (0,)
 zero 2 = (0,0)
 zero 3 = (0,0,0)
-zero n = lang.__tupleFromList (gen n)
-  where gen n | n == 1 = [0] | else = 0 :: zero (n-1)
+zero n = fromList (gen [] n)
+  where 
+    gen ys 0 = ys
+    gen ys n = gen (0::ys) (n-1)

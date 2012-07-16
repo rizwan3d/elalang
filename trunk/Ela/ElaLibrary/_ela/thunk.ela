@@ -6,7 +6,7 @@ import libCore#elalib@core lang
 
 evaled = core.evaled
 
-lazyList = lang.__isLazyList
+lazyList (xs is list) = lang.__isLazyList xs
 
 forceAll (x is list)   = forceList (force x)
 forceAll (x is tuple)  = forceTuple x

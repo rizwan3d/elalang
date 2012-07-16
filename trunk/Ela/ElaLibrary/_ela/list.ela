@@ -2,7 +2,7 @@
   Module list
   Created in 2011-2012 by Basil Voronkov
 */
-open core
+open core lang
 
 class ListLike a where
   toList a
@@ -44,12 +44,14 @@ takeWhile f (x::xs) | f x  = x :: takeWhile f xs
                     | else = []
 takeWhile f [] = []
 
-take 0 _       = []
-take n (x::xs) = x :: take (n - 1) xs
-take _ []      = []
+take = tak []
+  where
+    tak ys 0 _       = lang.__reverseList ys
+    tak ys n (x::xs) = tak (x::ys) (n-1) xs
+    tak ys _ []      = []
 
 skip 0 xs      = xs
-skip n (_::xs) = skip (n - 1) xs
+skip n (_::xs) = skip (n-1) xs
 skip _ []      = []
 
 map f (x::xs) = f x :: map f xs
@@ -106,7 +108,10 @@ maximum (x::xs) = maximum' x xs
                            | else  = maximum' v xs
         maximum' v [] = v
 
-reverse xs = foldl (flip (::)) [] xs
+reverse xs 
+  | lang.__isLazyList xs = rev xs
+  | else = lang.__reverseList xs
+  where rev = foldl (flip (::)) []
 
 zipWith z (x::xs) (y::ys) = z x y :: zipWith z xs ys
 zipWith _ _ _ = []

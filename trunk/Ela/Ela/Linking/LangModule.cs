@@ -147,6 +147,7 @@ namespace Ela.Linking
             Add<ElaList,ElaList>("__reverseList", ReverseList);
             Add<ElaList,Int32>("__listLength", ListLength);
             Add<ElaUserType,ElaValue>("__unwrap", Unwrap);
+            Add<ElaValue,ElaRecord>("__getTypeInfo", GetTypeInfo);
 
             Add("__toInt", new ToInt());
             Add("__toLong", new ToLong());
@@ -155,6 +156,13 @@ namespace Ela.Linking
             Add("__toChar", new ToChar());
             Add("__toBool", new ToBool());
             Add("__toString", new ToStr());
+        }
+
+        public ElaRecord GetTypeInfo(ElaValue val)
+        {
+            return new ElaRecord(
+                new ElaRecordField("typeName", val.GetTypeName()),
+                new ElaRecordField("typeCode", val.TypeId));
         }
 
         public ElaValue Unwrap(ElaUserType type)

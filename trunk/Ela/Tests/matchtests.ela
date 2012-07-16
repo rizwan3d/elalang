@@ -1,3 +1,5 @@
+open core
+
 literalMatch {eqt} = 
     eqt (match 1 with 1 = true; _ = false;;)
   $ eqt (match 124 with 124 = true; _ = false;;)
@@ -96,12 +98,12 @@ guards4 {eqt} = eqt v
                   "ELA"            = false
 
 guards6 {eqt} =
-    eqt <| (compare 100 12) == Lt
-  $ eqt <| (compare 12 100) == Gt
-  $ eqt <| (compare 13 13) == Eq
-  where compare x y | y >  x = Gt
-                    | y == x = Eq
-                    | else   = Lt 
+    eqt <| (compare 100 12) == LT
+  $ eqt <| (compare 12 100) == GT
+  $ eqt <| (compare 13 13) == EQ
+  where compare x y | y >  x = GT
+                    | y == x = EQ
+                    | else   = LT 
 
 parallel {eqt} = eqt v
   where v = match (1,2,3) with

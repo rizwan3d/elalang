@@ -6,16 +6,6 @@ namespace Ela.Runtime.Classes
 {
     internal sealed class SingleInstance : Class
     {
-        internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
-        {
-            return new ElaValue(@this.DirectGetReal() + 1);
-        }
-
-        internal override ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
-        {
-            return new ElaValue(@this.DirectGetReal() - 1);
-        }
-
         internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if (right.TypeId != ElaMachine.REA)

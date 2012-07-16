@@ -13,7 +13,7 @@ CHARACTERS
 	verbatimChar = ANY.
 	stringChar = ANY - '"' - '\\' - cr - lf.
 	char = ANY - "'" - '\\' - cr - lf.
-	op = "!%&+-.,:<=>?@^|$~`\\".
+	op = "!%&+-./:<=>?@^|$~`\\".
 	parens = "[]{}()".
 
 TOKENS
@@ -96,7 +96,7 @@ PRODUCTIONS
 			| "false" (. Add(t.pos, t.val.Length, TextStyle.Style5); .)
 			| parenTok
 			| "_"
-			| ";" | "#"
+			| ";" | "#" | ","
 		).
 		
 	Keywords = 

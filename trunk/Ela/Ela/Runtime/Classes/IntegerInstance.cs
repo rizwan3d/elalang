@@ -84,16 +84,6 @@ namespace Ela.Runtime.Classes
             return new ElaValue(left.I4 >> right.I4);
         }
 
-        internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
-        {
-            return new ElaValue(@this.I4 + 1);
-        }
-
-        internal override ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
-        {
-            return new ElaValue(@this.I4 - 1);
-        }
-
         internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if (right.TypeId != ElaMachine.INT)
@@ -239,7 +229,7 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.INT)
             {
                 if (right.TypeId == ElaMachine.LNG)
-                    return new ElaValue(Math.Pow(left.I4, right.Ref.AsLong()));
+                    return new ElaValue((Int64)Math.Pow(left.I4, right.Ref.AsLong()));
                 else
                 {
                     NoOverloadBinary(TCF.INT, right, "power", ctx);
@@ -247,7 +237,7 @@ namespace Ela.Runtime.Classes
                 }
             }
 
-            return new ElaValue(Math.Pow(left.I4, right.I4));
+            return new ElaValue((Int32)Math.Pow(left.I4, right.I4));
         }
 
         internal override ElaValue Negate(ElaValue value, ExecutionContext ctx)

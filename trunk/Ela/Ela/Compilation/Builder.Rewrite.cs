@@ -42,7 +42,7 @@ namespace Ela.Compilation
                 CompileClass(prog.Classes, map);
 
             if (prog.Types != null)
-                CompileType(prog.Types, map);
+                CompileTypes(prog.Types, map);
         }
 
         //This method declares all names from global bindings in advance (so that top level can be mutualy recursive).

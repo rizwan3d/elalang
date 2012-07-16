@@ -20,7 +20,6 @@ namespace Ela
 		internal const string MOD = "module";
 		internal const string OBJ = "object";
 		internal const string LAZ = "thunk";
-        internal const string TYP = "typeinfo";
 		
         public static ElaTypeCode GetTypeCode(string type)
         {
@@ -41,7 +40,6 @@ namespace Ela
                 case MOD: return ElaTypeCode.Module;
                 case OBJ: return ElaTypeCode.Object;
                 case LAZ: return ElaTypeCode.Lazy;
-                case TYP: return ElaTypeCode.TypeInfo;
                 default: return ElaTypeCode.None;
             }
         }
@@ -65,8 +63,7 @@ namespace Ela
 				case ElaTypeCode.Module: return MOD;
 				case ElaTypeCode.Object: return OBJ;
 				case ElaTypeCode.Lazy: return LAZ;
-                case ElaTypeCode.TypeInfo: return TYP;
-				default: return ERR;
+                default: return ERR;
 			}
 		}
 	}

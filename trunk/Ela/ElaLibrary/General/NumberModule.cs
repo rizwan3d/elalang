@@ -106,7 +106,7 @@ namespace Ela.Library.General
         public double Acosh(double x)
         {
             if (x < 1.0) 
-                throw new ElaRuntimeException("OutOfRange", "Invalid range.");
+                throw new ElaRuntimeException("Invalid range.");
 
             return Math.Log(x + Math.Sqrt(x * x - 1));
         }
@@ -136,7 +136,7 @@ namespace Ela.Library.General
         public double Atanh(double x)
         {
             if (x > 1.0 || x < -1.0)
-                throw new ElaRuntimeException("OutOfRange", "Invalid range.");
+                throw new ElaRuntimeException("Invalid range.");
 
             return 0.5 * Math.Log((1.0 + x) / (1.0 - x));
         }

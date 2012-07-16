@@ -30,5 +30,5 @@ forceOnlyList t
 Forces a given but doesn't force calculation of its elements.
 
 lazyList t
-Tests if a given list is a lazy list. This function only tests if a list itself is lazy, it will return `false`
-for a strict list which elements are thunks.
+Tests if a given list is a lazy list. This function only tests if a list itself is lazy, it will 
+return `false` for a strict list which elements are thunks.

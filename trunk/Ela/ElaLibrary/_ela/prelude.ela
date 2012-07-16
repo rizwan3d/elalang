@@ -13,13 +13,13 @@ type bool
 type char
 type string
 type tuple
-type list
 type record
 type module
-type typeinfo
 type fun
 type unit
 type object
+
+type list a = a :: list | Nil
 
 /* Eq */
 class Eq __internal Eq (==) (<>)
@@ -39,8 +39,6 @@ instance Eq long
 instance Eq string
 
 instance Eq unit
-
-instance Eq typeinfo
 
 instance Eq fun
 
@@ -99,7 +97,7 @@ instance Ord tuple
 
 tupleAny # private 
 tupleAny f tup1 tup2 
-  | length tup2 <> len = fail "Tuples should be of the same length."
+  | length tup2 <> len = fail "prelude: Tuples should be of the same length."
   | else = fold 0
   where len = length tup1
         fold n | n == len - 1 = e
@@ -156,17 +154,21 @@ instance Bit int
 instance Bit long
 
 /* Enum */
-class Enum __internal Enum succ pred
+class Enum a where
+  succ a
+  pred a
+  enumFrom a->a
+  enumFromTo a->a->a
 
-instance Enum int
-
-instance Enum long
-
-instance Enum double
-
-instance Enum single
-
-instance Enum char
+instance Enum int long where
+  succ = (+1)
+  pred = (-1)
+  enumFrom fst snd = genInf fst (snd-fst)
+    where genInf e step = e :: (& genInf (e+step) step)
+  enumFromTo max fst snd = gen [] max fst (snd-fst)
+    where gen xs max e step
+            | e > max = lang.__reverseList xs
+            | else = gen (e::xs) max (e+step) step
 
 /* Seq */
 class Seq __internal Seq head tail isnil
@@ -176,7 +178,9 @@ instance Seq list
 instance Seq string
 
 /* Ix */
-class Ix __internal Ix (:) length
+class Ix __internal Ix item length
+
+(:) = item
 
 instance Ix string
 
@@ -191,7 +195,7 @@ instance Ix list
       | else = lang.__listLength xs
       where len n [] = n
             len n (x::xs) = len (n+1) xs
-    xs:n = get 0 xs
+    item xs n = get 0 xs
       where get _ [] = fail ("Index " ++ n ++ " is out of range.")
             get i (x::xs) | i == n = x
                           | else = get (i+1) xs
@@ -241,8 +245,6 @@ instance Show string
 
 instance Show unit
 
-instance Show typeinfo
-
 instance Show fun
 
 instance Show module
@@ -253,7 +255,6 @@ instance Show tuple where
           tos n | n == len - 1 = [e, (if len == 1 then ",)" else ")")]
                 | else = e :: "," :: tos (n+1)
                 where e = showf f (t:n) 
-
 
 instance Show list where 
   showf _ [] = "[]"
@@ -314,7 +315,6 @@ instance StringLike string char where
 
 /* Misc operators */
 not = __internal not
-(::) = __internal cons
 
 /* Function related operators and functions */
 (>>) f g x = g (f x)
@@ -338,7 +338,7 @@ fst3 (x,_,_) = x
 snd3 (_,y,_) = y
 
 /* Complex behaviors */
-getType = __internal typeinfo
+getType x = lang.__getTypeInfo (force x)
 force = __internal force
 
 /* Variants */
@@ -352,21 +352,11 @@ sub x y z = x z (y z)//S
 fix f = f (& fix f)
 on cmb f x y = f x `cmb` f y
 
-/* Ord */
-type ordering = EQ | LT | GT
-
-//compare x y | x == y = EQ | x < y = LT | else = GT
-maxValue x y | x >= y = x | else   = y
-minValue x y | x <= y = x | else   = y
-
 /* Misc */
 until p f x | p x  = x | else = until p f (f x)
 even x = x % 2 == 0
 odd x = x % 2 <> 0
 
 /* Privates */
-cast # private
-cast = __internal cast
-
 (!!) # private
 (!!) = __internal recfield

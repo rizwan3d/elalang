@@ -44,6 +44,6 @@ namespace Ela
 
 		__Reserved2 = 17,
 
-        TypeInfo = 18
+        __Reserved3 = 18
 	}
 }

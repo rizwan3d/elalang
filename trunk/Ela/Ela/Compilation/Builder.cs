@@ -267,7 +267,7 @@ namespace Ela.Compilation
                     if ((hints & Hints.Left) != Hints.Left)
                         cw.Emit(Op.Pushunit);
 
-                    exprData = new ExprData(DataKind.VarType, -1);
+                    exprData = new ExprData(DataKind.VarType, (Int32)ElaTypeCode.Unit);
                     break;
                 case ElaNodeType.TupleLiteral:
                     {

@@ -60,10 +60,7 @@ namespace Ela.Compilation
 			-1, //Throw
 			-1, //Rethrow
 			0, //Force
-			0, //Type
 			0, //Isnil
-			0, //Succ
-			0, //Pred
 			-1, //Show
 			0, //Gettag
             -1, //Recfld

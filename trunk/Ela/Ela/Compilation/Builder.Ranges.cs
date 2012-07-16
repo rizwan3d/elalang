@@ -5,26 +5,81 @@ namespace Ela.Compilation
 {
 	internal sealed partial class Builder
 	{
-		#region Main
+        //An entry method for range generation. Implementation of ranges are not provided by a compiler,
+        //instead a particular data type implement ranges by providing an instance of Enum class. Functions
+        //succ, enumFrom and enumFromTo are explicitly invoked by this method.
 		private void CompileRange(ElaExpression parent, ElaRange range, LabelMap map, Hints hints)
 		{
 			AddLinePragma(range);
 
-			if (range.Last == null)
-			{
-				var sv = AddVariable();
-				CompileExpression(range.First, map, hints);
-				cw.Emit(Op.Dup);
-                PopVar(sv);
-				CompileCycleFunction(range.Second, map);
+            var snd = AddVariable();
+            var fst = AddVariable();
+
+            //Compile the first element which should always be present.
+            CompileExpression(range.First, map, Hints.None);
+            PopVar(fst);
+
+            //If the second element is missing we will calculate it using 'succ'.
+            if (range.Second == null)
+            {
+                var sv = GetFunction("succ", range);
+                PushVar(fst);
                 PushVar(sv);
-				cw.Emit(Op.Gen);
-			}
-			else if (!TryOptimizeRange(range, map, hints))
-				CompileStrictRange(range, map, hints);
+                cw.Emit(Op.Call);
+                PopVar(snd);
+            }
+            else
+            {
+                CompileExpression(range.Second, map, Hints.None);
+                PopVar(snd);
+            }
+
+            //If a last element is missing we need to generate an infinite range
+            //using 'enumFrom' function.
+            if (range.Last == null)
+            {
+                var sv = GetFunction("enumFrom", range);
+                PushVar(snd);                
+                PushVar(fst);
+                PushVar(sv);
+                cw.Emit(Op.Call);
+                cw.Emit(Op.Call);
+            }
+            else
+            {
+                //An ordinary strict range.
+                var sv = GetFunction("enumFromTo", range);
+                PushVar(snd);                
+                PushVar(fst);
+                CompileExpression(range.Last, map, Hints.None);
+                PushVar(sv);
+                cw.Emit(Op.Call);
+                cw.Emit(Op.Call);
+                cw.Emit(Op.Call);
+            }
 		}
 
+        //Finds a function from a Enum class - either enumFrom, enumFromTo or succ.
+        private ScopeVar GetFunction(string name, ElaRange range)
+        {
+            var sv = GetGlobalVariable(name, GetFlags.NoError, range.Line, range.Column);
+            var args = name == "enumFrom" ? 2 : name == "enumFromTo" ? 3 : 1;
 
+            //Do some validation to ensure that a found function at least "looks like"
+            //a correct one - e.g. is a class member and have a correct number of arguments.
+            if (sv.IsEmpty() || (sv.Flags & ElaVariableFlags.ClassFun) != ElaVariableFlags.ClassFun ||
+                args != sv.Data)
+                AddError(
+                    name == "enumFrom" ? ElaCompilerError.FromEnumNotFound :
+                    name == "enumFromTo" ? ElaCompilerError.FromEnumToNotFound :
+                    ElaCompilerError.SuccNotFound, 
+                    range);
+
+            return sv;
+        }
+        
+        //This is an old code that was used to optimize small ranges (to generate them in-place).
+        //It is currently not used, but in future it may be rejuvenated.
 		private bool TryOptimizeRange(ElaRange range, LabelMap map, Hints hints)
 		{
 			if (range.First.Type != ElaNodeType.Primitive ||
@@ -58,7 +113,7 @@ namespace Ela.Compilation
 				cw.Emit(Op.Gen);
 			}
 
-			for (; ; )
+			for (;;)
 			{
 				cw.Emit(Op.PushI4, fstVal);
 				cw.Emit(Op.Gen);
@@ -76,146 +131,5 @@ namespace Ela.Compilation
 			cw.Emit(Op.Genfin);
 			return true;
 		}
-
-
-		private void CompileStrictRange(ElaRange rng, LabelMap map, Hints hints)
-		{
-			var start = AddVariable();
-			CompileExpression(rng.First, map, Hints.None);
-            PopVar(start);
-
-			var last = AddVariable();
-			CompileExpression(rng.Last, map, Hints.None);
-            PopVar(last);
-
-			var step = AddVariable();
-			PushVar(start);
-
-            if (rng.Second != null)
-                CompileExpression(rng.Second, map, Hints.None);
-            else
-            {
-                PushVar(start);
-                cw.Emit(Op.Succ);
-            }
-			
-            cw.Emit(Op.Sub);
-            PopVar(step);
-
-			var second = AddVariable();
-			var trueLab = cw.DefineLabel();
-			var endLab = cw.DefineLabel();
-			PushVar(step);
-			PushVar(start);
-			cw.Emit(Op.Add);
-            cw.Emit(Op.Dup);
-
-            PopVar(second);
-
-            PushVar(start);
-            cw.Emit(Op.Cgt);
-            cw.Emit(Op.Brtrue, trueLab);
-
-            cw.Emit(Op.Newlist);
-            CompileStrictRangeCycle(start, second, step, last, hints, false);
-
-            cw.Emit(Op.Br, endLab);
-            cw.MarkLabel(trueLab);
-
-            cw.Emit(Op.Newlist);
-            CompileStrictRangeCycle(start, second, step, last, hints, true);
-
-			cw.MarkLabel(endLab);
-			cw.Emit(Op.Genfin);
-		}
-
-
-		private void CompileStrictRangeCycle(int start, int second, int step, int last, Hints hints, bool brGt)
-		{
-            PushVar(start);
-			cw.Emit(Op.Gen);
-
-            PushVar(second);
-			cw.Emit(Op.Dup);
-            PopVar(start);
-
-			cw.Emit(Op.Gen);
-
-			var iterLab = cw.DefineLabel();
-			var exitLab = cw.DefineLabel();
-			cw.MarkLabel(iterLab);
-
-            PushVar(step);
-            PushVar(start);
-			cw.Emit(Op.Add);
-			cw.Emit(Op.Dup);
-            PopVar(start);
-
-            PushVar(last);
-
-			if (brGt)
-				cw.Emit(Op.Cgt);
-			else
-				cw.Emit(Op.Clt);
-
-            cw.Emit(Op.Brtrue, exitLab);
-            PushVar(start);
-			cw.Emit(Op.Gen);
-
-			cw.Emit(Op.Br, iterLab);
-			cw.MarkLabel(exitLab);
-
-		}
-
-
-		private void CompileCycleFunction(ElaExpression sec, LabelMap map)
-		{
-			var start = AddVariable();
-            PopVar(start);
-			var step = AddVariable();
-			var fun = AddVariable();
-
-			if (sec != null)
-			{
-                PushVar(start);
-				CompileExpression(sec, map, Hints.None);
-				cw.Emit(Op.Sub);
-                PopVar(step);
-			}
-			else
-			{
-				cw.Emit(Op.PushI4, 1);
-                PopVar(step);
-			}
-
-			StartSection();
-			cw.StartFrame(0);
-			var funSkipLabel = cw.DefineLabel();
-			cw.Emit(Op.Br, funSkipLabel);
-			var address = cw.Offset;
-
-            PushVar(1 | (fun >> 8) << 8);
-			cw.Emit(Op.Newlazy);
-
-            PushVar(1 | (step >> 8) << 8);
-            PushVar(1 | (start >> 8) << 8);
-			cw.Emit(Op.Add);
-			cw.Emit(Op.Dup);
-            PopVar(1 | (start >> 8) << 8);
-			
-			cw.Emit(Op.Gen);
-
-			cw.Emit(Op.Ret);
-			frame.Layouts.Add(new MemoryLayout(currentCounter, cw.FinishFrame(), address));
-			EndSection();
-
-			cw.MarkLabel(funSkipLabel);
-			cw.Emit(Op.PushI4, 1);
-			cw.Emit(Op.Newfun, frame.Layouts.Count - 1);
-			cw.Emit(Op.Dup);
-            PopVar(fun);
-			cw.Emit(Op.Newlazy);
-		}
-		#endregion
 	}
 }

@@ -6,11 +6,6 @@ namespace Ela.Runtime.Classes
 {
     internal sealed class LongInstance : Class
     {
-        internal override ElaValue BitwiseNot(ElaValue @this, ExecutionContext ctx)
-        {
-            return new ElaValue(~@this.Ref.AsLong());
-        }
-
         internal override ElaValue BitwiseAnd(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if (right.TypeId != ElaMachine.LNG)
@@ -84,16 +79,6 @@ namespace Ela.Runtime.Classes
             return new ElaValue(left.Ref.AsLong() >> right.I4);
         }
 
-        internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
-        {
-            return new ElaValue(@this.Ref.AsLong() + 1);
-        }
-
-        internal override ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
-        {
-            return new ElaValue(@this.Ref.AsLong() - 1);
-        }
-
         internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if (right.TypeId != ElaMachine.LNG)
@@ -147,7 +132,7 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.LNG)
             {
                 if (right.TypeId == ElaMachine.INT)
-                    return new ElaValue(left.Ref.AsLong() + right.I4);
+                    return new ElaValue(left.Ref.AsLong() - right.I4);
                 else
                 {
                     NoOverloadBinary(TCF.LONG, right, "subtract", ctx);
@@ -237,7 +222,7 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.LNG)
             {
                 if (right.TypeId == ElaMachine.INT)
-                    return new ElaValue(Math.Pow(left.Ref.AsLong(), right.I4));
+                    return new ElaValue((Int64)Math.Pow(left.Ref.AsLong(), right.I4));
                 else
                 {
                     NoOverloadBinary(TCF.LONG, right, "power", ctx);
@@ -245,7 +230,7 @@ namespace Ela.Runtime.Classes
                 }
             }
 
-            return new ElaValue(Math.Pow(left.Ref.AsLong(), right.Ref.AsLong()));
+            return new ElaValue((Int64)Math.Pow(left.Ref.AsLong(), right.Ref.AsLong()));
         }
 
         internal override ElaValue Negate(ElaValue value, ExecutionContext ctx)

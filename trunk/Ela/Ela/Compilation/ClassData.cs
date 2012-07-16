@@ -9,6 +9,7 @@ namespace Ela.Compilation
         internal ClassData(ElaClassMember[] members)
         {
             Members = members;
+            Code = -1;
         }
 
         public IEnumerable<ElaClassMember> GetMembers()

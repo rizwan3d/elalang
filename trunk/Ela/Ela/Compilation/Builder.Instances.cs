@@ -297,7 +297,6 @@ namespace Ela.Compilation
                         tc == ElaTypeCode.Long ||
                         tc == ElaTypeCode.String ||
                         tc == ElaTypeCode.Unit ||
-                        tc == ElaTypeCode.TypeInfo ||
                         tc == ElaTypeCode.Function ||
                         tc == ElaTypeCode.Module ||
                         tc == ElaTypeCode.Tuple ||
@@ -324,13 +323,6 @@ namespace Ela.Compilation
                     return
                         tc == ElaTypeCode.Integer ||
                         tc == ElaTypeCode.Long;
-                case "Enum":
-                    return
-                        tc == ElaTypeCode.Integer ||
-                        tc == ElaTypeCode.Long ||
-                        tc == ElaTypeCode.Single ||
-                        tc == ElaTypeCode.Double ||
-                        tc == ElaTypeCode.Char;
                 case "Seq":
                     return
                         tc == ElaTypeCode.List ||
@@ -356,7 +348,6 @@ namespace Ela.Compilation
                         tc == ElaTypeCode.Boolean ||
                         tc == ElaTypeCode.String ||
                         tc == ElaTypeCode.Unit ||
-                        tc == ElaTypeCode.TypeInfo ||
                         tc == ElaTypeCode.Function ||
                         tc == ElaTypeCode.Module;
                 default:

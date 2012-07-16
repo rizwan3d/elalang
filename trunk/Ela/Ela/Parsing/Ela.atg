@@ -1286,13 +1286,21 @@ PRODUCTIONS
                 ident (. nt.TypeParams.Add(t.val); .)  
             }
             [
-                (. var cexp = default(ElaExpression); .)
-                "="
-                OpExpr0<out cexp> (. nt.Constructors.Add(cexp); .)
-                { 
-                    "|" OpExpr0<out cexp> 
-                    (. nt.Constructors.Add(cexp); .)
-                }
+                (
+                    (. var cexp = default(ElaExpression); .)
+                    "="
+                    OpExpr0<out cexp> (. nt.Constructors.Add(cexp); .)
+                    { 
+                        "|" OpExpr0<out cexp> 
+                        (. nt.Constructors.Add(cexp); .)
+                    }
+                )
+                |
+                (
+                    "#" 
+	                ident (. nt.Flags = ProcessAttribute(t.val,nt.Flags); .) 
+	                { ident (. nt.Flags = ProcessAttribute(t.val,nt.Flags); .) } 
+                )
 		    ]
 		    EndBlock      
         ).

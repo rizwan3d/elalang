@@ -81,5 +81,15 @@ namespace Ela.Compilation
         HeaderNotConnected = 335,
 
         InvalidFunctionDeclaration = 336,
+
+        UnableExtendBuiltin = 337,
+
+        FromEnumNotFound = 338,
+
+        FromEnumToNotFound = 339,
+
+        SuccNotFound = 340,
+
+        TypeHeaderNotConnected = 341,
 	}
 }

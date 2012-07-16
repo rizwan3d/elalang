@@ -67,8 +67,8 @@ namespace Ela.Runtime.ObjectModel
                 return Default();
             }
 
-            if (Value.Ref is ElaLazy)
-            {                
+            if (Value.TypeId == ElaMachine.LAZ)
+            {
                 var val = Value;
 
                 while (val.TypeId == ElaMachine.LAZ)

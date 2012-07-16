@@ -60,7 +60,7 @@ namespace Ela.Compilation
         //Such names are used for hidden variables that contains unique codes of types and classes.
         //This method can emit a qualified name (with a module prefix) as well as a short name.
         //It also generates an appropriate error if a name is not found.
-        private void EmitSpecName(string ns, string specName, ElaExpression exp, ElaCompilerError err)
+        private int EmitSpecName(string ns, string specName, ElaExpression exp, ElaCompilerError err)
         {
             if (ns != null)
             {
@@ -80,6 +80,7 @@ namespace Ela.Compilation
                     AddError(err, exp, ns + "." + specName.TrimStart('$'));
 
                 cw.Emit(Op.Pushext, lh | (extVar.Address << 8));
+                return extVar.Data;
             }
             else
             {
@@ -90,6 +91,7 @@ namespace Ela.Compilation
                     AddError(err, exp, specName.TrimStart('$'));
 
                 PushVar(a);
+                return a.Data;
             }
         }
 
@@ -112,7 +114,7 @@ namespace Ela.Compilation
             {
                 //But for other cases hiding in the same scope is not allowed
                 CurrentScope.Locals.Remove(name);
-                AddError(ElaCompilerError.NoHindingSameScope, exp, name);
+                AddError(ElaCompilerError.NoHindingSameScope, exp, name.TrimStart('$'));
             }
 
             CurrentScope.Locals.Add(name, new ScopeVar(flags, currentCounter, data));

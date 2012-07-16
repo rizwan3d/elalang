@@ -4,15 +4,37 @@
 */
 import libNumber#elalib@rl
 
-import int@locInt
-       long@locLong
-       single@locSingle
-       double@locDouble
+int = 
+  {
+    max = 0x7fffffff,
+    min = 0x7fffffff + 1,
+    zero = 0
+  }
 
-int = locInt
-long = locLong
-single = locSingle
-double = locDouble
+long = 
+  {
+    max = 0x7fffffffffffffffL,
+    min = 0x7fffffffffffffffL + 1,
+    zero = 0
+  }
+
+single = 
+  {
+    max = 3.402823E+38f,
+    min = --3.402823E+38f,
+    zero = 0f,
+    e = 2.718282f,
+    pi = 3.141593f
+  }
+
+double = 
+  {
+    max = 1.7976931348623157E+308D,
+    min = --1.7976931348623157E+308D,
+    zero = 0D,
+    e = 2.7182818284590451D,
+    pi = 3.1415926535897931D
+  }
 
 class Float a where 
   inf a

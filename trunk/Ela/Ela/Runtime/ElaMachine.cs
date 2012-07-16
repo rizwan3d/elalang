@@ -50,7 +50,7 @@ namespace Ela.Runtime
         internal const int MOD = (Int32)ElaTypeCode.Module;
         internal const int LAZ = (Int32)ElaTypeCode.Lazy;
         internal const int RES2 = (Int32)ElaTypeCode.__Reserved2;
-        internal const int TYP = (Int32)ElaTypeCode.TypeInfo;
+        internal const int RES3 = (Int32)ElaTypeCode.__Reserved3;
 
         private Class[] cls;
         #endregion
@@ -1045,36 +1045,6 @@ namespace Ela.Runtime
                     #endregion
 
                     #region Unary Operations
-                    case Op.Succ:
-                        right = evalStack.Peek();
-
-                        if (right.TypeId == LAZ)
-                            right = right.Ref.Force(right, ctx);
-
-                        evalStack.Replace(cls[right.TypeId].Successor(right, ctx));
-
-                        if (ctx.Failed)
-                        {
-                            evalStack.Replace(right);
-                            ExecuteThrow(thread, evalStack);
-                            goto SWITCH_MEM;
-                        }
-                        break;
-                    case Op.Pred:
-                        right = evalStack.Peek();
-
-                        if (right.TypeId == LAZ)
-                            right = right.Ref.Force(right, ctx);
-
-                        evalStack.Replace(cls[right.TypeId].Predecessor(right, ctx));
-
-                        if (ctx.Failed)
-                        {
-                            evalStack.Replace(right);
-                            ExecuteThrow(thread, evalStack);
-                            goto SWITCH_MEM;
-                        }
-                        break;
                     case Op.Not:
                         right = evalStack.Peek();
                         right = right.Ref.Force(right, ctx);
@@ -1341,22 +1311,6 @@ namespace Ela.Runtime
                         break;
                     case Op.Classid:
                         evalStack.Push(thread.Module.InternalClasses[frame.Strings[opd]].Code);
-                        break;
-                    case Op.Type:
-                        {
-                            right = evalStack.Peek();
-
-                            if (right.TypeId == LAZ)
-                                right = right.Ref.Force(right, ctx);
-
-                            if (ctx.Failed)
-                            {
-                                ExecuteThrow(thread, evalStack);
-                                goto SWITCH_MEM;
-                            }
-
-                            evalStack.Replace(new ElaValue(new ElaTypeInfo(asm.Types[right.Ref.TypeId])));
-                        }
                         break;
                     case Op.Throw:
                         {

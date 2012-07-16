@@ -14,7 +14,7 @@ namespace Ela.Compilation
             ValidateBinding(s);
             var fun = s.IsFunction();
 
-            if (s.Left.Type != ElaNodeType.NameReference && !fun)
+            if ((s.Left.Type != ElaNodeType.NameReference || ((ElaNameReference)s.Left).Uppercase) && !fun)
                 CompileBindingPattern(s, map);
             else
             {
@@ -119,9 +119,9 @@ namespace Ela.Compilation
                     return false;
                 }
 
-                AddVariable(name, exp.Left, flags | ElaVariableFlags.Function, -1);
+                AddVariable(name, exp.Left, flags | ElaVariableFlags.Function, exp.GetArgumentNumber());
             }
-            else if (exp.Left.Type == ElaNodeType.NameReference)
+            else if (exp.Left.Type == ElaNodeType.NameReference && !((ElaNameReference)exp.Left).Uppercase)
             {
                var data = -1;
 
@@ -178,7 +178,9 @@ namespace Ela.Compilation
                 case ElaNodeType.NameReference:
                     {
                         var vexp = (ElaNameReference)pat;
-                        AddVariable(vexp.Name, vexp, ElaVariableFlags.NoInit, -1);
+                        
+                        if (!vexp.Uppercase) //Uppercase is constructor
+                            AddVariable(vexp.Name, vexp, ElaVariableFlags.NoInit, -1);
                     }
                     break;
                 case ElaNodeType.RecordLiteral:
