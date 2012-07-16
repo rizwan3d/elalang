@@ -36,16 +36,16 @@ to an infinity.
 
 =Arithmetic
 All arithmetic operations are evaluated lazily, as a result one can safely write comparisons like so:
->>>infinity / 2? > 42?
+>>>infinity `div` 2? > 42?
 Arithmetic operations never result in non-termination:
 >>>y = infinity - infinity
 as soon as they basically don't evaluate their arguments at all. This evaluation is only done by demand
 by other functions, such as comparison functions or strict conversion functions.//br
 Peano numbers can be seen as a form of unsigned integer numbers. However, the result of any calculation 
 involving two peano numbers is always a peano number. Because of that peano numbers don't support real
-division. They do provide an instance for a `Field` class, however this instance implements integer
-division truncated towards zero.
->>>toInt <| 5? / 2?
+division and do not provide an instance for a `Field` class, however, they have an instance for `Integral`
+class:
+>>>toInt <| 5? `div` 2?
 Another peculiarity of peano numbers is their unsigned nature. The minimum value of a peano number is
 zero, therefore calculations that might otherwise result in a negative number would raise an exception.//br
 However, for convinience, a `subtractNeg` function is provided that doesn't raise an exception but instead
@@ -105,8 +105,11 @@ a peano number is zero). A negation function always raises an exception, excepti
 applied to zero.
 
 Enum peano
-Provides implementations for `succ` and `pred` functions. These both functions are lazy. Function `pred`
-can raise an exception when applied to zero.
+Provides implementations for `Enum` class. 
+Functions `succ` and `pred` are lazy. Function `pred` can raise an exception when applied to zero.//br
+Functions `enumFrom` and `enumFromTo` are implemented by converting a peano number to a 32-bit 
+integer, generating a range of 32-bit integers and than converting the resulting list of 32-bit
+integers to a list of peano numbers.
 
 Ord peano
 Provides an implementation for an `Ord` class. All functions in this instance are lazy, however they

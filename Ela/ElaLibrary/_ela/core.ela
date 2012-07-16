@@ -4,41 +4,59 @@
 */
 open lang
 
-/* Types */
+/* ordering */
 type ordering = EQ | LT | GT
 
+compare x y 
+  | x == y = EQ 
+  | x < y = LT 
+  | else = GT
+
+maxValue x y 
+  | x >= y = x 
+  | else   = y
+
+minValue x y 
+  | x <= y = x 
+  | else   = y
+
+/* option */
 type option a = Some a | None
 
+maybe n _ None = n
+maybe _ f (Some x) = f x
+
+isSome None = false
+isSome _    = true
+
+fromSome (Some a) = a
+
+fromOption d None = d
+fromOption _ (Some x) = x
+
+/* either */
 type either a = Left a | Right a
 
-/* Instances */
+takeEither f _ (Left x) = f x
+takeEither _ g (Right y) = g y
+
+lefts xs = [a \\ Left a <- xs]
+
+rights xs = [a \\ Right a <- xs]
+
+fromLeft (Left a) = a
+
+fromRight (Right a) = a
+
+/* Common instances */
 instance Show ordering option either where
   showf = genericShow
 
 instance Eq ordering option either where
   (==) = genericEq
   (<>) = genericNeq
-  
-instance Enum ordering where
-  succ (EQ _) = LT
-  succ (LT _) = GT
-  succ (GT _) = EQ
-  pred (EQ _) = GT
-  pred (LT _) = EQ
-  pred (GT _) = LT
 
-/* Functions */
-compare x y 
-  | x == y = EQ 
-  | x < y = LT 
-  | else = GT
-
-fromSome (Some a) = a
-
-fromLeft (Left a) = a
-
-fromRight (Right a) = a
-
+/* Generic functions */
 showParamList # private
 showParamList f t = tos 0
   where len = length t

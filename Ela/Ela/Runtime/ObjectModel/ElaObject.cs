@@ -95,7 +95,7 @@ namespace Ela.Runtime.ObjectModel
 
         internal virtual ElaValue Cons(ElaValue val, ExecutionContext ctx)
         {
-            ctx.NoOperator(new ElaValue(this), "juxta");
+            ctx.NoOperator(new ElaValue(this), "cons");
             return Default();
         }
 

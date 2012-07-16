@@ -3,6 +3,7 @@
   Created in 2012 by Basil Voronkov
 */
 import libChar#elalib@ch
+open list
 
 max # qualified
 max = '\x65535'
@@ -13,10 +14,11 @@ min = '\0'
 zero # qualified
 zero = min
 
-instance Additive char
-  where x+y = toChar (toInt x + toInt y)
-        x-y = toChar (toInt x - toInt y)
-        --x = zero - x
+instance Enum char where
+  succ a = toChar (toInt a + 1)
+  pred a = toChar (toInt a - 1)
+  enumFrom fst snd = map' toChar [(toInt fst),(toInt snd)..]
+  enumFromTo max fst snd = map toChar [(toInt fst),(toInt snd)..(toInt max)]
 
 lower (c is char) = ch.lower c
 upper (c is char) = ch.upper c
@@ -35,4 +37,3 @@ isWhiteSpace (c is char) = ch.isWhiteSpace c
 
 isSurrogate (c is char) = ch.isSurrogate c
 isSurrogatePair (x is char) (y is char) = ch.isSurrogatePair x y
-

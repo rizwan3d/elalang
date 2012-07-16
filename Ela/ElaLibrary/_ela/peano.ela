@@ -20,9 +20,11 @@ max # qualified
 max = infinity
 
 fromInt # qualified
-fromInt a = fromIntegral a
+fromInt = fromIntegral
+
 fromLong # qualified
-fromLong a = fromIntegral a
+fromLong = fromIntegral
+
 fromIntegral # qualified
 fromIntegral a = from a
   where from 0 = Zero
@@ -48,6 +50,8 @@ instance Ord peano where
 instance Enum peano where
   succ a = a + one
   pred a = a - one
+  enumFrom fst snd = map' fromInt [(toInt fst),(toInt snd)..]
+  enumFromTo max fst snd = map fromInt [(toInt fst),(toInt snd)..(toInt max)]
 
 instance Additive peano where
   x+y = add x y
@@ -92,7 +96,7 @@ add Zero b = b
 add (Succ a) b = Succ (& add a b)
 
 subtract Zero Zero = Zero
-subtract Zero b = fail "Peano: out of range!"
+subtract Zero b = fail "peano: out of range!"
 subtract b Zero = b
 subtract (Succ a) (Succ b) = & subtract a b
 

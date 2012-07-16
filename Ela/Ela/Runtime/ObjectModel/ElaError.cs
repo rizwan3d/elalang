@@ -4,44 +4,28 @@ using Ela.Debug;
 
 namespace Ela.Runtime.ObjectModel
 {
-	internal sealed class ElaError : ElaObject
+	internal sealed class ElaError : ElaString
 	{
-		private readonly object[] args;
-        private string message;
-        
-		internal ElaError(ElaRuntimeError code) : this(code, null, new object[0])
+		internal ElaError(ElaRuntimeError code) : base(Strings.GetError(code))
 		{
-
+            Code = code;
 		}
 
-		internal ElaError(ElaRuntimeError code, params object[] args) : this(code, null, args)
+		internal ElaError(ElaRuntimeError code, params object[] args) : base(Strings.GetError(code, args))
 		{
-
+            Code = code;
 		}
         		
-		internal ElaError(string message) : this(ElaRuntimeError.UserCode, message, new object[0])
+		internal ElaError(string message) : base(message)
 		{
 
-		}
-        
-		private ElaError(ElaRuntimeError code, string message, params object[] args) : 
-			base(ElaTypeCode.Object)
-		{
-			Code = code;
-			this.message = message;				
-			this.args = args;
 		}
 
 		internal string Message
 		{
 			get
 			{
-				if (message == null && Code != ElaRuntimeError.UserCode)
-					return message = Strings.GetError(Code, args);
-				else if (message == null)
-					return String.Empty;
-				else
-					return message;
+                return base.Value;
 			}
 		}
         

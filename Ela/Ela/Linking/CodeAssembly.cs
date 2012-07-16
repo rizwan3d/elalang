@@ -55,7 +55,7 @@ namespace Ela.Linking
                     new TypeData(ElaTypeCode.Module),
                     new TypeData(ElaTypeCode.Lazy),
                     new TypeData(ElaTypeCode.__Reserved2),
-                    new TypeData(ElaTypeCode.TypeInfo)
+                    new TypeData(ElaTypeCode.__Reserved3)
                 };
             Cls = new FastList<Class>();
             Cls.AddRange(
@@ -79,7 +79,7 @@ namespace Ela.Linking
                     new ModuleInstance(), //MOD
                     new Class(), //LAZ
                     new Class(), //RES2
-                    new TypeInfoInstance(), //TYP
+                    new Class(), //RES3
                 });
 		}
 		#endregion

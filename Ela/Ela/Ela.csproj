@@ -156,7 +156,6 @@
     <Compile Include="Compilation\ClassData.cs" />
     <Compile Include="Compilation\Builder.TypeClasses.cs" />
     <Compile Include="Compilation\TerminationException.cs" />
-    <Compile Include="Compilation\InlineFun.cs" />
     <Compile Include="Compilation\InstanceData.cs" />
     <Compile Include="Linking\LangModule.cs" />
     <Compile Include="SysConst.cs" />
@@ -217,7 +216,6 @@
     <Compile Include="Runtime\Classes\SingleInstance.cs" />
     <Compile Include="Runtime\Classes\StringInstance.cs" />
     <Compile Include="Runtime\Classes\TupleInstance.cs" />
-    <Compile Include="Runtime\Classes\TypeInfoInstance.cs" />
     <Compile Include="Runtime\ElaRuntimeException.cs" />
     <Compile Include="Runtime\EqHelper.cs" />
     <Compile Include="Runtime\ObjectModel\DelegateFunction.cs" />
@@ -339,7 +337,6 @@
     <Compile Include="Runtime\ObjectModel\ElaUserType.cs" />
     <Compile Include="TCF.cs" />
     <Compile Include="Runtime\ElaValue.cs" />
-    <Compile Include="Runtime\ObjectModel\ElaTypeInfo.cs" />
     <Compile Include="Runtime\Strings.cs" />
     <Compile Include="Runtime\WorkerThread.cs" />
     <Compile Include="TranslationResult.cs" />

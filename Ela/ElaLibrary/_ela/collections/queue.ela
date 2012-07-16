@@ -25,7 +25,7 @@ instance Seq queue
         isnil _ = false
 
 instance Ix queue
-  where q : i = toList q : i
+  where item q i = toList q : i
         length (Queue f b) = length f + length b
 
 instance ListLike queue where

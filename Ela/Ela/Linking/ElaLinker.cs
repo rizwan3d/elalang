@@ -168,16 +168,22 @@ namespace Ela.Linking
 
             foreach (var k in new List<String>(frame.InternalClasses.Keys))
             {
-                var c = Assembly.ClassIndexer;
-                frame.InternalClasses[k].Code = c;
-                Assembly.ClassIndexer++;
+                if (frame.InternalClasses[k].Code == -1)
+                {
+                    var c = Assembly.ClassIndexer;
+                    frame.InternalClasses[k].Code = c;
+                    Assembly.ClassIndexer++;
+                }
             }
 
             foreach (var k in new List<String>(frame.InternalConstructors.Keys))
-            {
-                var c = Assembly.Constructors.Count;
-                frame.InternalConstructors[k] = c;
-                Assembly.Constructors.Add(k);
+            {                
+                if (frame.InternalConstructors[k] == -1)
+                {
+                    var c = Assembly.Constructors.Count;
+                    frame.InternalConstructors[k] = c;
+                    Assembly.Constructors.Add(k);
+                }
             }
 
             foreach (var id in frame.InternalInstances)

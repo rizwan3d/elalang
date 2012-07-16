@@ -86,10 +86,6 @@ namespace Ela.Compilation
                     CompileBuiltinMember(ElaBuiltinKind.ShiftLeft, s, 4, map);
                     CompileBuiltinMember(ElaBuiltinKind.ShiftRight, s, 5, map);
                     break;
-                case "Enum":
-                    CompileBuiltinMember(ElaBuiltinKind.Succ, s, 0, map);
-                    CompileBuiltinMember(ElaBuiltinKind.Pred, s, 1, map);
-                    break;
                 case "Seq":
                     CompileBuiltinMember(ElaBuiltinKind.Head, s, 0, map);
                     CompileBuiltinMember(ElaBuiltinKind.Tail, s, 1, map);

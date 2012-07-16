@@ -41,6 +41,11 @@ namespace Ela.Runtime.ObjectModel
             return Values[index];
         }
 
+        public IEnumerable<ElaValue> GetValues()
+        {
+            return Values;
+        }
+
         internal ElaValue[] Values { get; private set; }
     }
 }

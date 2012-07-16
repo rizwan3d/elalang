@@ -15,7 +15,7 @@ namespace Ela.Compilation
             if ((hints & Hints.Left) == Hints.Left)
                 AddValueNotUsed(p);
 
-            return new ExprData(DataKind.VarType, -1);
+            return new ExprData(DataKind.VarType, (Int32)p.Value.LiteralType);
         }
 
         //Pushes a primitive value. It can be a string, a char,
@@ -87,7 +87,7 @@ namespace Ela.Compilation
             if ((hints & Hints.Left) == Hints.Left)
                 AddValueNotUsed(p);
 
-            return new ExprData(DataKind.VarType, -1);
+            return new ExprData(DataKind.VarType, (Int32)ElaTypeCode.Record);
         }
 
         //Compiles list literal
@@ -107,7 +107,7 @@ namespace Ela.Compilation
             if ((hints & Hints.Left) == Hints.Left)
                 AddValueNotUsed(p);
 
-            return new ExprData(DataKind.VarType, -1);
+            return new ExprData(DataKind.VarType, (Int32)ElaTypeCode.List);
         }
 
         //Compiles tuple literal
@@ -138,7 +138,7 @@ namespace Ela.Compilation
             if ((hints & Hints.Left) == Hints.Left)
                 AddValueNotUsed(v);
 
-            return new ExprData(DataKind.VarType, -1);
+            return new ExprData(DataKind.VarType, (Int32)ElaTypeCode.Tuple);
         }
     }
 }

@@ -5,9 +5,9 @@ This module contains functions and instances for a unicode character.
 
 #members
 
-Additive char
-Implements basic mathematical functions, including addition, subtraction and negation,
-for a unicode character.
+Enum char
+Implements `Enum` class for a unicode character, making it possible to generate char
+ranges.
 
 max
 Returns a maximum value for a char. This constant requires a fully qualified access.

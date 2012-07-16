@@ -1,3 +1,5 @@
+open core
+
 fromLiteral {eq} =
   let list = ['E', 'l', 'a'] in
     eq (length list) 3

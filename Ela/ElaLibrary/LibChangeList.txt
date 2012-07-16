@@ -1,3 +1,10 @@
+0.1.4.38:Change:Implementation of 'reverse' from 'list' module is optimized.
+0.1.4.37:Change:Implementation of 'take' from 'list' module is optimized.
+0.1.4.36:Change:New functions 'enumFrom' and 'enumFromTo' are added to 'Enum' class.
+0.1.4.35:Change:Functions 'maxValue', 'minValue' and 'compare' are moved from prelude to module 'core'.
+0.1.4.34:New:A new module 'core' is added (contains core algebraic types).
+0.1.4.33:Change:Now reference cells (module 'cell') don't implement Eq type class.
+0.1.4.32:Change:A module 'variant' is decomissioned (because a corresponding data type is decomissioned).
 0.1.4.31:New:A new 'peano' module is added.
 0.1.4.30:New:A new 'lazyList' function added to 'thunk' module.
 0.1.4.29:Change:Implementation of 'forceThunk' from 'thunk' module is optimized.

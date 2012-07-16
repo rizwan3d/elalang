@@ -5,21 +5,16 @@
 import libCell#elalib@cl
 
 /* Construction */
-type cell 
-  where ref x = RefCell (cl.cell x)
+type cell a = Ref a
 
 /* Instances */
-instance Eq cell
-  where (RefCell x) == (RefCell y) = x == y
-        (RefCell x) <> (RefCell y) = x <> y
-
 instance Show cell
-  where showf fmt (RefCell x) = "<cell:" ++ showf fmt x ++ ">"
+  where showf fmt (Ref x) = "<cell:" ++ showf fmt x ++ ">"
 
 /* Functions */
-mutate e (RefCell x) = ref <| cl.mutate (force e) x
+mutate e (Ref x)@c = cl.mutate e c
 
-valueof (RefCell x) = cl.valueof x
+valueof (Ref x) = x
 
 c.+ = mutate (valueof c + 1) c
 

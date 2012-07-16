@@ -39,7 +39,7 @@ namespace Ela.Runtime.ObjectModel
 		{
 			if (thunk != null)
 			{
-				InternalNext = thunk.Force(new ElaValue(thunk), ctx).Ref as ElaList;
+                InternalNext = thunk.Force(ctx).Ref as ElaList;
 
                 if (InternalNext == null)
                 {
@@ -78,7 +78,7 @@ namespace Ela.Runtime.ObjectModel
 		
 		protected override Exception InvalidDefinition()
 		{
-			return new ElaRuntimeException("InvalidLazyList", "Invalid lazy list definition.");
+			return new ElaRuntimeException("Invalid lazy list definition.");
 		}
 		
 		public override ElaList Next

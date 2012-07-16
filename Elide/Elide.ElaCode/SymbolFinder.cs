@@ -104,6 +104,12 @@ namespace Elide.ElaCode
                 case ElaNodeType.Builtin:
                     break;
                 case ElaNodeType.Newtype:
+                    {
+                        var b = (ElaNewtype)expr;
+
+                        foreach (var e in b.Constructors)
+                            FindName(name, doc, e, syms);
+                    }
                     break;
                 case ElaNodeType.TypeClass:
                     {
@@ -356,14 +362,6 @@ namespace Elide.ElaCode
 
                         if (r.Name == name)
                             syms.Add(new SymbolLocation(doc, r.Line, r.Column));
-                    }
-                    break;
-                case ElaNodeType.VariantLiteral:
-                    {
-                        var v = (ElaVariantLiteral)expr;
-
-                        if (v.Tag == name)
-                            syms.Add(new SymbolLocation(doc, v.Line, v.Column));
                     }
                     break;
             }

@@ -54,6 +54,9 @@ namespace Ela.Compilation
             if ((ut & Hints.Tail) == Hints.Tail)
                 ut ^= Hints.Tail;
 
+            if ((ut & Hints.Left) == Hints.Left)
+                ut ^= Hints.Left;
+
 			switch (op)
 			{
                 //Logical AND is executed in a lazy manner
@@ -88,7 +91,12 @@ namespace Ela.Compilation
 					CompileExpression(bin.Left, map, Hints.None);
 					cw.Emit(Op.Force);
 					cw.Emit(Op.Pop);
-					CompileExpression(bin.Right, map, hints);
+                    var ut2 = hints;
+
+                    if ((ut2 & Hints.Left) == Hints.Left)
+                        ut2 ^= Hints.Left;
+
+					CompileExpression(bin.Right, map, ut2);
 					break;
 			}
 

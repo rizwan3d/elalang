@@ -65,15 +65,6 @@ namespace Ela.Compilation
                 case ElaBuiltinKind.Negate:
                     cw.Emit(Op.Neg);
                     break;
-                case ElaBuiltinKind.Succ:
-                    cw.Emit(Op.Succ);
-                    break;
-                case ElaBuiltinKind.Pred:
-                    cw.Emit(Op.Pred);
-                    break;
-                case ElaBuiltinKind.Type:
-                    cw.Emit(Op.Type);
-                    break;
                 case ElaBuiltinKind.Length:
                     cw.Emit(Op.Len);
                     break;

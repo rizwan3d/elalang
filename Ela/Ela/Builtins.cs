@@ -10,22 +10,18 @@ namespace Ela
         {
             switch (func)
             {
-                case "fpipe": return ElaBuiltinKind.ForwardPipe;
-                case "bpipe": return ElaBuiltinKind.BackwardPipe;
                 case "not": return ElaBuiltinKind.Not;
                 case "force": return ElaBuiltinKind.Force;
                 case "length": return ElaBuiltinKind.Length;
-                case "typeinfo": return ElaBuiltinKind.Type;
-                case "succ": return ElaBuiltinKind.Succ;
-                case "pred": return ElaBuiltinKind.Pred;
                 case "head": return ElaBuiltinKind.Head;
                 case "tail": return ElaBuiltinKind.Tail;
                 case "isnil": return ElaBuiltinKind.IsNil;
                 case "gettag": return ElaBuiltinKind.Gettag;
-                
-                case "showf": return ElaBuiltinKind.Showf;
-                
                 case "recfield": return ElaBuiltinKind.RecField;
+
+                case "showf": return ElaBuiltinKind.Showf;
+                case "fpipe": return ElaBuiltinKind.ForwardPipe;
+                case "bpipe": return ElaBuiltinKind.BackwardPipe;
                 case "equal": return ElaBuiltinKind.Equal;
                 case "notequal": return ElaBuiltinKind.NotEqual;
                 case "greaterequal": return ElaBuiltinKind.GreaterEqual;

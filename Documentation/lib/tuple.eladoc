@@ -12,18 +12,20 @@ for a tuple.
 Also all binary functions in this instance require the tuples to be of the same length.
 
 Enum tuple
-Implements `succ` and `pred` functions for a tuple. These functions are implemented by sequentially 
-applying `succ` and `pred` to all tuple elements - therefore they will only work on tuples that 
-contain enumerable types.
->>>succ (1,2,'b')
+Implements functions from `Enum` class for a tuple.//br
+Functions `succ` and `pred` are implemented by sequentially applying `succ` and `pred` to all 
+tuple elements - therefore they will only work on tuples that contain enumerable types.
+>>>succ (1,2,3)
+Functions `enumFrom` and `enumFromTo` are implemented based on `Additive`, and therefore
+would also require all tuples in ranges to be of the same length.
+
+ListLike tuple
+Implements `toList` function that converts a given tuple to a linked list.
+>>>toList (1,2,3)
 
 fromList xs
 Converts a given list to a tuple. This function requires a qualified access.
 >>>fromList [1,2,3]
-
-toList t
-Converts a given tuple to a linked list. This function requires a qualified access.
->>>toList (1,2,3)
 
 map f t
 Maps a given function to all elements of a tuple. This function requires a qualified access.
@@ -39,5 +41,5 @@ Checks if at least one tuple element satisfies a given predicate. This function 
 >>>any (>2) (1,2,3)
 
 all p t
-Checks if all tuple element satisfy a given predicate. This function requires a qualified access.
+Checks if all tuple elements satisfy a given predicate. This function requires a qualified access.
 >>>all (>2) (1,2,3)

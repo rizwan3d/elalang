@@ -72,16 +72,24 @@ Transcendental double
 Implements functions from `Transcendental` class for a 64-bit floating point number.
 
 int
-A reference to the `int` module.
+A record with constants `max` (maximum value for a 32-bit integer), `min` (minimum value
+for a 32-bit integer) and `zero` (a zero value for a 32-bit integer).
 
 long
-A reference to the `long` module.
+A record with constants `max` (maximum value for a 64-bit integer), `min` (minimum value
+for a 64-bit integer) and `zero` (a zero value for a 64-bit integer).
 
 single
-A reference to the `single` module.
+A record with constants `max` (maximum value for a 32-bit float), `min` (minimum value
+for a 32-bit float), `zero` (a zero value for a 32-bit float), `pi` (the ratio of the 
+circumference of a circle to its diameter as 32-bit float) and `e` (the natural logarithmic 
+base as 32-bit float).
 
 double
-A reference to the `double` module.
+A record with constants `max` (maximum value for a 64-bit float), `min` (minimum value
+for a 64-bit float), `zero` (a zero value for a 64-bit float), `pi` (the ratio of the 
+circumference of a circle to its diameter as 64-bit float) and `e` (the natural logarithmic 
+base as 64-bit float).
 
 genericQuot
 A generic integer division truncated towards zero that works for both 32-bit integers 

@@ -2,7 +2,7 @@
   Module test
   Created in 2011-2012 by Basil Voronkov
 */
-open list reflect format
+open core list reflect format
 
 assert # private
 assert =
@@ -16,8 +16,8 @@ assert =
       eqt = op' "eqt" (==) true,
       eqf = op' "eqf" (==) false
   } 
-  where op' m op x y | op x y = ()
-                     | else   = raise AssertFailed (formatStr "{0} for {1} and {2}" m x y)
+  where op' m op x y | op x y = None
+                     | else   = Some (formatStr ": Assert failed: {0} for {1} and {2}" m x y)
 
 funData # private 
 funData mod fun = (moduleName mod ++ "." ++ funName fun, fun)
@@ -30,9 +30,7 @@ regFuns mod xs = xs ++ (vals |> filter isFun |> map (funData mod))
                        isFun _ = false
 
 run xs = (res, failed)
-        where exec (n, f) = try (f assert $ n, true, "") with 
-                                 AssertFailed m = (n, false, ": Assert failed: " ++ m)
-                                 v              = (n, false, ": Error occured: " ++ untag v)
+        where exec (n, f) = runAssert f n
               count f xs = length <| filter f xs
               res = map exec xs
               failed = count (not << snd3) res
@@ -51,3 +49,12 @@ report f prf (tests, failed) =
               all' _ [] _ s = s
               all' f (x::xs) i s | f x  = (s ++ fmt' i x) |> all' f xs (i + 1)
                                  | else = all' f xs (i + 1) s
+
+runAssert # private
+runAssert f n =
+  try asr f n with
+      v = (n, false, ": Error occured: " ++ v)
+  where asr f n =
+          match f assert with
+                Some x = (n, false, x)
+                None = (n, true, "")

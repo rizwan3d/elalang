@@ -21,16 +21,6 @@ namespace Ela.Runtime.Classes
             return new ElaValue(((Char)left.I4).ToString() + (Char)right.I4);
         }
 
-        internal override ElaValue Successor(ElaValue @this, ExecutionContext ctx)
-        {
-            return new ElaValue(@this.I4 + 1, ElaChar.Instance);
-        }
-
-        internal override ElaValue Predecessor(ElaValue @this, ExecutionContext ctx)
-        {
-            return new ElaValue(@this.I4 - 1, ElaChar.Instance);
-        }
-
         internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if (right.TypeId != ElaMachine.CHR)

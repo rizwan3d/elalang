@@ -212,8 +212,6 @@ namespace Ela.Runtime
                 return (ElaFunction)Ref;
             else if (ti == typeof(ElaModule) && TypeId == ElaMachine.MOD)
                 return (ElaModule)Ref;
-            else if (ti == typeof(ElaTypeInfo) && TypeId == ElaMachine.TYP)
-                return (ElaTypeInfo)Ref;
             else if (ti == typeof(ElaUnit) && TypeId == ElaMachine.UNI)
                 return ElaUnit.Instance;
             else if (ti == typeof(ElaObject))

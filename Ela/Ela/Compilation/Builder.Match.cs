@@ -302,15 +302,12 @@ namespace Ela.Compilation
                     {
                         //Unit pattern is redundant, it is essentially the same as checking
                         //the type of an expression which is what we do here.
-                        cw.Emit(Op.PushI4_0);
                         PushVar(sysVar);
-                        cw.Emit(Op.Type);
-                        cw.Emit(Op.Pushelem);
                         cw.Emit(Op.PushI4, (Int32)ElaTypeCode.Unit);
-                        cw.Emit(Op.Cneq);
+                        cw.Emit(Op.Ctypei);
 
                         //Types are not equal, proceed to fail.
-                        cw.Emit(Op.Brtrue, failLab);
+                        cw.Emit(Op.Brfalse, failLab);
                     }
                     break;
                 case ElaNodeType.Primitive:
@@ -377,13 +374,10 @@ namespace Ela.Compilation
                         //result in an error if somebody wants to check a trait which name is lowercased.
                         if (n.Traits.Count == 1 && !Char.IsUpper(n.Traits[0].Name[0]))
                         {
-                            cw.Emit(Op.PushI4_0);
                             PushVar(sysVar);
-                            cw.Emit(Op.Type);
-                            cw.Emit(Op.Pushelem);
                             EmitSpecName(n.Traits[0].Prefix, "$$" + n.Traits[0].Name, n, ElaCompilerError.UndefinedType);
-                            cw.Emit(Op.Cneq);
-                            cw.Emit(Op.Brtrue, failLab);
+                            cw.Emit(Op.Ctypei);
+                            cw.Emit(Op.Brfalse, failLab);
                         }
                         else
                         {

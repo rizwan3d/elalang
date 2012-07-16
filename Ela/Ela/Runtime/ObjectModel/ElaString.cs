@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Ela.Runtime.ObjectModel
 {
-	public sealed class ElaString : ElaObject, IEnumerable<ElaValue>
+	public class ElaString : ElaObject, IEnumerable<ElaValue>
 	{
 		public static readonly ElaString Empty = new ElaString(String.Empty);
 		

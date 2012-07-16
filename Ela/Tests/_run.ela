@@ -1,11 +1,11 @@
 open test console 
 open basictests funtests rangetests listtests tupletests recordtests
-     varianttests comprehensiontests thunktests matchtests
+     comprehensiontests thunktests matchtests
 
 //Just to run all std lib modules
 open cell char datetime espec format imperative io list
-     number read record reflect string thunk variant
-     int long single double tuple
+     number read record reflect string thunk
+     peano random tuple
      collections.alist collections.queue
 
 _ = [] 
@@ -15,11 +15,8 @@ _ = []
     |> regFuns listtests
     |> regFuns tupletests
     |> regFuns recordtests
-    |> regFuns varianttests
     |> regFuns comprehensiontests
     |> regFuns thunktests
     |> regFuns matchtests
     |> run
     |> report (\_ -> true) writen
-
-toInt 'A'

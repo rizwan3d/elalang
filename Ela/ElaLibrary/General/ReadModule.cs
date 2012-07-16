@@ -114,7 +114,7 @@ namespace Ela.Library.General
 
         private Exception Fail(string str)
         {
-            return new ElaRuntimeException("Failure",
+            return new ElaRuntimeException(
                 String.Format("Unable to read a literal from a string \"{0}\".", str));
         }
     }

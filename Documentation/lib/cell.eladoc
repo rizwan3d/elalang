@@ -10,14 +10,6 @@ cell
 This type represents a reference cell. A reference cells acts as a wrapper for a given value 
 allowing to change this value in-place.
 
-ref
-A type constructor function, used to create a reference cell.
-
-Eq cell
-An implementation of equality functions for a reference cell. When two reference cells are tested 
-for equality (or inequality) the actual comparison is done against the values which are wrapped 
-by this cell. It is a type error to compare a reference cell with a value of a different type.
-
 Show cell
 An implementation of `showf` function for a reference cell.
 
@@ -26,7 +18,7 @@ Changes a value inside a cell cl to a value x.
 
 valueof cl
 Unwraps a value from reference cell cl. For example, the following code evaluates to `12`: 
->>>r = ref 10
+>>>r = Ref 10
 >>>mutate ((valueof r) + 2) r $
 >>> valueof r
 
