@@ -6,6 +6,11 @@ namespace Ela.Runtime.Classes
 {
     internal sealed class DoubleInstance : Class
     {
+        internal override string Showf(string format, ElaValue value, ExecutionContext ctx)
+        {
+            return value.ToString(format, Culture.NumberFormat);
+        }
+
         internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
             if (right.TypeId != ElaMachine.DBL)

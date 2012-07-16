@@ -29,7 +29,7 @@ namespace Ela.Compilation
                     var str = val.AsString();
 
                     //String is added to the string table and indexed
-                    //An empty string is pushed using special op code.
+                    //An empty string is pushed using special op typeId.
                     if (str.Length == 0)
                         cw.Emit(Op.Pushstr_0);
                     else
@@ -115,7 +115,7 @@ namespace Ela.Compilation
         {
             var pars = v.Parameters;
 
-            //Optimize tuple creates for a case of pair (a single op code is used).
+            //Optimize tuple creates for a case of pair (a single op typeId is used).
             if (pars.Count == 2)
             {
                 CompileExpression(pars[0], map, Hints.None);

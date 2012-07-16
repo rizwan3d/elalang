@@ -49,27 +49,6 @@ fromLeft (Left a) = a
 fromRight (Right a) = a
 
 /* Common instances */
-instance Show ordering option either where
-  showf = genericShow
+instance Show ordering option either
 
-instance Eq ordering option either where
-  (==) = genericEq
-  (<>) = genericNeq
-
-/* Generic functions */
-showParamList # private
-showParamList f t = tos 0
-  where len = length t
-        tos n | n == len - 1 = [e]
-              | else = e :: " " :: tos (n+1)
-              where e = showf f (t:n) 
-
-genericShow f a = lang.__stringFromList (tag a :: v)
-  where u = untag a 
-        v = match u with () = []; _  = " " :: showParamList f u
-
-genericPred p a b = tag a `p` tag b and untag a `p` untag b
-
-genericEq = genericPred (==)
-
-genericNeq = genericPred (<>)
+instance Eq ordering option either

@@ -26,7 +26,7 @@ namespace Ela.Compilation
             cw.MarkLabel(catchLab);
             cw.Emit(Op.Leave);
 
-            //Throw hint is to tell match compiler to generate a different code if 
+            //Throw hint is to tell match compiler to generate a different typeId if 
             //all pattern fail - to rethrow an original error instead of generating a
             //new MatchFailed error.
             CompileSimpleMatch(n.Entries.Equations, map, hints | Hints.Throw);
@@ -303,6 +303,7 @@ namespace Ela.Compilation
                         //Unit pattern is redundant, it is essentially the same as checking
                         //the type of an expression which is what we do here.
                         PushVar(sysVar);
+                        cw.Emit(Op.Force);
                         cw.Emit(Op.PushI4, (Int32)ElaTypeCode.Unit);
                         cw.Emit(Op.Ctypei);
 
@@ -375,6 +376,7 @@ namespace Ela.Compilation
                         if (n.Traits.Count == 1 && !Char.IsUpper(n.Traits[0].Name[0]))
                         {
                             PushVar(sysVar);
+                            cw.Emit(Op.Force);
                             EmitSpecName(n.Traits[0].Prefix, "$$" + n.Traits[0].Name, n, ElaCompilerError.UndefinedType);
                             cw.Emit(Op.Ctypei);
                             cw.Emit(Op.Brfalse, failLab);
@@ -480,7 +482,7 @@ namespace Ela.Compilation
             {
                 var pat = tuple.Parameters[i];
 
-                //Generate a 'short' op code for the first entry
+                //Generate a 'short' op typeId for the first entry
                 if (i == 0)
                     cw.Emit(Op.PushI4_0);
                 else

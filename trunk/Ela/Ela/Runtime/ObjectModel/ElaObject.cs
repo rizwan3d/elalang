@@ -118,14 +118,13 @@ namespace Ela.Runtime.ObjectModel
         
 		internal virtual int GetTag(ExecutionContext ctx)
 		{
-            ctx.NoOperator(new ElaValue(this), "tag");
             return -1;
 		}
         
 		internal virtual ElaValue Untag(CodeAssembly asm, ExecutionContext ctx, int index)
         {
-			ctx.NoOperator(new ElaValue(this), "untag");
-			return Default();
+            ctx.Fail(new ElaError(ElaRuntimeError.InvalidTypeArgument, "<>", GetTypeName(), index + 1));
+            return Default();
         }
 
         internal int TypeId { get; private set; }

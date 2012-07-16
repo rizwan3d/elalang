@@ -1,9 +1,8 @@
 ﻿using System;
-using Ela.Runtime.ObjectModel;
 
 namespace Ela.Runtime.Classes
 {
-    internal sealed class BooleanInstance : Class
+    internal sealed class UnitInstance : Class
     {
         internal override string Showf(string format, ElaValue value, ExecutionContext ctx)
         {
@@ -12,24 +11,24 @@ namespace Ela.Runtime.Classes
 
         internal override bool Equal(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            if (right.TypeId != ElaMachine.BYT)
+            if (right.TypeId != ElaMachine.UNI)
             {
-                NoOverloadBinary(TCF.BOOL, right, "equal", ctx);
+                NoOverloadBinary(TCF.UNIT, right, "equal", ctx);
                 return false;
             }
 
-            return left.I4 == right.I4;
+            return left.Ref == right.Ref;
         }
 
         internal override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
         {
-            if (right.TypeId != ElaMachine.BYT)
+            if (right.TypeId != ElaMachine.UNI)
             {
-                NoOverloadBinary(TCF.BOOL, right, "notequal", ctx);
+                NoOverloadBinary(TCF.UNIT, right, "notequal", ctx);
                 return false;
             }
 
-            return left.I4 != right.I4;
+            return left.Ref == right.Ref;
         }
     }
 }

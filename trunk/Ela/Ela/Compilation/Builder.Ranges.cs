@@ -78,7 +78,7 @@ namespace Ela.Compilation
             return sv;
         }
         
-        //This is an old code that was used to optimize small ranges (to generate them in-place).
+        //This is an old typeId that was used to optimize small ranges (to generate them in-place).
         //It is currently not used, but in future it may be rejuvenated.
 		private bool TryOptimizeRange(ElaRange range, LabelMap map, Hints hints)
 		{

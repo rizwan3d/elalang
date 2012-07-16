@@ -150,7 +150,7 @@ namespace ElaConsole
 
         internal void PrintExecuteFirstTime()
         {
-            Console.WriteLine("Executing code first time...");
+            Console.WriteLine("Executing typeId first time...");
         }
 
 

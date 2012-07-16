@@ -157,7 +157,10 @@
     <Compile Include="Compilation\Builder.TypeClasses.cs" />
     <Compile Include="Compilation\TerminationException.cs" />
     <Compile Include="Compilation\InstanceData.cs" />
+    <Compile Include="Compilation\TypeClass.cs" />
     <Compile Include="Linking\LangModule.cs" />
+    <Compile Include="Runtime\CallStack.cs" />
+    <Compile Include="Runtime\Classes\UnitInstance.cs" />
     <Compile Include="SysConst.cs" />
     <Compile Include="Linking\TypeData.cs" />
     <Compile Include="Runtime\Classes\BooleanInstance.cs" />

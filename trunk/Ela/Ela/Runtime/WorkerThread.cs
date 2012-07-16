@@ -15,7 +15,7 @@ namespace Ela.Runtime
 		{
 			Assembly = asm;
 			Module = asm.GetRootModule();
-            CallStack = new FastStack<CallPoint>();
+            CallStack = new CallStack();
 			Context = new ExecutionContext();
 		}
 		
@@ -29,7 +29,7 @@ namespace Ela.Runtime
 		{
 			var ret = new WorkerThread();
 			ret.Assembly = Assembly;
-			ret.CallStack = new FastStack<CallPoint>();
+			ret.CallStack = new CallStack();
 			ret.Module = Assembly.GetRootModule();
 			ret.Context = new ExecutionContext();
 			ret.Offset = 1;
@@ -38,7 +38,7 @@ namespace Ela.Runtime
 		
         internal CodeAssembly Assembly { get; private set; }
 
-		internal FastStack<CallPoint> CallStack { get; private set; }
+		internal CallStack CallStack { get; private set; }
 
         internal int Offset;
 

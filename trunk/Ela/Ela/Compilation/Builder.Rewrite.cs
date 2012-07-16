@@ -47,7 +47,7 @@ namespace Ela.Compilation
 
         //This method declares all names from global bindings in advance (so that top level can be mutualy recursive).
         //It also compiles built-ins (all of them don't reference any names but instead do a lot of bindings that are 
-        //used by the rest of the code).
+        //used by the rest of the typeId).
         private FastList<ElaEquation> RunForwardDeclaration(List<ElaEquation> exps, LabelMap map)
         {
             var len = exps.Count;
@@ -113,7 +113,7 @@ namespace Ela.Compilation
         //This step compiles instances - this should be done after types (as soon as instances
         //reference types) and after the first step as well (as soon as instances reference type classes
         //and can reference any other local and non-local names). It is important however to compile
-        //instances before any user code gets executed because they effectively mutate function tables.
+        //instances before any user typeId gets executed because they effectively mutate function tables.
         private void ProcessInstances(ElaProgram prog, LabelMap map)
         {
             if (prog.Instances != null)
@@ -121,7 +121,7 @@ namespace Ela.Compilation
         }
             
         //Now we can compile global user defined functions and lazy sections. This is
-        //user code however it is not executed when bindings are done therefore we wouldn't need to enforce
+        //user typeId however it is not executed when bindings are done therefore we wouldn't need to enforce
         //laziness here. TopLevel done through pattern matching are rejected on this stage.
         private FastList<ElaEquation> ProcessFunctions(FastList<ElaEquation> exps, LabelMap map)
         {
@@ -174,7 +174,7 @@ namespace Ela.Compilation
         }
         
         //The last step is to compile let/in (local bindings) and the rest of expressions - we do not enforce
-        //thunks here and in some cases execution of such code may result in 'BottomReached' run-time error.
+        //thunks here and in some cases execution of such typeId may result in 'BottomReached' run-time error.
         private void ProcessExpressions(FastList<ElaEquation> exps, LabelMap map)
         {
             var len = exps.Count;

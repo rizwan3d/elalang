@@ -146,8 +146,9 @@ namespace Ela.Linking
             Add<ElaList,Boolean>("__isLazyList", IsLazyList);
             Add<ElaList,ElaList>("__reverseList", ReverseList);
             Add<ElaList,Int32>("__listLength", ListLength);
-            Add<ElaUserType,ElaValue>("__unwrap", Unwrap);
+            Add<ElaValue,ElaValue>("__unwrap", Unwrap);
             Add<ElaValue,ElaRecord>("__getTypeInfo", GetTypeInfo);
+            Add<ElaModule,ElaValue,Boolean>("__isInfix", IsInfix);
 
             Add("__toInt", new ToInt());
             Add("__toLong", new ToLong());
@@ -158,6 +159,18 @@ namespace Ela.Linking
             Add("__toString", new ToStr());
         }
 
+        public bool IsInfix(ElaModule mod, ElaValue val)
+        {
+            if (val.TypeId <= SysConst.MAX_TYP)
+                return false;
+
+            var type = (ElaUserType)val.Ref;
+            var tag = mod.GetCurrentMachine().Assembly.Constructors[type.GetTag(null)];
+
+            return Ela.CodeModel.Format.IsSymbolic(tag) && type.Values != null &&
+                type.Values.Length == 2;
+        }
+
         public ElaRecord GetTypeInfo(ElaValue val)
         {
             return new ElaRecord(
@@ -165,8 +178,13 @@ namespace Ela.Linking
                 new ElaRecordField("typeCode", val.TypeId));
         }
 
-        public ElaValue Unwrap(ElaUserType type)
+        public ElaValue Unwrap(ElaValue val)
         {
+            if (val.TypeId <= SysConst.MAX_TYP)
+                return new ElaValue(ElaUnit.Instance);
+
+            var type = (ElaUserType)val.Ref;
+
             if (type.Values == null)
                 return new ElaValue(ElaUnit.Instance);
             else

@@ -69,7 +69,7 @@ namespace Ela.Linking
                     new BooleanInstance(), //BYT
                     new CharInstance(), //CHR
                     new StringInstance(), //STR
-                    new Class(), //UNI
+                    new UnitInstance(), //UNI
                     new ListInstance(), //LST
                     new Class(), //TAB
                     new TupleInstance(), //TUP

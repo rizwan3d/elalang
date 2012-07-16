@@ -85,18 +85,3 @@ Returns `x` if `x` is greater or equal to `y`, otherwise returns y.
 minValue
 Returns `x` if `x` is lesser or equal to `y`, otherwise returns `y`. 
 
-genericPred p a b
-Applies a given predicate to algebraic types `a` and `b` and returns a result.
-
-genericEq a b
-Implements generic equality function for two algebraic types. This function can be used to implement `Eq` class. It is 
-defined through `genericPred` like so:
->>genericEq = genericPred (==)
-
-genericNeq a b
-Implements generic inequality function for two algebraic types. This function can be used to implement `Eq` class. It is 
-defined through `genericPred` like so:
->>genericEq = genericPred (<>)
-
-genericShow a
-Implements a generic show function for any given algebraic type. It can be used to implement `Show` class.
