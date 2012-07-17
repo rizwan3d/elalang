@@ -19,7 +19,7 @@ namespace Ela.Compilation
 		
 		FunctionInvalidType = 405,
 
-		// = 406,
+        TypeClassAmbiguity = 406,
 
         BottomValue = 407,
 	}

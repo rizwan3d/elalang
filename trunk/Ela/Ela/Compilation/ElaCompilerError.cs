@@ -61,7 +61,7 @@ namespace Ela.Compilation
 
         InvalidMemberSignature = 326,
 
-        OnlyBuiltinTypeNoDefinition = 327,
+        ExtendsNoDefinition = 327,
 
         InvalidProgram = 328,
 

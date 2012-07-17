@@ -13,8 +13,6 @@ namespace Ela.Compilation
         //Compiles an 'open' module directive.
         private void CompileModuleInclude(ElaModuleInclude s, LabelMap map)
         {
-            var modHandle = frame.References.Count;
-
             var modFrame = IncludeModule(
                 s.Alias,             //alias
                 s.Name,              //name
@@ -23,7 +21,6 @@ namespace Ela.Compilation
                 s.Line,              //line
                 s.Column,            //col
                 s.RequireQualified,  //qualified
-                modHandle,           //logical handle
                 s,                   //ElaExpression
                 true,                //add variable
                 false);              //NoPrelude
@@ -44,7 +41,7 @@ namespace Ela.Compilation
                         AddError(ElaCompilerError.UndefinedNameInModule, im, s.Alias, im.Name);
 
                     AddLinePragma(im);
-                    cw.Emit(Op.Pushext, modHandle | sv.Address << 8);
+                    cw.Emit(Op.Pushext, (frame.HandleMap.Count - 1) | sv.Address << 8);
                     PopVar(a);
                 }
             }
@@ -59,9 +56,10 @@ namespace Ela.Compilation
 
         //Includes a module reference (used for user references, Prelude and Arguments module).
         private CodeFrame IncludeModule(string alias, string name, string dllName, string[] path,
-            int line, int col, bool reqQual, int modHandle, ElaExpression exp, bool addVar, bool noPrelude)
+            int line, int col, bool reqQual, ElaExpression exp, bool addVar, bool noPrelude)
         {
-            var modRef = new ModuleReference(frame, name, dllName, path, line, col, reqQual, modHandle);
+            var modIndex = frame.HandleMap.Count;
+            var modRef = new ModuleReference(frame, name, dllName, path, line, col, reqQual, modIndex);
             modRef.NoPrelude = noPrelude;
             frame.AddReference(alias, modRef);
 
@@ -71,7 +69,6 @@ namespace Ela.Compilation
             if (exp != null)
                 AddLinePragma(exp);
 
-            var modIndex = frame.HandleMap.Count - 1;
             cw.Emit(Op.Runmod, modIndex);
             var addr = -1;
 
@@ -94,7 +91,7 @@ namespace Ela.Compilation
         }
 
         //Includes Prelude module
-        private void IncludePrelude(ElaProgram prog)
+        private void IncludePrelude(ElaProgram prog, bool addVariable)
         {
             IncludeModule(
                 options.Prelude, //alias
@@ -104,9 +101,8 @@ namespace Ela.Compilation
                 0,               //line
                 0,               //col
                 false,           //qualified
-                0,               //logical handle
                 prog.TopLevel,   //ElaExpression
-                true,            //add variable
+                addVariable,     //add variable
                 true);           //NoPrelude
         }
 
@@ -121,7 +117,6 @@ namespace Ela.Compilation
                0,                    //line
                0,                    //col
                false,                //qualified
-               frame.HandleMap.Count,//logical handle
                null,                 //ElaExpression
                false,                //add variable
                true);                //NoPrelude

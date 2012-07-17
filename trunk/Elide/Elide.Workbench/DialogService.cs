@@ -86,17 +86,12 @@ namespace Elide.Workbench
             var serv = App.GetService<IEditorService>();
             var sb = new StringBuilder(FILTER);
             var idx = 1;
-            var selIdx = 1;
 
             foreach (var e in serv.EnumerateInfos("editors").OfType<EditorInfo>())
             {
                 if (!e.Flags.Set(EditorFlags.HiddenEverywhere))
                 {
                     sb.AppendFormat("|{0} (*{1})|*{1}", e.FileExtensionDescription, e.FileExtension);
-
-                    if (e.Flags.Set(EditorFlags.Main))
-                        selIdx = idx + 1;
-
                     idx++;
                 }
             }
@@ -104,7 +99,6 @@ namespace Elide.Workbench
             openDialog = new OpenFileDialog
             {
                 Filter = sb.ToString(),
-                FilterIndex = selIdx,
                 RestoreDirectory = true,
                 Title = OPEN_TITLE
             };
@@ -112,7 +106,6 @@ namespace Elide.Workbench
             saveDialog = new SaveFileDialog
             {
                 Filter = sb.ToString(),
-                FilterIndex = selIdx,
                 RestoreDirectory = true,
                 Title = SAVE_TITLE
             };

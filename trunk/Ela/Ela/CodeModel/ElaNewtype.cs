@@ -71,6 +71,8 @@ namespace Ela.CodeModel
             }
         }
 
+        public bool Header { get; set; }
+
         public ElaVariableFlags Flags { get; set; }
 
         public ElaNewtype And { get; set; }

@@ -1,4 +1,8 @@
-﻿0.1.4.4:Fix:The same file could be opened twice.
+﻿0.1.4.8:Change:Now autocomplete window ignores case when looking for an item in a list.
+0.1.4.7:Change:Now Open/Save dialog by default show files '*.*', but remember the choice if a user changes a filter.
+0.1.4.6:Change:Ela Object file viewer is corrected according to the object file format changes; also it now displays a list of constructors declared in a module.
+0.1.4.5:Change:Ela syntax highlighter is updated according to the syntax changes.
+0.1.4.4:Fix:The same file could be opened twice.
 0.1.4.3:Change:A 'Standard Library' setting from Linker Settings is decomissioned (it is no longer supported by Ela linker).
 0.1.4.2:Change:Now when Elide outputs the result of script execution it uses an appropriate 'show' overload.
 0.1.4.1:New:A new menu item 'Create File' is added to the context menu in File Explorer.

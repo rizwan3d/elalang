@@ -123,6 +123,9 @@
   <data name="MatchEntryNotReachable" xml:space="preserve">
     <value>Consider reordering match entries. Less specific patterns should be moved after more specific patterns.</value>
   </data>
+  <data name="TypeClassAmbiguity" xml:space="preserve">
+    <value>Qualify a name with a module alias to resolve this ambiguity.</value>
+  </data>
   <data name="UseIgnoreToPop" xml:space="preserve">
     <value>Use '_ = ...' expression to disable warning, e.g. '_ = x'.</value>
   </data>

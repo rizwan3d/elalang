@@ -6,8 +6,8 @@ namespace Ela.Compilation
 	{
 		None = 0,
 
-		
-		// = 500,
+
+        TypeClassAmbiguity = 500,
 
 		UseIgnoreToPop = 501,
 

@@ -22,7 +22,8 @@ namespace Elide.ElaObject
                 ReadCode(reader).ToList(),
                 ReadTypes(reader).ToList(),
                 ReadClasses(reader).ToList(),
-                ReadInstances(reader).ToList());
+                ReadInstances(reader).ToList(),
+                ReadConstructors(reader).ToList());
         }
 
         private IEnumerable<Reference> ReadReferences(BinaryReader br)
@@ -59,10 +60,11 @@ namespace Elide.ElaObject
                 var name = br.ReadString();
                 var address = br.ReadInt32();
                 var data = br.ReadInt32();
+                var flags = br.ReadInt32();
                 var line = br.ReadInt32();
                 var col = br.ReadInt32();
 
-                yield return new LateBound(name, address, data, line, col);
+                yield return new LateBound(name, address, data, flags, line, col);
             }
         }
 
@@ -115,7 +117,11 @@ namespace Elide.ElaObject
             var c = br.ReadInt32();
 
             for (var i = 0; i < c; i++)
-                yield return br.ReadString();
+            {
+                var tn = br.ReadString();
+                var tc = br.ReadInt32();
+                yield return tn;
+            }
         }
 
         private IEnumerable<Class> ReadClasses(BinaryReader br)
@@ -150,6 +156,14 @@ namespace Elide.ElaObject
                        br.ReadInt32()
                     );
             }
+        }
+
+        private IEnumerable<String> ReadConstructors(BinaryReader br)
+        {
+            var c = br.ReadInt32();
+
+            for (var i = 0; i < c; i++)
+                yield return br.ReadString();
         }
 
         private Header ReadHeader(BinaryReader br)

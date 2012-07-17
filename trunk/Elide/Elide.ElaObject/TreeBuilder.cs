@@ -33,6 +33,7 @@ namespace Elide.ElaObject
             tree.Nodes.Add(ReadTypes(objectFile.Types));
             tree.Nodes.Add(ReadClasses(objectFile.Classes));
             tree.Nodes.Add(ReadInstances(objectFile.Instances));
+            tree.Nodes.Add(ReadConstructors(objectFile.Constructors));
 
             if (config.DisplayFlatOpCodes)
                 tree.Nodes.Add(ReadCode(objectFile.OpCodes));
@@ -169,6 +170,13 @@ namespace Elide.ElaObject
                 n.Element("Line", c.Line);
                 n.Element("Column", c.Column);
             });
+            return par;
+        }
+
+        private TreeNode ReadConstructors(IEnumerable<String> strings)
+        {
+            var par = Group("Constructors");
+            strings.ForEach(s => par.Element(s, null, "Type"));
             return par;
         }
 

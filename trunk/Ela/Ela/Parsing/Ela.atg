@@ -674,7 +674,7 @@ PRODUCTIONS
 						ot = t;
 					.)
 					(
-						"`" Literal<out funexp> "`"
+						"`" OpExpr6<out funexp> "`"
 					)
 					[ OpExpr6<out cexp> ]
 					(. 
@@ -693,7 +693,7 @@ PRODUCTIONS
 			|
 			(
 				(
-					"`" Literal<out funexp> "`"
+					"`" OpExpr6<out funexp> "`"
 				)
 				[ 
 					OpExpr6<out exp> 
@@ -827,7 +827,7 @@ PRODUCTIONS
 			(
 				(
 					"("
-						(ident|Operators)
+						(ident|variantTok|Operators)
 						(. exp = new ElaFieldReference(t) { FieldName = t.val, TargetObject = exp }; .)
 					")"
 				)
@@ -1276,7 +1276,7 @@ PRODUCTIONS
             var extends = false;
         .)
         (
-            (TYPE|DATA (. extends=true; .)) ident (. ns0 = t.val; .) [ "." ident (. ns1 = t.val; .)]
+            (TYPE|DATA (. extends=true; .)) (ident|variantTok) (. ns0 = t.val; .) [ "." (ident|variantTok) (. ns1 = t.val; .)]
             (.
                 var nt = new ElaNewtype(t) { Name = ns1 ?? ns0, Prefix = ns1==null?null:ns0, Extends = extends };                	            
 	            nt.And = Program.Types;
@@ -1297,7 +1297,7 @@ PRODUCTIONS
                 )
                 |
                 (
-                    "#" 
+                    "#" (. nt.Header = true; .)
 	                ident (. nt.Flags = ProcessAttribute(t.val,nt.Flags); .) 
 	                { ident (. nt.Flags = ProcessAttribute(t.val,nt.Flags); .) } 
                 )

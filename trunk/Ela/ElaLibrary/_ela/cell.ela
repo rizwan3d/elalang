@@ -4,17 +4,22 @@
 */
 import libCell#elalib@cl
 
-/* Construction */
-type cell a = Ref a
+/* Types */
+type cell
+
+data cell # private
+data cell a = Ref a
 
 /* Instances */
 instance Show cell
-  where showf fmt (Ref x) = "<cell:" ++ showf fmt x ++ ">"
+  where showf fmt (Ref x) = "<cell:" ++ showf fmt (cl.valueof x) ++ ">"
 
 /* Functions */
-mutate e (Ref x)@c = cl.mutate e c
+ref a = Ref (cl.newCell (force a))
 
-valueof (Ref x) = x
+mutate e (Ref x) = Ref (cl.mutate (force e) x)
+
+valueof (Ref x) = cl.valueof x
 
 c.+ = mutate (valueof c + 1) c
 
