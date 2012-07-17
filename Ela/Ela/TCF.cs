@@ -5,21 +5,21 @@ namespace Ela
 	public static class TCF
 	{
 		internal const string ERR = "INVALID";
-		internal const string CHAR = "char";
-		internal const string INT = "int";
-		internal const string LONG = "long";
-		internal const string SINGLE = "single";
-		internal const string DOUBLE = "double";
-		internal const string STRING = "string";
-		internal const string BOOL = "bool";
-		internal const string RECORD = "record";
-		internal const string TUPLE = "tuple";
-		internal const string LIST = "list";
-		internal const string FUN = "fun";
-		internal const string UNIT = "unit";
-		internal const string MOD = "module";
-		internal const string OBJ = "object";
-		internal const string LAZ = "thunk";
+		internal const string CHAR = "Char";
+		internal const string INT = "Int";
+		internal const string LONG = "Long";
+		internal const string SINGLE = "Single";
+		internal const string DOUBLE = "Double";
+		internal const string STRING = "String";
+		internal const string BOOL = "Bool";
+		internal const string RECORD = "Record";
+		internal const string TUPLE = "Tuple";
+		internal const string LIST = "List";
+		internal const string FUN = "Fun";
+		internal const string UNIT = "Unit";
+		internal const string MOD = "Module";
+		internal const string OBJ = "Object";
+		internal const string LAZ = "Thunk";
 		
         public static ElaTypeCode GetTypeCode(string type)
         {

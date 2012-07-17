@@ -5,9 +5,10 @@ This module contains an implementation of an immutable queue.
 
 #members
 
-queue
+Queue
 An immutable queue that implements FIFO (first-in-first-out) container. This implementation of
-queue is based on a linked list and uses two linked lists for internal data representation.
+queue is based on a linked list and uses two linked lists for internal data representation.//br
+This data type doesn't have any public constructors.
 
 empty
 This is a constant that returns an empty queue. This constant requires a qualified access, e.g. `queue.empty`.
@@ -17,28 +18,27 @@ Converts a given list to a queue:
 >>>fromList [1..10]
 This function requires a qualified access, e.g. `queue.fromList`.
 
-toList q
-Converts a given queue to a linked list.
+ListLike Queue
+Provides a support for conversion of a given queue to a linked list.
 >>>toList <| fromList [1..5]
-This function requires a qualified access, e.g. `queue.toList`.
 
-Show queue
+Show Queue
 Implements `showf` function for a queue. A queue is serialized to string in a similar manner as
 a linked list but with a `queue` prefix.
 
-Cat queue
+Cat Queue
 Implements concatenation operator for a queue. Queues can be concatenated only with other queues.
 
-Eq queue
+Eq Queue
 Implements equality functions for a queue.
 
-Seq queue
+Seq Queue
 Implements functions `head`, `tail` and `isnil` for a queue. This instance allows to pattern match
 queue in the same way as a linked list:
 >>>let (_::xs) = fromList [1,2,3]
 >>> in xs
 
-Ix queue
+Ix Queue
 Implements functions `:` and `length` for a queue. This instance allows to pattern match queue using
 a tuple pattern.
 

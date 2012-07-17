@@ -1,8 +1,7 @@
 #file number.ela
 #title number
 #category Ela Standard Library
-This module contains major numeric classes and instances. It also imports modules
-`int`, `long`, `single` and `double`.
+This module contains major numeric classes and instances. 
 
 #members
 
@@ -35,40 +34,40 @@ an absolute value of a given value, and function `signum` returns a sign of a gi
 Transcendental
 Represents a class for numbers supporting elementary transcendental functions.
 
-Float single
+Float Single
 Implements functions from `Float` class for a 32-bit floating point number.
 
-Float double
+Float Double
 Implements functions from `Float` class for a 64-bit floating point number.
 
-Fractional single
+Fractional Single
 Implements functions from `Fractional` class for a 32-bit floating point number.
 
-Fractional double
+Fractional Double
 Implements functions from `Fractional` class for a 64-bit floating point number.
 
-Integral int
+Integral Int
 Implements functions from `Integral` class for a 32-bit integer number.
 
-Integral long
+Integral Long
 Implements functions from `Integral` class for a 64-bit integer number.
 
-Absolute int
+Absolute Int
 Implements functions from `Absolute` class for a 32-bit integer number.
 
-Absolute long
+Absolute Long
 Implements functions from `Absolute` class for a 64-bit integer number.
 
-Absolute single
+Absolute Single
 Implements functions from `Absolute` class for a 32-bit floating point number.
 
-Absolute double
+Absolute Double
 Implements functions from `Absolute` class for a 64-bit floating point number.
 
-Transcendental single
+Transcendental Single
 Implements functions from `Transcendental` class for a 32-bit floating point number.
 
-Transcendental double
+Transcendental Double
 Implements functions from `Transcendental` class for a 64-bit floating point number.
 
 int

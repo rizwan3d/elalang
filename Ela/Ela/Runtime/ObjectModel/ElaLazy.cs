@@ -8,8 +8,13 @@ namespace Ela.Runtime.ObjectModel
 		{
 			Function = function;
 			_value = default(ElaValue);
-		}
+        }
 
+        internal override int GetTypeId()
+        {
+            return Value.Ref != null ? Value.Ref.TypeId : ElaMachine.LAZ;
+        }
+        
 		internal ElaValue Force()
 		{
             if (Value.Ref == null)

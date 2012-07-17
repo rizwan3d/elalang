@@ -73,53 +73,53 @@ class Transcendental a where
   atanh a
   acosh a
 
-instance Float single
+instance Float Single
   where
     inf       = rl.infSingle
     nan       = rl.nanSingle
     posInf    = rl.posInfSingle
     negInf    = rl.negInfSingle
 
-instance Float double
+instance Float Double
   where
     inf       = rl.infDouble
     nan       = rl.nanDouble
     posInf    = rl.posInfDouble
     negInf    = rl.negInfDouble
 
-instance Fractional single double
+instance Fractional Single Double
   where
     round     = rl.round
     truncate  = rl.truncate
     ceiling   = rl.ceiling
     floor     = rl.floor
 
-instance Integral int long
+instance Integral Int Long
   where
     div x y   = genericDiv x y
     quot x y  = x `genericQuot` y
 
-instance Absolute int
+instance Absolute Int
   where 
     abs x | x >= 0 = x | else = --x
     signum x | x < 0 = --1 | else = 1
 
-instance Absolute long
+instance Absolute Long
   where 
     abs x | x >= 0 = x | else = --x
     signum x | x < 0 = --1L | else = 1L
 
-instance Absolute single
+instance Absolute Single
   where 
     abs x | x >= 0 = x | else = --x
     signum x | x < 0 = --1f | else = 1f
 
-instance Absolute double
+instance Absolute Double
   where 
     abs x | x >= 0 = x | else = --x
     signum x | x < 0 = --1d | else = 1d
 
-instance Transcendental single double
+instance Transcendental Single Double
   where
     exp x       = rl.exp (force x)
     cos x       = rl.cos (force x)
@@ -144,7 +144,7 @@ genericDiv x y
   | else = r
   where r = x `genericQuot` y
 
-gcd 0 0 = fail "core.gcd: gcd 0 0 is undefined"
+gcd 0 0 = fail "number.gcd: gcd 0 0 is undefined"
 gcd x y = gcd' (abs x) (abs y)
           where gcd' x 0 = x
                 gcd' x y = gcd' y (x % y)

@@ -3,6 +3,7 @@ using Ela.CodeModel;
 
 namespace Ela.Compilation
 {
+    //This part is responsible for compilation of arithmetic ranges.
 	internal sealed partial class Builder
 	{
         //An entry method for range generation. Implementation of ranges are not provided by a compiler,
@@ -67,8 +68,7 @@ namespace Ela.Compilation
 
             //Do some validation to ensure that a found function at least "looks like"
             //a correct one - e.g. is a class member and have a correct number of arguments.
-            if (sv.IsEmpty() || (sv.Flags & ElaVariableFlags.ClassFun) != ElaVariableFlags.ClassFun ||
-                args != sv.Data)
+            if (!options.IgnoreUndefined && (sv.IsEmpty() || (sv.Flags & ElaVariableFlags.ClassFun) != ElaVariableFlags.ClassFun || args != sv.Data))
                 AddError(
                     name == "enumFrom" ? ElaCompilerError.FromEnumNotFound :
                     name == "enumFromTo" ? ElaCompilerError.FromEnumToNotFound :

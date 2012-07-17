@@ -26,8 +26,8 @@ regFun fun xs = funData fun :: xs
 
 regFuns mod xs = xs ++ (vals |> filter isFun |> map (funData mod))
                  where vals = map (:"value") (moduleExportList mod)
-                       isFun (_ is fun) = true
-                       isFun _ = false
+                       isFun x | x is Fun = true
+                               | else = false
 
 run xs = (res, failed)
         where exec (n, f) = runAssert f n

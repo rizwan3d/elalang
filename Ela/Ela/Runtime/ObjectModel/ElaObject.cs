@@ -32,7 +32,12 @@ namespace Ela.Runtime.ObjectModel
 		internal ElaObject(ElaTypeCode type)
 		{
 			TypeId = (Int32)type;
-		} 
+		}
+
+        internal virtual int GetTypeId()
+        {
+            return TypeId;
+        }
         
         internal virtual long AsLong()
         {

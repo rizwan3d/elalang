@@ -151,6 +151,7 @@
     <Compile Include="Compilation\Builder.Literals.cs" />
     <Compile Include="Compilation\Builder.Errors.cs" />
     <Compile Include="Compilation\Builder.Rewrite.cs" />
+    <Compile Include="Compilation\Builder.TypeCheck.cs" />
     <Compile Include="Compilation\Builder.Types.cs" />
     <Compile Include="Compilation\Builder.Variables.cs" />
     <Compile Include="Compilation\ClassData.cs" />

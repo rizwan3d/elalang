@@ -8,4 +8,4 @@ write x = con.write (show x)
 
 writen x = con.writen (show x)
 
-readn = con.readn
+readn () = con.readn ()

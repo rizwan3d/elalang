@@ -4,22 +4,23 @@
 */
 import libRecord#elalib@r
 
-hasField (fld is string) (rec is record) = r.hasField fld rec
+hasField fld rec = r.hasField (force fld) (force rec)
 
-addFields (fields is record) (rec is record) = r.addFields fields rec
-addField (fld is string) val (rec is record) = r.addField fld val rec
+addFields fields rec = r.addFields (force fields) (force rec)
+addField fld val rec = r.addField (force fld) val (force rec)
 
 removeFields = collect r.removeFields []
-removeField (fld is string) (rec is record) = r.removeField fld rec
+removeField fld rec = r.removeField (force fld) (force rec)
 
-changeField (fld is string) val (rec is record) = r.changeField fld val rec
+changeField fld val rec = r.changeField (force fld) val (force rec)
 
 field n rec = rec `rf` n
   where rf = __internal recfield
 
-fields (rec is record) = r.fields rec
+fields rec  = r.fields (force rec)
 
 //This function is used to collect field names
 collect # private
-collect fn xs (x is string) = collect fn (x::xs)
-collect fn xs (x is record) = fn xs x
+collect fn xs x
+  | x is String = collect fn (x::xs)
+  | else = fn xs x

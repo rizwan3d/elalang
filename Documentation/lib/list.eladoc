@@ -238,8 +238,8 @@ Returns the list of all subsequences of the argument:
 >>>subsequences [1,2]
 
 permutations xs
-Returns a list with all permutations of the argument: 
->>>permutations [1,2,3]
+Returns a list with all permutations of an argument: 
+>>>permutations [[1,2],[2,3]]
 
 groupBy eq xs
 Takes a predicate and two lists and returns the first list with the first occurrence of each 

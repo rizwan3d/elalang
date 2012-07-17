@@ -5,35 +5,35 @@
 import libString#elalib@str
 import list lang
 
-instance list.ListLike string
+instance list.ListLike String
   where toList x = str.toList x
 
-upper (x is string) = str.upper x
-lower (x is string) = str.lower x
+upper x = str.upper (force x)
+lower x = str.lower (force x)
 
-trim (x is string) = str.trim x
+trim x = str.trim (force x)
 trimChars = collect str.trimChars []
 trimStart s = str.trimStart (force s)
 trimStartChars = collect str.trimStartChars []
 trimEnd s = str.trimEnd (force s)
 trimEndChars = collect str.trimEndChars []
 
-indexOf (search is string) (s is string) = str.indexOf search s
-indexOfFrom (search is string) (idx is int) (s is string) = str.indexOfFrom search idx s
-indexOfLast (search is string) (s is string) = str.indexOfLast search s
+indexOf search s = str.indexOf (force search) (force s)
+indexOfFrom search idx s = str.indexOfFrom (force search) (force idx) (force s)
+indexOfLast search s = str.indexOfLast (force search) (force s)
 
-startsWith (search is string) (s is string) = str.startsWith search s
-endsWith (search is string) (s is string) = str.endsWith search s
+startsWith search s = str.startsWith (force search) (force s)
+endsWith search s = str.endsWith (force search) (force s)
 
-replace (search is string) (repl is string) (s is string) = str.replace search repl s
+replace search repl s = str.replace (force search) (force repl) (force s)
 
-remove (start is int) (n is int) (s is string) = str.remove start n s
+remove start n s = str.remove (force start) (force n) (force s)
 
-substr (start is int) (n is int) (s is string) = str.substr start n s
+substr start n s = str.substr (force start) (force n) (force s)
 
-split (sep is string) (s is string) = str.split sep s
+split sep s = str.split (force sep) (force s)
 
-insert (idx is int) (ins is string) (s is string) = str.insert idx ins s
+insert idx ins s = str.insert (force idx) (force ins) (force s)
 
 fromList # qualified
 fromList xs = lang.__stringFromList (trav xs)
@@ -42,5 +42,6 @@ fromList xs = lang.__stringFromList (trav xs)
 
 //This function is used to collect chars in a list
 collect # private
-collect fn xs (x is char) = collect fn (x::xs)
-collect fn xs (x is string) = fn xs x
+collect fn xs x 
+  | x is Char = collect fn (x::xs)
+  | else = fn xs x

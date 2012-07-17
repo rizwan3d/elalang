@@ -1,17 +1,17 @@
 #file tuple.ela
 #title tuple
 #category Ela Standard Library
-This module contains instances and functions for a tuple data type
+This module contains instances and functions for a tuple.
 
 #members
 
-Additive tuple
+Additive Tuple
 Implements basic mathematical functions, including addition, subtraction and negation,
 for a tuple.
 >>>(1,2) + (3,4)
 Also all binary functions in this instance require the tuples to be of the same length.
 
-Enum tuple
+Enum Tuple
 Implements functions from `Enum` class for a tuple.//br
 Functions `succ` and `pred` are implemented by sequentially applying `succ` and `pred` to all 
 tuple elements - therefore they will only work on tuples that contain enumerable types.
@@ -19,7 +19,7 @@ tuple elements - therefore they will only work on tuples that contain enumerable
 Functions `enumFrom` and `enumFromTo` are implemented based on `Additive`, and therefore
 would also require all tuples in ranges to be of the same length.
 
-ListLike tuple
+ListLike Tuple
 Implements `toList` function that converts a given tuple to a linked list.
 >>>toList (1,2,3)
 

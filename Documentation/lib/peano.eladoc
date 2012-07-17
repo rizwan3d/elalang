@@ -65,63 +65,63 @@ case for peano number, and this equation will hold.
 
 #members
 
-peano
+Peano
 This type represents a lazy recursive peano number.
 
-ListLike peano
+ListLike Peano
 Converts a given peano number to a linked list. A function `toList` always produces a lazy list,
 and it is possible to converts an infinity to a linked list:
 >>>take 10 <| toList infinity
 
-LongLike peano
+LongLike Peano
 Converts a given peano number to a 64-bit integer. A function `toLong` is strict and will evaluate
 the whole peano number.
 
-IntLike peano
+IntLike Peano
 Converts a given peano number to a 32-bit integer. A function `toInt` is strict and will evaluate
 the whole peano number.
 
-Absolute peano
+Absolute Peano
 Provides an instance for an `Absolute` class. A function `abs` in this instance is equivalent to
 an infinity, and a function `signum` returns either zero (if its operand is zero) or one and never
 returns a negative number.
 
-Integral peano
+Integral Peano
 Provides an instance for an `Integral` class. Both `div` and `quot` implement an integral division
 truncated towards zero. These functions are also lazy.
 
-Modulo peano
+Modulo Peano
 Provides an instance for a `Modulo` class. Both `mod` and `rem` implement a lazy modulus function.
 
-Ring peano
+Ring Peano
 This instance provides implementations for multiplication and power functions. Both multiplication
 and power are lazy functions.
 
-Additive peano
+Additive Peano
 Provides an instance for an `Additive` class. An implementation of addition is lazy and never overlows
 (as soon as the upper bound for a peano number is infinity). An implementation of subtraction is lazy
 as well, however, it can raise an exception if a result is less than zero (because the lower bound for
 a peano number is zero). A negation function always raises an exception, exception of the case when
 applied to zero.
 
-Enum peano
+Enum Peano
 Provides implementations for `Enum` class. 
 Functions `succ` and `pred` are lazy. Function `pred` can raise an exception when applied to zero.//br
 Functions `enumFrom` and `enumFromTo` are implemented by converting a peano number to a 32-bit 
 integer, generating a range of 32-bit integers and than converting the resulting list of 32-bit
 integers to a list of peano numbers.
 
-Ord peano
+Ord Peano
 Provides an implementation for an `Ord` class. All functions in this instance are lazy, however they
 could result in a non termination if both operands are infinity.
 >>>5? > 2?
 
-Eq peano
+Eq Peano
 Provides an implementation for an `Eq` class. All functions in this instance are lazy, however they
 could result in a non termination if both operands are infinity.
 >>>42? <> 42?
 
-Show peano
+Show Peano
 Provides an implementation of a `showf` function. This implementation is strict and will evaluate the
 whole peano number. It would result to a non-termination if applied to an infinity.
 >>>show (5? + 2?)

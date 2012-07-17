@@ -24,10 +24,16 @@ namespace Ela.CodeModel
         internal override void ToString(StringBuilder sb, int ident)
         {
             sb.Append('\\');
-            
-            foreach (var p in ((ElaJuxtaposition)Left).Parameters)
+
+            if (Left.Type == ElaNodeType.Juxtaposition)
+                foreach (var p in ((ElaJuxtaposition)Left).Parameters)
+                {
+                    Format.PutInBraces(p, sb);
+                    sb.Append(' ');
+                }
+            else
             {
-                Format.PutInBraces(p, sb);
+                Format.PutInBraces(Left, sb);
                 sb.Append(' ');
             }
 

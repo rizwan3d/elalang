@@ -33,8 +33,8 @@ namespace Ela.Compilation
 			this.cw = new CodeWriter(frame.Ops, frame.OpData);
 			this.globalScope = globalScope;
 
-            if (frame != null)
-                frame.HandleMap = new FastList<Int32>();
+            //if (frame != null)
+            //    frame.HandleMap = new FastList<Int32>();
             			
 			CurrentScope = globalScope;
 			debug = options.GenerateDebugInfo;
@@ -81,7 +81,6 @@ namespace Ela.Compilation
             switch (exp.Type)
             {
                 case ElaNodeType.As:
-                case ElaNodeType.TypeCheck:
                 case ElaNodeType.Equation:
                     AddError(ElaCompilerError.InvalidExpression, exp, FormatNode(exp));
                     break;
@@ -100,6 +99,12 @@ namespace Ela.Compilation
 
                         if ((hints & Hints.Left) == Hints.Left)
                             AddValueNotUsed(exp);
+                    }
+                    break;
+                case ElaNodeType.TypeCheck:
+                    {
+                        var n = (ElaTypeCheck)exp;
+                        CompileTypeCheck(n, map, hints);
                     }
                     break;
                 case ElaNodeType.Range:

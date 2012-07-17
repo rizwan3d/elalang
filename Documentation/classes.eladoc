@@ -13,7 +13,7 @@ compared with "object based" overloading in object oriented languages, where a f
 type of its first argument (which is usually implicitly passed to this function as `this` reference). Classes in Ela 
 do not provide a support for object oriented programming and are in fact more flexible, however the core approach is 
 essentially the same.//br
-Most of basic prelude functions in Ela are in fact class members. For example, a function `+` is defined as a member of `Num` 
+Most of basic prelude functions in Ela are in fact class members. For example, a function `+` is defined as a member of `Additive` 
 class. This is still a global function that is not different from regular Ela functions. However runtime environment allows 
 for this function to have separate implementations. A required "overload" is determined upon a _run time type_ (which is important
 to understand for those who are familiar with _typeclasses_ concept in Haskell as long as this is major difference).//br
@@ -27,7 +27,7 @@ you cannot implement interfaces for the types that are already defined, declarat
 in Ela may not be done at the same time. For example, you can easily write instances for built-in Ela types.//br
 Another important difference is that unlike interfaces classes are used to define _global_ bindings. A class member in Ela is 
 effectively a global function that is not different from other functions - it is curried and is a first class value:
->>>class Foo a
+>>>class Foo a 
 >>>  where foo _->a
 >>>
 >>>foo
@@ -35,13 +35,13 @@ Dispatch rules are also different. Ela provides a support for only single parame
 at any place in a function signature.//br
 In the example above we have defined a function `foo`, that accepts any value as its first argument. Now we can define an instance 
 of this class like so:
->>>instance Foo int
+>>>instance Foo Int
 >>>  where foo _ a = a
 Here we effectively ignore the first argument of a `foo` function. This function is overloaded only by its second argument:
 >>>foo "some value" 42
 Class member signature is used to provide overload rules for a function. For example, if we define a class `Foo`
 like so:
->>class Foo a
+>>class Foo a 
 >>  where foo a->a
 an application of `foo` to string and integer would fail.
 
@@ -89,7 +89,7 @@ A `Car` class defines a `drive` function that can be used to accellerate our car
 speed limits and if a limit is reach than this function would return a `SpeedLimit` variant.//br
 Taking that, we can first write a "test drive" function for a car like so:
 >>>//This type will be used to present vehicle speed
->>>type speed = Speed int | SpeedLimit
+>>>type Speed = Speed Int | SpeedLimit
 >>>
 >>>testDrive n car = 
 >>>   match drive n car with
@@ -98,17 +98,17 @@ Taking that, we can first write a "test drive" function for a car like so:
 This function pushes a given car to its limits and generates a list with our accelleration history - up to the moment when a speed 
 limit is reached.//br
 Now we can define a custom type `steamCar` which cannot go faster than 10 miles an hour:
->>>type steamCar = SteamCar
+>>>type SteamCar = SteamCar
 And here is an instance for this type:
->>>instance Car steamCar
+>>>instance Car SteamCar
 >>>  where drive s _ | s < 10 = Speed s
 >>>                  | else = SpeedLimit
 Now we can test drive our new car like so:
 >>>testDrive 0 SteamCar
 However ten miles an hour is not really fast so we might wish to implement a better (faster) car like so:
->>>type electroCar = ElectroCar
+>>>type ElectroCar = ElectroCar
 >>>
->>>instance Car electroCar
+>>>instance Car ElectroCar
 >>>  where drive s _ | s < 15 = Speed s
 >>>                  | else = SpeedLimit
 And test drive it as we did before:
@@ -121,12 +121,10 @@ As with custom types, class names are not unique. It is not allowed to define tw
 however they can perfectly coexist in different modules. Because of that it is allowed to prefix a class name with the module alias:
 >>open cars //We have cars implementations in this module
 >>open carClass //We have a Car class in this module
->>instance carClass.Car cars.steamCar
+>>instance carClass.Car cars.SteamCar
 >>  where drive _ s = ...
 
 =Reflection
-It is possible to query which instances are supported by a given value using special pattern like so:
->>match value with
->>      x is Eq Num Car = ...
-Class names can be prefixed with module aliases inside this pattern as well.
-
+It is possible to query which instances are supported by a given value using `is` expression:
+>>x is Eq Num Car
+Class names can be prefixed with module aliases.

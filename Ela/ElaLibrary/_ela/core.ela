@@ -5,7 +5,7 @@
 open lang
 
 /* ordering */
-type ordering = EQ | LT | GT
+type Ordering = EQ | LT | GT
 
 compare x y 
   | x == y = EQ 
@@ -21,7 +21,7 @@ minValue x y
   | else   = y
 
 /* option */
-type option a = Some a | None
+type Maybe = Some a | None
 
 maybe n _ None = n
 maybe _ f (Some x) = f x
@@ -31,14 +31,14 @@ isSome _    = true
 
 fromSome (Some a) = a
 
-fromOption d None = d
-fromOption _ (Some x) = x
+fromMaybe d None = d
+fromMaybe _ (Some x) = x
 
 /* either */
-type either a = Left a | Right a
+type Either = Left a | Right a
 
-takeEither f _ (Left x) = f x
-takeEither _ g (Right y) = g y
+either f _ (Left x) = f x
+either _ g (Right y) = g y
 
 lefts xs = [a \\ Left a <- xs]
 
@@ -49,6 +49,6 @@ fromLeft (Left a) = a
 fromRight (Right a) = a
 
 /* Common instances */
-instance Show ordering option either
+instance Show Ordering Maybe Either
 
-instance Eq ordering option either
+instance Eq Ordering Maybe Either

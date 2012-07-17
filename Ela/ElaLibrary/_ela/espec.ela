@@ -5,14 +5,14 @@
 open reflect list format
 
 /* Types */
-type endtest # private
-type endtest = EndOfTest
+type Endtest # private
+type Endtest = EndOfTest
 
-type word # private
-type word a = Do a | Apply a | Pred a | Given a | Fun a | Other | Test a
+type Word # private
+type Word = Do a | Apply a | Pred a | Given a | Fun a | Other | Test a
 
-type result # private
-type result a = Success | Failed a | Error a
+type Result # private
+type Result = Success | Failed a | Error a
 
 /* Words */
 test = test_sg []
@@ -23,8 +23,12 @@ test_sg xs t Do = test_apply t xs Do
 test_sg xs t Apply = test_apply t xs Apply
 test_sg xs t (Pred pred) = test_pred t xs pred
 test_sg xs t Given = test_given t xs
-test_sg xs t err = fail (formatStr "Unexpected word: {0}." (word err))
-  where word (w is fun) = funName w
+test_sg xs t err = fail (formatStr "Unexpected word: {0}." (name err))
+  where 
+    name w 
+      | w is Fun = funName w
+      | else = word w
+      where 
         word (Pred (n,_)) = n
         word (Fun (n,_)) = n
         word Do = "do"
@@ -98,9 +102,10 @@ init # private
 init = ((),[])
 
 same # private
-same (f is fun) (g is fun) = 
-  funModule f == funModule g and funHandle f == funHandle g
-same _ _ = false
+same f g
+  | (f is Fun) and (g is Fun) = 
+    funModule f == funModule g and funHandle f == funHandle g
+  | else = false
 
 /* Format result as string */
 stat # private
@@ -123,8 +128,8 @@ report_stat f e (x::xs) = formatStr "{0}\r\n{1}" (item x) (report_stat f e xs)
         item (Apply (fn,args,res)) = formatStr "    apply {0}{1} -> {2}" fn (itemDo args) res
         itemDo [] = ""
         itemDo (y::ys) = formatStr " {0}{1}" (ystr y) (itemDo ys)
-          where ystr (y is fun) = funName y 
-                ystr y = show y
+          where ystr y | y is Fun = funName y 
+                       | else = show y
         result Success = "success"
         result (Error m) = formatStr "error: {0}" m
         result (Failed x) = formatStr "failed (got {0})" x
@@ -136,8 +141,6 @@ formatGen n fc str (x::xs) = formatGen (n+1) failed (str++r) xs
         failed | f+e>0 = fc + 1 | else = fc
 
 formatResult xs = 
-    formatStr "Test session started.\r\n{0}\r\nTotal tests:{1} Failed: {2}" 
-              str n f
-    where (n,f,str) = formatGen 0 0 "" xs
-
-
+  formatStr "Test session started.\r\n{0}\r\nTotal tests:{1} Failed: {2}" 
+            str n f
+  where (n,f,str) = formatGen 0 0 "" xs

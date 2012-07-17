@@ -7,35 +7,35 @@ program unless you explicitly tell Ela not to do so.
 
 #members
 
-int
+Int
 >>42
 A 32-bit signed integer number type.
 
-long
+Long
 >>42L
 A 64-bit singed integer number type.
 
-single
+Single
 >>12.2
 A 32-bit singed floating point number type.
 
-double
+Double
 >>24.4
 A 64-bit singed floating point number type.
 
-bool
+Bool
 >>true false
 A boolean type which can be created using two literal forms - `true` or `false`.
 
-char
+Char
 >>'a'
 A single unicode character.
 
-string
+String
 >>"Hello, world!"
 An immutable indexed array of unicode characters.
 
-list
+List
 >>[1,2,3,4,5]
 An immutable single linked list. This class defines two constructors - a so called cons operator
 `::` and a `Nil` list.//br
@@ -48,29 +48,26 @@ A `Nil` constructor is used to represent a nil list. There is syntax sugar for t
 a literal `[]`. So that the code sample above is equivalent to:
 >>>1 :: 2 :: []
 
-tuple
+Tuple
 >>(1, 'c', "Hello", true)
 An immutable indexed array of elements of any type.
 
-record
+Record
 >>{x = 1, foo = "Foo"}
 A tuple with named elements.
 
-module
+Module
 Used to represent an Ela module.
 
-unit
+Unit
 >>()
 This type has a single immutable instance and is used to represent a value that can be discarded.
 
-fun
+Fun
 >>\x -> \y -> x + y
 A function.
 
-typeinfo
-Represents meta information about a type.
-
-object
+Object
 An object type.
 
 Eq
@@ -87,7 +84,7 @@ Additive
 Defines functions of a commutative group, including addition `+`, subtraction `-` and negation
 `--`.
 >>>2 + 2
-This is the most basic class for all numeric types. Also other types, such as `char` and `tuple`
+This is the most basic class for all numeric types. Also other types, such as `Char` and `Tuple`
 may provide implementations for this class as well.
 
 Ring
@@ -188,234 +185,228 @@ Defines a `toChar` type cast function.
 StringLike
 Defines a `toString` type cast function.
 
-IntLike int
-This instance is provided so that `toInt` applied to an `int` would be equivalent to an identity
+IntLike Int
+This instance is provided so that `toInt` applied to an `Int` would be equivalent to an identity
 function.
 
-IntLike long
+IntLike Long
 Implements a type cast of a 64-bit integer to a 32-bit integer.
 
-IntLike single
+IntLike Single
 Implements a type cast of a 32-bit float to a 32-bit integer.
 
-IntLike double
+IntLike Double
 Implements a type cast of a 64-bit float to a 32-bit integer.
 
-IntLike bool
+IntLike Bool
 Implements a type cast of a boolean to a 32-bit integer.
 
-IntLike char
+IntLike Char
 Implements a type cast of a unicode character to a 32-bit integer.
 
-LongLike long
-This instance is provided so that `toLong` applied to a `long` would be equivalent to an identity
+LongLike Long
+This instance is provided so that `toLong` applied to a `Long` would be equivalent to an identity
 function.
 
-LongLike int
+LongLike Int
 Implements a type cast of a 32-bit integer to a 64-bit integer.
 
-LongLike single
+LongLike Single
 Implements a type cast of a 32-bit float to a 64-bit integer.
 
-LongLike double
+LongLike Double
 Implements a type cast of a 64-bit float to a 64-bit integer.
 
-LongLike bool
+LongLike Bool
 Implements a type cast of a boolean to a 64-bit integer.
 
-LongLike char
+LongLike Char
 Implements a type cast of a unicode character to a 64-bit integer.
 
-SingleLike single
-This instance is provided so that `toSingle` applied to a `single` would be equivalent to an identity
+SingleLike Single
+This instance is provided so that `toSingle` applied to a `Single` would be equivalent to an identity
 function.
 
-SingleLike int
+SingleLike Int
 Implements a type cast of a 32-bit integer to a 32-bit float.
 
-SingleLike long
+SingleLike Long
 Implements a type cast of a 64-bit integer to a 32-bit float.
 
-SingleLike double
+SingleLike Double
 Implements a type cast of a 64-bit float to a 32-bit float.
 
-DoubleLike double
-This instance is provided so that `toDouble` applied to a `double` would be equivalent to an identity
+DoubleLike Double
+This instance is provided so that `toDouble` applied to a `Double` would be equivalent to an identity
 function.
 
-DoubleLike int
+DoubleLike Int
 Implements a type cast of a 32-bit integer to a 64-bit float.
 
-DoubleLike long
+DoubleLike Long
 Implements a type cast of a 64-bit integer to a 64-bit float.
 
-DoubleLike single
+DoubleLike Single
 Implements a type cast of a 32-bit float to a 64-bit float.
 
-BoolLike bool
-This instance is provided so that `toBool` applied to a `bool` would be equivalent to an identity
+BoolLike Bool
+This instance is provided so that `toBool` applied to a `Bool` would be equivalent to an identity
 function.
 
-BoolLike int
+BoolLike Int
 Implements a type cast of a 32-bit integer to a boolean.
 
-BoolLike long
+BoolLike Long
 Implements a type cast of a 64-bit integer to a boolean.
 
-CharLike char
-This instance is provided so that `toChar` applied to a `char` would be equivalent to an identity
+CharLike Char
+This instance is provided so that `toChar` applied to a `Char` would be equivalent to an identity
 function.
 
-CharLike int
+CharLike Int
 Implements a type cast of a 32-bit integer to a unicode character.
 
-StringLike string
-This instance is provided so that `toString` applied to a `string` would be equivalent to an identity
+StringLike String
+This instance is provided so that `toString` applied to a `String` would be equivalent to an identity
 function.
 
-StringLike char
+StringLike Char
 Implements a type cast of a unicode character to a string.
 
-Eq int
+Eq Int
 Implements equality functions for 32-bit integer type. This instance is automatically generated 
 by a compiler.
 
-Eq long
+Eq Long
 Implements equality functions for 64-bit integer type. This instance is automatically generated 
 by a compiler.
 
-Eq single
+Eq Single
 Implements equality functions for 32-bit floating point type. This instance is automatically 
 generated by a compiler.
 
-Eq double
+Eq Double
 Implements equality functions for 32-bit floating point type. This instance is automatically 
 generated by a compiler.
 
-Eq bool
+Eq Bool
 Implements equality functions for a boolean type. This instance is automatically generated 
 by a compiler.
 
-Eq char
+Eq Char
 Implements equality functions for a unicode character type. This instance is automatically 
 generated by a compiler.
 
-Eq string
+Eq String
 Implements equality functions for a string. This instance is automatically generated by a compiler.
 
-Eq unit
+Eq Unit
 Implements equality functions for a unit. This instance is automatically generated by a compiler.
 
-Eq typeinfo
-Implements equality functions for typeinfo. This instance is automatically generated by a compiler.
-
-Eq fun
+Eq Fun
 Implements equality functions for a function. This instance is automatically generated by a 
 compiler.
 
 Eq module
 Implements equality functions for a module. This instance is automatically generated by a compiler.
 
-Eq tuple
+Eq Tuple
 Implements equality functions for a tuple.
 
-Eq record
+Eq Record
 Implements equality functions for a record.
 
 Eq list
 Implements equality functions for a linked list.
 
-Eq variant
-Implements equality functions for a variant type.
-
-Ord int
+Ord Int
 Implements comparison functions for a 32-bit integer number type. This instance is automatically 
 generated by a compiler.
 
-Ord long
+Ord Long
 Implements comparison functions for a 64-bit integer number type. This instance is automatically 
 generated by a compiler.
 
-Ord single
+Ord Single
 Implements comparison functions for a 32-bit floating point type. This instance is automatically 
 generated by a compiler.
 
-Ord double
+Ord Double
 Implements comparison functions for a 64-bit floating point type. This instance is automatically 
 generated by a compiler.
 
-Ord char
+Ord Char
 Implements comparison functions for a unicode character. This instance is automatically generated 
 by a compiler.
 
-Ord string
+Ord String
 Implements comparison functions for a string. This instance is automatically generated by a 
 compiler.
 
-Ord tuple
+Ord Tuple
 Implements comparison functions for a tuple type.
 
-Additive int
+Additive Int
 Implements `Additive` class for a 32-bit integer.
 
-Additive long
+Additive Long
 Implements `Additive` class for a 64-bit integer.
 
-Additive single
+Additive Single
 Implements `Additive` class for a 32-bit float.
 
-Additive double
+Additive Double
 Implements `Additive` class for a 64-bit float.
 
-Ring int
+Ring Int
 Implements `Ring` class for a 32-bit integer.
 
-Ring long
+Ring Long
 Implements `Ring` class for a 64-bit integer.
 
-Ring single
+Ring Single
 Implements `Ring` class for a 32-bit float.
 
-Ring double
+Ring Double
 Implements `Ring` class for a 64-bit float.
 
-Field single
+Field Single
 Implements `Field` class for a 32-bit float.
 
-Field double
+Field Double
 Implements `Field` class for a 64-bit float.
 
-Modulo int
+Modulo Int
 Implements `Field` class for a 32-bit integer.
 
-Modulo long
+Modulo Long
 Implements `Field` class for a 64-bit integer.
 
-Modulo single
+Modulo Single
 Implements `Field` class for a 32-bit float.
 
-Modulo double
+Modulo Double
 Implements `Field` class for a 64-bit float.
 
-Bit int
+Bit Int
 Implements bitwise functions for a 32-bit integer number type. This instance is automatically 
 generated by a compiler.
 
-Bit long
+Bit Long
 Implements bitwise functions for a 64-bit integer number type. This instance is automatically 
 generated by a compiler.
 
-Enum int
+Enum Int
 Provides implementation of `Enum` class for a 32-bit integer number type. 
 
-Enum long
+Enum Long
 Provides implementation of `Enum` class for a 64-bit integer number type. 
 
-Seq list
+Seq List
 Implements functions `head`, `tail` and `isnil` for a linked list. This instance is automatically 
 generated by a compiler.
 
-Seq string
+Seq String
 Implements functions `head`, `tail` and `isnil` for a string. This instance is automatically 
 generated by a compiler. Applying a `head` to a string is equivalent to a substring that eliminates 
 the first character:
@@ -425,44 +416,44 @@ A function `head` always returns a first character:
 A empty string is considered to be a nil string:
 >>>isnil ""
 
-Ix tuple
+Ix Tuple
 Implements an indexing and a `length` function for a tuple. Tuple only supports indices of integer 
 type. This instance is automatically generated by a compiler.
 
-Ix string
+Ix String
 Implements an indexing and a `length` function for a string. String only supports indices of 
 integer type. This instance is automatically generated by a compiler.
 
-Ix module
+Ix Module
 Implements an indexing and a `length` function for a module. Module only supports indices of 
 string type. This instance is automatically generated by a compiler.
 
-Ix record
+Ix Record
 Implements an indexing and a `length` function for a module. Record supports indices of type string 
 and integer. This instance is automatically generated by a compiler.
 
-Ix list
+Ix List
 Implements an indexing and a `length` function for a linked list. The complexity of both `item` and 
 `length` functions is O(n) is most of situations. Both `item` and `length` have to traverse a list. 
 A `length` function always has to traverse the whole list. Traversing obviously forces calculation 
 of a lazy list and trying to obtain a length of an infinite list would never terminate. However, 
 both `item` and `length` never force calculation of list elements.
 
-Cat char
+Cat Char
 Implements concatenation for two characters. The result of such concatenation is always a string:
 >>>'a' ++ 'b'
 This instance is automatically generated by a compiler.
 
-Cat string
+Cat String
 Implements concatenation for two strings. This instance is automatically generated by a compiler.
 
-Cat tuple
+Cat Tuple
 Implements concatenation for two tuples. The result is a new tuple that contains elements from 
 both tuples:
 >>>(1,2) ++ (3,4)
 This instance is automatically generated by a compiler.
 
-Cat record
+Cat Record
 Implements concatenation for two records. The result is a new record that contains elements from 
 both records:
 >>>{x=1,y=2} ++ {name="Bar"}
@@ -475,58 +466,52 @@ left operand to be traversed twice.
 A function `++` for linked lists is lazy on its right operand. If a right operand is a thunk than 
 a lazy list is created.
 
-Show int
+Show Int
 Implements `showf` function for a 32-bit integer. This instance is automatically generated by a 
 compiler.
 
-Show long
+Show Long
 Implements `showf` function for a 64-bit integer. This instance is automatically generated by a 
 compiler.
 
-Show single
+Show Single
 Implements `showf` function for a 32-bit float. This instance is automatically generated by a 
 compiler.
 
-Show double
-Implements `showf` function for a 64-bit double. This instance is automatically generated by a 
+Show Double
+Implements `showf` function for a 64-bit float. This instance is automatically generated by a 
 compiler.
 
-Show char
+Show Char
 Implements `showf` function for a unicode character. This instance is automatically generated by 
 a compiler.
 
-Show unit
+Show Unit
 Implements `showf` function for a unit. This instance is automatically generated by 
 a compiler.
 
-Show bool
+Show Bool
 Implements `showf` function for a boolean. This instance is automatically generated by a compiler.
 
 Show string
 Implements `showf` function for a string. This instance is automatically generated by a compiler.
 
-Show long
-Implements `showf` function for a unit. This instance is automatically generated by a compiler.
+Show Long
+Implements `showf` function for a 64-bit integer. This instance is automatically generated by a compiler.
 
-Show typeinfo
-Implements `showf` function for a typeinfo. This instance is automatically generated by a compiler.
-
-Show fun
+Show Fun
 Implements `showf` function for a function. This instance is automatically generated by a compiler.
 
-Show module
+Show Module
 Implements `showf` function for a module. This instance is automatically generated by a compiler.
 
-Show variant
-Implements `showf` function for a variant.
-
-Show tuple
+Show Tuple
 Implements `showf` function for a tuple.
 
-Show list
+Show List
 Implements `showf` function for a list.
 
-Show record
+Show Record
 Implements `showf` function for a variant.
 
 % x y
@@ -656,10 +641,6 @@ and of a second argument to a forth argument:
 until
 Function application like so: `until p f` yields the result of applying `f` until `p` holds: 
 >>until (<0) (-1) 10
-
-! f
-An application operator. It is defined like so:
->>f! = f()
 
 |> e f
 A redundant low priority application operator also known as _forward pipe_. It has a normal 
