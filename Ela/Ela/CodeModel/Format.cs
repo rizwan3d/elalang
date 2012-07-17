@@ -33,6 +33,7 @@ namespace Ela.CodeModel
 				p.Type == ElaNodeType.ListLiteral ||
 				p.Type == ElaNodeType.RecordLiteral ||
 				p.Type == ElaNodeType.TupleLiteral ||
+                p.Type == ElaNodeType.Placeholder ||
 				p.Type == ElaNodeType.UnitLiteral;
 		}
 

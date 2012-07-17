@@ -29,6 +29,7 @@ namespace Elide.ElaCode
             var sci = GetScintilla();
             sci.SetWordChars("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'_");
             sci.SmartIndentRequired += SmartIndentRequired;
+            sci.AutocompleteIgnoreCase = true;
             folding = new FoldingManager(sci);            
             ElaFuns = new ElaFunctions(App, sci);
         }

@@ -7,6 +7,16 @@ namespace Ela.Library.General
 {
     public sealed class CellModule : ForeignModule
     {
+        private sealed class ElaCell : ElaObject
+        {
+            public ElaCell()
+            {
+
+            }
+
+            internal ElaValue Value { get; set; }
+        }
+
         public CellModule()
         {
 
@@ -14,14 +24,25 @@ namespace Ela.Library.General
         
         public override void Initialize()
         {
-            Add<ElaValue,ElaUserType,ElaUserType>("mutate", Mutate);
+            Add<ElaValue,ElaObject,ElaObject>("mutate", Mutate);
+            Add<ElaValue,ElaObject>("newCell", NewCell);
+            Add<ElaObject,ElaValue>("valueof", ValueOf);
         }
 
-        public ElaUserType Mutate(ElaValue value, ElaUserType obj)
+        public ElaObject Mutate(ElaValue value, ElaObject obj)
         {
-            var arr = (ElaValue[])obj.GetValues();
-            arr[0] = value;
+            ((ElaCell)obj).Value = value;
             return obj;
+        }
+
+        public ElaObject NewCell(ElaValue value)
+        {
+            return new ElaCell { Value = value };
+        }
+
+        public ElaValue ValueOf(ElaObject value)
+        {
+            return ((ElaCell)value).Value;
         }
     }
 }

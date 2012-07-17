@@ -113,35 +113,36 @@ namespace Ela.Linking
             }
             else
             {
-                if ((frame = Assembly.GetModule(mod.ToString(), out hdl)) == null)
+                if (mod.DllName != null)
+                    frame = ResolveDll(mod, out hdl);
+                else
                 {
-                    if (mod.DllName != null)
-                        frame = ResolveDll(mod, out hdl);
-                    else
+                    var ela = String.Concat(mod.ModuleName, EXT);
+                    var obj = LinkerOptions.ForceRecompile ? null : String.Concat(mod.ModuleName, OBJEXT);
+                    bool bin;
+                    var fi = FindModule(mod, ela, obj, out bin);
+                                            
+                    if (fi != null)
                     {
-                        var ela = String.Concat(mod.ModuleName, EXT);
-                        var obj = LinkerOptions.ForceRecompile ? null : String.Concat(mod.ModuleName, OBJEXT);
-                        bool bin;
-                        var fi = FindModule(mod, ela, obj, out bin);
-
-                        if (fi != null)
+                        if ((frame = Assembly.GetModule(fi.FullName.ToUpper(), out hdl)) != null)
                         {
-                            if (!bin)
-                            {
-                                frame = Build(parentFile, mod, fi);
-                                hdl = RegisterFrame(mod, frame, fi, false, mod.LogicalHandle);
-                            }
-                            else
-                            {
-                                frame = ReadObjectFile(parentFile, mod, fi);
-                                hdl = RegisterFrame(mod, frame, fi, false, mod.LogicalHandle);
-                            }
+                            //Do nothing
+                        }
+                        else if (!bin)
+                        {
+                            frame = Build(parentFile, mod, fi);
+                            hdl = RegisterFrame(mod, frame, fi, false, mod.LogicalHandle);
                         }
                         else
                         {
-                            frame = TryResolveModule(mod);
+                            frame = ReadObjectFile(parentFile, mod, fi);
                             hdl = RegisterFrame(mod, frame, fi, false, mod.LogicalHandle);
                         }
+                    }
+                    else
+                    {
+                        frame = TryResolveModule(mod);
+                        hdl = RegisterFrame(mod, frame, fi, false, mod.LogicalHandle);
                     }
                 }
             }

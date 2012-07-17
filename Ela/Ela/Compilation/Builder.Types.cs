@@ -8,8 +8,6 @@ namespace Ela.Compilation
     //This part contains compilation logic for built-in and user defined types.
     internal sealed partial class Builder
     {
-        private Dictionary<String,ElaNewtype> headers = new Dictionary<String,ElaNewtype>();
-
         //An entry method for type compilation. Ensures that types ('type') are
         //always compiled before type extensions ('data').
         private void CompileTypes(ElaNewtype v, LabelMap map)
@@ -17,24 +15,28 @@ namespace Ela.Compilation
             CompileHeaders(v);
             CompileTypeOnly(v, map);
             CompileDataOnly(v, map);
-
-            foreach (var kv in headers)
-                AddError(ElaCompilerError.TypeHeaderNotConnected, kv.Value, kv.Value.Name);
         }
 
         //Builds a list of attribute headers for types
         private void CompileHeaders(ElaNewtype v)
         {
-            if (v.Flags != ElaVariableFlags.None)
-            {
-                if (headers.ContainsKey(v.Prefix + "." + v.Name))
-                    AddError(ElaCompilerError.TypeHeaderNotConnected, v, v.Name);
-                else
-                    headers.Add(v.Prefix + "." + v.Name, v);
-            }
+            var t = v;
+            var oldt = default(ElaNewtype);
 
-            if (v.And != null)
-                CompileHeaders(v.And);
+            while (t != null)
+            {
+                if (t.Header)
+                {
+                    if (oldt == null || t.Extends != oldt.Extends)
+                        AddError(ElaCompilerError.TypeHeaderNotConnected, t, t.Name);
+                    else
+                        oldt.Flags = t.Flags;
+                }
+                else
+                    oldt = t;
+
+                t = t.And;
+            }
         }
 
 
@@ -42,7 +44,7 @@ namespace Ela.Compilation
         //and not type extensions ('data' declarations).
         private void CompileTypeOnly(ElaNewtype v, LabelMap map)
         {
-            if (!v.Extends && v.Flags == ElaVariableFlags.None)
+            if (!v.Extends && !v.Header)
                 CompileTypeBody(v, map);
 
             if (v.And != null)
@@ -52,7 +54,7 @@ namespace Ela.Compilation
         //This method only compiles type extensions (declared through 'data').
         private void CompileDataOnly(ElaNewtype v, LabelMap map)
         {
-            if (v.Extends && v.Flags == ElaVariableFlags.None)
+            if (v.Extends && !v.Header)
                 CompileTypeBody(v, map);
 
             if (v.And != null)
@@ -65,31 +67,25 @@ namespace Ela.Compilation
             //We need to obtain type typeId for a type
             var tc = -1;
             var sca = -1;
-            var hd = default(ElaNewtype);
-            var flags = ElaVariableFlags.None;
+            var flags = v.Flags;
             var isList = false;
-
-            if (headers.TryGetValue(v.Prefix + "." + v.Name, out hd))
-            {
-                flags = hd.Flags;
-                headers.Remove(v.Prefix + "." + v.Name);
-            }
                 
             //A body may be null only if this is a built-in type
             if (!v.HasBody && v.Extends)
-                AddError(ElaCompilerError.OnlyBuiltinTypeNoDefinition, v, v.Name);
+                AddError(ElaCompilerError.ExtendsNoDefinition, v, v.Name);
             else if (!v.HasBody || (isList = IsList(v, flags)))
             {
-                tc = (Int32)TCF.GetTypeCode(v.Name);                
+                tc = (Int32)TCF.GetTypeCode(v.Name);
+                tc = tc == 0 ? -1 : tc;
                 sca = AddVariable("$$" + v.Name, v, flags, tc);
 
-                //OK, type is no built-in, this cannot work
-                if (tc == 0)
-                    AddError(ElaCompilerError.OnlyBuiltinTypeNoDefinition, v, v.Name);
-
-                //We add a special variable that contains a global type ID
-                cw.Emit(Op.PushI4, tc);
-                PopVar(sca);
+                //OK, type is built-in
+                if (tc > 0)
+                {
+                    //We add a special variable that contains a global type ID
+                    cw.Emit(Op.PushI4, tc);
+                    PopVar(sca);
+                }
             }
             else
                 sca = v.Extends ? AddVariable() : AddVariable("$$" + v.Name, v, flags, -1);
@@ -126,8 +122,8 @@ namespace Ela.Compilation
                 }
             }
 
-            //Add a type var for a non built-in type
-            if (v.HasBody && !isList)
+            //Add a type var for a non built-in type with a body
+            if (tc == -1 && !isList)
             {
                 //Add a special variable with global type ID which will be calculated at run-time
                 if (v.Extends)
@@ -144,10 +140,13 @@ namespace Ela.Compilation
                 
                 PopVar(sca);
 
-                for (var i = 0; i < v.Constructors.Count; i++)
+                if (v.HasBody)
                 {
-                    var c = v.Constructors[i];
-                    CompileConstructor(typeParams, sca, c, flags);
+                    for (var i = 0; i < v.Constructors.Count; i++)
+                    {
+                        var c = v.Constructors[i];
+                        CompileConstructor(typeParams, sca, c, flags);
+                    }
                 }
             }
             else if (isList)

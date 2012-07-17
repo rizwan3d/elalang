@@ -263,6 +263,12 @@ namespace Elide.Scintilla
         {
             Ref.Send(Sci.SCI_CLEARREGISTEREDIMAGES);
         }
+
+        public bool AutocompleteIgnoreCase
+        {
+            get { return Ref.Send(Sci.SCI_AUTOCGETIGNORECASE) == Sci.TRUE; }
+            set { Ref.Send(Sci.SCI_AUTOCSETIGNORECASE, value); }
+        }
         #endregion
 
         #region Indicators

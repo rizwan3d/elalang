@@ -810,7 +810,7 @@ internal sealed partial class Parser {
 				ot = t;
 				
 				Get();
-				Literal(out funexp);
+				OpExpr6(out funexp);
 				Expect(59);
 				if (StartOf(11)) {
 					OpExpr6(out cexp);
@@ -828,7 +828,7 @@ internal sealed partial class Parser {
 			}
 		} else if (la.kind == 59) {
 			Get();
-			Literal(out funexp);
+			OpExpr6(out funexp);
 			Expect(59);
 			if (StartOf(11)) {
 				OpExpr6(out exp);
@@ -955,6 +955,8 @@ internal sealed partial class Parser {
 			if (la.kind == 50) {
 				Get();
 				if (la.kind == 1) {
+					Get();
+				} else if (la.kind == 2) {
 					Get();
 				} else if (StartOf(15)) {
 					Operators();
@@ -1495,11 +1497,19 @@ internal sealed partial class Parser {
 			Get();
 			extends=true; 
 		} else SynErr(109);
-		Expect(1);
+		if (la.kind == 1) {
+			Get();
+		} else if (la.kind == 2) {
+			Get();
+		} else SynErr(110);
 		ns0 = t.val; 
 		if (la.kind == 25) {
 			Get();
-			Expect(1);
+			if (la.kind == 1) {
+				Get();
+			} else if (la.kind == 2) {
+				Get();
+			} else SynErr(111);
 			ns1 = t.val; 
 		}
 		var nt = new ElaNewtype(t) { Name = ns1 ?? ns0, Prefix = ns1==null?null:ns0, Extends = extends };                	            
@@ -1523,6 +1533,7 @@ internal sealed partial class Parser {
 				}
 			} else {
 				Get();
+				nt.Header = true; 
 				Expect(1);
 				nt.Flags = ProcessAttribute(t.val,nt.Flags); 
 				while (la.kind == 1) {
@@ -1556,7 +1567,7 @@ internal sealed partial class Parser {
 		} else if (la.kind == 2) {
 			Get();
 			ci.TypeClassName=t.val; 
-		} else SynErr(110);
+		} else SynErr(112);
 		Expect(1);
 		fst = t.val; 
 		if (la.kind == 25) {
@@ -1626,7 +1637,7 @@ internal sealed partial class Parser {
 			NewType();
 		} else if (la.kind == 42) {
 			ClassInstance();
-		} else SynErr(111);
+		} else SynErr(113);
 		EndBlock();
 		if (StartOf(18)) {
 			TopLevel();
@@ -1796,8 +1807,10 @@ internal sealed class Errors {
 			case 107: s = "invalid TypeClass"; break;
 			case 108: s = "invalid TypeClass"; break;
 			case 109: s = "invalid NewType"; break;
-			case 110: s = "invalid ClassInstance"; break;
-			case 111: s = "invalid TopLevel"; break;
+			case 110: s = "invalid NewType"; break;
+			case 111: s = "invalid NewType"; break;
+			case 112: s = "invalid ClassInstance"; break;
+			case 113: s = "invalid TopLevel"; break;
 
 			default: s = "error " + n; break;
 		}

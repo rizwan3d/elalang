@@ -407,7 +407,7 @@ internal sealed class Errors {
 			case 38: s = "\"class\" expected"; break;
 			case 39: s = "\"instance\" expected"; break;
 			case 40: s = "\"type\" expected"; break;
-			case 41: s = "\"raise\" expected"; break;
+			case 41: s = "\"data\" expected"; break;
 			case 42: s = "\"fail\" expected"; break;
 			case 43: s = "??? expected"; break;
 			case 44: s = "invalid Primary"; break;

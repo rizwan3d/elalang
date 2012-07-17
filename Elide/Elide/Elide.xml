@@ -138,7 +138,7 @@
         <add key="EilCode" type="Elide.EilCode.EilEditor,Elide.EilCode" documentType="Elide.EilCode.EilDocument,Elide.EilCode" displayName="E&amp;IL File" fileExtension=".eil" fileExtensionDescription="EIL Code Files" flags="Hidden" />
         <add key="ElaCode" type="Elide.ElaCode.ElaEditor,Elide.ElaCode" documentType="Elide.ElaCode.ElaDocument,Elide.ElaCode" displayName="&amp;Ela Code File" fileExtension=".ela" fileExtensionDescription="Ela Code Files" flags="Main" />
         <add key="WelcomePage" type="Elide.WelcomePage.WelcomePageEditor,Elide.WelcomePage" documentType="Elide.WelcomePage.WelcomePageDocument,Elide.WelcomePage" displayName="Welcome Page" fileExtension="" fileExtensionDescription="Welcome Page" flags="Hidden,HiddenEverywhere" />
-        <add key="HelpViewer" type="Elide.HelpViewer.HelpEditor,Elide.HelpViewer" documentType="Elide.HelpViewer.HelpDocument,Elide.HelpViewer" displayName="Documentation File" fileExtension=".docxml" fileExtensionDescription="Documentation File" flags="Hidden" />
+        <add key="HelpViewer" type="Elide.HelpViewer.HelpEditor,Elide.HelpViewer" documentType="Elide.HelpViewer.HelpDocument,Elide.HelpViewer" displayName="Documentation File" fileExtension=".htm" fileExtensionDescription="Documentation File" flags="Hidden" />
     </editors>
 
 

@@ -126,6 +126,9 @@
   <data name="ElseMissing" xml:space="preserve">
     <value>A mandatory 'else' clause is missing. A conditional expression should be always terminated with an 'else' clause.</value>
   </data>
+  <data name="ExtendsNoDefinition" xml:space="preserve">
+    <value>Invalid definition of '{0}', all 'data' definitions require a body.</value>
+  </data>
   <data name="FromEnumNotFound" xml:space="preserve">
     <value>Unable to find a definition of 'enumFrom' to generate an infinite range.</value>
   </data>
@@ -194,9 +197,6 @@
   </data>
   <data name="NoHindingSameScope" xml:space="preserve">
     <value>A conflicting definition of '{0}'. Shadowing of names in the same lexical scope is not allowed.</value>
-  </data>
-  <data name="OnlyBuiltinTypeNoDefinition" xml:space="preserve">
-    <value>Invalid definition of type '{0}'. Only built-in types can have no definition.</value>
   </data>
   <data name="PatternsTooFew" xml:space="preserve">
     <value>Not all of the patterns are specified in the entry {0}. Expected {1} pattern(s), found {2} pattern(s).</value>

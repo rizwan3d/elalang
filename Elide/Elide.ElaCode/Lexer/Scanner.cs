@@ -344,7 +344,7 @@ internal sealed class Scanner {
 			case "class": t.kind = 38; break;
 			case "instance": t.kind = 39; break;
 			case "type": t.kind = 40; break;
-			case "raise": t.kind = 41; break;
+			case "data": t.kind = 41; break;
 			case "fail": t.kind = 42; break;
 			default: break;
 		}

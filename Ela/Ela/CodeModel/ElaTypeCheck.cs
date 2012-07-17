@@ -21,11 +21,10 @@ namespace Ela.CodeModel
         {
             Format.PutInBraces(Expression, sb);
 
-            sb.Append(" is");
+            sb.Append(" is ");
 
             if (_traits != null)
             {
-                sb.Append('(');
                 var c = 0;
 
                 foreach (var ti in _traits)
@@ -35,8 +34,6 @@ namespace Ela.CodeModel
 
                     sb.Append(ti.ToString());
                 }
-
-                sb.Append(')');
             }
         }
 

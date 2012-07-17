@@ -79,6 +79,9 @@ namespace Ela.Compilation
                 if ((mod == null || !mod.GlobalScope.Locals.TryGetValue(specName, out extVar)) && !options.IgnoreUndefined)
                     AddError(err, exp, ns + "." + specName.TrimStart('$'));
 
+                if ((extVar.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private)
+                    AddError(ElaCompilerError.PrivateNameInModule, exp, specName.TrimStart('$'), ns);
+
                 cw.Emit(Op.Pushext, lh | (extVar.Address << 8));
                 return extVar.Data;
             }
@@ -254,6 +257,22 @@ namespace Ela.Compilation
             while (cur != null);
 
             return null;
+        }
+
+        //This method checks if a given name (qualified or not) is a type or not a type.
+        private bool NameExists(string prefix, string name)
+        {
+            if (prefix == null)
+            {
+                var sv = GetVariable(name, globalScope, GetFlags.NoError, 0, 0);
+                return !sv.IsEmpty();
+            }
+            else
+            {
+                CodeFrame _;
+                var sv = FindByPrefix(prefix, name, out _);
+                return !sv.IsEmpty();
+            }
         }
     }
 }

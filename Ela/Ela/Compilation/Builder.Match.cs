@@ -370,29 +370,41 @@ namespace Ela.Compilation
                             break;
                         }
 
-                        //This pattern can either check a specific type or a collection of traits.
-                        //Here we try to 'guess' if this a type or a trait. This logic is poor and might
-                        //result in an error if somebody wants to check a trait which name is lowercased.
-                        if (n.Traits.Count == 1 && !Char.IsUpper(n.Traits[0].Name[0]))
+                        //Here we are checking all classes specified in a pattern. We have to loop
+                        //through all classes and generate a check instruction (Traitch) for each.
+                        for (var i = 0; i < n.Traits.Count; i++)
                         {
+                            var t = n.Traits[i];
                             PushVar(sysVar);
-                            cw.Emit(Op.Force);
-                            EmitSpecName(n.Traits[0].Prefix, "$$" + n.Traits[0].Name, n, ElaCompilerError.UndefinedType);
-                            cw.Emit(Op.Ctypei);
-                            cw.Emit(Op.Brfalse, failLab);
-                        }
-                        else
-                        {
-                            //Here we are checking all classes specified in a pattern. We have to loop
-                            //through all classes and generate a check instruction (Traitch) for each.
-                            for (var i = 0; i < n.Traits.Count; i++)
+
+                            //This item can either check a specific type or a trait.
+                            var isType = NameExists(t.Prefix, "$$" + t.Name); //A type with such a name exists
+                            var isClass = NameExists(t.Prefix, "$$$" + t.Name); //A class with such a name exists
+
+                            //OK, this is ambiguity, better to report about that. We will consider a symbol
+                            //to be a type and compile further.
+                            if (isType && isClass)
                             {
-                                var t = n.Traits[i];
-                                PushVar(sysVar);
+                                AddWarning(ElaCompilerWarning.TypeClassAmbiguity, exp, t.Prefix == null ? t.Name : t.Prefix + "." + t.Name, FormatNode(exp));
+
+                                //This hint suggests to use prefix, it is stupid to generate it, if we have a prefix already.
+                                if (t.Prefix == null)
+                                    AddHint(ElaCompilerHint.TypeClassAmbiguity, exp);
+                            }
+
+                            if (isType)
+                            {
+                                cw.Emit(Op.Force);
+                                EmitSpecName(n.Traits[0].Prefix, "$$" + n.Traits[0].Name, n, ElaCompilerError.UndefinedType);
+                                cw.Emit(Op.Ctypei);
+                            }
+                            else
+                            {
                                 EmitSpecName(t.Prefix, "$$$" + t.Name, n, ElaCompilerError.UnknownClass);
                                 cw.Emit(Op.Traitch);
-                                cw.Emit(Op.Brfalse, failLab);
                             }
+
+                            cw.Emit(Op.Brfalse, failLab);                                
                         }
 
                         //Process a pattern in type check expression

@@ -1,3 +1,5 @@
+0.11.0.48:Change:Type check pattern is refactored. Also now compiler generates a new warning and a hint if there is an ambigitious check (it can be both type and class).
+0.11.0.47:Fix:A bug in a linker is fixed. Executing a compiled file through Ela Console and staying in interactive mode could lead to a VM crash.
 0.11.0.46:Change:A standard type 'typeinfo' is decomissioned, now a regular record is used to present type information.
 0.11.0.45:Change:A built-in 'typeinfo' along with the corresponding op code is decomissioned.
 0.11.0.44:New:Now it is possible to specify attribute for types in the same way as for bindings.
