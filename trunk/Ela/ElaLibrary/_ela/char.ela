@@ -14,26 +14,26 @@ min = '\0'
 zero # qualified
 zero = min
 
-instance Enum char where
+instance Enum Char where
   succ a = toChar (toInt a + 1)
   pred a = toChar (toInt a - 1)
   enumFrom fst snd = map' toChar [(toInt fst),(toInt snd)..]
   enumFromTo max fst snd = map toChar [(toInt fst),(toInt snd)..(toInt max)]
 
-lower (c is char) = ch.lower c
-upper (c is char) = ch.upper c
+lower c = ch.lower (force c)
+upper c = ch.upper (force c)
 
-isUpper (c is char) = ch.isUpper c
-isLower (c is char) = ch.isLower c
+isUpper c = ch.isUpper (force c)
+isLower c = ch.isLower (force c)
 
-isControl (c is char) = ch.isControl c
-isDigit (c is char) = ch.isDigit c
-isLetter (c is char) = ch.isLetter c
-isNumber (c is char) = ch.isNumber c
-isPunctuation (c is char) = ch.isPunctuation c
-isSeparator (c is char) = ch.isSeparator c
-isSymbol (c is char) = ch.isSymbol c
-isWhiteSpace (c is char) = ch.isWhiteSpace c
+isControl c = ch.isControl (force c)
+isDigit c = ch.isDigit (force c)
+isLetter c = ch.isLetter (force c)
+isNumber c = ch.isNumber (force c)
+isPunctuation c = ch.isPunctuation (force c)
+isSeparator c = ch.isSeparator (force c)
+isSymbol c = ch.isSymbol (force c)
+isWhiteSpace c = ch.isWhiteSpace (force c)
 
-isSurrogate (c is char) = ch.isSurrogate c
-isSurrogatePair (x is char) (y is char) = ch.isSurrogatePair x y
+isSurrogate c = ch.isSurrogate (force c)
+isSurrogatePair x y = ch.isSurrogatePair (force x) (force y)

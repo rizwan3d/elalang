@@ -6,12 +6,12 @@ open thunk list
 import lang
 
 /* Instances */
-instance Additive tuple
-  where (+)  = join (+)
-        (-)  = join (-)
-        --x  = zero (length x) - x
+instance Additive Tuple where 
+  (+)  = join (+)
+  (-)  = join (-)
+  --x  = zero (length x) - x
 
-instance Enum tuple where 
+instance Enum Tuple where 
   succ = map succ
   pred = map pred
   enumFrom fst snd = gen fst (snd-fst)
@@ -21,7 +21,7 @@ instance Enum tuple where
             | e > max = reverse xs
             | else = gen (e::xs) max (e+s) s
 
-instance ListLike tuple where
+instance ListLike Tuple where
   toList t = tol 0
     where
       len = length t

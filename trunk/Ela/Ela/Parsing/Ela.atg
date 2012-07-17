@@ -1010,7 +1010,7 @@ PRODUCTIONS
 	        var falseExp = default(ElaExpression);
 	    .)
 	    (
-	        BinaryExpr<out cond> (. ifExp.Condition = cond; .)
+	        Expr<out cond> (. ifExp.Condition = cond; .)
 	        "->" Expr<out trueExp> (. ifExp.True = trueExp; .)
 	        (
 	            "|" 
@@ -1032,7 +1032,7 @@ PRODUCTIONS
 		BindingChain<out block> 
 		(. bindings.Pop(); .)
 		(. if (!skip) .) EndBlock.
-		
+	
 	LetBinding<out ElaExpression exp> = 
 	    (. exp = null; .)
 	    (
@@ -1075,7 +1075,7 @@ PRODUCTIONS
 	        var falseExp = default(ElaExpression);
 	    .)
 	    (
-	        BinaryExpr<out cond> (. ifExp.Condition = cond; .)
+	        Expr<out cond> (. ifExp.Condition = cond; .)
 	        "=" Expr<out trueExp> (. ifExp.True = trueExp; .)
 	        (
 	            "|" 
@@ -1230,7 +1230,10 @@ PRODUCTIONS
 	            )
 	            |
 	            (
-	                (. var targ = String.Empty; .)
+	                (. 
+	                    var targ = String.Empty; 
+	                    var block = default(ElaEquationSet);
+	                .)
 	                ident (. targ = t.val; .)
 	                (
 	                    "where"
@@ -1271,20 +1274,19 @@ PRODUCTIONS
     NewType = 
         (. 
             scanner.InjectBlock(); 
-            var ns0 = default(String);
-            var ns1 = default(String);
             var extends = false;
         .)
         (
-            (TYPE|DATA (. extends=true; .)) (ident|variantTok) (. ns0 = t.val; .) [ "." (ident|variantTok) (. ns1 = t.val; .)]
+            (TYPE|DATA (. extends=true; .))
+            (. var nt = new ElaNewtype(t) { Extends = extends }; .) 
+            (
+                ident (. nt.Prefix = t.val; .) "." variantTok (. nt.Name = t.val; .)
+                | variantTok (. nt.Name = t.val; .)
+            )
             (.
-                var nt = new ElaNewtype(t) { Name = ns1 ?? ns0, Prefix = ns1==null?null:ns0, Extends = extends };                	            
-	            nt.And = Program.Types;
+                nt.And = Program.Types;
 	            Program.Types = nt;
             .)
-            {
-                ident (. nt.TypeParams.Add(t.val); .)  
-            }
             [
                 (
                     (. var cexp = default(ElaExpression); .)
@@ -1307,8 +1309,6 @@ PRODUCTIONS
         
 	ClassInstance = 
 	    (. 
-	        var fst = default(String);
-	        var snd = default(String);
 	        var block = default(ElaEquationSet);
 	        var ot = t;
 	        var list = default(List<ElaClassInstance>);
@@ -1326,18 +1326,9 @@ PRODUCTIONS
 	            | variantTok (. ci.TypeClassName=t.val; .)
 	        )
 	        (
-	            ident (. fst = t.val; .)
-	            [ "." ident (. snd = t.val; .) ]
+	            ident (. ci.TypePrefix = t.val; .) "." variantTok (. ci.TypeName=t.val; .)
+	            | variantTok (. ci.TypeName=t.val; .)
 	        )
-	        (. 	            
-	            if (fst != null && snd != null)
-	            {
-	                ci.TypePrefix = fst;
-	                ci.TypeName = snd;
-	            }
-	            else
-	                ci.TypeName = fst;
-	        .)
 	        {
 	            (.
 	                if (list == null)
@@ -1353,18 +1344,9 @@ PRODUCTIONS
 	                list.Add(ci);
 	            .)
 	            (
-	                ident  (. fst = t.val; .)
-	                [ "." ident (. snd = t.val; .) ]
+	                ident (. ci.TypePrefix = t.val; .) "." variantTok (. ci.TypeName=t.val; .)
+	                | variantTok (. ci.TypeName=t.val; .)
 	            )
-	            (. 	            
-	                if (fst != null && snd != null)
-	                {
-	                    ci.TypePrefix = fst;
-	                    ci.TypeName = snd;
-	                }
-	                else
-	                    ci.TypeName = fst;
-	            .)
 	        }
 	        [
 	            WhereBinding<out block>

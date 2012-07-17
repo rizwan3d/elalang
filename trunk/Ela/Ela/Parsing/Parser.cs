@@ -1167,7 +1167,7 @@ internal sealed partial class Parser {
 		var trueExp = default(ElaExpression);
 		var falseExp = default(ElaExpression);
 		
-		BinaryExpr(out cond);
+		Expr(out cond);
 		ifExp.Condition = cond; 
 		Expect(22);
 		Expr(out trueExp);
@@ -1177,7 +1177,7 @@ internal sealed partial class Parser {
 			Get();
 			Expect(22);
 			Expr(out falseExp);
-		} else if (StartOf(16)) {
+		} else if (StartOf(2)) {
 			LambdaGuard(out falseExp);
 		} else SynErr(93);
 		ifExp.False = falseExp; 
@@ -1251,7 +1251,7 @@ internal sealed partial class Parser {
 		var trueExp = default(ElaExpression);
 		var falseExp = default(ElaExpression);
 		
-		BinaryExpr(out cond);
+		Expr(out cond);
 		ifExp.Condition = cond; 
 		Expect(53);
 		Expr(out trueExp);
@@ -1261,7 +1261,7 @@ internal sealed partial class Parser {
 			Get();
 			Expect(53);
 			Expr(out falseExp);
-		} else if (StartOf(16)) {
+		} else if (StartOf(2)) {
 			Guard(out falseExp);
 		} else SynErr(95);
 		ifExp.False = falseExp; 
@@ -1382,7 +1382,7 @@ internal sealed partial class Parser {
 			Get();
 			Expect(2);
 			tc.BuiltinName = t.val; 
-			while (StartOf(17)) {
+			while (StartOf(16)) {
 				if (la.kind == 1) {
 					Get();
 					nm=t.val; 
@@ -1404,6 +1404,8 @@ internal sealed partial class Parser {
 			}
 		} else if (la.kind == 1) {
 			var targ = String.Empty; 
+			var block = default(ElaEquationSet);
+			
 			Get();
 			targ = t.val; 
 			Expect(41);
@@ -1443,7 +1445,7 @@ internal sealed partial class Parser {
 			}
 			tc.Members.Add(new ElaClassMember(t) { Name = nm, Arguments = count, Mask = mask });
 			
-			while (StartOf(17)) {
+			while (StartOf(16)) {
 				if (la.kind == 1) {
 					Get();
 					nm=t.val; 
@@ -1487,8 +1489,6 @@ internal sealed partial class Parser {
 
 	void NewType() {
 		scanner.InjectBlock(); 
-		var ns0 = default(String);
-		var ns1 = default(String);
 		var extends = false;
 		
 		if (la.kind == 43) {
@@ -1497,29 +1497,20 @@ internal sealed partial class Parser {
 			Get();
 			extends=true; 
 		} else SynErr(109);
+		var nt = new ElaNewtype(t) { Extends = extends }; 
 		if (la.kind == 1) {
 			Get();
+			nt.Prefix = t.val; 
+			Expect(25);
+			Expect(2);
+			nt.Name = t.val; 
 		} else if (la.kind == 2) {
 			Get();
+			nt.Name = t.val; 
 		} else SynErr(110);
-		ns0 = t.val; 
-		if (la.kind == 25) {
-			Get();
-			if (la.kind == 1) {
-				Get();
-			} else if (la.kind == 2) {
-				Get();
-			} else SynErr(111);
-			ns1 = t.val; 
-		}
-		var nt = new ElaNewtype(t) { Name = ns1 ?? ns0, Prefix = ns1==null?null:ns0, Extends = extends };                	            
 		nt.And = Program.Types;
 		Program.Types = nt;
 		
-		while (la.kind == 1) {
-			Get();
-			nt.TypeParams.Add(t.val); 
-		}
 		if (la.kind == 48 || la.kind == 53) {
 			if (la.kind == 53) {
 				var cexp = default(ElaExpression); 
@@ -1546,8 +1537,6 @@ internal sealed partial class Parser {
 	}
 
 	void ClassInstance() {
-		var fst = default(String);
-		var snd = default(String);
 		var block = default(ElaEquationSet);
 		var ot = t;
 		var list = default(List<ElaClassInstance>);
@@ -1567,23 +1556,18 @@ internal sealed partial class Parser {
 		} else if (la.kind == 2) {
 			Get();
 			ci.TypeClassName=t.val; 
-		} else SynErr(112);
-		Expect(1);
-		fst = t.val; 
-		if (la.kind == 25) {
+		} else SynErr(111);
+		if (la.kind == 1) {
 			Get();
-			Expect(1);
-			snd = t.val; 
-		}
-		if (fst != null && snd != null)
-		{
-		    ci.TypePrefix = fst;
-		    ci.TypeName = snd;
-		}
-		else
-		    ci.TypeName = fst;
-		
-		while (la.kind == 1) {
+			ci.TypePrefix = t.val; 
+			Expect(25);
+			Expect(2);
+			ci.TypeName=t.val; 
+		} else if (la.kind == 2) {
+			Get();
+			ci.TypeName=t.val; 
+		} else SynErr(112);
+		while (la.kind == 1 || la.kind == 2) {
 			if (list == null)
 			{
 			    list = new List<ElaClassInstance>();
@@ -1596,21 +1580,16 @@ internal sealed partial class Parser {
 			Program.Instances = ci;
 			list.Add(ci);
 			
-			Get();
-			fst = t.val; 
-			if (la.kind == 25) {
+			if (la.kind == 1) {
 				Get();
-				Expect(1);
-				snd = t.val; 
+				ci.TypePrefix = t.val; 
+				Expect(25);
+				Expect(2);
+				ci.TypeName=t.val; 
+			} else {
+				Get();
+				ci.TypeName=t.val; 
 			}
-			if (fst != null && snd != null)
-			{
-			    ci.TypePrefix = fst;
-			    ci.TypeName = snd;
-			}
-			else
-			    ci.TypeName = fst;
-			
 		}
 		if (la.kind == 41) {
 			WhereBinding(out block);
@@ -1639,7 +1618,7 @@ internal sealed partial class Parser {
 			ClassInstance();
 		} else SynErr(113);
 		EndBlock();
-		if (StartOf(18)) {
+		if (StartOf(17)) {
 			TopLevel();
 		}
 	}
@@ -1677,7 +1656,6 @@ internal sealed partial class Parser {
 		{x,T,T,T, T,T,T,x, x,x,x,x, x,x,x,T, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x},
 		{x,T,T,T, T,T,T,x, x,x,x,x, x,x,x,x, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x},
 		{x,x,x,x, x,x,x,T, T,T,T,T, T,T,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x},
-		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,T, T,x,x,T, x,x,x,x, x,x},
 		{x,T,x,x, x,x,x,T, T,T,T,T, T,T,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x},
 		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,x,T, x,x,x,T, x,x,x,T, x,x,T,T, x,T,x,x, x,T,T,T, T,x,T,T, T,T,T,x, x,T,T,x, x,x,x,T, T,x,x,T, x,T,T,x, x,x}
 
@@ -1808,7 +1786,7 @@ internal sealed class Errors {
 			case 108: s = "invalid TypeClass"; break;
 			case 109: s = "invalid NewType"; break;
 			case 110: s = "invalid NewType"; break;
-			case 111: s = "invalid NewType"; break;
+			case 111: s = "invalid ClassInstance"; break;
 			case 112: s = "invalid ClassInstance"; break;
 			case 113: s = "invalid TopLevel"; break;
 

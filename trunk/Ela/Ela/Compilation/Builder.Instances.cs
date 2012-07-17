@@ -254,15 +254,19 @@ namespace Ela.Compilation
             else
                 args = btVar.Data;
 
-            //Eta expansion should be done if a member is not a function literal
-            //(it can be a partially applied function) or if a number of arguments
-            //doesn't match.
-            if (!s.IsFunction())
-                EtaExpand(s.Right, map, args);
-            else if (s.GetArgumentNumber() < args)
-                EtaExpand(s, map, args);
-            else
-                CompileFunction(s);
+            //First we check if this binding is simply a function reference
+            if (!TryResolveInstanceBinding(args, s.Right))
+            {
+                //Eta expansion should be done if a member is not a function literal
+                //(it can be a partially applied function) or if a number of arguments
+                //doesn't match.
+                if (!s.IsFunction())
+                    EtaExpand(s.Right, map, args);
+                else if (s.GetArgumentNumber() < args)
+                    EtaExpand(s, map, args);
+                else
+                    CompileFunction(s);
+            }
 
             AddLinePragma(s);
 
@@ -279,6 +283,47 @@ namespace Ela.Compilation
 
             //Finally adding a member function.
             cw.Emit(Op.Addmbr);
+        }
+
+        //This method checks if an instance member binding is a function reference with a correct number
+        //of arguments.
+        private bool TryResolveInstanceBinding(int args, ElaExpression exp)
+        {
+            if (exp == null)
+                return false;
+
+            //A simple case - a direct name reference, need to check its type arguments
+            if (exp.Type == ElaNodeType.NameReference)
+            {
+                var sv = GetVariable(exp.GetName(), CurrentScope, GetFlags.NoError, 0, 0);
+
+                if ((sv.VariableFlags & ElaVariableFlags.Function) == ElaVariableFlags.Function && sv.Data == args)
+                {
+                    AddLinePragma(exp);
+                    PushVar(sv);
+                    return true;
+                }
+            }
+            else if (exp.Type == ElaNodeType.FieldReference)
+            {
+                //A more complex case - this can be a qualified name (with a module alias)
+                var fr = (ElaFieldReference)exp;
+
+                if (fr.TargetObject.Type != ElaNodeType.NameReference)
+                    return false;
+
+                CodeFrame _;
+                var sv = FindByPrefix(fr.TargetObject.GetName(), fr.FieldName, out _);
+
+                if ((sv.VariableFlags & ElaVariableFlags.Function) == ElaVariableFlags.Function && sv.Data == args)
+                {
+                    AddLinePragma(exp);
+                    PushVar(sv);
+                    return true;
+                }
+            }
+            
+            return false;
         }
 
         //Perform an eta expansion for a given expression
@@ -443,7 +488,7 @@ namespace Ela.Compilation
             var sv = GetVariable(fun, globalScope, GetFlags.NoError, 0, 0);
 
             //We couldn't find a function, generate an error
-            if (sv.IsEmpty() || ((sv.Flags & ElaVariableFlags.Infrastructure) != ElaVariableFlags.Infrastructure))
+            if (!options.IgnoreUndefined && (sv.IsEmpty() || ((sv.Flags & ElaVariableFlags.Infrastructure) != ElaVariableFlags.Infrastructure)))
             {
                 var tname = instName + " " + (inst.TypePrefix == null ? inst.TypeName : inst.TypePrefix + "." + inst.TypeName);
                 AddError(ElaCompilerError.UnableAutoGenerateInstance, inst, tname, fun);

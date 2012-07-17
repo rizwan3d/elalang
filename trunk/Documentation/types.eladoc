@@ -1,18 +1,26 @@
-﻿#title User Types
+#title User Types
 #category Language Reference
 
 =Introduction
-Ela provides a support for user defined types. The only way to declare a type is to use a `type` declaration. 
+Ela provides a support for user defined types. The only way to declare a new type is to use a `type` declaration. 
 It has the following syntax:
->"type" ident
->   "where" expr = expr
->          {expr = expr}
-A name of a type should be a valid Ela identifier (uppercase type names are not supported as long as they are 
-not valid for identifiers). Also this declaration has a mandatory `where` used for type constructors. 
+>>"type" ident "=" Cons { "arg" } { "|" Cons }
+Here is a simple example of a type definition:
+>>type Maybe = Some a | None
+All user types in Ela are in fact algebraic types. It is possible, however, to declare a type with just a single
+product:
+>>type Any = Any a
+Constructors in type declarations are separated by a semicolon character. A type can have an unlimited number of 
+constructors. Each constructor can an unlimited number of parameters (however, parameters are not required, as you can
+see from a definition of `Maybe` type above).//br
+Type names in Ela should always start with a capital letter. The same for constructors. A name of a constructor can have
+the same name as an enclosing type. Ela also supports infix, postfix and prefix constructors:
+>>type Complex = a :+ a
+All types in Ela are open. It is possible to extend an already defined type with new constructors using `data`
+declaration.
 
 =Type Constructors
-A type declaration should have at least one type constructor. A type constructor can be a function or a regular 
-name binding:
+A type declaration should have at least one type constructor. A type constructor can have optional parameters:
 >>>type foobar
 >>>  where foo x = Foo x
 >>>        bar x = Bar x

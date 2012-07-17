@@ -71,8 +71,7 @@ filter' _ [] = []
 foldl f z (x::xs) = foldl f (f z x) xs
 foldl _ z [] = z
 
-foldr f z (x::xs) = f x (foldr f z xs)
-foldr _ z [] = z
+foldr f z xs = foldl f z (reverse xs)
 
 fold f xs = foldr f [] xs
 
@@ -109,9 +108,10 @@ maximum (x::xs) = maximum' x xs
         maximum' v [] = v
 
 reverse xs 
-  | lang.__isLazyList xs = rev xs
+  | lang.__isLazyList xs = rev [] xs
   | else = lang.__reverseList xs
-  where rev = foldl (flip (::)) []
+  where rev ys [] = ys
+        rev ys (x::xs) = rev (x::ys) xs
 
 zipWith z (x::xs) (y::ys) = z x y :: zipWith z xs ys
 zipWith _ _ _ = []
@@ -223,8 +223,8 @@ nonEmptySubsequences [] = []
 
 subsequences xs = [] :: nonEmptySubsequences xs 
 
-permutations [] = []
-permutations xs0  = xs0 :: perms xs0 []
+permutations []  = []
+permutations xs0 = xs0 :: perms xs0 []
   where perms [] _ = []
         perms (t::ts) is' = foldr interleave (perms ts (t::is')) (permutations is')
           where interleave xs r    = zs where (_,zs) = interleave' id xs r 

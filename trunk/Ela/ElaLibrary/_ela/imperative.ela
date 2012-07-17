@@ -10,5 +10,6 @@ rec2 f x y = f x y $ rec2 f
 each f (x::xs) = f x $ each f xs
 each _ []      = ()
 
-loop f (x::xs) | f x = ()
-               | else = loop f xs
+loop f (x::xs) 
+  | f x = ()
+  | else = loop f xs

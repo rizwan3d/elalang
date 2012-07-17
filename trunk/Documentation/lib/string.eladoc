@@ -5,7 +5,7 @@ This module contains functions that operate with strings.
 
 #members
 
-ListLike string
+ListLike String
 Converts a given string to a linked list.
 
 fromList xs

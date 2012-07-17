@@ -120,9 +120,6 @@
   <data name="ClassAlreadyDeclared" xml:space="preserve">
     <value>A module already defines a class '{0}'.</value>
   </data>
-  <data name="DuplicateTypeParameter" xml:space="preserve">
-    <value>Duplicate type parameter '{0}' in a definition of type '{1}'.</value>
-  </data>
   <data name="ElseMissing" xml:space="preserve">
     <value>A mandatory 'else' clause is missing. A conditional expression should be always terminated with an 'else' clause.</value>
   </data>

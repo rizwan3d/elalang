@@ -6,11 +6,15 @@ open console
 import libFormat#elalib@fm
 
 format' # private 
-format' fun fstr xs n | n == 0 = fun (fm.format fstr showf xs)
-                      | else = \x -> format' fun fstr (x::xs) (n-1)
+format' fun fstr xs n 
+  | n == 0 = fun (fm.format fstr showf xs)
+  | else = \x -> format' fun fstr (x::xs) (n-1)
 
-printf (fstr is string) = format' write fstr [] (fm.countArgs fstr)
+printf fstr = format' write f' [] (fm.countArgs f')
+  where f' = force fstr
 
-printfn (fstr is string) = format' writen fstr [] (fm.countArgs fstr)
+printfn fstr = format' writen f' [] (fm.countArgs f')
+  where f' = force fstr
 
-formatStr (fstr is string) = format' id fstr [] (fm.countArgs fstr)
+formatStr fstr = format' id f' [] (fm.countArgs f')
+  where f' = force fstr

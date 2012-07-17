@@ -5,54 +5,54 @@
 import lang
 
 /* Built-in types */
-type int
-type long
-type single
-type double
-type bool
-type char
-type string
-type tuple
-type record
-type module
-type fun
-type unit
-type object
+type Int
+type Long
+type Single
+type Double
+type Bool
+type Char
+type String
+type Tuple
+type Record
+type Module
+type Fun
+type Unit
+type Object
 
-type list a = a :: list | Nil
+type List = a :: b | Nil
 
 /* Eq */
 class Eq __internal Eq (==) (<>)
 
-instance Eq int
+instance Eq Int
 
-instance Eq char
+instance Eq Char
 
-instance Eq bool
+instance Eq Bool
 
-instance Eq double
+instance Eq Double
 
-instance Eq single
+instance Eq Single
 
-instance Eq long
+instance Eq Long
 
-instance Eq string
+instance Eq String
 
-instance Eq unit
+instance Eq Unit
 
-instance Eq fun
+instance Eq Fun
 
-instance Eq module
+instance Eq Module
 
-instance Eq tuple
+instance Eq Tuple
   where x == y = x `eqTuple` y
         x <> y = not (x `eqTuple` y)
 
-instance Eq record
+instance Eq Record
   where x == y = x `eqRecord` y
         x <> y = not (x `eqRecord` y)
 
-instance Eq list
+instance Eq List
   where x == y = x `eqList` y
         x <> y = not (x `eqList` y)
 
@@ -65,7 +65,7 @@ eqTuple tup1 tup2 = len == length tup2 and eq 0
 eqRecord # private
 eqRecord rec1 rec2 = len == length rec2 and eq 0
          where len = length rec1
-               eq n | n < len = if rec1!!n == rec2!!n and rec1:n == rec2:n then eq (n+1) else false
+               eq n | n < len = if rec1~n == rec2~n and rec1:n == rec2:n then eq (n+1) else false
                     | else = true
 
 eqList # private
@@ -77,19 +77,19 @@ eqList _ [] = false
 /* Ord */
 class Ord __internal Ord (>) (<) (>=) (<=)
 
-instance Ord int
+instance Ord Int
 
-instance Ord long
+instance Ord Long
 
-instance Ord single
+instance Ord Single
 
-instance Ord double
+instance Ord Double
 
-instance Ord char
+instance Ord Char
 
-instance Ord string
+instance Ord String
 
-instance Ord tuple
+instance Ord Tuple
   where x<y = tupleAny (<) x y
         x>y = tupleAny (>) x y
         x<=y = tupleAny (<=) x y
@@ -107,51 +107,51 @@ tupleAny f tup1 tup2
 /* Additive */
 class Additive __internal Additive (+) (-) (--)
 
-instance Additive int
+instance Additive Int
 
-instance Additive long
+instance Additive Long
 
-instance Additive single
+instance Additive Single
 
-instance Additive double
+instance Additive Double
 
 /* Ring */
 class Ring __internal Ring (*) (**)
 
-instance Ring int
+instance Ring Int
 
-instance Ring long
+instance Ring Long
 
-instance Ring single
+instance Ring Single
 
-instance Ring double
+instance Ring Double
 
 /* Num */
 class Field __internal Field (/)
 
-instance Field single
+instance Field Single
 
-instance Field double
+instance Field Double
 
 /* Modulo */
 class Modulo __internal Modulo mod rem
 
-instance Modulo int
+instance Modulo Int
 
-instance Modulo long
+instance Modulo Long
 
-instance Modulo single
+instance Modulo Single
 
-instance Modulo double
+instance Modulo Double
 
 (%) = rem
 
 /* Bit */
 class Bit __internal Bit (&&&) (|||) (^^^) (~~~) (<<<) (>>>)
 
-instance Bit int
+instance Bit Int
 
-instance Bit long
+instance Bit Long
 
 /* Enum */
 class Enum a where
@@ -160,7 +160,7 @@ class Enum a where
   enumFrom a->a
   enumFromTo a->a->a
 
-instance Enum int long where
+instance Enum Int Long where
   succ = (+1)
   pred = (-1)
   enumFrom fst snd = genInf fst (snd-fst)
@@ -173,22 +173,22 @@ instance Enum int long where
 /* Seq */
 class Seq __internal Seq head tail isnil
 
-instance Seq list
+instance Seq List
 
-instance Seq string
+instance Seq String
 
 /* Ix */
 class Ix __internal Ix item length
 
 (:) = item
 
-instance Ix string
+instance Ix String
 
-instance Ix tuple
+instance Ix Tuple
 
-instance Ix record
+instance Ix Record
 
-instance Ix list
+instance Ix List
   where 
     length xs
       | lang.__isLazyList xs = len 0 xs
@@ -203,15 +203,15 @@ instance Ix list
 /* Cat */
 class Cat __internal Cat (++)
 
-instance Cat char
+instance Cat Char
 
-instance Cat string
+instance Cat String
 
-instance Cat tuple
+instance Cat Tuple
 
-instance Cat record
+instance Cat Record
 
-instance Cat list
+instance Cat List
   where xs++ys = cat (reverse xs) ys
                  where cat (x::xs) ys = cat xs (x::ys)
                        cat [] ys = ys
@@ -229,45 +229,45 @@ class Show __internal Show showf
 
 show = showf ""
 
-instance Show int
+instance Show Int
 
-instance Show long
+instance Show Long
 
-instance Show single
+instance Show Single
 
-instance Show double
+instance Show Double
 
-instance Show char
+instance Show Char
 
-instance Show bool
+instance Show Bool
 
-instance Show string
+instance Show String
 
-instance Show unit
+instance Show Unit
 
-instance Show fun
+instance Show Fun
 
-instance Show module
+instance Show Module
 
-instance Show tuple where 
+instance Show Tuple where 
   showf f t = lang.__stringFromList ("(" :: tos 0)
     where len = length t
           tos n | n == len - 1 = [e, (if len == 1 then ",)" else ")")]
                 | else = e :: "," :: tos (n+1)
                 where e = showf f (t:n) 
 
-instance Show list where 
+instance Show List where 
   showf _ [] = "[]"
   showf f xs = lang.__stringFromList ("[" :: tos xs)
     where tos (x::[]) = [showf f x, "]"]
           tos (x::xs) = showf f x :: "," :: tos xs
 
-instance Show record where 
+instance Show Record where 
   showf f t = lang.__stringFromList ("{" :: tos 0)
     where len = length t
           tos n | n == len - 1 = [fld, "}"]
                 | else = fld :: "," :: tos (n+1)
-                where fld = t!!n ++ "=" ++ showf f (t:n)
+                where fld = t~n ++ "=" ++ showf f (t:n)
 
 /* xLike */
 class IntLike a where
@@ -291,25 +291,25 @@ class CharLike a where
 class StringLike a where
   toString a
 
-instance IntLike int long single double char bool where
+instance IntLike Int Long Single Double Char Bool where
   toInt = lang.__toInt
 
-instance LongLike long int single double char bool where
+instance LongLike Long Int Single Double Char Bool where
   toLong = lang.__toLong
 
-instance SingleLike single double long int where
+instance SingleLike Single Double Long Int where
   toSingle = lang.__toSingle
 
-instance DoubleLike double single long int where
+instance DoubleLike Double Single Long Int where
   toDouble = lang.__toDouble
 
-instance CharLike char int where
+instance CharLike Char Int where
   toChar = lang.__toChar
 
-instance BoolLike bool int long where
+instance BoolLike Bool Int Long where
   toBool = lang.__toBool
 
-instance StringLike string char where
+instance StringLike String Char where
   toString = lang.__toString
 
 
@@ -319,7 +319,6 @@ not = __internal not
 /* Function related operators and functions */
 (>>) f g x = g (f x)
 (<<) f g x = f (g x)
-f! = f()
 (|>) = __internal fpipe
 (<|) = __internal bpipe
 flip f x y = f y x
@@ -391,5 +390,5 @@ showParamList f t = tos 0
               where e = showf f (t:n) 
 
 /* Privates */
-(!!) # private
-(!!) = __internal recfield
+(~) # private
+(~) = __internal recfield

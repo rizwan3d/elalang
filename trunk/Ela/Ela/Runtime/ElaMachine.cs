@@ -1037,12 +1037,38 @@ namespace Ela.Runtime
                     case Op.Ctype:
                         left = evalStack.Pop();
                         right = evalStack.Peek();
-                        evalStack.Replace(left.TypeId == right.TypeId || left.TypeId == LAZ || right.TypeId == LAZ);
+
+                        if (left.TypeId == LAZ || right.TypeId == LAZ)
+                        {
+                            left = left.Ref.Force(left, ctx);
+                            right = right.Ref.Force(right, ctx);
+                        }
+
+                        evalStack.Replace(left.TypeId == right.TypeId);
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
                         break;
                     case Op.Ctypei:
                         i4 = evalStack.Pop().I4;
                         right = evalStack.Peek();
-                        evalStack.Replace(right.TypeId == i4 || right.TypeId == LAZ);
+
+                        if (right.TypeId == LAZ)
+                            right = right.Ref.Force(right, ctx);
+
+                        evalStack.Replace(right.TypeId == i4);
+                        
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
                         break;
                     #endregion
 
@@ -1300,6 +1326,18 @@ namespace Ela.Runtime
                         {
                             left = evalStack.Pop();
                             right = evalStack.Pop();
+
+                            if (right.TypeId == LAZ)
+                                right = right.Ref.Force(right, ctx);
+
+                            if (ctx.Failed)
+                            {
+                                evalStack.Push(right);
+                                evalStack.Push(left);
+                                ExecuteThrow(thread, evalStack);
+                                goto SWITCH_MEM;
+                            }
+
                             long cc = (Int64)left.I4;
                             long tc = (Int64)right.TypeId << 32;
                             evalStack.Push(Assembly.Instances.ContainsKey(cc | tc));

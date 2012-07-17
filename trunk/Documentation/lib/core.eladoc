@@ -6,59 +6,62 @@ that operate on them.
 
 #members
 
-option
-This type is used to represent an optional value. A value of type option either contains a value `a` (represented
-as `Some a`), or is empty (represented as `Nothing`).//br
-Using option is a good way to way to deal with errors without using exceptions.
+Maybe
+This type is used to represent an optional value. A value of type `Maybe` either contains a value `a` (represented
+as `Maybe a`), or is empty (represented as `None`).//br
+Using `Maybe` is a good way to way to deal with errors without using exceptions.
 
-Eq option
-Implements equality functions for an option data type.
+Eq Maybe
+Implements equality functions for an `Maybe` data type.
 
-Show option
-Implements `showf` function for an option data type.
+Show Maybe
+Implements `showf` function for an `Maybe` data type.
 >>>show (Some 12)
 
-ordering
-This type can be used by comparison functions to specify if two values are equal (represented through `EQ` case), one value 
-is lesser than another (represented through `LT` case) or one value is greater than another (represented through `GT` case).
-A typical example of a function that returns a value of type ordering is `compare`.
+Ordering
+This type can be used by comparison functions to specify if two values are equal (represented through `EQ` 
+case), one value is lesser than another (represented through `LT` case) or one value is greater than another 
+(represented through `GT` case).//br
+A typical example of a function that returns a value of type `Ordering` is `compare`.
 
-Eq ordering
-Implements equality functions for an ordering data type.
+Eq Ordering
+Implements equality functions for an `Ordering` data type.
 
 Show ordering
-Implements `showf` function for an ordering data type.
+Implements `showf` function for an `Ordering` data type.
 >>>show EQ
 
-either
-This type is used to represent two possibilities - either `Left` or `Right`. Normally a `Left` constructor is used to hold
-an error value, and `Right` constructor is used to hold a correct value.
+Either
+This type is used to represent two possibilities - either `Left` or `Right`. Normally a `Left` constructor 
+is used to hold an error value, and `Right` constructor is used to hold a correct value.
 
-Eq either
-Implements equality functions for an either data type.
+Eq Either
+Implements equality functions for an `Either` data type.
 
-Show either
-Implements `showf` function for an either data type.
+Show Either
+Implements `showf` function for an `Either` data type.
 >>>show (Left 42)
 
 maybe d f o
-This function takes a default value, a function, and an option value. If the option value is `None`, the function returns 
-the default value. Otherwise, it applies the function to the value inside the `Some` and returns the result.
+This function takes a default value, a function, and a `Maybe` value. If the `Maybe` value is `None`, the 
+function returns the default value. Otherwise, it applies the function to the value inside the `Some` and 
+returns the result.
 
 isSome o
-Checks if a given value is an option, created using `Some` constructor.
+Checks if a given value is a `Maybe`, created using `Some` constructor.
 
 fromSome o
-Unpacks a given value of type option, created using `Some` constructor.
+Unpacks a given value of a `Maybe`, created using `Some` constructor.
 >>>fromSome (Some 12)
 
-fromOption
-This function takes a default value and an option. If the option is 'Nothing', it returns the default value; otherwise, it 
-returns the value contained in the option.
->>>fromOption 32 None
+fromMaybe
+This function takes a default value and a `Maybe`. If a `Maybe` is 'Nothing', it returns the default value; 
+otherwise, it returns the value contained in `Maybe`.
+>>>fromMaybe 32 None
 
-takeEither f1 f2 v
-If the value `v` is `Left a`, apply the first function to `a`; if it is `Right a`, apply the second function to `a`.
+either f1 f2 v
+If the value `v` is `Left a`, apply the first function to `a`; if it is `Right a`, apply the second 
+function to `a`.
 
 lefts xs
 Extracts all `Left` elements from a given list in order.
@@ -67,16 +70,16 @@ rights xs
 Extracts all `Right` elements from a given list in order.
 
 fromLeft x
-Upacks a given value of type either, created using `Left` constructor.
+Upacks a given value of type `Either`, created using `Left` constructor.
 >>>fromLeft (Left 'a')
 
 fromRight x
-Upacks a given value of type either, created using `Right` constructor.
+Upacks a given value of type `Either`, created using `Right` constructor.
 >>>fromRight (Right 'b')
 
 compare
-Compares two given values and returns `EQ` if they are equal, `LT` if first argument is lesser than the second argument 
-and `GT` if first argument is greater than the second argument:
+Compares two given values and returns `EQ` if they are equal, `LT` if first argument is lesser than the 
+second argument and `GT` if first argument is greater than the second argument:
 >>>compare 12 34
 
 maxValue

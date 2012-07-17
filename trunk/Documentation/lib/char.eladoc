@@ -5,7 +5,7 @@ This module contains functions and instances for a unicode character.
 
 #members
 
-Enum char
+Enum Char
 Implements `Enum` class for a unicode character, making it possible to generate char
 ranges.
 

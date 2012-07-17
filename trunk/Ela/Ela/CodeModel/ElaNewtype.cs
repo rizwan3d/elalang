@@ -51,25 +51,11 @@ namespace Ela.CodeModel
             get { return Constructors.Count > 0; }
         }
 
-        public bool HasTypeParams
-        {
-            get { return _typeParams != null; }
-        }
-
         public string Name { get; set; }
 
         public string Prefix { get; set; }
 
         public bool Extends { get; set; }
-
-        private List<String> _typeParams;
-        public List<String> TypeParams
-        {
-            get
-            {
-                return _typeParams ?? (_typeParams = new List<String>());
-            }
-        }
 
         public bool Header { get; set; }
 

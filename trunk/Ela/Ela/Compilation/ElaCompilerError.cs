@@ -27,7 +27,7 @@ namespace Ela.Compilation
 
 		InvalidPattern = 309,
 
-		DuplicateTypeParameter = 310,
+		// = 310,
 
 		NameRequireQualified = 311,
 

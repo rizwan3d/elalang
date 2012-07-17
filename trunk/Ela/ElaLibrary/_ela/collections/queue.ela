@@ -5,30 +5,33 @@
 open list
 
 /* Construction */
-type queue = Queue list list
+type Queue
+
+data Queue # private
+data Queue = Queue List List
 
 /* Instances */
-instance Show queue
-  where showf f q = "queue" ++ showf f (toList q)
+instance Show Queue where 
+  showf f q = "queue" ++ showf f (toList q)
 
-instance Cat queue
-  where q1 ++ q2 = toList q1 ++ toList q2
+instance Cat Queue where 
+  q1 ++ q2 = toList q1 ++ toList q2
 
-instance Eq queue
-  where q1 == q2 = toList q1 == toList q2
-        q1 <> q2 = toList q1 <> toList q2
+instance Eq Queue where 
+  q1 == q2 = toList q1 == toList q2
+  q1 <> q2 = toList q1 <> toList q2
 
-instance Seq queue
-  where head = peek
-        tail = dequeue
-        isnil (Queue [] []) = true
-        isnil _ = false
+instance Seq Queue where 
+  head = peek
+  tail = dequeue
+  isnil (Queue [] []) = true
+  isnil _ = false
 
-instance Ix queue
-  where item q i = toList q : i
-        length (Queue f b) = length f + length b
+instance Ix Queue where 
+  item q i = toList q : i
+  length (Queue f b) = length f + length b
 
-instance ListLike queue where
+instance ListLike Queue where
   toList (Queue f b) = f ++ reverse b
 
 /* Functions */
@@ -39,15 +42,15 @@ empty # qualified
 empty = Queue [] []
 
 enqueue e (Queue f b) = enq f b
-      where enq [] b = Queue [e] b
-            enq f b  = Queue f (e::b)
+  where enq [] b = Queue [e] b
+        enq f b  = Queue f (e::b)
 
 dequeue (Queue f b) = deq f b
-      where deq [] [] = fail "queue: Empty queue."
-            deq (_::[]) [] = empty
-            deq (_::[]) ys = Queue (reverse ys) []
-            deq xs ys = Queue (tail xs) ys
+  where deq [] [] = fail "queue: Empty queue."
+        deq (_::[]) [] = empty
+        deq (_::[]) ys = Queue (reverse ys) []
+        deq xs ys = Queue (tail xs) ys
 
 peek (Queue f b) = peek' f b
-      where peek' [] [] = fail "queue: Empty queue."
-            peek' (x::_) _ = x
+  where peek' [] [] = fail "queue: Empty queue."
+        peek' (x::_) _ = x

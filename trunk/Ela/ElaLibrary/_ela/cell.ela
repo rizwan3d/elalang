@@ -5,13 +5,13 @@
 import libCell#elalib@cl
 
 /* Types */
-type cell
+type Cell
 
-data cell # private
-data cell a = Ref a
+data Cell # private
+data Cell = Ref a
 
 /* Instances */
-instance Show cell
+instance Show Cell
   where showf fmt (Ref x) = "<cell:" ++ showf fmt (cl.valueof x) ++ ">"
 
 /* Functions */
