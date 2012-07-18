@@ -1291,7 +1291,7 @@ PRODUCTIONS
                 (
                     (. var cexp = default(ElaExpression); .)
                     "="
-                    OpExpr0<out cexp> (. nt.Constructors.Add(cexp); .)
+                    ["|"] OpExpr0<out cexp> (. nt.Constructors.Add(cexp); .)
                     { 
                         "|" OpExpr0<out cexp> 
                         (. nt.Constructors.Add(cexp); .)

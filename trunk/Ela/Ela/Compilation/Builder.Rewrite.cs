@@ -75,7 +75,6 @@ namespace Ela.Compilation
                         head = null;
                     }
 
-                    //Forward declaration
                     if (AddNoInitVariable(b))
                     {
                         //This is a global binding that is initialized with a built-in. Or a 'safe'

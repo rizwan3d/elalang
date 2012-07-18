@@ -8,6 +8,9 @@ namespace Ela.Compilation
     //This part contains compilation logic for built-in and user defined types.
     internal sealed partial class Builder
     {
+        //This map is used for constructors - they might have explicit implementations.
+        private Dictionary<String,Int32> constructors = new Dictionary<String,Int32>();
+
         //An entry method for type compilation. Ensures that types ('type') are
         //always compiled before type extensions ('data').
         private void CompileTypes(ElaNewtype v, LabelMap map)
@@ -215,7 +218,7 @@ namespace Ela.Compilation
             cw.Emit(Op.Ctorid, AddString(exp.Name));
             PushVar(sca);
             cw.Emit(Op.Newtype);
-            var a = AddVariable(exp.Name, exp, ElaVariableFlags.TypeFun|flags, -1);
+            var a = AddVariable(exp.Name, exp, ElaVariableFlags.TypeFun|flags, 0);
             PopVar(a);
         }
 
@@ -227,6 +230,7 @@ namespace Ela.Compilation
             LabelMap newMap;
             var len = juxta.Parameters.Count;
             var typeParams = new Dictionary<String,Int32>();
+            var typeCheck = false; //Do we have type constraints in this constructor?
 
             AddLinePragma(juxta);
             CompileFunctionProlog(name, len, juxta.Line, juxta.Column, out funSkipLabel, out address, out newMap);
@@ -253,6 +257,7 @@ namespace Ela.Compilation
                     {
                         PushVar(sys[i]);
                         CheckTypeOrClass(null, n.Name, failLab, juxta);
+                        typeCheck = true;
                     }
                     else
                     {
@@ -268,6 +273,7 @@ namespace Ela.Compilation
                             PushVar(sys[i]);
                             cw.Emit(Op.Ctype);
                             cw.Emit(Op.Brfalse, failLab);
+                            typeCheck = true;
                         }
                     }
                 }
@@ -320,8 +326,20 @@ namespace Ela.Compilation
             cw.Emit(Op.Newtype);
 
             CompileFunctionEpilog(name, len, address, funSkipLabel);
-            var a = AddVariable(name, juxta, ElaVariableFlags.TypeFun|flags, -1);
+            var a = AddVariable(name, juxta, ElaVariableFlags.TypeFun|flags, len);
             PopVar(a);
+
+            //If a constructor doesn't have type checks, we add special variables that
+            //can be used lately to inline this constructor call.
+            if (!typeCheck)
+            {
+                var consVar = AddVariable("-$" + name, juxta, flags, len);
+                var typeVar = AddVariable("--$" + name, juxta, flags, len);
+                cw.Emit(Op.Ctorid, AddString(name));
+                PopVar(consVar);
+                PushVar(sca);
+                PopVar(typeVar);
+            }
         }
 
         //Performs type/class check for a constructor parameter when it has multiple constraints

@@ -51,6 +51,11 @@ namespace Ela.CodeModel
         {
             return false;
         }
+
+        internal virtual bool IsConstructor()
+        {
+            return false;
+        }
 		
         public int Line { get; private set; }
 

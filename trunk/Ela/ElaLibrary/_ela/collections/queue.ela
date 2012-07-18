@@ -8,7 +8,7 @@ open list
 type Queue
 
 data Queue # private
-data Queue = Queue List List
+data Queue = Queue a b
 
 /* Instances */
 instance Show Queue where 

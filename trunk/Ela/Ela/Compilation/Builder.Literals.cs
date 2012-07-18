@@ -1,5 +1,6 @@
 ﻿using System;
 using Ela.CodeModel;
+using System.Collections.Generic;
 
 namespace Ela.Compilation
 {
@@ -113,8 +114,17 @@ namespace Ela.Compilation
         //Compiles tuple literal
         private ExprData CompileTuple(ElaTupleLiteral v, LabelMap map, Hints hints)
         {
-            var pars = v.Parameters;
+            CompileTupleParameters(v, v.Parameters, map);
 
+            if ((hints & Hints.Left) == Hints.Left)
+                AddValueNotUsed(v);
+
+            return new ExprData(DataKind.VarType, (Int32)ElaTypeCode.Tuple);
+        }
+
+        //Compiles tuple parameters, can be used in all cases where tuple creation is needed.
+        private void CompileTupleParameters(ElaExpression v, List<ElaExpression> pars, LabelMap map)
+        {
             //Optimize tuple creates for a case of pair (a single op typeId is used).
             if (pars.Count == 2)
             {
@@ -134,11 +144,6 @@ namespace Ela.Compilation
                     cw.Emit(Op.Tupcons, i);
                 }
             }
-
-            if ((hints & Hints.Left) == Hints.Left)
-                AddValueNotUsed(v);
-
-            return new ExprData(DataKind.VarType, (Int32)ElaTypeCode.Tuple);
         }
     }
 }
