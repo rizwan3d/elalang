@@ -2,19 +2,16 @@
 
 namespace Elide.CodeEditor.Infrastructure
 {
-    public sealed class CodeName
+    public sealed class CodeName : ILocationBounded
     {
         public CodeName(string name, int line, int column)
         {
             Name = name;
-            Line = line;
-            Column = column;
+            Location = new Location(line, column);
         }
 
         public string Name { get; private set; }
 
-        public int Line { get; private set; }
-
-        public int Column { get; private set; }
+        public Location Location { get; private set; }
     }
 }

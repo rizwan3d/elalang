@@ -1301,6 +1301,30 @@ PRODUCTIONS
 	                { ident (. nt.Flags = ProcessAttribute(t.val,nt.Flags); .) } 
                 )
 		    ]
+		    [
+		        "deriving" 
+		        (. 
+		            var tt = t; 
+		            string pf;
+		            string nm;
+		        .)
+		        {
+		            (
+                       ident (. pf=t.val; .) "." variantTok (. nm=t.val; .)
+                       | variantTok (. pf=null;nm=t.val; .)
+                    )
+                    (.                        
+	                    var ci = new ElaClassInstance(tt);
+	                    ci.And = Program.Instances;
+	                    Program.Instances = ci;
+	                    ci.TypeName = nt.Name;
+	                    ci.TypePrefix = nt.Prefix;
+	                    ci.TypeClassPrefix = pf;
+	                    ci.TypeClassName = nm;
+                    .)
+                }
+                
+		    ]
 		    EndBlock      
         ).
         

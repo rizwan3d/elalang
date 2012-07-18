@@ -2,10 +2,10 @@
   Module core
   Created in 2012 by Basil Voronkov
 */
-open lang
 
-/* ordering */
+/* Ordering */
 type Ordering = EQ | LT | GT
+  deriving Eq Ord Show
 
 compare x y 
   | x == y = EQ 
@@ -20,8 +20,9 @@ minValue x y
   | x <= y = x 
   | else   = y
 
-/* option */
+/* Maybe */
 type Maybe = Some a | None
+  deriving Eq Show
 
 maybe n _ None = n
 maybe _ f (Some x) = f x
@@ -34,8 +35,9 @@ fromSome (Some a) = a
 fromMaybe d None = d
 fromMaybe _ (Some x) = x
 
-/* either */
+/* Either */
 type Either = Left a | Right a
+  deriving Eq Show
 
 either f _ (Left x) = f x
 either _ g (Right y) = g y
@@ -48,7 +50,3 @@ fromLeft (Left a) = a
 
 fromRight (Right a) = a
 
-/* Common instances */
-instance Show Ordering Maybe Either
-
-instance Eq Ordering Maybe Either

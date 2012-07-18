@@ -19,7 +19,7 @@ namespace Elide.ElaCode.ObjectModel
 
             if (Signature != 0)
             {
-                sb.Append("::");
+                sb.Append(" ");
 
                 for (var i = 0; i < Arguments; i++)
                 {

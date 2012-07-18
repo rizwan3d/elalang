@@ -1,4 +1,4 @@
 internal static class Const 
 {
-	internal const string Version = "0.11.0.51";
+	internal const string Version = "0.11.0.53";
 }

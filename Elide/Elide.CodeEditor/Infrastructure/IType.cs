@@ -2,7 +2,7 @@
 
 namespace Elide.CodeEditor.Infrastructure
 {
-    public interface IType
+    public interface IType : ILocationBounded
     {
         string Name { get; }
     }

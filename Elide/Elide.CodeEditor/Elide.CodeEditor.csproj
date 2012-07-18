@@ -123,11 +123,13 @@
     <Compile Include="Infrastructure\ICodeRunnerService.cs" />
     <Compile Include="Infrastructure\ICompiledAssembly.cs" />
     <Compile Include="Infrastructure\ICompiledUnit.cs" />
+    <Compile Include="Infrastructure\ILocationBounded.cs" />
     <Compile Include="Infrastructure\IReference.cs" />
     <Compile Include="Infrastructure\IReferenceResolver.cs" />
     <Compile Include="Infrastructure\IReferenceResolverService.cs" />
     <Compile Include="Infrastructure\CodeLexerService.cs" />
     <Compile Include="Infrastructure\IType.cs" />
+    <Compile Include="Infrastructure\Location.cs" />
     <Compile Include="Infrastructure\ReferenceResolverReader.cs" />
     <Compile Include="Infrastructure\ReferenceResolverService.cs" />
     <Compile Include="Infrastructure\ResolverInfo.cs" />

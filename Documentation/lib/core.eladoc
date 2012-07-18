@@ -12,10 +12,10 @@ as `Maybe a`), or is empty (represented as `None`).//br
 Using `Maybe` is a good way to way to deal with errors without using exceptions.
 
 Eq Maybe
-Implements equality functions for an `Maybe` data type.
+Implements equality functions for an `Maybe` data type. This instance is generate by a compiler.
 
 Show Maybe
-Implements `showf` function for an `Maybe` data type.
+Implements `showf` function for an `Maybe` data type. This instance is generate by a compiler.
 >>>show (Some 12)
 
 Ordering
@@ -25,10 +25,13 @@ case), one value is lesser than another (represented through `LT` case) or one v
 A typical example of a function that returns a value of type `Ordering` is `compare`.
 
 Eq Ordering
-Implements equality functions for an `Ordering` data type.
+Implements equality functions for an `Ordering` data type. This instance is generate by a compiler.
+
+Ord Ordering
+Implements functions from `Ord` class for an `Ordering` data type. This instance is generate by a compiler.
 
 Show ordering
-Implements `showf` function for an `Ordering` data type.
+Implements `showf` function for an `Ordering` data type. This instance is generate by a compiler.
 >>>show EQ
 
 Either
@@ -36,10 +39,10 @@ This type is used to represent two possibilities - either `Left` or `Right`. Nor
 is used to hold an error value, and `Right` constructor is used to hold a correct value.
 
 Eq Either
-Implements equality functions for an `Either` data type.
+Implements equality functions for an `Either` data type. This instance is generate by a compiler.
 
 Show Either
-Implements `showf` function for an `Either` data type.
+Implements `showf` function for an `Either` data type. This instance is generate by a compiler.
 >>>show (Left 42)
 
 maybe d f o

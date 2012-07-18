@@ -3,9 +3,9 @@
   Created in 2012 by Basil Voronkov
 */
 import libString#elalib@str
-import list lang
+import lang
 
-instance list.ListLike String
+instance ListLike String
   where toList x = str.toList x
 
 upper x = str.upper (force x)

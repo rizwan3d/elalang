@@ -1,3 +1,5 @@
+0.11.0.53:New:A new 'deriving' keyword is added that allows to specify instance when declaring type (it is fully equivalent to instance without a body).
+0.11.0.52:New:Now compiler can automatically generate an instance of Ix class for an algebraic type.
 0.11.0.51:Change:Compilation logic for instances is optimized.
 0.11.0.50:Fix:Trait check didn't work correctly with thunks.
 0.11.0.49:Change:Type check pattern is now a regular Ela expression that should be used outside of pattern matching.

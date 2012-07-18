@@ -16,8 +16,9 @@ assert =
       eqt = op' "eqt" (==) true,
       eqf = op' "eqf" (==) false
   } 
-  where op' m op x y | op x y = None
-                     | else   = Some (formatStr ": Assert failed: {0} for {1} and {2}" m x y)
+  where op' m op x y 
+          | op x y = None
+          | else   = Some (formatStr ": Assert failed: {0} for {1} and {2}" m x y)
 
 funData # private 
 funData mod fun = (moduleName mod ++ "." ++ funName fun, fun)
@@ -25,30 +26,30 @@ funData mod fun = (moduleName mod ++ "." ++ funName fun, fun)
 regFun fun xs = funData fun :: xs
 
 regFuns mod xs = xs ++ (vals |> filter isFun |> map (funData mod))
-                 where vals = map (:"value") (moduleExportList mod)
-                       isFun x | x is Fun = true
-                               | else = false
+  where vals = map (:"value") (moduleExportList mod)
+       isFun x | x is Fun = true
+               | else = false
 
 run xs = (res, failed)
-        where exec (n, f) = runAssert f n
-              count f xs = length <| filter f xs
-              res = map exec xs
-              failed = count (not << snd3) res
+  where exec (n, f) = runAssert f n
+        count f xs = length <| filter f xs
+        res = map exec xs
+        failed = count (not << snd3) res
 
 report f prf (tests, failed) =
-        out "Test session started" 
-            (all' f tests 1 "")
-            "Test session finished"
-            (formatStr "Executed tests: {0}" (length tests))
-            (formatStr "Successful tests: {0}" (length tests - failed))
-            (formatStr "Failed tests: {0}" failed)
-        where out v = prf v $ out
-              tag' true  = "Success "
-              tag' false = "FAILED "
-              fmt' i (n, r, m) = formatStr "{0}. {1}: {2} {3}\r\n" i n (tag' r) m
-              all' _ [] _ s = s
-              all' f (x::xs) i s | f x  = (s ++ fmt' i x) |> all' f xs (i + 1)
-                                 | else = all' f xs (i + 1) s
+  out "Test session started" 
+      (all' f tests 1 "")
+      "Test session finished"
+      (formatStr "Executed tests: {0}" (length tests))
+      (formatStr "Successful tests: {0}" (length tests - failed))
+      (formatStr "Failed tests: {0}" failed)
+  where out v = prf v $ out
+        tag' true  = "Success "
+        tag' false = "FAILED "
+        fmt' i (n, r, m) = formatStr "{0}. {1}: {2} {3}\r\n" i n (tag' r) m
+        all' _ [] _ s = s
+        all' f (x::xs) i s | f x  = (s ++ fmt' i x) |> all' f xs (i + 1)
+                           | else = all' f xs (i + 1) s
 
 runAssert # private
 runAssert f n =

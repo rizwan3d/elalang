@@ -209,8 +209,8 @@ internal sealed class Scanner {
 	const char EOL = '\n';
 	const int eofSym = 0; /* pdt */
 	
-	const int maxT = 64;
-	const int noSym = 64;
+	const int maxT = 65;
+	const int noSym = 65;
 
 
 	public Buffer buffer; // scanner buffer
@@ -404,6 +404,7 @@ internal sealed class Scanner {
 			case "__internal": t.kind = 61; break;
 			case "&": t.kind = 62; break;
 			case "<-": t.kind = 63; break;
+			case "deriving": t.kind = 64; break;
 			default: break;
 		}
 	}
