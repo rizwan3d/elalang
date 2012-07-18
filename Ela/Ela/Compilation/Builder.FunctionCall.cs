@@ -13,6 +13,9 @@ namespace Ela.Compilation
             var bf = default(ElaNameReference);
             var sv = default(ScopeVar);
 
+            if (TryOptimizeConstructor(v, map))
+                return ed;
+
             if (v.Target.Type == ElaNodeType.NameReference)
             {
                 bf = (ElaNameReference)v.Target;
@@ -127,6 +130,55 @@ namespace Ela.Compilation
             }
 
             return ed;
+        }
+
+        //Here we check if a function application is actually a constructor application.
+        //The latter case can be inlined. We support both direct reference and a qualified reference.
+        //Only constructors without type constraints can be inlined.
+        private bool TryOptimizeConstructor(ElaJuxtaposition juxta, LabelMap map)
+        {
+            if (juxta.Target.Type == ElaNodeType.NameReference)
+            {
+                var nr = (ElaNameReference)juxta.Target;
+
+                if (nr.Uppercase)
+                {
+                    var sv = GetGlobalVariable("-$" + nr.Name, GetFlags.NoError, 0, 0);
+
+                    if (!sv.IsEmpty() && sv.Data == juxta.Parameters.Count)
+                    {
+                        CompileTupleParameters(juxta, juxta.Parameters, map);
+                        PushVar(sv);
+                        var sv2 = GetGlobalVariable("--$" + nr.Name, GetFlags.None, juxta.Line, juxta.Column);
+                        PushVar(sv2);
+                        cw.Emit(Op.Newtype);
+                        return true;
+                    }
+                }
+            }
+            else if (juxta.Target.Type == ElaNodeType.FieldReference)
+            {
+                var fr = (ElaFieldReference)juxta.Target;
+
+                if (fr.TargetObject.Type == ElaNodeType.NameReference)
+                {
+                    var prefix = fr.TargetObject.GetName();
+                    CodeFrame _;
+                    var sv = FindByPrefix(prefix, "-$" + fr.FieldName, out _);
+
+                    if (!sv.IsEmpty() && sv.Data == juxta.Parameters.Count)
+                    {
+                        CompileTupleParameters(juxta, juxta.Parameters, map);
+                        PushVar(sv);
+                        var sv2 = FindByPrefix(prefix, "--$" + fr.FieldName, out _);
+                        PushVar(sv2);
+                        cw.Emit(Op.Newtype);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }

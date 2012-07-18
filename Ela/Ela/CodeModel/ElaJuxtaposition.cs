@@ -29,6 +29,12 @@ namespace Ela.CodeModel
             return false;
         }
 
+        internal override bool IsConstructor()
+        {
+            return Target != null && Target.Type == ElaNodeType.NameReference &&
+                ((ElaNameReference)Target).Uppercase;
+        }
+
         internal override void ToString(StringBuilder sb, int ident)
 		{
 			if (Target.Type == ElaNodeType.NameReference && Target.GetName().IndexOfAny(opChars) != -1 &&

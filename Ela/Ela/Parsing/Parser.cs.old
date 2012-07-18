@@ -1515,6 +1515,9 @@ internal sealed partial class Parser {
 			if (la.kind == 53) {
 				var cexp = default(ElaExpression); 
 				Get();
+				if (la.kind == 21) {
+					Get();
+				}
 				OpExpr0(out cexp);
 				nt.Constructors.Add(cexp); 
 				while (la.kind == 21) {
