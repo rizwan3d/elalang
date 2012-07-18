@@ -20,11 +20,32 @@ namespace Elide.ElaCode.ObjectModel
             if (codeFrame != null)
             {
                 Globals = ExtractNames(codeFrame).ToList();
-                Classes = codeFrame.Classes.Select(kv => new TypeClass(kv.Key, kv.Value)).ToList();
-                Instances = codeFrame.Instances.Select(i => new TypeClassInstance(i.Class, i.Type));
-                Types = codeFrame.Types.Select(s => new UserType(s));
+                Classes = codeFrame.Classes.Select(kv => new TypeClass(kv.Key, kv.Value, GetLocation("$$$" + kv.Key))).ToList();
+                Instances = codeFrame.Instances.Select(i => new TypeClassInstance(i.Class, i.Type, new Location(i.Line, i.Column)));
+                Types = codeFrame.Types.Select(s => new UserType(s, GetLocation("$$" + s)));
                 References = codeFrame.References.Where(r => !r.Key.StartsWith("$__")).Select(r => new Reference(this, r.Value)).ToList();
             }
+        }
+
+        private Location GetLocation(string name)
+        {
+            var sv = CodeFrame.GlobalScope.GetVariable(name);
+
+            if (CodeFrame.Symbols != null)
+            {
+                var dr = new DebugReader(CodeFrame.Symbols);
+                var sym = dr.FindVarSym(sv.VariableAddress, 0);
+
+                if (sym != null)
+                {
+                    var ln = dr.FindLineSym(sym.Offset);
+                    
+                    if (ln != null)
+                        return new Location(ln.Line, ln.Column);
+                }
+            }
+
+            return new Location(0, 0);
         }
 
         private IEnumerable<CodeName> ExtractNames(CodeFrame codeFrame)

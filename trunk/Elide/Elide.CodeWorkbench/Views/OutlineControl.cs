@@ -50,13 +50,13 @@ namespace Elide.CodeWorkbench.Views
 
         private void treeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            if (e.Node.Tag is CodeName)
+            if (e.Node.Tag is ILocationBounded)
             {
                 var doc = (CodeDocument)e.Node.Parent.Parent.Tag;
                 App.GetService<IDocumentService>().SetActiveDocument(doc);
 
-                var sym = (CodeName)e.Node.Tag;
-                App.GetService<IDocumentNavigatorService>().Navigate(doc, sym.Line - 1, sym.Column - 1, 0, true);
+                var lb = (ILocationBounded)e.Node.Tag;
+                App.GetService<IDocumentNavigatorService>().Navigate(doc, lb.Location.Line - 1, lb.Location.Column - 1, 0, true);
             }
         }
 
@@ -215,8 +215,7 @@ namespace Elide.CodeWorkbench.Views
 
             if (node != null)
             {
-                if (node.IsExpanded && (node.FirstNode.IsExpanded || node.Nodes[1].IsExpanded || 
-                    node.FirstNode.Nodes.Count == 0 || node.Nodes[1].Nodes.Count == 0))
+                if (node.IsExpanded)
                 {
                     node.Nodes.Clear();
                     AddDocumentNodes(node);

@@ -1,4 +1,5 @@
-﻿0.1.4.8:Change:Now autocomplete window ignores case when looking for an item in a list.
+﻿0.1.4.9:New:Now Outline view can navigate classes, instances and types in the same way as regular bindings.
+0.1.4.8:Change:Now autocomplete window ignores case when looking for an item in a list.
 0.1.4.7:Change:Now Open/Save dialog by default show files '*.*', but remember the choice if a user changes a filter.
 0.1.4.6:Change:Ela Object file viewer is corrected according to the object file format changes; also it now displays a list of constructors declared in a module.
 0.1.4.5:Change:Ela syntax highlighter is updated according to the syntax changes.

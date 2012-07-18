@@ -6,43 +6,48 @@ import lang
 
 /* Built-in types */
 type Int
+  deriving Eq Ord Show Additive Ring Modulo Bit
+
 type Long
+  deriving Eq Ord Show Additive Ring Modulo Bit
+
 type Single
+  deriving Eq Ord Show Additive Ring Field Modulo
+
 type Double
+  deriving Eq Ord Show Additive Ring Field Modulo
+
 type Bool
+  deriving Eq Show
+
 type Char
+  deriving Eq Ord Show Cat
+
 type String
+  deriving Eq Ord Show Cat Seq Ix
+
 type Tuple
+  deriving Ix Cat
+
 type Record
+  deriving Ix Cat
+
 type Module
+  deriving Eq Show
+
 type Fun
+  deriving Eq Show
+
 type Unit
+  deriving Eq Show
+
 type Object
 
 type List = a :: b | Nil
+  deriving Seq
 
 /* Eq */
 class Eq __internal Eq (==) (<>)
-
-instance Eq Int
-
-instance Eq Char
-
-instance Eq Bool
-
-instance Eq Double
-
-instance Eq Single
-
-instance Eq Long
-
-instance Eq String
-
-instance Eq Unit
-
-instance Eq Fun
-
-instance Eq Module
 
 instance Eq Tuple
   where x == y = x `eqTuple` y
@@ -77,18 +82,6 @@ eqList _ [] = false
 /* Ord */
 class Ord __internal Ord (>) (<) (>=) (<=)
 
-instance Ord Int
-
-instance Ord Long
-
-instance Ord Single
-
-instance Ord Double
-
-instance Ord Char
-
-instance Ord String
-
 instance Ord Tuple
   where x<y = tupleAny (<) x y
         x>y = tupleAny (>) x y
@@ -104,54 +97,19 @@ tupleAny f tup1 tup2
                | else = if e then true else fold (n+1)
                where e = tup1:n `f` tup2:n
 
-/* Additive */
+/* Numerical classes */
 class Additive __internal Additive (+) (-) (--)
 
-instance Additive Int
-
-instance Additive Long
-
-instance Additive Single
-
-instance Additive Double
-
-/* Ring */
 class Ring __internal Ring (*) (**)
 
-instance Ring Int
-
-instance Ring Long
-
-instance Ring Single
-
-instance Ring Double
-
-/* Num */
 class Field __internal Field (/)
 
-instance Field Single
-
-instance Field Double
-
-/* Modulo */
 class Modulo __internal Modulo mod rem
-
-instance Modulo Int
-
-instance Modulo Long
-
-instance Modulo Single
-
-instance Modulo Double
 
 (%) = rem
 
 /* Bit */
 class Bit __internal Bit (&&&) (|||) (^^^) (~~~) (<<<) (>>>)
-
-instance Bit Int
-
-instance Bit Long
 
 /* Enum */
 class Enum a where
@@ -178,20 +136,10 @@ instance Enum Int Long where
 /* Seq */
 class Seq __internal Seq head tail isnil
 
-instance Seq List
-
-instance Seq String
-
 /* Ix */
 class Ix __internal Ix item length
 
 (:) = item
-
-instance Ix String
-
-instance Ix Tuple
-
-instance Ix Record
 
 instance Ix List
   where 
@@ -201,20 +149,12 @@ instance Ix List
       where len n [] = n
             len n (x::xs) = len (n+1) xs
     item xs n = get 0 xs
-      where get _ [] = fail ("Index '" ++ show n ++ "' is out of range.")
+      where get _ [] = fail ("prelude.item: Index '" ++ show n ++ "' is out of range.")
             get i (x::xs) | i == n = x
                           | else = get (i+1) xs
 
 /* Cat */
 class Cat __internal Cat (++)
-
-instance Cat Char
-
-instance Cat String
-
-instance Cat Tuple
-
-instance Cat Record
 
 instance Cat List
   where xs++ys = cat (reverse xs) ys
@@ -225,34 +165,13 @@ reverse # private
 reverse xs 
   | lang.__isLazyList xs = rev [] xs 
   | else = lang.__reverseList xs
-  where (:) = flip (::)
-        rev z [] = z
-        rev z (x::xs) = rev (z:x) xs
+  where rev ys [] = ys
+        rev ys (x::xs) = rev (x::ys) xs
 
 /* Show */
 class Show __internal Show showf
 
 show = showf ""
-
-instance Show Int
-
-instance Show Long
-
-instance Show Single
-
-instance Show Double
-
-instance Show Char
-
-instance Show Bool
-
-instance Show String
-
-instance Show Unit
-
-instance Show Fun
-
-instance Show Module
 
 instance Show Tuple where 
   showf f t = lang.__stringFromList ("(" :: tos 0)
@@ -296,6 +215,12 @@ class CharLike a where
 class StringLike a where
   toString a
 
+class ListLike a where
+  toList a
+
+instance ListLike List where
+  toList a = a
+
 instance IntLike Int Long Single Double Char Bool where
   toInt = lang.__toInt
 
@@ -316,7 +241,6 @@ instance BoolLike Bool Int Long where
 
 instance StringLike String Char where
   toString = lang.__toString
-
 
 /* Misc operators */
 not = __internal not
@@ -369,16 +293,28 @@ genericNeq # infrastructure
 genericNeq a b = tag a <> tag b or untag a <> untag b
 
 genericGt # infrastructure
-genericGt a b = cid a > cid b
+genericGt a b 
+  | (aa is Unit) or (bb is Unit) = cid a > cid b 
+  | else = cid a >= cid b and aa > bb
+  where aa = untag a; bb = untag b
 
 genericLt # infrastructure
-genericLt a b = cid a < cid b
+genericLt a b 
+  | (aa is Unit) or (bb is Unit) = cid a < cid b 
+  | else = cid a <= cid b and aa < bb
+  where aa = untag a; bb = untag b
 
 genericGtEq # infrastructure
-genericGtEq a b = cid a >= cid b
+genericGtEq a b 
+  | (aa is Unit) or (bb is Unit) = cid a >= cid b 
+  | else = cid a >= cid b and aa >= bb
+  where aa = untag a; bb = untag b
 
 genericLtEq # infrastructure
-genericLtEq a b = cid a <= cid b
+genericLtEq a b 
+  | (aa is Unit) or (bb is Unit) = cid a <= cid b 
+  | else = cid a <= cid b and aa <= bb
+  where aa = untag a; bb = untag b
 
 genericShow # infrastructure
 genericShow f a 
@@ -395,7 +331,7 @@ genericLength v
 
 genericItem # infrastructure
 genericItem v n 
-  | idx < 0 = fail "Index '" ++ show n ++ "' is out of range."
+  | idx < 0 = fail "prelude.genericItem: Index '" ++ show n ++ "' is out of range."
   | else = lang.__unwrap v : idx
   where idx = lang.__getParameterIndex lang v n
 

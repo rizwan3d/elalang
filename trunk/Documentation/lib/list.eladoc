@@ -5,10 +5,6 @@ This module contains multiple functions to work with lists.
 
 #members
 
-ListLike
-Defines a `toList` function that can be used to convert list like data structures to a 
-linked list.
-
 sort xs
 Sorts a given list. This function implements a merge sort. It can sort an list with values of
 any type if their types have instances for `Ord` class.

@@ -8,13 +8,16 @@ namespace Elide.ElaCode.ObjectModel
 {
     public sealed class TypeClass : IClass
     {
-        internal TypeClass(string className, ClassData classData)
+        internal TypeClass(string className, ClassData classData, Location loc)
         {
             Name = className;
             Members = classData.GetMembers().Select(m => new TypeClassMember(m.Name, m.Arguments, m.Mask)).ToList();
+            Location = loc;
         }
 
         public string Name { get; private set; }
+
+        public Location Location { get; private set; }
 
         public IEnumerable<IClassMember> Members { get; private set; }
     }

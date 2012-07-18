@@ -164,6 +164,10 @@ A format string can be used to specify a format if this format is supported by a
 implementation of `showf`:
 >>>showf ".##" 12.1234
 
+ListLike
+Defines a `toList` function that can be used to convert list like data structures to a 
+linked list.
+
 IntLike
 Defines a `toInt` type cast function.
 
@@ -184,6 +188,10 @@ Defines a `toChar` type cast function.
 
 StringLike
 Defines a `toString` type cast function.
+
+ListLike List
+This instance is provided so that `toList` applied to a `List` would be equivalent to an identity
+function.
 
 IntLike Int
 This instance is provided so that `toInt` applied to an `Int` would be equivalent to an identity

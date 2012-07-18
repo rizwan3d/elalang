@@ -4,9 +4,6 @@
 */
 open core lang
 
-class ListLike a where
-  toList a
-
 //Strict sort based on merge sort
 mergeBy # private
 mergeBy pred (x::xs) (y::ys) 

@@ -2,7 +2,7 @@
 
 namespace Elide.CodeEditor.Infrastructure
 {
-    public interface IClassInstance
+    public interface IClassInstance : ILocationBounded
     {
         string Class { get; }
 

@@ -151,6 +151,7 @@ namespace Ela.Linking
             Add<ElaModule,ElaValue,Boolean>("__isInfix", IsInfix);
             Add<ElaModule,ElaValue,ElaValue,Int32>("__getParameterIndex", GetVariantParameterIndex);
             Add<ElaValue,Int32>("__constructorIndex", GetConstructorIndex);
+            Add<ElaUserType,ElaTuple,ElaObject>("__assemble", Assemble);
 
             Add("__toInt", new ToInt());
             Add("__toLong", new ToLong());
@@ -159,6 +160,11 @@ namespace Ela.Linking
             Add("__toChar", new ToChar());
             Add("__toBool", new ToBool());
             Add("__toString", new ToStr());
+        }
+
+        public ElaObject Assemble(ElaUserType type, ElaTuple tup)
+        {
+            return new ElaUserType(type.GetTypeName(), type.TypeId, type.GetTag(null), new ElaValue(tup));
         }
 
         public int GetConstructorIndex(ElaValue val)
