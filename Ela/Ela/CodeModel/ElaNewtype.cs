@@ -43,7 +43,7 @@ namespace Ela.CodeModel
                 And.ToString(sb, indent);
             }
         }
-
+        
         public List<ElaExpression> Constructors { get; private set; }
 
         public bool HasBody

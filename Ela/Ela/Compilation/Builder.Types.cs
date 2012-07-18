@@ -8,9 +8,6 @@ namespace Ela.Compilation
     //This part contains compilation logic for built-in and user defined types.
     internal sealed partial class Builder
     {
-        //This map is used for constructors - they might have explicit implementations.
-        private Dictionary<String,Int32> constructors = new Dictionary<String,Int32>();
-
         //An entry method for type compilation. Ensures that types ('type') are
         //always compiled before type extensions ('data').
         private void CompileTypes(ElaNewtype v, LabelMap map)
@@ -41,8 +38,7 @@ namespace Ela.Compilation
                 t = t.And;
             }
         }
-
-
+        
         //This method only compiles types declared through 'type' keyword
         //and not type extensions ('data' declarations).
         private void CompileTypeOnly(ElaNewtype v, LabelMap map)
@@ -205,17 +201,18 @@ namespace Ela.Compilation
             }
 
             var ab = AddVariable("$$$$" + name, exp, flags, -1);
-            cw.Emit(Op.Ctorid, AddString(name));
+            cw.Emit(Op.Ctorid, frame.InternalConstructors.Count - 1);
             PopVar(ab);
-            frame.InternalConstructors.Add(name, -1);
         }
 
         //Compiles a simple parameterless constructor
         private void CompileConstructorConstant(ElaNameReference exp, int sca, ElaVariableFlags flags)
         {
+            frame.InternalConstructors.Add(new ConstructorData { Name = exp.Name, Code = -1 });
+
             AddLinePragma(exp);
             cw.Emit(Op.Pushunit);
-            cw.Emit(Op.Ctorid, AddString(exp.Name));
+            cw.Emit(Op.Ctorid, frame.InternalConstructors.Count - 1);
             PushVar(sca);
             cw.Emit(Op.Newtype);
             var a = AddVariable(exp.Name, exp, ElaVariableFlags.TypeFun|flags, 0);
@@ -228,16 +225,11 @@ namespace Ela.Compilation
             Label funSkipLabel;
             int address;
             LabelMap newMap;
+            var pars = new List<String>();
             var len = juxta.Parameters.Count;
-            var typeParams = new Dictionary<String,Int32>();
-            var typeCheck = false; //Do we have type constraints in this constructor?
 
             AddLinePragma(juxta);
             CompileFunctionProlog(name, len, juxta.Line, juxta.Column, out funSkipLabel, out address, out newMap);
-
-            //Compile function body
-            var failLab = cw.DefineLabel();
-            var succLab = cw.DefineLabel();
             
             var sys = new int[len];
             
@@ -247,71 +239,13 @@ namespace Ela.Compilation
                 sys[i] = AddVariable();
                 PopVar(sys[i]);
 
-                if (ce.Type == ElaNodeType.NameReference)
-                {
-                    var n = (ElaNameReference)ce;
-                   
-                    //First, we check if a given name is a type name. Type names are
-                    //always uppercase, when type variables should be lowercase.
-                    if (Char.IsUpper(n.Name[0]))
-                    {
-                        PushVar(sys[i]);
-                        CheckTypeOrClass(null, n.Name, failLab, juxta);
-                        typeCheck = true;
-                    }
-                    else
-                    {
-                        var checkVar = default(Int32);
-                        
-                        //If this is the first occurence of a variable we only need to memorize
-                        //its address, otherwise we need to check its type.
-                        if (!typeParams.TryGetValue(n.Name, out checkVar))
-                            typeParams.Add(n.Name, sys[i]);
-                        else
-                        {
-                            PushVar(checkVar);
-                            PushVar(sys[i]);
-                            cw.Emit(Op.Ctype);
-                            cw.Emit(Op.Brfalse, failLab);
-                            typeCheck = true;
-                        }
-                    }
-                }
-                else if (ce.Type == ElaNodeType.FieldReference)
-                {
-                    //A type can be also prefixed with a module alias. We process this case here.
-                    var n = (ElaFieldReference)ce;
-
-                    if (n.TargetObject.Type != ElaNodeType.NameReference)
-                        AddError(ElaCompilerError.InvalidConstructorParameter, juxta, FormatNode(ce), name);
-
-                    PushVar(sys[i]);
-                    CheckTypeOrClass(n.TargetObject.GetName(), n.FieldName, failLab, juxta);
-                    cw.Emit(Op.Brfalse, failLab);
-                }
-                else if (ce.Type == ElaNodeType.Juxtaposition)
-                {
-                    //We might have a combination of type/classes
-                    var n = (ElaJuxtaposition)ce;
-                    CompileConstructorComplexTypeCheck(sys[i], name, n.Target, n, failLab);
-                    
-                    foreach (var p in n.Parameters)
-                        CompileConstructorComplexTypeCheck(sys[i], name, p, n, failLab);
-                }
+                if (ce.Type != ElaNodeType.NameReference || IsInvalidConstructorParameter((ElaNameReference)ce))
+                    AddError(ElaCompilerError.InvalidConstructorParameter, juxta, FormatNode(ce), name);
                 else
-                    AddError(ElaCompilerError.InvalidConstructorParameter, juxta, FormatNode(ce), name);                
-                
+                    pars.Add(ce.GetName());
             }
 
-            cw.Emit(Op.Br, succLab);
-            
-            //Not very happy path, match failed, have to raise an exception
-            cw.MarkLabel(failLab);
-            cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
-
-            //Happy path, pattern match was OK now we just need
-            //to push the passed argument and create a type instance
-            cw.MarkLabel(succLab);
+            frame.InternalConstructors.Add(new ConstructorData { Name = name, Code = -1, Parameters = pars });
             cw.Emit(Op.Newtup, len);
 
             for (var i = 0; i < len; i++)
@@ -320,7 +254,8 @@ namespace Ela.Compilation
                 cw.Emit(Op.Tupcons, i);
             }
 
-            cw.Emit(Op.Ctorid, AddString(name));
+            var ctid = frame.InternalConstructors.Count - 1;
+            cw.Emit(Op.Ctorid, ctid);
             //Refering to captured name, need to recode its address
             PushVar((Byte.MaxValue & sca) + 1 | (sca << 8) >> 8);
             cw.Emit(Op.Newtype);
@@ -329,42 +264,19 @@ namespace Ela.Compilation
             var a = AddVariable(name, juxta, ElaVariableFlags.TypeFun|flags, len);
             PopVar(a);
 
-            //If a constructor doesn't have type checks, we add special variables that
-            //can be used lately to inline this constructor call.
-            if (!typeCheck)
-            {
-                var consVar = AddVariable("-$" + name, juxta, flags, len);
-                var typeVar = AddVariable("--$" + name, juxta, flags, len);
-                cw.Emit(Op.Ctorid, AddString(name));
-                PopVar(consVar);
-                PushVar(sca);
-                PopVar(typeVar);
-            }
+            //We add special variables that can be used lately to inline this constructor call.
+            var consVar = AddVariable("-$" + name, juxta, flags, len);
+            var typeVar = AddVariable("--$" + name, juxta, flags, len);
+            cw.Emit(Op.Ctorid, ctid);
+            PopVar(consVar);
+            PushVar(sca);
+            PopVar(typeVar);
         }
 
-        //Performs type/class check for a constructor parameter when it has multiple constraints
-        private void CompileConstructorComplexTypeCheck(int sys, string consName, ElaExpression ce, ElaJuxtaposition juxta, Label failLab)
+        //Checks if a constructor parameter name is invalid
+        private bool IsInvalidConstructorParameter(ElaNameReference n)
         {
-            if (ce.Type == ElaNodeType.NameReference)
-            {
-                var n = (ElaNameReference)ce;
-                PushVar(sys);
-                CheckTypeOrClass(null, n.Name, failLab, juxta);
-            }
-            else if (ce.Type == ElaNodeType.FieldReference)
-            {
-                //A type can be also prefixed with a module alias. We process this case here.
-                var n = (ElaFieldReference)ce;
-
-                if (n.TargetObject.Type != ElaNodeType.NameReference)
-                    AddError(ElaCompilerError.InvalidConstructorParameter, juxta, FormatNode(ce), consName);
-
-                PushVar(sys);
-                CheckTypeOrClass(n.TargetObject.GetName(), n.FieldName, failLab, juxta);
-                cw.Emit(Op.Brfalse, failLab);
-            }
-            else
-                AddError(ElaCompilerError.InvalidConstructorParameter, juxta, FormatNode(ce), consName);
+            return n.Uppercase || Format.IsSymbolic(n.Name);
         }
 
         //Checks if an algebraic type is actually a list which implementation can be optimized.
@@ -395,6 +307,16 @@ namespace Ela.Compilation
                 && j.Parameters[1].Type == ElaNodeType.NameReference 
                 && !Char.IsUpper(j.Parameters[0].GetName()[0])
                 && !Char.IsUpper(j.Parameters[1].GetName()[0]);
+        }
+
+        //Returns a local index of a constructor
+        private int ConstructorIndex(string name)
+        {
+            for (var i = 0; i < frame.InternalConstructors.Count; i++)
+                if (name == frame.InternalConstructors[i].Name)
+                    return i;
+
+            return -1;
         }
     }
 }

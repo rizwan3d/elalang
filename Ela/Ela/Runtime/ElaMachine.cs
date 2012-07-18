@@ -325,25 +325,6 @@ namespace Ela.Runtime
                             goto SWITCH_MEM;
                         }
                         break;
-                    case Op.Pushfld:
-                        {
-                            var fld = frame.Strings[opd];
-                            right = evalStack.PopFast();
-
-                            if (right.TypeId == LAZ)
-                                right = right.Ref.Force(right, ctx);
-
-                            evalStack.Push(cls[right.TypeId].GetValue(right, new ElaValue(fld), ctx));
-
-                            if (ctx.Failed)
-                            {
-                                evalStack.Replace(right);
-                                ExecuteThrow(thread, evalStack);
-                                goto SWITCH_MEM;
-                            }
-
-                            break;
-                        }
                     case Op.Pop:
                         evalStack.PopVoid();
                         break;
@@ -572,7 +553,7 @@ namespace Ela.Runtime
 
                         i4 = right.Ref.GetTag(ctx);
 
-                        evalStack.Replace(new ElaValue(i4 < 0 ? String.Empty : asm.Constructors[i4]));
+                        evalStack.Replace(new ElaValue(i4 < 0 ? String.Empty : asm.Constructors[i4].Name));
 
                         if (ctx.Failed)
                         {
@@ -1344,7 +1325,7 @@ namespace Ela.Runtime
                         }
                         break;
                     case Op.Ctorid:
-                        evalStack.Push(thread.Module.InternalConstructors[frame.Strings[opd]]);
+                        evalStack.Push(thread.Module.InternalConstructors[opd].Code);
                         break;
                     case Op.Typeid:
                         evalStack.Push(thread.Module.InternalTypes[frame.Strings[opd]]);
@@ -1699,10 +1680,9 @@ namespace Ela.Runtime
                     f.AppliedParameters++;
                     stack.Push(new ElaValue(f));
                 }
-
-                if (args == 1)
+                else if (args == 1)
                     f.LastParameter = stack.Pop();
-                if (args == 2)
+                else if (args == 2)
                 {
                     f.Parameters[f.AppliedParameters] = stack.Pop();
                     f.AppliedParameters += 1;

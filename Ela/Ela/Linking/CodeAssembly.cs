@@ -34,7 +34,7 @@ namespace Ela.Linking
 			moduleMap = new Dictionary<String,Int32>();
             quals = new FastList<Boolean>();
             Instances = new Dictionary<Int64,Byte>();
-            Constructors = new FastList<String>();
+            Constructors = new FastList<ConstructorData>();
             Types = new FastList<TypeData>
                 {
                     new TypeData(ElaTypeCode.None),
@@ -223,7 +223,7 @@ namespace Ela.Linking
 
         internal FastList<TypeData> Types { get; private set; }
 
-        internal FastList<String> Constructors { get; private set; }
+        internal FastList<ConstructorData> Constructors { get; private set; }
 
         internal FastList<Class> Cls { get; private set; }
 		#endregion

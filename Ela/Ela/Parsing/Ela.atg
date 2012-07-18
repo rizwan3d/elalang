@@ -1230,10 +1230,7 @@ PRODUCTIONS
 	            )
 	            |
 	            (
-	                (. 
-	                    var targ = String.Empty; 
-	                    var block = default(ElaEquationSet);
-	                .)
+	                (. var targ = String.Empty; .)
 	                ident (. targ = t.val; .)
 	                (
 	                    "where"

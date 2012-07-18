@@ -149,6 +149,8 @@ namespace Ela.Linking
             Add<ElaValue,ElaValue>("__unwrap", Unwrap);
             Add<ElaValue,ElaRecord>("__getTypeInfo", GetTypeInfo);
             Add<ElaModule,ElaValue,Boolean>("__isInfix", IsInfix);
+            Add<ElaModule,ElaValue,ElaValue,Int32>("__getParameterIndex", GetVariantParameterIndex);
+            Add<ElaValue,Int32>("__constructorIndex", GetConstructorIndex);
 
             Add("__toInt", new ToInt());
             Add("__toLong", new ToLong());
@@ -159,6 +161,31 @@ namespace Ela.Linking
             Add("__toString", new ToStr());
         }
 
+        public int GetConstructorIndex(ElaValue val)
+        {
+            return val.Ref.GetTag(null);
+        }
+
+        public int GetVariantParameterIndex(ElaModule mod, ElaValue val, ElaValue fieldVal)
+        {
+            if (val.TypeId <= SysConst.MAX_TYP)
+                return -1;
+            
+            var type = (ElaUserType)val.Ref;
+            var tag = mod.GetCurrentMachine().Assembly.Constructors[type.GetTag(null)];
+
+            if (tag.Parameters == null)
+                return -1;
+            
+            if (fieldVal.TypeId == ElaMachine.STR)
+                return tag.Parameters.IndexOf(fieldVal.DirectGetString());
+
+            if (fieldVal.TypeId == ElaMachine.INT)
+                return fieldVal.I4;
+
+            return -1;
+        }
+
         public bool IsInfix(ElaModule mod, ElaValue val)
         {
             if (val.TypeId <= SysConst.MAX_TYP)
@@ -167,7 +194,7 @@ namespace Ela.Linking
             var type = (ElaUserType)val.Ref;
             var tag = mod.GetCurrentMachine().Assembly.Constructors[type.GetTag(null)];
 
-            return Ela.CodeModel.Format.IsSymbolic(tag) && type.Values != null &&
+            return Ela.CodeModel.Format.IsSymbolic(tag.Name) && type.Values != null &&
                 type.Values.Length == 2;
         }
 

@@ -141,7 +141,7 @@ namespace Ela.Compilation
             {
                 var nr = (ElaNameReference)juxta.Target;
 
-                if (nr.Uppercase)
+                if (nr.Uppercase || Format.IsSymbolic(nr.Name))
                 {
                     var sv = GetGlobalVariable("-$" + nr.Name, GetFlags.NoError, 0, 0);
 

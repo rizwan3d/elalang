@@ -128,7 +128,20 @@ namespace Ela.Linking
             c = bw.ReadInt32();
 
             for (var i = 0; i < c; i++)
-                frame.InternalConstructors.Add(bw.ReadString(), -1);
+            {
+                var ct = new ConstructorData { Code = -1, Name = bw.ReadString() };
+                var cc = bw.ReadInt32();
+
+                if (cc > 0)
+                {
+                    ct.Parameters = new List<String>();
+
+                    for (var j = 0; j < cc; j++)
+                        ct.Parameters.Add(bw.ReadString());
+                }
+
+                frame.InternalConstructors.Add(ct);
+            }
 
             var di = bw.ReadBoolean();
 

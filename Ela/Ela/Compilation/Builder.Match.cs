@@ -410,10 +410,10 @@ namespace Ela.Compilation
             {
                 var fld = rec.Fields[i];
                 var addr = AddVariable();
-                var str = AddString(fld.FieldName);
 
+                cw.Emit(Op.Pushstr, AddString(fld.FieldName));
                 PushVar(sysVar);
-                cw.Emit(Op.Pushfld, str);
+                cw.Emit(Op.Pushelem);
                 PopVar(addr);
 
                 //We obtain a value of field, now we need to match it using a pattern in

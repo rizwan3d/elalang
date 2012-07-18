@@ -90,8 +90,7 @@ namespace Ela.Compilation
 			5, //PushR4
             5, //Pushloc
 			5, //Pushvar
-			5, //Pushfld
-            5, //Poploc
+			5, //Poploc
 			5, //Popvar
 			5, //Runmod
 			5, //Br
