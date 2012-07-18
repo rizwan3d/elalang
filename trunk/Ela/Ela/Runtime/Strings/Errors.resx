@@ -126,6 +126,9 @@
   <data name="CallWithNoParams" xml:space="preserve">
     <value>Unable to call a function that accepts {0} parameters with an empty argument list.</value>
   </data>
+  <data name="ConstructorSequenceError" xml:space="preserve">
+    <value>Constructor '{0}' is out of range for the requested operation.</value>
+  </data>
   <data name="Cyclic" xml:space="preserve">
     <value>A cyclic definition is recognized.</value>
   </data>

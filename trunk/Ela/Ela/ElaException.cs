@@ -2,9 +2,19 @@
 
 namespace Ela
 {
-	public abstract class ElaException : Exception
+	public class ElaException : Exception
 	{
-		protected ElaException(string message, Exception ex) : base(message, ex)
+        internal ElaException()
+        {
+
+        }
+
+        public ElaException(string message) : base(message, null)
+        {
+
+        }
+
+		public ElaException(string message, Exception ex) : base(message, ex)
 		{
 
 		}

@@ -78,7 +78,7 @@ namespace Ela.Runtime.ObjectModel
 		
 		protected override Exception InvalidDefinition()
 		{
-			return new ElaRuntimeException("Invalid lazy list definition.");
+            return new ElaException("Invalid lazy list definition.");
 		}
 		
 		public override ElaList Next

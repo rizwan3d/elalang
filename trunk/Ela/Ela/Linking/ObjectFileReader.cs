@@ -129,7 +129,13 @@ namespace Ela.Linking
 
             for (var i = 0; i < c; i++)
             {
-                var ct = new ConstructorData { Code = -1, Name = bw.ReadString() };
+                var ct = new ConstructorData
+                {
+                    Code = -1,
+                    Name = bw.ReadString(),
+                    TypeName = bw.ReadString(),
+                    TypeModuleId = bw.ReadInt32()
+                };
                 var cc = bw.ReadInt32();
 
                 if (cc > 0)

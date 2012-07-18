@@ -90,7 +90,7 @@ instance Ord Tuple
 
 tupleAny # private 
 tupleAny f tup1 tup2 
-  | length tup2 <> len = fail "prelude: Tuples should be of the same length."
+  | length tup2 <> len = fail "prelude.tupleAny: Tuples should be of the same length."
   | else = fold 0
   where len = length tup1
         fold n | n == len - 1 = e
@@ -285,55 +285,60 @@ until p f x | p x  = x | else = until p f (f x)
 even x = x % 2 == 0
 odd x = x % 2 <> 0
 
-/* Functions used for automatic instance generation */
-genericEq # infrastructure
-genericEq a b = tag a == tag b and untag a == untag b
+/* Default instances */
+instance Eq where
+  a == b = tag a == tag b and untag a == untag b
+  a <> b = tag a <> tag b or untag a <> untag b
 
-genericNeq # infrastructure
-genericNeq a b = tag a <> tag b or untag a <> untag b
+instance Ord where
+  a > b
+    | (aa is Unit) or (bb is Unit) = cid a > cid b 
+    | else = cid a >= cid b and aa > bb
+    where aa = untag a; bb = untag b
+  a < b
+    | (aa is Unit) or (bb is Unit) = cid a < cid b 
+    | else = cid a <= cid b and aa < bb
+    where aa = untag a; bb = untag b
+  a >= b
+    | (aa is Unit) or (bb is Unit) = cid a >= cid b 
+    | else = cid a >= cid b and aa >= bb
+    where aa = untag a; bb = untag b
+  a <= b 
+    | (aa is Unit) or (bb is Unit) = cid a <= cid b 
+    | else = cid a <= cid b and aa <= bb
+    where aa = untag a; bb = untag b
 
-genericGt # infrastructure
-genericGt a b 
-  | (aa is Unit) or (bb is Unit) = cid a > cid b 
-  | else = cid a >= cid b and aa > bb
-  where aa = untag a; bb = untag b
+instance Show where
+  showf f a 
+    | lang.__isInfix lang a = showf f (u:0) ++ " " ++ tag a ++ " " ++ showf f (u:1)
+    | else = lang.__stringFromList (tag a :: v)
+    where u = untag a 
+          v = match u with () = []; _  = " " :: showParamList f u
 
-genericLt # infrastructure
-genericLt a b 
-  | (aa is Unit) or (bb is Unit) = cid a < cid b 
-  | else = cid a <= cid b and aa < bb
-  where aa = untag a; bb = untag b
+instance Ix where
+  length v
+    | o is Unit = 0
+    | else = length o
+    where o = lang.__unwrap v
+  item v n
+    | idx < 0 = fail "prelude.item: Index '" ++ show n ++ "' is out of range."
+    | else = lang.__unwrap v : idx
+    where idx = lang.__getParameterIndex lang v n
 
-genericGtEq # infrastructure
-genericGtEq a b 
-  | (aa is Unit) or (bb is Unit) = cid a >= cid b 
-  | else = cid a >= cid b and aa >= bb
-  where aa = untag a; bb = untag b
+instance Enum where
+  succ a = lang.__conssucc lang a
+  pred a = lang.__conspred lang a
+  enumFrom fst snd = enumFromTo (lang.__consfromint lang fst (lang.__consmax lang fst)) fst snd
+  enumFromTo max fst snd = map (lang.__consfromint lang max) [toi fst,toi snd..toi max]
+    where toi = lang.__constoint lang
+          map _ [] = []
+          map f (x::xs) = f x :: map f xs
 
-genericLtEq # infrastructure
-genericLtEq a b 
-  | (aa is Unit) or (bb is Unit) = cid a <= cid b 
-  | else = cid a <= cid b and aa <= bb
-  where aa = untag a; bb = untag b
+instance IntLike where
+  toInt a = lang.__constoint lang a
 
-genericShow # infrastructure
-genericShow f a 
-  | lang.__isInfix lang a = showf f (u:0) ++ " " ++ tag a ++ " " ++ showf f (u:1)
-  | else = lang.__stringFromList (tag a :: v)
-  where u = untag a 
-        v = match u with () = []; _  = " " :: showParamList f u
-
-genericLength # infrastructure
-genericLength v 
-  | o is Unit = 0
-  | else = length o
-  where o = lang.__unwrap v
-
-genericItem # infrastructure
-genericItem v n 
-  | idx < 0 = fail "prelude.genericItem: Index '" ++ show n ++ "' is out of range."
-  | else = lang.__unwrap v : idx
-  where idx = lang.__getParameterIndex lang v n
+instance LongLike where
+  toLong a = toLong (lang.__constoint lang a)
 
 showParamList # private
 showParamList f t = tos 0

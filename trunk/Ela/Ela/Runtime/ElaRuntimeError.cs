@@ -26,7 +26,7 @@ namespace Ela.Runtime
 
 		MatchFailed = 809,
 
-		// = 810,
+		ConstructorSequenceError = 810,
 
 		OperationNotSupported = 811,
 

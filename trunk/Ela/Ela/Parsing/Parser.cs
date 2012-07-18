@@ -1585,28 +1585,21 @@ internal sealed partial class Parser {
 			Get();
 			ci.TypeClassName=t.val; 
 		} else SynErr(112);
-		if (la.kind == 1) {
-			Get();
-			ci.TypePrefix = t.val; 
-			Expect(25);
-			Expect(2);
-			ci.TypeName=t.val; 
-		} else if (la.kind == 2) {
-			Get();
-			ci.TypeName=t.val; 
-		} else SynErr(113);
 		while (la.kind == 1 || la.kind == 2) {
-			if (list == null)
+			if (ci.TypeName != null)
 			{
-			    list = new List<ElaClassInstance>();
+			    if (list == null)
+			    {
+			        list = new List<ElaClassInstance>();
+			        list.Add(ci);
+			    }
+			    
+			    ci = new ElaClassInstance { TypeClassPrefix = ci.TypeClassPrefix, TypeClassName = ci.TypeClassName };
+			    ci.SetLinePragma(ot.line, ot.col);
+			    ci.And = Program.Instances;
+			    Program.Instances = ci;
 			    list.Add(ci);
 			}
-			
-			ci = new ElaClassInstance { TypeClassPrefix = ci.TypeClassPrefix, TypeClassName = ci.TypeClassName };
-			ci.SetLinePragma(ot.line, ot.col);
-			ci.And = Program.Instances;
-			Program.Instances = ci;
-			list.Add(ci);
 			
 			if (la.kind == 1) {
 				Get();
@@ -1644,7 +1637,7 @@ internal sealed partial class Parser {
 			NewType();
 		} else if (la.kind == 42) {
 			ClassInstance();
-		} else SynErr(114);
+		} else SynErr(113);
 		EndBlock();
 		if (StartOf(17)) {
 			TopLevel();
@@ -1816,8 +1809,7 @@ internal sealed class Errors {
 			case 110: s = "invalid NewType"; break;
 			case 111: s = "invalid NewType"; break;
 			case 112: s = "invalid ClassInstance"; break;
-			case 113: s = "invalid ClassInstance"; break;
-			case 114: s = "invalid TopLevel"; break;
+			case 113: s = "invalid TopLevel"; break;
 
 			default: s = "error " + n; break;
 		}

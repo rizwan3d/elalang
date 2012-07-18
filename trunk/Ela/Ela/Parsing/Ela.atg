@@ -1346,23 +1346,22 @@ PRODUCTIONS
 	            ident (. ci.TypeClassPrefix=t.val; .) "." variantTok (. ci.TypeClassName=t.val; .)
 	            | variantTok (. ci.TypeClassName=t.val; .)
 	        )
-	        (
-	            ident (. ci.TypePrefix = t.val; .) "." variantTok (. ci.TypeName=t.val; .)
-	            | variantTok (. ci.TypeName=t.val; .)
-	        )
 	        {
 	            (.
-	                if (list == null)
+	                if (ci.TypeName != null)
 	                {
-	                    list = new List<ElaClassInstance>();
+	                    if (list == null)
+	                    {
+	                        list = new List<ElaClassInstance>();
+	                        list.Add(ci);
+	                    }
+    	                
+	                    ci = new ElaClassInstance { TypeClassPrefix = ci.TypeClassPrefix, TypeClassName = ci.TypeClassName };
+	                    ci.SetLinePragma(ot.line, ot.col);
+	                    ci.And = Program.Instances;
+	                    Program.Instances = ci;
 	                    list.Add(ci);
 	                }
-	                
-	                ci = new ElaClassInstance { TypeClassPrefix = ci.TypeClassPrefix, TypeClassName = ci.TypeClassName };
-	                ci.SetLinePragma(ot.line, ot.col);
-	                ci.And = Program.Instances;
-	                Program.Instances = ci;
-	                list.Add(ci);
 	            .)
 	            (
 	                ident (. ci.TypePrefix = t.val; .) "." variantTok (. ci.TypeName=t.val; .)

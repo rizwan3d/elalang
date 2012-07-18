@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Ela.Linking
 {
@@ -13,7 +14,10 @@ namespace Ela.Linking
         {
             TypeName = typeName;
             TypeCode = typeCode;
+            Constructors = new List<Int32>();
         }
+
+        public List<Int32> Constructors { get; private set; }
 
         public int TypeCode { get; private set; }
 

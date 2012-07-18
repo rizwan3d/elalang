@@ -83,7 +83,7 @@ namespace Ela.Runtime.ObjectModel
         public IEnumerable<ElaRecord> GetVariables()
         {
             if (vm == null)
-                throw new ElaRuntimeException("VM is non present");
+                throw new ElaException("VM is non present");
 
             var frame = vm.Assembly.GetModule(Handle);            
 
@@ -108,7 +108,7 @@ namespace Ela.Runtime.ObjectModel
         public IEnumerable<ElaRecord> GetReferences()
         {
             if (vm == null)
-                throw new ElaRuntimeException("VM is non present");
+                throw new ElaException("VM is non present");
 
             var frame = vm.Assembly.GetModule(Handle);
             
@@ -128,7 +128,7 @@ namespace Ela.Runtime.ObjectModel
         public string GetModuleName()
         {
             if (vm == null)
-                throw new ElaRuntimeException("VM is non present");
+                throw new ElaException("VM is non present");
 
             return vm.Assembly.GetModuleName(Handle);
         }

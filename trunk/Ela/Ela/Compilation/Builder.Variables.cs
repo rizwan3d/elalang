@@ -56,11 +56,18 @@ namespace Ela.Compilation
                 cw.Emit(Op.Popvar, address);
         }
 
+        //A simplified version of EmitSpecName, when module ID of a name is not needed.
+        private int EmitSpecName(string ns, string specName, ElaExpression exp, ElaCompilerError err)
+        {
+            int _;
+            return EmitSpecName(ns, specName, exp, err, out _);
+        }
+
         //This method is used to generate Push* op typeId for a special name prefixed by $$ or $$$.
         //Such names are used for hidden variables that contains unique codes of types and classes.
         //This method can emit a qualified name (with a module prefix) as well as a short name.
         //It also generates an appropriate error if a name is not found.
-        private int EmitSpecName(string ns, string specName, ElaExpression exp, ElaCompilerError err)
+        private int EmitSpecName(string ns, string specName, ElaExpression exp, ElaCompilerError err, out int modId)
         {
             if (ns != null)
             {
@@ -82,6 +89,7 @@ namespace Ela.Compilation
                 if ((extVar.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private)
                     AddError(ElaCompilerError.PrivateNameInModule, exp, specName.TrimStart('$'), ns);
 
+                modId = lh;
                 cw.Emit(Op.Pushext, lh | (extVar.Address << 8));
                 return extVar.Data;
             }
@@ -93,6 +101,7 @@ namespace Ela.Compilation
                 if (a.IsEmpty() && !options.IgnoreUndefined)
                     AddError(err, exp, specName.TrimStart('$'));
 
+                modId = (a.Flags & ElaVariableFlags.External) == ElaVariableFlags.External ? a.Address & Byte.MaxValue : -1;
                 PushVar(a);
                 return a.Data;
             }

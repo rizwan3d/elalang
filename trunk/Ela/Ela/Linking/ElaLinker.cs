@@ -184,6 +184,11 @@ namespace Ela.Linking
                     var c = Assembly.Constructors.Count;
                     d.Code = c;
                     Assembly.Constructors.Add(d);
+
+                    if (d.TypeModuleId == -1)
+                        Assembly.Types[frame.InternalTypes[d.TypeName]].Constructors.Add(d.Code);
+                    else
+                        Assembly.Types[Assembly.GetModule(frame.HandleMap[d.TypeModuleId]).InternalTypes[d.TypeName]].Constructors.Add(d.Code);
                 }
             }
 
