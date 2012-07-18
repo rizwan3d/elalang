@@ -59,11 +59,6 @@ variantMatch {eqt} =
         s2 = Some (1,2,3)
         n  = None
 
-typeCheckMatch {eqt} =
-    eqt (match 1 with _ is int = true; _ = false;;)
-  $ eqt (match "123" with _ is string = true; _ = false;;)
-  $ eqt (match [1,2] with _ is list = true; _ = false;;)
-
 asMatch {eqt} =
   eqt (match 4 with 4@n = n == 4; _ = false;;)
   $ eqt (match (1,2) with (1,2)@t = t == (1,2); _ = false;;)

@@ -39,9 +39,9 @@ unary {eq} =
 
 succPred {eq} =
     eq (succ (1,2)) (2,3)
-  $ eq (succ (42.42, 'b')) (43.42, 'c')
+  $ eq (succ (42, 'b')) (43, 'c')
   $ eq (pred (3,4)) (2,3)
-  $ eq (pred (12.1,'B')) (11.1, 'A')
+  $ eq (pred (12,'B')) (11, 'A')
     
 concat {eq,eqt} =
     eq (t1++t2) (1,2,3,4,5,6)
@@ -65,4 +65,4 @@ fstSndTest {eq} =
 
 typeCheck {eqt} =
   let tup  = (0,) in
-  eqt (match tup with _ is tuple = true; _ = false;;)
+  eqt (tup is Tuple)

@@ -140,13 +140,9 @@ unaryMinus {eq} =
 
 succPred {eq} =
     eq (succ 1) 2
-  $ eq (succ 12.2) 13.2
-  $ eq (succ 12.22D) 13.22D
   $ eq (succ 'A') 'B'
   $ eq (succ (1,)) (2,)
   $ eq (pred 1) 0
-  $ eq (pred 12.2) 11.2
-  $ eq (pred 12.22D) 11.22D
   $ eq (pred 'B') 'A'
   $ eq (pred (1,)) (0,)
 

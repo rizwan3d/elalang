@@ -1036,7 +1036,8 @@ namespace Ela.Runtime
                         }
                         break;
                     case Op.Ctypei:
-                        i4 = evalStack.Pop().I4;
+                        left = evalStack.Pop();
+                        i4 = left.I4;
                         right = evalStack.Peek();
 
                         if (right.TypeId == LAZ)
@@ -1047,6 +1048,7 @@ namespace Ela.Runtime
                         if (ctx.Failed)
                         {
                             evalStack.Replace(right);
+                            evalStack.Push(left);
                             ExecuteThrow(thread, evalStack);
                             goto SWITCH_MEM;
                         }

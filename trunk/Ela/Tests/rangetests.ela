@@ -30,12 +30,7 @@ lazyStep2 {eq,eqt,eqf} =
   $ eqf <| (match rng with 10::5::0::_::[] = true; _ = false;;)
   $ eqt ((rng:3) < 0)
 
-wrong1 {eq,eqt} =
-  let rng = [2,1..10] in
-    eq (length rng) 2
-  $ eqt <| (head rng) == 2
-
-wrong2 {eq,eqt} =
+wrong {eq,eqt} =
   let rng = [5,10..11] in
     eq (length rng) 2
   $ eqt <| (match rng with 5::10::[] = true; _ = false;;)

@@ -40,4 +40,4 @@ equals {eq,neq} =
 
 typeCheck {eqt} =
   let rec' = {x=0} in
-  eqt (match rec' with _ is record = true; _ = false;;)
+  eqt (rec' is Record)

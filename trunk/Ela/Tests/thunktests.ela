@@ -22,15 +22,11 @@ fixPoint {eq} =
   let res = (fix' factabs) 5 in
   eq res 120
 
-forceTest {eqt} = 
-  let _ = force th
-  in eqt (match th with _ is int = true; _ = false;;)
-  where th = (& 2 + 2)
-
 typeCheck {eqt} =
-  let t = (& 2 * 2) in
-    t + 0
-  $ eqt (match t with _ is int = true;_ = false;;)
+    eqt (t is Int)
+  $ eqt (t2 is Int)
+  where t = (& 2 * 2) + 0
+        t2 = & 2
 
 lazyEquals {eqt} =
     eqt (thunk1 == 4)
