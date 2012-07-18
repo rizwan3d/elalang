@@ -177,13 +177,13 @@ namespace Ela.Linking
                 }
             }
 
-            foreach (var k in new List<String>(frame.InternalConstructors.Keys))
-            {                
-                if (frame.InternalConstructors[k] == -1)
+            foreach (var d in frame.InternalConstructors)
+            {
+                if (d.Code == -1)
                 {
                     var c = Assembly.Constructors.Count;
-                    frame.InternalConstructors[k] = c;
-                    Assembly.Constructors.Add(k);
+                    d.Code = c;
+                    Assembly.Constructors.Add(d);
                 }
             }
 

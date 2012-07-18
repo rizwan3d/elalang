@@ -196,7 +196,7 @@ instance Ix List
       where len n [] = n
             len n (x::xs) = len (n+1) xs
     item xs n = get 0 xs
-      where get _ [] = fail ("Index " ++ n ++ " is out of range.")
+      where get _ [] = fail ("Index '" ++ show n ++ "' is out of range.")
             get i (x::xs) | i == n = x
                           | else = get (i+1) xs
 
@@ -364,16 +364,16 @@ genericNeq # infrastructure
 genericNeq a b = tag a <> tag b or untag a <> untag b
 
 genericGt # infrastructure
-genericGt a b = untag a > untag b and tag a >= tag b
+genericGt a b = cid a > cid b
 
 genericLt # infrastructure
-genericLt a b = tag a < tag b or untag a < untag b
+genericLt a b = cid a < cid b
 
 genericGtEq # infrastructure
-genericGtEq a b = tag a >= tag b and untag a >= untag b
+genericGtEq a b = cid a >= cid b
 
 genericLtEq # infrastructure
-genericLtEq a b = tag a <= tag b or untag a <= untag b
+genericLtEq a b = cid a <= cid b
 
 genericShow # infrastructure
 genericShow f a 
@@ -382,12 +382,27 @@ genericShow f a
   where u = untag a 
         v = match u with () = []; _  = " " :: showParamList f u
 
+genericLength # infrastructure
+genericLength v 
+  | o is Unit = 0
+  | else = length o
+  where o = lang.__unwrap v
+
+genericItem # infrastructure
+genericItem v n 
+  | idx < 0 = fail "Index '" ++ show n ++ "' is out of range."
+  | else = lang.__unwrap v : idx
+  where idx = lang.__getParameterIndex lang v n
+
 showParamList # private
 showParamList f t = tos 0
   where len = length t
         tos n | n == len - 1 = [e]
               | else = e :: " " :: tos (n+1)
               where e = showf f (t:n) 
+
+cid # private
+cid = lang.__constructorIndex
 
 /* Privates */
 (~) # private

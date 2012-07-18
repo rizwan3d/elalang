@@ -163,7 +163,15 @@ namespace Elide.ElaObject
             var c = br.ReadInt32();
 
             for (var i = 0; i < c; i++)
-                yield return br.ReadString();
+            {
+                var name = br.ReadString();
+                var c2 = br.ReadInt32();
+
+                for (var j = 0; j < c2; j++)
+                    br.ReadString();
+
+                yield return name;
+            }
         }
 
         private Header ReadHeader(BinaryReader br)

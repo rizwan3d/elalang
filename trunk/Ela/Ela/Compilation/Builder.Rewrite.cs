@@ -12,8 +12,8 @@ namespace Ela.Compilation
         {
             ProcessIncludesClassesTypes(prog, map);
             var list = RunForwardDeclaration(prog.TopLevel.Equations, map);
-            ProcessInstances(prog, map);
             list = ProcessFunctions(list, map);
+            ProcessInstances(prog, map);
             list = ProcessBindings(list, map);
             ProcessExpressions(list, map);
         }

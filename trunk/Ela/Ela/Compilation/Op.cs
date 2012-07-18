@@ -88,7 +88,6 @@ namespace Ela.Compilation
         PushR4,
         Pushloc,
         Pushvar,
-        Pushfld,
         Poploc,
         Popvar,
         Runmod,

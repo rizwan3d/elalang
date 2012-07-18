@@ -142,8 +142,20 @@ namespace Ela.Linking
             var ctors = frame.InternalConstructors;
             bw.Write(ctors.Count);
 
-            foreach (var kv in frame.InternalConstructors)
-                bw.Write(kv.Key);
+            foreach (var ct in frame.InternalConstructors)
+            {
+                bw.Write(ct.Name);
+
+                if (ct.Parameters != null)
+                {
+                    bw.Write(ct.Parameters.Count);
+
+                    for (var j = 0; j < ct.Parameters.Count; j++)
+                        bw.Write(ct.Parameters[j]);
+                }
+                else
+                    bw.Write(0);
+            }
 
             var di = frame.Symbols != null;
             bw.Write(di); //Contains debug info

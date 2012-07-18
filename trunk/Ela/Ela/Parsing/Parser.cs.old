@@ -1404,8 +1404,6 @@ internal sealed partial class Parser {
 			}
 		} else if (la.kind == 1) {
 			var targ = String.Empty; 
-			var block = default(ElaEquationSet);
-			
 			Get();
 			targ = t.val; 
 			Expect(41);

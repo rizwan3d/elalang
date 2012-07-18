@@ -447,7 +447,7 @@ namespace Ela.Compilation
         {
             var cc = (TypeClass)classId;
             
-            //Currently only classes Eq, Ord, Show are supported
+            //Currently only classes Eq, Ord, Show, Ix are supported
             if (cc == TypeClass.Eq)
             {
                 GenerateMember(ElaBuiltinKind.Equal, "Eq", inst);
@@ -467,6 +467,12 @@ namespace Ela.Compilation
                 GenerateMember(ElaBuiltinKind.Showf, "Show", inst);
                 return true;
             }
+            else if (cc == TypeClass.Ix)
+            {
+                GenerateMember(ElaBuiltinKind.Length, "Ix", inst);
+                GenerateMember(ElaBuiltinKind.Get, "Ix", inst);
+                return true;
+            }
             else
                 return false;
         }
@@ -483,6 +489,8 @@ namespace Ela.Compilation
                     builtin == ElaBuiltinKind.Lesser ? "genericLt" :
                     builtin == ElaBuiltinKind.GreaterEqual ? "genericGtEq" :
                     builtin == ElaBuiltinKind.LesserEqual ? "genericLtEq" :
+                    builtin == ElaBuiltinKind.Length ? "genericLength" :
+                    builtin == ElaBuiltinKind.Get ? "genericItem" :
                     String.Empty;
 
             var sv = GetVariable(fun, globalScope, GetFlags.NoError, 0, 0);
