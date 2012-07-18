@@ -165,10 +165,15 @@ instance Enum Int Long where
   pred = (-1)
   enumFrom fst snd = genInf fst (snd-fst)
     where genInf e step = e :: (& genInf (e+step) step)
-  enumFromTo max fst snd = gen [] max fst (snd-fst)
-    where gen xs max e step
+  enumFromTo max fst snd 
+    | snd < fst = genLt [] max fst (snd-fst)
+    | else = genGt [] max fst (snd-fst)
+    where genLt xs max e step
+            | e < max = lang.__reverseList xs
+            | else = genLt(e::xs) max (e+step) step
+          genGt xs max e step
             | e > max = lang.__reverseList xs
-            | else = gen (e::xs) max (e+step) step
+            | else = genGt(e::xs) max (e+step) step
 
 /* Seq */
 class Seq __internal Seq head tail isnil

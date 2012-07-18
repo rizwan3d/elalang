@@ -57,7 +57,7 @@ compOperator {eqt} =
   where lst = [x \\ x <- [1..10] | x % 2 == 0]
 
 triangles {eq,eqt} =
-  eqt (match (head triangles) with _ is tuple = true; _ = false;;)
+  eqt (head triangles is Tuple)
   $ eq ((head triangles):0) 6
   $ eq ((head triangles):1) 8
   $ eq ((head triangles):2) 10
