@@ -1622,6 +1622,12 @@ namespace Ela.Runtime
 
                 stack.Push(funObj.Call(arr));
             }
+            catch (ElaRuntimeException ex)
+            {
+                thread.LastException = ex;
+                ExecuteFail(new ElaError(ex.Error, ex.Arguments), thread, stack);
+                return true;
+            }
             catch (Exception ex)
             {
                 thread.LastException = ex;

@@ -120,6 +120,9 @@
   <data name="ClassAlreadyDeclared" xml:space="preserve">
     <value>A module already defines a class '{0}'.</value>
   </data>
+  <data name="DefaultMemberAlreadyExist" xml:space="preserve">
+    <value>A default implementation for a member '{0}' of class '{1}' already exists.</value>
+  </data>
   <data name="ElseMissing" xml:space="preserve">
     <value>A mandatory 'else' clause is missing. A conditional expression should be always terminated with an 'else' clause.</value>
   </data>
@@ -227,9 +230,6 @@
   </data>
   <data name="TypeMemberNoPatterns" xml:space="preserve">
     <value>Type constructor {0} is not valid. Type constructors cannot be defined by pattern matching.</value>
-  </data>
-  <data name="UnableAutoGenerateInstance" xml:space="preserve">
-    <value>Unable to autogenerate an instance '{0}'. Definition of '{1}' not found.</value>
   </data>
   <data name="UnableExtendBuiltin" xml:space="preserve">
     <value>Unable to extend a built-in type '{0}'.</value>

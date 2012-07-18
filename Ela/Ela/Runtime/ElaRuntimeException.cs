@@ -2,11 +2,16 @@
 
 namespace Ela.Runtime
 {
-	public class ElaRuntimeException : ElaException
+	internal class ElaRuntimeException : ElaException
 	{
-		public ElaRuntimeException(string message) : base(message, null)
+		internal ElaRuntimeException(ElaRuntimeError error, params object[] arguments)
 		{
-
+            Error = error;
+            Arguments = arguments;
 		}
+
+        internal ElaRuntimeError Error { get; set; }
+
+        internal object[] Arguments { get; set; }
 	}
 }

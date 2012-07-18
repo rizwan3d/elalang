@@ -87,7 +87,7 @@ namespace Ela.Runtime.ObjectModel
         public override ElaValue Call(params ElaValue[] args)
         {
             if (args == null || args.Length == 0)
-                throw new ElaRuntimeException("Unable to call an overloaded function without arguments.");
+                throw new ElaException("Unable to call an overloaded function without arguments.");
 
             var ctx = new ExecutionContext();
             var fn = default(ElaFunction);
@@ -97,10 +97,10 @@ namespace Ela.Runtime.ObjectModel
                 fn = GetFunction(args[i], ctx);
 
                 if (!(fn is ElaFunTable))
-                    throw new ElaRuntimeException("Incorrect argument number.");
+                    throw new ElaException("Incorrect argument number.");
 
                 if (ctx.Failed)
-                    throw new ElaRuntimeException(ctx.Error.Message);
+                    throw new ElaException(ctx.Error.Message);
             }
 
             return fn.Call(args);

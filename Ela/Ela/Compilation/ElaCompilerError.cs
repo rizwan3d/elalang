@@ -92,6 +92,6 @@ namespace Ela.Compilation
 
         TypeHeaderNotConnected = 341,
 
-        UnableAutoGenerateInstance = 342,
+        DefaultMemberAlreadyExist = 342,
 	}
 }

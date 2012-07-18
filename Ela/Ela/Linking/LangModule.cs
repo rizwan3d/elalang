@@ -152,6 +152,11 @@ namespace Ela.Linking
             Add<ElaModule,ElaValue,ElaValue,Int32>("__getParameterIndex", GetVariantParameterIndex);
             Add<ElaValue,Int32>("__constructorIndex", GetConstructorIndex);
             Add<ElaUserType,ElaTuple,ElaObject>("__assemble", Assemble);
+            Add<ElaModule,ElaValue,ElaObject>("__conssucc", ConstructorSuccessor);
+            Add<ElaModule,ElaValue,ElaObject>("__conspred", ConstructorPredecessor);
+            Add<ElaModule,ElaValue,ElaValue>("__constoint", ConstructorToInt);
+            Add<ElaModule,ElaValue,ElaValue,ElaObject>("__consfromint", ConstructorFromInt);
+            Add<ElaModule,ElaValue,ElaValue>("__consmax", ConstructorMaxValue);
 
             Add("__toInt", new ToInt());
             Add("__toLong", new ToLong());
@@ -160,6 +165,92 @@ namespace Ela.Linking
             Add("__toChar", new ToChar());
             Add("__toBool", new ToBool());
             Add("__toString", new ToStr());
+        }
+
+        public ElaValue ConstructorMaxValue(ElaModule mod, ElaValue val)
+        {
+            if (val.TypeId <= SysConst.MAX_TYP)
+                throw new ElaRuntimeException(ElaRuntimeError.InvalidType, "?", val.GetTypeName());
+
+            var type = (ElaUserType)val.Ref;
+            var asm = mod.GetCurrentMachine().Assembly;
+            var typeInfo = asm.Types[val.TypeId];
+            return new ElaValue(typeInfo.Constructors.Count - 1);
+        }
+
+        public ElaValue ConstructorToInt(ElaModule mod, ElaValue val)
+        {
+            if (val.TypeId <= SysConst.MAX_TYP)
+                throw new ElaRuntimeException(ElaRuntimeError.InvalidType, "?", val.GetTypeName());
+
+            var type = (ElaUserType)val.Ref;
+            var asm = mod.GetCurrentMachine().Assembly;
+            var typeInfo = asm.Types[val.TypeId];
+
+            return new ElaValue(typeInfo.Constructors.IndexOf(type.GetTag(null)));
+        }
+
+        public ElaObject ConstructorFromInt(ElaModule mod, ElaValue val, ElaValue idx)
+        {
+            if (idx.TypeId != ElaMachine.INT)
+                throw new ElaRuntimeException(ElaRuntimeError.InvalidType, TCF.GetShortForm(ElaTypeCode.Integer), idx.GetTypeName());
+
+            if (val.TypeId <= SysConst.MAX_TYP)
+                throw new ElaRuntimeException(ElaRuntimeError.InvalidType, "?", val.GetTypeName());
+            
+            var type = (ElaUserType)val.Ref;
+            var asm = mod.GetCurrentMachine().Assembly;
+            var typeInfo = asm.Types[val.TypeId];
+
+            if (idx.I4 < 0 || idx.I4 >= typeInfo.Constructors.Count)
+                throw new ElaRuntimeException(ElaRuntimeError.IndexOutOfRange, idx.I4, TCF.GetShortForm(ElaTypeCode.Integer),
+                    val.ToString(), val.GetTypeName());
+
+            return CreateConstructor(asm, typeInfo.Constructors[idx.I4], val.TypeId);
+        }
+
+        public ElaObject ConstructorSuccessor(ElaModule mod, ElaValue val)
+        {
+            return ConstructorSuccPred(mod, val, 1);
+        }
+
+        public ElaObject ConstructorPredecessor(ElaModule mod, ElaValue val)
+        {
+            return ConstructorSuccPred(mod, val, -1);
+        }
+
+        private ElaObject ConstructorSuccPred(ElaModule mod, ElaValue val, int plus)
+        {
+            if (val.TypeId <= SysConst.MAX_TYP)
+                throw new ElaRuntimeException(ElaRuntimeError.InvalidType, "?", val.GetTypeName());
+
+            var type = (ElaUserType)val.Ref;
+            var asm = mod.GetCurrentMachine().Assembly;
+            var typeInfo = asm.Types[val.TypeId];
+
+            var next = typeInfo.Constructors.IndexOf(type.GetTag(null)) + plus;
+
+            if (next < typeInfo.Constructors.Count && next > -1)
+                return CreateConstructor(asm, typeInfo.Constructors[next], val.TypeId);
+
+            throw new ElaRuntimeException(ElaRuntimeError.ConstructorSequenceError, asm.Constructors[type.GetTag(null)].Name);
+        }
+
+        private ElaUserType CreateConstructor(CodeAssembly asm, int id, int typeId)
+        {
+            var cons = asm.Constructors[id];
+            
+            if (cons.Parameters == null)
+                return new ElaUserType(cons.TypeName, typeId, cons.Code, new ElaValue(ElaUnit.Instance));
+            else
+            {
+                var t = new ElaTuple(cons.Parameters.Count);
+
+                for (var i = 0; i < cons.Parameters.Count; i++)
+                    t.InternalSetValue(i, new ElaValue(ElaUnit.Instance));
+
+                return new ElaUserType(cons.TypeName, typeId, cons.Code, new ElaValue(t));
+            }
         }
 
         public ElaObject Assemble(ElaUserType type, ElaTuple tup)

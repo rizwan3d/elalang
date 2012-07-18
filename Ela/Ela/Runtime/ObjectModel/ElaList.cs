@@ -152,7 +152,7 @@ namespace Ela.Runtime.ObjectModel
         
 		protected virtual Exception InvalidDefinition()
 		{
-			return new ElaRuntimeException("Invalid list definition.");
+            return new ElaException("Invalid list definition.");
 		}
 
 		protected internal ElaValue InternalValue;

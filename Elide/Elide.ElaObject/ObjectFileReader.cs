@@ -165,6 +165,8 @@ namespace Elide.ElaObject
             for (var i = 0; i < c; i++)
             {
                 var name = br.ReadString();
+                var typeName = br.ReadString();
+                var typeModuleId = br.ReadInt32();
                 var c2 = br.ReadInt32();
 
                 for (var j = 0; j < c2; j++)

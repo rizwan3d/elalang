@@ -105,13 +105,16 @@ namespace Ela.Compilation
 
             AddLinePragma(v);
 
+            //-1 mean "this" module (considered by default).
+            var typeModuleId = -1;
+
             //Add a type var for a non built-in type with a body
             if (tc == -1 && !isList)
             {
                 //Add a special variable with global type ID which will be calculated at run-time
                 if (v.Extends)
                 {
-                    var sv = EmitSpecName(v.Prefix, "$$" + v.Name, v, ElaCompilerError.UndefinedType);
+                    var sv = EmitSpecName(v.Prefix, "$$" + v.Name, v, ElaCompilerError.UndefinedType, out typeModuleId);
 
                     //If this is a built-in type, than a variable contains data with type ID
                     //We capture this case here, thus disallowing built-in types.
@@ -128,7 +131,7 @@ namespace Ela.Compilation
                     for (var i = 0; i < v.Constructors.Count; i++)
                     {
                         var c = v.Constructors[i];
-                        CompileConstructor(sca, c, flags);
+                        CompileConstructor(v.Name, sca, c, flags, typeModuleId);
                     }
                 }
             }
@@ -156,7 +159,7 @@ namespace Ela.Compilation
 
         //Generic compilation logic for a constructor, compiles both functions and constants.
         //Parameter sca is an address of variable that contains real type ID.
-        private void CompileConstructor(int sca, ElaExpression exp, ElaVariableFlags flags)
+        private void CompileConstructor(string typeName, int sca, ElaExpression exp, ElaVariableFlags flags, int typeModuleId)
         {
             //Constructor name
             var name = String.Empty;
@@ -171,7 +174,7 @@ namespace Ela.Compilation
                         if (!n.Uppercase)
                             AddError(ElaCompilerError.InvalidConstructor, n, FormatNode(n));
                         else
-                            CompileConstructorConstant(n, sca, flags);
+                            CompileConstructorConstant(typeName, n, sca, flags, typeModuleId);
                     }
                     break;
                 case ElaNodeType.Juxtaposition:
@@ -187,7 +190,7 @@ namespace Ela.Compilation
                             //we assume that this is a correct case and is a constructor function
                             if (m.Uppercase || (Format.IsSymbolic(m.Name) && n.Parameters.Count <= 2))
                             {
-                                CompileConstructorFunction(m.Name, n, sca, flags);
+                                CompileConstructorFunction(typeName, m.Name, n, sca, flags, typeModuleId);
                                 break;
                             }   
                         }
@@ -206,9 +209,15 @@ namespace Ela.Compilation
         }
 
         //Compiles a simple parameterless constructor
-        private void CompileConstructorConstant(ElaNameReference exp, int sca, ElaVariableFlags flags)
+        private void CompileConstructorConstant(string typeName, ElaNameReference exp, int sca, ElaVariableFlags flags, int typeModuleId)
         {
-            frame.InternalConstructors.Add(new ConstructorData { Name = exp.Name, Code = -1 });
+            frame.InternalConstructors.Add(new ConstructorData
+            {
+                TypeName = typeName,
+                Name = exp.Name,
+                Code = -1,
+                TypeModuleId = typeModuleId
+            });
 
             AddLinePragma(exp);
             cw.Emit(Op.Pushunit);
@@ -220,7 +229,7 @@ namespace Ela.Compilation
         }
 
         //Compiles a type constructor
-        private void CompileConstructorFunction(string name, ElaJuxtaposition juxta, int sca, ElaVariableFlags flags)
+        private void CompileConstructorFunction(string typeName, string name, ElaJuxtaposition juxta, int sca, ElaVariableFlags flags, int typeModuleId)
         {
             Label funSkipLabel;
             int address;
@@ -245,7 +254,14 @@ namespace Ela.Compilation
                     pars.Add(ce.GetName());
             }
 
-            frame.InternalConstructors.Add(new ConstructorData { Name = name, Code = -1, Parameters = pars });
+            frame.InternalConstructors.Add(new ConstructorData
+            {
+                TypeName = typeName,
+                Name = name,
+                Code = -1,
+                Parameters = pars,
+                TypeModuleId = typeModuleId
+            });
             cw.Emit(Op.Newtup, len);
 
             for (var i = 0; i < len; i++)

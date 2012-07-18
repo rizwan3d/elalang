@@ -145,6 +145,8 @@ namespace Ela.Linking
             foreach (var ct in frame.InternalConstructors)
             {
                 bw.Write(ct.Name);
+                bw.Write(ct.TypeName);
+                bw.Write(ct.TypeModuleId);
 
                 if (ct.Parameters != null)
                 {
