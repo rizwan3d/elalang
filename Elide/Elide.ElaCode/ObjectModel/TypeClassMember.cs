@@ -15,7 +15,15 @@ namespace Elide.ElaCode.ObjectModel
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(Name);
+            
+            if (IsSymbolic(Name))
+            {
+                sb.Append('(');
+                sb.Append(Name);
+                sb.Append(')');
+            }
+            else
+                sb.Append(Name);
 
             if (Signature != 0)
             {
@@ -34,6 +42,13 @@ namespace Elide.ElaCode.ObjectModel
             }
 
             return sb.ToString();
+        }
+
+        private static readonly char[] ops = new char[] { '!', '%', '&', '*', '+', '-', '.', ':', '/', '\\', '<', '=', '>', '?', '@', '^', '|', '~' };
+
+        private static bool IsSymbolic(string name)
+        {
+            return name.IndexOfAny(ops) != -1;
         }
 
         public string Name { get; private set; }

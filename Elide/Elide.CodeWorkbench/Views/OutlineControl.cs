@@ -15,6 +15,7 @@ using Elide.CodeEditor;
 using Elide.CodeEditor.Infrastructure;
 using Elide.Environment;
 using Elide.TextEditor;
+using Ela.CodeModel;
 
 namespace Elide.CodeWorkbench.Views
 {
@@ -33,6 +34,7 @@ namespace Elide.CodeWorkbench.Views
             imageList.Images.Add("References", Bitmaps.Load<NS>("References"));
             imageList.Images.Add("Reference", Bitmaps.Load<NS>("Reference"));
             imageList.Images.Add("Variable", Bitmaps.Load<NS>("Variable"));
+            imageList.Images.Add("PrivateVariable", Bitmaps.Load<NS>("PrivateVariable"));
             imageList.Images.Add("Module", Bitmaps.Load<NS>("Module"));
             imageList.Images.Add("Interface", Bitmaps.Load<NS>("Interface"));
             imageList.Images.Add("Type", Bitmaps.Load<NS>("Type"));
@@ -52,7 +54,15 @@ namespace Elide.CodeWorkbench.Views
         {
             if (e.Node.Tag is ILocationBounded)
             {
-                var doc = (CodeDocument)e.Node.Parent.Parent.Tag;
+                var doc = default(CodeDocument);
+                var n = e.Node.Parent;
+
+                while (doc == null && n != null)
+                {
+                    doc = n.Tag as CodeDocument;
+                    n = n.Parent;
+                }
+                
                 App.GetService<IDocumentService>().SetActiveDocument(doc);
 
                 var lb = (ILocationBounded)e.Node.Tag;
@@ -75,9 +85,18 @@ namespace Elide.CodeWorkbench.Views
                 {
                     foreach (var v in doc.Unit.Globals)
                     {
-                        var tn = new TreeNode(v.Name) { ImageKey = "Variable", SelectedImageKey = "Variable" };
-                        tn.Tag = v;
-                        node.Nodes.Add(tn);
+                        var flags = (ElaVariableFlags)v.Flags;
+
+                        if (!flags.Set(ElaVariableFlags.ClassFun))
+                        {
+                            var tn = new TreeNode(v.Name)
+                            {
+                                ImageKey = flags.Set(ElaVariableFlags.Private) ? "PrivateVariable" : "Variable",
+                                SelectedImageKey = "Variable"
+                            };
+                            tn.Tag = v;
+                            node.Nodes.Add(tn);
+                        }
                     }
                 }
 
@@ -101,6 +120,7 @@ namespace Elide.CodeWorkbench.Views
                         foreach (var m in v.Members)
                         {
                             var cn = new TreeNode(m.ToString()) { ImageKey = "Member", SelectedImageKey = "Member" };
+                            cn.Tag = doc.Unit.Globals.FirstOrDefault(c => c.Name == m.Name);                            
                             tn.Nodes.Add(cn);
                         }
                     }
