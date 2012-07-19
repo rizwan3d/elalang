@@ -34,7 +34,8 @@ namespace Ela.CodeModel
 				p.Type == ElaNodeType.RecordLiteral ||
 				p.Type == ElaNodeType.TupleLiteral ||
                 p.Type == ElaNodeType.Placeholder ||
-				p.Type == ElaNodeType.UnitLiteral;
+				p.Type == ElaNodeType.UnitLiteral ||
+                p.Type == ElaNodeType.FieldReference;
 		}
 
 		public static bool IsHiddenVar(ElaExpression p)

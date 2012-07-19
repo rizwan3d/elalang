@@ -7,8 +7,36 @@ namespace Ela.Compilation
     //This Part is responsible for compilation of type class instances
     internal sealed partial class Builder
     {
-        //Main method for instnace compilation
-        private void CompileInstance(ElaClassInstance s, LabelMap map)
+        //An entry method for instance compilation
+        private void CompileInstances(ElaClassInstance s, LabelMap map)
+        {
+            var ins = s;
+
+            //First we need to compile default instances so that
+            //other instances in this class will be able to use them
+            while (ins != null)
+            {
+                if (ins.TypeName == null)
+                    CompileInstanceBody(ins, map);
+
+                ins = ins.And;
+            }
+
+            ins = s;
+
+            //Now we compile specific instances
+            while (ins != null)
+            {
+                if (ins.TypeName != null)
+                    CompileInstanceBody(ins, map);
+
+                ins = ins.And;
+            }
+        }
+
+
+        //Main method for instance compilation
+        private void CompileInstanceBody(ElaClassInstance s, LabelMap map)
         {
             //Obtain type class data
             var mod = default(CodeFrame);
@@ -87,7 +115,7 @@ namespace Ela.Compilation
                     }
 
                 //If this is not a default instance, we can try to autogenerate it.
-                if (s.TypeName != null && typeId == -1)
+                if (s.TypeName != null)
                     classMembers = TryGenerateMembers(classMembers, mod, s);
 
                 //Not all of the members are implemented, which is an error if an instance is
@@ -95,9 +123,6 @@ namespace Ela.Compilation
                 if (s.TypeName != null && !IsBuiltIn(classId, typeId) && classMembers.Count > 0)
                     AddError(ElaCompilerError.MemberNotAll, s, s.TypeClassName, s.TypeClassName + " " + s.TypeName);
             }
-
-            if (s.And != null)
-                CompileInstance(s.And, map);
         }
 
         //This method returns type class data including: type class metadata (ClassData), module local ID
@@ -420,13 +445,10 @@ namespace Ela.Compilation
                 case TypeClass.Additive:
                 case TypeClass.Modulo:
                 case TypeClass.Ring:
+                case TypeClass.Field:
                     return
                         tc == ElaTypeCode.Integer ||
                         tc == ElaTypeCode.Long ||
-                        tc == ElaTypeCode.Single ||
-                        tc == ElaTypeCode.Double;
-                case TypeClass.Field:
-                    return
                         tc == ElaTypeCode.Single ||
                         tc == ElaTypeCode.Double;
                 case TypeClass.Bit:

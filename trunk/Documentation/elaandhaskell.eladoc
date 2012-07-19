@@ -15,7 +15,7 @@ a "quick start" guide for those who are familiar with Haskell.
 | Evaluation strategy |Strict by default, lazy by demand |Lazy by default, string by demand 
 | Pattern matching |Yes |Yes 
 | Function definition by PM |Yes |Yes 
-| Algebraic types |Through polymorphic variants |Yes 
+| Algebraic types |Yes |Yes 
 | First class modules |Yes |No 
 | OOP support |Through duck typing and modules |Through existential types 
 | Monads |No *ii* |Yes 
@@ -31,7 +31,7 @@ for classical C-style console input/output.//br
 \*ii* Ela standard library doesn't have monads, however of course it is possible to implement them
 in the language.//br
 \*iii* Ela (as of 0.11) provides a support for single parameter type classes. However the implementation
-is quite different from Haskell as long as Ela is dynamically typed and the whole notion of `type`
+is quite different from Haskell as long as Ela is dynamically typed and the whole notion of type
 has a different (runtime) meaning in Ela.
 
 =Syntax overview
@@ -92,8 +92,8 @@ Ela:
 >>f 10 //8
 
 == List construction and list pattern matching
-By default Ela uses `::` operator for list construction. Haskell uses `:` operator. 
-Haskell: //br
+By default Ela uses `::` operator for list construction. Haskell uses `:` operator. //br
+Haskell:
 >xs = 1:2:3:[]
 >(y:ys) = xs
 Ela: 
@@ -103,15 +103,20 @@ Note that `:` is also a standard operator in Ela, however it is used as an index
 Haskell equivalent is `!!`).
 
 ==Algebraic data types
-Haskell supports them. Ela provides a support for polymorphic variants which can be used in a 
-similar fashion. Polymorphic variants don't have to be declared. //br
+Both languages support them, however, algebraic data types in Ela are open - one can define additional
+constructors for an already existing type. Also syntax is different. //br
 Haskell: 
 >data Couple a = Foo a | Bar a
 >unbox (Foo a) = a
 >unbox (Bar a) = a
 Ela: 
+>>type Couple = Foo a | Bar a
 >>unbox (Foo a) = a
 >>unbox (Bar a) = a
+Ela doesn't require to specify type variables on the left-hand side of a type definition. Also, in 
+order to define a new type, one should use a `type` declaration. Ela also supports `data` declaration,
+but it has a different meaning and allows to add constructors for an already existing type:
+>>data Couple = Zoo
 
 ==Partial operator application
 Both languages support it. //br
@@ -137,7 +142,8 @@ Ela:
 >>            []    = 0
 
 ==Guards
-Both Haskell and Ela support guards in a similar way. //br
+Both Haskell and Ela support guards in a similar way, however `else` clause in Ela is always 
+mandatory. //br
 Haskell: 
 >x = case (1,2) of
 >         (x,y) | x < y     -> x

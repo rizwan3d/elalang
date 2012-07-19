@@ -31,6 +31,11 @@ namespace Ela
 			array = (T[])list.array.Clone();
 			size = list.size;
 		}
+
+        internal void Normalize()
+        {
+            size = array.Length;
+        }
 		
         public IEnumerator<T> GetEnumerator()
 		{

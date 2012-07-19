@@ -89,8 +89,6 @@ namespace Ela.CodeModel
 
         public ElaVariableFlags VariableFlags { get; set; }
 
-        public string AssociatedType { get; set; }
-
         public ElaExpression Left { get; set; }
 
         public ElaExpression Right { get; set; }

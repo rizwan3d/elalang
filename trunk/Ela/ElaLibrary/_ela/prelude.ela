@@ -6,10 +6,10 @@ import lang
 
 /* Built-in types */
 type Int
-  deriving Eq Ord Show Additive Ring Modulo Bit
+  deriving Eq Ord Show Additive Ring Field Modulo Bit
 
 type Long
-  deriving Eq Ord Show Additive Ring Modulo Bit
+  deriving Eq Ord Show Additive Ring Field Modulo Bit
 
 type Single
   deriving Eq Ord Show Additive Ring Field Modulo
@@ -47,7 +47,9 @@ type List = a :: b | Nil
   deriving Seq
 
 /* Eq */
-class Eq __internal Eq (==) (<>)
+class Eq(Eq) a where 
+  (==) a->a 
+  (<>) a->a
 
 instance Eq Tuple
   where x == y = x `eqTuple` y
@@ -80,7 +82,11 @@ eqList [] _ = false
 eqList _ [] = false
 
 /* Ord */
-class Ord __internal Ord (>) (<) (>=) (<=)
+class Ord(Ord) a where
+  (>) a->a
+  (<) a->a
+  (>=) a->a
+  (<=) a->a
 
 instance Ord Tuple
   where x<y = tupleAny (<) x y
@@ -98,18 +104,32 @@ tupleAny f tup1 tup2
                where e = tup1:n `f` tup2:n
 
 /* Numerical classes */
-class Additive __internal Additive (+) (-) (--)
+class Additive(Additive) a where
+  (+) a->a
+  (-) a->a
+  (--) a
 
-class Ring __internal Ring (*) (**)
+class Ring(Ring) a where
+  (*) a->a
+  (**) a->a
 
-class Field __internal Field (/)
+class Field(Field) a where 
+  (/) a->a
 
-class Modulo __internal Modulo mod rem
+class Modulo(Modulo) a where
+  mod a->a
+  rem a->a
 
 (%) = rem
 
 /* Bit */
-class Bit __internal Bit (&&&) (|||) (^^^) (~~~) (<<<) (>>>)
+class Bit(Bit) a where 
+  (&&&) a->a
+  (|||) a->a
+  (^^^) a->a
+  (~~~) a
+  (<<<) a->_
+  (>>>) a->_
 
 /* Enum */
 class Enum a where
@@ -134,10 +154,15 @@ instance Enum Int Long where
             | else = genGt(e::xs) max (e+step) step
 
 /* Seq */
-class Seq __internal Seq head tail isnil
+class Seq(Seq) a where
+  head a
+  tail a
+  isnil a
 
 /* Ix */
-class Ix __internal Ix item length
+class Ix(Ix) a where 
+  item a->_
+  length a
 
 (:) = item
 
@@ -154,7 +179,8 @@ instance Ix List
                           | else = get (i+1) xs
 
 /* Cat */
-class Cat __internal Cat (++)
+class Cat(Cat) a where
+  (++) a->_
 
 instance Cat List
   where xs++ys = cat (reverse xs) ys
@@ -169,7 +195,8 @@ reverse xs
         rev ys (x::xs) = rev (x::ys) xs
 
 /* Show */
-class Show __internal Show showf
+class Show(Show) a where 
+  showf _->a
 
 show = showf ""
 

@@ -77,14 +77,24 @@ namespace Ela.Compilation
                 if ((v.Flags & ElaVariableFlags.Module) != ElaVariableFlags.Module)
                     AddError(ElaCompilerError.InvalidQualident, exp, ns);
 
-                var lh = frame.References[ns].LogicalHandle;
+                ModuleReference mr;
+                var lh = -1;
+
+                if (frame.References.TryGetValue(ns, out mr))
+                    lh = mr.LogicalHandle;
 
                 var extVar = default(ScopeVar);
                 var mod = lh > -1 && lh < refs.Count ? refs[lh] : null;
 
                 //A name (or even module) not found, generate an error
                 if ((mod == null || !mod.GlobalScope.Locals.TryGetValue(specName, out extVar)) && !options.IgnoreUndefined)
-                    AddError(err, exp, ns + "." + specName.TrimStart('$'));
+                {
+                    //No need to apped alias if we want to generate UndefinedName. That would be misleading.
+                    if (err == ElaCompilerError.UndefinedName)
+                        AddError(err, exp, specName.TrimStart('$'));
+                    else
+                        AddError(err, exp, ns + "." + specName.TrimStart('$'));
+                }
 
                 if ((extVar.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private)
                     AddError(ElaCompilerError.PrivateNameInModule, exp, specName.TrimStart('$'), ns);

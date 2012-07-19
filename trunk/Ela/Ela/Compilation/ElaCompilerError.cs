@@ -74,9 +74,9 @@ namespace Ela.Compilation
 
         InvalidMatchEntry = 332,
 
-        TypeMemberExpression = 333,
+        // = 333,
 
-        TypeMemberNoPatterns = 334,
+        // = 334,
 
         HeaderNotConnected = 335,
 

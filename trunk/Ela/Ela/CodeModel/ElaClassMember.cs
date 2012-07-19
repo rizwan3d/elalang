@@ -19,7 +19,14 @@ namespace Ela.CodeModel
         
         internal override void ToString(StringBuilder sb, int ident)
         {
-            sb.Append(Name);
+            if (Format.IsSymbolic(Name))
+            {
+                sb.Append('(');
+                sb.Append(Name);
+                sb.Append(')');
+            }
+            else
+                sb.Append(Name);
 
             if (Mask != 0)
             {
