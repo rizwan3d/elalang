@@ -61,10 +61,10 @@ namespace Elide.ElaCode.ObjectModel
                 {
                     var flags = (ElaVariableFlags)v.Flags;
 
-                    if (!flags.Set(ElaVariableFlags.Private) && !v.Name.StartsWith("$"))
+                    if (!v.Name.StartsWith("$"))
                     {
                         var ln = dr.FindLineSym(v.Offset);
-                        yield return new CodeName(v.Name, ln.Line, ln.Column);
+                        yield return new CodeName(v.Name, (Int32)flags, ln.Line, ln.Column);
                     }
                 }
             }
@@ -75,7 +75,7 @@ namespace Elide.ElaCode.ObjectModel
                     var sv = codeFrame.GlobalScope.GetVariable(v);
 
                     if (!sv.VariableFlags.Set(ElaVariableFlags.Private) && !v.StartsWith("$"))
-                        yield return new CodeName(v, 0, 0);
+                        yield return new CodeName(v, (Int32)sv.VariableFlags, 0, 0);
                 }
             }
         }

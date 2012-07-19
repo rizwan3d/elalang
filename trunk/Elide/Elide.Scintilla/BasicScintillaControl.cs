@@ -23,6 +23,7 @@ namespace Elide.Scintilla
             SetStyle(ControlStyles.UserPaint, false);
             Ref = new EditorRef(Handle);
             InternalInitialize();
+            Ref.Send(Sci.SCI_SETYCARETPOLICY, Sci.CARET_SLOP | Sci.CARET_STRICT | Sci.CARET_EVEN, 50);
         }
 
         protected virtual void InternalInitialize()
