@@ -90,7 +90,7 @@ instance Ord Tuple
 
 tupleAny # private 
 tupleAny f tup1 tup2 
-  | length tup2 <> len = fail "prelude.tupleAny: Tuples should be of the same length."
+  | length tup2 <> len = fail "prelude: Tuples should be of the same length."
   | else = fold 0
   where len = length tup1
         fold n | n == len - 1 = e
@@ -218,8 +218,20 @@ class StringLike a where
 class ListLike a where
   toList a
 
+class TupleLike a where
+  toTuple a
+
+class RecordLike a where
+  toRecord a
+
 instance ListLike List where
   toList a = a
+
+instance TupleLike Tuple where
+  toTuple a = a
+
+instance RecordLike Record where
+  toRecord a = a
 
 instance IntLike Int Long Single Double Char Bool where
   toInt = lang.__toInt
@@ -257,7 +269,7 @@ curry3 f x y z = f (x, y, z)
 uncurry3 f (x, y, z) = f x y z
 
 /* Tuple functions */
-(=>) x y = (x, y)
+x => y = (x, y)
 swap (x, y) = (y, x)
 swap3 (x, y, z) = (y, x, z)
 fst (x,_) = x
@@ -270,7 +282,7 @@ getType x = lang.__getTypeInfo (force x)
 force = __internal force
 
 /* Variants */
-tag   = __internal gettag
+tag = __internal gettag
 untag x = lang.__unwrap (force x)
 
 /* Combinators */
@@ -339,6 +351,15 @@ instance IntLike where
 
 instance LongLike where
   toLong a = toLong (lang.__constoint lang a)
+
+instance StringLike where
+  toString a = tag a
+
+instance TupleLike where
+  toTuple a
+    | v is Unit = fail "prelude.toTuple: Type constructor has no parameters."
+    | else = v
+    where v = untag a
 
 showParamList # private
 showParamList f t = tos 0

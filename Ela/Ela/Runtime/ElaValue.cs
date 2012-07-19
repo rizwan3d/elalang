@@ -118,7 +118,7 @@ namespace Ela.Runtime
             else if (TypeId == ElaMachine.CHR)
                 return ((Char)I4).ToString();
             else if (TypeId == ElaMachine.BYT)
-                return I4 == 1 ? Boolean.TrueString : Boolean.FalseString;
+                return I4 == 1 ? "true" : "false";
             else
                 return Ref.ToString(format, formatProvider);
         }
@@ -179,79 +179,125 @@ namespace Ela.Runtime
             else
                 throw new InvalidCastException();
 		}
-        
-		public T Convert<T>()
+
+        public T Convert<T>()
+        {
+            return Convert<T>(this);
+        }
+
+        public static T Convert<T>(ElaValue val)
 		{
 			var ti = typeof(T);
-			return (T)Convert(ti);
+			return (T)Convert(val, ti);
 		}
 
-		public object Convert(Type ti)
+		public static object Convert(ElaValue val, Type ti)
 		{
-			if (ti == typeof(Int32) && TypeId == ElaMachine.INT)
-                return I4;
-            else if (ti == typeof(Single) && TypeId <= ElaMachine.REA)
-                return GetReal();
-            else if (ti == typeof(Int64) && TypeId <= ElaMachine.LNG)
-                return GetLong();
-            else if (ti == typeof(Double) && TypeId <= ElaMachine.DBL)
-                return GetDouble();
-            else if (ti == typeof(Boolean) && TypeId == ElaMachine.BYT)
-                return I4 == 1;
-            else if (ti == typeof(String) && TypeId == ElaMachine.STR)
-                return DirectGetString();
-            else if (ti == typeof(Char) && TypeId == ElaMachine.CHR)
-                return (Char)I4;
-            else if (ti == typeof(ElaList) && TypeId == ElaMachine.LST)
-                return (ElaList)Ref;
-            else if (ti == typeof(ElaRecord) && TypeId == ElaMachine.REC)
-                return (ElaRecord)Ref;
-            else if (ti == typeof(ElaTuple) && TypeId == ElaMachine.TUP)
-                return (ElaTuple)Ref;
-            else if (ti == typeof(ElaFunction) && TypeId == ElaMachine.FUN)
-                return (ElaFunction)Ref;
-            else if (ti == typeof(ElaModule) && TypeId == ElaMachine.MOD)
-                return (ElaModule)Ref;
-            else if (ti == typeof(ElaUnit) && TypeId == ElaMachine.UNI)
+            if (ti == typeof(Int32) && val.TypeId == ElaMachine.INT)
+                return val.I4;
+            else if (ti == typeof(Single) && val.TypeId <= ElaMachine.REA)
+                return val.GetReal();
+            else if (ti == typeof(Int64) && val.TypeId <= ElaMachine.LNG)
+                return val.GetLong();
+            else if (ti == typeof(Double) && val.TypeId <= ElaMachine.DBL)
+                return val.GetDouble();
+            else if (ti == typeof(Boolean) && val.TypeId == ElaMachine.BYT)
+                return val.I4 == 1;
+            else if (ti == typeof(String) && val.TypeId == ElaMachine.STR)
+                return val.DirectGetString();
+            else if (ti == typeof(Char) && val.TypeId == ElaMachine.CHR)
+                return (Char)val.I4;
+            else if (ti == typeof(ElaList) && val.TypeId == ElaMachine.LST)
+                return (ElaList)val.Ref;
+            else if (ti == typeof(ElaRecord) && val.TypeId == ElaMachine.REC)
+                return (ElaRecord)val.Ref;
+            else if (ti == typeof(ElaTuple) && val.TypeId == ElaMachine.TUP)
+                return (ElaTuple)val.Ref;
+            else if (ti == typeof(ElaFunction) && val.TypeId == ElaMachine.FUN)
+                return (ElaFunction)val.Ref;
+            else if (ti == typeof(ElaModule) && val.TypeId == ElaMachine.MOD)
+                return (ElaModule)val.Ref;
+            else if (ti == typeof(ElaUnit) && val.TypeId == ElaMachine.UNI)
                 return ElaUnit.Instance;
             else if (ti == typeof(ElaObject))
-                return Ref;
+                return val.Ref;
             else if (ti == typeof(ElaValue))
-                return this;
+                return val;
             else if (ti == typeof(Object))
-                return AsObject();
+                return val.AsObject();
+            else if (val.TypeId == ElaMachine.LAZ)
+            {
+                var la = (ElaLazy)val.Ref;
+
+                if (la.Evaled)
+                    return Convert(la.Value, ti);
+                else
+                    throw InvalidCast(val, TypeToElaTypeCode(ti));
+            }
             else if (ti.IsArray)
-                return ConvertToArray(ti.GetElementType());
+                return ConvertToArray(val, ti.GetElementType());
             else if (ti.IsGenericType && ti.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-                return ConvertToArray(ti.GetGenericArguments()[0]);
+                return ConvertToArray(val, ti.GetGenericArguments()[0]);
             else
             {
                 try
                 {
-                    return System.Convert.ChangeType(Ref, ti);
+                    return System.Convert.ChangeType(val.Ref, ti);
                 }
                 catch (Exception) { }
             }
 
-            throw InvalidCast(ti);
+            throw InvalidCast(val, TypeToElaTypeCode(ti));
 		}
 
-		private object ConvertToArray(Type el)
+        private static ElaTypeCode TypeToElaTypeCode(System.Type ti)
+        {
+            if (ti == typeof(Int32))
+                return ElaTypeCode.Integer;
+            else if (ti == typeof(Single))
+                return ElaTypeCode.Single;
+            else if (ti == typeof(Int64))
+                return ElaTypeCode.Long;
+            else if (ti == typeof(Double))
+                return ElaTypeCode.Double;
+            else if (ti == typeof(Boolean))
+                return ElaTypeCode.Boolean;
+            else if (ti == typeof(String))
+                return ElaTypeCode.String;
+            else if (ti == typeof(Char))
+                return ElaTypeCode.Char;
+            else if (ti == typeof(ElaList))
+                return ElaTypeCode.List;
+            else if (ti == typeof(ElaRecord))
+                return ElaTypeCode.Record;
+            else if (ti == typeof(ElaTuple))
+                return ElaTypeCode.Tuple;
+            else if (ti == typeof(ElaFunction))
+                return ElaTypeCode.Function;
+            else if (ti == typeof(ElaModule))
+                return ElaTypeCode.Module;
+            else if (ti == typeof(ElaUnit))
+                return ElaTypeCode.Unit;
+            else
+                return ElaTypeCode.None;
+        }
+
+		private static object ConvertToArray(ElaValue val, Type el)
 		{
-			var seq = (IEnumerable<ElaValue>)Ref;
+            var seq = (IEnumerable<ElaValue>)val.Ref;
             var len = 0;
 
-            if (Ref is ElaList)
-                len = ((ElaList)Ref).Length;
-            else if (Ref is ElaTuple)
-                len = ((ElaTuple)Ref).Length;
+            if (val.Ref is ElaList)
+                len = ((ElaList)val.Ref).Length;
+            else if (val.Ref is ElaTuple)
+                len = ((ElaTuple)val.Ref).Length;
 
 			var arr = Array.CreateInstance(el, len);
 			var i = 0;
 
 			foreach (var e in seq)
 			{
-				var o = e.Convert(el);
+				var o = Convert(e, el);
 				arr.SetValue(o, i++);
 			}
 
@@ -324,6 +370,8 @@ namespace Ela.Runtime
         {
             if (TypeCode == ElaTypeCode.String)
                 return DirectGetString();
+            else if (TypeCode == ElaTypeCode.Char)
+                return ((Char)I4).ToString();
 
             throw InvalidCast(typeof(String));
         }
@@ -335,12 +383,27 @@ namespace Ela.Runtime
 
             throw InvalidCast(typeof(Boolean));
         }
+
+        private Exception InvalidCast(ElaTypeCode type)
+        {
+            return InvalidCast(this, type);
+        }
         
-		private InvalidCastException InvalidCast(System.Type target)
+		private static Exception InvalidCast(ElaValue val, ElaTypeCode type)
 		{
-            return new InvalidCastException(Strings.GetMessage("InvalidCast", TCF.GetShortForm(TypeCode), 
+            return new ElaRuntimeException(ElaRuntimeError.InvalidType, TCF.GetShortForm(type), val.GetTypeName());
+        }
+
+        private Exception InvalidCast(System.Type target)
+        {
+            return InvalidCast(this, target);
+        }
+
+        private static Exception InvalidCast(ElaValue val, System.Type target)
+        {
+            return new InvalidCastException(Strings.GetMessage("InvalidCast", TCF.GetShortForm(val.TypeCode),
                 target.Name));
-		}
+        }
 		#endregion
         
 		#region Properties

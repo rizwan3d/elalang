@@ -87,7 +87,7 @@ namespace Ela.Compilation
                     }
 
                 //If this is not a default instance, we can try to autogenerate it.
-                if (s.TypeName != null)
+                if (s.TypeName != null && typeId == -1)
                     classMembers = TryGenerateMembers(classMembers, mod, s);
 
                 //Not all of the members are implemented, which is an error if an instance is

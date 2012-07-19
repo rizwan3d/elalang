@@ -4,7 +4,7 @@ namespace Ela
 {
 	public static class TCF
 	{
-		internal const string ERR = "INVALID";
+		internal const string ERR = "?";
 		internal const string CHAR = "Char";
 		internal const string INT = "Int";
 		internal const string LONG = "Long";

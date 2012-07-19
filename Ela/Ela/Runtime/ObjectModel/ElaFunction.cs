@@ -301,7 +301,7 @@ namespace Ela.Runtime.ObjectModel
 			ret.ModuleHandle = ModuleHandle;
 			ret.vm = vm;
 			ret.Captures = Captures;
-			ret.Flip = Flip;
+			ret._flip = _flip;
 			return ret;
 		}
 
@@ -319,7 +319,7 @@ namespace Ela.Runtime.ObjectModel
 			newInstance.ModuleHandle = ModuleHandle;
 			newInstance.vm = vm;
 			newInstance.Captures = Captures;
-			newInstance.Flip = Flip;
+			newInstance._flip = _flip;
 			return newInstance;
 		}
         

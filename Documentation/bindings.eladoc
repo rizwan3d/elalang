@@ -14,7 +14,7 @@ used to bind an expression to a name:
 >>x = 3 //Not a valid Ela code!
 Function definitions however can have several bodies, if a function is defined by pattern matching, e.g.:
 >>x /. 0 = 0
->>x /. y = x / y
+>>x /. y = x `div` y
 We have implemented a safe division operator that has a special entry for the case when a second argument is zero.//br
 Another important difference from imperative languages is that the order of bindings in Ela is not significant. This is true for
 functions and for all other bindings as well. For example, the following code is valid:
