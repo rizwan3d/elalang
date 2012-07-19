@@ -32,10 +32,6 @@ namespace Ela.Compilation
                 {
                     map.BindingName = s.Left.GetName();
                     CompileExpression(s.Right, map, Hints.None);
-
-                    //If this a type member we need to construct a new type instance
-                    if (s.AssociatedType != null)
-                        cw.Emit(Op.Newtype, AddString(s.AssociatedType));
                 }
 
                 AddLinePragma(s);
@@ -105,15 +101,14 @@ namespace Ela.Compilation
         //patterns are traversed using AddPatternVariable method.
         private bool AddNoInitVariable(ElaEquation exp)
         {
-            var flags = exp.VariableFlags | ElaVariableFlags.NoInit | 
-                (exp.AssociatedType != null ? ElaVariableFlags.TypeFun : ElaVariableFlags.None);
+            var flags = exp.VariableFlags | ElaVariableFlags.NoInit;
             
             //This binding is not defined by PM
             if (exp.IsFunction())
             {
                 var name = exp.GetFunctionName();
 
-                if (name == null)
+                if (name == null || Char.IsUpper(name[0]))
                 {
                     AddError(ElaCompilerError.InvalidFunctionDeclaration, exp, FormatNode(exp.Left));
                     return false;

@@ -266,6 +266,7 @@ namespace Ela.Linking
 			{
 				var frame = obj.Read();
                 frame.HandleMap = new FastList<Int32>(frame.References.Count);
+                frame.HandleMap.Normalize();
                 var exportVars = CreateExportVars(fi);
 
                 foreach (var r in frame.References)
@@ -541,7 +542,7 @@ namespace Ela.Linking
 
             var exportVars = CreateExportVars(file);
 			elac.ModuleInclude += (o, e) => e.Frame = ResolveModule(file, e.Module, exportVars);
-			var res = frame != null ? elac.Compile(prog, CompilerOptions, exportVars, frame, scope) :
+			var res = frame != null ? elac.Compile(prog, opts, exportVars, frame, scope) :
 				elac.Compile(prog, opts, exportVars);
 			AddMessages(res.Messages, file);
 			return res;

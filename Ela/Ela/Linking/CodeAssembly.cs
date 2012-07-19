@@ -95,7 +95,9 @@ namespace Ela.Linking
 		internal int AddModule(FileInfo fi, CodeFrame module, bool qual, int logicHandle)
 		{
 			var hdl = 0;
-            var name = fi.FullName.ToUpper();
+            var name = !String.IsNullOrEmpty(fi.Extension) && !fi.Extension.Contains("#") ? 
+                fi.FullName.Replace(fi.Extension, String.Empty).ToUpper() :
+                fi.FullName.ToUpper();
 
 			if (!moduleMap.TryGetValue(name, out hdl))
 			{

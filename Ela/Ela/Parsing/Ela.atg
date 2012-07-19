@@ -1057,10 +1057,10 @@ PRODUCTIONS
 	        scanner.InjectBlock();
 	    .)
 	    (
-	        Binding<block,null> (. if (RequireEndBlock()) .) EndBlock
+	        Binding<block> (. if (RequireEndBlock()) .) EndBlock
 	        {	            
 	            (. scanner.InjectBlock(); .)
-	            Binding<block,null>
+	            Binding<block>
 	            (. if (RequireEndBlock()) .) EndBlock
 	        }
 	    ).	 
@@ -1087,7 +1087,7 @@ PRODUCTIONS
 	        )
 	    ).   
 		
-	Binding<ElaEquationSet block, string type> =
+	Binding<ElaEquationSet block> =
 	    (. 
 	        var bid = default(ElaEquation);
 	        var left = default(ElaExpression);
@@ -1123,7 +1123,7 @@ PRODUCTIONS
 	                }	                    
 	            .)
 	        ]
-	        (. ProcessBinding(block, bid, left, right, type); .)
+	        (. ProcessBinding(block, bid, left, right); .)
 	    ).
 	    
 	IncludeStat = 
@@ -1218,17 +1218,8 @@ PRODUCTIONS
 	            var nm = default(String);
 	            tc.Name = t.val;
 	        .)
+	        [ "(" variantTok (. tc.BuiltinName=t.val; .) ")" ]
 	        (
-	            (
-	                "__internal" variantTok (. tc.BuiltinName = t.val; .)
-	                { 
-	                    (ident (. nm=t.val; .) |Operators (. nm=t.val; .) | "(" (Operators|ident) (. nm=t.val; .) ")") 
-	                    (. 
-	                        tc.Members.Add(new ElaClassMember(t) { Name = nm });
-	                    .)  
-                    }
-	            )
-	            |
 	            (
 	                (. var targ = String.Empty; .)
 	                ident (. targ = t.val; .)
@@ -1385,7 +1376,7 @@ PRODUCTIONS
 	TopLevel =
 	    (. scanner.InjectBlock(); .)
 	    (
-	        Binding<Program.TopLevel,null>
+	        Binding<Program.TopLevel>
 	        | IncludeStat
 	        | TypeClass
 	        | NewType

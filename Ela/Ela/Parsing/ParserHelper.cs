@@ -56,7 +56,7 @@ namespace Ela.Parsing
             count++;
         }
 
-        private void ProcessBinding(ElaEquationSet block, ElaEquation bid, ElaExpression left, ElaExpression right, string type)
+        private void ProcessBinding(ElaEquationSet block, ElaEquation bid, ElaExpression left, ElaExpression right)
         {
             bid.Left = left;
             bid.Right = right;
@@ -84,19 +84,13 @@ namespace Ela.Parsing
                 if (lastB != null && ((ElaJuxtaposition)lastB.Left).Target.GetName() == fName)
                     lastB.Next = bid;
                 else
-                {
-                    bid.AssociatedType = type;
                     block.Equations.Add(bid);
-                }
 
                 bindings.Pop();
                 bindings.Push(bid);
             }
             else
-            {
-                bid.AssociatedType = type;
                 block.Equations.Add(bid);
-            }
         }
 
 		private ElaExpression GetOperatorFun(string op, ElaExpression left, ElaExpression right)

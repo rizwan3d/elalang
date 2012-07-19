@@ -42,7 +42,7 @@ Arithmetic operations never result in non-termination:
 as soon as they basically don't evaluate their arguments at all. This evaluation is only done by demand
 by other functions, such as comparison functions or strict conversion functions.//br
 Peano numbers can be seen as a form of unsigned integer numbers. However, the result of any calculation 
-involving two peano numbers is always a peano number. Because of that peano numbers don't support real
+involving two peano numbers is always a peano number. Because of that, peano numbers don't support real
 division and do not provide an instance for a `Field` class, however, they have an instance for `Integral`
 class:
 >>>toInt <| 5? `div` 2?

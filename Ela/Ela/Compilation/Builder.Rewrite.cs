@@ -116,7 +116,7 @@ namespace Ela.Compilation
         private void ProcessInstances(ElaProgram prog, LabelMap map)
         {
             if (prog.Instances != null)
-                CompileInstance(prog.Instances, map);
+                CompileInstances(prog.Instances, map);
         }
             
         //Now we can compile global user defined functions and lazy sections. This is
@@ -158,13 +158,7 @@ namespace Ela.Compilation
                 var b = exps[i];
 
                 if (b.Right != null)
-                {
-                    //Type constructors cannot be defined by PM
-                    if (b.Left.Type != ElaNodeType.NameReference && b.AssociatedType != null)
-                        AddError(ElaCompilerError.TypeMemberNoPatterns, b, FormatNode(b));
-
                     CompileDeclaration(b, map, Hints.Left);
-                }
                 else
                     list.Add(b);
             }
@@ -182,10 +176,6 @@ namespace Ela.Compilation
             {
                 var e = exps[i];
                 var hints = i == len - 1 ? Hints.None : Hints.Left;
-
-                //Type constructors cannot be just expressions
-                if (e.AssociatedType != null)
-                    AddError(ElaCompilerError.TypeMemberNoPatterns, e.Left, FormatNode(e));
 
                 //Compile everything that is left
                 CompileExpression(e.Left, map, hints);

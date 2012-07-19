@@ -32,9 +32,6 @@ namespace Ela.Compilation
 			this.comp = comp;
 			this.cw = new CodeWriter(frame.Ops, frame.OpData);
 			this.globalScope = globalScope;
-
-            //if (frame != null)
-            //    frame.HandleMap = new FastList<Int32>();
             			
 			CurrentScope = globalScope;
 			debug = options.GenerateDebugInfo;
@@ -55,7 +52,7 @@ namespace Ela.Compilation
             //We always include prelude, but a module variable is created just once
             //(We check if we are not resuming in interactive mode (cw.Offset==0) and if yes
             //we don't create a variable 'prelude'.
-			if (!String.IsNullOrEmpty(options.Prelude))
+            if (!String.IsNullOrEmpty(options.Prelude))
                 IncludePrelude(prog, cw.Offset == 0);
 
             //Always include arguments module

@@ -47,7 +47,7 @@ namespace Ela.Compilation
             //If this a 'type member' function we can specify a tail hint because
             //it could cause a generation of Callt when we need to construct a type
             //(using Newtype) as the very last instruction in such a function.
-            var hints = Hints.Scope | (dec.AssociatedType != null ? Hints.None : Hints.Tail);
+            var hints = Hints.Scope;
 
 			AddLinePragma(dec);
             var address = cw.Offset;
@@ -59,11 +59,6 @@ namespace Ela.Compilation
 			frame.Layouts.Add(new MemoryLayout(currentCounter, ss, address));
 			EndScope();
 			EndSection();
-
-            //For a type constructor function the last instruction
-            //in a function should be a Newtype op typeId.
-            if (dec.AssociatedType != null)
-                cw.Emit(Op.Newtype, AddString(dec.AssociatedType));
 
 			cw.Emit(Op.Ret);
 			cw.MarkLabel(funSkipLabel);

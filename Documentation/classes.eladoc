@@ -3,20 +3,13 @@
 
 =Introduction
 A concept of _classes_ in Ela is similar to the concept of _typeclasses_ in Haskell.//br
-A _class_ in Ela is a class of operations and can be seen as an abstraction over types. Without classes a particular operation 
-(such as `x + y`) would have a meaning only for a specific type (e.g. integer) which would result in a huge amount of 
-boilerplate code - imagine that you will have to implement all arithmetic operations for each numeric type in the language.
-That is the reason why many languages provide a support for _function overloading_. Classes in Ela can described as a way
-to implement overloading in a dynamic environment - but in a more structured and organized way than 
-in imperative languages. As soon as classes feature dynamic, not static dispatch, they may be more properly 
-compared with "object based" overloading in object oriented languages, where a function is selected at run time based on the
-type of its first argument (which is usually implicitly passed to this function as `this` reference). Classes in Ela 
-do not provide a support for object oriented programming and are in fact more flexible, however the core approach is 
-essentially the same.//br
-Most of basic prelude functions in Ela are in fact class members. For example, a function `+` is defined as a member of `Additive` 
-class. This is still a global function that is not different from regular Ela functions. However runtime environment allows 
-for this function to have separate implementations. A required "overload" is determined upon a _run time type_ (which is important
-to understand for those who are familiar with _typeclasses_ concept in Haskell as long as this is major difference).//br
+A _class_ in Ela is a class of operations and can be seen as an abstraction over types. In fact, most of standard functions
+and operators from prelude are members of classes. However, classes in Ela do not directly correspond to classes in object
+oriented languages. Class in Ela is a set of global functions which perform similar operations (such as comparison 
+operations).//br
+Major difference between regular functions and class functions is that run-time environment allows for a class function to
+have several implementations. A required "overload" is determined upon a _run-time type_ (which is important
+to understand for those who are familiar with _typeclasses_ concept in Haskell as long as this is the major difference).
 
 =Classes and Interfaces
 Classes in Ela can be compared with interfaces in object oriented languages (such as C#) as they do share with interfaces a
@@ -27,69 +20,73 @@ you cannot implement interfaces for the types that are already defined, declarat
 in Ela may not be done at the same time. For example, you can easily write instances for built-in Ela types.//br
 Another important difference is that unlike interfaces classes are used to define _global_ bindings. A class member in Ela is 
 effectively a global function that is not different from other functions - it is curried and is a first class value:
->>>class Foo a 
->>>  where foo _->a
+>>>class Foo a where 
+>>>  foo _->a
 >>>
 >>>foo
-Dispatch rules are also different. Ela provides a support for only single parameter classes, however this parameter can appear 
+Dispatch rules are also different. Ela provides a support for only single parameter classes, however, this parameter can appear 
 at any place in a function signature.//br
-In the example above we have defined a function `foo`, that accepts any value as its first argument. Now we can define an instance 
-of this class like so:
->>>instance Foo Int
->>>  where foo _ a = a
+Unlike single parameter typeclasses in Haskell, classes in Ela do not support dispatch by return type; as a result, a function 
+signature in a class declaration do not include a return type at all, e.g. a signature like so: `a->a` means a two argument
+function, not a single argument function.//br
+In the example above we have defined a function `foo`, that accepts any value as its first argument and a specific value (that
+can be specified through an instance) as its second argument. Now we can define an instance of this class like so:
+>>>instance Foo Int where 
+>>>  foo _ a = a
 Here we effectively ignore the first argument of a `foo` function. This function is overloaded only by its second argument:
 >>>foo "some value" 42
 Class member signature is used to provide overload rules for a function. For example, if we define a class `Foo`
 like so:
->>class Foo a 
->>  where foo a->a
+>>class Foo a where
+>>  foo a->a
 an application of `foo` to string and integer would fail.
 
 =Classes
 A class in Ela is declared using `class` declaration that has the following syntax:
->>"class" className param
->>  "where" (ident|operator) signature
->>         {(ident|operator) signature}
-A name of a class can be any valid Ela identifier. It can also start with a capital letter (like variants). It is recommended to use
-uppercased names for classes, and all standard Ela classes have uppercased names.//br
+>>"class" ClassName param "where"
+>>   (ident|operator) signature
+>>  {(ident|operator) signature}
+A name of a class shoudl always start with a capital letter.//br
 A `where` clause is used to specify members for a class. A class should have at least one member. Also all these members should
-be function bindings (and are treated like that by Ela compiler).//br
-As it was mentioned in introduction, class members are just ordinary global bindings and comply to the rules of bindings in Ela. Such as
-the head symbol can be either a valid Ela identifier or an operator symbol. You can also define class members using prefix, postfix and
-infix form. However using a pattern instead of a binding head is not allowed and will result in compile time error (but it is perfectly
-valid to use pattern inside function parameter list).//br
+be function bindings (and are treated like that by Ela compiler). Unlike Haskell, constants can'be used as class members.//br
+As it was mentioned in introduction, class members are just ordinary global bindings and comply to the rules of bindings in Ela. 
+Such as the head symbol can be either a valid Ela identifier or an operator symbol. You can also define class members using 
+prefix, postfix and infix form. However, using a pattern instead of a binding head is not allowed and will result in compile 
+time error (but it is perfectly valid to use pattern inside function argument list).//br
 A `param` clause should contain a valid Ela identifier. It is used for substitution in function signature. Any valid identifier can be 
-used here, however it is recommended to use a name `a` as a type parameter.//br
-A `singnature` clause represents a required class member signature. This signature is used to specify overloading rules for a function.
+used here, however, it is recommended to use a name `a` as a type parameter.//br
+A `signature` clause represents a required class member signature. This signature is used to specify overloading rules for a function.
 It has the following syntax:
 >(_|param) { "->" (_|param) }
-A underscore character denotes "any" value when a `param` should be an identifier from the `param` clause. As long as class in Ela is
-instanced for one specific type a `param` entry is used to specify occurences of this type in a function signature.//br
-A signature should define at least one argument. Also a function signature should have at least one occurence of `param` entry (multiple
-occurences are OK as well). Therefore a signature `a` is valid, as well as `_->a` and `a->_->a`, but a signature `_` is not valid and a
-signature `_->_` is not valid as well. A signature `a` means a function with _at_ _least_ _one_ _argument_ which first argument is of our
-target type, a signature `_->a` means a function with _at_ _least_ _two_ _arguments_ where the second argument is of our target type and
-a signature `a->_->a` means a function with _at_ _least_ _three_ _arguments_ where the first and the last arguments are of our target 
-type.//br
+A underscore character denotes _value of any type_, when a `param` should be an identifier from the `param` clause. As long as 
+class in Ela is instanced for one specific type, a `param` entry is used to specify occurences of this type in a function 
+signature.//br
+A signature should define at least one argument. Also a function signature should have at least one occurence of `param` entry 
+(multiple occurences are OK as well). Therefore, a signature `a` is valid, as well as `_->a` and `a->_->a`, but a signature 
+`_` is not valid, and a signature `_->_` is not valid as well. A signature `a` means a function with _at least one argument_, which 
+is the first argument is of our target type, a signature `_->a` means a function with _at least two arguments_ where the second 
+argument is of our target type, and a signature `a->_->a` means a function with _at least three arguments_, where the first and 
+the last arguments are of our target type.//br
 Here is an example of a custom class declaration:
->>>class Car a
->>>  where drive _->a
+>>>class Car a where
+>>>  drive _->a
 Here we define a `Car` class with one function `drive`. A `drive` function expects a target type as its second argument.
 
 =Instances
 Instances are used to implement a class for a particular type. An instance declaration has the following syntax:
->>"instance" className typeName
->>  "where" binding
->>         {binding}
-A name of an instance is composed of a class name and a type name. A `where` clause is used to specify implementations of class functions. 
-This clause should contain regular Ela bindings. Also Ela compiler controls that an instance provides implementations for all functions 
-of a class. If this is not the case, than a compile time error is generated.//br
+>>"instance" ClassName TypeName where
+>>   binding
+>>  {binding}
+A name of an instance is composed of a class name and a type name. A `where` clause is used to specify implementations of class 
+functions. This clause should contain regular Ela bindings. Also Ela compiler controls that an instance provides implementations 
+for all functions of a class. If this is not the case, than a compile time error is generated, unless there is a default instance
+for this class (see below for more details).//br
 Let's implement an instance for a class `Car` from a previous section. //br
-A `Car` class defines a `drive` function that can be used to accellerate our car to a specific speed. However all cars have certain 
-speed limits and if a limit is reach than this function would return a `SpeedLimit` variant.//br
+A `Car` class defines a `drive` function, that can be used to accellerate our car to a specific speed. However, all cars have certain 
+speed limits, and, if a limit is reached, than this function would return a `SpeedLimit` variant.//br
 Taking that, we can first write a "test drive" function for a car like so:
 >>>//This type will be used to present vehicle speed
->>>type Speed = Speed Int | SpeedLimit
+>>>type Speed = Speed a | SpeedLimit
 >>>
 >>>testDrive n car = 
 >>>   match drive n car with
@@ -97,30 +94,48 @@ Taking that, we can first write a "test drive" function for a car like so:
 >>>         SpeedLimit = []
 This function pushes a given car to its limits and generates a list with our accelleration history - up to the moment when a speed 
 limit is reached.//br
-Now we can define a custom type `steamCar` which cannot go faster than 10 miles an hour:
+Now we can define a custom type `SteamCar`, which cannot go faster than 10 miles an hour:
 >>>type SteamCar = SteamCar
 And here is an instance for this type:
->>>instance Car SteamCar
->>>  where drive s _ | s < 10 = Speed s
->>>                  | else = SpeedLimit
+>>>instance Car SteamCar where
+>>>  drive s _ | s < 10 = Speed s
+>>>            | else = SpeedLimit
 Now we can test drive our new car like so:
 >>>testDrive 0 SteamCar
-However ten miles an hour is not really fast so we might wish to implement a better (faster) car like so:
+However ten miles an hour is not really fast, so we might wish to implement a faster car like so:
 >>>type ElectroCar = ElectroCar
 >>>
->>>instance Car ElectroCar
->>>  where drive s _ | s < 15 = Speed s
->>>                  | else = SpeedLimit
+>>>instance Car ElectroCar where
+>>>  drive s _ | s < 15 = Speed s
+>>>            | else = SpeedLimit
 And test drive it as we did before:
 >>>testDrive 0 ElectroCar
-Instances can be defined for user types and for built-in Ela types as well. However it is an error to have two instances of the same 
-class for the same type - even in different modules.
+Instances can be defined for user types and for built-in Ela types as well. However, it is an error to have two instances of the 
+same class for the same type - even in different modules.
+
+=Default Instances
+Ela also allows to declare default instances. A default instance is an instance without a type specification. For example, this
+is how we can define a default instance for a `Car` class:
+>>instance Car where
+>>  drive _ _ = SpeedLimit
+A default instance can have implementations for all of the class function or just for some of them. Implementations of functions
+from a default instance will be used, when a specific instance doesn't provide implementations for these functions. If a default
+instance defines all functions from a class, than it is valid to create specific instance with an empty body like so:
+>>instance Car BrokenCar
+Alternatively, one can use a `deriving` clause and specify instances in a type declaration directly:
+>>type BrokenCar = BrokenCar
+>>  deriving Car
+A `deriving` clause can be used to specify any number of instances.//br
+Currently, standard prelude provides complete default implementations for the following classes: `Eq`, `Ord`, `Enum`, `Show`,
+`Ix`, `IntLike`, `LongLike`, `StringLike`, `TupleLike`.
 
 =Name Conflicts
 As with custom types, class names are not unique. It is not allowed to define two classes of the same name in a single module - 
-however they can perfectly coexist in different modules. Because of that it is allowed to prefix a class name with the module alias:
+however, they can perfectly coexist in different modules. Because of that, it is allowed to prefix a class name with 
+a module alias:
 >>open cars //We have cars implementations in this module
 >>open carClass //We have a Car class in this module
+>>
 >>instance carClass.Car cars.SteamCar
 >>  where drive _ s = ...
 

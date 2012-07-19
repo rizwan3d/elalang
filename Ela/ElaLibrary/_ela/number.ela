@@ -59,6 +59,7 @@ class Absolute a where
 class Transcendental a where
   exp a
   log a
+  sqrt a
   logBase a->_
   sin a
   tan a
@@ -119,23 +120,28 @@ instance Absolute Double
     abs x | x >= 0 = x | else = --x
     signum x | x < 0 = --1d | else = 1d
 
-instance Transcendental Single Double
-  where
-    exp x       = rl.exp (force x)
-    cos x       = rl.cos (force x)
-    sin x       = rl.sin (force x)
-    log x       = rl.log (force x)
-    logBase x y = rl.logBase (force x) (force y)
-    tan x       = rl.tan (force x)
-    acos x      = rl.acos (force x)
-    asin x      = rl.asin (force x)
-    atan x      = rl.atan (force x)
-    cosh x      = rl.cosh (force x)
-    sinh x      = rl.sinh (force x)
-    tanh x      = rl.tanh (force x)
-    acosh x     = rl.acosh (force x)
-    asinh x     = rl.asinh (force x)
-    atanh x     = rl.atanh (force x)
+instance Transcendental where
+  sqrt x      = x ** 0.5
+  logBase x y = log y / log x
+  tan x       = sin x / cos x
+  tanh x      = sinh x / cosh x
+
+instance Transcendental Single Double where
+  exp x       = rl.exp (force x)
+  cos x       = rl.cos (force x)
+  sin x       = rl.sin (force x)
+  log x       = rl.log (force x)
+  logBase x y = rl.logBase (force x) (force y)
+  tan x       = rl.tan (force x)
+  acos x      = rl.acos (force x)
+  asin x      = rl.asin (force x)
+  atan x      = rl.atan (force x)
+  cosh x      = rl.cosh (force x)
+  sinh x      = rl.sinh (force x)
+  tanh x      = rl.tanh (force x)
+  acosh x     = rl.acosh (force x)
+  asinh x     = rl.asinh (force x)
+  atanh x     = rl.atanh (force x)
 
 genericQuot = __internal quot
 
@@ -153,4 +159,3 @@ lcm _ 0 = 0
 lcm 0 _ = 0
 lcm x y = abs ((x `quot` gcd x y) * y)
 
-sqrt x = x ** 0.5

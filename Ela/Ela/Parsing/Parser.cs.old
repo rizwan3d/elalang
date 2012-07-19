@@ -531,12 +531,12 @@ internal sealed partial class Parser {
 		block = new ElaEquationSet(); 
 		scanner.InjectBlock();
 		
-		Binding(block,null);
+		Binding(block);
 		if (RequireEndBlock()) 
 		EndBlock();
 		while (StartOf(2)) {
 			scanner.InjectBlock(); 
-			Binding(block,null);
+			Binding(block);
 			if (RequireEndBlock()) 
 			EndBlock();
 		}
@@ -1200,7 +1200,7 @@ internal sealed partial class Parser {
 		EndBlock();
 	}
 
-	void Binding(ElaEquationSet block, string type) {
+	void Binding(ElaEquationSet block) {
 		var bid = default(ElaEquation);
 		var left = default(ElaExpression);
 		var right = default(ElaExpression);
@@ -1240,7 +1240,7 @@ internal sealed partial class Parser {
 			    }	                    
 			
 		}
-		ProcessBinding(block, bid, left, right, type); 
+		ProcessBinding(block, bid, left, right); 
 	}
 
 	void Guard(out ElaExpression exp) {
@@ -1378,59 +1378,77 @@ internal sealed partial class Parser {
 		var nm = default(String);
 		tc.Name = t.val;
 		
-		if (la.kind == 61) {
+		if (la.kind == 50) {
 			Get();
 			Expect(2);
-			tc.BuiltinName = t.val; 
-			while (StartOf(16)) {
-				if (la.kind == 1) {
-					Get();
-					nm=t.val; 
-				} else if (StartOf(15)) {
-					Operators();
-					nm=t.val; 
-				} else {
-					Get();
-					if (StartOf(15)) {
-						Operators();
-					} else if (la.kind == 1) {
-						Get();
-					} else SynErr(101);
-					nm=t.val; 
-					Expect(51);
-				}
-				tc.Members.Add(new ElaClassMember(t) { Name = nm });
-				
-			}
-		} else if (la.kind == 1) {
-			var targ = String.Empty; 
+			tc.BuiltinName=t.val; 
+			Expect(51);
+		}
+		var targ = String.Empty; 
+		Expect(1);
+		targ = t.val; 
+		Expect(41);
+		if (la.kind == 1) {
 			Get();
-			targ = t.val; 
-			Expect(41);
+			nm=t.val; 
+		} else if (StartOf(15)) {
+			Operators();
+			nm=t.val; 
+		} else if (la.kind == 50) {
+			Get();
+			if (StartOf(15)) {
+				Operators();
+			} else if (la.kind == 1) {
+				Get();
+			} else SynErr(101);
+			nm=t.val; 
+			Expect(51);
+		} else SynErr(102);
+		var count = 0;
+		var mask = 0;
+		
+		if (la.kind == 1) {
+			Get();
+		} else if (la.kind == 49) {
+			Get();
+		} else SynErr(103);
+		BuildMask(ref count, ref mask, t.val, targ); 
+		while (la.kind == 22) {
+			Get();
+			if (la.kind == 1) {
+				Get();
+			} else if (la.kind == 49) {
+				Get();
+			} else SynErr(104);
+			BuildMask(ref count, ref mask, t.val, targ); 
+		}
+		tc.Members.Add(new ElaClassMember(t) { Name = nm, Arguments = count, Mask = mask });
+		
+		while (StartOf(16)) {
 			if (la.kind == 1) {
 				Get();
 				nm=t.val; 
 			} else if (StartOf(15)) {
 				Operators();
 				nm=t.val; 
-			} else if (la.kind == 50) {
+			} else {
 				Get();
 				if (StartOf(15)) {
 					Operators();
 				} else if (la.kind == 1) {
 					Get();
-				} else SynErr(102);
+				} else SynErr(105);
 				nm=t.val; 
 				Expect(51);
-			} else SynErr(103);
-			var count = 0;
-			var mask = 0;
+			}
+			count = 0;
+			mask = 0;
 			
 			if (la.kind == 1) {
 				Get();
 			} else if (la.kind == 49) {
 				Get();
-			} else SynErr(104);
+			} else SynErr(106);
 			BuildMask(ref count, ref mask, t.val, targ); 
 			while (la.kind == 22) {
 				Get();
@@ -1438,50 +1456,12 @@ internal sealed partial class Parser {
 					Get();
 				} else if (la.kind == 49) {
 					Get();
-				} else SynErr(105);
+				} else SynErr(107);
 				BuildMask(ref count, ref mask, t.val, targ); 
 			}
 			tc.Members.Add(new ElaClassMember(t) { Name = nm, Arguments = count, Mask = mask });
 			
-			while (StartOf(16)) {
-				if (la.kind == 1) {
-					Get();
-					nm=t.val; 
-				} else if (StartOf(15)) {
-					Operators();
-					nm=t.val; 
-				} else {
-					Get();
-					if (StartOf(15)) {
-						Operators();
-					} else if (la.kind == 1) {
-						Get();
-					} else SynErr(106);
-					nm=t.val; 
-					Expect(51);
-				}
-				count = 0;
-				mask = 0;
-				
-				if (la.kind == 1) {
-					Get();
-				} else if (la.kind == 49) {
-					Get();
-				} else SynErr(107);
-				BuildMask(ref count, ref mask, t.val, targ); 
-				while (la.kind == 22) {
-					Get();
-					if (la.kind == 1) {
-						Get();
-					} else if (la.kind == 49) {
-						Get();
-					} else SynErr(108);
-					BuildMask(ref count, ref mask, t.val, targ); 
-				}
-				tc.Members.Add(new ElaClassMember(t) { Name = nm, Arguments = count, Mask = mask });
-				
-			}
-		} else SynErr(109);
+		}
 		EndBlock();
 	}
 
@@ -1494,7 +1474,7 @@ internal sealed partial class Parser {
 		} else if (la.kind == 46) {
 			Get();
 			extends=true; 
-		} else SynErr(110);
+		} else SynErr(108);
 		var nt = new ElaNewtype(t) { Extends = extends }; 
 		if (la.kind == 1) {
 			Get();
@@ -1505,7 +1485,7 @@ internal sealed partial class Parser {
 		} else if (la.kind == 2) {
 			Get();
 			nt.Name = t.val; 
-		} else SynErr(111);
+		} else SynErr(109);
 		nt.And = Program.Types;
 		Program.Types = nt;
 		
@@ -1584,7 +1564,7 @@ internal sealed partial class Parser {
 		} else if (la.kind == 2) {
 			Get();
 			ci.TypeClassName=t.val; 
-		} else SynErr(112);
+		} else SynErr(110);
 		while (la.kind == 1 || la.kind == 2) {
 			if (ci.TypeName != null)
 			{
@@ -1628,7 +1608,7 @@ internal sealed partial class Parser {
 	void TopLevel() {
 		scanner.InjectBlock(); 
 		if (StartOf(2)) {
-			Binding(Program.TopLevel,null);
+			Binding(Program.TopLevel);
 		} else if (la.kind == 31 || la.kind == 45) {
 			IncludeStat();
 		} else if (la.kind == 44) {
@@ -1637,7 +1617,7 @@ internal sealed partial class Parser {
 			NewType();
 		} else if (la.kind == 42) {
 			ClassInstance();
-		} else SynErr(113);
+		} else SynErr(111);
 		EndBlock();
 		if (StartOf(17)) {
 			TopLevel();
@@ -1804,12 +1784,10 @@ internal sealed class Errors {
 			case 105: s = "invalid TypeClass"; break;
 			case 106: s = "invalid TypeClass"; break;
 			case 107: s = "invalid TypeClass"; break;
-			case 108: s = "invalid TypeClass"; break;
-			case 109: s = "invalid TypeClass"; break;
-			case 110: s = "invalid NewType"; break;
-			case 111: s = "invalid NewType"; break;
-			case 112: s = "invalid ClassInstance"; break;
-			case 113: s = "invalid TopLevel"; break;
+			case 108: s = "invalid NewType"; break;
+			case 109: s = "invalid NewType"; break;
+			case 110: s = "invalid ClassInstance"; break;
+			case 111: s = "invalid TopLevel"; break;
 
 			default: s = "error " + n; break;
 		}
