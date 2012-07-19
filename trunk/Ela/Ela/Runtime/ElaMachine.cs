@@ -26,7 +26,7 @@ namespace Ela.Runtime
             modules = new ElaValue[asm.ModuleCount][];
             var mem = new ElaValue[lays.Size];
             modules[0] = mem;
-            MainThread.CallStack.Push(new CallPoint(0, new EvalStack(lays.StackSize), mem, FastList<ElaValue[]>.Empty));
+            MainThread.CallStack.Push(new CallPoint(0, new EvalStack(lays.StackSize, false), mem, FastList<ElaValue[]>.Empty));
             BuildFunTable();
         }
         #endregion
@@ -204,7 +204,7 @@ namespace Ela.Runtime
                 modules[0] = arr;
                 MainThread.SwitchModule(0);
                 MainThread.CallStack.Clear();
-                var cp = new CallPoint(0, new EvalStack(frame.Layouts[0].StackSize), arr, FastList<ElaValue[]>.Empty);
+                var cp = new CallPoint(0, new EvalStack(frame.Layouts[0].StackSize, false), arr, FastList<ElaValue[]>.Empty);
                 MainThread.CallStack.Push(cp);
             }
 
@@ -1289,7 +1289,7 @@ namespace Ela.Runtime
                                 }
                             }
                             else
-                                return evalStack.PopFast();
+                                return evalStack.Pop();
                         }
                     #endregion
 
@@ -1394,7 +1394,7 @@ namespace Ela.Runtime
                                     var loc = new ElaValue[i4];
                                     modules[hdl] = loc;
                                     callStack.Peek().BreakAddress = thread.Offset;
-                                    callStack.Push(new CallPoint(hdl, new EvalStack(frm.Layouts[0].StackSize), loc, FastList<ElaValue[]>.Empty));
+                                    callStack.Push(new CallPoint(hdl, new EvalStack(frm.Layouts[0].StackSize, false), loc, FastList<ElaValue[]>.Empty));
                                     thread.SwitchModule(hdl);
                                     thread.Offset = 0;
                                     goto SWITCH_MEM;
@@ -1448,7 +1448,7 @@ namespace Ela.Runtime
                 t.SwitchModule(fun.ModuleHandle);
 
             var layout = t.Module.Layouts[fun.Handle];
-            var stack = new EvalStack(layout.StackSize);
+            var stack = new EvalStack(layout.StackSize, false);
 
             stack.Push(arg);
 
@@ -1471,7 +1471,7 @@ namespace Ela.Runtime
                 t.SwitchModule(fun.ModuleHandle);
 
             var layout = t.Module.Layouts[fun.Handle];
-            var stack = new EvalStack(layout.StackSize);
+            var stack = new EvalStack(layout.StackSize, false);
             var len = args.Length;
 
             for (var i = 0; i < len; i++)
@@ -1552,13 +1552,16 @@ namespace Ela.Runtime
                     if (natFun.ModuleHandle != thread.ModuleHandle)
                         thread.SwitchModule(natFun.ModuleHandle);
 
-                    var p = cf != CallFlag.AllParams ? stack.PopFast() : natFun.LastParameter;
+                    var p = cf != CallFlag.AllParams ? stack.Pop() : natFun.LastParameter;
 
                     var mod = thread.Module;
                     var layout = mod.Layouts[natFun.Handle];
 
                     var newLoc = new ElaValue[layout.Size];
-                    var newStack = new EvalStack(layout.StackSize);
+
+                    //If CallFalg.NoReturn is set than this is a tail call. For a tail call we
+                    //can reuse an already allocated eval stack array.
+                    var newStack = new EvalStack(layout.StackSize, cf == CallFlag.NoReturn);
                     var newMem = new CallPoint(natFun.ModuleHandle, newStack, newLoc, natFun.Captures);
 
                     if (cf != CallFlag.NoReturn)

@@ -335,7 +335,7 @@ namespace Ela.Linking
             var sb = new StringBuilder();
 
             foreach (var v in lst)
-                sb.Append(v.DirectGetString());
+                sb.Append(v.AsString());
 
             return sb.ToString();
         }

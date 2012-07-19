@@ -89,7 +89,7 @@ namespace Ela.Runtime.ObjectModel
 
 		public override ElaFunction Clone()
 		{
-			return CloneFast(new DelegateFunction<T1, T2>(Name, func));
+			return CloneFast(new DelegateFunction<T1,T2>(Name, func));
 		}
 	}
 

@@ -5,12 +5,12 @@
 
 /* Ordering */
 type Ordering = EQ | LT | GT
-  deriving Eq Ord Show
+  deriving Eq Ord Show Enum
 
 compare x y 
   | x == y = EQ 
-  | x < y = LT 
-  | else = GT
+  | x < y  = LT 
+  | else   = GT
 
 maxValue x y 
   | x >= y = x 

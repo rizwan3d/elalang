@@ -7,20 +7,19 @@ namespace Ela.Runtime
 {
 	internal class EvalStack : IEnumerable<ElaValue>
 	{
-		private const int DEFAULT_SIZE = 20;
 		private ElaValue[] array;
 		private int size;
 		private int initialSize;
+        private static ElaValue[] bigArray = new ElaValue[100];
 
-		internal EvalStack() : this(DEFAULT_SIZE)
-		{
-
-		}
-
-		internal EvalStack(int size)
+		internal EvalStack(int size, bool tail)
 		{
 			this.initialSize = size;
-			array = new ElaValue[size];
+			
+            //It DOESN'T create a memory leak, we can safely reuse an already allocated
+            //array here. This is because eval stack *after* execution of a function is 
+            //should be always empty.
+            array = tail && size <= 100 ? bigArray : new ElaValue[size];
 		}
 
 		public IEnumerator<ElaValue> GetEnumerator()
