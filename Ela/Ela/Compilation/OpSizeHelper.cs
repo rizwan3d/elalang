@@ -10,6 +10,8 @@ namespace Ela.Compilation
 			1, //Len
 			1, //Pushunit
 			1, //Pushelem
+            1, //Pushfld
+            1, //Hasfld
 			1, //PushI4_0
 			1, //PushI1_0
 			1, //PushI1_1
@@ -62,15 +64,16 @@ namespace Ela.Compilation
 			1, //Force
 			1, //Isnil
 			1, //Show
-			1, //Gettag
             1, //Recfld
             1, //Addmbr            
             1, //Traitch
             1, //Skiptag
 			1, //Newtype
             1, //Ctype            
-            1, //Ctypei
+            1, //Ctypei            
 
+            5, //Api
+            5, //Api2
             5, //Untag
 			5, //Reccons
 			5, //Tupcons

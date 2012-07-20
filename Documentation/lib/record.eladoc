@@ -5,11 +5,6 @@ This module contains functions that operate with records.
 
 #members
 
-hasField
-Returns `true` if a record `rec` has a field `fld`, otherwise returns `false`:
->>>rec = { foo = "Foo", bar = "Bar" }
->>>hasField "foo" rec
-
 addFields
 Concatenates two records. This function has the same effect as record concatenation operator: 
 >>>addFields {y=2} {x=1}

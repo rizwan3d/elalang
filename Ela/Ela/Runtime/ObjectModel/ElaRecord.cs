@@ -38,27 +38,50 @@ namespace Ela.Runtime.ObjectModel
 
             if (key.TypeId != ElaMachine.INT)
             {
-                if (key.TypeId != ElaMachine.STR)
-                {
-                    ctx.InvalidIndexType(key);
-                    return Default();
-                }
-
-                idx = GetOrdinal(key.DirectGetString());
+                ctx.InvalidIndexType(key);
+                return Default();
             }
-            else
+            
+            if (idx == -1 || idx > values.Length - 1)
             {
-                idx = key.I4;
-
-                if (key.I4 == -1 || key.I4 > values.Length - 1)
-                {
-                    ctx.IndexOutOfRange(key, new ElaValue(this));
-                    return Default();
-                }
+                ctx.IndexOutOfRange(key, new ElaValue(this));
+                return Default();
             }
 
 			return values[idx];
-		}
+        }
+
+        internal ElaValue GetField(ElaValue key, ExecutionContext ctx)
+        {
+            if (key.TypeId != ElaMachine.STR)
+            {
+                ctx.InvalidType(TCF.GetShortForm(ElaTypeCode.String), key);
+                return Default();
+            }
+
+            var idx = GetOrdinal(key.DirectGetString());
+
+            if (idx == -1)
+            {
+                ctx.UnknownField(key.DirectGetString(), new ElaValue(this));
+                return Default();
+            }
+
+            return values[idx];
+        }
+
+        internal bool HasField(ElaValue key, ExecutionContext ctx)
+        {
+            var idx = key.I4;
+
+            if (key.TypeId != ElaMachine.STR)
+            {
+                ctx.InvalidType(TCF.GetShortForm(ElaTypeCode.String), key);
+                return false;
+            }
+
+            return GetOrdinal(key.DirectGetString()) != -1;
+        }
 
 		public override string ToString(string format, IFormatProvider provider)
         {
@@ -90,11 +113,6 @@ namespace Ela.Runtime.ObjectModel
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
-        }
-
-        public bool HasField(string field)
-        {
-            return Array.IndexOf<String>(keys, field) != -1;
         }
 
 		public IEnumerable<String> GetKeys()

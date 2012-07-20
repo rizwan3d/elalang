@@ -459,11 +459,16 @@ namespace Ela.Compilation
                     return
                         tc == ElaTypeCode.List ||
                         tc == ElaTypeCode.String;
+                case TypeClass.Len:
                 case TypeClass.Ix:
                     return
                         tc == ElaTypeCode.String ||
                         tc == ElaTypeCode.Tuple ||
                         tc == ElaTypeCode.Record;
+                case TypeClass.Name:
+                    return
+                        tc == ElaTypeCode.Record ||
+                        tc == ElaTypeCode.Module;
                 case TypeClass.Cat:
                     return
                         tc == ElaTypeCode.Char ||

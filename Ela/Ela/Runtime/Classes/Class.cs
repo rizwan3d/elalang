@@ -16,7 +16,9 @@ namespace Ela.Runtime.Classes
         private ElaFunction eq;
         private ElaFunction neq;
         private ElaFunction len;
-        private ElaFunction get;
+        private ElaFunction getval;
+        private ElaFunction getfld;
+        private ElaFunction hasfld;
         private ElaFunction add;
         private ElaFunction sub;
         private ElaFunction mul;
@@ -196,14 +198,38 @@ namespace Ela.Runtime.Classes
 
         internal virtual ElaValue GetValue(ElaValue value, ElaValue index, ExecutionContext ctx)
         {
-            if (get != null)
+            if (getval != null)
             {
-                ctx.SetDeffered(get, 2);
+                ctx.SetDeffered(getval, 2);
                 return Default();
             }
 
-            ctx.NoOverload(value.GetTypeName(), "get");
+            ctx.NoOverload(value.GetTypeName(), "getvalue");
             return Default();
+        }
+
+        internal virtual ElaValue GetField(ElaValue obj, ElaValue field, ExecutionContext ctx)
+        {
+            if (getfld != null)
+            {
+                ctx.SetDeffered(getfld, 2);
+                return Default();
+            }
+
+            ctx.NoOverload(obj.GetTypeName(), "getfield");
+            return Default();
+        }
+
+        internal virtual bool HasField(ElaValue obj, ElaValue field, ExecutionContext ctx)
+        {
+            if (hasfld != null)
+            {
+                ctx.SetDeffered(hasfld, 2);
+                return false;
+            }
+
+            ctx.NoOverload(obj.GetTypeName(), "hasfield");
+            return false;
         }
 
         internal virtual ElaValue Add(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -503,8 +529,11 @@ namespace Ela.Runtime.Classes
                 case ElaBuiltinKind.Length:
                     len = fun;
                     break;
-                case ElaBuiltinKind.Get:
-                    get = fun;
+                case ElaBuiltinKind.GetValue:
+                    getval = fun;
+                    break;
+                case ElaBuiltinKind.GetField:
+                    getfld = fun;
                     break;
                 case ElaBuiltinKind.Add:
                     add = fun;
@@ -553,6 +582,9 @@ namespace Ela.Runtime.Classes
                     break;
                 case ElaBuiltinKind.Modulus:
                     mod = fun;
+                    break;
+                case ElaBuiltinKind.HasField:
+                    hasfld = fun;
                     break;
             }            
         }

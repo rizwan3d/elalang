@@ -207,10 +207,10 @@ namespace Ela.Compilation
                         //are first class) but is used as optimization.
                         if (!TryOptimizeFieldReference(p))
                         {
-                            cw.Emit(Op.Pushstr, AddString(p.FieldName));
                             CompileExpression(p.TargetObject, map, Hints.None);
+                            cw.Emit(Op.Pushstr, AddString(p.FieldName));
                             AddLinePragma(p);
-                            cw.Emit(Op.Pushelem);
+                            cw.Emit(Op.Pushfld);
                         }
 
                         if ((hints & Hints.Left) == Hints.Left)

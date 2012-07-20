@@ -95,9 +95,15 @@ namespace Ela.Compilation
                     CompileBuiltinMember(ElaBuiltinKind.Tail, s, 1, map);
                     CompileBuiltinMember(ElaBuiltinKind.IsNil, s, 2, map);
                     break;
+                case TypeClass.Len:
+                    CompileBuiltinMember(ElaBuiltinKind.Length, s, 0, map);
+                    break;
                 case TypeClass.Ix:
-                    CompileBuiltinMember(ElaBuiltinKind.Get, s, 0, map);
-                    CompileBuiltinMember(ElaBuiltinKind.Length, s, 1, map);
+                    CompileBuiltinMember(ElaBuiltinKind.GetValue, s, 0, map);                    
+                    break;
+                case TypeClass.Name:
+                    CompileBuiltinMember(ElaBuiltinKind.GetField, s, 0, map);
+                    CompileBuiltinMember(ElaBuiltinKind.HasField, s, 1, map);                    
                     break;
                 case TypeClass.Cat:
                     CompileBuiltinMember(ElaBuiltinKind.Concat, s, 0, map);

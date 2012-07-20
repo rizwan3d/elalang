@@ -41,23 +41,31 @@ namespace Ela.Compilation
         
         //This method only compiles types declared through 'type' keyword
         //and not type extensions ('data' declarations).
-        private void CompileTypeOnly(ElaNewtype v, LabelMap map)
+        private void CompileTypeOnly(ElaNewtype nt, LabelMap map)
         {
-            if (!v.Extends && !v.Header)
-                CompileTypeBody(v, map);
+            var v = nt;
 
-            if (v.And != null)
-                CompileTypeOnly(v.And, map);
+            while (v != null)
+            {
+                if (!v.Extends && !v.Header)
+                    CompileTypeBody(v, map);
+
+                v = v.And;
+            }
         }
 
         //This method only compiles type extensions (declared through 'data').
-        private void CompileDataOnly(ElaNewtype v, LabelMap map)
+        private void CompileDataOnly(ElaNewtype nt, LabelMap map)
         {
-            if (v.Extends && !v.Header)
-                CompileTypeBody(v, map);
+            var v = nt;
 
-            if (v.And != null)
-                CompileDataOnly(v.And, map);
+            while (v != null)
+            {
+                if (v.Extends && !v.Header)
+                    CompileTypeBody(v, map);
+
+                v = v.And;
+            }
         }
 
         //Main method for type compilation

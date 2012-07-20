@@ -10,7 +10,7 @@ namespace Ela.Runtime
 
 		CallFailed = 801,
 
-		// = 802,
+		NotAlgebraicType = 802,
 
 		DivideByZero = 803,
 
@@ -44,7 +44,7 @@ namespace Ela.Runtime
 
 		BottomReached = 818,
 
-		// = 819,
+		UnknownField = 819,
 
 		NoOverload = 820,
 

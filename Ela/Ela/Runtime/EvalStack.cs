@@ -10,16 +10,18 @@ namespace Ela.Runtime
 		private ElaValue[] array;
 		private int size;
 		private int initialSize;
-        private static ElaValue[] bigArray = new ElaValue[100];
+        private static readonly ElaValue[] bigArray = new ElaValue[100];
+        internal readonly bool tail;
 
 		internal EvalStack(int size, bool tail)
 		{
 			this.initialSize = size;
-			
+            this.tail = tail;
+
             //It DOESN'T create a memory leak, we can safely reuse an already allocated
             //array here. This is because eval stack *after* execution of a function is 
             //should be always empty.
-            array = tail && size <= 100 ? bigArray : new ElaValue[size];
+            array = /*tail && size <= 100 ? bigArray :*/ new ElaValue[size];            
 		}
 
 		public IEnumerator<ElaValue> GetEnumerator()

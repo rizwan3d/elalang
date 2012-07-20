@@ -47,13 +47,31 @@ namespace Ela.Runtime.ObjectModel
             return 0;
         }
 
-        internal ElaValue GetValue(ElaValue index, ExecutionContext ctx)
+        internal bool HasField(ElaValue index, ExecutionContext ctx)
+        {
+            if (vm != null)
+            {
+                if (index.TypeId != ElaMachine.STR)
+                {
+                    ctx.InvalidType(TCF.GetShortForm(ElaTypeCode.String), index);
+                    return false;
+                }
+
+                var frame = vm.Assembly.GetModule(Handle);
+                return frame.GlobalScope.Locals.ContainsKey(index.DirectGetString());
+            }
+
+            ctx.Fail(ElaRuntimeError.Unknown, "VM is non present");
+            return false;
+        }
+
+        internal ElaValue GetField(ElaValue index, ExecutionContext ctx)
 		{
 			if (vm != null)
 			{
                 if (index.TypeId != ElaMachine.STR)
                 {
-                    ctx.InvalidIndexType(index);
+                    ctx.InvalidType(TCF.GetShortForm(ElaTypeCode.String), index);
                     return Default();
                 }
 
@@ -63,7 +81,7 @@ namespace Ela.Runtime.ObjectModel
 
 				if (!frame.GlobalScope.Locals.TryGetValue(field, out sc))
 				{
-					ctx.IndexOutOfRange(index, new ElaValue(this));
+					ctx.UnknownField(index.DirectGetString(), new ElaValue(this));
 					return Default();
 				}
 

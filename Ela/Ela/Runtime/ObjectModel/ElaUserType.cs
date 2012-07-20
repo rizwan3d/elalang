@@ -33,8 +33,7 @@ namespace Ela.Runtime.ObjectModel
         {
             if (Values == null || index >= Values.Length)
             {
-                ctx.Fail(new ElaError(ElaRuntimeError.InvalidTypeArgument,
-                    asm.Constructors[tag], typeName, index + 1));
+                ctx.Fail(new ElaError(ElaRuntimeError.InvalidTypeArgument, asm.Constructors[tag].Name, typeName, index + 1));
                 return Default();
             }
 

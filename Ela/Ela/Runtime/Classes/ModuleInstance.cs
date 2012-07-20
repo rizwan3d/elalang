@@ -32,14 +32,14 @@ namespace Ela.Runtime.Classes
             return ((ElaModule)left.Ref).Handle != ((ElaModule)right.Ref).Handle;
         }
 
-        internal override ElaValue GetLength(ElaValue value, ExecutionContext ctx)
+        internal override ElaValue GetField(ElaValue obj, ElaValue field, ExecutionContext ctx)
         {
-            return new ElaValue(((ElaModule)value.Ref).GetVariableCount(ctx));
+            return ((ElaModule)obj.Ref).GetField(field, ctx);
         }
 
-        internal override ElaValue GetValue(ElaValue value, ElaValue index, ExecutionContext ctx)
+        internal override bool HasField(ElaValue obj, ElaValue field, ExecutionContext ctx)
         {
-            return ((ElaModule)value.Ref).GetValue(index, ctx);
+            return ((ElaModule)obj.Ref).HasField(field, ctx);
         }
     }
 }

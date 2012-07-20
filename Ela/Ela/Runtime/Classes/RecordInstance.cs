@@ -30,5 +30,15 @@ namespace Ela.Runtime.Classes
         {
             return ((ElaRecord)value.Ref).GetValue(index, ctx);
         }
+
+        internal override ElaValue GetField(ElaValue obj, ElaValue field, ExecutionContext ctx)
+        {
+            return ((ElaRecord)obj.Ref).GetField(field, ctx);
+        }
+
+        internal override bool HasField(ElaValue obj, ElaValue field, ExecutionContext ctx)
+        {
+            return ((ElaRecord)obj.Ref).HasField(field, ctx);
+        }
     }
 }

@@ -1,3 +1,5 @@
+0.11.0.57:Change:New op codes 'Api' and 'Api2' are added that will now be used for extensible internal API.
+0.11.0.56:Change:Op code 'Gettag' is decomissioned.
 0.11.0.55:Change:Now Ela generate better error message on type errors in external methods calls.
 0.11.0.54:New:Tail calls are seriously optimized and can reuse the eval stack frame in most cases.
 0.11.0.53:New:Now compiler can automatically generate instances for virtually any class if there is a default instance (an instance without a type specification) for this type.

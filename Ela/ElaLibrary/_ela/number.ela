@@ -74,6 +74,16 @@ class Transcendental a where
   atanh a
   acosh a
 
+class Principal a where
+  gcd a->a
+  lcm a->a
+
+instance Integral where
+  div x y
+    | r < 0 and r*y <> x = r - 1
+    | else = r
+    where r = x `quot` y
+
 instance Float Single
   where
     inf       = rl.infSingle
@@ -97,8 +107,7 @@ instance Fractional Single Double
 
 instance Integral Int Long
   where
-    div x y   = genericDiv x y
-    quot x y  = x `genericQuot` y
+    quot = __internal quot
 
 instance Absolute Int
   where 
@@ -143,19 +152,13 @@ instance Transcendental Single Double where
   asinh x     = rl.asinh (force x)
   atanh x     = rl.atanh (force x)
 
-genericQuot = __internal quot
+instance Principal where
+  gcd 0 0 = fail "Principal.gcd: gcd 0 0 is undefined"
+  gcd x y = gcd' (abs x) (abs y)
+            where gcd' x 0 = x
+                  gcd' x y = gcd' y (x % y)
+  lcm _ 0 = 0
+  lcm 0 _ = 0
+  lcm x y = abs ((x `quot` gcd x y) * y)
 
-genericDiv x y
-  | r < 0 and r*y <> x = r - 1
-  | else = r
-  where r = x `genericQuot` y
-
-gcd 0 0 = fail "number.gcd: gcd 0 0 is undefined"
-gcd x y = gcd' (abs x) (abs y)
-          where gcd' x 0 = x
-                gcd' x y = gcd' y (x % y)
-
-lcm _ 0 = 0
-lcm 0 _ = 0
-lcm x y = abs ((x `quot` gcd x y) * y)
-
+instance Principal Int Long Single Double

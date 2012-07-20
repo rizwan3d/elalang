@@ -168,6 +168,9 @@
   <data name="NoOverload" xml:space="preserve">
     <value>Function '{0}' is not implemented for the given argument list. Expected '{1}', got '{2}'.</value>
   </data>
+  <data name="NotAlgebraicType" xml:space="preserve">
+    <value>A type '{0}' is not an algebraic type.</value>
+  </data>
   <data name="OperationNotSupported" xml:space="preserve">
     <value>This operation is not supported by the object of type '{0}'.</value>
   </data>
@@ -188,6 +191,9 @@
   </data>
   <data name="Unknown" xml:space="preserve">
     <value>An unknown runtime error has occured. Error details: {0}.</value>
+  </data>
+  <data name="UnknownField" xml:space="preserve">
+    <value>Unknown field '{0}' in an object '{1}' of type '{2}'.</value>
   </data>
   <data name="UnknownParameterType" xml:space="preserve">
     <value>Invalid type for the function parameter: '{0}'.</value>

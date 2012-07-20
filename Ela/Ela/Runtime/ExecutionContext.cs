@@ -41,6 +41,11 @@ namespace Ela.Runtime
 			Fail(ElaRuntimeError.InvalidIndexType, index.GetTypeName());
 		}
 
+        public void NotAlgebraicType(ElaValue val)
+        {
+            Fail(ElaRuntimeError.NotAlgebraicType, val.GetTypeName());
+        }
+        
 
 		public void IndexOutOfRange(ElaValue index, ElaValue obj)
 		{
@@ -52,7 +57,12 @@ namespace Ela.Runtime
 		public void InvalidType(string expected, ElaValue given)
 		{
 			Fail(ElaRuntimeError.InvalidType, expected, given.GetTypeName());
-		}
+        }
+
+        public void UnknownField(string field, ElaValue given)
+        {
+            Fail(ElaRuntimeError.UnknownField, given.ToString(), given.GetTypeName());
+        }
 
 
 		public void NoOperator(ElaValue value, string op)
