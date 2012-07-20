@@ -22,5 +22,5 @@ fromRecord # qualified
 fromRecord rec = fromRec 0
   where len = length rec
         keys = fields rec
-        fromRec n | n < len = (keys:n,rec:(keys:n)) :: fromRec (n+1)
+        fromRec n | n < len = (keys:n,rec:n) :: fromRec (n+1)
                   | else = []

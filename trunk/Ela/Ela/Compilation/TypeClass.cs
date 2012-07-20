@@ -18,8 +18,10 @@ namespace Ela.Compilation
         Bit = 7,
         Seq = 8,
         Ix = 9,
-        Cat = 10,
-        Show = 11
+        Len = 10,
+        Name = 11,
+        Cat = 12,
+        Show = 13
     }
 
     //Convert a string to TypeClass enum.
@@ -38,6 +40,8 @@ namespace Ela.Compilation
                 case "Bit": return TypeClass.Bit;
                 case "Seq": return TypeClass.Seq;
                 case "Ix": return TypeClass.Ix;
+                case "Len": return TypeClass.Len;
+                case "Name": return TypeClass.Name;
                 case "Cat": return TypeClass.Cat;
                 case "Show": return TypeClass.Show;
                 default: return TypeClass.None;

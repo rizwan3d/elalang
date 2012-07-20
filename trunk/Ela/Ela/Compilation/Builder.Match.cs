@@ -410,10 +410,16 @@ namespace Ela.Compilation
             {
                 var fld = rec.Fields[i];
                 var addr = AddVariable();
+                var si = AddString(fld.FieldName);
 
-                cw.Emit(Op.Pushstr, AddString(fld.FieldName));
                 PushVar(sysVar);
-                cw.Emit(Op.Pushelem);
+                cw.Emit(Op.Pushstr, si);
+                cw.Emit(Op.Hasfld);
+                cw.Emit(Op.Brfalse, failLab);
+
+                PushVar(sysVar);
+                cw.Emit(Op.Pushstr, si);
+                cw.Emit(Op.Pushfld);
                 PopVar(addr);
 
                 //We obtain a value of field, now we need to match it using a pattern in
@@ -439,14 +445,14 @@ namespace Ela.Compilation
             for (var i = 0; i < len; i++)
             {
                 var pat = tuple.Parameters[i];
-
+                PushVar(sysVar);
+                
                 //Generate a 'short' op typeId for the first entry
                 if (i == 0)
                     cw.Emit(Op.PushI4_0);
                 else
                     cw.Emit(Op.PushI4, i);
 
-                PushVar(sysVar);
                 cw.Emit(Op.Pushelem);
 
                 //Here we need to bind a value of an element to a new system
@@ -611,8 +617,8 @@ namespace Ela.Compilation
                 cw.Emit(Op.Cneq);
                 cw.Emit(Op.Brtrue, failLab);
                 //Obtain an element
-                if (i == 0) cw.Emit(Op.PushI4_0); else cw.Emit(Op.PushI4, i);
                 PushVar(a);
+                if (i == 0) cw.Emit(Op.PushI4_0); else cw.Emit(Op.PushI4, i);
                 cw.Emit(Op.Pushelem);
 
                 //Compile thunk epilog, create a new thunk object

@@ -50,9 +50,6 @@ namespace Ela.Compilation
                 case ElaBuiltinKind.BackwardPipe:
                     cw.Emit(Op.Call);
                     break;
-                case ElaBuiltinKind.Gettag:
-                    cw.Emit(Op.Gettag);
-                    break;
                 case ElaBuiltinKind.Head:
                     cw.Emit(Op.Head);
                     break;
@@ -143,8 +140,57 @@ namespace Ela.Compilation
                 case ElaBuiltinKind.BitwiseNot:
                     cw.Emit(Op.NotBw);
                     break;
-                case ElaBuiltinKind.Get:
+                case ElaBuiltinKind.GetValue:
                     cw.Emit(Op.Pushelem);
+                    break;
+                case ElaBuiltinKind.GetValueR:
+                    cw.Emit(Op.Swap);
+                    cw.Emit(Op.Pushelem);
+                    break;
+                case ElaBuiltinKind.GetField:
+                    cw.Emit(Op.Pushfld);
+                    break;
+                case ElaBuiltinKind.Api1:
+                    cw.Emit(Op.Api, 1);
+                    break;
+                case ElaBuiltinKind.Api2:
+                    cw.Emit(Op.Api, 2);
+                    break;
+                case ElaBuiltinKind.Api3:
+                    cw.Emit(Op.Api, 3);
+                    break;
+                case ElaBuiltinKind.Api4:
+                    cw.Emit(Op.Api, 4);
+                    break;
+                case ElaBuiltinKind.Api5:
+                    cw.Emit(Op.Api, 5);
+                    break;
+                case ElaBuiltinKind.Api6:
+                    cw.Emit(Op.Api, 6);
+                    break;
+                case ElaBuiltinKind.Api7:
+                    cw.Emit(Op.Api, 7);
+                    break;
+                case ElaBuiltinKind.Api8:
+                    cw.Emit(Op.Api, 8);
+                    break;
+                case ElaBuiltinKind.Api9:
+                    cw.Emit(Op.Api, 9);
+                    break;
+                case ElaBuiltinKind.Api101:
+                    cw.Emit(Op.Api2, 101);
+                    break;
+                case ElaBuiltinKind.Api102:
+                    cw.Emit(Op.Api2, 102);
+                    break;
+                case ElaBuiltinKind.Api103:
+                    cw.Emit(Op.Api2, 103);
+                    break;
+                case ElaBuiltinKind.Api104:
+                    cw.Emit(Op.Api2, 104);
+                    break;
+                case ElaBuiltinKind.Api105:
+                    cw.Emit(Op.Api2, 105);
                     break;
             }
         }

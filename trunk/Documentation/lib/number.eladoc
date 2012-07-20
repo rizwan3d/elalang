@@ -90,10 +90,6 @@ for a 64-bit float), `zero` (a zero value for a 64-bit float), `pi` (the ratio o
 circumference of a circle to its diameter as 64-bit float) and `e` (the natural logarithmic 
 base as 64-bit float).
 
-genericQuot
-A generic integer division truncated towards zero that works for both 32-bit integers 
-and 64-bit integers.
-
 genericDiv
 A generic integer division truncated towards negative infinity that works for both
 32-bit integers and 64-bit integers.

@@ -136,21 +136,29 @@ deconstruct this type using head/tail pattern, e.g.:
 >>      x::xs = ...
 >>      [] = ...
 
+Len
+Defines a function `length` that can be implemented by objects for which there is a notion
+of measurable length. An example of such object is a linked list or tuple:
+>>>length (1,2,3)
+
 Ix
-Defines two functions that allow to work with a given sequence as with an indexed array. A
-function `item` obtains an element from a sequence with a given index:
->>>xs = (1,2,3)
->>>xs `item` 1
-Indices can be of any type. Whether an index of a particular type is supported depends on a 
-specific implementation of this operator, e.g. records accept strings as indices:
->>>rec = {x=1, y=2, z=3}
->>>rec `item` "y"
-Function `length` returns a length of a given sequence:
->>>length rec
-If an instance of this class is implemented for a particular type than it is possible to 
-deconstruct this type using tuple pattern, e.g.:
+Defines a function `getValue` that maps a given index to a value. This class should be 
+implemented by containers which have a strict order of elements, such as lists or tuples.
+>>>getValue 1 [1,2,3]
+Instance of this class (along with an instance of `Len` class) allows to pattern match a
+value using tuple pattern, e.g.:
 >>match tup with
 >>      (x,y,z) = ...
+
+Name
+This class provides an abstraction for a container which elements can be accessed by name.
+A function `getField` maps a given name to a value, and a function `hasField` checks if a
+given name is recognized by a container. A typical example of a container that implements
+such an abstraction is a record.
+>>>getField "y" {x=1,y=2,z=3}
+Instance of this class allows to pattern match a value using record pattern, e.g.:
+>>match rec with
+>>      {x=xx,y=yy} = ...
 
 Cat
 An operator `++` concatenates two entities and produces a new entity that includes elements from 
@@ -230,17 +238,27 @@ It relies on a declaration order of constructors in an algebraic type:
 >>>succ Foo
 This implementation allows to use custom types in ranges.
 
-Ix-
-This is a default implementation of an `Ix` class. It defines all members of `Ix` class. It can be used to 
-generate instances of `Ix` (e.g. using `deriving` clause). This implementation would work for any 
+Len-
+This is a default implementation of a `Len` class. It can be used to generate instances of `Len` (e.g. using `deriving` 
+clause). This implementation would work for any custom algebraic type.//br
+This implementation returns a number of parameters for a given constructor.
+
+Name-
+This is a default implementation of an `Name` class. It defines all members of `Name` class. It can be used to 
+generate instances of `Name` (e.g. using `deriving` clause). This implementation would work for any 
 custom algebraic type.//br
-This implementation of `Ix` allows to treat productions of an algebraic types as record and to use record
+This implementation of `Name` allows to treat productions of an algebraic types as records and to use record
 like syntax to access members of these productions:
 >>>type Point = Point x y
->>>  deriving Ix
+>>>  deriving Name
 >>>
 >>>p = Point 12 24
 >>>p.x
+
+Ix-
+This is a default implementation of an `Ix` class. It can be used to generate instances of `Ix` (e.g. using `deriving` 
+clause). This implementation would work for any custom algebraic type.//br
+This implementation returns a parameter of a given constructor at a given index.
 
 Show-
 This is a default implementation of an `Show` class. It defines all members of `Show` class. It can be used to 
@@ -447,7 +465,7 @@ An alias for a remainder (`rem`) function from `Modulo` class:
 >>>12.2 % 3.0
 
 : x y
-An alias for an `item` function from `Ix` class:
+Provides a version of `getValue` function from `Ix` class that accepts arguments in a reverse order:
 >>>[1,2,3] : 2
 
 show x

@@ -44,11 +44,7 @@ namespace Ela.Compilation
             //StartSection create a real lexical scope.
 			StartSection();
 
-            //If this a 'type member' function we can specify a tail hint because
-            //it could cause a generation of Callt when we need to construct a type
-            //(using Newtype) as the very last instruction in such a function.
-            var hints = Hints.Scope;
-
+            var hints = Hints.Scope|Hints.Tail;
 			AddLinePragma(dec);
             var address = cw.Offset;
             CompileFunctionMatch(pars, dec, map, hints);

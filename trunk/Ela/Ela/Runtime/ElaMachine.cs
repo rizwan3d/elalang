@@ -315,7 +315,47 @@ namespace Ela.Runtime
                             right = right.Ref.Force(right, ctx);
                         }
 
-                        evalStack.Replace(cls[left.TypeId].GetValue(left, right, ctx));
+                        evalStack.Replace(cls[right.TypeId].GetValue(right, left, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.Pushfld:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+
+                        if (left.TypeId == LAZ || right.TypeId == LAZ)
+                        {
+                            left = left.Ref.Force(left, ctx);
+                            right = right.Ref.Force(right, ctx);
+                        }
+
+                        evalStack.Replace(cls[right.TypeId].GetField(right, left, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.Hasfld:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+
+                        if (left.TypeId == LAZ || right.TypeId == LAZ)
+                        {
+                            left = left.Ref.Force(left, ctx);
+                            right = right.Ref.Force(right, ctx);
+                        }
+
+                        evalStack.Replace(cls[right.TypeId].HasField(right, left, ctx));
 
                         if (ctx.Failed)
                         {
@@ -537,23 +577,6 @@ namespace Ela.Runtime
                             right = right.Ref.Force(right, ctx);
 
                         evalStack.Replace(right.Ref.Untag(asm, ctx, opd));
-
-                        if (ctx.Failed)
-                        {
-                            evalStack.Replace(right);
-                            ExecuteThrow(thread, evalStack);
-                            goto SWITCH_MEM;
-                        }
-                        break;
-                    case Op.Gettag:
-                        right = evalStack.Peek();
-
-                        if (right.TypeId == LAZ)
-                            right = right.Ref.Force(right, ctx);
-
-                        i4 = right.Ref.GetTag(ctx);
-
-                        evalStack.Replace(new ElaValue(i4 < 0 ? String.Empty : asm.Constructors[i4].Name));
 
                         if (ctx.Failed)
                         {
@@ -1296,6 +1319,30 @@ namespace Ela.Runtime
                     #region Misc
                     case Op.Nop:
                         break;
+                    case Op.Api:
+                        right = evalStack.Pop();
+                        evalStack.Push(ApiCall(opd, right, new ElaValue(), evalStack, thread));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
+                    case Op.Api2:
+                        left = evalStack.Pop();
+                        right = evalStack.Pop();
+                        evalStack.Push(ApiCall(opd, left, right, evalStack, thread));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
                     case Op.Newtype:
                         {
                             var tid = evalStack.Pop().I4;
@@ -1433,6 +1480,220 @@ namespace Ela.Runtime
 
 
         #region Operations
+        internal enum Api
+        {
+            None = 0,
+            ConsName = 1,
+            ConsParamNumber = 2,
+            ConsIndex = 3,
+            
+            TypeName = 4,
+            TypeCode = 5,
+            TypeConsNumber = 6,
+            ConsInfix = 7,
+            ConsParams = 8,
+            ConsCode = 9,
+                        
+            ConsParamIndex = 101,
+            ConsParamValue = 102,
+            ConsParamName = 103,
+            ConsDefault = 104,
+            ConsParamExist = 105,
+        }
+
+        internal ElaValue ApiCall(int code, ElaValue left, ElaValue right, EvalStack stack, WorkerThread thread)
+        {
+            switch ((Api)code)
+            {
+                case Api.ConsName:
+                    {
+                        var cid = left.Ref.GetTag(null);
+
+                        if (cid >= 0)
+                            return new ElaValue(asm.Constructors[cid].Name);
+
+                        thread.Context.NotAlgebraicType(left);
+                    }
+                    break;
+                case Api.ConsParamNumber:
+                    {
+                        var cid = left.Ref.GetTag(null);
+
+                        if (cid >= 0)
+                        {
+                            var pars = asm.Constructors[cid].Parameters;
+                            return new ElaValue(pars != null ? pars.Count : 0);
+                        }
+
+                        thread.Context.NotAlgebraicType(left);
+                    }
+                    break;
+                case Api.ConsParams:
+                    {
+                        if (left.TypeId > SysConst.MAX_TYP)
+                        {
+                            var vals = ((ElaUserType)left.Ref).Values;
+                            return vals != null ? new ElaValue(new ElaTuple(vals)) : new ElaValue(ElaUnit.Instance);
+                        }
+
+                        thread.Context.NotAlgebraicType(left);
+                    }
+                    break;
+                case Api.ConsIndex:
+                    {
+                        if (left.TypeId <= SysConst.MAX_TYP)
+                            thread.Context.NotAlgebraicType(left);
+
+                        var cons = asm.Types[left.Ref.TypeId].Constructors;
+                        return new ElaValue(cons.Count > 0 ? cons.IndexOf(left.Ref.GetTag(null)) : 0);
+                    }
+                case Api.ConsCode:
+                    {
+                        if (left.TypeId <= SysConst.MAX_TYP)
+                            thread.Context.NotAlgebraicType(left);
+
+                        return new ElaValue(left.Ref.GetTag(null));
+                    }
+                case Api.TypeName:
+                    return new ElaValue(left.GetTypeName());
+                case Api.TypeCode:
+                    return new ElaValue(left.Ref.TypeId);
+                case Api.TypeConsNumber:
+                    return new ElaValue(asm.Types[left.Ref.TypeId].Constructors.Count);
+                case Api.ConsInfix:
+                    {
+                        var cid = left.Ref.GetTag(null);
+
+                        if (cid >= 0)
+                        {
+                            var r = asm.Constructors[cid];
+                            return new ElaValue(Format.IsSymbolic(r.Name));
+                        }
+
+                        thread.Context.NotAlgebraicType(right);
+                    }
+                    break;
+                case Api.ConsParamIndex:
+                    {
+                        if (left.TypeId != STR)
+                        {
+                            thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.String), left);
+                            return new ElaValue(ElaObject.ElaInvalidObject.Instance);
+                        }
+
+                        var cid = right.Ref.GetTag(null);
+
+                        if (cid >= 0)
+                        {
+                            var r = asm.Constructors[cid].Parameters.IndexOf(left.DirectGetString());
+
+                            if (r < 0)
+                                thread.Context.IndexOutOfRange(left, right);
+
+                            return new ElaValue(r);
+                        }
+
+                        thread.Context.NotAlgebraicType(right);
+                    }
+                    break;
+                case Api.ConsParamExist:
+                    {
+                        if (left.TypeId != STR)
+                        {
+                            thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.String), left);
+                            return new ElaValue(ElaObject.ElaInvalidObject.Instance);
+                        }
+
+                        var cid = right.Ref.GetTag(null);
+
+                        if (cid >= 0)
+                        {
+                            var r = asm.Constructors[cid].Parameters.IndexOf(left.DirectGetString());
+                            return new ElaValue(r >= 0);
+                        }
+
+                        thread.Context.NotAlgebraicType(right);
+                    }
+                    break;
+                case Api.ConsParamValue:
+                    {
+                        if (left.TypeId != INT)
+                        {
+                            thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.Integer), left);
+                            return new ElaValue(ElaObject.ElaInvalidObject.Instance);
+                        }
+
+                        if (right.Ref.TypeId > SysConst.MAX_TYP)
+                            return ((ElaUserType)right.Ref).Untag(asm, thread.Context, left.I4);
+
+                        thread.Context.NotAlgebraicType(right);
+                    }
+                    break;
+                case Api.ConsParamName:
+                    {
+                        if (left.TypeId != INT)
+                        {
+                            thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.Integer), left);
+                            return new ElaValue(ElaObject.ElaInvalidObject.Instance);
+                        }
+
+                        var cid = right.Ref.GetTag(null);
+
+                        if (cid >= 0)
+                        {
+                            var pars = asm.Constructors[cid].Parameters;
+
+                            if (left.I4 < 0 || left.I4 >= pars.Count)
+                                thread.Context.IndexOutOfRange(left, right);
+                            else
+                                return new ElaValue(pars[left.I4]);
+                        }
+
+                        thread.Context.NotAlgebraicType(right);
+                    }
+                    break;
+                case Api.ConsDefault:
+                    {
+                        if (left.TypeId != INT)
+                        {
+                            thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.Integer), left);
+                            return new ElaValue(ElaObject.ElaInvalidObject.Instance);
+                        }
+
+                        var tid = right.Ref.TypeId;
+
+                        if (tid > SysConst.MAX_TYP)
+                        {
+                            var dt = asm.Types[tid];
+
+                            if (left.I4 < 0 || left.I4 >= dt.Constructors.Count)
+                                thread.Context.IndexOutOfRange(left, right);
+                            else
+                            {
+                                var cd = asm.Constructors[dt.Constructors[left.I4]];
+
+                                if (cd.Parameters == null)
+                                    return new ElaValue(new ElaUserType(cd.TypeName, tid, cd.Code, new ElaValue(ElaUnit.Instance)));
+                                else
+                                {
+                                    var arr = new ElaTuple(cd.Parameters.Count);
+
+                                    for (var i = 0; i < arr.Length; i++)
+                                        arr.InternalSetValue(i, new ElaValue(ElaUnit.Instance));
+
+                                    return new ElaValue(new ElaUserType(cd.TypeName, tid, cd.Code, new ElaValue(arr)));
+                                }
+                            }
+                        }
+
+                        thread.Context.NotAlgebraicType(right);
+                    }
+                    break;
+            }
+
+            return new ElaValue(ElaObject.ElaInvalidObject.Instance);
+        }
+
         internal ElaValue CallPartial(ElaFunction fun, ElaValue arg)
         {
             if (fun.AppliedParameters < fun.Parameters.Length)
@@ -1561,7 +1822,7 @@ namespace Ela.Runtime
 
                     //If CallFalg.NoReturn is set than this is a tail call. For a tail call we
                     //can reuse an already allocated eval stack array.
-                    var newStack = new EvalStack(layout.StackSize, cf == CallFlag.NoReturn);
+                    var newStack = new EvalStack(layout.StackSize, stack.tail && cf == CallFlag.NoReturn);
                     var newMem = new CallPoint(natFun.ModuleHandle, newStack, newLoc, natFun.Captures);
 
                     if (cf != CallFlag.NoReturn)

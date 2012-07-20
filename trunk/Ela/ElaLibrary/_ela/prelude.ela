@@ -24,16 +24,16 @@ type Char
   deriving Eq Ord Show Cat
 
 type String
-  deriving Eq Ord Show Cat Seq Ix
+  deriving Eq Ord Show Cat Seq Len Ix
 
 type Tuple
-  deriving Ix Cat
+  deriving Len Ix Cat
 
 type Record
-  deriving Ix Cat
+  deriving Len Ix Name Cat
 
 type Module
-  deriving Eq Show
+  deriving Eq Show Name
 
 type Fun
   deriving Eq Show
@@ -88,11 +88,11 @@ class Ord(Ord) a where
   (>=) a->a
   (<=) a->a
 
-instance Ord Tuple
-  where x<y = tupleAny (<) x y
-        x>y = tupleAny (>) x y
-        x<=y = tupleAny (<=) x y
-        x>=y = tupleAny (>=) x y
+instance Ord Tuple where 
+  x < y  = tupleAny (<) x y
+  x > y  = tupleAny (>) x y
+  x <= y = tupleAny (<=) x y
+  x >= y = tupleAny (>=) x y
 
 tupleAny # private 
 tupleAny f tup1 tup2 
@@ -161,31 +161,40 @@ class Seq(Seq) a where
 
 /* Ix */
 class Ix(Ix) a where 
-  item a->_
+  getValue _->a
+
+instance Ix List where
+  getValue n xs = get 0 xs
+    where get _ [] = fail "Ix.getValue: Index is out of range."
+          get i (x::xs) | i == n = x
+                        | else = get (i+1) xs
+
+(:) = __internal getvaluer
+
+/* Len */
+class Len(Len) a where
   length a
 
-(:) = item
+instance Len List where
+  length xs
+    | lang.__isLazyList xs = len 0 xs
+    | else = lang.__listLength xs
+    where len n [] = n
+          len n (x::xs) = len (n+1) xs
 
-instance Ix List
-  where 
-    length xs
-      | lang.__isLazyList xs = len 0 xs
-      | else = lang.__listLength xs
-      where len n [] = n
-            len n (x::xs) = len (n+1) xs
-    item xs n = get 0 xs
-      where get _ [] = fail ("prelude.item: Index '" ++ show n ++ "' is out of range.")
-            get i (x::xs) | i == n = x
-                          | else = get (i+1) xs
+/* Name */
+class Name(Name) a where
+  getField _->a
+  hasField _->a
 
 /* Cat */
 class Cat(Cat) a where
   (++) a->_
 
-instance Cat List
-  where xs++ys = cat (reverse xs) ys
-                 where cat (x::xs) ys = cat xs (x::ys)
-                       cat [] ys = ys
+instance Cat List where 
+  xs ++ ys = cat (reverse xs) ys
+             where cat (x::xs) ys = cat xs (x::ys)
+                   cat [] ys = ys
 
 reverse # private
 reverse xs 
@@ -354,15 +363,22 @@ instance Show where
     where u = untag a 
           v = match u with () = []; _  = " " :: showParamList f u
 
-instance Ix where
+instance Len where
   length v
     | o is Unit = 0
     | else = length o
     where o = lang.__unwrap v
-  item v n
-    | idx < 0 = fail "prelude.item: Index '" ++ show n ++ "' is out of range."
-    | else = lang.__unwrap v : idx
-    where idx = lang.__getParameterIndex lang v n
+
+instance Name where
+  getField nm xs
+    | idx < 0 = fail "Name.getField: Unknown field."
+    | else = lang.__unwrap xs : idx
+    where idx = lang.__getParameterIndex lang xs nm
+  hasField nm xs = idx >= 0
+    where idx = lang.__getParameterIndex lang xs nm
+
+instance Ix where
+  getValue idx xs = lang.__unwrap xs : idx
 
 instance Enum where
   succ a = lang.__conssucc lang a

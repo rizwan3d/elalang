@@ -4,8 +4,6 @@
 */
 import libRecord#elalib@r
 
-hasField fld rec = r.hasField (force fld) (force rec)
-
 addFields fields rec = r.addFields (force fields) (force rec)
 addField fld val rec = r.addField (force fld) val (force rec)
 

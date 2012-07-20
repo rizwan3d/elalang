@@ -15,18 +15,12 @@ namespace Ela.Library.General
 
         public override void Initialize()
         {
-            Add<String,ElaRecord,Boolean>("hasField", HasField);
             Add<ElaRecord,ElaRecord,ElaRecord>("addFields", AddFields);
             Add<String,ElaValue,ElaRecord,ElaRecord>("addField", AddField);
             Add<IEnumerable<String>,ElaRecord,ElaRecord>("removeFields", RemoveFields);
             Add<String,ElaRecord,ElaRecord>("removeField", RemoveField);
             Add<String,ElaValue,ElaRecord,ElaRecord>("changeField", ChangeField);
             Add<ElaRecord,ElaList>("fields", GetFields);
-        }
-
-        public bool HasField(string field, ElaRecord rec)
-        {
-            return rec.HasField(field);
         }
 
         public ElaRecord AddField(string field, ElaValue value, ElaRecord rec)
