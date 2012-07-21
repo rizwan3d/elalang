@@ -58,6 +58,10 @@ namespace Ela
                 case "api7": return ElaBuiltinKind.Api7;
                 case "api8": return ElaBuiltinKind.Api8;
                 case "api9": return ElaBuiltinKind.Api9;
+                case "api10": return ElaBuiltinKind.Api10;
+                case "api11": return ElaBuiltinKind.Api11;
+                case "api12": return ElaBuiltinKind.Api12;
+                case "api13": return ElaBuiltinKind.Api13;
                 case "api101": return ElaBuiltinKind.Api101;
                 case "api102": return ElaBuiltinKind.Api102;
                 case "api103": return ElaBuiltinKind.Api103;

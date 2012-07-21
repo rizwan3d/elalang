@@ -32,10 +32,10 @@ fromIntegral a = from a
 
 /* Instances */
 instance Show Peano where 
-  showf _ p = string.fromList ("peano(" :: show p)
+  showf _ p = toString <| show (stringBuilder +> "peano(") p
     where 
-      show Zero = ["0)"]
-      show (Succ a) = "1+" :: show a
+      show sb Zero = sb +> "0)"
+      show sb (Succ a) = show (sb +> "1+") a
 
 instance Eq Peano where
   (==) = comp (==)

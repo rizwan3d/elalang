@@ -170,7 +170,7 @@ comparision {eq} =
 
 operator1 {eq} =
   eq (rec ?. "foo") "foo"
-  where x ?. y = x:y
+  where x ?. y = getField y x
         rec = { foo = "foo" }
 
 flipThunk {eq} = 

@@ -277,7 +277,7 @@ namespace Ela.Compilation
         {
             //Obtain a 'table' function of a class
             var name = s.GetLeftName();
-            var btVar = ObtainClassFunction(classPrefix, name, s.Line, s.Column);
+            var btVar = ObtainClassFunction(classPrefix, className, name, s.Line, s.Column);
 
             if (btVar.IsEmpty())
                 AddError(ElaCompilerError.MemberInvalid, s, name, className);
@@ -503,11 +503,30 @@ namespace Ela.Compilation
                 
         //Looks for a 'table' function (a class function to which we would add instances).
         //It can be optionally qualified with a 'classPrefix' (which is a module alias).
-        private ScopeVar ObtainClassFunction(string classPrefix, string name, int line, int col)
+        private ScopeVar ObtainClassFunction(string classPrefix, string className, string name, int line, int col)
         {
             var btVar = default(ScopeVar);
 
-            if (classPrefix == null)
+            if (classPrefix == null && !frame.InternalClasses.ContainsKey(className))
+            {
+                //We can't look for this name directly, because it can be shadowed. 
+                //First, we need to obtain a class reference, which is used to obtain a local
+                //module ID (encoded in address). Then we directly look for this name in the module.
+                var cv = GetGlobalVariable("$$$" + className, GetFlags.NoError, line, col);
+                var moduleHandle = cv.Address & Byte.MaxValue;
+
+                if (moduleHandle < 0 || moduleHandle >= refs.Count ||
+                    !refs[moduleHandle].GlobalScope.Locals.TryGetValue(name, out btVar))
+                    btVar = ScopeVar.Empty;
+                else
+                {
+                    //OK, found, but now we need to patch this variable, so it will be correctly
+                    //encoded as an external name.
+                    btVar = new ScopeVar(btVar.Flags | ElaVariableFlags.External,
+                        moduleHandle | btVar.Address << 8, btVar.Data);
+                }
+            }
+            else if (classPrefix == null)
                 btVar = GetVariable(name, CurrentScope, GetFlags.NoError, line, col);
             else
             {
@@ -531,13 +550,13 @@ namespace Ela.Compilation
             for (var i = 0; i < newMem.Count; i++)
             {
                 var m = newMem[i];
-                var btVar = ObtainClassFunction(inst.TypeClassPrefix, m, inst.Line, inst.Column);
+                var btVar = ObtainClassFunction(inst.TypeClassPrefix, inst.TypeClassName, m, inst.Line, inst.Column);
 
                 //This is less likely but we better check this anyway
                 if (btVar.IsEmpty())
                     AddError(ElaCompilerError.MemberInvalid, inst, m, inst.TypeClassName);
 
-                var defVar = ObtainClassFunction(inst.TypeClassPrefix, "$default$" + m, inst.Line, inst.Column);
+                var defVar = GetGlobalVariable("$default$" + m, GetFlags.NoError, inst.Line, inst.Column);
 
                 //We dont' need to generate errors here, errors will be captured later.
                 if (!defVar.IsEmpty())

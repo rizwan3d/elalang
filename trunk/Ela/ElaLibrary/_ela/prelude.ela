@@ -46,37 +46,57 @@ type Object
 type List = a :: b | Nil
   deriving Seq
 
+/* Extra types */
+type StringBuilder = StringBuilder xs # private
+
+stringBuilder = StringBuilder []
+
+(StringBuilder xs) +> s = StringBuilder (s::xs)
+
+instance StringLike StringBuilder where
+  toString (StringBuilder xs) = lts xs
+    where lts = __internal api13
+
+instance Eq StringBuilder where
+  (StringBuilder xs) == (StringBuilder ys) = xs == ys
+  (StringBuilder xs) <> (StringBuilder ys) = xs <> ys
+
+instance Show StringBuilder where
+  showf _ = toString
+
 /* Eq */
 class Eq(Eq) a where 
   (==) a->a 
   (<>) a->a
 
-instance Eq Tuple
-  where x == y = x `eqTuple` y
-        x <> y = not (x `eqTuple` y)
+instance Eq Tuple where 
+  x == y = x `eqTuple` y
+  x <> y = not (x `eqTuple` y)
 
-instance Eq Record
-  where x == y = x `eqRecord` y
-        x <> y = not (x `eqRecord` y)
+instance Eq Record where 
+  x == y = x `eqRecord` y
+  x <> y = not (x `eqRecord` y)
 
-instance Eq List
-  where x == y = x `eqList` y
-        x <> y = not (x `eqList` y)
+instance Eq List where 
+  x == y = x `eqList` y
+  x <> y = not (x `eqList` y)
 
 eqTuple # private
 eqTuple tup1 tup2 = len == length tup2 and eq 0
-        where len = length tup1
-              eq n | n < len = if tup1:n == tup2:n then eq (n+1) else false
-                   | else = true
+  where len = length tup1
+        eq n | n < len = if tup1:n == tup2:n then eq (n+1) else false
+             | else = true
 
 eqRecord # private
 eqRecord rec1 rec2 = len == length rec2 and eq 0
-         where len = length rec1
-               eq n | n < len = if rec1~n == rec2~n and rec1:n == rec2:n then eq (n+1) else false
-                    | else = true
+  where len = length rec1
+        eq n | n < len = if n~rec1 == n~rec2 and rec1:n == rec2:n then eq (n+1) else false
+             | else = true
 
 eqList # private
-eqList (x::xs) (y::ys) | x == y = xs `eqList` ys | else = false
+eqList (x::xs) (y::ys) 
+  | x == y = xs `eqList` ys 
+  | else = false
 eqList [] [] = true
 eqList [] _ = false
 eqList _ [] = false
@@ -99,8 +119,8 @@ tupleAny f tup1 tup2
   | length tup2 <> len = fail "prelude: Tuples should be of the same length."
   | else = fold 0
   where len = length tup1
-        fold n | n == len - 1 = e
-               | else = if e then true else fold (n+1)
+        fold n | n < len = if e then true else fold (n+1)
+               | else = e
                where e = tup1:n `f` tup2:n
 
 /* Numerical classes */
@@ -147,11 +167,11 @@ instance Enum Int Long where
     | snd < fst = genLt [] max fst (snd-fst)
     | else = genGt [] max fst (snd-fst)
     where genLt xs max e step
-            | e < max = lang.__reverseList xs
-            | else = genLt(e::xs) max (e+step) step
+            | e < max = listReverse xs
+            | else = genLt (e::xs) max (e+step) step
           genGt xs max e step
-            | e > max = lang.__reverseList xs
-            | else = genGt(e::xs) max (e+step) step
+            | e > max = listReverse xs
+            | else = genGt (e::xs) max (e+step) step
 
 /* Seq */
 class Seq(Seq) a where
@@ -177,15 +197,15 @@ class Len(Len) a where
 
 instance Len List where
   length xs
-    | lang.__isLazyList xs = len 0 xs
-    | else = lang.__listLength xs
+    | listLazy xs = len 0 xs
+    | else = listLength xs
     where len n [] = n
           len n (x::xs) = len (n+1) xs
 
 /* Name */
 class Name(Name) a where
   getField _->a
-  hasField _->a
+  isField _->a
 
 /* Cat */
 class Cat(Cat) a where
@@ -196,13 +216,6 @@ instance Cat List where
              where cat (x::xs) ys = cat xs (x::ys)
                    cat [] ys = ys
 
-reverse # private
-reverse xs 
-  | lang.__isLazyList xs = rev [] xs 
-  | else = lang.__reverseList xs
-  where rev ys [] = ys
-        rev ys (x::xs) = rev (x::ys) xs
-
 /* Show */
 class Show(Show) a where 
   showf _->a
@@ -210,24 +223,27 @@ class Show(Show) a where
 show = showf ""
 
 instance Show Tuple where 
-  showf f t = lang.__stringFromList ("(" :: tos 0)
-    where len = length t
-          tos n | n == len - 1 = [e, (if len == 1 then ",)" else ")")]
-                | else = e :: "," :: tos (n+1)
-                where e = showf f (t:n) 
+  showf f (x,) = "(" ++ showf f x ++ ",)"
+  showf f t = toString <| tos (stringBuilder +> "(") 0
+    where len = length t - 1
+          tos sb n 
+            | n < len = tos (sbb +> ",") (n+1)
+            | else = sbb +> ")"
+            where sbb = sb +> showf f (t:n)
 
 instance Show List where 
   showf _ [] = "[]"
-  showf f xs = lang.__stringFromList ("[" :: tos xs)
-    where tos (x::[]) = [showf f x, "]"]
-          tos (x::xs) = showf f x :: "," :: tos xs
+  showf f xs = toString <| tos (stringBuilder +> "[") xs
+    where tos sb (x::[]) = sb +> showf f x +> "]"
+          tos sb (x::xs) = tos (sb +> showf f x +> ",") xs
 
 instance Show Record where 
-  showf f t = lang.__stringFromList ("{" :: tos 0)
-    where len = length t
-          tos n | n == len - 1 = [fld, "}"]
-                | else = fld :: "," :: tos (n+1)
-                where fld = t~n ++ "=" ++ showf f (t:n)
+  showf f t = toString <| tos (stringBuilder +> "{") 0
+    where len = length t - 1
+          tos sb n 
+            | n < len = tos (sbb +> ",") (n+1)
+            | else = sbb +> "}"
+            where sbb = sb +> n~t +> "=" +> showf f (t:n)
 
 /* xLike */
 class IntLike a where
@@ -261,13 +277,13 @@ class RecordLike a where
   toRecord a
 
 instance ListLike List where
-  toList a = a
+  toList = id
 
 instance TupleLike Tuple where
-  toTuple a = a
+  toTuple = id
 
 instance RecordLike Record where
-  toRecord a = a
+  toRecord = id
 
 instance IntLike Int Long Single Double Char Bool where
   toInt = lang.__toInt
@@ -324,10 +340,28 @@ fix f = f (& fix f)
 on cmb f x y = f x `cmb` f y
 
 /* Misc */
-until p f x | p x  = x | else = until p f (f x)
+until p f x 
+  | p x  = x 
+  | else = until p f (f x)
 even x = x % 2 == 0
 odd x = x % 2 <> 0
 
 /* Privates */
 (~) # private
 (~) = __internal api106
+
+listLazy # private
+listLazy = __internal api10
+
+listLength # private
+listLength = __internal api11
+
+listReverse # private
+listReverse = __internal api12
+
+reverse # private
+reverse xs 
+  | listLazy xs = rev [] xs 
+  | else = listReverse xs
+  where rev ys [] = ys
+        rev ys (x::xs) = rev (x::ys) xs
