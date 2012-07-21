@@ -111,6 +111,7 @@ TOKENS
 	CLASS = "class".
 	IMPORT = "import".
 	DATA = "data".
+	OPENTYPE = "opentype".
 	
 	EBLOCK = ";".
 	
@@ -1263,10 +1264,11 @@ PRODUCTIONS
         (. 
             scanner.InjectBlock(); 
             var extends = false;
+            var opened = false;
         .)
         (
-            (TYPE|DATA (. extends=true; .))
-            (. var nt = new ElaNewtype(t) { Extends = extends }; .) 
+            (TYPE|DATA (. extends=true; .)|OPENTYPE (. opened=true; .))
+            (. var nt = new ElaNewtype(t) { Extends=extends,Opened=opened }; .) 
             (
                 ident (. nt.Prefix = t.val; .) "." variantTok (. nt.Name = t.val; .)
                 | variantTok (. nt.Name = t.val; .)
@@ -1279,11 +1281,8 @@ PRODUCTIONS
                 (
                     (. var cexp = default(ElaExpression); .)
                     "="
-                    ["|"] OpExpr0<out cexp> (. nt.Constructors.Add(cexp); .)
-                    { 
-                        "|" OpExpr0<out cexp> 
-                        (. nt.Constructors.Add(cexp); .)
-                    }
+                    ["|"] NewTypeConstructor<nt>
+                    {  "|" NewTypeConstructor<nt> }
                 )
                 |
                 (
@@ -1318,6 +1317,24 @@ PRODUCTIONS
 		    ]
 		    EndBlock      
         ).
+        
+    NewTypeConstructor<ElaNewtype nt> = 
+        (. 
+            var flags = ElaVariableFlags.None; 
+            var exp = default(ElaExpression);
+        .)
+        (
+            OpExpr0<out exp>
+            [
+                "#" 
+	            ident (. flags = ProcessAttribute(t.val,flags); .) 
+	            { ident (. flags = ProcessAttribute(t.val,flags); .) } 
+	        ]
+	        (. 
+	            nt.Constructors.Add(exp); 
+	            nt.ConstructorFlags.Add(flags);
+	        .)
+	    ).
         
 	ClassInstance = 
 	    (. 

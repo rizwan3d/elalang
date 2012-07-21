@@ -1,3 +1,4 @@
+0.11.0.58:Change:Op code 'Recfld' is decomissioned, it is now implemented through 'Api2' op code.
 0.11.0.57:Change:New op codes 'Api' and 'Api2' are added that will now be used for extensible internal API.
 0.11.0.56:Change:Op code 'Gettag' is decomissioned.
 0.11.0.55:Change:Now Ela generate better error message on type errors in external methods calls.

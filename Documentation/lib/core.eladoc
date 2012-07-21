@@ -56,6 +56,12 @@ fromRight x
 Upacks a given value of type `Either`, created using `Right` constructor.
 >>>fromRight (Right 'b')
 
+isLeft o
+Checks if a given value is an `Either`, created using `Left` constructor.
+
+isRight o
+Checks if a given value is an `Either`, created using `Right` constructor.
+
 compare
 Compares two given values and returns `EQ` if they are equal, `LT` if first argument is lesser than the 
 second argument and `GT` if first argument is greater than the second argument:

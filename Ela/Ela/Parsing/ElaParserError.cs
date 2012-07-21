@@ -87,7 +87,7 @@ namespace Ela.Parsing
 
 		ExpectedKeywordLet = 123,
 
-		// = 124,
+        ExpectedKeywordOpentype = 124,
 
 		ExpectedKeywordOpen = 125,
 

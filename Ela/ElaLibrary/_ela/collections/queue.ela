@@ -4,11 +4,8 @@
 */
 open list
 
-/* Construction */
-type Queue
-
-data Queue # private
-data Queue = Queue a b
+/* Types */
+type Queue = Queue a b # private
 
 /* Instances */
 instance Show Queue where 
@@ -27,9 +24,11 @@ instance Seq Queue where
   isnil (Queue [] []) = true
   isnil _ = false
 
-instance Ix Queue where 
-  item q i = toList q : i
+instance Len Queue where 
   length (Queue f b) = length f + length b
+
+instance Ix Queue where
+  getValue i q = i `getValue` toList q
 
 instance ListLike Queue where
   toList (Queue f b) = f ++ reverse b

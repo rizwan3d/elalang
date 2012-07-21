@@ -2,10 +2,11 @@
   Module core
   Created in 2012 by Basil Voronkov
 */
+open generic
 
 /* Ordering */
 type Ordering = EQ | LT | GT
-  deriving Eq Ord Show Enum
+  deriving Eq Ord Show Enum IntLike
 
 compare x y 
   | x == y = EQ 
@@ -21,8 +22,8 @@ minValue x y
   | else   = y
 
 /* Maybe */
-type Maybe = Some a | None
-  deriving Eq Show
+type Maybe = None | Some a
+  deriving Eq Ord Show ListLike
 
 maybe n _ None = n
 maybe _ f (Some x) = f x
@@ -37,10 +38,16 @@ fromMaybe _ (Some x) = x
 
 /* Either */
 type Either = Left a | Right a
-  deriving Eq Show
+  deriving Eq Ord Show ListLike
 
 either f _ (Left x) = f x
 either _ g (Right y) = g y
+
+isLeft (Left _) = true
+isLeft _ = false
+
+isRight (Right _) = true
+isRight _ = false
 
 lefts xs = [a \\ Left a <- xs]
 

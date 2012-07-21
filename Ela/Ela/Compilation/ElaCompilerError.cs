@@ -74,7 +74,7 @@ namespace Ela.Compilation
 
         InvalidMatchEntry = 332,
 
-        // = 333,
+        UnableDerive = 333,
 
         // = 334,
 
@@ -82,7 +82,7 @@ namespace Ela.Compilation
 
         InvalidFunctionDeclaration = 336,
 
-        UnableExtendBuiltin = 337,
+        UnableExtendOpenType = 337,
 
         FromEnumNotFound = 338,
 

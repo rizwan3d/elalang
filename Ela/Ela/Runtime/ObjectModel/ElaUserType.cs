@@ -40,6 +40,6 @@ namespace Ela.Runtime.ObjectModel
             return Values[index];
         }
 
-        internal ElaValue[] Values { get; private set; }
+        internal ElaValue[] Values { get; set; }
     }
 }

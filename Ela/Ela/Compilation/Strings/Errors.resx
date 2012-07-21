@@ -225,8 +225,11 @@
   <data name="TypeHeaderNotConnected" xml:space="preserve">
     <value>A type header '{0}' should precede a type declaration.</value>
   </data>
-  <data name="UnableExtendBuiltin" xml:space="preserve">
-    <value>Unable to extend a built-in type '{0}'.</value>
+  <data name="UnableDerive" xml:space="preserve">
+    <value>Unable to automatically derive a class '{0}' for a data type '{1}'. A complete default instance of class '{0}' was not found.</value>
+  </data>
+  <data name="UnableExtendOpenType" xml:space="preserve">
+    <value>Type '{0}' is not declared as open type, it is not possible to extend this type with new constructors.</value>
   </data>
   <data name="UndefinedName" xml:space="preserve">
     <value>A name '{0}' is not defined in a module or externally.</value>

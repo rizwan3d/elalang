@@ -2,14 +2,13 @@
   Module datetime
   Created in 2012 by Basil Voronkov
 */
-import libDateTime#elalib@dt 
+import libDateTime#elalib@dt
+open generic
 
 /* Construction */
-type DateTime
+type DateTime = 
+  | DateTime long # private
   deriving Eq Ord
-
-data DateTime # private
-data DateTime = DateTime long
 
 fromTicks # qualified
 fromTicks x = DateTime (force x)

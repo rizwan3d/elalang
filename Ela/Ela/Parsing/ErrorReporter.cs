@@ -71,6 +71,7 @@ namespace Ela.Parsing
                 case "TypeClass": return ElaParserError.InvalidTypeClass;
                 case "Instance": return ElaParserError.InvalidClassInstance;
                 case "NewType": return ElaParserError.InvalidNewType;
+                case "NewTypeConstructor": return ElaParserError.InvalidNewType;
 				
                 case "LambdaExpr": return ElaParserError.InvalidLambda;
 				case "IncludeStat": return ElaParserError.InvalidInclude;
@@ -156,6 +157,7 @@ namespace Ela.Parsing
                 case Parser._INSTANCE: return ElaParserError.ExpectedKeywordInstance;
                 case Parser._CLASS: return ElaParserError.ExpectedKeywordClass;
                 case Parser._TYPE: return ElaParserError.ExpectedKeywordType;
+                case Parser._OPENTYPE: return ElaParserError.ExpectedKeywordOpentype;
                 case Parser._IMPORT: return ElaParserError.ExpectedKeywordImport;
                 case Parser._PIPE: return ElaParserError.ExpectedPipe;
                 

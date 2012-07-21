@@ -27,7 +27,7 @@ namespace Ela.Compilation
             {
                 if (t.Header)
                 {
-                    if (oldt == null || t.Extends != oldt.Extends)
+                    if (oldt == null || t.Extends != oldt.Extends || t.Opened != oldt.Opened)
                         AddError(ElaCompilerError.TypeHeaderNotConnected, t, t.Name);
                     else
                         oldt.Flags = t.Flags;
@@ -71,7 +71,7 @@ namespace Ela.Compilation
         //Main method for type compilation
         private void CompileTypeBody(ElaNewtype v, LabelMap map)
         {
-            //We need to obtain type typeId for a type
+            //We need to obtain typeId for a type
             var tc = -1;
             var sca = -1;
             var flags = v.Flags;
@@ -84,7 +84,7 @@ namespace Ela.Compilation
             {
                 tc = (Int32)TCF.GetTypeCode(v.Name);
                 tc = tc == 0 ? -1 : tc;
-                sca = AddVariable("$$" + v.Name, v, flags, tc);
+                sca = AddVariable("$$" + v.Name, v, flags | ElaVariableFlags.ClosedType, tc);
 
                 //OK, type is built-in
                 if (tc > 0)
@@ -95,7 +95,14 @@ namespace Ela.Compilation
                 }
             }
             else
-                sca = v.Extends ? AddVariable() : AddVariable("$$" + v.Name, v, flags, -1);
+            {
+                var tf = flags;
+
+                if (!v.Opened)
+                    tf |= ElaVariableFlags.ClosedType;
+
+                sca = v.Extends ? AddVariable() : AddVariable("$$" + v.Name, v, tf, -1);
+            }
 
             //Type is already declared within the same module (types from different
             //modules can shadow each, so this is perfectly OK).
@@ -124,10 +131,9 @@ namespace Ela.Compilation
                 {
                     var sv = EmitSpecName(v.Prefix, "$$" + v.Name, v, ElaCompilerError.UndefinedType, out typeModuleId);
 
-                    //If this is a built-in type, than a variable contains data with type ID
-                    //We capture this case here, thus disallowing built-in types.
-                    if (sv != -1)
-                        AddError(ElaCompilerError.UnableExtendBuiltin, v, v.Name);
+                    //We can only extend type that are explicitly declared as open
+                    if ((sv.Flags & ElaVariableFlags.ClosedType) == ElaVariableFlags.ClosedType)
+                        AddError(ElaCompilerError.UnableExtendOpenType, v, v.Name);
                 }
                 else
                     cw.Emit(Op.Typeid, AddString(v.Name));
@@ -139,7 +145,9 @@ namespace Ela.Compilation
                     for (var i = 0; i < v.Constructors.Count; i++)
                     {
                         var c = v.Constructors[i];
-                        CompileConstructor(v.Name, sca, c, flags, typeModuleId);
+                        var cf = v.ConstructorFlags[i];
+                        cf = cf == ElaVariableFlags.None ? flags : cf;
+                        CompileConstructor(v.Name, sca, c, cf, typeModuleId);
                     }
                 }
             }

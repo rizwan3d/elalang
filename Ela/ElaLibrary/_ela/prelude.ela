@@ -314,12 +314,7 @@ fst3 (x,_,_) = x
 snd3 (_,y,_) = y
 
 /* Complex behaviors */
-getType x = lang.__getTypeInfo (force x)
 force = __internal force
-
-/* Variants */
-tag = __internal gettag
-untag x = lang.__unwrap (force x)
 
 /* Combinators */
 id x = x//I
@@ -333,87 +328,6 @@ until p f x | p x  = x | else = until p f (f x)
 even x = x % 2 == 0
 odd x = x % 2 <> 0
 
-/* Default instances */
-instance Eq where
-  a == b = tag a == tag b and untag a == untag b
-  a <> b = tag a <> tag b or untag a <> untag b
-
-instance Ord where
-  a > b
-    | (aa is Unit) or (bb is Unit) = cid a > cid b 
-    | else = cid a >= cid b and aa > bb
-    where aa = untag a; bb = untag b
-  a < b
-    | (aa is Unit) or (bb is Unit) = cid a < cid b 
-    | else = cid a <= cid b and aa < bb
-    where aa = untag a; bb = untag b
-  a >= b
-    | (aa is Unit) or (bb is Unit) = cid a >= cid b 
-    | else = cid a >= cid b and aa >= bb
-    where aa = untag a; bb = untag b
-  a <= b 
-    | (aa is Unit) or (bb is Unit) = cid a <= cid b 
-    | else = cid a <= cid b and aa <= bb
-    where aa = untag a; bb = untag b
-
-instance Show where
-  showf f a 
-    | lang.__isInfix lang a = showf f (u:0) ++ " " ++ tag a ++ " " ++ showf f (u:1)
-    | else = lang.__stringFromList (tag a :: v)
-    where u = untag a 
-          v = match u with () = []; _  = " " :: showParamList f u
-
-instance Len where
-  length v
-    | o is Unit = 0
-    | else = length o
-    where o = lang.__unwrap v
-
-instance Name where
-  getField nm xs
-    | idx < 0 = fail "Name.getField: Unknown field."
-    | else = lang.__unwrap xs : idx
-    where idx = lang.__getParameterIndex lang xs nm
-  hasField nm xs = idx >= 0
-    where idx = lang.__getParameterIndex lang xs nm
-
-instance Ix where
-  getValue idx xs = lang.__unwrap xs : idx
-
-instance Enum where
-  succ a = lang.__conssucc lang a
-  pred a = lang.__conspred lang a
-  enumFrom fst snd = enumFromTo (lang.__consfromint lang fst (lang.__consmax lang fst)) fst snd
-  enumFromTo max fst snd = map (lang.__consfromint lang max) [toi fst,toi snd..toi max]
-    where toi = lang.__constoint lang
-          map _ [] = []
-          map f (x::xs) = f x :: map f xs
-
-instance IntLike where
-  toInt a = lang.__constoint lang a
-
-instance LongLike where
-  toLong a = toLong (lang.__constoint lang a)
-
-instance StringLike where
-  toString a = tag a
-
-instance TupleLike where
-  toTuple a
-    | v is Unit = fail "prelude.toTuple: Type constructor has no parameters."
-    | else = v
-    where v = untag a
-
-showParamList # private
-showParamList f t = tos 0
-  where len = length t
-        tos n | n == len - 1 = [e]
-              | else = e :: " " :: tos (n+1)
-              where e = showf f (t:n) 
-
-cid # private
-cid = lang.__constructorIndex
-
 /* Privates */
 (~) # private
-(~) = __internal recfield
+(~) = __internal api106

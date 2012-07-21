@@ -12,8 +12,7 @@ removeField fld rec = r.removeField (force fld) (force rec)
 
 changeField fld val rec = r.changeField (force fld) val (force rec)
 
-field n rec = rec `rf` n
-  where rf = __internal recfield
+field = __internal api106
 
 fields rec  = r.fields (force rec)
 

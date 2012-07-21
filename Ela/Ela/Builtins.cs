@@ -16,7 +16,6 @@ namespace Ela
                 case "head": return ElaBuiltinKind.Head;
                 case "tail": return ElaBuiltinKind.Tail;
                 case "isnil": return ElaBuiltinKind.IsNil;
-                case "recfield": return ElaBuiltinKind.RecField;
 
                 case "showf": return ElaBuiltinKind.Showf;
                 case "fpipe": return ElaBuiltinKind.ForwardPipe;
@@ -64,6 +63,8 @@ namespace Ela
                 case "api103": return ElaBuiltinKind.Api103;
                 case "api104": return ElaBuiltinKind.Api104;
                 case "api105": return ElaBuiltinKind.Api105;
+                case "api106": return ElaBuiltinKind.Api106;
+                case "api107": return ElaBuiltinKind.Api107;
                 default: return ElaBuiltinKind.None;
             }
         }

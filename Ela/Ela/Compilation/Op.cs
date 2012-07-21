@@ -62,7 +62,6 @@ namespace Ela.Compilation
         Force,
         Isnil,
         Show,
-        Recfld,
         Addmbr,                
         Traitch,
         Skiptag,
