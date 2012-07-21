@@ -24,6 +24,10 @@ namespace Ela.CodeModel
         Api7,
         Api8,
         Api9,
+        Api10,
+        Api11,
+        Api12,
+        Api13,
         
         /* Two arguments */
         Showf,

@@ -6,7 +6,7 @@ import libCore#elalib@core lang
 
 evaled = core.evaled
 
-lazyList xs = lang.__isLazyList (force xs)
+lazyList xs = internalLazyList (force xs)
 
 forceAll x
   | x is List = forceList (force x)
@@ -18,7 +18,9 @@ forceAll x
 forceList (x::xs) = forceAll x :: forceList xs
 forceList [] = []
 
-forceOnlyList xs | lang.__isLazyList xs = force xs | else = xs
+forceOnlyList xs 
+  | lazyList xs = force xs 
+  | else = xs
   where
     force (x::xs) = x :: force xs
     force [] = []
@@ -31,3 +33,6 @@ forceTuple tup = lang.__tupleFromList (force 0)
   where len = length tup 
         force i | i == len = []
                 | else = forceAll (tup:i) :: force (i+1)
+
+internalLazyList # private
+internalLazyList = __internal api10

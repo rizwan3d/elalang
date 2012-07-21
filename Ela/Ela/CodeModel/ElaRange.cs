@@ -18,9 +18,7 @@ namespace Ela.CodeModel
 
         internal override bool Safe()
         {
-            return (First == null || First.Safe()) &&
-                (Second == null || Second.Safe()) &&
-                (Last == null || Last.Safe());
+            return false;
         }
 
         internal override void ToString(StringBuilder sb, int ident)

@@ -1468,6 +1468,10 @@ namespace Ela.Runtime
             ConsInfix = 7,
             ConsParams = 8,
             ConsCode = 9,
+            LazyList = 10,
+            ListLength = 11,
+            ReverseList = 12,
+            ListToString = 13,
                         
             ConsParamIndex = 101,
             ConsParamValue = 102,
@@ -1503,6 +1507,21 @@ namespace Ela.Runtime
         {
             switch ((Api)code)
             {
+                case Api.ListToString:
+                    {
+                        var sb = new System.Text.StringBuilder();
+
+                        foreach (var v in ((ElaList)left.Ref).Reverse())
+                            sb.Append(v.AsString());
+
+                        return new ElaValue(sb.ToString());
+                    }
+                case Api.LazyList:
+                    return new ElaValue(left.Ref is ElaLazyList);
+                case Api.ListLength:
+                    return new ElaValue(((ElaList)left.Ref).GetLength());
+                case Api.ReverseList:
+                    return new ElaValue(((ElaList)left.Ref).Reverse());
                 case Api.ConsName:
                     {
                         var cid = left.Ref.GetTag(null);
@@ -1691,7 +1710,7 @@ namespace Ela.Runtime
                     {
                         if (right.TypeId != REC)
                         {
-                            thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.Record), left);
+                            thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.Record), right);
                             return new ElaValue(ElaObject.ElaInvalidObject.Instance);
                         }
 

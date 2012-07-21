@@ -1279,7 +1279,6 @@ PRODUCTIONS
             .)
             [
                 (
-                    (. var cexp = default(ElaExpression); .)
                     "="
                     ["|"] NewTypeConstructor<nt>
                     {  "|" NewTypeConstructor<nt> }

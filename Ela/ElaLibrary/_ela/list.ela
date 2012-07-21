@@ -2,7 +2,7 @@
   Module list
   Created in 2011-2012 by Basil Voronkov
 */
-open core lang
+open core thunk
 
 //Strict sort based on merge sort
 mergeBy # private
@@ -43,7 +43,7 @@ takeWhile f [] = []
 
 take = tak []
   where
-    tak ys 0 _       = lang.__reverseList ys
+    tak ys 0 _       = revList ys
     tak ys n (x::xs) = tak (x::ys) (n-1) xs
     tak ys _ []      = []
 
@@ -105,10 +105,13 @@ maximum (x::xs) = maximum' x xs
         maximum' v [] = v
 
 reverse xs 
-  | lang.__isLazyList xs = rev [] xs
-  | else = lang.__reverseList xs
+  | lazyList xs = rev [] xs
+  | else = revList xs
   where rev ys [] = ys
         rev ys (x::xs) = rev (x::ys) xs
+
+revList # private
+revList = __internal api12
 
 zipWith z (x::xs) (y::ys) = z x y :: zipWith z xs ys
 zipWith _ _ _ = []

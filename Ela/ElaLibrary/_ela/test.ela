@@ -26,7 +26,7 @@ funData mod fun = (moduleName mod ++ "." ++ funName fun, fun)
 regFun fun xs = funData fun :: xs
 
 regFuns mod xs = xs ++ (vals |> filter isFun |> map (funData mod))
-  where vals = map (:"value") (moduleExportList mod)
+  where vals = map ("value"`getField`) (moduleExportList mod)
        isFun x | x is Fun = true
                | else = false
 

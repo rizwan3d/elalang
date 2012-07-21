@@ -70,6 +70,15 @@ A function.
 Object
 An object type.
 
+StringBuilder
+This type implements an immutable string builder that can be used for string concatenation instead of
+`++` operator (which might cause severe performance degradation on long strings).//br
+As long this type is immutable, its instance can be created by simply referencing a `stringBuilder`
+constant. In order to append a string one can use a `+>` operator which is left associative:
+>>>stringBuilder +> "First" +> "Second"
+This operator always returns a new instance of `StringBuilder`. In order to convert a string builder
+to a string, one can use a standard `toString` method.
+
 Eq
 Defines two basic comparison functions - equal `==` and not equal `<>`. Implementation of equality 
 functions is fully dependent from a particular instance however normally these functions would 
@@ -152,7 +161,7 @@ value using tuple pattern, e.g.:
 
 Name
 This class provides an abstraction for a container which elements can be accessed by name.
-A function `getField` maps a given name to a value, and a function `hasField` checks if a
+A function `getField` maps a given name to a value, and a function `isField` checks if a
 given name is recognized by a container. A typical example of a container that implements
 such an abstraction is a record.
 >>>getField "y" {x=1,y=2,z=3}
@@ -303,6 +312,9 @@ function.
 StringLike Char
 Implements a type cast of a unicode character to a string.
 
+StringLike StringBuilder
+Converts an instance of a type `StringBuilder` to a string.
+
 Eq Tuple
 Implements equality functions for a tuple.
 
@@ -380,6 +392,18 @@ Implements `showf` function for a list.
 
 Show Record
 Implements `showf` function for a variant.
+
+Show StringBuilder
+Implements `showf` function for a string builder.
+
+stringBuilder
+This constant returns an empty string builder (see description of a `StringBuilder` type).
+
++> sb str
+This function is used in conjunction with `StringBuilder` type. It allows to append strings to a given
+string builder. This function is pure and always returns a new instance of `StringBuilder`. It is
+left associative:
+>>>toString <| stringBuilder +> "1" +> "2"
 
 % x y
 An alias for a remainder (`rem`) function from `Modulo` class:

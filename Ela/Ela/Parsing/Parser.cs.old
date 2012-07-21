@@ -1496,7 +1496,6 @@ internal sealed partial class Parser {
 		
 		if (la.kind == 49 || la.kind == 54) {
 			if (la.kind == 54) {
-				var cexp = default(ElaExpression); 
 				Get();
 				if (la.kind == 21) {
 					Get();

@@ -2,8 +2,6 @@
   Module data
   Created by Basil Voronkov in 2012
 */
-open lang
-
 /* Reflection API */
 //Constructor name: Alg->String
 consName        = __internal api1
@@ -57,11 +55,11 @@ instance Show where
   showf f a 
     | consInfix a and len == 2 = showf f (consParamValue 0 a) ++ " " 
                                  ++ consName a ++ " " ++ showf f (consParamValue 1 a)
-    | else = lang.__stringFromList (consName a :: show 0)
+    | else = toString <| show (stringBuilder +> consName a) 0
     where len = consParamNumber a
-          show n 
-            | n < len = " " :: showf f (consParamValue n a) :: show (n+1)
-            | else = []
+          show sb n 
+            | n < len = show (sb +> " " +> showf f (consParamValue n a)) (n+1)
+            | else = sb
 
 //Only for algebraic, open types are welcome
 instance Eq where

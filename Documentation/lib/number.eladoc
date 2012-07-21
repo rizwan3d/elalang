@@ -34,6 +34,35 @@ an absolute value of a given value, and function `signum` returns a sign of a gi
 Transcendental
 Represents a class for numbers supporting elementary transcendental functions.
 
+Principal
+A principal ideal domain is a ring in which every ideal, the set of multiples of some generating
+set of elements, is principal. This class defines functions `gcd` (greatest common divisor for 
+the two given arguments) and `lcm` (the least common multiple of two given arguments).
+
+Principal-
+A complete default implementation of `Principal` class.
+
+Integral-
+This partial default instance contains only the following definition of `div` function:
+>>div x y
+>>  | r < 0 and r*y <> x = r - 1
+>>  | else = r
+>>  where r = x `quot` y
+
+Absolute-
+This partial default instance contains only the following definition of `abs` function:
+>>abs x 
+>>  | x >= 0 = x 
+>>  | else = --x
+
+Transcendental-
+This partial default instance contains definitions of functions `sqrt`, `logBase`, `tan`
+and `tanh`:
+>>sqrt x      = x ** 0.5
+>>logBase x y = log y / log x
+>>tan x       = sin x / cos x
+>>tanh x      = sinh x / cosh x
+
 Float Single
 Implements functions from `Float` class for a 32-bit floating point number.
 
@@ -94,11 +123,7 @@ genericDiv
 A generic integer division truncated towards negative infinity that works for both
 32-bit integers and 64-bit integers.
 
-gcd x y
-Returns the greatest common divisor for the two given arguments. 
 
-lcm x y
-Calculates the least common multiple of two given arguments. 
 
 sqrt
 Returns the square root of a specified number. 
