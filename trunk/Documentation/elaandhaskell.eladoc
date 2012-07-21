@@ -19,7 +19,7 @@ a "quick start" guide for those who are familiar with Haskell.
 | First class modules |Yes |No 
 | OOP support |Through duck typing and modules |Through existential types 
 | Monads |No *ii* |Yes 
-| Exceptions |Through structured exception |handling Through monads 
+| Exceptions |Through structured exception handling |Through monads 
 | Curried functions |Yes, all functions are curried |Yes, all functions are curried 
 | Operators as functions |Yes |Yes 
 | Type classes |Yes *iii* |Yes
@@ -103,20 +103,23 @@ Note that `:` is also a standard operator in Ela, however it is used as an index
 Haskell equivalent is `!!`).
 
 ==Algebraic data types
-Both languages support them, however, algebraic data types in Ela are open - one can define additional
-constructors for an already existing type. Also syntax is different. //br
+Both languages support them, however, Ela additionally provides an ability to declared open algebraic data 
+types, which can be extended after declaration with additional constructors. Also syntax is different. //br
 Haskell: 
 >data Couple a = Foo a | Bar a
 >unbox (Foo a) = a
 >unbox (Bar a) = a
 Ela: 
->>type Couple = Foo a | Bar a
+>>type Couple = Foo a | Bar a //Closed type
 >>unbox (Foo a) = a
 >>unbox (Bar a) = a
-Ela doesn't require to specify type variables on the left-hand side of a type definition. Also, in 
-order to define a new type, one should use a `type` declaration. Ela also supports `data` declaration,
-but it has a different meaning and allows to add constructors for an already existing type:
->>data Couple = Zoo
+>>
+>>opentype AnyNumber = Foo a | Bar a //Open type
+>>data AnyNumber = Zoo a //Extension of AnyNumber type
+Ela doesn't require to specify type variables on the left-hand side of a type definition. Type variables
+in constructor definitions are not used by Ela compiler (but can be queried at run-time). Also Ela 
+supports constructors in prefix, infix and postfix forms:
+>>type Complex = a :+ b
 
 ==Partial operator application
 Both languages support it. //br

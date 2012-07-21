@@ -1,9 +1,17 @@
-#title What's new? (Ela Platform 2012.7)
+#title What's new? (Ela Platform 2012.6)
 
 =Elide changes
 
 Elide contains multiple performance enhancements and bug fixes. The most important are:
 * Improved overall stability and UI performance, reduced flickering
+* Multiple bug fixes in Find and Replace feature
+* Performance of EIL editor is improved
+* Bug fixes in Error List view which could show incorrect file locations in previous versions
+Also several new feature were added:
+* Outline view now displays classes, instances and types, declared in a module
+* Ela Object file (.elaobj) editor now also display metadata related to classes, instances and types
+* Ela editor now can list module members automatically when entering a dot symbol after a module name
+* Documentation format has changed
 
 =Ela changes
 Ela Platform 2012.6 is shipped with a new major version of Ela - Ela 0.11. This version includes a lot
@@ -33,7 +41,7 @@ For more information about classes and instances please refer to the `Classes` a
 Now `let` keyword is not needed for global bindings. Ela syntax is now more Haskell like.//br
 Global binding (Ela 0.10):
 >>let map f (x::xs) = f x :: map xs
->>  map _ [] = []
+>>    map _ [] = []
 Global binding (Ela 0.11): //br
 >>map f (x::xs) = f x :: map xs
 >>map _ [] = []

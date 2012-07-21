@@ -125,9 +125,7 @@ instance defines all functions from a class, than it is valid to create specific
 Alternatively, one can use a `deriving` clause and specify instances in a type declaration directly:
 >>type BrokenCar = BrokenCar
 >>  deriving Car
-A `deriving` clause can be used to specify any number of instances.//br
-Currently, standard prelude provides complete default implementations for the following classes: `Eq`, `Ord`, `Enum`, `Show`,
-`Ix`, `IntLike`, `LongLike`, `StringLike`, `TupleLike`.
+A `deriving` clause can be used to specify any number of instances.
 
 =Name Conflicts
 As with custom types, class names are not unique. It is not allowed to define two classes of the same name in a single module - 

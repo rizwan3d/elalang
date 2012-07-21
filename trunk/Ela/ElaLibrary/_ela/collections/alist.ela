@@ -24,3 +24,4 @@ fromRecord rec = fromRec 0
         keys = fields rec
         fromRec n | n < len = (keys:n,rec:n) :: fromRec (n+1)
                   | else = []
+

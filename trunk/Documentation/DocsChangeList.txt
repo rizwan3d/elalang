@@ -1,3 +1,4 @@
+0.1.4.12:New:A new article 'generic' about a module of the same name is added.
 0.1.4.11:Change:Article 'cell' updated according to the module changes.
 0.1.4.10:Change:Article 'variant' is removed.
 0.1.4.9:Change:Article 'thunk' updated according to the module changes.

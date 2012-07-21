@@ -57,10 +57,10 @@ instance Show where
   showf f a 
     | consInfix a and len == 2 = showf f (consParamValue 0 a) ++ " " 
                                  ++ consName a ++ " " ++ showf f (consParamValue 1 a)
-    | else = lang.__stringFromList (consName a :: " " :: show 0)
+    | else = lang.__stringFromList (consName a :: show 0)
     where len = consParamNumber a
           show n 
-            | n < len = showf f (consParamValue n a) :: " " :: show (n+1)
+            | n < len = " " :: showf f (consParamValue n a) :: show (n+1)
             | else = []
 
 //Only for algebraic, open types are welcome
@@ -82,7 +82,7 @@ instance Ord where
 //Only for algebraic, open types are welcome
 instance Name where
   getField nm xs = consParamValue (consParamIndex nm xs) xs
-  hasField = consParamExist
+  isField = consParamExist
 
 //Only for algebraic, open types are welcome
 instance Len where

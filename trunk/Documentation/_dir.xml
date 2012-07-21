@@ -14,6 +14,8 @@
     <doc name="thunk" file="lib\thunk.htm" />
     <doc name="random" file="lib\random.htm" />
     <doc name="format" file="lib\format.htm" />
+    <doc name="generic" file="lib\generic.htm" />
+    <doc name="core" file="lib\core.htm" />
     <doc name="reflect" file="lib\reflect.htm" />
     <doc name="read" file="lib\read.htm" />
     <doc name="espec" file="lib\espec.htm" />
@@ -32,7 +34,6 @@
     <doc name="Lists" file="lists.htm"/>
     <doc name="Ranges" file="ranges.htm"/>
     <doc name="Comprehensions" file="comprehensions.htm"/>
-    <doc name="Variants" file="variants.htm"/>
     <doc name="Lazy Evaluation" file="thunks.htm"/>
     <doc name="Pattern Matching" file="patternmatching.htm"/>
     <doc name="Exceptions" file="exceptions.htm"/>
@@ -40,6 +41,9 @@
     <doc name="User Types" file="types.htm"/>
     <doc name="Classes" file="classes.htm"/>
     <doc name="Operator Priority" file="operatorpriority.htm" />    
+  </folder>
+  <folder name="Older Versions">
+    <doc name="Platform 2012.6" file="oldversions/platform-2012-6.htm" />
   </folder>
   <doc name="What's new?" file="whatsnew.htm" />
   <doc name="Ela and Haskell" file="elaandhaskell.htm" />
