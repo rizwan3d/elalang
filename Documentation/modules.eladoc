@@ -1,4 +1,4 @@
-﻿#title Modules
+#title Modules
 #category Language Reference
 
 =Introduction
@@ -64,13 +64,13 @@ In code example above the following local names will be created: `map` with the 
 By default all global bindings are included in the export list of a module. If you want to exclude some bindings from export 
 list you should add a private modifier to these bindings like so: 
 >>foo # private
->>foo = Foo
+>>foo = "Foo"
 
 =First class Modules
 Modules in Ela are first-class values and can be treated as records. Consider the following example: 
->>import core
+>>import foo
 >>
->>get f x = x:f
->>_ = get "e" {e=core.e}
->>_ = get "e" core
+>>get f x = x `getField` f
+>>_ = get "bar" {e=foo.bar}
+>>_ = get "bar" foo
 

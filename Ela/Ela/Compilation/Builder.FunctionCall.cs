@@ -143,13 +143,13 @@ namespace Ela.Compilation
 
                 if (nr.Uppercase || Format.IsSymbolic(nr.Name))
                 {
-                    var sv = GetGlobalVariable("-$" + nr.Name, GetFlags.NoError, 0, 0);
+                    var sv = GetGlobalVariable("$-" + nr.Name, GetFlags.NoError, 0, 0);
 
                     if (!sv.IsEmpty() && sv.Data == juxta.Parameters.Count)
                     {
                         CompileTupleParameters(juxta, juxta.Parameters, map);
                         PushVar(sv);
-                        var sv2 = GetGlobalVariable("--$" + nr.Name, GetFlags.None, juxta.Line, juxta.Column);
+                        var sv2 = GetGlobalVariable("$--" + nr.Name, GetFlags.None, juxta.Line, juxta.Column);
                         PushVar(sv2);
                         cw.Emit(Op.Newtype);
                         return true;
@@ -164,13 +164,13 @@ namespace Ela.Compilation
                 {
                     var prefix = fr.TargetObject.GetName();
                     CodeFrame _;
-                    var sv = FindByPrefix(prefix, "-$" + fr.FieldName, out _);
+                    var sv = FindByPrefix(prefix, "$-" + fr.FieldName, out _);
 
                     if (!sv.IsEmpty() && sv.Data == juxta.Parameters.Count)
                     {
                         CompileTupleParameters(juxta, juxta.Parameters, map);
                         PushVar(sv);
-                        var sv2 = FindByPrefix(prefix, "--$" + fr.FieldName, out _);
+                        var sv2 = FindByPrefix(prefix, "$--" + fr.FieldName, out _);
                         PushVar(sv2);
                         cw.Emit(Op.Newtype);
                         return true;

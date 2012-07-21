@@ -1,4 +1,4 @@
-﻿#title Records
+#title Records
 #category Language Reference
 
 =Introduction
@@ -11,7 +11,8 @@ following literal form to construct records:
 >>r = {x = 1, y = 2}
 It is possible to name record fields using a combination of symbols that is not valid for Ela identifier: 
 >>r = { "long field name" = 1, y = 2 }
-Also if you assign record fields with values of variables Ela can infer field names like so: 
+Also if you assign record fields with values of variables Ela can infer field names like so (this feature is also
+known as _record punning_): 
 >>>x = 1
 >>>y = 2
 >>>{x,y}

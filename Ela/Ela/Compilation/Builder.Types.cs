@@ -146,7 +146,7 @@ namespace Ela.Compilation
                     {
                         var c = v.Constructors[i];
                         var cf = v.ConstructorFlags[i];
-                        cf = cf == ElaVariableFlags.None ? flags : cf;
+                        cf = cf == ElaVariableFlags.None ? flags : cf|flags;
                         CompileConstructor(v.Name, sca, c, cf, typeModuleId);
                     }
                 }
@@ -297,8 +297,8 @@ namespace Ela.Compilation
             PopVar(a);
 
             //We add special variables that can be used lately to inline this constructor call.
-            var consVar = AddVariable("-$" + name, juxta, flags, len);
-            var typeVar = AddVariable("--$" + name, juxta, flags, len);
+            var consVar = AddVariable("$-" + name, juxta, flags, len);
+            var typeVar = AddVariable("$--" + name, juxta, flags, len);
             cw.Emit(Op.Ctorid, ctid);
             PopVar(consVar);
             PushVar(sca);

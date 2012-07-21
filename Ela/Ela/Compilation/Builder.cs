@@ -48,6 +48,13 @@ namespace Ela.Compilation
 		{
             frame.Layouts.Add(new MemoryLayout(0, 0, 1)); //top level layout
 			cw.StartFrame(0);
+
+            //Handles and references should be of the same length. This might not
+            //be the case, if we are resuming in interactive mode. We should "align" them,
+            //so they are of the same length.
+            if (refs.Count != frame.HandleMap.Count)
+                for (var i = 0; i < frame.HandleMap.Count; i++)
+                    refs.Add(null);
 			
             //We always include prelude, but a module variable is created just once
             //(We check if we are not resuming in interactive mode (cw.Offset==0) and if yes

@@ -12,7 +12,7 @@ IntLike-
 This is a default implementation of a `IntLike` class. It can be used to generate instances of `IntLike` (e.g.
 using `deriving` clause). This implementation would work for any custom algebraic type.//br
 It relies on a declaration order of constructors in an algebraic type:
->>>type Letters = A | B | C | D 
+>>>type Letter = A | B | C | D 
 >>>  deriving IntLike
 >>>
 >>>toInt B
