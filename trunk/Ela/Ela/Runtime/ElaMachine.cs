@@ -428,31 +428,6 @@ namespace Ela.Runtime
                             rec.SetField(opd, right.DirectGetString(), left);
                         }
                         break;
-                    case Op.Recfld:
-                        {
-                            left = evalStack.Pop();
-                            right = evalStack.Pop();
-
-                            if (left.TypeId == LAZ || right.TypeId == LAZ)
-                            {
-                                left = left.Ref.Force(left, ctx);
-                                right = right.Ref.Force(right, ctx);
-                            }
-                            if (left.TypeId != REC)
-                                ctx.InvalidType(TCF.GetShortForm(ElaTypeCode.Record), left);
-
-                            if (!ctx.Failed)
-                                evalStack.Push(((ElaRecord)left.Ref).GetKey(right, ctx));
-
-                            if (ctx.Failed)
-                            {
-                                evalStack.Push(right);
-                                evalStack.Push(left);
-                                ExecuteFail(ctx.Error, thread, evalStack);
-                                goto SWITCH_MEM;
-                            }
-                        }
-                        break;
                     case Op.Tupcons:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
@@ -1499,6 +1474,29 @@ namespace Ela.Runtime
             ConsParamName = 103,
             ConsDefault = 104,
             ConsParamExist = 105,
+            RecordField = 106,
+            ConsCreate = 107,
+        }
+
+        private sealed class ConsFunction : ElaFunction
+        {
+            private readonly ElaUserType type;
+
+            internal ConsFunction(ElaUserType type, int args) : base(args)
+            {
+                this.type = type;
+            }
+
+            public override ElaValue Call(params ElaValue[] args)
+            {
+                type.Values = args;
+                return new ElaValue(type);
+            }
+
+            public override ElaFunction Clone()
+            {
+                return CloneFast(new ConsFunction(type, Parameters.Length + 1));
+            }
         }
 
         internal ElaValue ApiCall(int code, ElaValue left, ElaValue right, EvalStack stack, WorkerThread thread)
@@ -1687,6 +1685,49 @@ namespace Ela.Runtime
                         }
 
                         thread.Context.NotAlgebraicType(right);
+                    }
+                    break;
+                case Api.RecordField:
+                    {
+                        if (right.TypeId != REC)
+                        {
+                            thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.Record), left);
+                            return new ElaValue(ElaObject.ElaInvalidObject.Instance);
+                        }
+
+                        var rec = (ElaRecord)right.Ref;
+                        return rec.GetKey(left, thread.Context);
+                    }
+                case Api.ConsCreate:
+                    {
+                        if (left.TypeId != INT)
+                        {
+                            thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.Integer), left);
+                            return new ElaValue(ElaObject.ElaInvalidObject.Instance);
+                        }
+
+                        var tid = right.Ref.GetTypeId();
+
+                        if (tid <= SysConst.MAX_TYP)
+                            thread.Context.NotAlgebraicType(right);
+                        else
+                        {
+                            var dt = asm.Types[tid];
+
+                            if (left.I4 < 0 || left.I4 >= dt.Constructors.Count)
+                                thread.Context.IndexOutOfRange(left, right);
+                            else
+                            {
+                                var cid = dt.Constructors[left.I4];
+                                var cd = asm.Constructors[cid];
+
+                                if (cd.Parameters == null)
+                                    return new ElaValue(new ElaUserType(dt.TypeName, dt.TypeCode, cid, new ElaValue(ElaUnit.Instance)));
+                                else
+                                    return new ElaValue(new ConsFunction(new ElaUserType(dt.TypeName, dt.TypeCode,
+                                        cid, new ElaValue(ElaUnit.Instance)), cd.Parameters.Count));
+                            }
+                        }
                     }
                     break;
             }

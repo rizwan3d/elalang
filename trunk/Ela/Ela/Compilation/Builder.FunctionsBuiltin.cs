@@ -40,9 +40,6 @@ namespace Ela.Compilation
         {
             switch (kind)
             {
-                case ElaBuiltinKind.RecField:
-                    cw.Emit(Op.Recfld);
-                    break;
                 case ElaBuiltinKind.ForwardPipe:
                     cw.Emit(Op.Swap);
                     cw.Emit(Op.Call);
@@ -191,6 +188,12 @@ namespace Ela.Compilation
                     break;
                 case ElaBuiltinKind.Api105:
                     cw.Emit(Op.Api2, 105);
+                    break;
+                case ElaBuiltinKind.Api106:
+                    cw.Emit(Op.Api2, 106);
+                    break;
+                case ElaBuiltinKind.Api107:
+                    cw.Emit(Op.Api2, 107);
                     break;
             }
         }

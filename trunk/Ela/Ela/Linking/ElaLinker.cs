@@ -186,7 +186,7 @@ namespace Ela.Linking
                     Assembly.Constructors.Add(d);
 
                     //Not sure that we need to exclude private constructors from metadata
-                    //if ((frame.GlobalScope.Locals[d.Name].Flags & ElaVariableFlags.Private) != ElaVariableFlags.Private)
+                    if ((frame.GlobalScope.Locals[d.Name].Flags & ElaVariableFlags.Private) != ElaVariableFlags.Private)
                     {
                         if (d.TypeModuleId == -1)
                             Assembly.Types[frame.InternalTypes[d.TypeName]].Constructors.Add(d.Code);

@@ -10,6 +10,7 @@ namespace Ela.CodeModel
         internal ElaNewtype(Token tok): base(tok, ElaNodeType.Newtype)
         {
             Constructors = new List<ElaExpression>();
+            ConstructorFlags = new List<ElaVariableFlags>();
         }
         
         public ElaNewtype() : this(null)
@@ -26,6 +27,8 @@ namespace Ela.CodeModel
         {
             if (Extends)
                 sb.Append("data ");
+            else if (Opened)
+                sb.Append("opentype ");
             else
                 sb.Append("type ");
 
@@ -43,8 +46,10 @@ namespace Ela.CodeModel
                 And.ToString(sb, indent);
             }
         }
-        
+
         public List<ElaExpression> Constructors { get; private set; }
+
+        public List<ElaVariableFlags> ConstructorFlags { get; private set; }
 
         public bool HasBody
         {
@@ -56,7 +61,9 @@ namespace Ela.CodeModel
         public string Prefix { get; set; }
 
         public bool Extends { get; set; }
-
+        
+        public bool Opened { get; set; }
+        
         public bool Header { get; set; }
 
         public ElaVariableFlags Flags { get; set; }

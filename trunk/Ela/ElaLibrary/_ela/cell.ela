@@ -5,10 +5,7 @@
 import libCell#elalib@cl
 
 /* Types */
-type Cell
-
-data Cell # private
-data Cell = Ref a
+type Cell = Ref a # private
 
 /* Instances */
 instance Show Cell

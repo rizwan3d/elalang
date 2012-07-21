@@ -31,6 +31,8 @@ namespace Ela.CodeModel
 
         ClassFun = 1 << 11,
 
-        TypeFun = 1 << 12
+        TypeFun = 1 << 12,
+
+        ClosedType = 1 << 13,
 	}
 }
