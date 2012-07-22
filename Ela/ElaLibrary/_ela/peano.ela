@@ -14,11 +14,6 @@ infinity # qualified
 infinity = inf Zero 
   where inf a = Succ (& inf a)
 
-min # qualified
-min = Zero
-max # qualified
-max = infinity
-
 fromInt # qualified
 fromInt = fromIntegral
 
@@ -31,6 +26,10 @@ fromIntegral a = from a
         from n = Succ (& from (n-1))
 
 /* Instances */
+instance Bounded Peano where
+  maxBound _ = infinity
+  minBound _ = Zero
+
 instance Show Peano where 
   showf _ p = toString <| show (stringBuilder +> "peano(") p
     where 
@@ -118,6 +117,7 @@ divideMod x y
   | else = let &(q,r) = & divideMod d y in (Succ q,r)
   where (neg,d) = subtractNeg y x
 
+/* Privates */
 toIntegral2 # private
 toIntegral2 a b = toInt 0L 0L a b
   where

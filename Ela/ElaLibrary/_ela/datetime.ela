@@ -7,8 +7,7 @@ open generic
 
 /* Construction */
 type DateTime = 
-  | DateTime long # private
-  deriving Eq Ord
+  | DateTime a # private
 
 fromTicks # qualified
 fromTicks x = DateTime (force x)
@@ -27,13 +26,21 @@ today () = DateTime (dt.today ())
 parse # qualified
 parse fmt str = DateTime (dt.parse (force fmt) (force str))
 
-min # qualified
-min = DateTime dt.maxDateTime
-
-max # qualified
-max = DateTime dt.maxDateTime
-
 /* Instances */
+instance Eq DateTime where
+  (DateTime x) == (DateTime y) = x == y
+  (DateTime x) <> (DateTime y) = x <> y
+
+instance Ord DateTime where
+  (DateTime x) > (DateTime y)  = x > y
+  (DateTime x) < (DateTime y)  = x < y
+  (DateTime x) >= (DateTime y) = x >= y
+  (DateTime x) <= (DateTime y) = x <= y
+
+instance Bounded DateTime where
+  maxBound _ = dt.maxDateTime
+  minBound _ = dt.minDateTime
+
 instance Show DateTime where 
   showf fmt (DateTime x) = dt.formatToString (force fmt) x
 
