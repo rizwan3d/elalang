@@ -60,6 +60,10 @@ namespace Ela.Runtime
 
 		InvalidOp = 826,
 
+        InvalidTypeCode = 827,
+
+        InvalidConstructorCode = 828,
+
 
 		UserCode = 999
 	}

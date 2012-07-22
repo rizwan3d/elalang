@@ -1,15 +1,18 @@
-open list variant
+open list core
 
-amb xs = x
-   where join (x::xs) = amb' x (join xs)
-         join [] = \_ -> Some ""
-         amb' [] _ _ = None
-         amb' (x::xs) n w | eq' w x and nx `tagged` Some = Some (x ++ " " ++ untag nx)
-                          | else = amb' xs n w
-                          where nx = n x
-                                eq' [] x = true
-                                eq' w x  = last w == head x
-         (Some x) = (& join xs "")
+amb xs = x where 
+  (Some x) = & join xs ""
+  join (x::xs) = amb' x (join xs)
+  join [] = \_ -> Some ""
+  eq' [] x = true
+  eq' w x  = last w == head x
+  amb' [] _ _ = None
+  amb' (x::xs) n w 
+    | eq' w x =
+    match n x with
+          Some v = Some (x ++ " " ++ v)
+          _ = amb' xs n w
+    | else = amb' xs n w
 
 //If our amb operator is smart enough it should print 'that thing grows slowly'
 amb [

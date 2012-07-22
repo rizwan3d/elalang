@@ -1472,14 +1472,16 @@ namespace Ela.Runtime
             ListLength = 11,
             ReverseList = 12,
             ListToString = 13,
-                        
+            ConsDefault = 14,
+            ConsCreate = 15,
+            
             ConsParamIndex = 101,
             ConsParamValue = 102,
             ConsParamName = 103,
-            ConsDefault = 104,
+            ConsCodeByIndex = 104,
             ConsParamExist = 105,
             RecordField = 106,
-            ConsCreate = 107,
+            
         }
 
         private sealed class ConsFunction : ElaFunction
@@ -1583,7 +1585,13 @@ namespace Ela.Runtime
                 case Api.TypeCode:
                     return new ElaValue(left.Ref.TypeId);
                 case Api.TypeConsNumber:
-                    return new ElaValue(asm.Types[left.Ref.TypeId].Constructors.Count);
+                    if (left.TypeId != INT)
+                        thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.Integer), left);
+                    else if (left.I4 < 0 || left.I4 >= asm.Types.Count)
+                        thread.Context.InvalidTypeCode(left);
+                    else
+                        return new ElaValue(asm.Types[left.I4].Constructors.Count);
+                    break;
                 case Api.ConsInfix:
                     {
                         var cid = left.Ref.GetTag(null);
@@ -1605,21 +1613,25 @@ namespace Ela.Runtime
                             return new ElaValue(ElaObject.ElaInvalidObject.Instance);
                         }
 
-                        var cid = right.Ref.GetTag(null);
-
-                        if (cid >= 0)
+                        if (right.TypeId != INT)
                         {
-                            var r = asm.Constructors[cid].Parameters.IndexOf(left.DirectGetString());
-
-                            if (r < 0)
-                                thread.Context.IndexOutOfRange(left, right);
-
-                            return new ElaValue(r);
+                            thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.Integer), left);
+                            return new ElaValue(ElaObject.ElaInvalidObject.Instance);
                         }
 
-                        thread.Context.NotAlgebraicType(right);
+                        if (right.I4 < 0 || right.I4 >= asm.Constructors.Count)
+                        {
+                            thread.Context.InvalidConstructorCode(right);
+                            return new ElaValue(ElaObject.ElaInvalidObject.Instance);
+                        }
+
+                        var r = asm.Constructors[right.I4].Parameters.IndexOf(left.DirectGetString());
+
+                        if (r < 0)
+                            thread.Context.IndexOutOfRange(left, right);
+
+                        return new ElaValue(r);
                     }
-                    break;
                 case Api.ConsParamExist:
                     {
                         if (left.TypeId != STR)
@@ -1628,17 +1640,21 @@ namespace Ela.Runtime
                             return new ElaValue(ElaObject.ElaInvalidObject.Instance);
                         }
 
-                        var cid = right.Ref.GetTag(null);
-
-                        if (cid >= 0)
+                        if (right.TypeId != INT)
                         {
-                            var r = asm.Constructors[cid].Parameters.IndexOf(left.DirectGetString());
-                            return new ElaValue(r >= 0);
+                            thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.Integer), left);
+                            return new ElaValue(ElaObject.ElaInvalidObject.Instance);
                         }
 
-                        thread.Context.NotAlgebraicType(right);
+                        if (right.I4 < 0 || right.I4 >= asm.Constructors.Count)
+                        {
+                            thread.Context.InvalidConstructorCode(right);
+                            return new ElaValue(ElaObject.ElaInvalidObject.Instance);
+                        }
+
+                        var r = asm.Constructors[right.I4].Parameters.IndexOf(left.DirectGetString());
+                        return new ElaValue(r >= 0);
                     }
-                    break;
                 case Api.ConsParamValue:
                     {
                         if (left.TypeId != INT)
@@ -1661,17 +1677,24 @@ namespace Ela.Runtime
                             return new ElaValue(ElaObject.ElaInvalidObject.Instance);
                         }
 
-                        var cid = right.Ref.GetTag(null);
-
-                        if (cid >= 0)
+                        if (right.TypeId != INT)
                         {
-                            var pars = asm.Constructors[cid].Parameters;
-
-                            if (left.I4 < 0 || left.I4 >= pars.Count)
-                                thread.Context.IndexOutOfRange(left, right);
-                            else
-                                return new ElaValue(pars[left.I4]);
+                            thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.Integer), left);
+                            return new ElaValue(ElaObject.ElaInvalidObject.Instance);
                         }
+
+                        if (right.I4 < 0 || right.I4 >= asm.Constructors.Count)
+                        {
+                            thread.Context.InvalidConstructorCode(right);
+                            return new ElaValue(ElaObject.ElaInvalidObject.Instance);
+                        }
+
+                        var pars = asm.Constructors[right.I4].Parameters;
+
+                        if (left.I4 < 0 || left.I4 >= pars.Count)
+                            thread.Context.IndexOutOfRange(left, right);
+                        else
+                            return new ElaValue(pars[left.I4]);
 
                         thread.Context.NotAlgebraicType(right);
                     }
@@ -1684,33 +1707,24 @@ namespace Ela.Runtime
                             return new ElaValue(ElaObject.ElaInvalidObject.Instance);
                         }
 
-                        var tid = right.Ref.TypeId;
-
-                        if (tid > SysConst.MAX_TYP)
+                        if (left.I4 < 0 || left.I4 >= asm.Constructors.Count)
+                            thread.Context.InvalidConstructorCode(left);
+                        else
                         {
-                            var dt = asm.Types[tid];
+                            var cd = asm.Constructors[left.I4];
 
-                            if (left.I4 < 0 || left.I4 >= dt.Constructors.Count)
-                                thread.Context.IndexOutOfRange(left, right);
+                            if (cd.Parameters == null)
+                                return new ElaValue(new ElaUserType(cd.TypeName, cd.TypeCode, cd.Code, new ElaValue(ElaUnit.Instance)));
                             else
                             {
-                                var cd = asm.Constructors[dt.Constructors[left.I4]];
+                                var arr = new ElaTuple(cd.Parameters.Count);
 
-                                if (cd.Parameters == null)
-                                    return new ElaValue(new ElaUserType(cd.TypeName, tid, cd.Code, new ElaValue(ElaUnit.Instance)));
-                                else
-                                {
-                                    var arr = new ElaTuple(cd.Parameters.Count);
+                                for (var i = 0; i < arr.Length; i++)
+                                    arr.InternalSetValue(i, new ElaValue(ElaUnit.Instance));
 
-                                    for (var i = 0; i < arr.Length; i++)
-                                        arr.InternalSetValue(i, new ElaValue(ElaUnit.Instance));
-
-                                    return new ElaValue(new ElaUserType(cd.TypeName, tid, cd.Code, new ElaValue(arr)));
-                                }
+                                return new ElaValue(new ElaUserType(cd.TypeName, cd.TypeCode, cd.Code, new ElaValue(arr)));
                             }
                         }
-
-                        thread.Context.NotAlgebraicType(right);
                     }
                     break;
                 case Api.RecordField:
@@ -1732,27 +1746,44 @@ namespace Ela.Runtime
                             return new ElaValue(ElaObject.ElaInvalidObject.Instance);
                         }
 
-                        var tid = right.Ref.GetTypeId();
-
-                        if (tid <= SysConst.MAX_TYP)
-                            thread.Context.NotAlgebraicType(right);
+                        if (left.I4 < 0 || left.I4 >= asm.Constructors.Count)
+                            thread.Context.InvalidConstructorCode(left);
                         else
                         {
-                            var dt = asm.Types[tid];
+                            var cd = asm.Constructors[left.I4];
 
-                            if (left.I4 < 0 || left.I4 >= dt.Constructors.Count)
-                                thread.Context.IndexOutOfRange(left, right);
+                            if (cd.Parameters == null)
+                                return new ElaValue(new ElaUserType(cd.TypeName, cd.TypeCode, cd.Code, new ElaValue(ElaUnit.Instance)));
                             else
-                            {
-                                var cid = dt.Constructors[left.I4];
-                                var cd = asm.Constructors[cid];
+                                return new ElaValue(new ConsFunction(new ElaUserType(cd.TypeName, cd.TypeCode,
+                                    cd.Code, new ElaValue(ElaUnit.Instance)), cd.Parameters.Count));
+                        }
+                    }
+                    break;
+                case Api.ConsCodeByIndex:
+                    {
+                        if (left.TypeId != INT)
+                        {
+                            thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.Integer), left);
+                            return new ElaValue(ElaObject.ElaInvalidObject.Instance);
+                        }
 
-                                if (cd.Parameters == null)
-                                    return new ElaValue(new ElaUserType(dt.TypeName, dt.TypeCode, cid, new ElaValue(ElaUnit.Instance)));
-                                else
-                                    return new ElaValue(new ConsFunction(new ElaUserType(dt.TypeName, dt.TypeCode,
-                                        cid, new ElaValue(ElaUnit.Instance)), cd.Parameters.Count));
-                            }
+                        if (right.TypeId != INT)
+                        {
+                            thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.Integer), right);
+                            return new ElaValue(ElaObject.ElaInvalidObject.Instance);
+                        }
+
+                        if (left.I4 < 0 || left.I4 >= asm.Types.Count)
+                            thread.Context.InvalidTypeCode(left);
+                        else
+                        {
+                            var td = asm.Types[left.I4];
+
+                            if (right.I4 < 0 || right.I4 >= td.Constructors.Count)
+                                thread.Context.IndexOutOfRange(right, new ElaValue(new ElaUserType(td.TypeName, td.TypeCode, -1, new ElaValue(ElaUnit.Instance))));
+
+                            return new ElaValue(td.Constructors[right.I4]);
                         }
                     }
                     break;

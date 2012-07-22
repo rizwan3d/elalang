@@ -53,6 +53,16 @@ namespace Ela.Runtime
 				obj.ToString(), obj.GetTypeName());
 		}
 
+        public void InvalidTypeCode(ElaValue code)
+        {
+            Fail(ElaRuntimeError.InvalidTypeCode, code.I4);
+        }
+
+        public void InvalidConstructorCode(ElaValue code)
+        {
+            Fail(ElaRuntimeError.InvalidConstructorCode, code.I4);
+        }
+
 
 		public void InvalidType(string expected, ElaValue given)
 		{

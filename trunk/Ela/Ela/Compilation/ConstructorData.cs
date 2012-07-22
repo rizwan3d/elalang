@@ -11,6 +11,10 @@ namespace Ela.Compilation
 
         public int Code { get; internal set; }
 
+        internal int TypeCode { get; set; }
+
+        public bool Private { get; internal set; }
+
         public string Name { get; internal set; }
 
         internal List<String> Parameters { get; set; }

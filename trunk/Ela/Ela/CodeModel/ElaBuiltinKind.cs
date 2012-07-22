@@ -28,6 +28,8 @@ namespace Ela.CodeModel
         Api11,
         Api12,
         Api13,
+        Api14,
+        Api15,
         
         /* Two arguments */
         Showf,
@@ -65,6 +67,6 @@ namespace Ela.CodeModel
         Api104,
         Api105,
         Api106,
-        Api107,
+        //Api107,
     }
 }

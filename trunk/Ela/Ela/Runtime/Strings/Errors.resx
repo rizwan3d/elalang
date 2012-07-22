@@ -147,6 +147,9 @@
   <data name="InvalidConstructor" xml:space="preserve">
     <value>Unable to find metadata for constructor '{0}' of type '{1}'.</value>
   </data>
+  <data name="InvalidConstructorCode" xml:space="preserve">
+    <value>A constructor code '{0}' doesn't correspond to any existing constructor.</value>
+  </data>
   <data name="InvalidFormat" xml:space="preserve">
     <value>Format '{0}' for the value '{1}' of type '{2}' is invalid or not supported.</value>
   </data>
@@ -164,6 +167,9 @@
   </data>
   <data name="InvalidTypeArgument" xml:space="preserve">
     <value>A constructor '{0}' of type '{1}' doesn't have '{2}' arguments.</value>
+  </data>
+  <data name="InvalidTypeCode" xml:space="preserve">
+    <value>A type code '{0}' doesn't correspond to any existing type.</value>
   </data>
   <data name="MatchFailed" xml:space="preserve">
     <value>Match failed. None of the patterns were successful.</value>

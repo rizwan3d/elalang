@@ -1,7 +1,7 @@
 //Here we use console output for testing purposes
 //Module console contains implementations of basic console functions such as
 //writen (write line), write (write), readn (read line)
-open console
+open console tuple
 
 //Tuples are sequences of values. They are convenient for grouping multiple values,
 //for example, when you want to return multiple values from a function. Here we create

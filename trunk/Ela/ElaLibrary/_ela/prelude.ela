@@ -41,10 +41,10 @@ type Fun
 type Unit
   deriving Eq Show
 
-type Object
-
-type List = a :: b | Nil
+type List
   deriving Seq
+
+type Object
 
 /* Extra types */
 type StringBuilder = StringBuilder xs # private
@@ -119,7 +119,7 @@ tupleAny f tup1 tup2
   | length tup2 <> len = fail "prelude: Tuples should be of the same length."
   | else = fold 0
   where len = length tup1
-        fold n | n < len = if e then true else fold (n+1)
+        fold n | n < len - 1 = if e then true else fold (n+1)
                | else = e
                where e = tup1:n `f` tup2:n
 
@@ -328,13 +328,15 @@ instance StringLike String Char where
   toString = lang.__toString
 
 /* Misc operators */
-not = __internal not
+not  = __internal not
+(::) = __internal cons
 
 /* Function related operators and functions */
 (>>) f g x = g (f x)
 (<<) f g x = f (g x)
 (|>) = __internal fpipe
 (<|) = __internal bpipe
+f! = f()
 flip f x y = f y x
 curry f x y = f (x, y)
 uncurry f (x, y) = f x y
