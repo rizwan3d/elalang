@@ -39,26 +39,9 @@ A principal ideal domain is a ring in which every ideal, the set of multiples of
 set of elements, is principal. This class defines functions `gcd` (greatest common divisor for 
 the two given arguments) and `lcm` (the least common multiple of two given arguments).
 
-Principal-
-A complete default implementation of `Principal` class.
-
-Integral-
-This partial default instance contains only the following definition of `div` function:
->>div x y
->>  | r < 0 and r*y <> x = r - 1
->>  | else = r
->>  where r = x `quot` y
-
-Absolute-
-This partial default instance contains only the following definition of `abs` function:
->>abs x 
->>  | x >= 0 = x 
->>  | else = --x
-
 Transcendental-
-This partial default instance contains definitions of functions `sqrt`, `logBase`, `tan`
+This partial default instance contains definitions of functions `logBase`, `tan`
 and `tanh`:
->>sqrt x      = x ** 0.5
 >>logBase x y = log y / log x
 >>tan x       = sin x / cos x
 >>tanh x      = sinh x / cosh x
@@ -99,31 +82,24 @@ Implements functions from `Transcendental` class for a 32-bit floating point num
 Transcendental Double
 Implements functions from `Transcendental` class for a 64-bit floating point number.
 
-int
-A record with constants `max` (maximum value for a 32-bit integer), `min` (minimum value
-for a 32-bit integer) and `zero` (a zero value for a 32-bit integer).
+Principal Int
+Implements functions from `Principal` class for a 32-bit integer number.
 
-long
-A record with constants `max` (maximum value for a 64-bit integer), `min` (minimum value
-for a 64-bit integer) and `zero` (a zero value for a 64-bit integer).
+Principal Long
+Implements functions from `Principal` class for a 64-bit integer number.
+
+Principal Single
+Implements functions from `Principal` class for a 32-bit floating point number.
+
+Principal Double
+Implements functions from `Principal` class for a 64-bit floating point number.
 
 single
-A record with constants `max` (maximum value for a 32-bit float), `min` (minimum value
-for a 32-bit float), `zero` (a zero value for a 32-bit float), `pi` (the ratio of the 
+A record with `pi` (the ratio of the 
 circumference of a circle to its diameter as 32-bit float) and `e` (the natural logarithmic 
 base as 32-bit float).
 
 double
-A record with constants `max` (maximum value for a 64-bit float), `min` (minimum value
-for a 64-bit float), `zero` (a zero value for a 64-bit float), `pi` (the ratio of the 
+A record with constants `pi` (the ratio of the 
 circumference of a circle to its diameter as 64-bit float) and `e` (the natural logarithmic 
 base as 64-bit float).
-
-genericDiv
-A generic integer division truncated towards negative infinity that works for both
-32-bit integers and 64-bit integers.
-
-
-
-sqrt
-Returns the square root of a specified number. 

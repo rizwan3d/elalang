@@ -91,3 +91,79 @@ This is a default implementation of an `Eq` class. It defines all members of `Eq
 generate instances of `Eq` (e.g. using `deriving` clause). This implementation would work for any 
 custom algebraic type.//br
 It relies on a declaration order of constructors in an algebraic type.
+
+Bounded-
+This is a default implementation of a `Bounded` class. It defines all members of `Bounded` class. It can be used to 
+generate instances of `Bounded` (e.g. using `deriving` clause). This implementation would work for any 
+custom algebraic type.//br
+It relies on a declaration order of constructors in an algebraic type. The `maxBound` function returns a maximum
+index of a constructor in a given algebraic type, e.g. for a type with three constructors it will return 2 as a
+maximum bound. The `minBound` function always returns 0 in this implementation.
+
+consName a
+Returns a name as a string of a given constructor.
+>>>consName (Point 1 2)
+
+consParamNumber a
+Returns number of parameters for a given constructor. If a constructor doesn't have parameters, it returns 0.
+>>>open core
+>>>consParamNumber None
+
+consIndex a
+Returns a positional index of a given constructor:
+>>>consIndex (Some 42)
+
+consInfix a
+Returns `true` if a given constructor has an operator-like name, otherwise returns false.
+>>>consInfix (1 :+ 2)
+
+consParams a
+Returns parameters of a given constructor as a tuple. If a constructor doesn't have parameters, it return a unit.
+>>>consParams (Point 12 24)
+
+consCode a
+Returns a unique ID of a given constructor.
+>>>consCode None
+
+typeName a
+Returns a type name as a string of a given value.
+>>>typeName (Some 42)
+It is important to remember that type names are not unique, in order to compare types one should use `typeCode`
+function instead.
+
+typeCode a
+Returns a unique ID of a type of a given value.
+>>>typeCode (Some 42)
+
+typeConsNumber a
+Returns a number of constructors in a type of a given value.
+>>>typeConsNumber None
+
+consParamIndex a
+Returns a positional index of a given parameter of a constructor.
+>>>type Person = Person name age
+>>>ps = Person "Basil" 33
+>>>consParamIndex "age" ps
+
+consParamValue a
+Returns a value of a constructor parameter identified by an index.
+>>>consParamValue 1 ps
+
+consParamName a
+Returns a name of a constructor parameter indentifier by a positional index.
+>>>consParamName 1 ps
+
+consParamExist a
+Checks if any of constructor parameters of a given value have a specified name.
+>>>consParamExist "age" ps
+
+consDefault a
+Creates a default instance of a constructor with the specified index. If this constructor has parameters they are
+filled with units.
+>>>consDefault 1 None
+
+consCreate a
+If a requested constructor doesn't have any parameters, acts as `consDefault`, otherwise returns a function for `n`
+arguments, where `n` is the number of constructor parameters.
+>>>f = consCreate 1 None
+>>>f "value"
