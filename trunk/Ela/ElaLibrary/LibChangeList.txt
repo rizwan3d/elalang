@@ -1,3 +1,5 @@
+0.1.4.41:Change:Now 'espec' module uses StringBuilder for test result report generation.
+0.1.4.42:New:A new type StringBuilder is now added to prelude. This is an immutable data type that supports effecient string concatenation through '+>' operator.
 0.1.4.40:Change:Implementation of function 'foldr' from 'list' module is optimized.
 0.1.4.39:Change:An application operator (!) from prelude is decomissioned.
 0.1.4.38:Change:Implementation of 'reverse' from 'list' module is optimized.

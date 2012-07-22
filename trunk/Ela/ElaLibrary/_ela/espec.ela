@@ -96,7 +96,7 @@ addTest fn xs = fn EndOfTest :: xs
 
 addTests mod xs = foldl (flip (::)) xs funs
   where funs = map (\f -> f EndOfTest) <| 
-          filter (same test_sg) <| map (:"value") <| moduleExportList mod
+          filter (same test_sg) <| map (getField "value") <| moduleExportList mod
 
 init # private
 init = ((),[])
@@ -115,12 +115,12 @@ stat f e (Pred (_,_,_,Error)::xs) = stat f (e+1) xs
 stat f e (_::xs) = stat f e xs
 
 report # private
-report xs = (f, e, report_stat f e xs)
+report xs = (f, e, toString <| report_stat stringBuilder f e xs)
   where (f,e) = stat 0 0 xs
 
 report_stat # private
-report_stat _ _ [] = ""
-report_stat f e (x::xs) = formatStr "{0}\r\n{1}" (item x) (report_stat f e xs)
+report_stat sb _ _ [] = sb
+report_stat sb f e (x::xs) = report_stat (sb +> (item x) +> "\r\n") f e xs
   where item (Test n) = formatStr "\r\nTest \"{0}\" (failed {1}, errors {2}):" n f e
         item (Given x) = formatStr "  given {0}" x
         item (Pred (nm,fnm,val,res)) = formatStr "    {0} {1} {2} -> {3}" nm fnm val (result res)

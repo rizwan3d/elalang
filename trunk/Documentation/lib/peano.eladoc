@@ -68,6 +68,10 @@ case for peano number, and this equation will hold.
 Peano
 This type represents a lazy recursive peano number.
 
+Bounded Peano
+Implements functions `maxBound` and `minBound` for the `Peano` data type. Function `maxBound`
+always returns `infinity`, and `minBound` - `Zero`.
+
 ListLike Peano
 Converts a given peano number to a linked list. A function `toList` always produces a lazy list,
 and it is possible to converts an infinity to a linked list:
@@ -139,12 +143,6 @@ always requires a qualified access.
 infinity
 A constructor for a peano number, returns a peano representation for an infinity. This constant
 always requires a qualified access.
-
-min
-This constant is equivalent to `zero` constructor. It always requires a qualified access.
-
-max
-This constant is equivalent to `infinity` constructor. It always requires a qualified access.
 
 fromInt
 Converts a given 32-bit integer to a peano number. This is a lazy function.
