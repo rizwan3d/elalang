@@ -1,4 +1,4 @@
-open console cell
+open console cell core
 
 //An implementation of a function that creates an iterator for a given list
 iter xs = iter' (ref xs)

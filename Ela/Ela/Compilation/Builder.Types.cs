@@ -75,12 +75,11 @@ namespace Ela.Compilation
             var tc = -1;
             var sca = -1;
             var flags = v.Flags;
-            var isList = false;
                 
             //A body may be null only if this is a built-in type
             if (!v.HasBody && v.Extends)
                 AddError(ElaCompilerError.ExtendsNoDefinition, v, v.Name);
-            else if (!v.HasBody || (isList = IsList(v, flags)))
+            else if (!v.HasBody)
             {
                 tc = (Int32)TCF.GetTypeCode(v.Name);
                 tc = tc == 0 ? -1 : tc;
@@ -124,7 +123,7 @@ namespace Ela.Compilation
             var typeModuleId = -1;
 
             //Add a type var for a non built-in type with a body
-            if (tc == -1 && !isList)
+            if (tc == -1)
             {
                 //Add a special variable with global type ID which will be calculated at run-time
                 if (v.Extends)
@@ -150,24 +149,6 @@ namespace Ela.Compilation
                         CompileConstructor(v.Name, sca, c, cf, typeModuleId);
                     }
                 }
-            }
-            else if (isList)
-            {
-                //This is a special case of a built-in type - a linked list - which
-                //definition is fully written to have an ability to specify names for constructors.
-                var nil = v.Constructors[0].Type == ElaNodeType.NameReference ?
-                    v.Constructors[0] : v.Constructors[1];
-                var cons = v.Constructors[0].Type == ElaNodeType.Juxtaposition ?
-                    v.Constructors[0] : v.Constructors[1];
-
-                var nilVar = AddVariable(nil.GetName(), nil, ElaVariableFlags.TypeFun|flags, -1);
-                cw.Emit(Op.Newlist);
-                PopVar(nilVar);
-
-                var consName = cons.GetName();
-                var consVar = AddVariable(consName, cons, ElaVariableFlags.TypeFun|ElaVariableFlags.Builtin, (Int32)ElaBuiltinKind.Cons);
-                CompileBuiltin(ElaBuiltinKind.Cons, cons, map, consName);
-                PopVar(consVar);                
             }
             else
                 cw.Emit(Op.Nop);
@@ -309,20 +290,6 @@ namespace Ela.Compilation
         private bool IsInvalidConstructorParameter(ElaNameReference n)
         {
             return n.Uppercase || Format.IsSymbolic(n.Name);
-        }
-
-        //Checks if an algebraic type is actually a list which implementation can be optimized.
-        private bool IsList(ElaNewtype t, ElaVariableFlags flags)
-        {
-            if (t.Flags != ElaVariableFlags.None
-                || t.Name != "List"
-                || t.Extends
-                )
-                return false;
-
-            return  t.Constructors.Count == 2 &&
-                (t.Constructors[0].Type == ElaNodeType.NameReference && IsCons(t.Constructors[1], t))
-                || (t.Constructors[1].Type == ElaNodeType.NameReference && IsCons(t.Constructors[0], t));
         }
 
         //Checks if a constructor is actually a list constructor which implementation can be optimized.

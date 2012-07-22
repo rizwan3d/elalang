@@ -1,9 +1,7 @@
-open console
+open number
 
-//This function divides two passed values and handles possible exceptions
-sum x y = try x / y with
-              InvalidOperand m = writen ("You can't divide these values! " ++ m)
-              DivideByZero m   = writen ("Ooop, division by zero! " ++ m)
+//This function divides two passed values and handles exceptions
+sum x y = try x `div` y with
+              m = "You can't divide these values! " ++ m
 
-sum 2 "0" $ //This will cause InvalidOperand error
-  sum 2 0 //This will cause DivideByZero error
+sum 2 0

@@ -37,16 +37,7 @@ An immutable indexed array of unicode characters.
 
 List
 >>[1,2,3,4,5]
-An immutable single linked list. This class defines two constructors - a so called cons operator
-`::` and a `Nil` list.//br
-An operator `::` is right associative. In order to construct a list a rightmost part of an expression 
-should always be a list. 
->>>1 :: 2 :: Nil
-This function is lazy on its both arguments. It doesn't force a left argument and if a right 
-argument is a thunk than a lazy list is constructed.//br
-A `Nil` constructor is used to represent a nil list. There is syntax sugar for this constructor - 
-a literal `[]`. So that the code sample above is equivalent to:
->>>1 :: 2 :: []
+An immutable single linked list.
 
 Tuple
 >>(1, 'c', "Hello", true)
@@ -422,6 +413,13 @@ string builder. This function is pure and always returns a new instance of `Stri
 left associative:
 >>>toString <| stringBuilder +> "1" +> "2"
 
+:: e xs
+List construction operator. This operator is right associative. In order to construct a list a 
+rightmost part of an expression should always be a list. 
+>>>1 :: 2 :: []
+This function is lazy on its both arguments. It doesn't force a left argument and if a right 
+argument is a thunk than a lazy list is constructed.
+
 % x y
 An alias for a remainder (`rem`) function from `Modulo` class:
 >>>12.2 % 3.0
@@ -549,6 +547,10 @@ and of a second argument to a forth argument:
 until
 Function application like so: `until p f` yields the result of applying `f` until `p` holds: 
 >>until (<0) (-1) 10
+
+! f
+An application operator. It is defined like so:
+>>f! = f()
 
 |> e f
 A redundant low priority application operator also known as _forward pipe_. It has a normal 

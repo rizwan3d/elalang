@@ -5,8 +5,8 @@
 open reflect list format
 
 /* Types */
-type Endtest # private
-type Endtest = EndOfTest
+type EndOfTest # private
+type EndOfTest = EndOfTest
 
 type Word # private
 type Word = Do a | Apply a | Pred a | Given a | Fun a | Other | Test a

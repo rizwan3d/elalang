@@ -1,8 +1,8 @@
 /*
   Module peano
-  Created by Basil Voronkov in 2012
+  Created in 2012 by Basil Voronkov
 */
-open string number list
+open number list
 
 /* Construction */
 type Peano = Zero | Succ a
@@ -95,7 +95,7 @@ add Zero b = b
 add (Succ a) b = Succ (& add a b)
 
 subtract Zero Zero = Zero
-subtract Zero b = fail "peano: out of range!"
+subtract Zero b = fail "peano.subtract: Out of range."
 subtract b Zero = b
 subtract (Succ a) (Succ b) = & subtract a b
 

@@ -147,6 +147,9 @@ namespace Ela.Compilation
                 case ElaBuiltinKind.GetField:
                     cw.Emit(Op.Pushfld);
                     break;
+                case ElaBuiltinKind.HasField:
+                    cw.Emit(Op.Hasfld);
+                    break;
                 /* Api */
                 case ElaBuiltinKind.Api1:
                     cw.Emit(Op.Api, 1);
@@ -187,6 +190,12 @@ namespace Ela.Compilation
                 case ElaBuiltinKind.Api13:
                     cw.Emit(Op.Api, 13);
                     break;
+                case ElaBuiltinKind.Api14:
+                    cw.Emit(Op.Api, 14);
+                    break;
+                case ElaBuiltinKind.Api15:
+                    cw.Emit(Op.Api, 15);
+                    break;
                 case ElaBuiltinKind.Api101:
                     cw.Emit(Op.Api2, 101);
                     break;
@@ -205,9 +214,9 @@ namespace Ela.Compilation
                 case ElaBuiltinKind.Api106:
                     cw.Emit(Op.Api2, 106);
                     break;
-                case ElaBuiltinKind.Api107:
-                    cw.Emit(Op.Api2, 107);
-                    break;
+                //case ElaBuiltinKind.Api107:
+                //    cw.Emit(Op.Api2, 107);
+                //    break;
             }
         }
 

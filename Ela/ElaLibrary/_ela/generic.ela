@@ -4,49 +4,52 @@
 */
 /* Reflection API */
 //Constructor name: Alg->String
-consName        = __internal api1
+consName          = __internal api1
 
 //Constructor parameter number: Alg->Int
-consParamNumber = __internal api2
+consParamNumber   = __internal api2
 
 //Constructor index: Alg->Int
-consIndex       = __internal api3
+consIndex         = __internal api3
 
 //Constructor is infix symbol: Alg->Bool
-consInfix       = __internal api7
+consInfix         = __internal api7
 
 //Constructor parameters: Alg->Tuple or Alg->Unit
-consParams      = __internal api8
+consParams        = __internal api8
 
 //Constructor unique ID: Alg->Int
-consCode        = __internal api9
+consCode          = __internal api9
+
+//Constructor unique ID by index: Int->Int
+consCodeByIndex   = __internal api104
 
 //Type name: (any)->String
-typeName        = __internal api4
+typeName          = __internal api4
 
 //Type unique ID: (any)-Int
-typeCode        = __internal api5
+typeCode          = __internal api5
 
-//Number of constructor in type: Alg->Int
-typeConsNumber  = __internal api6
+//Number of constructor in type: Int->Int
+typeConsNumber    = __internal api6
 
-//Index of a parameter in constructor: String->Alg->Int
-consParamIndex  = __internal api101
+//Index of a parameter in constructor: String->Int->Int
+consParamIndex    = __internal api101
 
 //Value of a parameter in constructor: Int->Alg->(any)
-consParamValue  = __internal api102
+consParamValue    = __internal api102
 
-//Name of a parameter: Int->Alg->String
-consParamName   = __internal api103
+//Name of a parameter: Int->Int->String
+consParamName     = __internal api103
 
-//Checks is a cons parameter exists: String->Alg->Bool
-consParamExist  = __internal api105
+//Checks is a cons parameter exists: String->Int->Bool
+consParamExist    = __internal api105
 
-//Creates a default instance: Int->Alg->Alg
-consDefault     = __internal api104
+//Creates a default instance: Int->Alg
+consCreateDefault = __internal api14
 
-//Create a production: Int->Alg->Fun or Int->Alg->Alg
-consCreate      = __internal api107
+//Create a production: Int->Fun or Int->Alg
+consCreate        = __internal api15
 
 
 /* Default instances */
@@ -79,8 +82,8 @@ instance Ord where
 
 //Only for algebraic, open types are welcome
 instance Name where
-  getField nm xs = consParamValue (consParamIndex nm xs) xs
-  isField = consParamExist
+  getField nm xs = consParamValue (consParamIndex nm (consCode xs)) xs
+  isField fld a = consParamExist fld (consCode a)
 
 //Only for algebraic, open types are welcome
 instance Len where
@@ -92,10 +95,12 @@ instance Ix where
 
 //Only for algebraic, better not to use with open types
 instance Enum where
-  succ a = consDefault (consIndex a + 1) a
-  pred a = consDefault (consIndex a - 1) a
-  enumFrom fst snd = map (flip consDefault fst) [consIndex fst,consIndex snd..typeConsNumber fst - 1]
-  enumFromTo max fst snd = map (flip consDefault max) [consIndex fst,consIndex snd..consIndex max]
+  succ a = consCreateDefault (consCodeByIndex (typeCode a) (consIndex a + 1))
+  pred a = consCreateDefault (consCodeByIndex (typeCode a) (consIndex a + 1))
+  enumFrom fst snd = map (\x -> consCreateDefault (consCodeByIndex tc x)) [consIndex fst,consIndex snd..typeConsNumber (typeCode fst) - 1]
+    where tc = typeCode fst
+  enumFromTo max fst snd = map (\x -> consCreateDefault (consCodeByIndex tc x)) [consIndex fst,consIndex snd..consIndex max]
+    where tc = typeCode fst
 
 //Only for algebraic, better not to use with open types
 instance IntLike where
@@ -128,7 +133,7 @@ instance ListLike where
 
 //Only for algebraic, better not to use with open types
 instance Bounded where
-  maxBound a = typeConsNumber a - 1
+  maxBound a = typeConsNumber (typeCode a) - 1
   minBound _ = 0
 
 /* Privates */
