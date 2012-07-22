@@ -1562,7 +1562,14 @@ namespace Ela.Runtime
                             thread.Context.NotAlgebraicType(left);
 
                         var cons = asm.Types[left.Ref.TypeId].Constructors;
-                        return new ElaValue(cons.Count > 0 ? cons.IndexOf(left.Ref.GetTag(null)) : 0);
+                        var r = cons.IndexOf(left.Ref.GetTag(null));
+
+                        if (r < 0)
+                            thread.Context.Fail(new ElaError(ElaRuntimeError.InvalidConstructor, 
+                                asm.Constructors[left.Ref.GetTag(null)].Name,
+                                left.Ref.GetTypeName()));
+
+                        return new ElaValue(r);
                     }
                 case Api.ConsCode:
                     {

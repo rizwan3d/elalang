@@ -181,6 +181,11 @@ A format string can be used to specify a format if this format is supported by a
 implementation of `showf`:
 >>>showf ".##" 12.1234
 
+Bounded
+This class defines two functions `maxBound` and `minBound` that accept an argument and return a
+maximum and a minimum possible value for this argument.
+>>>maxBound 0F
+
 ListLike
 Defines a `toList` function that can be used to convert list like data structures to a 
 linked list.
@@ -395,6 +400,18 @@ Implements `showf` function for a variant.
 
 Show StringBuilder
 Implements `showf` function for a string builder.
+
+Bounded Int
+Provides an implementation of `Bounded` class for 32-bit integers.
+
+Bounded Long
+Provides an implementation of `Bounded` class for 64-bit integers.
+
+Bounded Single
+Provides an implementation of `Bounded` class for 32-bit floats.
+
+Bounded Double
+Provides an implementation of `Bounded` class for 64-bit floats.
 
 stringBuilder
 This constant returns an empty string builder (see description of a `StringBuilder` type).

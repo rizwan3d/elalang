@@ -94,12 +94,12 @@ instance Ix where
 instance Enum where
   succ a = consDefault (consIndex a + 1) a
   pred a = consDefault (consIndex a - 1) a
-  enumFrom fst snd = map (flip consDefault fst) [consIndex fst,consIndex snd..consParamNumber fst - 1]
+  enumFrom fst snd = map (flip consDefault fst) [consIndex fst,consIndex snd..typeConsNumber fst - 1]
   enumFromTo max fst snd = map (flip consDefault max) [consIndex fst,consIndex snd..consIndex max]
 
 //Only for algebraic, better not to use with open types
 instance IntLike where
-  toInt a = consIndex
+  toInt = consIndex
 
 //Only for algebraic, better not to use with open types
 instance LongLike where
@@ -126,7 +126,12 @@ instance ListLike where
         | n < len = consParamValue n a :: tol (n+1)
         | else = []
 
+//Only for algebraic, better not to use with open types
+instance Bounded where
+  maxBound a = typeConsNumber a - 1
+  minBound _ = 0
+
 /* Privates */
 map # private
 map _ [] = []
-map f (x::xs) = f x :: map xs
+map f (x::xs) = f x :: map f xs

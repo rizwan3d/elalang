@@ -173,6 +173,27 @@ instance Enum Int Long where
             | e > max = listReverse xs
             | else = genGt (e::xs) max (e+step) step
 
+/* Bounded */
+class Bounded a where
+  maxBound a
+  minBound a
+
+instance Bounded Int where
+  maxBound _ = 0x7fffffff
+  minBound _ = 0x7fffffff + 1
+
+instance Bounded Long where
+  maxBound _ = 0x7fffffffffffffffL
+  minBound _ = 0x7fffffffffffffffL + 1
+
+instance Bounded Single where
+  maxBound _ = 3.402823E+38f
+  minBound _ = --3.402823E+38f
+
+instance Bounded Double where
+  maxBound _ = 1.7976931348623157E+308D
+  minBound _ = --1.7976931348623157E+308D
+
 /* Seq */
 class Seq(Seq) a where
   head a

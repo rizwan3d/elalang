@@ -144,6 +144,9 @@
   <data name="IndexOutOfRange" xml:space="preserve">
     <value>Index '{0}' of type '{1}' was out of range on object '{2}' of type '{3}'.</value>
   </data>
+  <data name="InvalidConstructor" xml:space="preserve">
+    <value>Unable to find metadata for constructor '{0}' of type '{1}'.</value>
+  </data>
   <data name="InvalidFormat" xml:space="preserve">
     <value>Format '{0}' for the value '{1}' of type '{2}' is invalid or not supported.</value>
   </data>
