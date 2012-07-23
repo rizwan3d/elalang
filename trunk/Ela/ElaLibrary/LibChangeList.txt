@@ -1,3 +1,10 @@
+0.1.4.48:Change:Function 'index' removed from 'list' module.
+0.1.4.47:New:Function 'partition' added to 'list' module.
+0.1.4.46:New:Functions 'find', 'findIndices' and 'findIndex' are added to 'list' module.
+0.1.4.45:New:Functions 'unzip' and 'unzip3' added to 'list' module.
+0.1.4.44:Change:Function 'breakList' from 'list' module renamed to 'break'.
+0.1.4.43:New:Functions 'scanl1' and 'scanr1' added to 'list' module.
+0.1.4.42:Fix:Function 'concatMap' from 'list' module was implemented incorrectly.
 0.1.4.41:Change:Now 'espec' module uses StringBuilder for test result report generation.
 0.1.4.40:New:A new type StringBuilder is now added to prelude. This is an immutable data type that supports effecient string concatenation through '+>' operator.
 0.1.4.39:Change:Implementation of function 'foldr' from 'list' module is optimized.

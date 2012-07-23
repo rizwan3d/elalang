@@ -87,11 +87,11 @@ Concatenates a list of lists:
 concatMap f xs
 Maps a function over a list and concatenate the results. 
 
-sum
+sum xs
 Computes the sum of a finite list of numbers: 
 >>>sum [1,2,3]
 
-product
+product xs
 Computes the product of a finite list of numbers. 
 
 minimum xs
@@ -140,9 +140,9 @@ is longest prefix (possibly empty) of `xs` of elements that satisfy `p` and seco
 remainder of the list: 
 >>>span (<3) [1,2,3,4,1,2,3,4]
 
-breakList p xs
+break p xs
 This function is equivalent to `span (not << p)`: 
->>>breakList (>3) [1,2,3,4,1,2,3,4]
+>>>break (>3) [1,2,3,4,1,2,3,4]
 
 drop n xs
 Function `drop` returns the suffix of `xs` after the first `n` elements, or a nil list if `n` is 
@@ -152,10 +152,6 @@ than zero.
 dropWhile p xs
 Function `dropWhile` returns the suffix remaining after `takeWhile`, called with the same 
 arguments. 
-
-index e xs
-Returns an index of an element `e` in a list `xs`: 
->>>index 3 [1,2,3,4]
 
 elem e xs
 Returns `true` if a list `xs` contains an element `e`, otherwise returns `false`. 
@@ -172,8 +168,14 @@ scanl f z xs
 Function `scanl` is similar to `foldl`, but returns a list of successive reduced values from the 
 left.
 
+scanl1 f xs
+A variant of `scanl` that has no starting value argument.
+
 scanr f z xs
-Function `scanr` is the right-to-left version of `scanl`. 
+Function `scanr` is the right-to-left version of `scanl`.
+
+scanr1 f xs
+A variant of `scanr` that has not starting value argument. 
 
 repeat e
 Repeats a given element and constructs an infinite list. This function is non-strict. 
@@ -251,3 +253,36 @@ Takes the list intersection of two lists.
 intersect xs ys
 This function can be defined in terms of intersectBy as follows: 
 >>intersect = intersectBy (==)
+
+unzip xs
+This function transforms a list of pairs into a list of first components and a list of second components.
+
+unzip3 xs
+This function takes a list of triples and returns three lists, analogous to `unzip`.
+
+find p xs
+The `find` function takes a predicate and a list and returns the first element in the list matching the predicate, 
+wrapped in `Some` constructor of `Maybe` type, or `None` if there is no such element. This function is lazy.
+>>>find (==3) [1..]
+
+findIndices p xs
+This function returns indices of all elements from the list `xs` satisfying the predicate `p`, in ascending order.
+This function is lazy.
+
+findIndex p xs
+This function takes a predicate and a list and returns the index of the first element in the list satisfying the predicate, 
+wrapped in `Some` constructor of `Maybe` type, or `Nothing` if there is no such element. This function is lazy.
+>>>findIndex (==10) [1..]
+
+elemIndex e xs
+The `elemIndex` function returns the index of the first element in the given list which is equal (by `==`) to the query element,
+or 'None' if there is no such element. This function is lazy.
+>>>elemIndex 55 [1..]
+
+elemIndices e xs
+The `elemIndices` function extends `elemIndex`, by returning the indices of all elements equal to the query element, in 
+ascending order. This function is lazy.
+
+partition p xs
+The `partition` function takes a predicate a list and returns the pair of lists of elements which do and do not satisfy 
+the predicate.

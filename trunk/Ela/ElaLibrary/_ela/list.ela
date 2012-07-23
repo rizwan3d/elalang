@@ -4,6 +4,7 @@
 */
 open core thunk
 
+/* Sorting */
 //Strict sort based on merge sort
 mergeBy # private
 mergeBy pred (x::xs) (y::ys) 
@@ -37,38 +38,17 @@ init (x::[])   = []
 init (x::xs)   = x :: init xs
 init []        = fail "list.init: Empty list"
 
-takeWhile f (x::xs) | f x  = x :: takeWhile f xs
-                    | else = []
-takeWhile f [] = []
-
-take = tak []
-  where
-    tak ys 0 _       = revList ys
-    tak ys n (x::xs) = tak (x::ys) (n-1) xs
-    tak ys _ []      = []
-
-skip 0 xs      = xs
-skip n (_::xs) = skip (n-1) xs
-skip _ []      = []
-
 map f (x::xs) = f x :: map f xs
 map _ []      = []
 
 map' f (x::xs) = f x :: (& map' f xs)
 map' _ []      = []
 
-filter p (x::xs) | p x  = x :: filter p xs
-                 | else = filter p xs
-filter _ [] = []
-
-filter' p (x::xs) | p x  = x :: (& filter' p xs)
-                  | else = filter' p xs
-filter' _ [] = []
-
 foldl f z (x::xs) = foldl f (f z x) xs
 foldl _ z [] = z
 
-foldr f z xs = foldl f z (reverse xs)
+foldr f z (x::xs) = f x (foldr f z xs)
+foldr _ z []      = z
 
 fold f xs = foldr f [] xs
 
@@ -80,30 +60,6 @@ foldr' _ z []      = z
     
 fold' f xs = foldr' f [] xs
 
-concat (x::xs) = x ++ concat xs 
-concat []      = []
-
-concatMap f (x::xs) = f x :: concatMap f xs 
-concatMap _ []      = []
-
-sum xs = sum' 0 xs
-  where sum' s (x::xs) = sum' (s + x) xs
-        sum' s [] = s
-
-product xs = product' 1 xs
-  where product' p (x::xs) = product' (p * x) xs
-        product' p []      = p
-
-minimum (x::xs) = minimum' x xs
-  where minimum' v (x::xs) | x < v = minimum' x xs
-                           | else  = minimum' v xs
-        minimum' v [] = v
-
-maximum (x::xs) = maximum' x xs
-  where maximum' v (x::xs) | x > v = maximum' x xs
-                           | else  = maximum' v xs
-        maximum' v [] = v
-
 reverse xs 
   | lazyList xs = rev [] xs
   | else = revList xs
@@ -112,79 +68,6 @@ reverse xs
 
 revList # private
 revList = __internal api12
-
-zipWith z (x::xs) (y::ys) = z x y :: zipWith z xs ys
-zipWith _ _ _ = []
-
-zip = zipWith (\x y -> (x,y))
-
-zipWith3 z (a::as) (b::bs) (c::cs) =  z a b c :: zipWith3 z as bs cs
-zipWith3 _ _ _ _ = []
-
-zip3 =  zipWith3 (\x y z -> (x,y,z))
-
-any f (x::xs) | f x  = true
-              | else = any f xs
-any _ []             = false
-
-all f (x::xs) | f x  = all f xs
-              | else = false
-all _ []             = true
-
-splitAt 0 xs = ([],xs)
-splitAt _ [] = ([],[])
-splitAt n (x::xs) | n > 0 = (x::xs',xs2')
-                  | else = fail "list.splitAt: negative argument"
-                  where (xs',xs2') = splitAt (n-1) xs
-
-splitHalf xs = go xs xs 
-  where go (x::xs) (_::_::zs) = (x::us,vs) where (us,vs) = go xs zs
-        go xs _ = ([],xs)
-
-span p [] = ([],[])
-span p (x::xs')@xs | p x  = (x::ys, zs)
-                   | else = ([],xs)
-                   where (ys,zs) = span p xs'
-
-breakList p xs = span (not << p) xs
-
-drop 0 xs              = xs
-drop _ []              = []
-drop n (_::xs) | n > 0 = drop (n-1) xs
-               | else  = fail "list.drop: negative argument"
-
-dropWhile p [] = []
-dropWhile p (x::xs) | p x  = dropWhile p xs
-                    | else = x::xs
-
-index e lst = index' 0 lst
-  where index' n (x::xs) | x <> e = index' (n+1) xs
-                         | else   = n
-        index' n [] = n
-
-elem x = any (==x)
-
-notElem x = all (<>x)
-
-elemBy _  _ [] = false
-elemBy eq y (x::xs) = y `eq` x or elemBy eq y xs
-
-scanl f q (x::xs) = q :: scanl f (f q x) xs
-scanl _ q []      = q :: []
-
-scanr f q0 [] = q0::[]
-scanr f q0 (x::xs) = f x q :: qs
-  where (q::_)@qs = scanr f q0 xs
-
-repeat x = x :: (& repeat x)
-
-cycle (head::tail) = head :: (& cycle' tail)
-  where cycle' (x::xs) = x :: (& cycle' xs)
-        cycle' []      = head :: (& cycle' tail)
-
-iterate f x = x :: (& iterate f (f x))
-
-replicate n x = take n (repeat x)
 
 deleteBy p x (y::ys) | p x y  = ys
                      | else   = y :: deleteBy p x ys
@@ -232,12 +115,6 @@ permutations xs0 = xs0 :: perms xs0 []
                 interleave' f (y::ys) r = (y::us, f (t::y::us) :: zs)
                   where (us,zs) = interleave' (f << (y::)) ys r
 
-groupBy eq (x::xs) = (x::ys) :: groupBy eq zs
-                     where (ys,zs) = span (eq x) xs
-groupBy _  [] = []
-
-group = groupBy (==)
-
 intersectBy eq xs ys =  [x \\ x <- xs | any (eq x) ys]
 
 intersect = intersectBy (==)
@@ -245,3 +122,171 @@ intersect = intersectBy (==)
 count f = count' 0
   where count' n (x::xs) | f x = count (n+1) xs | else = count n xs
         count' n [] = n
+
+/* Special folds */
+any f (x::xs) 
+  | f x  = true
+  | else = any f xs
+any _ [] = false
+
+all f (x::xs) 
+  | f x  = all f xs
+  | else = false
+all _ [] = true
+
+sum = foldl (+) 0
+
+product = foldl (*) 1
+
+minimum (x::xs) = minimum' x xs
+  where minimum' v (x::xs) | x < v = minimum' x xs
+                           | else  = minimum' v xs
+        minimum' v [] = v
+
+maximum (x::xs) = maximum' x xs
+  where maximum' v (x::xs) | x > v = maximum' x xs
+                           | else  = maximum' v xs
+        maximum' v [] = v
+
+concat (x::xs) = x ++ concat xs 
+concat []      = []
+
+concatMap f = concat << map f
+
+/* Building lists */
+scanl f q (x::xs) = q :: scanl f (f q x) xs
+scanl _ q []      = q :: []
+
+scanl1 f (x::xs) = scanl f x xs
+scanl1 _ []      = []
+
+scanr f q0 [] = q0::[]
+scanr f q0 (x::xs) = f x q :: qs
+  where (q::_)@qs = scanr f q0 xs
+
+scanr1 _ []      = []
+scanr1 _ [x]     = [x]
+scanr1 f (x::xs) = f x q :: qs
+  where (q::_)@qs = scanr1 f xs 
+
+repeat x = x :: (& repeat x)
+
+cycle (head::tail) = head :: (& cycle' tail)
+  where cycle' (x::xs) = x :: (& cycle' xs)
+        cycle' []      = head :: (& cycle' tail)
+
+iterate f x = x :: (& iterate f (f x))
+
+replicate n x = take n (repeat x)
+
+/* Sublists */
+take = tak [] 
+  where
+    tak ys 0 _       = revList ys
+    tak ys n (x::xs) = tak (x::ys) (n-1) xs
+    tak ys _ []      = []
+
+takeWhile f (x::xs) 
+  | f x  = x :: takeWhile f xs
+  | else = []
+takeWhile f [] = []
+
+skip 0 xs      = xs
+skip n (_::xs) = skip (n-1) xs
+skip _ []      = []
+
+drop 0 xs = xs
+drop _ [] = []
+drop n (_::xs) 
+  | n > 0 = drop (n-1) xs
+  | else  = fail "list.drop: negative argument"
+
+dropWhile p [] = []
+dropWhile p (x::xs) 
+  | p x  = dropWhile p xs
+  | else = x::xs
+
+splitAt 0 xs = ([],xs)
+splitAt _ [] = ([],[])
+splitAt n (x::xs) | n > 0 = (x::xs',xs2')
+                  | else = fail "list.splitAt: negative argument"
+                  where (xs',xs2') = splitAt (n-1) xs
+
+splitHalf xs = go xs xs 
+  where go (x::xs) (_::_::zs) = (x::us,vs) where (us,vs) = go xs zs
+        go xs _ = ([],xs)
+
+span p [] = ([],[])
+span p (x::xs')@xs | p x  = (x::ys, zs)
+                   | else = ([],xs)
+                   where (ys,zs) = span p xs'
+
+break p xs = span (not << p) xs
+
+groupBy eq (x::xs) = (x::ys) :: groupBy eq zs
+  where (ys,zs) = span (eq x) xs
+groupBy _  [] = []
+
+group = groupBy (==)
+
+/* Searching lists */
+elem x = any (==x)
+
+notElem x = all (<>x)
+
+elemBy _  _ [] = false
+elemBy eq y (x::xs) = y `eq` x or elemBy eq y xs
+
+filter p (x::xs) 
+  | p x  = x :: filter p xs
+  | else = filter p xs
+filter _ [] = []
+
+filter' p (x::xs) 
+  | p x  = x :: (& filter' p xs)
+  | else = filter' p xs
+filter' _ [] = []
+
+find p xs 
+  | isnil fxs = None
+  | else = Some (head fxs)
+  where fxs = filter' p xs
+
+partition p xs = foldr (select p) ([],[]) xs
+
+select # private
+select p x (ts,fs) 
+  | p x = (x::ts,fs)
+  | else = (ts, x::fs)
+
+/* Indexing */
+findIndices p ls = loop 0 ls
+  where
+    loop _ [] = []
+    loop n (x::xs) 
+      | p x = n :: (& loop (n + 1) xs)
+      | else = loop (n + 1) xs
+
+findIndex p xs
+  | isnil fxs = None
+  | else = Some (head fxs)
+  where fxs = findIndices p xs
+
+elemIndex x = findIndex (x==)
+
+elemIndices x = findIndices (x==)
+
+/* Zips */
+zipWith z (x::xs) (y::ys) = z x y :: zipWith z xs ys
+zipWith _ _ _ = []
+
+zip = zipWith (\x y -> (x,y))
+
+zipWith3 z (a::as) (b::bs) (c::cs) =  z a b c :: zipWith3 z as bs cs
+zipWith3 _ _ _ _ = []
+
+zip3 =  zipWith3 (\x y z -> (x,y,z))
+
+unzip =  foldr (\(a,b) (as,bs) -> (a::as,b::bs)) ([],[])
+
+unzip3 = foldr (\(a,b,c) (as,bs,cs) -> (a::as,b::bs,c::cs)) ([],[],[])
