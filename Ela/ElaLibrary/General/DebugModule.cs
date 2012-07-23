@@ -23,9 +23,15 @@ namespace Ela.Library.General
 			Add<ElaObject>("startClock", StartClock);
             Add<Wrapper<Stopwatch>,String>("stopClock", StopClock);
 			Add<Int32,ElaUnit>("sleep", Sleep);
-		}
+            Add<ElaUnit>("collect", Collect);
+        }
 
-
+        public ElaUnit Collect()
+        {
+            GC.Collect();
+            return ElaUnit.Instance;
+        }
+        
 		public ElaObject StartClock()
 		{
             var t = new Stopwatch();
