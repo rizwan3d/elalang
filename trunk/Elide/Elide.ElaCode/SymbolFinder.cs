@@ -52,7 +52,7 @@ namespace Elide.ElaCode
 
                 if (res.Success)
                 {
-                    FindName(name, doc, res.Program.Includes, list);
+                    res.Program.Includes.ForEach(i => FindName(name, doc, i, list));
                     FindName(name, doc, res.Program.Instances, list);
                     FindName(name, doc, res.Program.Classes, list);
                     FindName(name, doc, res.Program.Types, list);
@@ -298,9 +298,6 @@ namespace Elide.ElaCode
                         if (m.HasImportList)
                             foreach (var i in m.ImportList)
                                 FindName(name, doc, i, syms);
-
-                        if (m.And != null)
-                            FindName(name, doc, m.And, syms);
                     }
                     break;
                 case ElaNodeType.Primitive:

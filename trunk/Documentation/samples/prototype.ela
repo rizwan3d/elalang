@@ -1,5 +1,5 @@
 //This sample is a simple implementation of OOP style object system in Ela.
-//If you don't understand everything here, you read first about classes and 
+//If you don't understand everything here, you can read first about classes and 
 //user types in Ela.
 
 //This is a type Object that will be used to represent objects in our code.

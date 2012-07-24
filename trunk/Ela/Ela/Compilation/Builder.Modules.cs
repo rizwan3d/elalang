@@ -10,6 +10,15 @@ namespace Ela.Compilation
         //All compiled referenced modules
         private FastList<CodeFrame> refs = new FastList<CodeFrame>();
 
+        //An entry method for includes compilation
+        private void CompileModuleIncludes(ElaProgram prog, LabelMap map)
+        {
+            var inc = prog.Includes;
+
+            for (var i = 0; i < inc.Count; i++)
+                CompileModuleInclude(inc[i], map);
+        }
+
         //Compiles an 'open' module directive.
         private void CompileModuleInclude(ElaModuleInclude s, LabelMap map)
         {
@@ -44,13 +53,6 @@ namespace Ela.Compilation
                     cw.Emit(Op.Pushext, (frame.HandleMap.Count - 1) | sv.Address << 8);
                     PopVar(a);
                 }
-            }
-
-            //Several 'open' directives can be chained
-            if (s.And != null)
-            {
-                CompileModuleInclude(s.And, map);
-                return;
             }
         }
 

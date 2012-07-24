@@ -14,15 +14,15 @@ A 32-bit signed integer number type.
 >>42
 
 #Long
-A 64-bit singed integer number type.
+A 64-bit signed integer number type.
 >>42L
 
 #Single
-A 32-bit singed floating point number type.
+A 32-bit signed floating point number type.
 >>12.2
 
 #Double
-A 64-bit singed floating point number type.
+A 64-bit signed floating point number type.
 >>24.4
 
 #Bool

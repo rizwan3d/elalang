@@ -2,7 +2,7 @@
 "Hello, world!"
 
 //OK, here we cheat a little bit. The trick is that program in Ela is an expression
-//and yields a value. Both Ela Console (elac) and Elide print these expression in
+//and yields a value. Both Ela Console (elac) and Elide print this expression in
 //standard output. As a result we have a complete pure 'Hello, world!' program -
 //without a single side effect.
 

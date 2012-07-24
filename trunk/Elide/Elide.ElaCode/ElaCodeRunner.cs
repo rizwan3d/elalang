@@ -24,7 +24,7 @@ namespace Elide.ElaCode
             {
                 var em = new ElaMachine(asm.Assembly);
                 var res = em.Run().ReturnValue;
-                return em.PrintValue(res);
+                return res.TypeCode == ElaTypeCode.Unit ? String.Empty : em.PrintValue(res);
             }
             catch (ElaCodeException ex)
             {

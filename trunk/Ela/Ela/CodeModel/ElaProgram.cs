@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Ela.CodeModel
@@ -8,6 +9,7 @@ namespace Ela.CodeModel
         public ElaProgram()
         {
             TopLevel = new ElaEquationSet();
+            Includes = new List<ElaModuleInclude>();
         }
 
         public override string ToString()
@@ -17,7 +19,7 @@ namespace Ela.CodeModel
 
         public ElaEquationSet TopLevel { get; private set; }
 
-        public ElaModuleInclude Includes { get; internal set; }
+        public List<ElaModuleInclude> Includes { get; internal set; }
 
         public ElaTypeClass Classes { get; internal set; }
 
@@ -31,9 +33,9 @@ namespace Ela.CodeModel
             {
                 var sb = new StringBuilder();
 
-                if (Includes != null)
+                foreach (var i in Includes)
                 {
-                    Includes.ToString(sb, 0);
+                    i.ToString(sb, 0);
                     sb.AppendLine("\r\n");
                 }
 

@@ -66,9 +66,9 @@ triangles {eq,eqt} =
                       a**2 + b**2 == c**2 and a+b+c == 24]
 
 pythTriples {eq} =
-  eq (pyth 12) [(3,4,5),(5,12,13),(6,8,10)]
+  eq (pyth 12) [(3,4,5),(6,8,10)]
   where pyth n = [(x,y,z) \\ x <- [1..n], y <- [x..n], z <- [y..n] | x**2 + y**2 == z**2]
 
 pythTriplesLazy {eq} =
-  eq (pyth 12) [(3,4,5),(5,12,13),(6,8,10)]
+  eq (pyth 12) [(3,4,5),(6,8,10)]
   where pyth n = [& (x,y,z) \\ x <- [1..n], y <- [x..n], z <- [y..n] | x**2 + y**2 == z**2]

@@ -4,7 +4,7 @@
 open console
 
 //Lists can be constructed using cons (::) operator. This operator is right associative
-//and the rightmost argument should be an empty (nil) list
+//and the rightmost argument should be a list
 list1 = 1::2::3::[]
 
 _ = writen list1 //A handy thing is that list is automatically serialized to string
@@ -50,8 +50,8 @@ _ = writen ("xs=" ++ show xs) //Prints xs=[3,5,7,9,10]
 //It is very easy to write functions that analyze lists using recursion with the help of 
 //head/tail pattern. Here we have a function that calculates a length of a given list.
 listLength xs = len 0 xs
-                    where len n [] = n
-                          len n (x::xs) = len (n+1) xs
+  where len n [] = n
+        len n (x::xs) = len (n+1) xs
 
 _ = writen ("listLength=" ++ show (listLength xs)) //Prints listLength=5
 

@@ -35,8 +35,7 @@ namespace Ela.Compilation
         //Type class declarations, modules includes and type declarations can be compiled in the first place.
         private void ProcessIncludesClassesTypes(ElaProgram prog, LabelMap map)
         {
-            if (prog.Includes != null)
-                CompileModuleInclude(prog.Includes, map);
+            CompileModuleIncludes(prog, map);
             
             if (prog.Classes != null)
                 CompileClass(prog.Classes, map);
