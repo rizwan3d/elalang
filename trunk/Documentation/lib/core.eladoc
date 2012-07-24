@@ -4,72 +4,76 @@
 This module contains implementations of some commonly used algebraic types, their instances and functions
 that operate on them.
 
-#members
+=Maybe
 
-Maybe
+#Maybe
 This type is used to represent an optional value. A value of type `Maybe` either contains a value `a` (represented
 as `Maybe a`), or is empty (represented as `None`).//br
 Using `Maybe` is a good way to way to deal with errors without using exceptions.
 
-Ordering
+#maybe d f o
+This function takes a default value, a function, and a `Maybe` value. If the `Maybe` value is `None`, the 
+function returns the default value. Otherwise, it applies the function to the value inside the `Some` and 
+returns the result.
+
+#isSome o
+Checks if a given value is a `Maybe`, created using `Some` constructor.
+
+#fromSome o
+Unpacks a given value of a `Maybe`, created using `Some` constructor.
+>>>fromSome (Some 12)
+
+#fromMaybe
+This function takes a default value and a `Maybe`. If a `Maybe` is 'Nothing', it returns the default value; 
+otherwise, it returns the value contained in `Maybe`.
+>>>fromMaybe 32 None
+
+=Ordering
+
+#Ordering
 This type can be used by comparison functions to specify if two values are equal (represented through `EQ` 
 case), one value is lesser than another (represented through `LT` case) or one value is greater than another 
 (represented through `GT` case).//br
 A typical example of a function that returns a value of type `Ordering` is `compare`.
 
-Either
-This type is used to represent two possibilities - either `Left` or `Right`. Normally a `Left` constructor 
-is used to hold an error value, and `Right` constructor is used to hold a correct value.
-
-maybe d f o
-This function takes a default value, a function, and a `Maybe` value. If the `Maybe` value is `None`, the 
-function returns the default value. Otherwise, it applies the function to the value inside the `Some` and 
-returns the result.
-
-isSome o
-Checks if a given value is a `Maybe`, created using `Some` constructor.
-
-fromSome o
-Unpacks a given value of a `Maybe`, created using `Some` constructor.
->>>fromSome (Some 12)
-
-fromMaybe
-This function takes a default value and a `Maybe`. If a `Maybe` is 'Nothing', it returns the default value; 
-otherwise, it returns the value contained in `Maybe`.
->>>fromMaybe 32 None
-
-either f1 f2 v
-If the value `v` is `Left a`, apply the first function to `a`; if it is `Right a`, apply the second 
-function to `a`.
-
-lefts xs
-Extracts all `Left` elements from a given list in order.
-
-rights xs
-Extracts all `Right` elements from a given list in order.
-
-fromLeft x
-Upacks a given value of type `Either`, created using `Left` constructor.
->>>fromLeft (Left 'a')
-
-fromRight x
-Upacks a given value of type `Either`, created using `Right` constructor.
->>>fromRight (Right 'b')
-
-isLeft o
-Checks if a given value is an `Either`, created using `Left` constructor.
-
-isRight o
-Checks if a given value is an `Either`, created using `Right` constructor.
-
-compare
+#compare
 Compares two given values and returns `EQ` if they are equal, `LT` if first argument is lesser than the 
 second argument and `GT` if first argument is greater than the second argument:
 >>>compare 12 34
 
-maxValue
+#maxValue
 Returns `x` if `x` is greater or equal to `y`, otherwise returns y. 
 
-minValue
+#minValue
 Returns `x` if `x` is lesser or equal to `y`, otherwise returns `y`. 
 
+
+=Either
+
+#Either
+This type is used to represent two possibilities - either `Left` or `Right`. Normally a `Left` constructor 
+is used to hold an error value, and `Right` constructor is used to hold a correct value.
+
+#either f1 f2 v
+If the value `v` is `Left a`, apply the first function to `a`; if it is `Right a`, apply the second 
+function to `a`.
+
+#lefts xs
+Extracts all `Left` elements from a given list in order.
+
+#rights xs
+Extracts all `Right` elements from a given list in order.
+
+#fromLeft x
+Upacks a given value of type `Either`, created using `Left` constructor.
+>>>fromLeft (Left 'a')
+
+#fromRight x
+Upacks a given value of type `Either`, created using `Right` constructor.
+>>>fromRight (Right 'b')
+
+#isLeft o
+Checks if a given value is an `Either`, created using `Left` constructor.
+
+#isRight o
+Checks if a given value is an `Either`, created using `Right` constructor.

@@ -24,6 +24,7 @@ namespace Ela.Library.General
             Add<Wrapper<Stopwatch>,String>("stopClock", StopClock);
 			Add<Int32,ElaUnit>("sleep", Sleep);
             Add<ElaUnit>("collect", Collect);
+            Add<Int32,Int32,Int32,ElaList>("enumFromTo2", EnumFromTo);
         }
 
         public ElaUnit Collect()
@@ -52,6 +53,31 @@ namespace Ela.Library.General
 			Thread.Sleep(ms);
 			return ElaUnit.Instance;
 		}
+
+
+        public ElaList EnumFromTo(int max, int fst, int snd)
+        {
+            var sw = new Stopwatch();
+            sw.Start();
+
+            var e = max;
+            var xs = ElaList.Empty;
+            snd = snd - fst;
+
+            for (;;)
+            {
+                if (e < fst)
+                    break;
+
+                xs = new ElaList(xs, new ElaValue(e));
+                e = e-snd;
+            }
+
+            var ret = xs;//.Reverse();
+            sw.Stop();
+            Console.WriteLine(sw.Elapsed);
+            return ret;
+        }
 		#endregion
 	}
 }

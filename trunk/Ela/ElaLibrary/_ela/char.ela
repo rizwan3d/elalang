@@ -5,20 +5,15 @@
 import libChar#elalib@ch
 open list
 
-max # qualified
-max = '\x65535'
-
-min # qualified
-min = '\0'
-
-zero # qualified
-zero = min
-
 instance Enum Char where
   succ a = toChar (toInt a + 1)
   pred a = toChar (toInt a - 1)
   enumFrom fst snd = map' toChar [(toInt fst),(toInt snd)..]
   enumFromTo max fst snd = map toChar [(toInt fst),(toInt snd)..(toInt max)]
+
+instance Bounded Char where
+  maxBound _ = '\x65535'
+  minBound _ = '\0'
 
 lower c = ch.lower (force c)
 upper c = ch.upper (force c)

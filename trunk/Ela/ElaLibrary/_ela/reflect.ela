@@ -24,8 +24,8 @@ moduleExportList x = reflect.moduleExportList (force x)
 
 moduleReferences x = reflect.moduleReferences (force x)
 
-asmMainModule () = reflect.asmMainModule reflect
+asmMainModule = & reflect.asmMainModule reflect
 
-asmModuleCount () = reflect.asmModuleCount reflect
+asmModuleCount = & reflect.asmModuleCount reflect
 
-asmModules () = reflect.asmModules reflect
+asmModules = & reflect.asmModules reflect

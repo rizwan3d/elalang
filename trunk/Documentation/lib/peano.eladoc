@@ -1,11 +1,13 @@
 #file peano.ela
 #title peano
 #category Ela Standard Library
+
+=Overview
 This module contains an implementation of lazy peano numbers. Lazy peano numbers are used to represent
 natural numbers including infinity. Because of their lazy nature it is possible to use them for such tasks
 as represeting a length of an infinite list.
 
-=Implementation notes
+==Implementation notes
 Peano numbers are pretty close to linked lists - moreover one can even imitate a peano number using a
 linked list.//br
 A peano number is represented as a recursive variant type with two tags - `Zero`, which is used to represent
@@ -34,7 +36,7 @@ functions that are strict and would try to traverse the whole peano number struc
 function is evaluated lazily and always returns a lazy list, therefore it is safe to apply this function
 to an infinity.
 
-=Arithmetic
+==Arithmetic
 All arithmetic operations are evaluated lazily, as a result one can safely write comparisons like so:
 >>>infinity `div` 2? > 42?
 Arithmetic operations never result in non-termination:
@@ -52,7 +54,7 @@ However, for convinience, a `subtractNeg` function is provided that doesn't rais
 returns a tuple where a first element is boolean, used to represent a sign (`true` for positive and `false`
 for negative) and the second element is a peano number.
 
-=Applications
+==Applications
 Peano numbers can be used to represent lazy calculations, such as counting of elements in a lazy (and
 possibly infinite) list. This module provides a `listLength` function that can be used in such a way:
 >>>listLength [1..] > 5?
@@ -63,130 +65,126 @@ This equation is (logically) correct and should evaluate to true, however normal
 it one would have to fully evaluate the left-hand operand, which is infinity. Luckily this is not the
 case for peano number, and this equation will hold.
 
-#members
-
-Peano
+=Peano
 This type represents a lazy recursive peano number.
 
-Bounded Peano
+==Instances
+===Bounded
 Implements functions `maxBound` and `minBound` for the `Peano` data type. Function `maxBound`
 always returns `infinity`, and `minBound` - `Zero`.
 
-ListLike Peano
+===ListLike
 Converts a given peano number to a linked list. A function `toList` always produces a lazy list,
 and it is possible to converts an infinity to a linked list:
 >>>take 10 <| toList infinity
 
-LongLike Peano
+===LongLike
 Converts a given peano number to a 64-bit integer. A function `toLong` is strict and will evaluate
 the whole peano number.
 
-IntLike Peano
+===IntLike
 Converts a given peano number to a 32-bit integer. A function `toInt` is strict and will evaluate
 the whole peano number.
 
-Absolute Peano
+===Absolute
 Provides an instance for an `Absolute` class. A function `abs` in this instance is equivalent to
 an infinity, and a function `signum` returns either zero (if its operand is zero) or one and never
 returns a negative number.
 
-Integral Peano
+===Integral
 Provides an instance for an `Integral` class. Both `div` and `quot` implement an integral division
 truncated towards zero. These functions are also lazy.
 
-Modulo Peano
+===Modulo
 Provides an instance for a `Modulo` class. Both `mod` and `rem` implement a lazy modulus function.
 
-Ring Peano
+===Ring
 This instance provides implementations for multiplication and power functions. Both multiplication
 and power are lazy functions.
 
-Additive Peano
+===Additive
 Provides an instance for an `Additive` class. An implementation of addition is lazy and never overlows
 (as soon as the upper bound for a peano number is infinity). An implementation of subtraction is lazy
 as well, however, it can raise an exception if a result is less than zero (because the lower bound for
 a peano number is zero). A negation function always raises an exception, exception of the case when
 applied to zero.
 
-Enum Peano
+===Enum
 Provides implementations for `Enum` class. 
 Functions `succ` and `pred` are lazy. Function `pred` can raise an exception when applied to zero.//br
 Functions `enumFrom` and `enumFromTo` are implemented by converting a peano number to a 32-bit 
 integer, generating a range of 32-bit integers and than converting the resulting list of 32-bit
 integers to a list of peano numbers.
 
-Ord Peano
+===Ord
 Provides an implementation for an `Ord` class. All functions in this instance are lazy, however they
 could result in a non termination if both operands are infinity.
 >>>5? > 2?
 
-Eq Peano
+===Eq
 Provides an implementation for an `Eq` class. All functions in this instance are lazy, however they
 could result in a non termination if both operands are infinity.
 >>>42? <> 42?
 
-Show Peano
+===Show
 Provides an implementation of a `showf` function. This implementation is strict and will evaluate the
 whole peano number. It would result to a non-termination if applied to an infinity.
 >>>show (5? + 2?)
 
-zero
-A constructor for a peano number, returns a peano representation for a zero number. This constant
-always requires a qualified access.
->>>zero
+==Functions and constants
 
-one
+#one
 A constructor for a peano number, returns a peano representation for number one. This constant
 always requires a qualified access.
 >>>one
 
-infinity
+#infinity
 A constructor for a peano number, returns a peano representation for an infinity. This constant
 always requires a qualified access.
 
-fromInt
+#fromInt
 Converts a given 32-bit integer to a peano number. This is a lazy function.
 This function always requires a qualified access.
 
-fromLong
+#fromLong
 Converts a given 64-bit integer to a peano number. This is a lazy function.
 This function always requires a qualified access.
 
-fromIntegral
+#fromIntegral
 Converts a given 32-bit integer or 65-bit integer to a peano number. This is a lazy function.
 This function always requires a qualified access.
 >>>fromIntegral 5
 
-listLength xs
+#listLength xs
 Calculates a length of a given list in a lazy manner.
 
-? x
+#? x
 This is an alias for a `fromInt` function. As soon as an operator `?` has a high priority,
 parenthesis can be omitted in many cases:
 >>>2? * 4?
 However, when an expression like `2?` is used as a function argument, parentheses are required.
 
-add x y
+#add x y
 Sums two peano numbers in a lazy manner.
 
-subtract x y
+#subtract x y
 Subtracts one peano number from another in a lazy manner. This function can raise an exception if
 a result is less than zero.
 
-subtractNeg x y
+#subtractNeg x y
 Implements a safe lazy subtraction. This function returns a pair where a first element is a sign,
 represented using boolean, and a second element is a peano number. Negative numbers are presented
 as `(false,*)`, and positive numbers are presented as `(true,*)`. A zero is considered to be a
 positive number.
 >>>3? `subtractNeg` 10?
 
-multiply x y
+#multiply x y
 Multiplies one peano number by another peano number. This is a lazy function.
 
-power x y
+#power x y
 Raises one peano number to a power specified by another peano number. This is a lazy function.
 
-divideMod x y
+#divideMod x y
 Divides two peano numbers in a lazy manner and returns a pair where a first element is a result of
 a division and a second element is a remainder.
 >>>5? `divideMod` 2?

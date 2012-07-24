@@ -3,11 +3,11 @@
 #category Ela Standard Library
 This module contains a `readStr` function that can deserialize Ela objects from strings.
 
-#members
+=Functions
 
-readStr s
+#readStr s
 Parses a given string as an Ela literal and constructs an appropriate Ela object. This function
 accepts all valid Ela literals which can be nested at any level:
 >>>readStr "[1,2,('a',\"string\"),true]"
-It can construct values of type `int`, `long`, `single`, `double`, `bool`, `char`, `string`,
-`list`, `tuple`, `record`, `variant` and `unit`.
+It can construct values of type `Int`, `Long`, `Single`, `Double`, `Bool`, `Char`, `String`,
+`List`, `Tuple`, `Record` and `Unit`.

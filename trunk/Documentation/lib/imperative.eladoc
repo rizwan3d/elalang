@@ -3,17 +3,17 @@
 #category Ela Standard Library
 This module contains functions that can be used to imitate imperative control structures. 
 
-#members
+=Functions
 
-rec
+#rec
 Takes a function for one argument and creates recursive function. 
 
-rec2
+#rec2
 Takes a function for two arguments and creates recursive function. 
 
-each f xs
+#each f xs
 Applies a function `f` to each of the elements of `xs` list and discard its return value. 
 This function can be used to imitate an imperative foreach statement. 
 
-loop f xs
+#loop f xs
 Loops through the given list until a function `f` applied to a list element returns `false`. 

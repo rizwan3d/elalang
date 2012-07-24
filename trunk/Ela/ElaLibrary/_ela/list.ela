@@ -30,25 +30,15 @@ sort' x = qsort x []
                                    | z < x = part zs (z::l) e g 
                                    | else  = part zs l (z::e) g
 
-last (x::[]) = x
-last (_::xs) = last xs
-last []      = fail "list.last: Empty list"
-
-init (x::[])   = []
-init (x::xs)   = x :: init xs
-init []        = fail "list.init: Empty list"
-
-map f (x::xs) = f x :: map f xs
-map _ []      = []
-
+/* Basic */
 map' f (x::xs) = f x :: (& map' f xs)
 map' _ []      = []
 
-foldl f z (x::xs) = foldl f (f z x) xs
-foldl _ z [] = z
+foldl1 f (x::xs) = foldl f x xs
+foldl1 _ [] = fail "list.foldl1: Empty list."
 
-foldr f z (x::xs) = f x (foldr f z xs)
-foldr _ z []      = z
+foldr1 f (x::xs) = foldr f x xs
+foldr1 _ [] = fail "list.foldr1: Empty list."
 
 fold f xs = foldr f [] xs
 
@@ -60,17 +50,9 @@ foldr' _ z []      = z
     
 fold' f xs = foldr' f [] xs
 
-reverse xs 
-  | lazyList xs = rev [] xs
-  | else = revList xs
-  where rev ys [] = ys
-        rev ys (x::xs) = rev (x::ys) xs
-
-revList # private
-revList = __internal api12
-
-deleteBy p x (y::ys) | p x y  = ys
-                     | else   = y :: deleteBy p x ys
+deleteBy p x (y::ys) 
+  | p x y  = ys
+  | else   = y :: deleteBy p x ys
 deleteBy _ _ [] = []
 
 delete = deleteBy (==)
@@ -90,37 +72,14 @@ nubBy eq xs = nubBy' xs []
 
 nub = nubBy (==)
 
-intersperse e (x::[]) = x :: intersperse e []
-intersperse e (x::xs) = x :: e :: intersperse e xs
-intersperse _ []      = []
-
-transpose ([]::xs)      = transpose xs
-transpose ((x::xs)::ys) = (x :: [h \\ (h::_) <- ys]) :: transpose (xs :: [t \\ (_::t) <- ys])
-transpose []            = []
-
-intercalate xs xss = concat (intersperse xs xss)
-
-nonEmptySubsequences (x::xs) = (x::[]) :: fold f (nonEmptySubsequences xs)
-                               where f ys r = ys :: (x :: ys) :: r
-nonEmptySubsequences [] = []
-
-subsequences xs = [] :: nonEmptySubsequences xs 
-
-permutations []  = []
-permutations xs0 = xs0 :: perms xs0 []
-  where perms [] _ = []
-        perms (t::ts) is' = foldr interleave (perms ts (t::is')) (permutations is')
-          where interleave xs r    = zs where (_,zs) = interleave' id xs r 
-                interleave' _ [] r = (ts, r)
-                interleave' f (y::ys) r = (y::us, f (t::y::us) :: zs)
-                  where (us,zs) = interleave' (f << (y::)) ys r
-
 intersectBy eq xs ys =  [x \\ x <- xs | any (eq x) ys]
 
 intersect = intersectBy (==)
 
 count f = count' 0
-  where count' n (x::xs) | f x = count (n+1) xs | else = count n xs
+  where count' n (x::xs) 
+          | f x = count (n+1) xs 
+          | else = count n xs
         count' n [] = n
 
 /* Special folds */
@@ -138,15 +97,9 @@ sum = foldl (+) 0
 
 product = foldl (*) 1
 
-minimum (x::xs) = minimum' x xs
-  where minimum' v (x::xs) | x < v = minimum' x xs
-                           | else  = minimum' v xs
-        minimum' v [] = v
+minimum xs = foldl1 minValue xs
 
-maximum (x::xs) = maximum' x xs
-  where maximum' v (x::xs) | x > v = maximum' x xs
-                           | else  = maximum' v xs
-        maximum' v [] = v
+maximum xs = foldl1 maxValue xs
 
 concat (x::xs) = x ++ concat xs 
 concat []      = []
@@ -182,7 +135,7 @@ replicate n x = take n (repeat x)
 /* Sublists */
 take = tak [] 
   where
-    tak ys 0 _       = revList ys
+    tak ys 0 _       = reverse ys
     tak ys n (x::xs) = tak (x::ys) (n-1) xs
     tak ys _ []      = []
 
@@ -229,6 +182,27 @@ groupBy _  [] = []
 
 group = groupBy (==)
 
+stripPrefix [] ys = Some ys
+stripPrefix (x::xs) (y::ys)
+  | x == y = stripPrefix xs ys
+  | else = None
+stripPrefix _ _ = None
+
+inits (x::xs) = [[]] ++ map (x::) (inits xs)
+inits [] = [[]]
+
+tails (_::xs)@ys = ys :: tails xs
+tails [] =  [[]]
+
+/* Predicates */
+isPrefixOf (x::xs) (y::ys) = x == y and isPrefixOf xs ys
+isPrefixOf [] _ = true
+isPrefixOf _  [] = false
+
+isSuffixOf x y = reverse x `isPrefixOf` reverse y
+
+isInfixOf needle haystack = any (isPrefixOf needle) (tails haystack)
+
 /* Searching lists */
 elem x = any (==x)
 
@@ -236,11 +210,6 @@ notElem x = all (<>x)
 
 elemBy _  _ [] = false
 elemBy eq y (x::xs) = y `eq` x or elemBy eq y xs
-
-filter p (x::xs) 
-  | p x  = x :: filter p xs
-  | else = filter p xs
-filter _ [] = []
 
 filter' p (x::xs) 
   | p x  = x :: (& filter' p xs)
@@ -290,3 +259,29 @@ zip3 =  zipWith3 (\x y z -> (x,y,z))
 unzip =  foldr (\(a,b) (as,bs) -> (a::as,b::bs)) ([],[])
 
 unzip3 = foldr (\(a,b,c) (as,bs,cs) -> (a::as,b::bs,c::cs)) ([],[],[])
+
+/* List transformations */
+intersperse e (x::[]) = x :: intersperse e []
+intersperse e (x::xs) = x :: e :: intersperse e xs
+intersperse _ []      = []
+
+transpose ([]::xs)      = transpose xs
+transpose ((x::xs)::ys) = (x :: [h \\ (h::_) <- ys]) :: transpose (xs :: [t \\ (_::t) <- ys])
+transpose []            = []
+
+intercalate xs xss = concat (intersperse xs xss)
+
+nonEmptySubsequences (x::xs) = (x::[]) :: fold f (nonEmptySubsequences xs)
+  where f ys r = ys :: (x :: ys) :: r
+nonEmptySubsequences [] = []
+
+subsequences xs = [] :: nonEmptySubsequences xs 
+
+permutations []  = []
+permutations xs0 = xs0 :: perms xs0 []
+  where perms [] _ = []
+        perms (t::ts) is' = foldr interleave (perms ts (t::is')) (permutations is')
+          where interleave xs r    = zs where (_,zs) = interleave' id xs r 
+                interleave' _ [] r = (ts, r)
+                interleave' f (y::ys) r = (y::us, f (t::y::us) :: zs)
+                  where (us,zs) = interleave' (f << (y::)) ys r

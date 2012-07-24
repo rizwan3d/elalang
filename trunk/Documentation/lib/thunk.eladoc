@@ -2,9 +2,9 @@
 #title thunk
 This module contains useful functions that operate with thunks. 
 
-#members
+=Functions
 
-evaled x
+#evaled x
 Tests if a given value is a thunk that is not yet evaluated. 
 >>>evaled (& 2+2)
 It is safe to apply this function to a value of any type. For values that are already calculated 
@@ -13,22 +13,22 @@ it will always return `true`:
 >>>_ = force t
 >>>evaled t
 
-forceAll t
+#forceAll t
 Recursively forces a given value. For example, if a given value is a list of thunks all thunks in 
 a list will be forced. 
 
-forceRecord t
+#forceRecord t
 Recursively forces a given record, including all its elements. 
 
-forceTuple t
+#forceTuple t
 Recursively forces a given tuple, including all its elements.
 
-forceList t
+#forceList t
 Recursively forces a given list, including all list elements.
 
-forceOnlyList t
+#forceOnlyList t
 Forces a given but doesn't force calculation of its elements.
 
-lazyList t
+#lazyList t
 Tests if a given list is a lazy list. This function only tests if a list itself is lazy, it will 
 return `false` for a strict list which elements are thunks.

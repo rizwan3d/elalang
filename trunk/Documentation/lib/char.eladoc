@@ -3,60 +3,56 @@
 #category Ela Standard Library
 This module contains functions and instances for a unicode character. 
 
-#members
-
-Enum Char
+=Instances
+===Enum
 Implements `Enum` class for a unicode character, making it possible to generate char
 ranges.
 
-max
-Returns a maximum value for a char. This constant requires a fully qualified access.
+===Bounded
+Implements `Bounded` class for a unicode character.
 
-min
-Returns a minimum value for a char. This constant requires a fully qualified access.
+=Functions
 
-zero
-Returns a zero char. This constant requires a fully qualified access. It returns the
-same value as `min` constant.
-
-lower
+==Transformation
+#lower
 Transforms a given char to lowercase. 
 
-upper
-Transforms a given char to uppercase. 
+#upper
+Transforms a given char to uppercase.
 
-isLower
+==Checking
+#isLower
 Returns `true` if a given char is in lower case, otherwise returns `false`. 
 
-isUpper
+#isUpper
 Returns `true` if a given char is in upper case, otherwise returns `false`. 
 
-isControl
+#isControl
 Returns `true` if a given char is a control char, otherwise returns `false`. 
 
-isDigit
+#isDigit
 Returns `true` if a given char is a digit, otherwise returns `false`. 
 
-isLetter
+#isLetter
 Returns `true` if a given char is a letter, otherwise returns `false`. 
 
-isLetterOrDigit
+#isLetterOrDigit
 Returns `true` if a given char is a letter or digit, otherwise returns `false`. 
 
-isNumber
+#isNumber
 Returns `true` if a given char can be categorized as a number, otherwise returns `false`. 
 
-isPunctuation
+#isPunctuation
 Returns `true` if a given char is a punctuation char, otherwise returns `false`. 
 
-isSurrogate
+#isSurrogate
 Returns `true` if a given char has a surrogate code point, otherwise returns `false`. 
 
-isSurrogatePair
+#isSurrogatePair
 Returns `true` if given chars form a surrogate pair, otherwise returns `false`. 
 
-isSymbol
+#isSymbol
 Returns `true` if a given char is a symbol character, otherwise returns `false`. 
 
-isWhiteSpace
+#isWhiteSpace
 Returns `true` if a given char is a white space character, otherwise returns `false`. 

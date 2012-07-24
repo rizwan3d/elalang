@@ -6,9 +6,9 @@ at run-time. Also this module contains default instances for many of the standar
 These default instances are implemented through reflection API and, therefore, are generic and would work
 for any algebraic type.
 
-#members
+=Default instances
 
-IntLike-
+===IntLike
 This is a default implementation of a `IntLike` class. It can be used to generate instances of `IntLike` (e.g.
 using `deriving` clause). This implementation would work for any custom algebraic type.//br
 It relies on a declaration order of constructors in an algebraic type:
@@ -17,27 +17,27 @@ It relies on a declaration order of constructors in an algebraic type:
 >>>
 >>>toInt B
 
-LongLike-
+===LongLike
 This is a default implementation of a `LongLike` class. It is defined through `IntLike` default implementation 
 like so:
 >>toLong = toLong << toInt
 
-StringLike-
+===StringLike
 This is a default implementation of a `StringLike` class. It can be used to generate instances of `StringLike` 
 (e.g. using `deriving` clause). A `toString` function in this instance always returns a name of a constructor 
 of a given production.
 
-ListLike-
+===ListLike
 This is a default implementation of a `ListLike` class. It can be used to generate instances of `ListLike` 
 (e.g. using `deriving` clause). A `toList` function in this instance returns a list with parameters of a given
 constructor. If a given constructor has no parameters, than an empty list is returned.
 
-TupleLike-
+===TupleLike
 This is a default implementation of a `TupleLike` class. It can be used to generate instances of `TupleLike` 
 (e.g. using `deriving` clause). A `toTuple` function in this instance always returns a tuple with parameters of
 a given production. If a production was created using a parameterless constructor, than an error is generated.
 
-Enum-
+===Enum
 This is a default implementation of an `Enum` class. It defines all members of `Enum` class. It can be used to 
 generate instances of `Enum` (e.g. using `deriving` clause). This implementation would work for any 
 custom algebraic type.//br
@@ -48,12 +48,12 @@ It relies on a declaration order of constructors in an algebraic type:
 >>>succ Foo
 This implementation allows to use custom types in ranges.
 
-Len-
+===Len
 This is a default implementation of a `Len` class. It can be used to generate instances of `Len` (e.g. using `deriving` 
 clause). This implementation would work for any custom algebraic type.//br
 This implementation returns a number of parameters for a given constructor.
 
-Name-
+===Name
 This is a default implementation of an `Name` class. It defines all members of `Name` class. It can be used to 
 generate instances of `Name` (e.g. using `deriving` clause). This implementation would work for any 
 custom algebraic type.//br
@@ -65,12 +65,12 @@ like syntax to access members of these productions:
 >>>p = Point 12 24
 >>>p.x
 
-Ix-
+===Ix
 This is a default implementation of an `Ix` class. It can be used to generate instances of `Ix` (e.g. using `deriving` 
 clause). This implementation would work for any custom algebraic type.//br
 This implementation returns a parameter of a given constructor at a given index.
 
-Show-
+===Show
 This is a default implementation of an `Show` class. It defines all members of `Show` class. It can be used to 
 generate instances of `Show` (e.g. using `deriving` clause). This implementation would work for any 
 custom algebraic type.//br
@@ -80,19 +80,19 @@ This implementation takes into account, whether a constructor was declared in a 
 >>>
 >>>show (2 :+ 3)
 
-Ord-
+===Ord
 This is a default implementation of an `Ord` class. It defines all members of `Ord` class. It can be used to 
 generate instances of `Ord` (e.g. using `deriving` clause). This implementation would work for any 
 custom algebraic type.//br
 It relies on a declaration order of constructors in an algebraic type.
 
-Eq-
+===Eq
 This is a default implementation of an `Eq` class. It defines all members of `Eq` class. It can be used to 
 generate instances of `Eq` (e.g. using `deriving` clause). This implementation would work for any 
 custom algebraic type.//br
 It relies on a declaration order of constructors in an algebraic type.
 
-Bounded-
+===Bounded
 This is a default implementation of a `Bounded` class. It defines all members of `Bounded` class. It can be used to 
 generate instances of `Bounded` (e.g. using `deriving` clause). This implementation would work for any 
 custom algebraic type.//br
@@ -100,75 +100,77 @@ It relies on a declaration order of constructors in an algebraic type. The `maxB
 index of a constructor in a given algebraic type, e.g. for a type with three constructors it will return 2 as a
 maximum bound. The `minBound` function always returns 0 in this implementation.
 
-consName a
+=Reflection API
+
+#consName a
 Returns a name as a string of a given constructor.
 >>>consName (Point 1 2)
 
-consParamNumber a
+#consParamNumber a
 Returns number of parameters for a given constructor. If a constructor doesn't have parameters, it returns 0.
 >>>open core
 >>>consParamNumber None
 
-consIndex a
+#consIndex a
 Returns a positional index of a given constructor:
 >>>consIndex (Some 42)
 
-consInfix a
+#consInfix a
 Returns `true` if a given constructor has an operator-like name, otherwise returns false.
 >>>consInfix (1 :+ 2)
 
-consParams a
+#consParams a
 Returns parameters of a given constructor as a tuple. If a constructor doesn't have parameters, it return a unit.
 >>>consParams (Point 12 24)
 
-consCode a
+#consCode a
 Returns a unique ID of a given constructor.
 >>>consCode None
 
-consCodeByIndex typeCode consIndex
+#consCodeByIndex typeCode consIndex
 Returns a unique ID of a given constructor using a provided type code and a positional constructor index.
 >>>consCodeByIndex (typeCode None) 1 == consCode (Some 42)
 
-typeName a
+#typeName a
 Returns a type name as a string of a given value.
 >>>typeName (Some 42)
 It is important to remember that type names are not unique, in order to compare types one should use `typeCode`
 function instead.
 
-typeCode a
+#typeCode a
 Returns a unique ID of a type of a given value.
 >>>typeCode (Some 42)
 
-typeConsNumber code
+#typeConsNumber code
 Returns a number of constructors for a type with a provided type code:
 >>>typeConsNumber (typeCode None)
 
-consParamIndex name code
+#consParamIndex name code
 Returns a positional index of a parameter with given `name` for a constructor, identified by a unique `code`:
 >>>type Person = Person name age
 >>>ps = Person "Basil" 33
 >>>consParamIndex "age" (consCode ps) 
 
-consParamValue index cons
+#consParamValue index cons
 Returns a value of a constructor parameter identified by an index.
 >>>consParamValue 1 ps
 
-consParamName index code
+#consParamName index code
 Returns a name of a constructor parameter indentified by a positional `index`. A `code` argument should be a
 valid constructor identifier.
 >>>consParamName 1 (consCode ps)
 
-consParamExist name code
+#consParamExist name code
 Checks if any of constructor parameters have a specified `name`. A `code` argument should be a
 valid constructor identifier.
 >>>consParamExist "age" (consCode ps)
 
-consCreateDefault code
+#consCreateDefault code
 Creates a default instance of a constructor with the specified `code`. If this constructor has parameters,
 parameters are filled with units.
 >>>consCreateDefault (consCode None)
 
-consCreate code
+#consCreate code
 If a requested constructor doesn't have any parameters, acts as `consDefault`, otherwise returns a function for `n`
 arguments, where `n` is the number of constructor parameters.
 >>>s = Some 12
