@@ -30,7 +30,7 @@ namespace Ela.Library.General
             var prog = res.Program;
 
             if (prog.Instances != null
-                || prog.Includes != null
+                || prog.Includes.Count != 0
                 || prog.Classes != null
                 || prog.Types != null
                 || prog.TopLevel.Equations.Count != 1)

@@ -66,12 +66,6 @@ namespace Ela.CodeModel
 
                 sb.Append(")");
             }
-
-            if (And != null)
-            {
-                sb.AppendLine();
-                And.ToString(sb, indent);
-            }
 		}
 
 		public string Name { get; set; }
@@ -100,7 +94,5 @@ namespace Ela.CodeModel
 				return _importList;
 			}
 		}
-
-        public ElaModuleInclude And { get; set; }
 	}
 }

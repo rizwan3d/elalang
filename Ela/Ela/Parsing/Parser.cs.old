@@ -1287,15 +1287,8 @@ internal sealed partial class Parser {
 		Qualident(inc.Path);
 		var name = inc.Path[inc.Path.Count - 1];				
 		inc.Path.RemoveAt(inc.Path.Count - 1);				
-		inc.Alias = inc.Name = name;
-		
-		if (Program.Includes == null)
-		    Program.Includes = inc;
-		else
-		{
-		    inc.And = Program.Includes;
-		    Program.Includes = inc;
-		}
+		inc.Alias = inc.Name = name;				
+		Program.Includes.Add(inc);
 		
 		if (la.kind == 49) {
 			Get();

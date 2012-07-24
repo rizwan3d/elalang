@@ -4,17 +4,17 @@ open random list console format string datetime read core
 rnd' v = rnd s 1 v where s = milliseconds <| datetime.now ()
 
 //Implementation of a game
-start () = match bound! with
+start () = match bound () with
                  Some v = printfn "Guess a number from 1 to {0}." v $ guess <| rnd' v
-                 None   = start!
+                 None   = start ()
 
 bound () = writen "What's the upper bound?" $ bound' <| readStr <| readn ()
            where bound' v | v <= 0 = writen "Bound should be greater than 0." $ None
                           | else   = Some v
                           
 success v =  writen "Correct! Do you want to continue? (Y/N)" $ ask ()
-             where ask () = read <| upper <| readn!
-                   read "Y" = start!
+             where ask () = read <| upper <| readn ()
+                   read "Y" = start ()
                    read "N" = writen "Bye!"
                    read x   = writen "Say what?" $ ask ()
                    
