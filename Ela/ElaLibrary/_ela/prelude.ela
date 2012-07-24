@@ -20,14 +20,13 @@ type Double
 type Bool
   deriving Eq Show
 
+not  = __internal not
+
 type Char
   deriving Eq Ord Show Cat
 
 type String
   deriving Eq Ord Show Cat Seq Len Ix
-
-type Tuple
-  deriving Len Ix Cat
 
 type Record
   deriving Len Ix Name Cat
@@ -35,18 +34,91 @@ type Record
 type Module
   deriving Eq Show Name
 
-type Fun
-  deriving Eq Show
-
 type Unit
   deriving Eq Show
 
+type Object
+
+/* Function */
+type Fun
+  deriving Eq Show
+
+(>>) f g x = g (f x)
+
+(<<) f g x = f (g x)
+
+(|>) = __internal fpipe
+
+(<|) = __internal bpipe
+
+f! = f()
+
+flip f x y = f y x
+
+curry f x y = f (x, y)
+
+uncurry f (x, y) = f x y
+
+curry3 f x y z = f (x, y, z)
+
+uncurry3 f (x, y, z) = f x y z
+
+/* Tuple */
+type Tuple
+  deriving Len Ix Cat
+
+x => y = (x, y)
+
+swap (x, y) = (y, x)
+
+swap3 (x, y, z) = (y, x, z)
+
+fst (x,_) = x
+
+snd (_,y) = y
+
+fst3 (x,_,_) = x
+
+snd3 (_,y,_) = y
+
+/* List */
 type List
   deriving Seq
 
-type Object
+(::) = __internal cons
 
-/* Extra types */
+last (x::[]) = x
+last (_::xs) = last xs
+last []      = fail "prelude.last: Empty list."
+
+init (x::[])   = []
+init (x::xs)   = x :: init xs
+init []        = fail "prelude.init: Empty list."
+
+map f (x::xs) = f x :: map f xs
+map _ []      = []
+
+foldl f z (x::xs) = foldl f (f z x) xs
+foldl _ z [] = z
+
+foldr f z (x::xs) = f x (foldr f z xs)
+foldr _ z []      = z
+
+reverse xs 
+  | listLazy xs = rev [] xs
+  | else = revList xs
+  where rev ys [] = ys
+        rev ys (x::xs) = rev (x::ys) xs
+
+filter p (x::xs) 
+  | p x  = x :: filter p xs
+  | else = filter p xs
+filter _ [] = []
+
+revList # private
+revList = __internal api12
+
+/* String builder */
 type StringBuilder = StringBuilder xs # private
 
 stringBuilder = StringBuilder []
@@ -163,15 +235,15 @@ instance Enum Int Long where
   pred = (-1)
   enumFrom fst snd = genInf fst (snd-fst)
     where genInf e step = e :: (& genInf (e+step) step)
-  enumFromTo max fst snd 
-    | snd < fst = genLt [] max fst (snd-fst)
-    | else = genGt [] max fst (snd-fst)
-    where genLt xs max e step
+  enumFromTo max fst snd
+    | snd < fst = genLt [] fst (snd-fst)
+    | else = genGt [] fst (snd-fst)
+    where genLt xs e step
             | e < max = listReverse xs
-            | else = genLt (e::xs) max (e+step) step
-          genGt xs max e step
+            | else = genLt (e::xs) (e+step) step
+          genGt xs e step
             | e > max = listReverse xs
-            | else = genGt (e::xs) max (e+step) step
+            | else = genGt (e::xs) (e+step) step
 
 /* Bounded */
 class Bounded a where
@@ -327,31 +399,6 @@ instance BoolLike Bool Int Long where
 instance StringLike String Char where
   toString = lang.__toString
 
-/* Misc operators */
-not  = __internal not
-(::) = __internal cons
-
-/* Function related operators and functions */
-(>>) f g x = g (f x)
-(<<) f g x = f (g x)
-(|>) = __internal fpipe
-(<|) = __internal bpipe
-f! = f()
-flip f x y = f y x
-curry f x y = f (x, y)
-uncurry f (x, y) = f x y
-curry3 f x y z = f (x, y, z)
-uncurry3 f (x, y, z) = f x y z
-
-/* Tuple functions */
-x => y = (x, y)
-swap (x, y) = (y, x)
-swap3 (x, y, z) = (y, x, z)
-fst (x,_) = x
-snd (_,y) = y
-fst3 (x,_,_) = x
-snd3 (_,y,_) = y
-
 /* Complex behaviors */
 force = __internal force
 
@@ -381,10 +428,3 @@ listLength = __internal api11
 
 listReverse # private
 listReverse = __internal api12
-
-reverse # private
-reverse xs 
-  | listLazy xs = rev [] xs 
-  | else = listReverse xs
-  where rev ys [] = ys
-        rev ys (x::xs) = rev (x::ys) xs

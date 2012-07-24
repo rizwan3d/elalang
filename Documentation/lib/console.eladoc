@@ -3,16 +3,16 @@
 #category Ela Standard Library
 This module contains standard input and output functions.
 
-#members
+=Functions
 
-write
+#write
 Writes a given string to standard output: 
 >>write "Hello, world!"
 
-writen
+#writen
 Writes a given string and a new line to standard output: 
 >>writen "Hello, world!"
 
-readn ()
+#readn ()
 Reads a line from standard input: 
 >>res = readn ()

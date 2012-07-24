@@ -3,17 +3,19 @@
 #category Ela Standard Library
 This module contains implementation of a datetime data type, its instance and functions that operate with dates and time. 
 
-#members
+=DateTime
 
-DateTime
+#DateTime
 This type is used to represent date and time. An 64-bit integer is used for internal 
 representation.
 
-fromTicks x
+==Construction
+
+#fromTicks x
 Constructs a `DateTime` instance from a ticks component represented as 64-bit integer. This function
 requires a qualified access.
 
-fromTuple x
+#fromTuple x
 Constructs a datetime instance from a tuple that contains `DateTime` components as 32-bit integers. The
 mimimum number of elements in a tuple is three (year, month, day): 
 >>>fromTuple (2012,2,3)
@@ -21,105 +23,98 @@ The maximum number of elements in a tuple is seven (year, month, day, hour, minu
 >>>fromTuple (2012,2,3,16,44,12,124)
 This function requires a qualified access.
 
-Bounded DateTime
-Implements functions `maxBound` and `minBound` for a `DateTime`.
-
-Eq DateTime
-Implements equality functions for a `DateTime`.
-
-Ord DateTime
-Implements comparison functions for a `DateTime`.
-
-Show DateTime
-Implements `showf` function for a `DateTime`. A format string is fully supported and allows
-to specify an output format for a `DateTime` in .Net Framework `DateTime.ToString` fashion, e.g.:
->>>showf "dd/MM/yyyy" <| now ()
-By default a format string `dd/MM/yyyy HH:mm:ss` is used.
-
-now ()
+#now ()
 Returns the current date and time. This function requires a qualified access.
 
-today ()
+#today ()
 Returns the current date. This function requires a qualified access.
 
-addDates x y
+==Modification
+
+#addDates x y
 Adds one date to another.
 
-addTicks ticks date
+#addTicks ticks date
 Adds a specified number of ticks to a date. 
 
-addMilliseconds ms date
+#addMilliseconds ms date
 Adds a specified number of milliseconds to a date. 
 
-addSeconds s date
+#addSeconds s date
 Adds a specified number of seconds to a date. 
 
-addMinutes mn date
+#addMinutes mn date
 Adds a specified number of minutes to a date. 
 
-addHours h date
+#addHours h date
 Adds a specified number of hours to a date. 
 
-addDays d date
+#addDays d date
 Adds a specified number of days to a date. 
 
-addMonths m date
+#addMonths m date
 Adds a specified number of months to a date.
 
-addYears yr date
+#addYears yr date
 Adds a specified number of years to a date. 
 
-years x
+==Extracting components
+
+#years x
 Returns a years component of a given date. 
 
-months x
+#months x
 Returns a months component of a given date. 
 
-days x
+#days x
 Returns a days component of a given date. 
 
-hours x
+#hours x
 Returns a hours component of a given date. 
 
-minutes x
+#minutes x
 Returns a minutes component of a given date. 
 
-seconds x
+#seconds x
 Returns a seconds component of a given date. 
 
-milliseconds x
+#milliseconds x
 Returns a milliseconds component of a given date. 
 
-ticks x
+#ticks x
 Returns a ticks component of a given date. 
 
-dayOfWeek x
+#dayOfWeek x
 Returns a string that represents day of week for a given date. A string might one of 
 the following: `"Fri"` for Friday, `"Mon"` for Monday, `"Sat"` for Saturday, `"Sun"` for Sunday, 
 `"Thu"` for Thursday, `"Tue"` for Tuesday and `"Wed"` for Wednesday. 
 >>>dayOfWeek (parse "yyyy-MM-dd" "2012-01-01")
 
-dayOfYear x
+#dayOfYear x
 Returns a day of year for a given date. 
 
-date x
+#date x
 Returns a date part (without time) of a given date. 
 
-parse fmt str
+==Parsing
+
+#parse fmt str
 Parsers a string str using a format fmt into a date and time instance. 
 >>>parse "yyyy-MM-dd" "2012-01-01"
 This function requires a qualified access.
 
-diff x y
+==Diff
+
+#diff x y
 Calculates a difference between dates x and y. A difference is returned as a records with the 
 following structure: 
 >>{ ticks, milliseconds, second, minutes, hours, days }.
 
-diffSeconds fmt x
+#diffSeconds fmt x
 Calculates a difference in seconds between dates `x` and `y`. 
 
-diffMilliseconds fmt x
+#diffMilliseconds fmt x
 Calculates a difference in milliseconds between dates `x` and `y`. 
 
-diffTicks fmt x
+#diffTicks fmt x
 Calculates a difference in ticks between dates `x` and `y`. 

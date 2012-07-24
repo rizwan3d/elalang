@@ -10,29 +10,35 @@ In the code sample above `1` and `2` are keys while `"foo"` and `"bar"` are valu
 this data structure is just an ordinary linked list there are no means to ensure that keys are
 unique.
 
-#members
+=Functions
 
-lookup k xs
+==Construction
+
+#fromRecord rec
+Constructs an associative list from a given record:
+>>>fromRecord {x=1,y=2,z=3}
+This function requires a qualified access, e.g. `alist.fromRecord`.
+
+==Search
+
+#lookup k xs
 Searches for a key `k` in a list `xs` and if this key is found returns its value as a `Some`
 variant. Otherwise returns `None` variant:
 >>>xs = [(1,"foo"),(2,"bar")]
 >>>lookup 2 xs
 
-split xs
+==Deconstruction
+
+#split xs
 Splits an associative list into two lists - the first contains keys and the second contains values.
 Lists are returned as a pair:
 >>>split [(1,"foo"),(2,"bar")]
 This function requires a qualified access, e.g. `alist.split`.
 
-keys xs
+#keys xs
 Returns a list of a keys of a given associative list:
 >>>keys [(1,"foo"),(2,"bar")]
 
-values xs
+#values xs
 Returns a list of a values of a given associative list:
 >>>values [(1,"foo"),(2,"bar")]
-
-fromRecord rec
-Constructs an associative list from a given record:
->>>fromRecord {x=1,y=2,z=3}
-This function requires a qualified access, e.g. `alist.fromRecord`.

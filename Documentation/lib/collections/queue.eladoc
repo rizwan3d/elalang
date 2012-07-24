@@ -3,56 +3,38 @@
 #category Ela Standard Library
 This module contains an implementation of an immutable queue.
 
-#members
+=Queue
 
-Queue
+#Queue
 An immutable queue that implements FIFO (first-in-first-out) container. This implementation of
 queue is based on a linked list and uses two linked lists for internal data representation.//br
-This data type doesn't have any public constructors.
+This data type doesn't have any public constructors.//br
+Queue provides an instance for `Seq` class and can be treated as a linked list in many cases and
+even deconstructed using list and head/tail pattern. Also queues can be indexed.
 
-empty
+==Construction
+
+#empty
 This is a constant that returns an empty queue. This constant requires a qualified access, e.g. `queue.empty`.
 
-fromList
+#fromList
 Converts a given list to a queue:
 >>>fromList [1..10]
 This function requires a qualified access, e.g. `queue.fromList`.
 
-ListLike Queue
-Provides a support for conversion of a given queue to a linked list.
->>>toList <| fromList [1..5]
+==Main functions
 
-Show Queue
-Implements `showf` function for a queue. A queue is serialized to string in a similar manner as
-a linked list but with a `queue` prefix.
-
-Cat Queue
-Implements concatenation operator for a queue. Queues can be concatenated only with other queues.
-
-Eq Queue
-Implements equality functions for a queue.
-
-Seq Queue
-Implements functions `head`, `tail` and `isnil` for a queue. This instance allows to pattern match
-queue in the same way as a linked list:
->>>let (_::xs) = fromList [1,2,3]
->>> in xs
-
-Ix Queue
-Implements functions `:` and `length` for a queue. This instance allows to pattern match queue using
-a tuple pattern.
-
-enqueue e qu
+#enqueue e qu
 Appends an elements to the beggining of a given queue and returns a new queue:
 >>>qu = fromList [1..10]
 >>>enqueue 22 qu
 
-dequeue qu
+#dequeue qu
 Removes a first element from a queue and returns a new queue:
 >>>qu' = fromList ['a','b','c']
 >>>dequeue qu'
 
-peek qu
+#peek qu
 Returns a value from the beggining of a queue without removing it:
 >>>sq = fromList ["foo","bar"]
 >>>peek sq

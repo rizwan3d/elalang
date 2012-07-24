@@ -3,15 +3,15 @@
 #category Ela Standard Library
 This module contains instances and functions for a tuple.
 
-#members
+=Instances
 
-Additive Tuple
+===Additive
 Implements basic mathematical functions, including addition, subtraction and negation,
 for a tuple.
 >>>(1,2) + (3,4)
 Also all binary functions in this instance require the tuples to be of the same length.
 
-Enum Tuple
+===Enum
 Implements functions from `Enum` class for a tuple.//br
 Functions `succ` and `pred` are implemented by sequentially applying `succ` and `pred` to all 
 tuple elements - therefore they will only work on tuples that contain enumerable types.
@@ -19,27 +19,29 @@ tuple elements - therefore they will only work on tuples that contain enumerable
 Functions `enumFrom` and `enumFromTo` are implemented based on `Additive`, and therefore
 would also require all tuples in ranges to be of the same length.
 
-ListLike Tuple
+===ListLike
 Implements `toList` function that converts a given tuple to a linked list.
 >>>toList (1,2,3)
 
-fromList xs
+=Functions
+
+#fromList xs
 Converts a given list to a tuple. This function requires a qualified access.
 >>>fromList [1,2,3]
 
-map f t
+#map f t
 Maps a given function to all elements of a tuple. This function requires a qualified access.
 >>>map succ (1,2,3)
 
-join f a b
+#join f a b
 Joins two given tuples into a single tuple by applying a binary function `f` to their elements.
 Tuples should be of the same length. This function requires a qualified access.
 >>>join (+) (1,2) (3,4)
 
-any p t
+#any p t
 Checks if at least one tuple element satisfies a given predicate. This function requires a qualified access.
 >>>any (>2) (1,2,3)
 
-all p t
+#all p t
 Checks if all tuple elements satisfy a given predicate. This function requires a qualified access.
 >>>all (>2) (1,2,3)
