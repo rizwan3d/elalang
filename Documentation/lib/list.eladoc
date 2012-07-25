@@ -21,7 +21,7 @@ Sorts a given list. This is a non-strict function, which implements a quicksort 
 ==Folds
 
 #fold
-This function is equivalent to foldr called with a nil list as its second argument. This is a 
+This function is equivalent to `foldr` called with a nil list as its second argument. This is a 
 strict function. 
 
 #foldl' f z xs
