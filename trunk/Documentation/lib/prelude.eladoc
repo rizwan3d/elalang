@@ -336,7 +336,7 @@ maximum and a minimum possible value for this argument.
 Defines functions of a commutative group, including addition `+`, subtraction `-` and negation
 `--`.
 >>>2 + 2
-This is the most basic class for all numeric types. Also other types, such as `Char` and `Tuple`
+This is the most basic class for all numeric types. Also other types, such as `Tuple`,
 may provide implementations for this class as well.
 
 #Ring

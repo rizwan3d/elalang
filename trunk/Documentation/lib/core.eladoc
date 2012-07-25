@@ -8,7 +8,7 @@ that operate on them.
 
 #Maybe
 This type is used to represent an optional value. A value of type `Maybe` either contains a value `a` (represented
-as `Maybe a`), or is empty (represented as `None`).//br
+as `Some a`), or is empty (represented as `None`).//br
 Using `Maybe` is a good way to way to deal with errors without using exceptions.
 
 #maybe d f o
