@@ -66,6 +66,7 @@ namespace Ela.Runtime.ObjectModel
                 }
 
                 ret = ret.CloneFast();
+                ret.Flip = Flip;
                 ret.AppliedParameters = AppliedParameters;
                 
                 if (ret.Parameters.Length != Parameters.Length)
