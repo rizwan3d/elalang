@@ -1,4 +1,6 @@
-﻿0.1.4.13:Change:Now Bindings folder in Outline view shows private bindings along with public. Private bindings are marked with a special icon.
+﻿0.1.4.15:Change:Syntax highlighting for EIL is updated according to the language changes.
+0.1.4.14:Change:A bug fixed in syntax highlighting of comments in Ela code editor.
+0.1.4.13:Change:Now Bindings folder in Outline view shows private bindings along with public. Private bindings are marked with a special icon.
 0.1.4.12:Change:Now Bindings folder in Outline view only shows global function that are not class members.
 0.1.4.11:Fix:Signatures for class members in Outline view are now always displayed and formatted correctly.
 0.1.4.10:Change:Now it is possible to navigate to class members in Outline view by clicking on them.

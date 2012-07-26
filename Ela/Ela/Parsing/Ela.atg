@@ -870,6 +870,7 @@ PRODUCTIONS
 			| FailExpr<out exp>
 			| MatchExpr<out exp>
 			| TryExpr<out exp>
+			//| DoBlock
 		).
 	
 	TypeCheckExpr<ref ElaExpression pat> = 
@@ -1381,7 +1382,24 @@ PRODUCTIONS
 	            .)
 	        ]
 	    ).
-	    		
+    
+   /* DoBlock = 
+		(. 
+		    scanner.InjectBlock(); 
+		    var skip = false;
+		    var exp = default(ElaExpression);
+		.) 
+		SYNC "do" [EndBlock (. skip=true; .)]
+		(
+		    Expr<out exp> [ "<-" Expr<out exp> ] (. if (RequireEndBlock()) .) EndBlock	    
+		    {	            
+	            (. scanner.InjectBlock(); .)
+	            Expr<out exp> [ "<-" Expr<out exp> ] (. if (RequireEndBlock()) .) EndBlock
+	        }
+		)
+		(. if (!skip) .) EndBlock.*/
+        
+    
 	TopLevel =
 	    (. scanner.InjectBlock(); .)
 	    (

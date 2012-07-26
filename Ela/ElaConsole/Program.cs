@@ -33,6 +33,9 @@ namespace ElaConsole
         #region Methods
         private static int Main(string[] args) 
 		{
+            //foreach (var s in Enum.GetNames(typeof(Op)))
+            //    Debug.Write("\"" + s + "\"|");
+
             if (!ReadOptions(args))
 				return R_ERR;
 
