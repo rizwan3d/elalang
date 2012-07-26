@@ -94,25 +94,31 @@ namespace Ela.Linking
 
 		internal int AddModule(FileInfo fi, CodeFrame module, bool qual, int logicHandle)
 		{
-			var hdl = 0;
-            var name = !String.IsNullOrEmpty(fi.Extension) && !fi.Extension.Contains("#") ? 
+			var name = !String.IsNullOrEmpty(fi.Extension) && !fi.Extension.Contains("#") ? 
                 fi.FullName.Replace(fi.Extension, String.Empty).ToUpper() :
                 fi.FullName.ToUpper();
+            return AddModule(name, module, qual, logicHandle);
+		}
 
-			if (!moduleMap.TryGetValue(name, out hdl))
-			{
-				moduleMap.Add(name, hdl = modules.Count);                
-				modules.Add(module);
-				quals.Add(qual);
-			}
-			else
-			{
-				modules[hdl] = module;
-				quals[hdl] = qual;
-			}
+
+        internal int AddModule(string name, CodeFrame module, bool qual, int logicHandle)
+        {
+            var hdl = 0;
+
+            if (!moduleMap.TryGetValue(name, out hdl))
+            {
+                moduleMap.Add(name, hdl = modules.Count);
+                modules.Add(module);
+                quals.Add(qual);
+            }
+            else
+            {
+                modules[hdl] = module;
+                quals[hdl] = qual;
+            }
 
             return hdl;
-		}
+        }
 
 
 		public bool IsModuleRegistered(string name)

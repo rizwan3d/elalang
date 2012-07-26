@@ -30,7 +30,7 @@ namespace Ela.Linking
 		private const string DLLEXT = ".dll";
         internal const string ARG_MODULE = "$___ARGS___";
 
-		internal static readonly FileInfo MemoryFile = new FileInfo("memory");
+		internal const string MemoryFile = "memory";
         private static readonly ModuleReference argModuleRef = new ModuleReference("$Args");
 		private Dictionary<String,Dictionary<String,ElaModuleAttribute>> foreignModules;
         private Dictionary<String,FileInfo> foreignModulesFiles;
@@ -98,7 +98,7 @@ namespace Ela.Linking
                 var lm = new LangModule();
                 lm.Initialize();
                 frame = lm.Compile();
-                hdl = Assembly.AddModule(new FileInfo("lang"), frame, false, mod.LogicalHandle);
+                hdl = Assembly.AddModule("lang", frame, false, mod.LogicalHandle);
             }
             else if (mod.ModuleName == ARG_MODULE)
             {
@@ -109,7 +109,7 @@ namespace Ela.Linking
                     argModuleFrame = argModule.Compile();
 
                 frame = argModuleFrame;
-                hdl = Assembly.AddModule(new FileInfo("args"), argModuleFrame, false, mod.LogicalHandle);
+                hdl = Assembly.AddModule("args", argModuleFrame, false, mod.LogicalHandle);
             }
             else
             {
@@ -685,12 +685,12 @@ namespace Ela.Linking
 
         protected FileInfo SafeRootFile
         {
-            get { return RootFile ?? MemoryFile; }
+            get { return RootFile != null ? RootFile : new FileInfo(MemoryFile); }
         }
 
         protected string SafeRootFileName
         {
-            get { return RootFile != null ? RootFile.Name : MemoryFile.Name; }
+            get { return RootFile != null ? RootFile.Name : MemoryFile; }
         }
 		#endregion
 

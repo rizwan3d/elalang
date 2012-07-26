@@ -78,7 +78,7 @@ namespace Ela.Linking
         protected override ExportVars CreateExportVars(FileInfo fi)
         {
             var vars = default(ExportVars);
-            var key = fi == null ? MemoryFile.Name : fi.ToString();
+            var key = fi == null ? MemoryFile : fi.ToString();
 
             if (!exportMap.TryGetValue(key, out vars))
             {
