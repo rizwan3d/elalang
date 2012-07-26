@@ -1,4 +1,4 @@
-0.1.4.53:Release:Release of 0.1.5.0.
+0.1.5.0:Release:Release of 0.1.5.0.
 0.1.4.52:Change:Functions 'last', 'init', 'map', 'foldl', 'foldr', 'reverse' and 'filter' are moved from 'list' module to prelude.
 0.1.4.51:New:Functions 'foldl1' and 'foldr1' are added to 'list' module.
 0.1.4.50:New:Functions 'isPrefixOf', 'isSuffixOf' and 'isInfixOf' are added to 'list' module.
