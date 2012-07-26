@@ -34,6 +34,7 @@ namespace Elide.Workbench
             App = app;
             documentContainer.SelectedDocumentFunc = App.Document;
             documentContainer.DocumentCaptionRedraw += (o,e) => UpdateWindowHeader();
+            App.GetService<IDocumentService>().DocumentClosed += (o,e) => UpdateWindowHeader();
         }
 
         protected override CreateParams CreateParams
