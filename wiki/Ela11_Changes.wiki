@@ -1,5 +1,5 @@
 #summary Ela 0.10 to Ela 0.11 migration
-#labels Featured,Phase-Implementation
+#labels Phase-Implementation
 
 == Introduction ==
 
