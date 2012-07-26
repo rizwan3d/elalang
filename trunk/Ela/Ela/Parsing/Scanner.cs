@@ -234,12 +234,13 @@ internal sealed class Scanner {
 		for (int i = 97; i <= 122; ++i) start[i] = 1;
 		for (int i = 65; i <= 90; ++i) start[i] = 4;
 		for (int i = 49; i <= 57; ++i) start[i] = 66;
-		start[95] = 92; 
+		start[95] = 91; 
 		start[39] = 67; 
 		start[48] = 68; 
 		start[46] = 69; 
 		start[34] = 21; 
 		start[60] = 70; 
+		for (int i = 36; i <= 36; ++i) start[i] = 45;
 		for (int i = 38; i <= 38; ++i) start[i] = 45;
 		for (int i = 124; i <= 124; ++i) start[i] = 45;
 		start[61] = 46; 
@@ -256,7 +257,7 @@ internal sealed class Scanner {
 		for (int i = 126; i <= 126; ++i) start[i] = 56;
 		start[123] = 60; 
 		start[125] = 61; 
-		start[91] = 93; 
+		start[91] = 92; 
 		start[93] = 62; 
 		start[92] = 74; 
 		start[64] = 64; 
@@ -266,7 +267,6 @@ internal sealed class Scanner {
 		start[41] = 87; 
 		start[44] = 88; 
 		start[96] = 90; 
-		start[36] = 91; 
 		start[Buffer.EOF] = -1;
 
 	}
@@ -402,6 +402,7 @@ internal sealed class Scanner {
 			case "::": t.kind = 57; break;
 			case "or": t.kind = 58; break;
 			case "and": t.kind = 59; break;
+			case "$": t.kind = 61; break;
 			case "__internal": t.kind = 62; break;
 			case "&": t.kind = 63; break;
 			case "<-": t.kind = 64; break;
@@ -844,12 +845,10 @@ internal sealed class Scanner {
 			case 90:
 				{t.kind = 60; break;}
 			case 91:
-				{t.kind = 61; break;}
-			case 92:
 				recEnd = pos; recKind = 50;
 				if (ch == 39 || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 2;}
 				else {t.kind = 50; break;}
-			case 93:
+			case 92:
 				recEnd = pos; recKind = 19;
 				if (ch == '&') {AddCh(); goto case 89;}
 				else {t.kind = 19; break;}

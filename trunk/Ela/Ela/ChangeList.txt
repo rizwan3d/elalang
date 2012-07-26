@@ -1,3 +1,6 @@
+0.11.0.61:Change:A 'Type' op code along with 'getType' function from prelude is decomissioned.
+0.11.0.60:Change:Now module 'open' and 'import' directives are processed by Ela compiler in order of declaration.
+0.11.0.59:Change:Now it is possible to use symbol '$' in custom operators. When an operator starts with '$' it is left associative and has the lowest priority.
 0.11.0.58:Change:Op code 'Recfld' is decomissioned, it is now implemented through 'Api2' op code.
 0.11.0.57:Change:New op codes 'Api' and 'Api2' are added that will now be used for extensible internal API.
 0.11.0.56:Change:Op code 'Gettag' is decomissioned.
