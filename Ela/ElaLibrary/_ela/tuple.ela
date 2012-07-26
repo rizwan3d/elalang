@@ -2,7 +2,7 @@
   Module tuple
   Created in 2012 by Basil Voronkov
 */
-open thunk list
+open thunk
 import lang
 
 /* Instances */
