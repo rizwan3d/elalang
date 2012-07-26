@@ -1,11 +1,11 @@
-﻿#title Operator Priority
+#title Operator Priority
 #category Language Reference
 
 =Introduction
 This article discusses operator priority and associativity in Ela. 
 
 =Operator Symbols
-In Ela operator identifiers can include only the following symbols: `!%&*+-.:/\<=>?@^|~`. Some of the symbols are already used by 
+In Ela operator identifiers can include only the following symbols: `$!%&*+-.:/\<=>?@^|~`. Some of the symbols are already used by 
 language constructs. For example, it is not possible to define an operator `&` as soon as the one is already used to denote lazy lists 
 and lazy expressions. However it is possible to define an operator `&=`, etc. All standard arithmetic operators such as `+`, `-`, etc., 
 composition operators, application operators and so on are not syntax but functions defined in prelude and therefore can be easily redefined. 
@@ -21,6 +21,8 @@ The following combinations of operator symbols are reserved and cannot be used f
 |`\\` |Comprehension operator 
 |`<-` |Comprehension selector
 |`..` |Ranges
+|`$`  |Sequencing
+|`.`  |Member access
 
 =Priority and Associativity
 In Ela operator priority and associativity is controlled by the first symbols in operator identifier. The following table lists all operator 
@@ -29,6 +31,7 @@ symbols is allowed here. For example, priroty of operators `=|` and `=||` is the
 |*Operator* *Symbols* |*Priority* |*Associativity* 
 |`| {op}` | 0 |Left 
 |`& {op}` | 0 |Left 
+|`$ {op}` | 0 |Left
 |`<| {op}` | 1 |Right 
 |`= {op}` | 2 |Left 
 |`< {op}` | 2 |Left 
