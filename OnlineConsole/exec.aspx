@@ -103,7 +103,7 @@
 				lo.CodeBase.Directories.Add(new System.IO.DirectoryInfo(@"D:\Hosting\7431445\html\bin"));
 				CompilerOptions co = new CompilerOptions();
 				co.Prelude = "Prelude";
-				linker = new ElaIncrementalLinker(lo, co);
+				linker = new ElaIncrementalLinker(lo, co, new FileInfo(@"D:\Hosting\7431445\html\bin\online"));
 				linker.AddArgument("webOut", webOutDelegate);				
 				Session["Linker"] = linker;
 			}
@@ -153,7 +153,7 @@
 			Session["LastOffset"] = lastOffset;
 			DateTime dt = DateTime.Now;
 			ExecutionResult exer = vm.Run(os);
-			string ret = exer.ReturnValue.ToString();	
+			string ret = vm.PrintValue(exer.ReturnValue);	
 			res.Status = "Success";
 			
 			string outp = "";
@@ -187,7 +187,7 @@
 		XmlWriter xw = new XmlTextWriter(sw);
 		xw.WriteStartElement("Result");
 		xw.WriteAttributeString("Type", type);
-		xw.WriteAttributeString("Result", result);
+		xw.WriteAttributeString("Result", result.Replace(@"D:\Hosting\7431445\html\bin\", String.Empty));
 		xw.WriteEndElement();
 		
 		Response.Write(sw.ToString());
