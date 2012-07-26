@@ -17,7 +17,7 @@ internal sealed partial class Parser {
 	public const int _stringTok = 4;
 	public const int _operatorTok = 5;
 	public const int _NL = 6;
-	public const int maxT = 103;
+	public const int maxT = 102;
 
 	const bool T = true;
 	const bool x = false;
@@ -103,7 +103,7 @@ internal sealed partial class Parser {
 			Get();
 		} else if (la.kind == 0) {
 			Get();
-		} else SynErr(104);
+		} else SynErr(103);
 		Add(pos, t.pos - pos + t.val.Length, TextStyle.Style4); 
 	}
 
@@ -486,11 +486,7 @@ internal sealed partial class Parser {
 			Get();
 			break;
 		}
-		case 102: {
-			Get();
-			break;
-		}
-		default: SynErr(105); break;
+		default: SynErr(104); break;
 		}
 		Add(t.pos, t.val.Length, TextStyle.Style2); 
 	}
@@ -511,7 +507,7 @@ internal sealed partial class Parser {
 		} else if (la.kind == 3) {
 			Get();
 			Add(t.pos, t.val.Length, TextStyle.Style8); 
-		} else SynErr(106);
+		} else SynErr(105);
 	}
 
 	void Code() {
@@ -525,7 +521,7 @@ internal sealed partial class Parser {
 			SingleLineComment();
 		} else if (la.kind == 6) {
 			Get();
-		} else SynErr(107);
+		} else SynErr(106);
 	}
 
 	void Eil() {
@@ -547,11 +543,11 @@ internal sealed partial class Parser {
 	}
 	
 	static readonly bool[,] set = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x},
-		{x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x, x},
-		{x,T,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, T,T,T,T, T,x,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x, x}
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{x,T,T,T, T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x},
+		{x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,x,x},
+		{x,T,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{x,T,T,T, T,T,T,T, T,x,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,x,x}
 
 	};
 } // end Parser
@@ -582,77 +578,77 @@ internal sealed class Errors {
 			case 11: s = "\"Len\" expected"; break;
 			case 12: s = "\"Pushunit\" expected"; break;
 			case 13: s = "\"Pushelem\" expected"; break;
-			case 14: s = "\"PushI4_0\" expected"; break;
-			case 15: s = "\"PushI1_0\" expected"; break;
-			case 16: s = "\"PushI1_1\" expected"; break;
-			case 17: s = "\"Pop\" expected"; break;
-			case 18: s = "\"Pushstr_0\" expected"; break;
-			case 19: s = "\"Genfin\" expected"; break;
-			case 20: s = "\"Cons\" expected"; break;
-			case 21: s = "\"Gen\" expected"; break;
-			case 22: s = "\"Tail\" expected"; break;
-			case 23: s = "\"Head\" expected"; break;
-			case 24: s = "\"Ret\" expected"; break;
-			case 25: s = "\"Concat\" expected"; break;
-			case 26: s = "\"Add\" expected"; break;
-			case 27: s = "\"Mul\" expected"; break;
-			case 28: s = "\"Div\" expected"; break;
-			case 29: s = "\"Rem\" expected"; break;
-			case 30: s = "\"Pow\" expected"; break;
-			case 31: s = "\"Sub\" expected"; break;
-			case 32: s = "\"Shr\" expected"; break;
-			case 33: s = "\"Shl\" expected"; break;
-			case 34: s = "\"Ceq\" expected"; break;
-			case 35: s = "\"Cneq\" expected"; break;
-			case 36: s = "\"Clt\" expected"; break;
-			case 37: s = "\"Cgt\" expected"; break;
-			case 38: s = "\"Cgteq\" expected"; break;
-			case 39: s = "\"Clteq\" expected"; break;
-			case 40: s = "\"AndBw\" expected"; break;
-			case 41: s = "\"OrBw\" expected"; break;
-			case 42: s = "\"Xor\" expected"; break;
-			case 43: s = "\"Not\" expected"; break;
-			case 44: s = "\"Neg\" expected"; break;
-			case 45: s = "\"NotBw\" expected"; break;
-			case 46: s = "\"Dup\" expected"; break;
-			case 47: s = "\"Swap\" expected"; break;
-			case 48: s = "\"Newlazy\" expected"; break;
-			case 49: s = "\"Newlist\" expected"; break;
-			case 50: s = "\"Newtup_2\" expected"; break;
-			case 51: s = "\"Stop\" expected"; break;
-			case 52: s = "\"NewI8\" expected"; break;
-			case 53: s = "\"NewR8\" expected"; break;
-			case 54: s = "\"Leave\" expected"; break;
-			case 55: s = "\"Flip\" expected"; break;
-			case 56: s = "\"LazyCall\" expected"; break;
-			case 57: s = "\"Call\" expected"; break;
-			case 58: s = "\"Callt\" expected"; break;
-			case 59: s = "\"Throw\" expected"; break;
-			case 60: s = "\"Rethrow\" expected"; break;
-			case 61: s = "\"Force\" expected"; break;
-			case 62: s = "\"Type\" expected"; break;
-			case 63: s = "\"Isnil\" expected"; break;
-			case 64: s = "\"Succ\" expected"; break;
-			case 65: s = "\"Pred\" expected"; break;
-			case 66: s = "\"Show\" expected"; break;
-			case 67: s = "\"Untag\" expected"; break;
-			case 68: s = "\"Skiphtag\" expected"; break;
-			case 69: s = "\"Gettag\" expected"; break;
-			case 70: s = "\"Cast\" expected"; break;
-			case 71: s = "\"Recfld\" expected"; break;
-			case 72: s = "\"Read\" expected"; break;
-			case 73: s = "\"Addmbr\" expected"; break;
-			case 74: s = "\"Traitch\" expected"; break;
-			case 75: s = "\"Newtype\" expected"; break;
-			case 76: s = "\"Reccons\" expected"; break;
-			case 77: s = "\"Tupcons\" expected"; break;
-			case 78: s = "\"Typeid\" expected"; break;
-			case 79: s = "\"Classid\" expected"; break;
-			case 80: s = "\"Newfunc\" expected"; break;
-			case 81: s = "\"Newmod\" expected"; break;
-			case 82: s = "\"Pushext\" expected"; break;
-			case 83: s = "\"Skiptag\" expected"; break;
-			case 84: s = "\"Newvar\" expected"; break;
+			case 14: s = "\"Pushfld\" expected"; break;
+			case 15: s = "\"Hasfld\" expected"; break;
+			case 16: s = "\"PushI4_0\" expected"; break;
+			case 17: s = "\"PushI1_0\" expected"; break;
+			case 18: s = "\"PushI1_1\" expected"; break;
+			case 19: s = "\"Pop\" expected"; break;
+			case 20: s = "\"Pushstr_0\" expected"; break;
+			case 21: s = "\"Genfin\" expected"; break;
+			case 22: s = "\"Cons\" expected"; break;
+			case 23: s = "\"Gen\" expected"; break;
+			case 24: s = "\"Tail\" expected"; break;
+			case 25: s = "\"Head\" expected"; break;
+			case 26: s = "\"Ret\" expected"; break;
+			case 27: s = "\"Concat\" expected"; break;
+			case 28: s = "\"Add\" expected"; break;
+			case 29: s = "\"Mul\" expected"; break;
+			case 30: s = "\"Div\" expected"; break;
+			case 31: s = "\"Quot\" expected"; break;
+			case 32: s = "\"Rem\" expected"; break;
+			case 33: s = "\"Mod\" expected"; break;
+			case 34: s = "\"Pow\" expected"; break;
+			case 35: s = "\"Sub\" expected"; break;
+			case 36: s = "\"Shr\" expected"; break;
+			case 37: s = "\"Shl\" expected"; break;
+			case 38: s = "\"Ceq\" expected"; break;
+			case 39: s = "\"Cneq\" expected"; break;
+			case 40: s = "\"Clt\" expected"; break;
+			case 41: s = "\"Cgt\" expected"; break;
+			case 42: s = "\"Cgteq\" expected"; break;
+			case 43: s = "\"Clteq\" expected"; break;
+			case 44: s = "\"AndBw\" expected"; break;
+			case 45: s = "\"OrBw\" expected"; break;
+			case 46: s = "\"Xor\" expected"; break;
+			case 47: s = "\"Not\" expected"; break;
+			case 48: s = "\"Neg\" expected"; break;
+			case 49: s = "\"NotBw\" expected"; break;
+			case 50: s = "\"Dup\" expected"; break;
+			case 51: s = "\"Swap\" expected"; break;
+			case 52: s = "\"Newlazy\" expected"; break;
+			case 53: s = "\"Newlist\" expected"; break;
+			case 54: s = "\"Newtup_2\" expected"; break;
+			case 55: s = "\"Stop\" expected"; break;
+			case 56: s = "\"NewI8\" expected"; break;
+			case 57: s = "\"NewR8\" expected"; break;
+			case 58: s = "\"Leave\" expected"; break;
+			case 59: s = "\"Flip\" expected"; break;
+			case 60: s = "\"LazyCall\" expected"; break;
+			case 61: s = "\"Call\" expected"; break;
+			case 62: s = "\"Callt\" expected"; break;
+			case 63: s = "\"Throw\" expected"; break;
+			case 64: s = "\"Rethrow\" expected"; break;
+			case 65: s = "\"Force\" expected"; break;
+			case 66: s = "\"Isnil\" expected"; break;
+			case 67: s = "\"Show\" expected"; break;
+			case 68: s = "\"Addmbr\" expected"; break;
+			case 69: s = "\"Traitch\" expected"; break;
+			case 70: s = "\"Skiptag\" expected"; break;
+			case 71: s = "\"Newtype\" expected"; break;
+			case 72: s = "\"Ctype\" expected"; break;
+			case 73: s = "\"Ctypei\" expected"; break;
+			case 74: s = "\"Api\" expected"; break;
+			case 75: s = "\"Api2\" expected"; break;
+			case 76: s = "\"Untag\" expected"; break;
+			case 77: s = "\"Reccons\" expected"; break;
+			case 78: s = "\"Tupcons\" expected"; break;
+			case 79: s = "\"Ctorid\" expected"; break;
+			case 80: s = "\"Typeid\" expected"; break;
+			case 81: s = "\"Classid\" expected"; break;
+			case 82: s = "\"Newfunc\" expected"; break;
+			case 83: s = "\"Newmod\" expected"; break;
+			case 84: s = "\"Pushext\" expected"; break;
 			case 85: s = "\"Newrec\" expected"; break;
 			case 86: s = "\"Newtup\" expected"; break;
 			case 87: s = "\"Failwith\" expected"; break;
@@ -663,19 +659,18 @@ internal sealed class Errors {
 			case 92: s = "\"PushR4\" expected"; break;
 			case 93: s = "\"Pushloc\" expected"; break;
 			case 94: s = "\"Pushvar\" expected"; break;
-			case 95: s = "\"Pushfld\" expected"; break;
-			case 96: s = "\"Poploc\" expected"; break;
-			case 97: s = "\"Popvar\" expected"; break;
-			case 98: s = "\"Runmod\" expected"; break;
-			case 99: s = "\"Br\" expected"; break;
-			case 100: s = "\"Brtrue\" expected"; break;
-			case 101: s = "\"Brfalse\" expected"; break;
-			case 102: s = "\"Newfun\" expected"; break;
-			case 103: s = "??? expected"; break;
-			case 104: s = "invalid SingleLineComment"; break;
-			case 105: s = "invalid Keyword"; break;
-			case 106: s = "invalid Value"; break;
-			case 107: s = "invalid Code"; break;
+			case 95: s = "\"Poploc\" expected"; break;
+			case 96: s = "\"Popvar\" expected"; break;
+			case 97: s = "\"Runmod\" expected"; break;
+			case 98: s = "\"Br\" expected"; break;
+			case 99: s = "\"Brtrue\" expected"; break;
+			case 100: s = "\"Brfalse\" expected"; break;
+			case 101: s = "\"Newfun\" expected"; break;
+			case 102: s = "??? expected"; break;
+			case 103: s = "invalid SingleLineComment"; break;
+			case 104: s = "invalid Keyword"; break;
+			case 105: s = "invalid Value"; break;
+			case 106: s = "invalid Code"; break;
 
 			default: s = "error " + n; break;
 		}

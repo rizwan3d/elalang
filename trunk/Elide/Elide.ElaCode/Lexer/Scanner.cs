@@ -244,18 +244,18 @@ internal sealed class Scanner {
 		for (int i = 125; i <= 125; ++i) start[i] = 44;
 		for (int i = 10; i <= 10; ++i) start[i] = 45;
 		for (int i = 13; i <= 13; ++i) start[i] = 45;
-		start[95] = 64; 
+		start[95] = 65; 
 		start[39] = 47; 
 		start[48] = 48; 
 		start[46] = 49; 
 		start[34] = 21; 
-		start[47] = 65; 
-		start[42] = 66; 
-		start[60] = 67; 
-		start[93] = 68; 
-		start[59] = 61; 
-		start[35] = 62; 
-		start[44] = 63; 
+		start[47] = 66; 
+		start[42] = 67; 
+		start[60] = 68; 
+		start[93] = 69; 
+		start[59] = 62; 
+		start[35] = 63; 
+		start[44] = 64; 
 		start[Buffer.EOF] = -1;
 
 	}
@@ -322,8 +322,6 @@ internal sealed class Scanner {
 
 	void CheckLiteral() {
 		switch (t.val) {
-			case "//": t.kind = 12; break;
-			case "/": t.kind = 16; break;
 			case "true": t.kind = 17; break;
 			case "false": t.kind = 18; break;
 			case "let": t.kind = 23; break;
@@ -526,8 +524,8 @@ internal sealed class Scanner {
 				{t.kind = 6; break;}
 			case 43:
 				recEnd = pos; recKind = 7;
-				if (ch == '!' || ch >= '$' && ch <= '&' || ch == '+' || ch >= '-' && ch <= '/' || ch == ':' || ch >= '<' && ch <= '@' || ch == 92 || ch == '^' || ch == '`' || ch == '|' || ch == '~') {AddCh(); goto case 43;}
-				else {t.kind = 7; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
+				if (ch == '!' || ch >= '$' && ch <= '&' || ch == '+' || ch >= '-' && ch <= '.' || ch == ':' || ch >= '<' && ch <= '@' || ch == 92 || ch == '^' || ch == '`' || ch == '|' || ch == '~') {AddCh(); goto case 43;}
+				else {t.kind = 7; break;}
 			case 44:
 				recEnd = pos; recKind = 8;
 				if (ch >= '(' && ch <= ')' || ch == '[' || ch == ']' || ch == '{' || ch == '}') {AddCh(); goto case 44;}
@@ -559,8 +557,8 @@ internal sealed class Scanner {
 			case 49:
 				recEnd = pos; recKind = 7;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 9;}
-				else if (ch == '!' || ch >= '$' && ch <= '&' || ch == '+' || ch >= '-' && ch <= '/' || ch == ':' || ch >= '<' && ch <= '@' || ch == 92 || ch == '^' || ch == '`' || ch == '|' || ch == '~') {AddCh(); goto case 43;}
-				else {t.kind = 7; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
+				else if (ch == '!' || ch >= '$' && ch <= '&' || ch == '+' || ch >= '-' && ch <= '.' || ch == ':' || ch >= '<' && ch <= '@' || ch == 92 || ch == '^' || ch == '`' || ch == '|' || ch == '~') {AddCh(); goto case 43;}
+				else {t.kind = 7; break;}
 			case 50:
 				recEnd = pos; recKind = 1;
 				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 50;}
@@ -603,37 +601,39 @@ internal sealed class Scanner {
 			case 58:
 				{t.kind = 11; break;}
 			case 59:
-				{t.kind = 13; break;}
+				{t.kind = 12; break;}
 			case 60:
-				{t.kind = 14; break;}
+				{t.kind = 13; break;}
 			case 61:
-				{t.kind = 20; break;}
+				{t.kind = 14; break;}
 			case 62:
-				{t.kind = 21; break;}
+				{t.kind = 20; break;}
 			case 63:
-				{t.kind = 22; break;}
+				{t.kind = 21; break;}
 			case 64:
+				{t.kind = 22; break;}
+			case 65:
 				recEnd = pos; recKind = 19;
 				if (ch == 39 || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 2;}
 				else {t.kind = 19; break;}
-			case 65:
-				recEnd = pos; recKind = 7;
-				if (ch == '!' || ch >= '$' && ch <= '&' || ch == '+' || ch >= '-' && ch <= '/' || ch == ':' || ch >= '<' && ch <= '@' || ch == 92 || ch == '^' || ch == '`' || ch == '|' || ch == '~') {AddCh(); goto case 43;}
-				else if (ch == '*') {AddCh(); goto case 57;}
-				else {t.kind = 7; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 			case 66:
+				recEnd = pos; recKind = 16;
+				if (ch == '*') {AddCh(); goto case 57;}
+				else if (ch == '/') {AddCh(); goto case 59;}
+				else {t.kind = 16; break;}
+			case 67:
 				recEnd = pos; recKind = 15;
 				if (ch == '/') {AddCh(); goto case 58;}
 				else {t.kind = 15; break;}
-			case 67:
-				recEnd = pos; recKind = 7;
-				if (ch == '!' || ch >= '$' && ch <= '&' || ch == '+' || ch >= '-' && ch <= '/' || ch == ':' || ch >= '<' && ch <= '@' || ch == 92 || ch == '^' || ch == '`' || ch == '|' || ch == '~') {AddCh(); goto case 43;}
-				else if (ch == '[') {AddCh(); goto case 59;}
-				else {t.kind = 7; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 			case 68:
+				recEnd = pos; recKind = 7;
+				if (ch == '!' || ch >= '$' && ch <= '&' || ch == '+' || ch >= '-' && ch <= '.' || ch == ':' || ch >= '<' && ch <= '@' || ch == 92 || ch == '^' || ch == '`' || ch == '|' || ch == '~') {AddCh(); goto case 43;}
+				else if (ch == '[') {AddCh(); goto case 60;}
+				else {t.kind = 7; break;}
+			case 69:
 				recEnd = pos; recKind = 8;
 				if (ch >= '(' && ch <= ')' || ch == '[' || ch == ']' || ch == '{' || ch == '}') {AddCh(); goto case 44;}
-				else if (ch == '>') {AddCh(); goto case 60;}
+				else if (ch == '>') {AddCh(); goto case 61;}
 				else {t.kind = 8; break;}
 
 		}
