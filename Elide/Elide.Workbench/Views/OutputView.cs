@@ -48,6 +48,7 @@ namespace Elide.Workbench.Views
 
         public override void Activate()
         {
+            sci.RestyleDocument();
             sci.Select();
         }
 

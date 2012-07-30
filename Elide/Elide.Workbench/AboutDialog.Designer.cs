@@ -33,11 +33,11 @@
             this.close = new System.Windows.Forms.Button();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.generalPage = new System.Windows.Forms.TabPage();
+            this.infoBox = new System.Windows.Forms.RichTextBox();
             this.changeLogPage = new System.Windows.Forms.TabPage();
+            this.changeLog = new System.Windows.Forms.RichTextBox();
             this.header = new System.Windows.Forms.Label();
             this.progInfo = new System.Windows.Forms.Label();
-            this.infoBox = new System.Windows.Forms.RichTextBox();
-            this.changeLog = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.tabControl.SuspendLayout();
             this.generalPage.SuspendLayout();
@@ -87,6 +87,21 @@
             this.generalPage.Text = "General";
             this.generalPage.UseVisualStyleBackColor = true;
             // 
+            // infoBox
+            // 
+            this.infoBox.BackColor = System.Drawing.SystemColors.Window;
+            this.infoBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.infoBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.infoBox.Location = new System.Drawing.Point(3, 3);
+            this.infoBox.Name = "infoBox";
+            this.infoBox.ReadOnly = true;
+            this.infoBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.infoBox.ShowSelectionMargin = true;
+            this.infoBox.Size = new System.Drawing.Size(375, 156);
+            this.infoBox.TabIndex = 1;
+            this.infoBox.Text = "";
+            this.infoBox.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.infoBox_LinkClicked);
+            // 
             // changeLogPage
             // 
             this.changeLogPage.Controls.Add(this.changeLog);
@@ -97,6 +112,20 @@
             this.changeLogPage.TabIndex = 1;
             this.changeLogPage.Text = "Change Log";
             this.changeLogPage.UseVisualStyleBackColor = true;
+            // 
+            // changeLog
+            // 
+            this.changeLog.BackColor = System.Drawing.SystemColors.Window;
+            this.changeLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.changeLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.changeLog.Location = new System.Drawing.Point(3, 3);
+            this.changeLog.Name = "changeLog";
+            this.changeLog.ReadOnly = true;
+            this.changeLog.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.changeLog.ShowSelectionMargin = true;
+            this.changeLog.Size = new System.Drawing.Size(375, 156);
+            this.changeLog.TabIndex = 1;
+            this.changeLog.Text = "";
             // 
             // header
             // 
@@ -116,34 +145,6 @@
             this.progInfo.Size = new System.Drawing.Size(386, 34);
             this.progInfo.TabIndex = 4;
             this.progInfo.Text = "{0} (pronounced ɪˈlaɪd). Version {1} ({2}). {3}";
-            // 
-            // infoBox
-            // 
-            this.infoBox.BackColor = System.Drawing.SystemColors.Window;
-            this.infoBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.infoBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.infoBox.Location = new System.Drawing.Point(3, 3);
-            this.infoBox.Name = "infoBox";
-            this.infoBox.ReadOnly = true;
-            this.infoBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.infoBox.ShowSelectionMargin = true;
-            this.infoBox.Size = new System.Drawing.Size(375, 156);
-            this.infoBox.TabIndex = 1;
-            this.infoBox.Text = "";
-            // 
-            // changeLog
-            // 
-            this.changeLog.BackColor = System.Drawing.SystemColors.Window;
-            this.changeLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.changeLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.changeLog.Location = new System.Drawing.Point(3, 3);
-            this.changeLog.Name = "changeLog";
-            this.changeLog.ReadOnly = true;
-            this.changeLog.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.changeLog.ShowSelectionMargin = true;
-            this.changeLog.Size = new System.Drawing.Size(375, 156);
-            this.changeLog.TabIndex = 1;
-            this.changeLog.Text = "";
             // 
             // AboutDialog
             // 

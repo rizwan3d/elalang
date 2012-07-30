@@ -23,7 +23,7 @@ namespace Ela.CodeModel
 
         Builtin = 1 << 7,
 
-        Infrastructure = 1 << 8,
+        //Infrastructure = 1 << 8,
 
         NoInit = 1 << 9,
 

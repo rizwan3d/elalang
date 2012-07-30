@@ -51,6 +51,9 @@ consCreateDefault = __internal api14
 //Create a production: Int->Fun or Int->Alg
 consCreate        = __internal api15
 
+//An index of a constructor by name: Int->String->Int
+consNameIndex     = __internal api107
+
 /* Default instances */
 //Only for algebraic, open types are welcome
 instance Show where
@@ -102,28 +105,37 @@ instance Enum where
     where tc = typeCode fst
 
 //Only for algebraic, better not to use with open types
+instance Bounded where
+  maxBound = __internal genmaxbound
+  minBound = 0
+
+//Only for algebraic, recommended for types where first constructor
+//has not parameters.
+instance Default where
+  default = __internal gendefault
+
+//Only for algebraic, better not to use with open types
 instance IntLike where
   toInt = consIndex
-  fromInt = undefined
+  fromInt = __internal genfromint
 
 //Only for algebraic, better not to use with open types
 instance LongLike where
   toLong = toLong << consIndex
-  fromLong = undefined
+  fromLong x = fromInt (toInt x)
 
 //Only for algebraic, open types are welcome
 instance StringLike where
   toString = consName
-  fromString = undefined
+  fromString = __internal genfromstring
 
-//Only for algebraic, open types are welcome
+//(Partial) Only for algebraic, open types are welcome
 instance TupleLike where
   toTuple a
     | consParamNumber a == 0 = fail "TupleLike.toTuple: Type constructor has no parameters."
     | else = consParams a
-  fromTuple = undefined
 
-//Only for algebraic, open types are welcome
+//(Partial) Only for algebraic, open types are welcome
 instance ListLike where
   toList a
     | len == 0 = []
@@ -133,9 +145,3 @@ instance ListLike where
       tol n 
         | n < len = consParamValue n a :: tol (n+1)
         | else = []
-  fromList = undefined
-
-/* Privates */
-map # private
-map _ [] = []
-map f (x::xs) = f x :: map f xs

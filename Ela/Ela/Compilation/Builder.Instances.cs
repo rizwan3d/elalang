@@ -339,7 +339,16 @@ namespace Ela.Compilation
                     globalScope.Locals.Remove(name);
                 }
 
-                var dv = AddVariable(nm, s, ElaVariableFlags.Infrastructure, -1);
+                var flags = ElaVariableFlags.None;
+                var data = -1;
+
+                if (s.Right.Type == ElaNodeType.Builtin)
+                {
+                    flags = ElaVariableFlags.Builtin; 
+                    data = (Int32)((ElaBuiltin)s.Right).Kind;
+                }
+
+                var dv = AddVariable(nm, s, flags, data);
                 PopVar(dv);
             }
         }
@@ -571,14 +580,16 @@ namespace Ela.Compilation
                 if (!defVar.IsEmpty())
                 {
                     var builtin = (btVar.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin;
-                    
-                    PushVar(defVar);
+
+                    //Check if this member is implemented directly by compiler
+                    if (!TryAutogenerate(defVar, inst))
+                        PushVar(defVar);
 
                     if (!builtin)
                         PushVar(btVar, false /*no dispatch*/);
                     else
                         cw.Emit(Op.PushI4, (Int32)btVar.Data);
-
+                
                     EmitSpecName(inst.TypePrefix, "$$" + inst.TypeName, inst, ElaCompilerError.UndefinedType);
                     cw.Emit(Op.Addmbr);
                     members.Remove(m);
@@ -586,6 +597,60 @@ namespace Ela.Compilation
             }
 
             return members;
+        }
+
+        //Some members may be generated directly by compiler. Here we check if this is the case for this
+        //particular member.
+        private bool TryAutogenerate(ScopeVar var, ElaClassInstance inst)
+        {
+            if ((var.Flags & ElaVariableFlags.Builtin) != ElaVariableFlags.Builtin)
+                return false;
+
+            Label funSkipLabel;
+            int address;
+            LabelMap newMap;
+
+            switch ((ElaBuiltinKind)var.Data)
+            {
+                //Used to generate Bounded.maxBound constant
+                case ElaBuiltinKind.GenMaxBound:
+                    cw.Emit(Op.PushI4, 1);
+                    //Obtain type ID, no errors, they are captured elsewhere
+                    EmitSpecName(inst.TypePrefix, "$$" + inst.TypeName, inst, ElaCompilerError.None);
+                    cw.Emit(Op.Api, (Int32)Api.TypeConsNumber);
+                    cw.Emit(Op.Sub);
+                    return true;
+                case ElaBuiltinKind.GenDefault:
+                    cw.Emit(Op.PushI4_0);
+                    //Obtain type ID, no errors, they are captured elsewhere
+                    EmitSpecName(inst.TypePrefix, "$$" + inst.TypeName, inst, ElaCompilerError.None);
+                    cw.Emit(Op.Api2, (Int32)Api.ConsCodeByIndex);
+                    cw.Emit(Op.Api, (Int32)Api.ConsDefault);
+                    return true;
+                case ElaBuiltinKind.GenFromInt:
+                    CompileFunctionProlog(null, 1, inst.Line, inst.Column, out funSkipLabel, out address, out newMap);
+
+                    //Obtain type ID, no errors, they are captured elsewhere
+                    EmitSpecName(inst.TypePrefix, "$$" + inst.TypeName, inst, ElaCompilerError.None);
+                    cw.Emit(Op.Api2, (Int32)Api.ConsCodeByIndex);
+                    cw.Emit(Op.Api, (Int32)Api.ConsDefault);
+
+                    CompileFunctionEpilog(null, 1, address, funSkipLabel);
+                    return true;
+                case ElaBuiltinKind.GenFromString:                    
+                    CompileFunctionProlog(null, 1, inst.Line, inst.Column, out funSkipLabel, out address, out newMap);
+
+                    //Obtain type ID, no errors, they are captured elsewhere
+                    EmitSpecName(inst.TypePrefix, "$$" + inst.TypeName, inst, ElaCompilerError.None);
+                    cw.Emit(Op.Api2, (Int32)Api.ConsNameIndex);
+                    EmitSpecName(inst.TypePrefix, "$$" + inst.TypeName, inst, ElaCompilerError.None);
+                    cw.Emit(Op.Api2, (Int32)Api.ConsCodeByIndex);
+                    cw.Emit(Op.Api, (Int32)Api.ConsDefault);
+                    CompileFunctionEpilog(null, 1, address, funSkipLabel);
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 }

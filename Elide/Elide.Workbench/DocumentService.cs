@@ -91,7 +91,16 @@ namespace Elide.Workbench
                                 doc.IsDirty = true;
                         }
                         else
-                            ed.Instance.ReloadDocument(doc, true);
+                        {
+                            try
+                            {
+                                ed.Instance.ReloadDocument(doc, true);
+                            }
+                            catch
+                            {
+                                ed.Instance.ReloadDocument(doc, true);
+                            }
+                        }
                     }
                     finally
                     {

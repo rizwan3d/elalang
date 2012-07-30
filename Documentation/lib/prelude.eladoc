@@ -428,3 +428,8 @@ Returns `true` if the specified number is even, otherwise returns `false`.
 
 #odd
 Returns `true` if the specified number is odd, otherwise returns `false`. 
+
+#iif p f x y
+Takes a predicate, a function and two arguments, applies a predicate to the first argument,
+and, if true, applies a function to both arguments and returns the result, otherwise - 
+returns just the second argument.

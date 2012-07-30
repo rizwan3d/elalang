@@ -1491,37 +1491,6 @@ namespace Ela.Runtime
 
 
         #region Operations
-        internal enum Api
-        {
-            None = 0,
-            ConsName = 1,
-            ConsParamNumber = 2,
-            ConsIndex = 3,
-            
-            TypeName = 4,
-            TypeCode = 5,
-            TypeConsNumber = 6,
-            ConsInfix = 7,
-            ConsParams = 8,
-            ConsCode = 9,
-            LazyList = 10,
-            ListLength = 11,
-            ReverseList = 12,
-            ListToString = 13,
-            ConsDefault = 14,
-            ConsCreate = 15,
-
-            CurrentContext = 16,
-            
-            ConsParamIndex = 101,
-            ConsParamValue = 102,
-            ConsParamName = 103,
-            ConsCodeByIndex = 104,
-            ConsParamExist = 105,
-            RecordField = 106,
-            
-        }
-
         private sealed class ConsFunction : ElaFunction
         {
             private readonly ElaUserType type;
@@ -1551,6 +1520,12 @@ namespace Ela.Runtime
                     return new ElaValue(thread.Context.DispatchContext.Peek());
                 case Api.ListToString:
                     {
+                        if (left.TypeId != LST)
+                        {
+                            thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.List), left);
+                            break;
+                        }
+
                         var sb = new System.Text.StringBuilder();
 
                         foreach (var v in ((ElaList)left.Ref).Reverse())
@@ -1831,6 +1806,37 @@ namespace Ela.Runtime
                         }
                     }
                     break;
+                case Api.ConsNameIndex:
+                    if (left.TypeId != INT)
+                    {
+                        thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.Integer), left);
+                        return new ElaValue(ElaObject.ElaInvalidObject.Instance);
+                    }
+
+                    if (right.TypeId != STR)
+                    {
+                        thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.String), right);
+                        return new ElaValue(ElaObject.ElaInvalidObject.Instance);
+                    }
+
+                    if (left.I4 < 0 || left.I4 >= asm.Types.Count)
+                        thread.Context.InvalidTypeCode(left);
+                    else
+                    {
+                        var td = asm.Types[left.I4];
+                        var name = right.DirectGetString();
+
+                        for (var i = 0; i < td.Constructors.Count; i++)
+                        {
+                            var cd = asm.Constructors[td.Constructors[i]];
+
+                            if (cd.Name == name)
+                                return new ElaValue(i);
+                        }
+
+                        return new ElaValue(-1);
+                    }
+                    break;                
             }
 
             return new ElaValue(ElaObject.ElaInvalidObject.Instance);

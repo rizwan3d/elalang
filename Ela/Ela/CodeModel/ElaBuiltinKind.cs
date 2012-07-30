@@ -62,12 +62,17 @@ namespace Ela.CodeModel
         GetField,
         HasField,
 
+        GenMaxBound,
+        GenFromInt,
+        GenFromString,
+        GenDefault,
+
         Api101,
         Api102,
         Api103,
         Api104,
         Api105,
         Api106,
-        //Api107,
+        Api107,
     }
 }

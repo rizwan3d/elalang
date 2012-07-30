@@ -34,8 +34,6 @@ namespace Ela.Parsing
                 return flags | ElaVariableFlags.Private;
             else if (attribute == "qualified")
                 return flags | ElaVariableFlags.Qualified;
-            else if (attribute == "infrastructure")
-                return flags | ElaVariableFlags.Infrastructure;
             else
             {
                 AddError(ElaParserError.UnknownAttribute, attribute);

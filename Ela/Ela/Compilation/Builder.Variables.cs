@@ -76,6 +76,7 @@ namespace Ela.Compilation
         //Such names are used for hidden variables that contains unique codes of types and classes.
         //This method can emit a qualified name (with a module prefix) as well as a short name.
         //It also generates an appropriate error if a name is not found.
+        //Specifying ElaCompilerError.None would force this method to not generate any error messages.
         private ScopeVar EmitSpecName(string ns, string specName, ElaExpression exp, ElaCompilerError err, out int modId)
         {
             if (ns != null)
@@ -83,7 +84,7 @@ namespace Ela.Compilation
                 var v = GetVariable(ns, exp.Line, exp.Column);
 
                 //A prefix (ns) is not a module alias which is an error
-                if ((v.Flags & ElaVariableFlags.Module) != ElaVariableFlags.Module)
+                if ((v.Flags & ElaVariableFlags.Module) != ElaVariableFlags.Module && err != ElaCompilerError.None)
                     AddError(ElaCompilerError.InvalidQualident, exp, ns);
 
                 ModuleReference mr;
@@ -96,7 +97,8 @@ namespace Ela.Compilation
                 var mod = lh > -1 && lh < refs.Count ? refs[lh] : null;
 
                 //A name (or even module) not found, generate an error
-                if ((mod == null || !mod.GlobalScope.Locals.TryGetValue(specName, out extVar)) && !options.IgnoreUndefined)
+                if ((mod == null || !mod.GlobalScope.Locals.TryGetValue(specName, out extVar)) &&
+                    !options.IgnoreUndefined && err != ElaCompilerError.None)
                 {
                     //No need to apped alias if we want to generate UndefinedName. That would be misleading.
                     if (err == ElaCompilerError.UndefinedName)
@@ -105,7 +107,7 @@ namespace Ela.Compilation
                         AddError(err, exp, ns + "." + specName.TrimStart('$'));
                 }
 
-                if ((extVar.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private)
+                if ((extVar.Flags & ElaVariableFlags.Private) == ElaVariableFlags.Private && err != ElaCompilerError.None)
                     AddError(ElaCompilerError.PrivateNameInModule, exp, specName.TrimStart('$'), ns);
 
                 modId = lh;
@@ -117,7 +119,7 @@ namespace Ela.Compilation
                 //Without a qualident it is pretty straightforward
                 var a = GetVariable(specName, CurrentScope, GetFlags.NoError, exp.Line, exp.Column);
 
-                if (a.IsEmpty() && !options.IgnoreUndefined)
+                if (a.IsEmpty() && !options.IgnoreUndefined && err != ElaCompilerError.None)
                     AddError(err, exp, specName.TrimStart('$'));
 
                 modId = (a.Flags & ElaVariableFlags.External) == ElaVariableFlags.External ? a.Address & Byte.MaxValue : -1;
