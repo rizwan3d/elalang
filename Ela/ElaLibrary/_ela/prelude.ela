@@ -128,6 +128,7 @@ stringBuilder = StringBuilder []
 instance StringLike StringBuilder where
   toString (StringBuilder xs) = lts xs
     where lts = __internal api13
+  fromString s = stringBuilder +> s
 
 instance Eq StringBuilder where
   (StringBuilder xs) == (StringBuilder ys) = xs == ys
@@ -136,28 +137,53 @@ instance Eq StringBuilder where
 instance Show StringBuilder where
   showf _ = toString
 
+/* Default */
+class Default a where
+  default a
+
+instance Default Int where
+  default = 0
+
+instance Default Long where
+  default = 0L
+
+instance Default Single where
+  default = 0f
+
+instance Default Double where
+  default = 0d
+
+instance Default Bool where
+  default = false
+
+instance Default Char where
+  default = '\0'
+
+instance Default String where
+  default = ""
+
+instance Default List where
+  default = []
+
+instance Default Unit where
+  default = ()
+
 /* Eq */
 class Eq(Eq) a where 
-  (==) a->a 
-  (<>) a->a
+  (==) a->a->_
+  (<>) a->a->_
 
 instance Eq Tuple where 
-  x == y = x `eqTuple` y
-  x <> y = not (x `eqTuple` y)
+  (==) = compareTuples (==)
+  (<>) = compareTuples (<>)
 
 instance Eq Record where 
   x == y = x `eqRecord` y
   x <> y = not (x `eqRecord` y)
 
 instance Eq List where 
-  x == y = x `eqList` y
-  x <> y = not (x `eqList` y)
-
-eqTuple # private
-eqTuple tup1 tup2 = len == length tup2 and eq 0
-  where len = length tup1
-        eq n | n < len = if tup1:n == tup2:n then eq (n+1) else false
-             | else = true
+  (==) = compareLists (==)
+  (<>) = compareLists (<>)
 
 eqRecord # private
 eqRecord rec1 rec2 = len == length rec2 and eq 0
@@ -165,74 +191,65 @@ eqRecord rec1 rec2 = len == length rec2 and eq 0
         eq n | n < len = if n~rec1 == n~rec2 and rec1:n == rec2:n then eq (n+1) else false
              | else = true
 
-eqList # private
-eqList (x::xs) (y::ys) 
-  | x == y = xs `eqList` ys 
-  | else = false
-eqList [] [] = true
-eqList [] _ = false
-eqList _ [] = false
-
 /* Ord */
 class Ord(Ord) a where
-  (>) a->a
-  (<) a->a
-  (>=) a->a
-  (<=) a->a
+  (>) a->a->_
+  (<) a->a->_
+  (>=) a->a->_
+  (<=) a->a->_
 
 instance Ord Tuple where 
-  x < y  = tupleAny (<) x y
-  x > y  = tupleAny (>) x y
-  x <= y = tupleAny (<=) x y
-  x >= y = tupleAny (>=) x y
+  x < y  = compareTuples (<) x y
+  x > y  = compareTuples (>) x y
+  x <= y = compareTuples (<=) x y
+  x >= y = compareTuples (>=) x y
 
-tupleAny # private 
-tupleAny f tup1 tup2 
-  | length tup2 <> len = fail "prelude: Tuples should be of the same length."
-  | else = fold 0
-  where len = length tup1
-        fold n | n < len - 1 = if e then true else fold (n+1)
-               | else = e
-               where e = tup1:n `f` tup2:n
+instance Ord List where
+  x > y  = compareLists (>) x y
+  x < y  = compareLists (<) x y
+  x <= y = compareLists (<=) x y
+  x >= y = compareLists (>=) x y
 
 /* Numerical classes */
 class Additive(Additive) a where
-  (+) a->a
-  (-) a->a
-  (--) a
+  (+) a->a->_
+  (-) a->a->_
+  negate a->_
+
+(--) = negate
 
 class Ring(Ring) a where
-  (*) a->a
-  (**) a->a
+  (*) a->a->_
+  (**) a->a->_
 
 class Field(Field) a where 
-  (/) a->a
+  (/) a->a->_
 
 class Modulo(Modulo) a where
-  mod a->a
-  rem a->a
+  mod a->a->_
+  rem a->a->_
 
 (%) = rem
 
 /* Bit */
 class Bit(Bit) a where 
-  (&&&) a->a
-  (|||) a->a
-  (^^^) a->a
-  (~~~) a
-  (<<<) a->_
-  (>>>) a->_
+  (&&&) a->a->_
+  (|||) a->a->_
+  (^^^) a->a->_
+  (~~~) a->_
+  (<<<) a->_->_
+  (>>>) a->_->_
 
 /* Enum */
 class Enum a where
-  succ a
-  pred a
-  enumFrom a->a
-  enumFromTo a->a->a
+  succ a->_
+  pred a->_
+  enumFrom a->a->_
+  enumFromTo a->a->a->_
 
 instance Enum Int Long where
-  succ = (+1)
-  pred = (-1)
+  succ = (+ 1)
+  pred = (- 1)
   enumFrom fst snd = genInf fst (snd-fst)
     where genInf e step = e :: (& genInf (e+step) step)
   enumFromTo max fst snd
@@ -251,30 +268,30 @@ class Bounded a where
   minBound a
 
 instance Bounded Int where
-  maxBound _ = 0x7fffffff
-  minBound _ = 0x7fffffff + 1
+  maxBound = 0x7fffffff
+  minBound = 0x7fffffff + 1
 
 instance Bounded Long where
-  maxBound _ = 0x7fffffffffffffffL
-  minBound _ = 0x7fffffffffffffffL + 1
+  maxBound = 0x7fffffffffffffffL
+  minBound = 0x7fffffffffffffffL + 1
 
 instance Bounded Single where
-  maxBound _ = 3.402823E+38f
-  minBound _ = --3.402823E+38f
+  maxBound = 3.402823E+38f
+  minBound = --3.402823E+38f
 
 instance Bounded Double where
-  maxBound _ = 1.7976931348623157E+308D
-  minBound _ = --1.7976931348623157E+308D
+  maxBound = 1.7976931348623157E+308D
+  minBound = --1.7976931348623157E+308D
 
 /* Seq */
 class Seq(Seq) a where
-  head a
-  tail a
-  isnil a
+  head a->_
+  tail a->_
+  isnil a->_
 
 /* Ix */
 class Ix(Ix) a where 
-  getValue _->a
+  getValue _->a->_
 
 instance Ix List where
   getValue n xs = get 0 xs
@@ -286,32 +303,32 @@ instance Ix List where
 
 /* Len */
 class Len(Len) a where
-  length a
+  length a->_
 
 instance Len List where
   length xs
     | listLazy xs = len 0 xs
     | else = listLength xs
     where len n [] = n
-          len n (x::xs) = len (n+1) xs
+          len n (_::xs) = len (n+1) xs
 
 /* Name */
 class Name(Name) a where
-  getField _->a
-  isField _->a
+  getField _->a->_
+  isField _->a->_
 
 /* Cat */
 class Cat(Cat) a where
-  (++) a->_
+  (++) a->_->_
 
 instance Cat List where 
   xs ++ ys = cat (reverse xs) ys
-             where cat (x::xs) ys = cat xs (x::ys)
-                   cat [] ys = ys
+    where cat (x::xs) ys = cat xs (x::ys)
+          cat [] ys = ys
 
 /* Show */
 class Show(Show) a where 
-  showf _->a
+  showf _->a->_
 
 show = showf ""
 
@@ -340,67 +357,168 @@ instance Show Record where
 
 /* xLike */
 class IntLike a where
-  toInt a
+  toInt a->_
+  fromInt _->a
 
 class LongLike a where
-  toLong a
+  toLong a->_
+  fromLong _->a
 
 class SingleLike a where
-  toSingle a
+  toSingle a->_
+  fromSingle _->a
 
 class DoubleLike a where
-  toDouble a
+  toDouble a->_
+  fromDouble _->a
 
 class BoolLike a where
-  toBool a
+  toBool a->_
+  fromBool _->a
 
 class CharLike a where
-  toChar a
+  toChar a->_
+  fromChar _->a
 
 class StringLike a where
-  toString a
+  toString a->_
+  fromString _->a
 
 class ListLike a where
-  toList a
+  toList a->_
+  fromList _->a
 
 class TupleLike a where
-  toTuple a
+  toTuple a->_
+  fromTuple _->a
 
 class RecordLike a where
-  toRecord a
+  toRecord a->_
+  fromRecord _->a
 
 instance ListLike List where
   toList = id
+  fromList = id
 
 instance TupleLike Tuple where
   toTuple = id
+  fromTuple = id
 
 instance RecordLike Record where
   toRecord = id
+  fromRecord = id
 
-instance IntLike Int Long Single Double Char Bool where
+instance IntLike Int where
+  toInt = id
+  fromInt = id
+
+instance IntLike Long where
   toInt = lang.__toInt
+  fromInt = lang.__toLong
 
-instance LongLike Long Int Single Double Char Bool where
+instance IntLike Single where
+  toInt = lang.__toInt
+  fromInt = lang.__toSingle
+
+instance IntLike Double where
+  toInt = lang.__toInt
+  fromInt = lang.__toDouble
+
+instance IntLike Char where
+  toInt = lang.__toInt
+  fromInt = lang.__toChar
+
+instance IntLike Bool where
+  toInt = lang.__toInt
+  fromInt = lang.__toBool
+
+instance LongLike Long where
+  toLong = id
+  fromLong = id
+
+instance LongLike Int where
   toLong = lang.__toLong
+  fromLong = lang.__toInt
 
-instance SingleLike Single Double Long Int where
+instance LongLike Single where
+  toLong = lang.__toLong
+  fromLong = lang.__toSingle
+
+instance LongLike Double where
+  toLong = lang.__toLong
+  fromLong = lang.__toDouble
+
+instance LongLike Char where
+  toLong = lang.__toLong
+  fromLong = lang.__toChar
+
+instance LongLike Bool where
+  toLong = lang.__toLong
+  fromLong = lang.__toBool
+
+instance SingleLike Single where
+  toSingle = id
+  fromSingle = id
+
+instance SingleLike Int where
   toSingle = lang.__toSingle
+  fromSingle = lang.__toInt
 
-instance DoubleLike Double Single Long Int where
+instance SingleLike Double where
+  toSingle = lang.__toSingle
+  fromSingle = lang.__toDouble
+
+instance SingleLike Long where
+  toSingle = lang.__toSingle
+  fromSingle = lang.__toLong
+
+instance DoubleLike Double where
+  toDouble = id
+  fromDouble = id
+
+instance DoubleLike Int where
   toDouble = lang.__toDouble
+  fromDouble = lang.__toInt
 
-instance CharLike Char Int where
+instance DoubleLike Single where
+  toDouble = lang.__toDouble
+  fromDouble = lang.__toSingle
+
+instance DoubleLike Long where
+  toDouble = lang.__toDouble
+  fromDouble = lang.__toLong
+
+instance CharLike Char where
+  toChar = id
+  fromChar = id
+
+instance CharLike Int where
   toChar = lang.__toChar
+  fromChar = lang.__toInt
 
-instance BoolLike Bool Int Long where
+instance BoolLike Bool where
+  toBool = id
+  fromBool = id
+  
+instance BoolLike Int where
   toBool = lang.__toBool
+  fromBool = lang.__toInt
 
-instance StringLike String Char where
+instance BoolLike Long where
+  toBool = lang.__toBool
+  fromBool = lang.__toLong
+  
+instance StringLike String where
+  toString = id
+  fromString = id
+
+instance StringLike Char where
   toString = lang.__toString
+  fromString = lang.__toChar
 
-/* Complex behaviors */
+/* Misc */
 force = __internal force
+undefined = & fail "Undefined."
 
 /* Combinators */
 id x = x//I
@@ -428,3 +546,22 @@ listLength = __internal api11
 
 listReverse # private
 listReverse = __internal api12
+
+compareLists # private
+compareLists f (x::xs) (y::ys) 
+  | x `f` y = compareLists f xs ys 
+  | else = false
+compareLists _ [] [] = true
+compareLists _ [] _ = false
+compareLists _ _ [] = false
+
+compareTuples # private 
+compareTuples f tup1 tup2 
+  | length tup2 <> len = fail "prelude: Tuples should be of the same length."
+  | else = fold 0
+  where 
+    len = length tup1
+    fold n 
+      | n < len - 1 = if e then true else fold (n+1)
+      | else = e
+      where e = tup1:n `f` tup2:n

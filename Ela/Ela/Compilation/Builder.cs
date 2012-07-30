@@ -88,6 +88,47 @@ namespace Ela.Compilation
                 case ElaNodeType.Equation:
                     AddError(ElaCompilerError.InvalidExpression, exp, FormatNode(exp));
                     break;
+                case ElaNodeType.Context:
+                    {
+                        var v = (ElaContext)exp;
+
+                        if (!v.Context.Parens && v.Context.Type == ElaNodeType.NameReference)
+                        {
+                            var nr = (ElaNameReference)v.Context;
+
+                            if (nr.Uppercase)
+                                EmitSpecName(null, "$$" + nr.Name, nr, ElaCompilerError.UndefinedType);
+                            else
+                            {
+                                CompileExpression(v.Context, map, Hints.None);
+                                cw.Emit(Op.Api, 5); //TypeCode
+                            }
+                        }
+                        else if (!v.Context.Parens && v.Context.Type == ElaNodeType.FieldReference)
+                        {
+                            var fr = (ElaFieldReference)v.Context;
+
+                            if (Char.IsUpper(fr.FieldName[0]) && fr.TargetObject.Type == ElaNodeType.NameReference)
+                                EmitSpecName(fr.TargetObject.GetName(), "$$" + fr.FieldName, fr, ElaCompilerError.UndefinedType);
+                            else
+                            {
+                                CompileExpression(v.Context, map, Hints.None);
+                                cw.Emit(Op.Api, 5); //TypeCode
+                            }
+                        }
+                        else
+                        {
+                            CompileExpression(v.Context, map, Hints.None);
+                            cw.Emit(Op.Api, 5); //TypeCode
+                        }
+
+                        AddLinePragma(v);
+
+                        cw.Emit(v.Tentative ? Op.Ctxtnt : Op.Ctxset);
+                        CompileExpression(v.Expression, map, hints);
+                        cw.Emit(v.Tentative ? Op.Ctxclst : Op.Ctxcls);
+                    }
+                    break;
                 case ElaNodeType.Builtin:
                     {
                         var v = (ElaBuiltin)exp;

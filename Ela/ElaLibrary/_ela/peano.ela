@@ -7,18 +7,8 @@ open number list
 /* Construction */
 type Peano = Zero | Succ a
 
-one # qualified
-one = Succ Zero
-
 infinity # qualified
-infinity = inf Zero 
-  where inf a = Succ (& inf a)
-
-fromInt # qualified
-fromInt = fromIntegral
-
-fromLong # qualified
-fromLong = fromIntegral
+infinity = & Succ infinity
 
 fromIntegral # qualified
 fromIntegral a = from a
@@ -26,9 +16,16 @@ fromIntegral a = from a
         from n = Succ (& from (n-1))
 
 /* Instances */
+instance Default Peano where
+  default = Zero
+
+instance Num Peano where
+  zero = Zero
+  one = Succ Zero
+
 instance Bounded Peano where
-  maxBound _ = infinity
-  minBound _ = Zero
+  maxBound = infinity
+  minBound = Zero
 
 instance Show Peano where 
   showf _ p = toString <| show (stringBuilder +> "peano(") p
@@ -47,15 +44,15 @@ instance Ord Peano where
   (<=) = comp (<=)
 
 instance Enum Peano where
-  succ a = a + one
-  pred a = a - one
+  succ a = a + one -> (a)
+  pred a = a - one -> (a)
   enumFrom fst snd = map' fromInt [(toInt fst),(toInt snd)..]
   enumFromTo max fst snd = map fromInt [(toInt fst),(toInt snd)..(toInt max)]
 
 instance Additive Peano where
   x+y = add x y
   x-y = subtract x y
-  --x = Zero - x
+  negate x = Zero - x
 
 instance Ring Peano where
   x*y  = multiply x y
@@ -72,22 +69,25 @@ instance Integral Peano where
 instance Absolute Peano where
   abs = id
   signum Zero = Zero
-  signum (Succ _) = one
+  signum (Succ _) = one -> Peano
 
 instance IntLike Peano where
   toInt = toIntegral 0
+  fromInt = fromIntegral
 
 instance LongLike Peano where
   toLong = toIntegral 0L
+  fromLong = fromIntegral
 
 instance ListLike Peano where
   toList = list 0
     where list n Zero = [n]
           list n (Succ a) = n :: (& list (n+1) a)
+  fromList xs = fromInt (length xs)
 
 /* Functions */
 listLength [] = Zero
-listLength (x::xs) = add one (& listLength xs)
+listLength (x::xs) = add one (& listLength xs) -> Peano
 
 (?) = fromIntegral
 
@@ -107,8 +107,8 @@ multiply Zero _ = Zero
 multiply _ Zero = Zero
 multiply (Succ x) y = add y (& multiply x y)
 
-power b Zero = one
-power b e = p e one
+power b Zero = one -> Peano
+power b e = p e one -> Peano
   where p Zero r = r
         p n r = p (n `subtract` one) (r `multiply` b)
 

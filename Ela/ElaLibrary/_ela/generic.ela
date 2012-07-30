@@ -21,7 +21,7 @@ consParams        = __internal api8
 //Constructor unique ID: Alg->Int
 consCode          = __internal api9
 
-//Constructor unique ID by index: Int->Int
+//Constructor unique ID by index: Int->Int->Int
 consCodeByIndex   = __internal api104
 
 //Type name: (any)->String
@@ -51,7 +51,6 @@ consCreateDefault = __internal api14
 //Create a production: Int->Fun or Int->Alg
 consCreate        = __internal api15
 
-
 /* Default instances */
 //Only for algebraic, open types are welcome
 instance Show where
@@ -67,7 +66,7 @@ instance Show where
 //Only for algebraic, open types are welcome
 instance Eq where
   a == b = consCode a == consCode b and consParams a == consParams b
-  a <> b = consCode a <> consCode b or consParams a <> consParams b
+  a <> b = not (a == b)
 
 //Only for algebraic, bettern not to use with open types
 instance Ord where
@@ -96,7 +95,7 @@ instance Ix where
 //Only for algebraic, better not to use with open types
 instance Enum where
   succ a = consCreateDefault (consCodeByIndex (typeCode a) (consIndex a + 1))
-  pred a = consCreateDefault (consCodeByIndex (typeCode a) (consIndex a + 1))
+  pred a = consCreateDefault (consCodeByIndex (typeCode a) (consIndex a - 1))
   enumFrom fst snd = map (\x -> consCreateDefault (consCodeByIndex tc x)) [consIndex fst,consIndex snd..typeConsNumber (typeCode fst) - 1]
     where tc = typeCode fst
   enumFromTo max fst snd = map (\x -> consCreateDefault (consCodeByIndex tc x)) [consIndex fst,consIndex snd..consIndex max]
@@ -105,20 +104,24 @@ instance Enum where
 //Only for algebraic, better not to use with open types
 instance IntLike where
   toInt = consIndex
+  fromInt = undefined
 
 //Only for algebraic, better not to use with open types
 instance LongLike where
   toLong = toLong << consIndex
+  fromLong = undefined
 
 //Only for algebraic, open types are welcome
 instance StringLike where
   toString = consName
+  fromString = undefined
 
 //Only for algebraic, open types are welcome
 instance TupleLike where
   toTuple a
     | consParamNumber a == 0 = fail "TupleLike.toTuple: Type constructor has no parameters."
     | else = consParams a
+  fromTuple = undefined
 
 //Only for algebraic, open types are welcome
 instance ListLike where
@@ -130,11 +133,7 @@ instance ListLike where
       tol n 
         | n < len = consParamValue n a :: tol (n+1)
         | else = []
-
-//Only for algebraic, better not to use with open types
-instance Bounded where
-  maxBound a = typeConsNumber (typeCode a) - 1
-  minBound _ = 0
+  fromList = undefined
 
 /* Privates */
 map # private

@@ -200,6 +200,8 @@ namespace Ela.Compilation
                     break;
             }
 
+            //To prevent redundant errors
+            CurrentScope.Locals.Remove("$$$$" + name);
             var ab = AddVariable("$$$$" + name, exp, flags, -1);
             cw.Emit(Op.Ctorid, frame.InternalConstructors.Count - 1);
             PopVar(ab);
@@ -277,6 +279,9 @@ namespace Ela.Compilation
             var a = AddVariable(name, juxta, ElaVariableFlags.TypeFun|flags, len);
             PopVar(a);
 
+            //To prevent redundant errors
+            CurrentScope.Locals.Remove("$-" + name); 
+            CurrentScope.Locals.Remove("$--" + name);
             //We add special variables that can be used lately to inline this constructor call.
             var consVar = AddVariable("$-" + name, juxta, flags, len);
             var typeVar = AddVariable("$--" + name, juxta, flags, len);

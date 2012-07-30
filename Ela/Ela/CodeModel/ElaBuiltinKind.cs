@@ -30,6 +30,7 @@ namespace Ela.CodeModel
         Api13,
         Api14,
         Api15,
+        Api16,
         
         /* Two arguments */
         Showf,

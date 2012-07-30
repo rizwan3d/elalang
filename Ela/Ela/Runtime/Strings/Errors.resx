@@ -174,8 +174,11 @@
   <data name="MatchFailed" xml:space="preserve">
     <value>Match failed. None of the patterns were successful.</value>
   </data>
+  <data name="NoContext" xml:space="preserve">
+    <value>Unable to dispatch '{0}'. No context is available for a dispatch.</value>
+  </data>
   <data name="NoOverload" xml:space="preserve">
-    <value>Function '{0}' is not implemented for the given argument list. Expected '{1}', got '{2}'.</value>
+    <value>'{0}' is not implemented for the given argument list. Expected '{1}', got '{2}'.</value>
   </data>
   <data name="NotAlgebraicType" xml:space="preserve">
     <value>A type '{0}' is not an algebraic type.</value>

@@ -20,14 +20,11 @@ Functions `enumFrom` and `enumFromTo` are implemented based on `Additive`, and t
 would also require all tuples in ranges to be of the same length.
 
 ===ListLike
-Implements `toList` function that converts a given tuple to a linked list.
+Implements `toList` and `fromList` functions that converts a given tuple to a linked list, and
+a list to a tuple.
 >>>toList (1,2,3)
 
 =Functions
-
-#fromList xs
-Converts a given list to a tuple. This function requires a qualified access.
->>>fromList [1,2,3]
 
 #map f t
 Maps a given function to all elements of a tuple. This function requires a qualified access.

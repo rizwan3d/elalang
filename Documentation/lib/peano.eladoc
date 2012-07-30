@@ -66,25 +66,36 @@ it one would have to fully evaluate the left-hand operand, which is infinity. Lu
 case for peano number, and this equation will hold.
 
 =Peano
+#Peano
 This type represents a lazy recursive peano number.
 
 ==Instances
+===Default
+Implements constant `default` which is always equal to `Zero`.
+
 ===Bounded
-Implements functions `maxBound` and `minBound` for the `Peano` data type. Function `maxBound`
+Implements constants `maxBound` and `minBound` for the `Peano` data type. A constant `maxBound`
 always returns `infinity`, and `minBound` - `Zero`.
+
+===Num
+Implements constants `one` and `zero` for the `Peano` data type. A constant `zero` is, of course,
+equivalent to `Zero` constructor, and a constant `one` is defined like so:
+>>one = Succ Zero
 
 ===ListLike
 Converts a given peano number to a linked list. A function `toList` always produces a lazy list,
 and it is possible to converts an infinity to a linked list:
 >>>take 10 <| toList infinity
+A function `fromList` is defined like so:
+>>fromList xs = fromInt <| length xs
 
 ===LongLike
 Converts a given peano number to a 64-bit integer. A function `toLong` is strict and will evaluate
-the whole peano number.
+the whole peano number. A function `fromLong` is lazy and can be safely applied to big numbers.
 
 ===IntLike
 Converts a given peano number to a 32-bit integer. A function `toInt` is strict and will evaluate
-the whole peano number.
+the whole peano number. A function `fromInt` is lazy and can be safely applied to big numbers.
 
 ===Absolute
 Provides an instance for an `Absolute` class. A function `abs` in this instance is equivalent to
@@ -133,22 +144,9 @@ whole peano number. It would result to a non-termination if applied to an infini
 
 ==Functions and constants
 
-#one
-A constructor for a peano number, returns a peano representation for number one. This constant
-always requires a qualified access.
->>>one
-
 #infinity
 A constructor for a peano number, returns a peano representation for an infinity. This constant
 always requires a qualified access.
-
-#fromInt
-Converts a given 32-bit integer to a peano number. This is a lazy function.
-This function always requires a qualified access.
-
-#fromLong
-Converts a given 64-bit integer to a peano number. This is a lazy function.
-This function always requires a qualified access.
 
 #fromIntegral
 Converts a given 32-bit integer or 65-bit integer to a peano number. This is a lazy function.

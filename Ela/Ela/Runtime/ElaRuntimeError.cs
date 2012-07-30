@@ -64,6 +64,8 @@ namespace Ela.Runtime
 
         InvalidConstructorCode = 828,
 
+        NoContext = 829,
+
 
 		UserCode = 999
 	}

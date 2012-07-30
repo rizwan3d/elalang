@@ -8,7 +8,7 @@ namespace Elide.ElaCode.ObjectModel
         internal TypeClassMember(string name, int arguments, int signature)
         {
             Name = name;
-            Arguments = arguments;
+            Components = arguments;
             Signature = signature;
         }
 
@@ -29,7 +29,7 @@ namespace Elide.ElaCode.ObjectModel
             {
                 sb.Append(" ");
 
-                for (var i = 0; i < Arguments; i++)
+                for (var i = 0; i < Components; i++)
                 {
                     if (i > 0)
                         sb.Append("->");
@@ -44,7 +44,7 @@ namespace Elide.ElaCode.ObjectModel
             return sb.ToString();
         }
 
-        private static readonly char[] ops = new char[] { '!', '%', '&', '*', '+', '-', '.', ':', '/', '\\', '<', '=', '>', '?', '@', '^', '|', '~' };
+        private static readonly char[] ops = new char[] { '!', '%', '&', '*', '+', '-', '.', ':', '/', '$', '\\', '<', '=', '>', '?', '@', '^', '|', '~' };
 
         private static bool IsSymbolic(string name)
         {
@@ -53,7 +53,7 @@ namespace Elide.ElaCode.ObjectModel
 
         public string Name { get; private set; }
 
-        public int Arguments { get; private set; }
+        public int Components { get; private set; }
 
         public int Signature { get; private set; }
     }

@@ -9,7 +9,7 @@ import lang
 instance Additive Tuple where 
   (+)  = join (+)
   (-)  = join (-)
-  --x  = zero (length x) - x
+  negate x = zero (length x) - x
 
 instance Enum Tuple where 
   succ = map succ
@@ -27,15 +27,13 @@ instance ListLike Tuple where
       len = length t
       tol n | n == len = []
             | else = t:n :: tol (n+1)
+  fromList xs = lang.__tupleFromList ys
+    where ys | lazyList xs = forceOnlyList xs
+             | else = xs
 
 /* Functions */
-fromList # qualified
-fromList xs = lang.__tupleFromList ys
-  where ys | lazyList xs = forceOnlyList xs
-           | else = xs
-
 map # qualified
-map f tup = fromList (m 0)
+map f tup = fromList (m 0) -> Tuple
   where 
     len = length tup
     m n | n == len = []
@@ -47,7 +45,7 @@ join f (x,y) (a,b) = (x `f` a, y `f` b)
 join f (x,y,z) (a,b,c) = (x `f` a,y `f` b,z `f` c)
 join f t1 t2 
   | len <> length t2 = fail "tuple: Tuples should be of the same length." 
-  | else = fromList (fold 0)
+  | else = fromList (fold 0) -> Tuple
   where len = length t1
         fold n | n == len = []
                | else = (t1:n `f` t2:n) :: fold (n+1)
@@ -70,7 +68,7 @@ zero # private
 zero 1 = (0,)
 zero 2 = (0,0)
 zero 3 = (0,0,0)
-zero n = fromList (gen [] n)
+zero n = fromList (gen [] n) -> Tuple
   where 
     gen ys 0 = ys
     gen ys n = gen (0::ys) (n-1)

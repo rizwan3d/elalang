@@ -119,7 +119,7 @@ namespace Ela.Linking
                 for (var i = 0; i < kv.Value.Members.Length; i++)
                 {
                     var m = kv.Value.Members[i];
-                    bw.Write(m.Arguments);
+                    bw.Write(m.Components);
                     bw.Write(m.Mask);
                     bw.Write(m.Name);
                 }

@@ -2,21 +2,23 @@
   Module queue
   Created in 2012 by Basil Voronkov
 */
-open list
+open list generic
 
 /* Types */
 type Queue = Queue a b # private
 
 /* Instances */
+instance Default Queue where
+  default = empty
+
 instance Show Queue where 
   showf f q = "queue" ++ showf f (toList q)
 
 instance Cat Queue where 
-  q1 ++ q2 = toList q1 ++ toList q2
+  q1 ++ q2 = Queue (reverse <| toList q1 ++ toList q2) []
 
 instance Eq Queue where 
-  q1 == q2 = toList q1 == toList q2
-  q1 <> q2 = toList q1 <> toList q2
+  (Queue a b) == (Queue c d) = a == b and c == d
 
 instance Seq Queue where 
   head = peek
@@ -32,11 +34,9 @@ instance Ix Queue where
 
 instance ListLike Queue where
   toList (Queue f b) = f ++ reverse b
+  fromList xs = Queue (reverse xs) []
 
 /* Functions */
-fromList # qualified
-fromList xs = Queue (reverse xs) []
-
 empty # qualified
 empty = Queue [] []
 
@@ -45,11 +45,11 @@ enqueue e (Queue f b) = enq f b
         enq f b  = Queue f (e::b)
 
 dequeue (Queue f b) = deq f b
-  where deq [] [] = fail "queue: Empty queue."
+  where deq [] [] = fail "queue.dequeue: Empty queue."
         deq (_::[]) [] = empty
         deq (_::[]) ys = Queue (reverse ys) []
         deq xs ys = Queue (tail xs) ys
 
 peek (Queue f b) = peek' f b
-  where peek' [] [] = fail "queue: Empty queue."
+  where peek' [] [] = fail "queue.peek: Empty queue."
         peek' (x::_) _ = x

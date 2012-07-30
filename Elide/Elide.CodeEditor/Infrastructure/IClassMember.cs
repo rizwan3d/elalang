@@ -6,7 +6,7 @@ namespace Elide.CodeEditor.Infrastructure
     {
         string Name { get; }
 
-        int Arguments { get; }
+        int Components { get; }
 
         int Signature { get; }
     }

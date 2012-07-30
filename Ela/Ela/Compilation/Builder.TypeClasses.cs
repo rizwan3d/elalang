@@ -25,10 +25,22 @@ namespace Ela.Compilation
                     if (m.Mask == 0)
                         AddError(ElaCompilerError.InvalidMemberSignature, m, m.Name);
 
-                    var addr = AddVariable(m.Name, m, ElaVariableFlags.ClassFun, m.Arguments);
-                    cw.Emit(Op.PushI4, m.Arguments);
-                    cw.Emit(Op.PushI4, m.Mask);
-                    cw.Emit(Op.Newfunc, AddString(m.Name));
+                    //Class member can be a constant or a function
+                    var isConst = m.Components == 1;
+
+                    //m.Components are function arguments plus return type.
+                    var addr = AddVariable(m.Name, m, ElaVariableFlags.ClassFun |
+                        (isConst ? ElaVariableFlags.Polyadric : ElaVariableFlags.None), m.Components - 1);
+
+                    if (!isConst) //This is a function
+                    {
+                        cw.Emit(Op.PushI4, m.Components - 1);
+                        cw.Emit(Op.PushI4, m.Mask);
+                        cw.Emit(Op.Newfunc, AddString(m.Name));
+                    }
+                    else //This is a polymorphic constant
+                        cw.Emit(Op.Newconst, AddString(m.Name));
+
                     PopVar(addr);
                 }
             }

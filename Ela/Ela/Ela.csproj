@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builtins.cs" />
+    <Compile Include="CodeModel\ElaContext.cs" />
     <Compile Include="Compilation\ConstructorData.cs" />
     <Compile Include="CodeModel\ElaAs.cs" />
     <Compile Include="CodeModel\ElaHeader.cs" />
@@ -163,6 +164,7 @@
     <Compile Include="Linking\LangModule.cs" />
     <Compile Include="Runtime\CallStack.cs" />
     <Compile Include="Runtime\Classes\UnitInstance.cs" />
+    <Compile Include="Runtime\ObjectModel\ElaConstant.cs" />
     <Compile Include="SysConst.cs" />
     <Compile Include="Linking\TypeData.cs" />
     <Compile Include="Runtime\Classes\BooleanInstance.cs" />

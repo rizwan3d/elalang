@@ -128,9 +128,9 @@ namespace Ela.Parsing
 
 		private ElaLiteralValue ParseInt(string val, bool negate)
 		{
-            if (val.StartsWith("--"))
+            if (val.StartsWith("-"))
             {
-                val = val.Substring(2);
+                val = val.Substring(1);
                 negate = true;
             }
 
@@ -194,9 +194,9 @@ namespace Ela.Parsing
 
 		private ElaLiteralValue ParseReal(string val, bool negate)
 		{
-            if (val.StartsWith("--"))
+            if (val.StartsWith("-"))
             {
-                val = val.Substring(2);
+                val = val.Substring(1);
                 negate = true;
             }
 

@@ -12,8 +12,8 @@ instance Enum Char where
   enumFromTo max fst snd = map toChar [(toInt fst),(toInt snd)..(toInt max)]
 
 instance Bounded Char where
-  maxBound _ = '\x65535'
-  minBound _ = '\0'
+  maxBound = '\x65535'
+  minBound = '\0'
 
 lower c = ch.lower (force c)
 upper c = ch.upper (force c)

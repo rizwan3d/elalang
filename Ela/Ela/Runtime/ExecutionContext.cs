@@ -8,7 +8,8 @@ namespace Ela.Runtime
 		#region Construction
         public ExecutionContext()
 		{
-
+            DispatchContext = new FastStack<Int32>();
+            DispatchContext.Push(0);
 		}
 		#endregion
 
@@ -22,6 +23,11 @@ namespace Ela.Runtime
         public void NoOverload(string got, string function)
         {
             NoOverload("?", got, function);
+        }
+
+        public void NoContext(string function)
+        {
+            Fail(ElaRuntimeError.NoContext, function);
         }
 
 		public void InvalidFormat(string format, ElaValue value)
@@ -132,7 +138,7 @@ namespace Ela.Runtime
 
         internal string Tag;
 
-        internal string OverloadFunction;
+        internal FastStack<Int32> DispatchContext;
 		#endregion
 	}
 }

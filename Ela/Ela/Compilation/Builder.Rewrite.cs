@@ -133,7 +133,8 @@ namespace Ela.Compilation
                 if (b.Right != null)
                 {
                     //We need to ensure that this is a global binding that it is not defined by pattern matching
-                    if (b.IsFunction() || b.Left.Type == ElaNodeType.LazyLiteral)
+                    if (b.IsFunction() || (b.Right.Type == ElaNodeType.LazyLiteral && 
+                        (b.Left.Type == ElaNodeType.NameReference || b.Left.Type == ElaNodeType.LazyLiteral)))
                         CompileDeclaration(b, map, Hints.None);
                     else
                         list.Add(b);

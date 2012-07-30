@@ -294,7 +294,7 @@ namespace Ela.Compilation
                 args = btVar.Data;
 
             //First we check if this binding is simply a function reference
-            if (!TryResolveInstanceBinding(args, s.Right))
+            if (!TryResolveInstanceBinding(args, s.Right, map))
             {
                 //Eta expansion should be done if a member is not a function literal
                 //(it can be a partially applied function) or if a number of arguments
@@ -316,7 +316,7 @@ namespace Ela.Compilation
                 //Depending whether this is a built-in class or a different approach is
                 //used to add a member function.
                 if (!builtin)
-                    PushVar(btVar);
+                    PushVar(btVar, false /*no dispatch*/);
                 else
                     cw.Emit(Op.PushI4, (Int32)btVar.Data);
 
@@ -346,10 +346,19 @@ namespace Ela.Compilation
 
         //This method checks if an instance member binding is a function reference with a 
         //correct number of arguments.
-        private bool TryResolveInstanceBinding(int args, ElaExpression exp)
+        private bool TryResolveInstanceBinding(int args, ElaExpression exp, LabelMap map)
         {
             if (exp == null)
                 return false;
+
+            //This is not a function at all, but a polymorphic constant. We, however, cannot
+            //execute it right away - as a result we need to defer its execution by creating 
+            //a thunk. Code should not be executing when instances are run.
+            if (args == 0)
+            {
+                CompileLazyExpression(exp, map, Hints.None);
+                return true;
+            }
 
             //A simple case - a direct name reference, need to check its type arguments
             if (exp.Type == ElaNodeType.NameReference)
@@ -566,7 +575,7 @@ namespace Ela.Compilation
                     PushVar(defVar);
 
                     if (!builtin)
-                        PushVar(btVar);
+                        PushVar(btVar, false /*no dispatch*/);
                     else
                         cw.Emit(Op.PushI4, (Int32)btVar.Data);
 

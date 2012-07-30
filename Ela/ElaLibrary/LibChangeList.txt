@@ -1,3 +1,8 @@
+0.1.5.5:Change:A negation function from 'Additive' class from prelude is now called 'negate', and '--' symbol is provided as its synonym.
+0.1.5.4:Fix:A 'reverse' function in prelude, when applied to a value other than list, used to crash VM instead of generating an appropriate exception.
+0.1.5.3:New:Now an instance for Ord class is provided for lists in prelude module (lists now can be compared using comparison operators). (Issue #28)
+0.1.5.2:Fix:A bug fixed in implementation of 'Cat' class (concatenation operator) for queues - the result of concatenation of two queues was a list, not a queue.
+0.1.5.1:Fix:A bug fixed in implementation of 'pred' function in default instance for 'Enum' class in 'generic' module.
 0.1.5.0:Release:Release of 0.1.5.0.
 0.1.4.52:Change:Functions 'last', 'init', 'map', 'foldl', 'foldr', 'reverse' and 'filter' are moved from 'list' module to prelude.
 0.1.4.51:New:Functions 'foldl1' and 'foldr1' are added to 'list' module.

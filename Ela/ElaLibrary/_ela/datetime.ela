@@ -38,8 +38,11 @@ instance Ord DateTime where
   (DateTime x) <= (DateTime y) = x <= y
 
 instance Bounded DateTime where
-  maxBound _ = dt.maxDateTime
-  minBound _ = dt.minDateTime
+  maxBound = dt.maxDateTime
+  minBound = dt.minDateTime
+
+instance Default DateTime where
+  default = dt.minDateTime
 
 instance Show DateTime where 
   showf fmt (DateTime x) = dt.formatToString (force fmt) x
