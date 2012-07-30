@@ -328,16 +328,19 @@ not needed.
 #Bounded
 This class defines two functions `maxBound` and `minBound` that accept an argument and return a
 maximum and a minimum possible value for this argument.
->>>maxBound 0F
+>>>maxBound -> Single
 
 ==Numeric classes
 
 #Additive
 Defines functions of a commutative group, including addition `+`, subtraction `-` and negation
-`--`.
+`negate`.
 >>>2 + 2
 This is the most basic class for all numeric types. Also other types, such as `Tuple`,
 may provide implementations for this class as well.
+
+#-- x
+A synonym for `negate` function from `Additive` class that can be used as a prefix/postfix operator.
 
 #Ring
 Defines functions of a (not necessarily commutative) ring, including multiplication `*` and

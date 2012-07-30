@@ -105,7 +105,7 @@ namespace Ela.Linking
                 for (var j = 0; j < cc; j++)
                 {
                     var m = new ElaClassMember();
-                    m.Arguments = bw.ReadInt32();
+                    m.Components = bw.ReadInt32();
                     m.Mask = bw.ReadInt32();
                     m.Name = bw.ReadString();
                     mbr[j] = m;

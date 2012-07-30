@@ -21,7 +21,7 @@ in Ela may not be done at the same time. For example, you can easily write insta
 Another important difference is that unlike interfaces classes are used to define _global_ bindings. A class member in Ela is 
 effectively a global function that is not different from other functions - it is curried and is a first class value:
 >>>class Foo a where 
->>>  foo _->a
+>>>  foo _->a->_
 >>>
 >>>foo
 Dispatch rules are also different. Ela provides a support for only single parameter classes, however, this parameter can appear 
@@ -38,7 +38,7 @@ Here we effectively ignore the first argument of a `foo` function. This function
 Class member signature is used to provide overload rules for a function. For example, if we define a class `Foo`
 like so:
 >>class Foo a where
->>  foo a->a
+>>  foo a->a->_
 an application of `foo` to string and integer would fail.
 
 =Classes
@@ -62,14 +62,13 @@ A underscore character denotes _value of any type_, when a `param` should be an 
 class in Ela is instanced for one specific type, a `param` entry is used to specify occurences of this type in a function 
 signature.//br
 A signature should define at least one argument. Also a function signature should have at least one occurence of `param` entry 
-(multiple occurences are OK as well). Therefore, a signature `a` is valid, as well as `_->a` and `a->_->a`, but a signature 
-`_` is not valid, and a signature `_->_` is not valid as well. A signature `a` means a function with _at least one argument_, which 
-is the first argument is of our target type, a signature `_->a` means a function with _at least two arguments_ where the second 
-argument is of our target type, and a signature `a->_->a` means a function with _at least three arguments_, where the first and 
-the last arguments are of our target type.//br
+(multiple occurences are OK as well). Therefore, a signature `a` is valid, as well as `a->_` and `a->_->_`, but a signature 
+`_` is not valid, and a signature `_->_` is not valid as well. A signature `a` means a polymorphic constant, a signature `a->_` 
+means a function with one argument, and a signature `a->_->_` means a function with two arguments, where the first argument is 
+of our target type.//br
 Here is an example of a custom class declaration:
 >>>class Car a where
->>>  drive _->a
+>>>  drive _->a->_
 Here we define a `Car` class with one function `drive`. A `drive` function expects a target type as its second argument.
 
 =Instances

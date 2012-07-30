@@ -135,7 +135,7 @@ namespace Elide.ElaObject
                 var list = new List<ElaClassMember>();
 
                 for (var j = 0; j < mc; j++)
-                    list.Add(new ElaClassMember { Arguments = br.ReadInt32(), Mask = br.ReadInt32(), Name = br.ReadString() });
+                    list.Add(new ElaClassMember { Components = br.ReadInt32(), Mask = br.ReadInt32(), Name = br.ReadString() });
 
                 yield return new Class(name, list);
             }

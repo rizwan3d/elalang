@@ -5,7 +5,7 @@ namespace Ela.Linking
 {
 	public abstract class ObjectFile
 	{
-		private const int VERSION = 24;
+		private const int VERSION = 25;
 
 		protected ObjectFile(FileInfo file)
 		{

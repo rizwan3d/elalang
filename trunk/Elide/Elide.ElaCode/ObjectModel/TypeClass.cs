@@ -11,7 +11,7 @@ namespace Elide.ElaCode.ObjectModel
         internal TypeClass(string className, ClassData classData, Location loc)
         {
             Name = className;
-            Members = classData.GetMembers().Select(m => new TypeClassMember(m.Name, m.Arguments, m.Mask)).ToList();
+            Members = classData.GetMembers().Select(m => new TypeClassMember(m.Name, m.Components, m.Mask)).ToList();
             Location = loc;
         }
 

@@ -1126,13 +1126,31 @@ namespace Ela.Runtime
                             evalStack.Push(new ElaValue(fn));
                         }
                         break;
+                    case Op.Newconst:
+                        {
+                            var cs = new ElaConstant(frame.Strings[opd]);
+                            evalStack.Push(new ElaValue(cs));
+                        }
+                        break;
+                    case Op.Disp:
+                        right = evalStack.Pop();
+                        evalStack.Push(((ElaConstant)right.Ref).GetConstantValue(this, ctx));
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.PopVoid();
+                            evalStack.Push(right);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+                        break;
                     case Op.Addmbr:
                         {
                             var typ = evalStack.Pop().I4;
                             left = evalStack.Pop();
                             right = evalStack.Pop();
 
-                            if (right.TypeId != FUN)
+                            if (right.TypeId != FUN && left.TypeId != OBJ)
                             {
                                 InvalidType(right, thread, evalStack, TCF.GetShortForm(ElaTypeCode.Function));
                                 goto SWITCH_MEM;
@@ -1140,8 +1158,10 @@ namespace Ela.Runtime
 
                             if (left.TypeId == INT)
                                 cls[typ].AddFunction((ElaBuiltinKind)left.I4, (ElaFunction)right.Ref);
-                            else
+                            else if (left.TypeId == FUN)
                                 ((ElaFunTable)left.Ref).AddFunction(typ, (ElaFunction)right.Ref);
+                            else
+                                ((ElaConstant)left.Ref).AddConstant(typ, right);
                         }
                         break;
                     case Op.Newlist:
@@ -1293,6 +1313,22 @@ namespace Ela.Runtime
 
                     #region Misc
                     case Op.Nop:
+                        break;
+                    case Op.Ctxtnt:
+                        i4 = evalStack.Pop().I4;
+
+                        if (ctx.DispatchContext.Count == 1)
+                            ctx.DispatchContext.Push(i4);
+                        break;
+                    case Op.Ctxset:
+                        ctx.DispatchContext.Push(evalStack.Pop().I4);
+                        break;
+                    case Op.Ctxcls:
+                        ctx.DispatchContext.Pop();
+                        break;
+                    case Op.Ctxclst:
+                        if (ctx.DispatchContext.Count > 1)
+                            ctx.DispatchContext.Pop();
                         break;
                     case Op.Api:
                         right = evalStack.Pop();
@@ -1474,6 +1510,8 @@ namespace Ela.Runtime
             ListToString = 13,
             ConsDefault = 14,
             ConsCreate = 15,
+
+            CurrentContext = 16,
             
             ConsParamIndex = 101,
             ConsParamValue = 102,
@@ -1509,6 +1547,8 @@ namespace Ela.Runtime
         {
             switch ((Api)code)
             {
+                case Api.CurrentContext:
+                    return new ElaValue(thread.Context.DispatchContext.Peek());
                 case Api.ListToString:
                     {
                         var sb = new System.Text.StringBuilder();
@@ -1523,7 +1563,11 @@ namespace Ela.Runtime
                 case Api.ListLength:
                     return new ElaValue(((ElaList)left.Ref).GetLength());
                 case Api.ReverseList:
-                    return new ElaValue(((ElaList)left.Ref).Reverse());
+                    if (left.TypeId != LST)
+                        thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.List), left);
+                    else
+                        return new ElaValue(((ElaList)left.Ref).Reverse());
+                    break;
                 case Api.ConsName:
                     {
                         var cid = left.Ref.GetTag(null);
@@ -1782,8 +1826,8 @@ namespace Ela.Runtime
 
                             if (right.I4 < 0 || right.I4 >= td.Constructors.Count)
                                 thread.Context.IndexOutOfRange(right, new ElaValue(new ElaUserType(td.TypeName, td.TypeCode, -1, new ElaValue(ElaUnit.Instance))));
-
-                            return new ElaValue(td.Constructors[right.I4]);
+                            else
+                                return new ElaValue(td.Constructors[right.I4]);
                         }
                     }
                     break;

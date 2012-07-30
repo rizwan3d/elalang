@@ -209,8 +209,8 @@ internal sealed class Scanner {
 	const char EOL = '\n';
 	const int eofSym = 0; /* pdt */
 	
-	const int maxT = 66;
-	const int noSym = 66;
+	const int maxT = 67;
+	const int noSym = 67;
 
 
 	public Buffer buffer; // scanner buffer
@@ -406,7 +406,8 @@ internal sealed class Scanner {
 			case "__internal": t.kind = 62; break;
 			case "&": t.kind = 63; break;
 			case "<-": t.kind = 64; break;
-			case "deriving": t.kind = 65; break;
+			case "~>": t.kind = 65; break;
+			case "deriving": t.kind = 66; break;
 			default: break;
 		}
 	}
@@ -537,7 +538,7 @@ internal sealed class Scanner {
 			case 9:
 				recEnd = pos; recKind = 4;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 9;}
-				else if (ch == 'D' || ch == 'F' || ch == 'M' || ch == 'd' || ch == 'f' || ch == 'm') {AddCh(); goto case 20;}
+				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 20;}
 				else if (ch == 'E' || ch == 'e') {AddCh(); goto case 10;}
 				else {t.kind = 4; break;}
 			case 10:
@@ -550,12 +551,12 @@ internal sealed class Scanner {
 			case 12:
 				recEnd = pos; recKind = 4;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 12;}
-				else if (ch == 'D' || ch == 'F' || ch == 'M' || ch == 'd' || ch == 'f' || ch == 'm') {AddCh(); goto case 20;}
+				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 20;}
 				else {t.kind = 4; break;}
 			case 13:
 				recEnd = pos; recKind = 4;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 13;}
-				else if (ch == 'D' || ch == 'F' || ch == 'M' || ch == 'd' || ch == 'f' || ch == 'm') {AddCh(); goto case 20;}
+				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 20;}
 				else if (ch == 'E' || ch == 'e') {AddCh(); goto case 14;}
 				else {t.kind = 4; break;}
 			case 14:
@@ -568,7 +569,7 @@ internal sealed class Scanner {
 			case 16:
 				recEnd = pos; recKind = 4;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 16;}
-				else if (ch == 'D' || ch == 'F' || ch == 'M' || ch == 'd' || ch == 'f' || ch == 'm') {AddCh(); goto case 20;}
+				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 20;}
 				else {t.kind = 4; break;}
 			case 17:
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 19;}
@@ -580,7 +581,7 @@ internal sealed class Scanner {
 			case 19:
 				recEnd = pos; recKind = 4;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 19;}
-				else if (ch == 'D' || ch == 'F' || ch == 'M' || ch == 'd' || ch == 'f' || ch == 'm') {AddCh(); goto case 20;}
+				else if (ch == 'D' || ch == 'F' || ch == 'd' || ch == 'f') {AddCh(); goto case 20;}
 				else {t.kind = 4; break;}
 			case 20:
 				{t.kind = 4; break;}

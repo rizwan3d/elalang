@@ -56,12 +56,40 @@ namespace Ela.Runtime.ObjectModel
             {
                 var ret = default(ElaFunction);
 
+                if ((mask & (1 << Parameters.Length + 1)) == (1 << Parameters.Length + 1))
+                {
+                    if (ct == 0)
+                    {
+                        ct = ctx.DispatchContext.Peek();
+
+                        if (ct == 0)
+                            ctx.NoContext(name);
+                    }
+                    else if (ct != ctx.DispatchContext.Peek())
+                    {
+                        var dc = ctx.DispatchContext.Peek();
+
+                        if (dc != 0)
+                        {
+                            if (funs.ContainsKey(ct))
+                                ctx.NoOverload(ToStringWithType(ct, null, AppliedParameters), ToStringWithType(ct, dc, AppliedParameters + 1), name);
+                            else
+                                ctx.NoOverload(Machine.Assembly.Types[ct].TypeName, name);
+                        }
+                        else
+                            ctx.NoContext(name);
+                    }
+                }
+
                 if (!funs.TryGetValue(ct, out ret))
                 {
                     if (funs.ContainsKey(ct))
                         ctx.NoOverload(ToStringWithType(ct, null, AppliedParameters), ToStringWithType(ct, val.TypeId, AppliedParameters), name);
+                    else if (ct == 0)
+                        ctx.NoOverload(val.GetTypeName(), name);
                     else
-                        ctx.NoOverload(val.GetTypeName(), name); 
+                        ctx.NoOverload(Machine.Assembly.Types[ct].TypeName, name);
+
                     return null;
                 }
 
@@ -135,7 +163,13 @@ namespace Ela.Runtime.ObjectModel
                     sb.Append('*');
             }
 
-            sb.Append("->*");
+            var mm = 1 << Parameters.Length + 1;
+
+            if ((mask & mm) == mm)
+                sb.Append("->a");
+            else
+                sb.Append("->*");
+
             return GetFunctionName() + ":" + sb.ToString();
         }
 
@@ -144,8 +178,10 @@ namespace Ela.Runtime.ObjectModel
             var sb = new StringBuilder();
             var tn = base.Machine.Assembly.Types[type].TypeName;
             var curn = cur != null ? base.Machine.Assembly.Types[cur.Value].TypeName : null;
+            var len = cur == null ? Parameters.Length + 2 : 
+                (AppliedParameters != Parameters.Length ? AppliedParameters + 1 : AppliedParameters + 2);
 
-            for (var i = 0; i < Parameters.Length + 1; i++)
+            for (var i = 0; i < len; i++)
             {
                 if (i > 0)
                     sb.Append("->");
@@ -160,7 +196,9 @@ namespace Ela.Runtime.ObjectModel
                     sb.Append('*');
             }
 
-            sb.Append("->*");
+            if (cur != null && AppliedParameters != Parameters.Length)
+                sb.Append("->...");
+
             return sb.ToString();
         }
 

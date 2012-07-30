@@ -25,7 +25,9 @@ namespace Ela.CodeModel
 
         Header,
 
-		Builtin,
+		Context,
+        
+        Builtin,
 
 		Binary,
 

@@ -32,7 +32,7 @@ namespace Elide.Workbench
         public void NewFile(string editorKey)
         {
             var editor = (EditorInfo)App.GetService<IEditorService>().GetInfo("editors", editorKey);
-            var doc = editor.Instance.CreateDocument("Untitled" + editor.FileExtension);
+            var doc = editor.Instance.CreateDocument("untitled" + editor.FileExtension);
             App.GetService<IDocumentService>().AddDocument(doc);
         }
 
@@ -195,7 +195,7 @@ namespace Elide.Workbench
         private void NewFile(EditorFlags flags)
         {
             var editor = App.EditorInfo(flags);
-            var doc = editor.Instance.CreateDocument("Untitled" + editor.FileExtension);
+            var doc = editor.Instance.CreateDocument("untitled" + editor.FileExtension);
             App.GetService<IDocumentService>().AddDocument(doc);
         }
 

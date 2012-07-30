@@ -32,7 +32,7 @@ namespace Ela.CodeModel
             {
                 sb.Append(" ");
 
-                for (var i = 0; i < Arguments; i++)
+                for (var i = 0; i < Components; i++)
                 {
                     if (i > 0)
                         sb.Append("->");
@@ -52,7 +52,7 @@ namespace Ela.CodeModel
         
         public string Name { get; set; }
 
-        public int Arguments { get; set; }
+        public int Components { get; set; }
 
         public int Mask { get; set; }
     }

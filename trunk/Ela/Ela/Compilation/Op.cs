@@ -68,7 +68,13 @@ namespace Ela.Compilation
         Newtype,
         Ctype,        
         Ctypei,
+        Ctxset,
+        Ctxtnt,
+        Ctxcls,
+        Ctxclst,
+        Disp,
         
+        Newconst,
         Api,
         Api2,
         Untag,

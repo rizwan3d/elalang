@@ -5,8 +5,11 @@
 import libString#elalib@str
 import lang
 
-instance ListLike String
-  where toList x = str.toList x
+instance ListLike String where 
+  toList x    = str.toList x
+  fromList xs = toString <| trav stringBuilder xs
+    where trav sb (x::xs) = trav (sb +> toString x) xs
+          trav sb [] = sb
 
 upper x = str.upper (force x)
 lower x = str.lower (force x)
@@ -34,11 +37,6 @@ substr start n s = str.substr (force start) (force n) (force s)
 split sep s = str.split (force sep) (force s)
 
 insert idx ins s = str.insert (force idx) (force ins) (force s)
-
-fromList # qualified
-fromList xs = toString <| trav stringBuilder xs
-  where trav sb (x::xs) = trav (sb +> toString x) xs
-        trav sb [] = sb
 
 //This function is used to collect chars in a list
 collect # private

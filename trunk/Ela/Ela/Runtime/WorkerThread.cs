@@ -35,7 +35,7 @@ namespace Ela.Runtime
 			ret.Offset = 1;
 			return ret;
 		}
-		
+
         internal CodeAssembly Assembly { get; private set; }
 
 		internal CallStack CallStack { get; private set; }

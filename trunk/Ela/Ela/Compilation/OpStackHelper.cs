@@ -21,7 +21,7 @@ namespace Ela.Compilation
 			-1, //Cons
 			-1, //Gen
 			0, //Tail
-			0, //Header
+			0, //Head
 			0, //Ret
 			-1, //Concat
 			-1, //Add
@@ -69,8 +69,14 @@ namespace Ela.Compilation
             -2, //Skiptag
 			-2, //Newtype
             -1, //Ctype            
-            -1, //Ctypei
+            -1, //Ctypei            
+            -1, //Ctxset
+            -1, //Ctxtnt
+            0, //Ctxcls
+            0, //Ctxclst
+            0, //Disp
 
+            1, //Newconst
             0, //Api
             -1, //Api2
             0, //Untag

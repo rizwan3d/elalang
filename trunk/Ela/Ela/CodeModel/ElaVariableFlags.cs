@@ -34,5 +34,7 @@ namespace Ela.CodeModel
         TypeFun = 1 << 12,
 
         ClosedType = 1 << 13,
+
+        Polyadric = 1 << 14
 	}
 }

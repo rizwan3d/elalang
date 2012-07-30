@@ -56,7 +56,7 @@ namespace Ela.Compilation
             }
         }
 
-        //Includes a module reference (used for user references, Prelude and Arguments module).
+        //Includes a module reference (used for user references, Prelude and Components module).
         private CodeFrame IncludeModule(string alias, string name, string dllName, string[] path,
             int line, int col, bool reqQual, ElaExpression exp, bool addVar, bool noPrelude)
         {

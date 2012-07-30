@@ -30,16 +30,18 @@ TOKENS
     
 	variantTok = ucase { letter | digit | "'" }.
 	
-	intTok = ( digit { digit } | digit { digit } CONTEXT ("." notDigit) | 
-			( "0x" | "0X" ) hexDigit { hexDigit } ) [ "L" | "l" ].
+	intTok = ( digit { digit } 
+	          | digit { digit } CONTEXT ("." notDigit) 
+	          | ("0x"|"0X") hexDigit { hexDigit } 
+	          ) ["L"|"l"].
 			
-	realTok = "." digit { digit } [ ( "e" | "E") [ "+" | "-" ] digit { digit } ] [ "D" | "d" | "F" | "f"| "M" | "m" ] 
+	realTok = "." digit { digit } [ ("e"|"E") ["+"|"-"] digit { digit } ] ["D"|"d"|"F"|"f"] 
 			| digit { digit } 
-			( 
-				"." digit { digit } 
-				[ ( "e" | "E" ) ["+" | "-" ] digit { digit } ] [ "D" | "d" | "F" | "f"| "M" | "m" ] 
-				| ( "e" | "E") ["+" | "-" ] digit { digit } [ "D" | "d" | "F" | "f" | "M" | "m" ]  | "D" | "d" | "F" | "f"| "M" | "m"
-			).		
+			    ( 
+				    "." digit { digit } [ ( "e" | "E" ) ["+" | "-" ] digit { digit } ] ["D"|"d"|"F"|"f"] 
+				    | ("e"|"E") ["+"|"-"] digit { digit } ["D"|"d"|"F"|"f"]  
+				    | "D"|"d"|"F"|"f"|"M"|"m"
+			    ).		
 			
 	stringTok = "\"" { stringChar
 					| "\\\"" | "\\\\" | "\\0" | "\\b" | "\\n" | "\\r" | "\\t" | "\\'"
@@ -1094,6 +1096,7 @@ PRODUCTIONS
 	        var bid = default(ElaEquation);
 	        var left = default(ElaExpression);
 	        var right = default(ElaExpression);
+	        var ctx = default(ElaExpression);
 	    .)
 	    (
 	        Expr<out left> (. bid = new ElaEquation(t); .)
@@ -1101,6 +1104,27 @@ PRODUCTIONS
 	            "=" Expr<out right> 
 	            | "|" Guard<out right>
 	            | Attribute<ref left>
+	        ]
+	        [
+	            (. var tentative=false; .)
+	            ("->"|"~>" (.tentative=true;.)) Expr<out ctx>
+	            (.
+	                var nctx = new ElaContext(t) { Context = ctx, Tentative=tentative };
+	            
+	                if (right != null)
+	                {
+	                    nctx.Expression = right;
+	                    right = nctx;
+	                }
+	                else
+	                {
+	                    nctx.Expression = left;
+	                    left = nctx;
+	                    
+	                    if (left.Type == ElaNodeType.Header)
+	                        AddError(ElaParserError.InvalidSyntax);
+	                }
+	            .)
 	        ]
 	        [
 	            (. var cb = default(ElaEquationSet); .)
@@ -1231,7 +1255,7 @@ PRODUCTIONS
 	                            { "->" (ident|"_") (. BuildMask(ref count, ref mask, t.val, targ); .)  }
 	                        )
 	                        (.	                        
-	                            tc.Members.Add(new ElaClassMember(t) { Name = nm, Arguments = count, Mask = mask });
+	                            tc.Members.Add(new ElaClassMember(t) { Name = nm, Components = count, Mask = mask });
 	                        .)
 	                    )
 	                    { 
@@ -1245,7 +1269,7 @@ PRODUCTIONS
 	                            { "->" (ident|"_") (. BuildMask(ref count, ref mask, t.val, targ); .)  }
 	                        )
 	                        (.	                        
-	                            tc.Members.Add(new ElaClassMember(t) { Name = nm, Arguments = count, Mask = mask });
+	                            tc.Members.Add(new ElaClassMember(t) { Name = nm, Components = count, Mask = mask });
 	                        .)
 	                    }
 	                )
