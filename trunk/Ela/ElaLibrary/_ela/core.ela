@@ -8,9 +8,6 @@ open generic
 type Ordering = EQ | LT | GT
   deriving Eq Ord Show Enum IntLike
 
-instance Default Ordering where
-  default = EQ
-
 compare x y 
   | x == y = EQ 
   | x < y  = LT 
@@ -26,10 +23,11 @@ minValue x y
 
 /* Maybe */
 type Maybe = None | Some a
-  deriving Eq Ord Show ListLike
+  deriving Eq Ord Show Default
 
-instance Default Maybe where
-  default = None
+instance ListLike Maybe where
+  fromList [] = None
+  fromList (x::[]) = Some x
 
 maybe n _ None = n
 maybe _ f (Some x) = f x
@@ -44,7 +42,7 @@ fromMaybe _ (Some x) = x
 
 /* Either */
 type Either = Left a | Right a
-  deriving Eq Ord Show ListLike
+  deriving Eq Ord Show
 
 either f _ (Left x) = f x
 either _ g (Right y) = g y
@@ -62,4 +60,3 @@ rights xs = [a \\ Right a <- xs]
 fromLeft (Left a) = a
 
 fromRight (Right a) = a
-

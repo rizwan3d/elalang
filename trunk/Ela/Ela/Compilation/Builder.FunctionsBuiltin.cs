@@ -217,9 +217,9 @@ namespace Ela.Compilation
                 case ElaBuiltinKind.Api106:
                     cw.Emit(Op.Api2, 106);
                     break;
-                //case ElaBuiltinKind.Api107:
-                //    cw.Emit(Op.Api2, 107);
-                //    break;
+                case ElaBuiltinKind.Api107:
+                    cw.Emit(Op.Api2, 107);
+                    break;
             }
         }
 

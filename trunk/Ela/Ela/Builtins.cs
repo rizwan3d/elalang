@@ -49,6 +49,12 @@ namespace Ela
                 case "isfield": return ElaBuiltinKind.HasField;
                 case "getvaluer": return ElaBuiltinKind.GetValueR;
 
+                /* infrastructure */
+                case "genmaxbound": return ElaBuiltinKind.GenMaxBound;
+                case "genfromint": return ElaBuiltinKind.GenFromInt;
+                case "genfromstring": return ElaBuiltinKind.GenFromString;
+                case "gendefault": return ElaBuiltinKind.GenDefault;
+
                 case "api1": return ElaBuiltinKind.Api1;
                 case "api2": return ElaBuiltinKind.Api2;
                 case "api3": return ElaBuiltinKind.Api3;
@@ -73,7 +79,7 @@ namespace Ela
                 case "api104": return ElaBuiltinKind.Api104;
                 case "api105": return ElaBuiltinKind.Api105;
                 case "api106": return ElaBuiltinKind.Api106;
-                //case "api107": return ElaBuiltinKind.Api107;
+                case "api107": return ElaBuiltinKind.Api107;
                 default: return ElaBuiltinKind.None;
             }
         }

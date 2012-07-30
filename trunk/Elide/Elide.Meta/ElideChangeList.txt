@@ -1,4 +1,9 @@
-﻿0.1.5.0:Release:Release of Elide 0.1.5.0.
+﻿0.1.5.5:Change:Now EIL generate shows op codes offsets by default.
+0.1.5.4:Fix:Elide could crash if another program modified a file currently editing.
+0.1.5.3:Fix:Highlighting in output window wasn't always done correctly.
+0.1.5.2:Change:Default highlighting settings for Ela code editor has changed.
+0.1.5.1:Fix:Links in About dialog are now clickable.
+0.1.5.0:Release:Release of Elide 0.1.5.0.
 0.1.4.16:Fix:After a document is closed, a document name could still be displayed in a window header.
 0.1.4.15:Change:Syntax highlighting for EIL is updated according to the language changes.
 0.1.4.14:Change:A bug fixed in syntax highlighting of comments in Ela code editor.

@@ -94,7 +94,7 @@
             <add key="Style1" display="Identifier" />
             <add key="Style2" display="Keyword" fore="Blue" />
             <add key="Style3" display="Variant" fore="Navy" bold="true" />
-            <add key="Style4" display="Operator" />
+            <add key="Style4" display="Operator" fore="Purple" bold="true" />
             <add key="Style5" display="Literal" fore="Teal" bold="true" />
             <add key="MultilineStyle1" display="Multiline Comment" fore="Green" />
             <add key="Style6" display="Singleline Comment" fore="Green" />
@@ -102,7 +102,6 @@
             <add key="MultilineStyle2" display="Multiline String" fore="Maroon" />
             <add key="Style8" display="Char" fore="Maroon" />
             <add key="Style9" display="Number" fore="Red" />
-            <add key="Style10" display="Thunks" fore="Blue" />
             <add key="Annotation1" display="Errors" fore="Black" back="Pink" font="Segoe UI" size="9" />
             <add key="CallTip" display="Call Tips" fore="Black" back="Cornsilk" font="Segoe UI" size="9" />
             <add key="BraceMatch" display="Brace Match" back="Silver" />

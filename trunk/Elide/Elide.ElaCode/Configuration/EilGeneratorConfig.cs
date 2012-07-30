@@ -9,6 +9,7 @@ namespace Elide.ElaCode.Configuration
         public EilGeneratorConfig()
         {
             GenerateInDebugMode = true;
+            IncludeCodeOffsets = true;
         }
 
         public bool IncludeCodeOffsets { get; set; }

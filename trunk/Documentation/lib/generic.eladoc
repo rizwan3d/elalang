@@ -24,18 +24,15 @@ like so:
 
 ===StringLike
 This is a default implementation of a `StringLike` class. It can be used to generate instances of `StringLike` 
-(e.g. using `deriving` clause). A `toString` function in this instance always returns a name of a constructor 
-of a given production.
+(e.g. using `deriving` clause).//br
+A `toString` function in this instance always returns a name of a constructor of a given production. A
+`fromString` function creates a production of an algebraic type from a name. //br
+It is strongly recommended to use this instance only for types with parameterless constructors.
 
-===ListLike
-This is a default implementation of a `ListLike` class. It can be used to generate instances of `ListLike` 
-(e.g. using `deriving` clause). A `toList` function in this instance returns a list with parameters of a given
-constructor. If a given constructor has no parameters, than an empty list is returned.
-
-===TupleLike
-This is a default implementation of a `TupleLike` class. It can be used to generate instances of `TupleLike` 
-(e.g. using `deriving` clause). A `toTuple` function in this instance always returns a tuple with parameters of
-a given production. If a production was created using a parameterless constructor, than an error is generated.
+===Default
+This is a complete default implementation of a `Default` class. It is strongly recommended to use this 
+instance only for types which has a first parameterless constructor.//br
+A `default` constant in this instance always returns the very first production in a type.
 
 ===Enum
 This is a default implementation of an `Enum` class. It defines all members of `Enum` class. It can be used to 
@@ -99,6 +96,19 @@ custom algebraic type.//br
 It relies on a declaration order of constructors in an algebraic type. The `maxBound` function returns a maximum
 index of a constructor in a given algebraic type, e.g. for a type with three constructors it will return 2 as a
 maximum bound. The `minBound` function always returns 0 in this implementation.
+
+=Partial Instances
+
+===ListLike
+This is a partial implementation of a `ListLike` class, it implements only `toList` function.//br 
+A `toList` function in this instance returns a list with parameters of a given constructor. If a given 
+constructor has no parameters, than an empty list is returned.
+
+===TupleLike
+This is a partial implementation of a `TupleLike` class, it implements only `toTuple` function.//br 
+A `toTuple` function in this instance always returns a tuple with parameters of a given production. 
+If a production was created using a parameterless constructor, than an error is generated.
+
 
 =Reflection API
 
@@ -176,3 +186,9 @@ arguments, where `n` is the number of constructor parameters.
 >>>s = Some 12
 >>>f = consCreate (consCode s)
 >>>f "value"
+
+#consNameIndex code name
+Returns an index of a constructor with the specified `name`. A `code` should be a valid type code, which
+can be obtained using `typeCode` function.
+>>>consNameIndex (typeCode None) "Some"
+

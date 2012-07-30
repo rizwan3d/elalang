@@ -134,6 +134,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api.cs" />
     <Compile Include="Builtins.cs" />
     <Compile Include="CodeModel\ElaContext.cs" />
     <Compile Include="Compilation\ConstructorData.cs" />

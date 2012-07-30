@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using Elide.Core;
 using Elide.Main;
 using System.Text;
+using System.Diagnostics;
 
 namespace Elide.Workbench
 {
@@ -72,6 +73,15 @@ This computer program uses the following open source components:
                 }
                 catch { }
             }
+        }
+
+        private void infoBox_LinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            try
+            {
+                Process.Start(e.LinkText);
+            }
+            catch { }
         }
     }
 }

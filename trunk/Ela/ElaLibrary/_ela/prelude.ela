@@ -526,6 +526,9 @@ const x _ = x//K
 sub x y z = x z (y z)//S
 fix f = f (& fix f)
 on cmb f x y = f x `cmb` f y
+iif p f x y
+  | p x  = f x y
+  | else = y
 
 /* Misc */
 until p f x 
