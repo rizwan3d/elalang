@@ -121,9 +121,11 @@ namespace Ela.Compilation
 
             for (var i = 0; i < len; i++)
             {
+                var last = i == v.Parameters.Count - 1;
+
                 //Use a tail call if this function call is a tail expression and this function
                 //is not marked with 'inline' attribute.
-                if (i == v.Parameters.Count - 1 && tail && opt)
+                if (last && tail && opt)
                     cw.Emit(Op.Callt);
                 else
                     cw.Emit(Op.Call);
