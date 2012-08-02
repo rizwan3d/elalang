@@ -19,11 +19,11 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.REA)
             {
                 if (right.TypeId == ElaMachine.DBL)
-                    return left.DirectGetReal() == right.Ref.AsDouble();
+                    return left.DirectGetSingle() == right.Ref.AsDouble();
                 else if (right.TypeId == ElaMachine.INT)
-                    return left.DirectGetReal() == right.I4;
+                    return left.DirectGetSingle() == right.I4;
                 else if (right.TypeId == ElaMachine.LNG)
-                    return left.DirectGetReal() == right.Ref.AsLong();
+                    return left.DirectGetSingle() == right.Ref.AsLong();
                 else
                 {
                     NoOverloadBinary(TCF.SINGLE, right, "equal", ctx);
@@ -31,7 +31,7 @@ namespace Ela.Runtime.Classes
                 }
             }
 
-            return left.DirectGetReal() == right.DirectGetReal();
+            return left.DirectGetSingle() == right.DirectGetSingle();
         }
 
         internal override bool NotEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -39,11 +39,11 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.REA)
             {
                 if (right.TypeId == ElaMachine.DBL)
-                    return left.DirectGetReal() != right.Ref.AsDouble();
+                    return left.DirectGetSingle() != right.Ref.AsDouble();
                 else if (right.TypeId == ElaMachine.INT)
-                    return left.DirectGetReal() != right.I4;
+                    return left.DirectGetSingle() != right.I4;
                 else if (right.TypeId == ElaMachine.LNG)
-                    return left.DirectGetReal() != right.Ref.AsLong();
+                    return left.DirectGetSingle() != right.Ref.AsLong();
                 else
                 {
                     NoOverloadBinary(TCF.SINGLE, right, "notequal", ctx);
@@ -51,7 +51,7 @@ namespace Ela.Runtime.Classes
                 }
             }
 
-            return left.DirectGetReal() != right.DirectGetReal();
+            return left.DirectGetSingle() != right.DirectGetSingle();
         }
 
         internal override bool Greater(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -59,11 +59,11 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.REA)
             {
                 if (right.TypeId == ElaMachine.DBL)
-                    return left.DirectGetReal() > right.Ref.AsDouble();
+                    return left.DirectGetSingle() > right.Ref.AsDouble();
                 else if (right.TypeId == ElaMachine.INT)
-                    return left.DirectGetReal() > right.I4;
+                    return left.DirectGetSingle() > right.I4;
                 else if (right.TypeId == ElaMachine.LNG)
-                    return left.DirectGetReal() > right.Ref.AsLong();
+                    return left.DirectGetSingle() > right.Ref.AsLong();
                 else
                 {
                     NoOverloadBinary(TCF.SINGLE, right, "greater", ctx);
@@ -71,7 +71,7 @@ namespace Ela.Runtime.Classes
                 }
             }
 
-            return left.DirectGetReal() > right.DirectGetReal();
+            return left.DirectGetSingle() > right.DirectGetSingle();
         }
 
         internal override bool Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -79,11 +79,11 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.REA)
             {
                 if (right.TypeId == ElaMachine.DBL)
-                    return left.DirectGetReal() < right.Ref.AsDouble();
+                    return left.DirectGetSingle() < right.Ref.AsDouble();
                 else if (right.TypeId == ElaMachine.INT)
-                    return left.DirectGetReal() < right.I4;
+                    return left.DirectGetSingle() < right.I4;
                 else if (right.TypeId == ElaMachine.LNG)
-                    return left.DirectGetReal() < right.Ref.AsLong();
+                    return left.DirectGetSingle() < right.Ref.AsLong();
                 else
                 {
                     NoOverloadBinary(TCF.SINGLE, right, "lesser", ctx);
@@ -91,7 +91,7 @@ namespace Ela.Runtime.Classes
                 }
             }
 
-            return left.DirectGetReal() < right.DirectGetReal();
+            return left.DirectGetSingle() < right.DirectGetSingle();
         }
 
         internal override bool GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -99,11 +99,11 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.REA)
             {
                 if (right.TypeId == ElaMachine.DBL)
-                    return left.DirectGetReal() >= right.Ref.AsDouble();
+                    return left.DirectGetSingle() >= right.Ref.AsDouble();
                 else if (right.TypeId == ElaMachine.INT)
-                    return left.DirectGetReal() >= right.I4;
+                    return left.DirectGetSingle() >= right.I4;
                 else if (right.TypeId == ElaMachine.LNG)
-                    return left.DirectGetReal() >= right.Ref.AsLong();
+                    return left.DirectGetSingle() >= right.Ref.AsLong();
                 else
                 {
                     NoOverloadBinary(TCF.SINGLE, right, "greaterequal", ctx);
@@ -111,7 +111,7 @@ namespace Ela.Runtime.Classes
                 }
             }
 
-            return left.DirectGetReal() >= right.DirectGetReal();
+            return left.DirectGetSingle() >= right.DirectGetSingle();
         }
 
         internal override bool LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -119,11 +119,11 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.REA)
             {
                 if (right.TypeId == ElaMachine.DBL)
-                    return left.DirectGetReal() <= right.Ref.AsDouble();
+                    return left.DirectGetSingle() <= right.Ref.AsDouble();
                 else if (right.TypeId == ElaMachine.INT)
-                    return left.DirectGetReal() <= right.I4;
+                    return left.DirectGetSingle() <= right.I4;
                 else if (right.TypeId == ElaMachine.LNG)
-                    return left.DirectGetReal() <= right.Ref.AsLong();
+                    return left.DirectGetSingle() <= right.Ref.AsLong();
                 else
                 {
                     NoOverloadBinary(TCF.SINGLE, right, "lesserequal", ctx);
@@ -131,7 +131,7 @@ namespace Ela.Runtime.Classes
                 }
             }
 
-            return left.DirectGetReal() <= right.DirectGetReal();
+            return left.DirectGetSingle() <= right.DirectGetSingle();
         }
         #endregion
 
@@ -141,11 +141,11 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.REA)
             {
                 if (right.TypeId == ElaMachine.DBL)
-                    return new ElaValue(left.DirectGetReal() + right.Ref.AsDouble());
+                    return new ElaValue(left.DirectGetSingle() + right.Ref.AsDouble());
                 else if (right.TypeId == ElaMachine.INT)
-                    return new ElaValue(left.DirectGetReal() + right.I4);
+                    return new ElaValue(left.DirectGetSingle() + right.I4);
                 else if (right.TypeId == ElaMachine.LNG)
-                    return new ElaValue(left.DirectGetReal() + right.Ref.AsLong());
+                    return new ElaValue(left.DirectGetSingle() + right.Ref.AsLong());
                 else
                 {
                     NoOverloadBinary(TCF.SINGLE, right, "add", ctx);
@@ -153,7 +153,7 @@ namespace Ela.Runtime.Classes
                 }
             }
 
-            return new ElaValue(left.DirectGetReal() + right.DirectGetReal());
+            return new ElaValue(left.DirectGetSingle() + right.DirectGetSingle());
         }
 
         internal override ElaValue Subtract(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -161,11 +161,11 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.REA)
             {
                 if (right.TypeId == ElaMachine.DBL)
-                    return new ElaValue(left.DirectGetReal() - right.Ref.AsDouble());
+                    return new ElaValue(left.DirectGetSingle() - right.Ref.AsDouble());
                 else if (right.TypeId == ElaMachine.INT)
-                    return new ElaValue(left.DirectGetReal() - right.I4);
+                    return new ElaValue(left.DirectGetSingle() - right.I4);
                 else if (right.TypeId == ElaMachine.LNG)
-                    return new ElaValue(left.DirectGetReal() - right.Ref.AsLong());
+                    return new ElaValue(left.DirectGetSingle() - right.Ref.AsLong());
                 else
                 {
                     NoOverloadBinary(TCF.SINGLE, right, "subtract", ctx);
@@ -173,7 +173,7 @@ namespace Ela.Runtime.Classes
                 }
             }
 
-            return new ElaValue(left.DirectGetReal() - right.DirectGetReal());
+            return new ElaValue(left.DirectGetSingle() - right.DirectGetSingle());
         }
 
         internal override ElaValue Multiply(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -181,11 +181,11 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.REA)
             {
                 if (right.TypeId == ElaMachine.DBL)
-                    return new ElaValue(left.DirectGetReal() * right.Ref.AsDouble());
+                    return new ElaValue(left.DirectGetSingle() * right.Ref.AsDouble());
                 else if (right.TypeId == ElaMachine.INT)
-                    return new ElaValue(left.DirectGetReal() * right.I4);
+                    return new ElaValue(left.DirectGetSingle() * right.I4);
                 else if (right.TypeId == ElaMachine.LNG)
-                    return new ElaValue(left.DirectGetReal() * right.Ref.AsLong());
+                    return new ElaValue(left.DirectGetSingle() * right.Ref.AsLong());
                 else
                 {
                     NoOverloadBinary(TCF.SINGLE, right, "multiply", ctx);
@@ -193,7 +193,7 @@ namespace Ela.Runtime.Classes
                 }
             }
 
-            return new ElaValue(left.DirectGetReal() * right.DirectGetReal());
+            return new ElaValue(left.DirectGetSingle() * right.DirectGetSingle());
         }
 
         internal override ElaValue Divide(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -201,11 +201,11 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.REA)
             {
                 if (right.TypeId == ElaMachine.DBL)
-                    return new ElaValue(left.DirectGetReal() / right.Ref.AsDouble());
+                    return new ElaValue(left.DirectGetSingle() / right.Ref.AsDouble());
                 else if (right.TypeId == ElaMachine.INT)
-                    return new ElaValue(left.DirectGetReal() / right.I4);
+                    return new ElaValue(left.DirectGetSingle() / right.I4);
                 else if (right.TypeId == ElaMachine.LNG)
-                    return new ElaValue(left.DirectGetReal() / right.Ref.AsLong());
+                    return new ElaValue(left.DirectGetSingle() / right.Ref.AsLong());
                 else
                 {
                     NoOverloadBinary(TCF.SINGLE, right, "divide", ctx);
@@ -213,13 +213,13 @@ namespace Ela.Runtime.Classes
                 }
             }
 
-            if (right.DirectGetReal() == 0)
+            if (right.DirectGetSingle() == 0)
             {
                 ctx.DivideByZero(left);
                 return Default();
             }
 
-            return new ElaValue(left.DirectGetReal() / right.DirectGetReal());
+            return new ElaValue(left.DirectGetSingle() / right.DirectGetSingle());
         }
                 
         internal override ElaValue Remainder(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -227,11 +227,11 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.REA)
             {
                 if (right.TypeId == ElaMachine.DBL)
-                    return new ElaValue(left.DirectGetReal() % right.Ref.AsDouble());
+                    return new ElaValue(left.DirectGetSingle() % right.Ref.AsDouble());
                 else if (right.TypeId == ElaMachine.INT)
-                    return new ElaValue(left.DirectGetReal() % right.I4);
+                    return new ElaValue(left.DirectGetSingle() % right.I4);
                 else if (right.TypeId == ElaMachine.LNG)
-                    return new ElaValue(left.DirectGetReal() % right.Ref.AsLong());
+                    return new ElaValue(left.DirectGetSingle() % right.Ref.AsLong());
                 else
                 {
                     NoOverloadBinary(TCF.SINGLE, right, "remainder", ctx);
@@ -239,13 +239,13 @@ namespace Ela.Runtime.Classes
                 }
             }
 
-            if (right.DirectGetReal() == 0)
+            if (right.DirectGetSingle() == 0)
             {
                 ctx.DivideByZero(left);
                 return Default();
             }
 
-            return new ElaValue(left.DirectGetReal() % right.DirectGetReal());
+            return new ElaValue(left.DirectGetSingle() % right.DirectGetSingle());
         }
 
         internal static ElaValue Modulus(float x, float y, ExecutionContext ctx)
@@ -259,11 +259,11 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.REA)
             {
                 if (right.TypeId == ElaMachine.DBL)
-                    return DoubleInstance.Modulus(left.DirectGetReal(), right.Ref.AsDouble(), ctx);
+                    return DoubleInstance.Modulus(left.DirectGetSingle(), right.Ref.AsDouble(), ctx);
                 else if (right.TypeId == ElaMachine.INT)
-                    return Modulus(left.DirectGetReal(), right.I4, ctx);
+                    return Modulus(left.DirectGetSingle(), right.I4, ctx);
                 else if (right.TypeId == ElaMachine.LNG)
-                    return Modulus(left.DirectGetReal(), right.Ref.AsLong(), ctx);
+                    return Modulus(left.DirectGetSingle(), right.Ref.AsLong(), ctx);
                 else
                 {
                     NoOverloadBinary(TCF.SINGLE, right, "modulus", ctx);
@@ -271,7 +271,7 @@ namespace Ela.Runtime.Classes
                 }
             }
 
-            return Modulus(left.DirectGetReal(), right.DirectGetReal(), ctx);
+            return Modulus(left.DirectGetSingle(), right.DirectGetSingle(), ctx);
         }
         
         internal override ElaValue Power(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -279,11 +279,11 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.REA)
             {
                 if (right.TypeId == ElaMachine.DBL)
-                    return new ElaValue(Math.Pow(left.DirectGetReal(), right.Ref.AsDouble()));
+                    return new ElaValue(Math.Pow(left.DirectGetSingle(), right.Ref.AsDouble()));
                 else if (right.TypeId == ElaMachine.INT)
-                    return new ElaValue((Single)Math.Pow(left.DirectGetReal(), right.I4));
+                    return new ElaValue((Single)Math.Pow(left.DirectGetSingle(), right.I4));
                 else if (right.TypeId == ElaMachine.LNG)
-                    return new ElaValue((Single)Math.Pow(left.DirectGetReal(), right.Ref.AsLong()));
+                    return new ElaValue((Single)Math.Pow(left.DirectGetSingle(), right.Ref.AsLong()));
                 else
                 {
                     NoOverloadBinary(TCF.SINGLE, right, "power", ctx);
@@ -291,12 +291,12 @@ namespace Ela.Runtime.Classes
                 }
             }
 
-            return new ElaValue(Math.Pow(left.DirectGetReal(), right.DirectGetReal()));
+            return new ElaValue(Math.Pow(left.DirectGetSingle(), right.DirectGetSingle()));
         }
         
         internal override ElaValue Negate(ElaValue value, ExecutionContext ctx)
         {
-            return new ElaValue(-value.DirectGetReal());
+            return new ElaValue(-value.DirectGetSingle());
         }
         #endregion
     }

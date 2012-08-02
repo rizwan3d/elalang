@@ -27,12 +27,10 @@ forceOnlyList xs
 
 forceRecord r = forceTuple r
 
-forceTuple (x,y) = (forceAll x,forceAll y)
-forceTuple (x,y,z) = (forceAll y,forceAll y,forceAll z)
-forceTuple tup = lang.__tupleFromList (force 0)
+forceTuple tup = force 0
   where len = length tup 
-        force i | i == len = []
-                | else = forceAll (tup:i) :: force (i+1)
+        force i | i == len = tup
+                | else = forceAll (tup:i) $ force (i+1)
 
 internalLazyList # private
 internalLazyList = __internal api10

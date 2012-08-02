@@ -117,7 +117,8 @@ instance Default where
 //Only for algebraic, better not to use with open types
 instance IntLike where
   toInt = consIndex
-  fromInt = __internal genfromint
+  //fromInt = __internal genfromint
+  fromInt x = consCreateDefault <| consCodeByIndex context x
 
 //Only for algebraic, better not to use with open types
 instance LongLike where
@@ -127,7 +128,8 @@ instance LongLike where
 //Only for algebraic, open types are welcome
 instance StringLike where
   toString = consName
-  fromString = __internal genfromstring
+  //fromString = __internal genfromstring
+  fromString x = consCreateDefault <| consCodeByIndex context (consNameIndex context x)
 
 //(Partial) Only for algebraic, open types are welcome
 instance TupleLike where

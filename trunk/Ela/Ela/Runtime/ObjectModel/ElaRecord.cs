@@ -7,7 +7,7 @@ namespace Ela.Runtime.ObjectModel
 	public sealed class ElaRecord : ElaObject, IEnumerable<ElaRecordField>
 	{
 		private readonly string[] keys;
-        private readonly ElaValue[] values;
+        internal readonly ElaValue[] values;
 
 		public ElaRecord(params ElaRecordField[] fields) : base(ElaTypeCode.Record)
 		{

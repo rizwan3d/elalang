@@ -11,6 +11,16 @@ for a tuple.
 >>>(1,2) + (3,4)
 Also all binary functions in this instance require the tuples to be of the same length.
 
+===Ring
+Implements multiplication and 'power' for tuples.
+>>>(2,3) * (3,4)
+All functions in this instance require the tuples to be of the same length.
+
+===Field
+Implements real division for tuples.
+>>>(2,3) / (2,2)
+All functions in this instance require the tuples to be of the same length.
+
 ===Enum
 Implements functions from `Enum` class for a tuple.//br
 Functions `succ` and `pred` are implemented by sequentially applying `succ` and `pred` to all 
@@ -42,3 +52,23 @@ Checks if at least one tuple element satisfies a given predicate. This function 
 #all p t
 Checks if all tuple elements satisfy a given predicate. This function requires a qualified access.
 >>>all (>2) (1,2,3)
+
+#concat t
+Concatenates a tuple of tuples. This function requires a qualified access.
+>>>concat ((1,2),(3,4))
+
+#foldl f z xs
+Function `foldl`, applied to a binary operator, a starting value (typically the left-identity of 
+the operator), and a tuple, reduces a tuple using the binary operator, from left to right. This function
+requires a qualified access.
+
+#foldr f z xs
+Function `foldr`, applied to a binary operator, a starting value (typically the left-identity of 
+the operator), and a tuple, reduces a tuple using the binary operator, from right to left. This function
+requires a qualified access.
+
+#foldl1 f xs
+The same as `foldl`, but with a first tuple element as a starting value. This function requires a qualified access.
+
+#foldr1 f z xs
+The same as `foldr`, but with a first tuple element as a starting value. This function requires a qualified access.

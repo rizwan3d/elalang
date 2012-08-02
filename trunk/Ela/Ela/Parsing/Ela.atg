@@ -1107,7 +1107,7 @@ PRODUCTIONS
 	        ]
 	        [
 	            (. var tentative=false; .)
-	            ("->"|"~>" (.tentative=true;.)) Expr<out ctx>
+	            ("~"|"~~" (.tentative=true;.)) Expr<out ctx>
 	            (.
 	                var nctx = new ElaContext(t) { Context = ctx, Tentative=tentative };
 	            

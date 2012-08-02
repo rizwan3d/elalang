@@ -15,7 +15,15 @@ namespace Ela.Library.General
 
 		}
 		#endregion
-		
+
+        sealed class Fun2 : ElaFunction
+        {
+            public Fun2() : base() { }
+            public override ElaValue Call(params ElaValue[] args)
+            {
+                return new ElaValue(ElaUnit.Instance);
+            }
+        }
 		
 		#region Methods
 		public override void Initialize()
@@ -23,13 +31,13 @@ namespace Ela.Library.General
 			Add<ElaObject>("startClock", StartClock);
             Add<Wrapper<Stopwatch>,String>("stopClock", StopClock);
 			Add<Int32,ElaUnit>("sleep", Sleep);
-            Add<ElaUnit>("collect", Collect);
+            Add<ElaUnit,ElaUnit>("fun1", Fun1);
+            Add("fun2",new Fun2());
             Add<Int32,Int32,Int32,ElaList>("enumFromTo2", EnumFromTo);
         }
 
-        public ElaUnit Collect()
+        public ElaUnit Fun1(ElaUnit unit)
         {
-            GC.Collect();
             return ElaUnit.Instance;
         }
         

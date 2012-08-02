@@ -23,15 +23,15 @@ This is a constant that returns an empty queue. This constant requires a qualifi
 
 #enqueue e qu
 Appends an elements to the beggining of a given queue and returns a new queue:
->>>qu = fromList [1..10] -> Queue
+>>>qu = fromList [1..10] ~ Queue
 >>>enqueue 22 qu
 
 #dequeue qu
 Removes a first element from a queue and returns a new queue:
->>>qu' = fromList ['a','b','c'] -> Queue
+>>>qu' = fromList ['a','b','c'] ~ Queue
 >>>dequeue qu'
 
 #peek qu
 Returns a value from the beggining of a queue without removing it:
->>>sq = fromList ["foo","bar"] -> Queue
+>>>sq = fromList ["foo","bar"] ~ Queue
 >>>peek sq

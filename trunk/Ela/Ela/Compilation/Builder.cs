@@ -124,9 +124,12 @@ namespace Ela.Compilation
 
                         AddLinePragma(v);
 
+                        StartScope(false, v.Line, v.Column);
                         cw.Emit(v.Tentative ? Op.Ctxtnt : Op.Ctxset);
+                        AddVariable("context", v, ElaVariableFlags.Context, -1);
                         CompileExpression(v.Expression, map, hints);
                         cw.Emit(v.Tentative ? Op.Ctxclst : Op.Ctxcls);
+                        EndScope();
                     }
                     break;
                 case ElaNodeType.Builtin:
@@ -277,7 +280,14 @@ namespace Ela.Compilation
                         AddLinePragma(v);
                         var scopeVar = GetVariable(v.Name, v.Line, v.Column);
 
-                        PushVar(scopeVar);
+                        //This is context value, not a real variable
+                        if ((scopeVar.Flags & ElaVariableFlags.Context) == ElaVariableFlags.Context)
+                        {
+                            cw.Emit(Op.Pushunit);
+                            cw.Emit(Op.Api, (Int32)Api.CurrentContext);
+                        }
+                        else
+                            PushVar(scopeVar);
 
                         if ((hints & Hints.Left) == Hints.Left)
                             AddValueNotUsed(v);
