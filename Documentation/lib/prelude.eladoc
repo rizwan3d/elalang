@@ -328,7 +328,7 @@ not needed.
 #Bounded
 This class defines two functions `maxBound` and `minBound` that accept an argument and return a
 maximum and a minimum possible value for this argument.
->>>maxBound -> Single
+>>>maxBound ~ Single
 
 ==Numeric classes
 

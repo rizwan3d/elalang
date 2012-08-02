@@ -1517,7 +1517,13 @@ namespace Ela.Runtime
             switch ((Api)code)
             {
                 case Api.CurrentContext:
-                    return new ElaValue(thread.Context.DispatchContext.Peek());
+                    var ic = thread.Context.DispatchContext.Peek();
+
+                    if (ic == 0)
+                        thread.Context.Fail(ElaRuntimeError.ZeroContext);
+                    else
+                        return new ElaValue(ic);
+                    break;
                 case Api.ListToString:
                     {
                         if (left.TypeId != LST)

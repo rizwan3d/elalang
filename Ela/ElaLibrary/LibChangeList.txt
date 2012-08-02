@@ -1,3 +1,6 @@
+0.1.5.8:New:Instances for 'Field' and 'Ring' classes added to 'tuple' module. (Issue #22)
+0.1.5.7:New:Functions 'foldl', 'foldr', 'foldl1' and 'foldr1' added to 'tuple' module.
+0.1.5.6:New:A new 'concat' function added to 'tuple' module.
 0.1.5.5:Change:A negation function from 'Additive' class from prelude is now called 'negate', and '--' symbol is provided as its synonym.
 0.1.5.4:Fix:A 'reverse' function in prelude, when applied to a value other than list, used to crash VM instead of generating an appropriate exception.
 0.1.5.3:New:Now an instance for Ord class is provided for lists in prelude module (lists now can be compared using comparison operators). (Issue #28)

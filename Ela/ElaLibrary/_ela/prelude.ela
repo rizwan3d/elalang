@@ -188,7 +188,7 @@ instance Eq List where
 eqRecord # private
 eqRecord rec1 rec2 = len == length rec2 and eq 0
   where len = length rec1
-        eq n | n < len = if n~rec1 == n~rec2 and rec1:n == rec2:n then eq (n+1) else false
+        eq n | n < len = if n!!rec1 == n!!rec2 and rec1:n == rec2:n then eq (n+1) else false
              | else = true
 
 /* Ord */
@@ -353,7 +353,7 @@ instance Show Record where
           tos sb n 
             | n < len = tos (sbb +> ",") (n+1)
             | else = sbb +> "}"
-            where sbb = sb +> n~t +> "=" +> showf f (t:n)
+            where sbb = sb +> n!!t +> "=" +> showf f (t:n)
 
 /* xLike */
 class IntLike a where
@@ -413,108 +413,108 @@ instance IntLike Int where
   fromInt = id
 
 instance IntLike Long where
-  toInt = lang.__toInt
-  fromInt = lang.__toLong
+  toInt = lang.asInt
+  fromInt = lang.asLong
 
 instance IntLike Single where
-  toInt = lang.__toInt
-  fromInt = lang.__toSingle
+  toInt = lang.asInt
+  fromInt = lang.asSingle
 
 instance IntLike Double where
-  toInt = lang.__toInt
-  fromInt = lang.__toDouble
+  toInt = lang.asInt
+  fromInt = lang.asDouble
 
 instance IntLike Char where
-  toInt = lang.__toInt
-  fromInt = lang.__toChar
+  toInt = lang.asInt
+  fromInt = lang.asChar
 
 instance IntLike Bool where
-  toInt = lang.__toInt
-  fromInt = lang.__toBool
+  toInt = lang.asInt
+  fromInt = lang.asBool
 
 instance LongLike Long where
   toLong = id
   fromLong = id
 
 instance LongLike Int where
-  toLong = lang.__toLong
-  fromLong = lang.__toInt
+  toLong = lang.asLong
+  fromLong = lang.asInt
 
 instance LongLike Single where
-  toLong = lang.__toLong
-  fromLong = lang.__toSingle
+  toLong = lang.asLong
+  fromLong = lang.asSingle
 
 instance LongLike Double where
-  toLong = lang.__toLong
-  fromLong = lang.__toDouble
+  toLong = lang.asLong
+  fromLong = lang.asDouble
 
 instance LongLike Char where
-  toLong = lang.__toLong
-  fromLong = lang.__toChar
+  toLong = lang.asLong
+  fromLong = lang.asChar
 
 instance LongLike Bool where
-  toLong = lang.__toLong
-  fromLong = lang.__toBool
+  toLong = lang.asLong
+  fromLong = lang.asBool
 
 instance SingleLike Single where
   toSingle = id
   fromSingle = id
 
 instance SingleLike Int where
-  toSingle = lang.__toSingle
-  fromSingle = lang.__toInt
+  toSingle = lang.asSingle
+  fromSingle = lang.asInt
 
 instance SingleLike Double where
-  toSingle = lang.__toSingle
-  fromSingle = lang.__toDouble
+  toSingle = lang.asSingle
+  fromSingle = lang.asDouble
 
 instance SingleLike Long where
-  toSingle = lang.__toSingle
-  fromSingle = lang.__toLong
+  toSingle = lang.asSingle
+  fromSingle = lang.asLong
 
 instance DoubleLike Double where
   toDouble = id
   fromDouble = id
 
 instance DoubleLike Int where
-  toDouble = lang.__toDouble
-  fromDouble = lang.__toInt
+  toDouble = lang.asDouble
+  fromDouble = lang.asInt
 
 instance DoubleLike Single where
-  toDouble = lang.__toDouble
-  fromDouble = lang.__toSingle
+  toDouble = lang.asDouble
+  fromDouble = lang.asSingle
 
 instance DoubleLike Long where
-  toDouble = lang.__toDouble
-  fromDouble = lang.__toLong
+  toDouble = lang.asDouble
+  fromDouble = lang.asLong
 
 instance CharLike Char where
   toChar = id
   fromChar = id
 
 instance CharLike Int where
-  toChar = lang.__toChar
-  fromChar = lang.__toInt
+  toChar = lang.asChar
+  fromChar = lang.asChar
 
 instance BoolLike Bool where
   toBool = id
   fromBool = id
   
 instance BoolLike Int where
-  toBool = lang.__toBool
-  fromBool = lang.__toInt
+  toBool = lang.asBool
+  fromBool = lang.asInt
 
 instance BoolLike Long where
-  toBool = lang.__toBool
-  fromBool = lang.__toLong
+  toBool = lang.asBool
+  fromBool = lang.asLong
   
 instance StringLike String where
   toString = id
   fromString = id
 
 instance StringLike Char where
-  toString = lang.__toString
-  fromString = lang.__toChar
+  toString = lang.asString
+  fromString = lang.asChar
 
 /* Misc */
 force = __internal force
@@ -538,8 +538,8 @@ even x = x % 2 == 0
 odd x = x % 2 <> 0
 
 /* Privates */
-(~) # private
-(~) = __internal api106
+(!!) # private
+(!!) = __internal api106
 
 listLazy # private
 listLazy = __internal api10

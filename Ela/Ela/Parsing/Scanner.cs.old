@@ -402,12 +402,12 @@ internal sealed class Scanner {
 			case "::": t.kind = 57; break;
 			case "or": t.kind = 58; break;
 			case "and": t.kind = 59; break;
-			case "~": t.kind = 61; break;
-			case "$": t.kind = 62; break;
-			case "__internal": t.kind = 63; break;
-			case "&": t.kind = 64; break;
-			case "<-": t.kind = 65; break;
-			case "~>": t.kind = 66; break;
+			case "$": t.kind = 61; break;
+			case "__internal": t.kind = 62; break;
+			case "&": t.kind = 63; break;
+			case "<-": t.kind = 64; break;
+			case "~": t.kind = 65; break;
+			case "~~": t.kind = 66; break;
 			case "deriving": t.kind = 67; break;
 			default: break;
 		}

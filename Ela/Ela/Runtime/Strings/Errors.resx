@@ -213,4 +213,7 @@
   <data name="UserCode" xml:space="preserve">
     <value>An error in user code occured.</value>
   </data>
+  <data name="ZeroContext" xml:space="preserve">
+    <value>Context is invalid.</value>
+  </data>
 </root>

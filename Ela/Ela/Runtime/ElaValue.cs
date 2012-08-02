@@ -66,17 +66,52 @@ namespace Ela.Runtime
 		#endregion
 
 		#region Casting
-        internal float GetReal()
+        internal int GetInt()
+        {
+            if (TypeCode == ElaTypeCode.Long)
+                return (Int32)Ref.AsLong();
+            else if (TypeCode == ElaTypeCode.Double)
+                return (Int32)Ref.AsDouble();
+            else if (TypeCode == ElaTypeCode.Single)
+                return (Int32)DirectGetSingle();
+
+            return I4;
+        }
+
+        internal bool GetBool()
+        {
+            if (TypeCode == ElaTypeCode.Long)
+                return Ref.AsLong() == 1;
+
+            return I4 == 1;
+        }
+
+        internal char GetChar()
+        {
+            if (TypeCode == ElaTypeCode.Long)
+                return (Char)Ref.AsLong();
+            else if (TypeCode == ElaTypeCode.String)
+            {
+                var s = DirectGetString();
+                return s.Length == 0 ? '\0' : s[0];
+            }
+            
+            return (Char)I4;
+        }
+
+        internal float GetSingle()
         {
             if (TypeCode == ElaTypeCode.Integer)
                 return (Single)I4;
             else if (TypeCode == ElaTypeCode.Long)
-                return (Single)((ElaLong)Ref).Value;
+                return (Single)Ref.AsLong();
+            else if (TypeCode == ElaTypeCode.Double)
+                return (Single)Ref.AsDouble();
 
-            return DirectGetReal();
+            return DirectGetSingle();
         }
 
-        internal float DirectGetReal()
+        internal float DirectGetSingle()
         {
             var conv = new Conv();
             conv.I4_1 = I4;
@@ -90,15 +125,22 @@ namespace Ela.Runtime
 
         internal double GetDouble()
         {
-            return TypeCode == ElaTypeCode.Double ? ((ElaDouble)Ref).Value :
-                TypeCode == ElaTypeCode.Single ? DirectGetReal() :
-                TypeCode == ElaTypeCode.Long ? ((ElaLong)Ref).Value :
+            return TypeCode == ElaTypeCode.Double ? Ref.AsDouble() :
+                TypeCode == ElaTypeCode.Single ? DirectGetSingle() :
+                TypeCode == ElaTypeCode.Long ? Ref.AsLong() :
                 (Double)I4;
         }
 
         internal long GetLong()
         {
-            return TypeCode == ElaTypeCode.Long ? ((ElaLong)Ref).Value : I4;
+            if (TypeCode == ElaTypeCode.Long)
+                return Ref.AsLong();
+            else if (TypeCode == ElaTypeCode.Double)
+                return (Int64)Ref.AsDouble();
+            else if (TypeCode == ElaTypeCode.Single)
+                return (Int64)DirectGetSingle();
+
+            return (Int64)I4;
         }
 
 		public override string ToString()
@@ -114,7 +156,7 @@ namespace Ela.Runtime
             if (TypeId == ElaMachine.INT)
                 return I4.ToString(format, formatProvider);
             else if (TypeId == ElaMachine.REA)
-                return DirectGetReal().ToString(format, Culture.NumberFormat);
+                return DirectGetSingle().ToString(format, Culture.NumberFormat);
             else if (TypeId == ElaMachine.CHR)
                 return ((Char)I4).ToString();
             else if (TypeId == ElaMachine.BYT)
@@ -128,7 +170,7 @@ namespace Ela.Runtime
             switch (Ref.TypeId)
             {
                 case ElaMachine.INT: return I4.GetHashCode();
-                case ElaMachine.REA: return DirectGetReal().GetHashCode();
+                case ElaMachine.REA: return DirectGetSingle().GetHashCode();
                 case ElaMachine.CHR: return ((Char)I4).GetHashCode();
                 case ElaMachine.BYT: return (I4 == 1).GetHashCode();
                 default: return Ref.GetHashCode();
@@ -196,7 +238,7 @@ namespace Ela.Runtime
             if (ti == typeof(Int32) && val.TypeId == ElaMachine.INT)
                 return val.I4;
             else if (ti == typeof(Single) && val.TypeId <= ElaMachine.REA)
-                return val.GetReal();
+                return val.GetSingle();
             else if (ti == typeof(Int64) && val.TypeId <= ElaMachine.LNG)
                 return val.GetLong();
             else if (ti == typeof(Double) && val.TypeId <= ElaMachine.DBL)
@@ -313,7 +355,7 @@ namespace Ela.Runtime
 				case ElaTypeCode.Double: return Ref.AsDouble();
 				case ElaTypeCode.Integer: return I4;
 				case ElaTypeCode.Long: return Ref.AsLong();
-				case ElaTypeCode.Single: return DirectGetReal();
+				case ElaTypeCode.Single: return DirectGetSingle();
 				case ElaTypeCode.String: return DirectGetString();
 				case ElaTypeCode.Unit: return null;
 				case ElaTypeCode.Lazy:
@@ -353,7 +395,7 @@ namespace Ela.Runtime
         public float AsSingle()
         {
             if (TypeCode == ElaTypeCode.Single)
-                return DirectGetReal();
+                return DirectGetSingle();
 
             throw InvalidCast(typeof(Single));
         }

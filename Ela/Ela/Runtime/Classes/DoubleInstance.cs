@@ -19,7 +19,7 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.DBL)
             {
                 if (right.TypeId == ElaMachine.REA)
-                    return left.Ref.AsDouble() == right.DirectGetReal();
+                    return left.Ref.AsDouble() == right.DirectGetSingle();
                 else if (right.TypeId == ElaMachine.INT)
                     return left.Ref.AsDouble() == right.I4;
                 else if (right.TypeId == ElaMachine.LNG)
@@ -39,7 +39,7 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.DBL)
             {
                 if (right.TypeId == ElaMachine.REA)
-                    return left.Ref.AsDouble() != right.DirectGetReal();
+                    return left.Ref.AsDouble() != right.DirectGetSingle();
                 else if (right.TypeId == ElaMachine.INT)
                     return left.Ref.AsDouble() != right.I4;
                 else if (right.TypeId == ElaMachine.LNG)
@@ -59,7 +59,7 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.DBL)
             {
                 if (right.TypeId == ElaMachine.REA)
-                    return left.Ref.AsDouble() > right.DirectGetReal();
+                    return left.Ref.AsDouble() > right.DirectGetSingle();
                 else if (right.TypeId == ElaMachine.INT)
                     return left.Ref.AsDouble() > right.I4;
                 else if (right.TypeId == ElaMachine.LNG)
@@ -79,7 +79,7 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.DBL)
             {
                 if (right.TypeId == ElaMachine.REA)
-                    return left.Ref.AsDouble() < right.DirectGetReal();
+                    return left.Ref.AsDouble() < right.DirectGetSingle();
                 else if (right.TypeId == ElaMachine.INT)
                     return left.Ref.AsDouble() < right.I4;
                 else if (right.TypeId == ElaMachine.LNG)
@@ -99,7 +99,7 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.DBL)
             {
                 if (right.TypeId == ElaMachine.REA)
-                    return left.Ref.AsDouble() >= right.DirectGetReal();
+                    return left.Ref.AsDouble() >= right.DirectGetSingle();
                 else if (right.TypeId == ElaMachine.INT)
                     return left.Ref.AsDouble() >= right.I4;
                 else if (right.TypeId == ElaMachine.LNG)
@@ -119,7 +119,7 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.DBL)
             {
                 if (right.TypeId == ElaMachine.REA)
-                    return left.Ref.AsDouble() <= right.DirectGetReal();
+                    return left.Ref.AsDouble() <= right.DirectGetSingle();
                 else if (right.TypeId == ElaMachine.INT)
                     return left.Ref.AsDouble() <= right.I4;
                 else if (right.TypeId == ElaMachine.LNG)
@@ -141,7 +141,7 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.DBL)
             {
                 if (right.TypeId == ElaMachine.REA)
-                    return new ElaValue(left.Ref.AsDouble() + right.DirectGetReal());
+                    return new ElaValue(left.Ref.AsDouble() + right.DirectGetSingle());
                 else if (right.TypeId == ElaMachine.INT)
                     return new ElaValue(left.Ref.AsDouble() + right.I4);
                 else if (right.TypeId == ElaMachine.LNG)
@@ -161,7 +161,7 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.DBL)
             {
                 if (right.TypeId == ElaMachine.REA)
-                    return new ElaValue(left.Ref.AsDouble() - right.DirectGetReal());
+                    return new ElaValue(left.Ref.AsDouble() - right.DirectGetSingle());
                 else if (right.TypeId == ElaMachine.INT)
                     return new ElaValue(left.Ref.AsDouble() - right.I4);
                 else if (right.TypeId == ElaMachine.LNG)
@@ -181,7 +181,7 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.DBL)
             {
                 if (right.TypeId == ElaMachine.REA)
-                    return new ElaValue(left.Ref.AsDouble() * right.DirectGetReal());
+                    return new ElaValue(left.Ref.AsDouble() * right.DirectGetSingle());
                 else if (right.TypeId == ElaMachine.INT)
                     return new ElaValue(left.Ref.AsDouble() * right.I4);
                 else if (right.TypeId == ElaMachine.LNG)
@@ -201,7 +201,7 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.DBL)
             {
                 if (right.TypeId == ElaMachine.REA)
-                    return new ElaValue(left.Ref.AsDouble() / right.DirectGetReal());
+                    return new ElaValue(left.Ref.AsDouble() / right.DirectGetSingle());
                 else if (right.TypeId == ElaMachine.INT)
                     return new ElaValue(left.Ref.AsDouble() / right.I4);
                 else if (right.TypeId == ElaMachine.LNG)
@@ -227,7 +227,7 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.DBL)
             {
                 if (right.TypeId == ElaMachine.REA)
-                    return new ElaValue(left.Ref.AsDouble() % right.DirectGetReal());
+                    return new ElaValue(left.Ref.AsDouble() % right.DirectGetSingle());
                 else if (right.TypeId == ElaMachine.INT)
                     return new ElaValue(left.Ref.AsDouble() % right.I4);
                 else if (right.TypeId == ElaMachine.LNG)
@@ -253,7 +253,7 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.DBL)
             {
                 if (right.TypeId == ElaMachine.REA)
-                    return new ElaValue(Math.Pow(left.Ref.AsDouble(), right.DirectGetReal()));
+                    return new ElaValue(Math.Pow(left.Ref.AsDouble(), right.DirectGetSingle()));
                 else if (right.TypeId == ElaMachine.INT)
                     return new ElaValue(Math.Pow(left.Ref.AsDouble(), right.I4));
                 else if (right.TypeId == ElaMachine.LNG)
@@ -279,7 +279,7 @@ namespace Ela.Runtime.Classes
             if (right.TypeId != ElaMachine.DBL)
             {
                 if (right.TypeId == ElaMachine.REA)
-                    return DoubleInstance.Modulus(left.Ref.AsDouble(), right.DirectGetReal(), ctx);
+                    return DoubleInstance.Modulus(left.Ref.AsDouble(), right.DirectGetSingle(), ctx);
                 else if (right.TypeId == ElaMachine.INT)
                     return DoubleInstance.Modulus(left.Ref.AsDouble(), right.I4, ctx);
                 else if (right.TypeId == ElaMachine.LNG)

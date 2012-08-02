@@ -66,6 +66,8 @@ namespace Ela.Runtime
 
         NoContext = 829,
 
+        ZeroContext = 830,
+
 
 		UserCode = 999
 	}
