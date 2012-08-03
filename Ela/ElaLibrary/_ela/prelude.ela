@@ -119,20 +119,15 @@ revList # private
 revList = __internal api12
 
 /* String builder */
-type StringBuilder = StringBuilder xs # private
-
-stringBuilder = StringBuilder []
-
-(StringBuilder xs) +> s = StringBuilder (s::xs)
+type StringBuilder = sb +> s
 
 instance StringLike StringBuilder where
-  toString (StringBuilder xs) = lts xs
-    where lts = __internal api13
-  fromString s = stringBuilder +> s
+  toString sb = lang.asString sb
+  fromString s = "" +> s
 
 instance Eq StringBuilder where
-  (StringBuilder xs) == (StringBuilder ys) = xs == ys
-  (StringBuilder xs) <> (StringBuilder ys) = xs <> ys
+  (a +> b) == (c +> d) = a == b or c == d
+  a <> b = not (a == b)
 
 instance Show StringBuilder where
   showf _ = toString
@@ -334,7 +329,7 @@ show = showf ""
 
 instance Show Tuple where 
   showf f (x,) = "(" ++ showf f x ++ ",)"
-  showf f t = toString <| tos (stringBuilder +> "(") 0
+  showf f t = toString <| tos ("" +> "(") 0
     where len = length t - 1
           tos sb n 
             | n < len = tos (sbb +> ",") (n+1)
@@ -343,12 +338,12 @@ instance Show Tuple where
 
 instance Show List where 
   showf _ [] = "[]"
-  showf f xs = toString <| tos (stringBuilder +> "[") xs
+  showf f xs = toString <| tos ("" +> "[") xs
     where tos sb (x::[]) = sb +> showf f x +> "]"
           tos sb (x::xs) = tos (sb +> showf f x +> ",") xs
 
 instance Show Record where 
-  showf f t = toString <| tos (stringBuilder +> "{") 0
+  showf f t = toString <| tos ("" +> "{") 0
     where len = length t - 1
           tos sb n 
             | n < len = tos (sbb +> ",") (n+1)

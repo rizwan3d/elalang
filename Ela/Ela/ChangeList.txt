@@ -1,3 +1,4 @@
+0.11.1.6:Fix:Now linker can detect cyclic module references and generate appropriate errors. (Issue #27)
 0.11.1.5:New:Default contexts are added. Default contexts are applied when there is no other context.
 0.11.1.4:New:Now it is possible to resolve overloading by return type through explicit context annotations.
 0.11.1.3:New:Now classes support overloading by return type as well (signatures for classes have changed and now always include a return type).
@@ -50,7 +51,7 @@
 0.11.0.18:Change:Behavior of op codes Newmod and Runmod was changed and optimized.
 0.11.0.17:Change:A 'standard library' settings of a linker is decomissioned.
 0.11.0.16:Fix:It was impossible to implement a class from a module referenced using 'import' directive (not 'open' directive).
-0.11.0.15:Change:Built-in class enum is decomissioned. Instead new classes 'Additive', 'Ring', 'Field' and 'Modulo' are introduced.
+0.11.0.15:Change:Built-in class Num is decomissioned. Instead new classes 'Additive', 'Ring', 'Field' and 'Modulo' are introduced.
 0.11.0.14:Change:Layout rules for instance and type are now more flexible.
 0.11.0.13:Change:Error messages for overloads failures are greatly improved.
 0.11.0.12:Fix:It was impossible to call overloaded Ela functions from .NET because of a bug.

@@ -88,6 +88,8 @@ namespace Ela.Linking
 		}
 
 		
+        //Modules that are being processed (but are not completely processed yet, used to detect cyclic references).
+        private Dictionary<String,String> inProc = new Dictionary<String,String>();
 		internal CodeFrame ResolveModule(FileInfo parentFile, ModuleReference mod, ExportVars exportVars)
 		{
             var frame = default(CodeFrame);
@@ -124,19 +126,30 @@ namespace Ela.Linking
                                             
                     if (fi != null)
                     {
-                        if ((frame = Assembly.GetModule(fi.FullName.ToUpper(), out hdl)) != null)
-                        {
-                            //Do nothing
-                        }
-                        else if (!bin)
-                        {
-                            frame = Build(parentFile, mod, fi);
-                            hdl = RegisterFrame(mod, frame, fi, false, mod.LogicalHandle);
-                        }
+                        var kv = fi.FullName.ToUpper();
+
+                        if (inProc.ContainsKey(kv))
+                            AddError(ElaLinkerError.CyclicReference, parentFile, mod.Line, mod.Column, fi.FullName);
                         else
                         {
-                            frame = ReadObjectFile(parentFile, mod, fi);
-                            hdl = RegisterFrame(mod, frame, fi, false, mod.LogicalHandle);
+                            inProc.Add(kv, null);
+
+                            if ((frame = Assembly.GetModule(fi.FullName.ToUpper(), out hdl)) != null)
+                            {
+                                //Do nothing
+                            }
+                            else if (!bin)
+                            {
+                                frame = Build(parentFile, mod, fi);
+                                hdl = RegisterFrame(mod, frame, fi, false, mod.LogicalHandle);
+                            }
+                            else
+                            {
+                                frame = ReadObjectFile(parentFile, mod, fi);
+                                hdl = RegisterFrame(mod, frame, fi, false, mod.LogicalHandle);
+                            }
+
+                            inProc.Remove(kv);
                         }
                     }
                     else
@@ -533,6 +546,7 @@ namespace Ela.Linking
 
             return true;
         }
+
 
 
 		internal CompilerResult Compile(FileInfo file, ElaProgram prog, CodeFrame frame, Scope scope, bool noPrelude)

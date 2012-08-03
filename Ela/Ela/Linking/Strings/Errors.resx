@@ -120,6 +120,9 @@
   <data name="AssemblyLoad" xml:space="preserve">
     <value>Unable to load assembly '{0}' because of an error: {1}.</value>
   </data>
+  <data name="CyclicReference" xml:space="preserve">
+    <value>A cyclic reference of module '{0}'.</value>
+  </data>
   <data name="DuplicateModuleInAssembly" xml:space="preserve">
     <value>Duplicate module name '{0}' in assembly '{1}'.</value>
   </data>

@@ -1,3 +1,4 @@
+0.1.5.9:Change:StringBuilder type from prelude is redesigned and string concatenation through this type is now much more effecient and easier to use.
 0.1.5.8:New:Instances for 'Field' and 'Ring' classes added to 'tuple' module. (Issue #22)
 0.1.5.7:New:Functions 'foldl', 'foldr', 'foldl1' and 'foldr1' added to 'tuple' module.
 0.1.5.6:New:A new 'concat' function added to 'tuple' module.
