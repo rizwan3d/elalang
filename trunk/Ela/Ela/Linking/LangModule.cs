@@ -22,6 +22,33 @@ namespace Ela.Linking
 
         public ElaValue AsString(ElaValue val)
         {
+            if (val.TypeId > SysConst.MAX_TYP)
+            {
+                var tid = val.TypeId;
+                var sb = new StringBuilder();
+                var usb = val.Ref as ElaUserType;
+                var xs = new List<String>();
+
+                while (usb != null && usb.Values != null)
+                {
+                    xs.Add(usb.Values[1].ToString());
+                    var td = usb.Values[0].Ref;
+
+                    if (td.TypeId == tid)
+                        usb = (ElaUserType)td;
+                    else
+                    {
+                        usb = null;
+                        xs.Add(td.ToString());
+                    }
+                }
+
+                for (var i = xs.Count - 1; i > -1; i--)
+                    sb.Append(xs[i]);
+
+                return new ElaValue(sb.ToString());
+            }
+
             return new ElaValue(val.AsString());
         }
 

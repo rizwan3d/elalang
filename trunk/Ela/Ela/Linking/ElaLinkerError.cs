@@ -32,5 +32,7 @@ namespace Ela.Linking
         ExportedNameChanged = 611,
 
         InstanceAlreadyExists = 612,
+
+        CyclicReference = 613,
 	}
 }

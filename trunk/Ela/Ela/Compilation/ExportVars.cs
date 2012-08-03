@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ela.CodeModel;
+using System.IO;
 
 namespace Ela.Compilation
 {
