@@ -41,10 +41,12 @@ test_given t xs x = test_sg (Given x :: xs) t
 
 test_apply # private
 test_apply t xs tit fn
-      | maxN == 0 = test_sg (tit (fn,[]) :: xs) t
-      | else = test_apply_for 1 [] fn
+  | maxN == 0 = test_sg (tit (fn,[]) :: xs) t
+  | else = test_apply_for 1 [] fn
   where args = funArgsCount fn - funAppliedArgsCount fn
-        maxN | args > 0 = args - 1 | else = 0
+        maxN 
+          | args > 0 = args - 1 
+          | else = 0
         test_apply_for n ys fn x 
           | n < maxN = test_apply_for (n+1) (x::ys) fn
           | else = test_sg (tit (fn,x::ys) :: xs) t
@@ -115,7 +117,7 @@ stat f e (Pred (_,_,_,Error)::xs) = stat f (e+1) xs
 stat f e (_::xs) = stat f e xs
 
 report # private
-report xs = (f, e, toString <| report_stat stringBuilder f e xs)
+report xs = (f, e, toString <| report_stat "" f e xs)
   where (f,e) = stat 0 0 xs
 
 report_stat # private

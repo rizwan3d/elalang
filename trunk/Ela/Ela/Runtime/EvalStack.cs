@@ -67,15 +67,12 @@ namespace Ela.Runtime
         internal ElaValue Pop()
 		{
             --size;
+            var ret = array[size];
 
-            if (array[size].Ref.TypeId > 5)
-            {
-                var ret = array[size];
+            if (ret.Ref.TypeId > 5)
                 array[size].Ref = null;
-                return ret;
-            }
 
-            return array[size];
+            return ret;
 		}
         
 		internal ElaValue Peek()
@@ -86,7 +83,12 @@ namespace Ela.Runtime
 		internal void Push(ElaValue val)
 		{
 			array[size++] = val;
-		}
+        }
+
+        internal void Push(ElaObject val)
+        {
+            array[size++] = new ElaValue(val);
+        }
 
         internal void Dup()
         {
@@ -97,31 +99,36 @@ namespace Ela.Runtime
 		internal void Push(int val)
 		{
             emptyInt.I4 = val;
-            array[size++] = emptyInt;// new ElaValue(val);
+            array[size++] = emptyInt;
 		}
         
         private ElaValue emptyBool = new ElaValue(ElaBoolean.Instance);
         internal void Push(bool val)
 		{
             emptyBool.I4 = val ? 1 :0;
-            array[size++] = emptyBool;// new ElaValue(val);
+            array[size++] = emptyBool;
 		}
         
 		internal void Replace(ElaValue val)
 		{
 			array[size - 1] = val;
-		}
+        }
+
+        internal void Replace(ElaObject val)
+        {
+            array[size - 1] = new ElaValue(val);
+        }
         
 		internal void Replace(int val)
 		{
             emptyInt.I4 = val;
-            array[size - 1] = emptyInt;// new ElaValue(val);
+            array[size - 1] = emptyInt;
 		}
 
         internal void Replace(bool val)
 		{
             emptyBool.I4 = val ? 1 : 0;
-            array[size - 1] = emptyBool;// new ElaValue(val);
+            array[size - 1] = emptyBool;
 		}
 
 		internal int Count

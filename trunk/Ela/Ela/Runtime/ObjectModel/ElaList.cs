@@ -61,12 +61,7 @@ namespace Ela.Runtime.ObjectModel
         {
             return new ElaValue(new ElaList(this, value));
         }
-        
-		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
-		{
-			return new ElaValue(new ElaList(this, value));
-		}
-        
+                
 		protected internal override ElaValue GenerateFinalize(ExecutionContext ctx)
 		{
             return new ElaValue(Reverse());

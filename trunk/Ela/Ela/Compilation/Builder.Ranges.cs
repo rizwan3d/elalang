@@ -110,13 +110,13 @@ namespace Ela.Compilation
 			{
 				cw.Emit(Op.PushI4, fstVal);
 				fstVal = sndVal;
-				cw.Emit(Op.Gen);
+				cw.Emit(Op.Cons);
 			}
 
 			for (;;)
 			{
 				cw.Emit(Op.PushI4, fstVal);
-				cw.Emit(Op.Gen);
+				cw.Emit(Op.Cons);
 				fstVal += step;
 
 				if (step > 0)

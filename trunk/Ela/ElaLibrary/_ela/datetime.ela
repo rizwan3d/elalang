@@ -6,8 +6,7 @@ import libDateTime#elalib@dt
 open generic
 
 /* Construction */
-type DateTime = 
-  | DateTime a # private
+type DateTime = DateTime a # private
 
 fromTicks # qualified
 fromTicks x = DateTime (force x)

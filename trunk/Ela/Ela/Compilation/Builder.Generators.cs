@@ -53,7 +53,7 @@ namespace Ela.Compilation
 				CompileExpression(s.Body, newMap, Hints.Scope);
 
 				if (s.Body.Type != ElaNodeType.Generator)
-					cw.Emit(Op.Gen);
+					cw.Emit(Op.Cons);
 			}
 
 			cw.Emit(Op.Br, iter);
@@ -133,7 +133,7 @@ namespace Ela.Compilation
 				PushVar(1 | (funAddr >> 8) << 8);
 				cw.Emit(Op.LazyCall);
 				CompileExpression(s.Body, map, Hints.None);
-				cw.Emit(Op.Gen);
+				cw.Emit(Op.Cons);
 				cw.Emit(Op.Br, exitLab);
 			}
 

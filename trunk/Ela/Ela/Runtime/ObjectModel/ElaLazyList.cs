@@ -58,14 +58,6 @@ namespace Ela.Runtime.ObjectModel
             return new ElaValue(new ElaLazyList(this, value));
         }
 
-		protected internal override ElaValue Generate(ElaValue value, ExecutionContext ctx)
-		{
-			if (thunk != null)
-				return new ElaValue(new ElaLazyList(thunk, value));
-			else
-				return new ElaValue(new ElaLazyList((ElaLazyList)InternalNext, value));
-		}
-
 		protected internal override ElaValue GenerateFinalize(ExecutionContext ctx)
 		{
 			return new ElaValue(this);

@@ -22,10 +22,13 @@ instance Enum Tuple where
   succ = map succ
   pred = map pred
   enumFrom fst snd = gen fst (snd-fst)
-    where gen e s = e :: (& gen (e+s) s)
+    where gen e s = & e :: gen (e+s) s
   enumFromTo max fst snd = gen [] max fst (snd-fst)
-    where gen xs max e s 
-            | e > max = reverse xs
+    where 
+        p | snd > fst = (>)
+          | else = (<)
+        gen xs max e s 
+            | p e max = reverse xs
             | else = gen (e::xs) max (e+s) s
 
 instance ListLike Tuple where
@@ -66,9 +69,9 @@ concat # qualified
 concat = foldl1 (++)
 
 join # qualified
-join f (x,) (a,) = (x `f` a,)
-join f (x,y) (a,b) = (x `f` a, y `f` b)
-join f (x,y,z) (a,b,c) = (x `f` a,y `f` b,z `f` c)
+join f (x,) (a,) = (f x a,)
+join f (x,y) (a,b) = (f x a,f y b)
+join f (x,y,z) (a,b,c) = (f x a,f y b,f z c)
 join f t1 t2 
   | len <> length t2 = fail "tuple.join: Tuples should be of the same length." 
   | else = fromList (fold 0) ~ Tuple
