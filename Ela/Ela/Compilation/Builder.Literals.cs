@@ -102,7 +102,7 @@ namespace Ela.Compilation
             for (var i = 0; i < len; i++)
             {
                 CompileExpression(p.Values[p.Values.Count - i - 1], map, Hints.None);
-                cw.Emit(Op.Gen);
+                cw.Emit(Op.Cons);
             }
 
             if ((hints & Hints.Left) == Hints.Left)

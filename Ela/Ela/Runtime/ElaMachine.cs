@@ -282,7 +282,7 @@ namespace Ela.Runtime
                         evalStack.Push(new ElaValue(frame.Strings[opd]));
                         break;
                     case Op.Pushstr_0:
-                        evalStack.Push(new ElaValue(ElaString.Empty));
+                        evalStack.Push(ElaString.Empty);
                         break;
                     case Op.PushI4:
                         evalStack.Push(opd);
@@ -421,35 +421,18 @@ namespace Ela.Runtime
                         }
                         break;
                     case Op.Reccons:
-                        {
-                            right = evalStack.Pop();
-                            left = evalStack.Pop();
-                            var rec = (ElaRecord)evalStack.Peek().Ref;
-                            rec.SetField(opd, right.DirectGetString(), left);
-                        }
+                        right = evalStack.Pop();
+                        left = evalStack.Pop();
+                        ((ElaRecord)evalStack.Peek().Ref).SetField(opd, right.DirectGetString(), left);
                         break;
                     case Op.Tupcons:
                         right = evalStack.Pop();
-                        left = evalStack.Peek();
-                        ((ElaTuple)left.Ref).InternalSetValue(opd, right);
+                        ((ElaTuple)evalStack.Peek().Ref).Values[opd] = right;
                         break;
                     case Op.Cons:
                         left = evalStack.Pop();
                         right = evalStack.Peek();
                         evalStack.Replace(right.Ref.Cons(left, ctx));
-
-                        if (ctx.Failed)
-                        {
-                            evalStack.Replace(right);
-                            evalStack.Push(left);
-                            ExecuteThrow(thread, evalStack);
-                            goto SWITCH_MEM;
-                        }
-                        break;
-                    case Op.Gen:
-                        right = evalStack.Pop();
-                        left = evalStack.Peek();
-                        evalStack.Replace(left.Ref.Generate(right, ctx));
 
                         if (ctx.Failed)
                         {
@@ -1013,26 +996,6 @@ namespace Ela.Runtime
                             goto SWITCH_MEM;
                         }
                         break;
-                    case Op.Ctype:
-                        left = evalStack.Pop();
-                        right = evalStack.Peek();
-
-                        if (left.TypeId == LAZ || right.TypeId == LAZ)
-                        {
-                            left = left.Ref.Force(left, ctx);
-                            right = right.Ref.Force(right, ctx);
-                        }
-
-                        evalStack.Replace(left.TypeId == right.TypeId);
-
-                        if (ctx.Failed)
-                        {
-                            evalStack.Replace(right);
-                            evalStack.Push(left);
-                            ExecuteThrow(thread, evalStack);
-                            goto SWITCH_MEM;
-                        }
-                        break;
                     case Op.Ctypei:
                         left = evalStack.Pop();
                         i4 = left.I4;
@@ -1165,22 +1128,20 @@ namespace Ela.Runtime
                         }
                         break;
                     case Op.Newlist:
-                        evalStack.Push(new ElaValue(ElaList.Empty));
+                        evalStack.Push(ElaList.Empty);
                         break;
                     case Op.Newrec:
-                        evalStack.Push(new ElaValue(new ElaRecord(opd)));
+                        evalStack.Push(new ElaRecord(opd));
                         break;
                     case Op.Newtup:
-                        evalStack.Push(new ElaValue(new ElaTuple(opd)));
+                        evalStack.Push(new ElaTuple(opd));
                         break;
                     case Op.Newtup_2:
                         {
-                            right = evalStack.Pop();
-                            left = evalStack.Peek();
                             var tup = new ElaTuple(2);
-                            tup.InternalSetValue(0, left);
-                            tup.InternalSetValue(1, right);
-                            evalStack.Replace(new ElaValue(tup));
+                            tup.Values[1] = evalStack.Pop();
+                            tup.Values[0] = evalStack.Peek();
+                            evalStack.Replace(tup);
                         }
                         break;
                     case Op.NewI8:
@@ -1206,7 +1167,7 @@ namespace Ela.Runtime
                     case Op.Newmod:
                         {
                             i4 = frame.HandleMap[opd];
-                            evalStack.Push(new ElaValue(new ElaModule(i4, this)));
+                            evalStack.Push(new ElaModule(i4, this));
                         }
                         break;
                     #endregion

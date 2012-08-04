@@ -19,7 +19,6 @@ namespace Ela.Compilation
 			1, //Pushstr_0
 			0, //Genfin
 			-1, //Cons
-			-1, //Gen
 			0, //Tail
 			0, //Head
 			0, //Ret
@@ -68,7 +67,6 @@ namespace Ela.Compilation
             -1, //Traitch
             -2, //Skiptag
 			-2, //Newtype
-            -1, //Ctype            
             -1, //Ctypei            
             -1, //Ctxset
             -1, //Ctxtnt

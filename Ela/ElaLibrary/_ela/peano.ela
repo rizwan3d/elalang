@@ -1,5 +1,5 @@
 /*
-  Module peano
+  Module peano. Lazy peano numbers.
   Created in 2012 by Basil Voronkov
 */
 open number list
@@ -28,7 +28,7 @@ instance Bounded Peano where
   minBound = Zero
 
 instance Show Peano where 
-  showf _ p = toString <| show (stringBuilder +> "peano(") p
+  showf _ p = toString <| show "peano(" p
     where 
       show sb Zero = sb +> "0)"
       show sb (Succ a) = show (sb +> "1+") a
@@ -44,8 +44,8 @@ instance Ord Peano where
   (<=) = comp (<=)
 
 instance Enum Peano where
-  succ a = a + one~(a)
-  pred a = a - one~(a)
+  succ a = a + one~Peano
+  pred a = a - one~Peano
   enumFrom fst snd = map' fromInt [(toInt fst),(toInt snd)..]
   enumFromTo max fst snd = map fromInt [(toInt fst),(toInt snd)..(toInt max)]
 

@@ -60,7 +60,7 @@ instance Show where
   showf f a 
     | consInfix a and len == 2 = showf f (consParamValue 0 a) ++ " " 
                                  ++ consName a ++ " " ++ showf f (consParamValue 1 a)
-    | else = toString <| show (stringBuilder +> consName a) 0
+    | else = toString <| show ("" +> consName a) 0
     where len = consParamNumber a
           show sb n 
             | n < len = show (sb +> " " +> showf f (consParamValue n a)) (n+1)
@@ -99,9 +99,11 @@ instance Ix where
 instance Enum where
   succ a = consCreateDefault (consCodeByIndex (typeCode a) (consIndex a + 1))
   pred a = consCreateDefault (consCodeByIndex (typeCode a) (consIndex a - 1))
-  enumFrom fst snd = map (\x -> consCreateDefault (consCodeByIndex tc x)) [consIndex fst,consIndex snd..typeConsNumber (typeCode fst) - 1]
+  enumFrom fst snd = map (\x -> consCreateDefault (consCodeByIndex tc x)) 
+      [consIndex fst,consIndex snd..typeConsNumber (typeCode fst) - 1]
     where tc = typeCode fst
-  enumFromTo max fst snd = map (\x -> consCreateDefault (consCodeByIndex tc x)) [consIndex fst,consIndex snd..consIndex max]
+  enumFromTo max fst snd = map (\x -> consCreateDefault (consCodeByIndex tc x)) 
+      [consIndex fst,consIndex snd..consIndex max]
     where tc = typeCode fst
 
 //Only for algebraic, better not to use with open types

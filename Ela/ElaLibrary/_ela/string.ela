@@ -7,7 +7,7 @@ import lang
 
 instance ListLike String where 
   toList x    = str.toList x
-  fromList xs = toString <| trav stringBuilder xs
+  fromList xs = toString <| trav "" xs
     where trav sb (x::xs) = trav (sb +> toString x) xs
           trav sb [] = sb
 

@@ -126,7 +126,7 @@ instance StringLike StringBuilder where
   fromString s = "" +> s
 
 instance Eq StringBuilder where
-  (a +> b) == (c +> d) = a == b or c == d
+  (a +> b) == (c +> d) = a == b and c == d
   a <> b = not (a == b)
 
 instance Show StringBuilder where
@@ -329,7 +329,7 @@ show = showf ""
 
 instance Show Tuple where 
   showf f (x,) = "(" ++ showf f x ++ ",)"
-  showf f t = toString <| tos ("" +> "(") 0
+  showf f t = toString <| tos "(" 0
     where len = length t - 1
           tos sb n 
             | n < len = tos (sbb +> ",") (n+1)
@@ -338,12 +338,12 @@ instance Show Tuple where
 
 instance Show List where 
   showf _ [] = "[]"
-  showf f xs = toString <| tos ("" +> "[") xs
+  showf f xs = toString <| tos "[" xs
     where tos sb (x::[]) = sb +> showf f x +> "]"
           tos sb (x::xs) = tos (sb +> showf f x +> ",") xs
 
 instance Show Record where 
-  showf f t = toString <| tos ("" +> "{") 0
+  showf f t = toString <| tos "{" 0
     where len = length t - 1
           tos sb n 
             | n < len = tos (sbb +> ",") (n+1)
@@ -502,7 +502,7 @@ instance BoolLike Int where
 instance BoolLike Long where
   toBool = lang.asBool
   fromBool = lang.asLong
-  
+
 instance StringLike String where
   toString = id
   fromString = id
@@ -521,9 +521,6 @@ const x _ = x//K
 sub x y z = x z (y z)//S
 fix f = f (& fix f)
 on cmb f x y = f x `cmb` f y
-iif p f x y
-  | p x  = f x y
-  | else = y
 
 /* Misc */
 until p f x 

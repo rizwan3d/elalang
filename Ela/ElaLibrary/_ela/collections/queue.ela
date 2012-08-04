@@ -15,7 +15,7 @@ instance Show Queue where
   showf f q = "queue" ++ showf f (toList q)
 
 instance Cat Queue where 
-  q1 ++ q2 = Queue (reverse <| toList q1 ++ toList q2) []
+  q1 ++ q2 = fromList (toList q1 ++ toList q2) ~ Queue
 
 instance Eq Queue where 
   (Queue a b) == (Queue c d) = a == b and c == d
