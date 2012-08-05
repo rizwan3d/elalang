@@ -77,7 +77,7 @@ namespace Ela.Runtime
 
         public void UnknownField(string field, ElaValue given)
         {
-            Fail(ElaRuntimeError.UnknownField, given.ToString(), given.GetTypeName());
+            Fail(ElaRuntimeError.UnknownField, field, given.ToString(), given.GetTypeName());
         }
 
 

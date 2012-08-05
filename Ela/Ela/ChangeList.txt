@@ -1,3 +1,4 @@
+0.11.1.9:Fix:An error message, that is generate when trying to obtain a non-existing field from a record, is corrected.
 0.11.1.8:Change:Op code 'Ctype' is decomissioned (it wasn't emitted by compiler anyway).
 0.11.1.7:Change:Op code 'Gen' is decomissioned (it was fully equivalent to 'Cons').
 0.11.1.6:Fix:Now linker can detect cyclic module references and generate appropriate errors. (Issue #27)
