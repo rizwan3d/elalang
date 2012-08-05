@@ -27,7 +27,7 @@ TOKENS
 	ident = lcase { letter | digit | "'" }
 			| "_" ("'"|letter) { letter | digit | "'" }
 			| "'" letter [ (letter|digit|"'") {letter|digit|"'"} (letter|digit) ].	
-    
+        
 	variantTok = ucase { letter | digit | "'" }.
 	
 	intTok = ( digit { digit } 
