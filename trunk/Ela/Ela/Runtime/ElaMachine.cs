@@ -1947,9 +1947,7 @@ namespace Ela.Runtime
                     //can reuse an already allocated eval stack array.
                     var newStack = new EvalStack(layout.StackSize, stack.tail && cf == CallFlag.NoReturn);
                     var newMem = new CallPoint(natFun.ModuleHandle, newStack, newLoc, natFun.Captures);
-
-                    if (ctx != null)
-                        newMem.Context = ctx.Value;
+                    newMem.Context = ctx != null ? ctx.Value : thread.CallStack.Peek().Context;
 
                     if (cf != CallFlag.NoReturn)
                         thread.CallStack.Peek().BreakAddress = thread.Offset;

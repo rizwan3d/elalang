@@ -1,3 +1,5 @@
+0.11.1.10:New:Now in addition to lazy tuple patterns Ela also supports lazy record patterns.
+0.11.1.9:New:Now it is possible to define in classes constants as well as regular bindings. These constants will work as polymorphic constants.
 0.11.1.8:Fix:An error message, that is generate when trying to obtain a non-existing field from a record, is corrected.
 0.11.1.7:Change:Op code 'Ctype' is decomissioned (it wasn't emitted by compiler anyway).
 0.11.1.6:Change:Op code 'Gen' is decomissioned (it was fully equivalent to 'Cons').

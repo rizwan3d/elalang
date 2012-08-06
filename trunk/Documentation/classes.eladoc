@@ -112,6 +112,58 @@ And test drive it as we did before:
 Instances can be defined for user types and for built-in Ela types as well. However, it is an error to have two instances of the 
 same class for the same type - even in different modules.
 
+=Contexts
+So far we have only discussed class functions that are overloaded by their arguments. However, Ela also supports overloading by
+return type. It is even possible to use constants as class members.//br
+As soon as Ela is a dynamic language, its approach to overloading by return type is quite different from static languages. Let's
+take an example:
+>>>class Empty a where
+>>>  empty a
+>>>
+>>>instance Empty Int where
+>>>  empty = 0
+Here we have a class `Empty` that defines a single member - a constant `empty`. This constant should be evaluated to an empty
+(or default) instance of a type. We have also implemented this class for a 32-bit integer, where this constant evaluates to 0.//br
+A constant `empty` is called a _polymorphic constant_. In order to dispatch such a constant one should specify an explicit
+context, e.g.:
+>>>empty ::: Int
+A syntax `exp ::: context` is used to specify a context. A context can be specified for a constant or for a function 
+application.//br
+It is quite similar to the type annotation, but is pretty different from it in many aspects. First, a context can be specified
+using a type name (short or qualified with a module alias) or can be extracted from a value. For example, this code is 
+equivalent to the code sample above:
+>>>x = 42
+>>>empty ::: (x)
+In order to extract a context from a value, one should enclose this value in parentheses; otherwise, it will be recognized as a
+type name. Second, if a context is specified for a function application, this context is propagated inside this function - in
+other words it is passed to this function as an implicit parameter.//br
+Let's take another example:
+>>>open core
+>>>
+>>>class Pointed a where
+>>>  return _->a
+>>>
+>>>instance Pointed Maybe where
+>>>  return x = Some x
+>>>
+>>>instance Pointed Either where
+>>>  return x = Left x
+Here we have declared a `Pointed` class with a single `return` function. This function is overloaded by its return type. We 
+also have instances for types `Maybe` and `Either` from `core` module. This is how these instances work:
+>>>return 12 ::: Maybe
+and
+>>>return 12 ::: Either
+But as soon as contexts can be propagated inside functions, it is not always required to specify them explicitly:
+>>>getSomeValue x = return x
+>>>getSomeValue 12 ::: Maybe
+Here we have defined `getSomeValue` function that simply calls `return` function. You can see that an application of `return`
+function is not annotated. But as long as we annotate an application of `getSomeValue` with a context, it is a perfectly
+valid code, and `return` function is dispatched using type `Maybe`.//br
+A single context annotation can be propagated inside an unlimited number of functions. For example, we can transform our
+previous code sample like so:
+>>>calcAndGet f x = getSomeValue (f x)
+>>>calcAndGet (*2) 12 ::: Maybe
+
 =Default Instances
 Ela also allows to declare default instances. A default instance is an instance without a type specification. For example, this
 is how we can define a default instance for a `Car` class:
