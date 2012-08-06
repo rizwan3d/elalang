@@ -68,6 +68,9 @@ namespace Ela.Compilation
             1, //Traitch
             1, //Skiptag
 			1, //Newtype
+            1, //Newtype0
+            1, //Newtype1
+            1, //Newtype2
             1, //Ctypei            
             1, //Disp
         

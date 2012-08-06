@@ -1,3 +1,4 @@
+0.11.1.11:Change:New op codes 'Newtype0', 'Newtype1' and 'Newtype2' are added; creation of AlgDT constructors is optimized.
 0.11.1.10:New:Now in addition to lazy tuple patterns Ela also supports lazy record patterns.
 0.11.1.9:New:Now it is possible to define in classes constants as well as regular bindings. These constants will work as polymorphic constants.
 0.11.1.8:Fix:An error message, that is generate when trying to obtain a non-existing field from a record, is corrected.

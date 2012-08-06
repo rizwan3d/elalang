@@ -26,16 +26,16 @@ namespace Ela.Linking
             {
                 var tid = val.TypeId;
                 var sb = new StringBuilder();
-                var usb = val.Ref as ElaUserType;
+                var usb = val.Ref as ElaUserType2;
                 var xs = new List<String>();
 
-                while (usb != null && usb.Values != null)
+                while (usb != null)
                 {
-                    xs.Add(usb.Values[1].ToString());
-                    var td = usb.Values[0].Ref;
+                    xs.Add(usb.Value1.ToString());
+                    var td = usb.Value2.Ref;
 
                     if (td.TypeId == tid)
-                        usb = (ElaUserType)td;
+                        usb = td as ElaUserType2;
                     else
                     {
                         usb = null;

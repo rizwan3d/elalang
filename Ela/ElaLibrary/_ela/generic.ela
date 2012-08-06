@@ -15,9 +15,6 @@ consIndex         = __internal api3
 //Constructor is infix symbol: Alg->Bool
 consInfix         = __internal api7
 
-//Constructor parameters: Alg->Tuple or Alg->Unit
-consParams        = __internal api8
-
 //Constructor unique ID: Alg->Int
 consCode          = __internal api9
 
@@ -60,7 +57,7 @@ instance Show where
   showf f a 
     | consInfix a and len == 2 = showf f (consParamValue 0 a) ++ " " 
                                  ++ consName a ++ " " ++ showf f (consParamValue 1 a)
-    | else = toString <| show ("" +> consName a) 0
+    | else = toString <| show (consName a) 0
     where len = consParamNumber a
           show sb n 
             | n < len = show (sb +> " " +> showf f (consParamValue n a)) (n+1)
@@ -68,17 +65,29 @@ instance Show where
 
 //Only for algebraic, open types are welcome
 instance Eq where
-  a == b = consCode a == consCode b and consParams a == consParams b
+  a == b = consCode a == consCode a == consCode b and cyc (consParamNumber a - 1)
+    where cyc 0 = true
+          cyc n 
+            | consParamValue n a == consParamValue n b = cyc (n-1)
+            | else = false
   a <> b = not (a == b)
 
 //Only for algebraic, bettern not to use with open types
 instance Ord where
   a > b
     | consParamNumber a == 0 or consParamNumber b == 0 = consIndex a > consIndex b 
-    | else = consIndex a > consIndex b or consParams a > consParams b
+    | else = consIndex a > consIndex b or cyc (consParamNumber a - 1)
+    where cyc 0 = true
+          cyc n 
+            | consParamValue n a > consParamValue n b = cyc (n-1)
+            | else = false
   a < b
     | consParamNumber a == 0 or consParamNumber b == 0 = consIndex a < consIndex b 
-    | else = consIndex a < consIndex b or consParams a < consParams b
+    | else = consIndex a < consIndex b or cyc (consParamNumber a - 1)
+    where cyc 0 = true
+          cyc n 
+            | consParamValue n a < consParamValue n b = cyc (n-1)
+            | else = false
   a >= b = a > b or a == b
   a <= b = a < b or a == b
 
@@ -136,8 +145,15 @@ instance StringLike where
 //(Partial) Only for algebraic, open types are welcome
 instance TupleLike where
   toTuple a
-    | consParamNumber a == 0 = fail "TupleLike.toTuple: Type constructor has no parameters."
-    | else = consParams a
+    | len == 0 = fail "TupleLike.toTuple: Type constructor has no parameters."
+    | len == 1 = (consParamValue 0 a,)
+    | len == 2 = (consParamValue 0 a,consParamValue 1 a)
+    | len == 3 = (consParamValue 0 a,consParamValue 1 a,consParamValue 2 a)
+    | else = cyc 0
+    where
+      len = consParamNumber a
+      cyc n | n < len - 1 = (consParamValue n a,) ++ cyc (n+1)
+            | else = (consParamValue n a,)
 
 //(Partial) Only for algebraic, open types are welcome
 instance ListLike where
