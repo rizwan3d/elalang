@@ -31,8 +31,8 @@ namespace Ela.Linking
 
                 while (usb != null)
                 {
-                    xs.Add(usb.Value1.ToString());
-                    var td = usb.Value2.Ref;
+                    xs.Add(usb.Value2.ToString());
+                    var td = usb.Value1.Ref;
 
                     if (td.TypeId == tid)
                         usb = td as ElaUserType2;

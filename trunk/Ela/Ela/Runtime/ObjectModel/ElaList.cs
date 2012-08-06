@@ -17,7 +17,7 @@ namespace Ela.Runtime.ObjectModel
 
 			protected internal override ElaValue Tail(ExecutionContext ctx)
 			{
-				ctx.Fail("List is nil.");
+				ctx.Fail("prelude: Empty list.");
 				return Default();
 			}
 		}
