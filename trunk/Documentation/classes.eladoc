@@ -47,8 +47,8 @@ A class in Ela is declared using `class` declaration that has the following synt
 >>   (ident|operator) signature
 >>  {(ident|operator) signature}
 A name of a class shoudl always start with a capital letter.//br
-A `where` clause is used to specify members for a class. A class should have at least one member. Also all these members should
-be function bindings (and are treated like that by Ela compiler). Unlike Haskell, constants can'be used as class members.//br
+A `where` clause is used to specify members for a class. A class should have at least one member. Class members can be either
+functions or regular constants.//br
 As it was mentioned in introduction, class members are just ordinary global bindings and comply to the rules of bindings in Ela. 
 Such as the head symbol can be either a valid Ela identifier or an operator symbol. You can also define class members using 
 prefix, postfix and infix form. However, using a pattern instead of a binding head is not allowed and will result in compile 
@@ -59,7 +59,7 @@ A `signature` clause represents a required class member signature. This signatur
 It has the following syntax:
 >(_|param) { "->" (_|param) }
 A underscore character denotes _value of any type_, when a `param` should be an identifier from the `param` clause. As long as 
-class in Ela is instanced for one specific type, a `param` entry is used to specify occurences of this type in a function 
+class in Ela is instantiated for one specific type, a `param` entry is used to specify occurences of this type in a function 
 signature.//br
 A signature should define at least one argument. Also a function signature should have at least one occurence of `param` entry 
 (multiple occurences are OK as well). Therefore, a signature `a` is valid, as well as `a->_` and `a->_->_`, but a signature 
