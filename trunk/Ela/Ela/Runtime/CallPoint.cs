@@ -28,5 +28,7 @@ namespace Ela.Runtime
 		internal int? CatchMark;
 
 		internal ElaLazy Thunk;
+
+        internal int Context;
 	}
 }

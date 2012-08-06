@@ -56,6 +56,7 @@ namespace Ela.Compilation
         LazyCall,
         Call,
         Callt,
+        Calld,
         Throw,
         Rethrow,
         Force,
@@ -66,10 +67,6 @@ namespace Ela.Compilation
         Skiptag,
         Newtype,
         Ctypei,
-        Ctxset,
-        Ctxtnt,
-        Ctxcls,
-        Ctxclst,
         Disp,
         
         Newconst,

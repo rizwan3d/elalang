@@ -1096,13 +1096,18 @@ namespace Ela.Runtime
                         }
                         break;
                     case Op.Disp:
-                        right = evalStack.Pop();
-                        evalStack.Push(((ElaConstant)right.Ref).GetConstantValue(this, ctx));
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+                        
+                        if (left.TypeId == UNI)
+                            evalStack.Replace(((ElaConstant)right.Ref).GetConstantValue(this, ctx, callStack.Peek().Context));
+                        else
+                            evalStack.Replace(((ElaConstant)right.Ref).GetConstantValue(this, ctx, left.I4));
 
                         if (ctx.Failed)
                         {
-                            evalStack.PopVoid();
-                            evalStack.Push(right);
+                            evalStack.Replace(right);
+                            evalStack.Push(left);
                             ExecuteThrow(thread, evalStack);
                             goto SWITCH_MEM;
                         }
@@ -1200,7 +1205,25 @@ namespace Ela.Runtime
                         }
                         break;
                     case Op.Call:
-                        if (Call(evalStack.Pop().Ref, thread, evalStack, CallFlag.None))
+                        if (Call(evalStack.Pop().Ref, thread, evalStack, CallFlag.None, null))
+                            goto SWITCH_MEM;
+                        break;
+                    case Op.Calld:
+                        left = evalStack.Pop();
+                        right = evalStack.Pop();
+
+                        if (right.TypeId == LAZ)
+                            right = right.Ref.Force(right, ctx);
+
+                        if (ctx.Failed)
+                        {
+                            evalStack.Push(right);
+                            evalStack.Push(left);
+                            ExecuteThrow(thread, evalStack);
+                            goto SWITCH_MEM;
+                        }
+
+                        if (Call(right.Ref, thread, evalStack, CallFlag.None, left.I4))
                             goto SWITCH_MEM;
                         break;
                     case Op.LazyCall:
@@ -1216,7 +1239,7 @@ namespace Ela.Runtime
 
                             if (callStack.Peek().Thunk != null || !funObj.CanTailCall())
                             {
-                                if (Call(evalStack.Pop().Ref, thread, evalStack, CallFlag.None))
+                                if (Call(evalStack.Pop().Ref, thread, evalStack, CallFlag.None, null))
                                     goto SWITCH_MEM;
                                 break;
                             }
@@ -1224,7 +1247,7 @@ namespace Ela.Runtime
                             var cp = callStack.Pop();
                             evalStack.PopVoid();
 
-                            if (Call(funObj, thread, evalStack, CallFlag.NoReturn))
+                            if (Call(funObj, thread, evalStack, CallFlag.NoReturn, null))
                                 goto SWITCH_MEM;
                             else
                                 callStack.Push(cp);
@@ -1274,22 +1297,6 @@ namespace Ela.Runtime
 
                     #region Misc
                     case Op.Nop:
-                        break;
-                    case Op.Ctxtnt:
-                        i4 = evalStack.Pop().I4;
-
-                        if (ctx.DispatchContext.Count == 1)
-                            ctx.DispatchContext.Push(i4);
-                        break;
-                    case Op.Ctxset:
-                        ctx.DispatchContext.Push(evalStack.Pop().I4);
-                        break;
-                    case Op.Ctxcls:
-                        ctx.DispatchContext.Pop();
-                        break;
-                    case Op.Ctxclst:
-                        if (ctx.DispatchContext.Count > 1)
-                            ctx.DispatchContext.Pop();
                         break;
                     case Op.Api:
                         right = evalStack.Pop();
@@ -1478,7 +1485,7 @@ namespace Ela.Runtime
             switch ((Api)code)
             {
                 case Api.CurrentContext:
-                    var ic = thread.Context.DispatchContext.Peek();
+                    var ic = thread.CallStack.Peek().Context;
 
                     if (ic == 0)
                         thread.Context.Fail(ElaRuntimeError.ZeroContext);
@@ -1873,7 +1880,7 @@ namespace Ela.Runtime
         }
 
 
-        private bool Call(ElaObject fun, WorkerThread thread, EvalStack stack, CallFlag cf)
+        private bool Call(ElaObject fun, WorkerThread thread, EvalStack stack, CallFlag cf, int? ctx)
         {
             if (fun.TypeId != FUN)
             {
@@ -1902,7 +1909,8 @@ namespace Ela.Runtime
 
             if (natFun.table)
             {
-                natFun = ((ElaFunTable)fun).GetFunction(stack.Peek(), thread.Context);
+                natFun = ((ElaFunTable)fun).GetFunction(stack.Peek(), thread.Context,
+                    ctx == null ? thread.CallStack.Peek().Context : ctx.Value);
 
                 if (thread.Context.Failed)
                 {
@@ -1939,6 +1947,9 @@ namespace Ela.Runtime
                     //can reuse an already allocated eval stack array.
                     var newStack = new EvalStack(layout.StackSize, stack.tail && cf == CallFlag.NoReturn);
                     var newMem = new CallPoint(natFun.ModuleHandle, newStack, newLoc, natFun.Captures);
+
+                    if (ctx != null)
+                        newMem.Context = ctx.Value;
 
                     if (cf != CallFlag.NoReturn)
                         thread.CallStack.Peek().BreakAddress = thread.Offset;
@@ -2046,7 +2057,7 @@ namespace Ela.Runtime
 
                 if (fn != null)
                 {
-                    Call(t.Function, thread, stack, CallFlag.AllParams);
+                    Call(t.Function, thread, stack, CallFlag.AllParams, null);
                     thread.CallStack.Peek().Thunk = t;
                 }
                 else
@@ -2076,7 +2087,7 @@ namespace Ela.Runtime
                     f.LastParameter = stack.Pop();
                 }
 
-                Call(f, thread, stack, CallFlag.AllParams);
+                Call(f, thread, stack, CallFlag.AllParams, null);
                 return;
             }
 

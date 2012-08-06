@@ -100,9 +100,8 @@ instance Absolute Int Long Single Double where
     | x >= 0 = x 
     | else = --x
   signum x 
-    | x < 0 = --one
-    | else = one
-    ~(x)
+    | x < 0 = --one ::: (x)
+    | else = one ::: (x)
 
 instance Transcendental where
   logBase x y = log y / log x

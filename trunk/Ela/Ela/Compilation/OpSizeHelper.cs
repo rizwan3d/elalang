@@ -58,6 +58,7 @@ namespace Ela.Compilation
 			1, //LazyCall
 			1, //Call
 			1, //Callt
+            1, //Calld
 			1, //Throw
 			1, //Rethrow
 			1, //Force
@@ -68,10 +69,6 @@ namespace Ela.Compilation
             1, //Skiptag
 			1, //Newtype
             1, //Ctypei            
-            1, //Ctxset
-            1, //Ctxtnt
-            1, //Ctxcls
-            1, //Ctxclst
             1, //Disp
         
             5, //Newconst

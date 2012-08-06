@@ -8,8 +8,7 @@ namespace Ela.Runtime
 		#region Construction
         public ExecutionContext()
 		{
-            DispatchContext = new FastStack<Int32>();
-            DispatchContext.Push(0);
+            
 		}
 		#endregion
 
@@ -137,8 +136,6 @@ namespace Ela.Runtime
         internal ElaFunction Fun;
 
         internal string Tag;
-
-        internal FastStack<Int32> DispatchContext;
 		#endregion
 	}
 }
