@@ -240,9 +240,11 @@ namespace Ela.Compilation
                     {
                         var n = (ElaLazyLiteral)exp;
 
-                        //Currently we support only lazy tuple patterns
+                        //Currently we support only lazy tuple and record patterns
                         if (n.Expression.Type == ElaNodeType.TupleLiteral)
                             CompileLazyTuplePattern(sysVar, (ElaTupleLiteral)n.Expression, failLab);
+                        else if (n.Expression.Type == ElaNodeType.RecordLiteral)
+                            CompileLazyRecordPattern(sysVar, (ElaRecordLiteral)n.Expression, failLab);
                         else
                             AddError(ElaCompilerError.InvalidLazyPattern, exp, FormatNode(exp));
                     }
@@ -629,6 +631,52 @@ namespace Ela.Compilation
                 var newSys = AddVariable();
                 PopVar(newSys);
                 CompilePattern(newSys, e, failLab);
+            }
+        }
+
+        //With a lazy record pattern an equation like so: '{x,y} = exp' is semantically 
+        //transformed into '{x,y} = {x = & getField "x" exp, y = & getField "y" exp}, but as soon as
+        //there is no need for an intermediate record structure the names on the left hand side
+        //are bound directly to thunks.
+        private void CompileLazyRecordPattern(int sysVar, ElaRecordLiteral rec, Label failLab)
+        {
+            var len = rec.Fields.Count;
+
+            for (var i = 0; i < len; i++)
+            {
+                var f = rec.Fields[i];
+                var sid = AddString(f.FieldName);
+
+                //Compile the first part of the thunk function
+                Label funSkipLabel;
+                int address;
+                LabelMap newMap;
+                CompileFunctionProlog(null, 1, f.Line, f.Column, out funSkipLabel, out address, out newMap);
+
+                //Here we compile a thunk body that obtains a record element
+                //Here we have to manually patch an address because we refer
+                //to a captured variable that doesn't belong to this function scope.
+                var a = (sysVar & Byte.MaxValue) + 1 | (sysVar << 8) >> 8;
+                PushVar(a);
+
+                //Here we first check if a requested field exists in a record,
+                //otherwise we need to generate a MatchFailed error.
+                cw.Emit(Op.Pushstr, sid);
+                cw.Emit(Op.Hasfld);
+                cw.Emit(Op.Brfalse, failLab);
+                //Obtain a field value
+                PushVar(a);
+                cw.Emit(Op.Pushstr, sid);
+                cw.Emit(Op.Pushfld);
+                
+                //Compile thunk epilog, create a new thunk object
+                CompileFunctionEpilog(null, 1, address, funSkipLabel);
+                cw.Emit(Op.Newlazy);
+
+                //Move on to the nested pattern
+                var newSys = AddVariable();
+                PopVar(newSys);
+                CompilePattern(newSys, f.FieldValue, failLab);
             }
         }
 
