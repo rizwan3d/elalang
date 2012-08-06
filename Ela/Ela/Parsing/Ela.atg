@@ -821,7 +821,19 @@ PRODUCTIONS
 					    mi.Parameters.Add(cexp); 
 				.)					
 			}								
-		).
+		)
+		[
+		    ":::" 
+		    (. 
+		        var ctx = new ElaContext(t) { Expression = exp }; 
+		        var cexp2 = default(ElaExpression);
+		    .)
+		    AccessExpr<out cexp2>
+            (. 
+                ctx.Context = cexp2; 
+                exp = ctx;
+            .)
+		].
 		
 	AccessExpr<out ElaExpression exp> =
 		Literal<out exp>
@@ -1096,7 +1108,6 @@ PRODUCTIONS
 	        var bid = default(ElaEquation);
 	        var left = default(ElaExpression);
 	        var right = default(ElaExpression);
-	        var ctx = default(ElaExpression);
 	    .)
 	    (
 	        Expr<out left> (. bid = new ElaEquation(t); .)
@@ -1104,27 +1115,6 @@ PRODUCTIONS
 	            "=" Expr<out right> 
 	            | "|" Guard<out right>
 	            | Attribute<ref left>
-	        ]
-	        [
-	            (. var tentative=false; .)
-	            ("~"|"~~" (.tentative=true;.)) Expr<out ctx>
-	            (.
-	                var nctx = new ElaContext(t) { Context = ctx, Tentative=tentative };
-	            
-	                if (right != null)
-	                {
-	                    nctx.Expression = right;
-	                    right = nctx;
-	                }
-	                else
-	                {
-	                    nctx.Expression = left;
-	                    left = nctx;
-	                    
-	                    if (left.Type == ElaNodeType.Header)
-	                        AddError(ElaParserError.InvalidSyntax);
-	                }
-	            .)
 	        ]
 	        [
 	            (. var cb = default(ElaEquationSet); .)

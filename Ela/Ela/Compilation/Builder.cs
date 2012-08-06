@@ -124,12 +124,13 @@ namespace Ela.Compilation
 
                         AddLinePragma(v);
 
-                        StartScope(false, v.Line, v.Column);
-                        cw.Emit(v.Tentative ? Op.Ctxtnt : Op.Ctxset);
-                        AddVariable("context", v, ElaVariableFlags.Context, -1);
-                        CompileExpression(v.Expression, map, hints);
-                        cw.Emit(v.Tentative ? Op.Ctxclst : Op.Ctxcls);
-                        EndScope();
+                        var a = AddVariable();
+                        PopVar(a);
+                        var newMap = map.Clone(a);
+
+                        //cw.Emit(v.Tentative ? Op.Ctxtnt : Op.Ctxset);
+                        CompileExpression(v.Expression, newMap, hints);
+                        //cw.Emit(v.Tentative ? Op.Ctxclst : Op.Ctxcls);
                     }
                     break;
                 case ElaNodeType.Builtin:
@@ -279,10 +280,22 @@ namespace Ela.Compilation
                         var v = (ElaNameReference)exp;
                         AddLinePragma(v);
                         var scopeVar = GetVariable(v.Name, v.Line, v.Column);
-
-                        //This is context value, not a real variable
-                        if ((scopeVar.Flags & ElaVariableFlags.Context) == ElaVariableFlags.Context)
+                        
+                        //This a polymorphic constant
+                        if ((scopeVar.Flags & ElaVariableFlags.Polyadric) == ElaVariableFlags.Polyadric)
                         {
+                            PushVar(scopeVar);
+                            
+                            if (map.HasContext)
+                                PushVar(map.Context.Value);
+                            else
+                                cw.Emit(Op.Pushunit);
+
+                            cw.Emit(Op.Disp);
+                        }
+                        else if ((scopeVar.Flags & ElaVariableFlags.Context) == ElaVariableFlags.Context)
+                        {
+                            //This is context value, not a real variable
                             cw.Emit(Op.Pushunit);
                             cw.Emit(Op.Api, (Int32)Api.CurrentContext);
                         }

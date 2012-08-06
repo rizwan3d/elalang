@@ -5,24 +5,37 @@ namespace Ela.Compilation
 {
 	internal sealed class LabelMap
 	{
-		#region Construction
 		internal LabelMap()
 		{
 			
 		}
-
-
+        
 		internal LabelMap(LabelMap old)
 		{
 			FunStart = old.FunStart;
 			FunctionName = old.FunctionName;
 			FunctionParameters = old.FunctionParameters;
 		}
-		#endregion
 
+        internal LabelMap Clone(int context)
+        {
+            return new LabelMap
+            {
+                FunStart = FunStart,
+                BindingName = BindingName,
+                FunctionName = FunctionName,
+                FunctionParameters = FunctionParameters,
+                FunctionScope = FunctionScope,
+                Context = context
+            };
+        }
 
-		#region Properties
-		internal Label FunStart { get; set; }
+        internal bool HasContext
+        {
+            get { return Context != null; }
+        }
+		
+        internal Label FunStart { get; set; }
 
         internal string BindingName { get; set; }
 
@@ -31,6 +44,7 @@ namespace Ela.Compilation
         internal int FunctionParameters { get; set; }
 
 		internal Scope FunctionScope { get; set; }
-		#endregion
+
+        internal int? Context { get; private set; }
 	}
 }

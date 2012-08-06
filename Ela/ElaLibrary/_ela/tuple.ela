@@ -74,7 +74,7 @@ join f (x,y) (a,b) = (f x a,f y b)
 join f (x,y,z) (a,b,c) = (f x a,f y b,f z c)
 join f t1 t2 
   | len <> length t2 = fail "tuple.join: Tuples should be of the same length." 
-  | else = fromList (fold 0) ~ Tuple
+  | else = fromList (fold 0) ::: Tuple
   where len = length t1
         fold n | n == len = []
                | else = (t1:n `f` t2:n) :: fold (n+1)
@@ -97,7 +97,7 @@ zero # private
 zero 1 = (0,)
 zero 2 = (0,0)
 zero 3 = (0,0,0)
-zero n = fromList (gen [] n) ~ Tuple
+zero n = fromList (gen [] n) ::: Tuple
   where 
     gen ys 0 = ys
     gen ys n = gen (0::ys) (n-1)

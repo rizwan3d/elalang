@@ -14,10 +14,8 @@ namespace Ela.Runtime.ObjectModel
             this.name = name;
         }
 
-        internal ElaValue GetConstantValue(ElaMachine vm, ExecutionContext ctx)
+        internal ElaValue GetConstantValue(ElaMachine vm, ExecutionContext ctx, int d)
         {
-            var d = ctx.DispatchContext.Peek();
-
             if (d == 0)
             {
                 ctx.NoContext(name);

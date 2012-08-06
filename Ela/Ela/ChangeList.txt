@@ -1,8 +1,7 @@
-0.11.1.9:Fix:An error message, that is generate when trying to obtain a non-existing field from a record, is corrected.
-0.11.1.8:Change:Op code 'Ctype' is decomissioned (it wasn't emitted by compiler anyway).
-0.11.1.7:Change:Op code 'Gen' is decomissioned (it was fully equivalent to 'Cons').
-0.11.1.6:Fix:Now linker can detect cyclic module references and generate appropriate errors. (Issue #27)
-0.11.1.5:New:Default contexts are added. Default contexts are applied when there is no other context.
+0.11.1.8:Fix:An error message, that is generate when trying to obtain a non-existing field from a record, is corrected.
+0.11.1.7:Change:Op code 'Ctype' is decomissioned (it wasn't emitted by compiler anyway).
+0.11.1.6:Change:Op code 'Gen' is decomissioned (it was fully equivalent to 'Cons').
+0.11.1.5:Fix:Now linker can detect cyclic module references and generate appropriate errors. (Issue #27)
 0.11.1.4:New:Now it is possible to resolve overloading by return type through explicit context annotations.
 0.11.1.3:New:Now classes support overloading by return type as well (signatures for classes have changed and now always include a return type).
 0.11.1.2:Change:Generation of errors for type definitions with duplicate constructors is improved.

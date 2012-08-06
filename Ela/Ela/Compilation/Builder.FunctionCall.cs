@@ -13,10 +13,10 @@ namespace Ela.Compilation
             var bf = default(ElaNameReference);
             var sv = default(ScopeVar);
 
-            if (TryOptimizeConstructor(v, map))
+            if (!map.HasContext && TryOptimizeConstructor(v, map))
                 return ed;
 
-            if (v.Target.Type == ElaNodeType.NameReference)
+            if (!map.HasContext && v.Target.Type == ElaNodeType.NameReference)
             {
                 bf = (ElaNameReference)v.Target;
                 sv = GetVariable(bf.Name, bf.Line, bf.Column);
@@ -46,7 +46,8 @@ namespace Ela.Compilation
                 }
             }
 
-            var tail = (hints & Hints.Tail) == Hints.Tail;
+            //We can't apply tail call optimization for the context bound call
+            var tail = (hints & Hints.Tail) == Hints.Tail && map.HasContext;
             var safeHints = (hints & Hints.Lazy) == Hints.Lazy ? Hints.Lazy : Hints.None;
             var len = v.Parameters.Count;
 
@@ -119,17 +120,25 @@ namespace Ela.Compilation
 
             AddLinePragma(v);
 
-            for (var i = 0; i < len; i++)
-            {
-                var last = i == v.Parameters.Count - 1;
+            //If this is a context-bound call, we need to emit a different call instruction.
+            //Tail calls are not supported in such a case.
+            if (map.HasContext)
+                for (var i = 0; i < len; i++)
+                {
+                    PushVar(map.Context.Value);
+                    cw.Emit(Op.Calld);
+                }
+            else
+                for (var i = 0; i < len; i++)
+                {
+                    var last = i == v.Parameters.Count - 1;
 
-                //Use a tail call if this function call is a tail expression and this function
-                //is not marked with 'inline' attribute.
-                if (last && tail && opt)
-                    cw.Emit(Op.Callt);
-                else
-                    cw.Emit(Op.Call);
-            }
+                    //Use a tail call if this function call is a tail expression and optimizations are enabled.
+                    if (last && tail && opt)
+                        cw.Emit(Op.Callt);
+                    else
+                        cw.Emit(Op.Call);
+                }
 
             return ed;
         }

@@ -316,7 +316,7 @@ namespace Ela.Compilation
                 //Depending whether this is a built-in class or a different approach is
                 //used to add a member function.
                 if (!builtin)
-                    PushVar(btVar, false /*no dispatch*/);
+                    PushVar(btVar);
                 else
                     cw.Emit(Op.PushI4, (Int32)btVar.Data);
 
@@ -586,7 +586,7 @@ namespace Ela.Compilation
                         PushVar(defVar);
 
                     if (!builtin)
-                        PushVar(btVar, false /*no dispatch*/);
+                        PushVar(btVar);
                     else
                         cw.Emit(Op.PushI4, (Int32)btVar.Data);
                 

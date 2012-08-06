@@ -21,7 +21,7 @@ namespace Ela.Runtime.ObjectModel
             funs = new Dictionary<Int32,ElaFunction>();
         }
 
-        internal ElaFunction GetFunction(ElaValue val, ExecutionContext ctx)
+        internal ElaFunction GetFunction(ElaValue val, ExecutionContext ctx, int contextPar)
         {
             var m = 1 << AppliedParameters;
             var bit = (mask & m) == m;
@@ -60,14 +60,14 @@ namespace Ela.Runtime.ObjectModel
                 {
                     if (ct == 0)
                     {
-                        ct = ctx.DispatchContext.Peek();
+                        ct = contextPar;
 
                         if (ct == 0)
                             ctx.NoContext(name);
                     }
-                    else if (ct != ctx.DispatchContext.Peek())
+                    else if (ct != contextPar)
                     {
-                        var dc = ctx.DispatchContext.Peek();
+                        var dc = contextPar;
 
                         if (dc != 0)
                         {
@@ -123,7 +123,7 @@ namespace Ela.Runtime.ObjectModel
             
             for (var i = 0; i < args.Length - 1; i++)
             {
-                fn = GetFunction(args[i], ctx);
+                fn = GetFunction(args[i], ctx, 0);
 
                 if (!(fn is ElaFunTable))
                     throw new ElaException("Incorrect argument number.");
