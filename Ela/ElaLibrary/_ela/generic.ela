@@ -65,10 +65,10 @@ instance Show where
 
 //Only for algebraic, open types are welcome
 instance Eq where
-  a == b = consCode a == consCode a == consCode b and cyc (consParamNumber a - 1)
+  a == b = consCode a == consCode b and cyc (consParamNumber a)
     where cyc 0 = true
           cyc n 
-            | consParamValue n a == consParamValue n b = cyc (n-1)
+            | consParamValue (n-1) a == consParamValue (n-1) b = cyc (n-1)
             | else = false
   a <> b = not (a == b)
 

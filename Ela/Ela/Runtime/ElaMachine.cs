@@ -1352,10 +1352,10 @@ namespace Ela.Runtime
                         {
                             var tid = evalStack.Pop().I4;
                             left = evalStack.Pop();
+                            var last = evalStack.Pop();
                             right = evalStack.Pop();
-                            var third = evalStack.Pop();
                             var t = asm.Types[tid];
-                            evalStack.Push(new ElaValue(new ElaUserType2(t.TypeName, t.TypeCode, left.I4, right, third)));
+                            evalStack.Push(new ElaValue(new ElaUserType2(t.TypeName, t.TypeCode, left.I4, right, last)));
                         }
                         break;
                     case Op.Traitch:
