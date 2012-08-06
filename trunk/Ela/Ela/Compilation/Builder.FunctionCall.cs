@@ -47,7 +47,7 @@ namespace Ela.Compilation
             }
 
             //We can't apply tail call optimization for the context bound call
-            var tail = (hints & Hints.Tail) == Hints.Tail && map.HasContext;
+            var tail = (hints & Hints.Tail) == Hints.Tail && !map.HasContext;
             var safeHints = (hints & Hints.Lazy) == Hints.Lazy ? Hints.Lazy : Hints.None;
             var len = v.Parameters.Count;
 
@@ -158,11 +158,8 @@ namespace Ela.Compilation
 
                     if (!sv.IsEmpty() && sv.Data == juxta.Parameters.Count)
                     {
-                        CompileTupleParameters(juxta, juxta.Parameters, map);
-                        PushVar(sv);
                         var sv2 = GetGlobalVariable("$--" + nr.Name, GetFlags.None, juxta.Line, juxta.Column);
-                        PushVar(sv2);
-                        cw.Emit(Op.Newtype);
+                        CompleConstructorCall(juxta, map, sv, sv2);
                         return true;
                     }
                 }
@@ -179,17 +176,42 @@ namespace Ela.Compilation
 
                     if (!sv.IsEmpty() && sv.Data == juxta.Parameters.Count)
                     {
-                        CompileTupleParameters(juxta, juxta.Parameters, map);
-                        PushVar(sv);
                         var sv2 = FindByPrefix(prefix, "$--" + fr.FieldName, out _);
-                        PushVar(sv2);
-                        cw.Emit(Op.Newtype);
+                        CompleConstructorCall(juxta, map, sv, sv2);
                         return true;
                     }
                 }
             }
 
             return false;
+        }
+
+        //Inlines a constructor call, method is called from TryOptimizeConstructor
+        private void CompleConstructorCall(ElaJuxtaposition juxta, LabelMap map, ScopeVar sv, ScopeVar sv2)
+        {
+            var len = juxta.Parameters.Count;
+
+            //For optimization purposes we use a simplified creation algorythm for constructors 
+            //with 1 and 2 parameters
+            if (len == 1)
+                CompileExpression(juxta.Parameters[0], map, Hints.None);
+            else if (len == 2)
+            {
+                CompileExpression(juxta.Parameters[0], map, Hints.None);
+                CompileExpression(juxta.Parameters[1], map, Hints.None);
+            }
+            else
+                CompileTupleParameters(juxta, juxta.Parameters, map);
+
+            PushVar(sv);
+            PushVar(sv2);
+
+            if (len == 1)
+                cw.Emit(Op.Newtype1);
+            else if (len == 2)
+                cw.Emit(Op.Newtype2);
+            else
+                cw.Emit(Op.Newtype);
         }
     }
 }

@@ -219,10 +219,9 @@ namespace Ela.Compilation
             });
 
             AddLinePragma(exp);
-            cw.Emit(Op.Pushunit);
             cw.Emit(Op.Ctorid, frame.InternalConstructors.Count - 1);
             PushVar(sca);
-            cw.Emit(Op.Newtype);
+            cw.Emit(Op.Newtype0);
             var a = AddVariable(exp.Name, exp, ElaVariableFlags.TypeFun|flags, 0);
             PopVar(a);
         }
@@ -241,6 +240,7 @@ namespace Ela.Compilation
             
             var sys = new int[len];
             
+            //Here we have to validate all constructor parameters
             for (var i = 0; i < len; i++)
             {
                 var ce = juxta.Parameters[i];
@@ -261,19 +261,38 @@ namespace Ela.Compilation
                 Parameters = pars,
                 TypeModuleId = typeModuleId
             });
-            cw.Emit(Op.Newtup, len);
 
-            for (var i = 0; i < len; i++)
+            //For optimization purposes we use a simplified creation algorythm for constructors 
+            //with 1 and 2 parameters
+            if (len == 1)
+                PushVar(sys[0]);                    
+            else if (len == 2)
             {
-                PushVar(sys[i]);
-                cw.Emit(Op.Tupcons, i);
+                PushVar(sys[0]);
+                PushVar(sys[1]);                    
+            }
+            else 
+            {
+                cw.Emit(Op.Newtup, len);
+
+                for (var i = 0; i < len; i++)
+                {
+                    PushVar(sys[i]);
+                    cw.Emit(Op.Tupcons, i);
+                }
             }
 
             var ctid = frame.InternalConstructors.Count - 1;
             cw.Emit(Op.Ctorid, ctid);
             //Refering to captured name, need to recode its address
             PushVar((Byte.MaxValue & sca) + 1 | (sca << 8) >> 8);
-            cw.Emit(Op.Newtype);
+
+            if (len == 1)
+                cw.Emit(Op.Newtype1);
+            else if (len == 2)
+                cw.Emit(Op.Newtype2);
+            else
+                cw.Emit(Op.Newtype);
 
             CompileFunctionEpilog(name, len, address, funSkipLabel);
             var a = AddVariable(name, juxta, ElaVariableFlags.TypeFun|flags, len);

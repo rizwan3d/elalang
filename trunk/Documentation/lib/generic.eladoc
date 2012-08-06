@@ -129,10 +129,6 @@ Returns a positional index of a given constructor:
 Returns `true` if a given constructor has an operator-like name, otherwise returns false.
 >>>consInfix (1 :+ 2)
 
-#consParams a
-Returns parameters of a given constructor as a tuple. If a constructor doesn't have parameters, it return a unit.
->>>consParams (Point 12 24)
-
 #consCode a
 Returns a unique ID of a given constructor.
 >>>consCode None

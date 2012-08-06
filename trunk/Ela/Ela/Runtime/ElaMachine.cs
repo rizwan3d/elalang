@@ -1328,7 +1328,34 @@ namespace Ela.Runtime
                             left = evalStack.Pop();
                             right = evalStack.Pop();
                             var t = asm.Types[tid];                            
-                            evalStack.Push(new ElaValue(new ElaUserType(t.TypeName, t.TypeCode, left.I4, right)));
+                            evalStack.Push(new ElaValue(new ElaUserTypeVariadic(t.TypeName, t.TypeCode, left.I4, ((ElaTuple)right.Ref).Values)));
+                        }
+                        break;
+                    case Op.Newtype0:
+                        {
+                            var tid = evalStack.Pop().I4;
+                            left = evalStack.Pop();
+                            var t = asm.Types[tid];
+                            evalStack.Push(new ElaValue(new ElaUserType0(t.TypeName, t.TypeCode, left.I4)));
+                        }
+                        break;
+                    case Op.Newtype1:
+                        {
+                            var tid = evalStack.Pop().I4;
+                            left = evalStack.Pop();
+                            right = evalStack.Pop();
+                            var t = asm.Types[tid];
+                            evalStack.Push(new ElaValue(new ElaUserType1(t.TypeName, t.TypeCode, left.I4, right)));
+                        }
+                        break;
+                    case Op.Newtype2:
+                        {
+                            var tid = evalStack.Pop().I4;
+                            left = evalStack.Pop();
+                            right = evalStack.Pop();
+                            var third = evalStack.Pop();
+                            var t = asm.Types[tid];
+                            evalStack.Push(new ElaValue(new ElaUserType2(t.TypeName, t.TypeCode, left.I4, right, third)));
                         }
                         break;
                     case Op.Traitch:
@@ -1461,22 +1488,32 @@ namespace Ela.Runtime
         #region Operations
         private sealed class ConsFunction : ElaFunction
         {
-            private readonly ElaUserType type;
+            private string typeName;
+            private int typeCode;
+            private int consCode;
 
-            internal ConsFunction(ElaUserType type, int args) : base(args)
+            internal ConsFunction(string typeName, int typeCode, int consCode, int args) : base(args)
             {
-                this.type = type;
+                this.typeName = typeName;
+                this.typeCode = typeCode;
+                this.consCode = consCode;
             }
 
             public override ElaValue Call(params ElaValue[] args)
             {
-                type.Values = args;
-                return new ElaValue(type);
+                var len = base.Parameters.Length + 1;
+
+                if (len == 1)
+                    return new ElaValue(new ElaUserType1(typeName, typeCode, consCode, args[0]));
+                else if (len == 2)
+                    return new ElaValue(new ElaUserType2(typeName, typeCode, consCode, args[0], args[1]));
+                else
+                    return new ElaValue(new ElaUserTypeVariadic(typeName, typeCode, consCode, args));
             }
 
             public override ElaFunction Clone()
             {
-                return CloneFast(new ConsFunction(type, Parameters.Length + 1));
+                return CloneFast(new ConsFunction(typeName, typeCode, consCode, Parameters.Length + 1));
             }
         }
 
@@ -1535,17 +1572,6 @@ namespace Ela.Runtime
                         {
                             var pars = asm.Constructors[cid].Parameters;
                             return new ElaValue(pars != null ? pars.Count : 0);
-                        }
-
-                        thread.Context.NotAlgebraicType(left);
-                    }
-                    break;
-                case Api.ConsParams:
-                    {
-                        if (left.TypeId > SysConst.MAX_TYP)
-                        {
-                            var vals = ((ElaUserType)left.Ref).Values;
-                            return vals != null ? new ElaValue(new ElaTuple(vals)) : new ElaValue(ElaUnit.Instance);
                         }
 
                         thread.Context.NotAlgebraicType(left);
@@ -1707,15 +1733,22 @@ namespace Ela.Runtime
                             var cd = asm.Constructors[left.I4];
 
                             if (cd.Parameters == null)
-                                return new ElaValue(new ElaUserType(cd.TypeName, cd.TypeCode, cd.Code, new ElaValue(ElaUnit.Instance)));
+                                return new ElaValue(new ElaUserType0(cd.TypeName, cd.TypeCode, cd.Code));
                             else
                             {
-                                var arr = new ElaTuple(cd.Parameters.Count);
+                                if (cd.Parameters.Count == 1)
+                                    return new ElaValue(new ElaUserType1(cd.TypeName, cd.TypeCode, cd.Code, new ElaValue(ElaUnit.Instance)));
+                                else if (cd.Parameters.Count == 2)
+                                    return new ElaValue(new ElaUserType2(cd.TypeName, cd.TypeCode, cd.Code, new ElaValue(ElaUnit.Instance), new ElaValue(ElaUnit.Instance)));
+                                else
+                                {
+                                    var arr = new ElaValue[cd.Parameters.Count];
 
-                                for (var i = 0; i < arr.Length; i++)
-                                    arr.InternalSetValue(i, new ElaValue(ElaUnit.Instance));
+                                    for (var i = 0; i < arr.Length; i++)
+                                        arr[i] = new ElaValue(ElaUnit.Instance);
 
-                                return new ElaValue(new ElaUserType(cd.TypeName, cd.TypeCode, cd.Code, new ElaValue(arr)));
+                                    return new ElaValue(new ElaUserTypeVariadic(cd.TypeName, cd.TypeCode, cd.Code, arr));
+                                }
                             }
                         }
                     }
@@ -1746,10 +1779,10 @@ namespace Ela.Runtime
                             var cd = asm.Constructors[left.I4];
 
                             if (cd.Parameters == null)
-                                return new ElaValue(new ElaUserType(cd.TypeName, cd.TypeCode, cd.Code, new ElaValue(ElaUnit.Instance)));
+                                return new ElaValue(new ElaUserType0(cd.TypeName, cd.TypeCode, cd.Code));
                             else
-                                return new ElaValue(new ConsFunction(new ElaUserType(cd.TypeName, cd.TypeCode,
-                                    cd.Code, new ElaValue(ElaUnit.Instance)), cd.Parameters.Count));
+                                return new ElaValue(new ConsFunction(cd.TypeName, cd.TypeCode,
+                                    cd.Code, cd.Parameters.Count));
                         }
                     }
                     break;
@@ -1774,7 +1807,7 @@ namespace Ela.Runtime
                             var td = asm.Types[left.I4];
 
                             if (right.I4 < 0 || right.I4 >= td.Constructors.Count)
-                                thread.Context.IndexOutOfRange(right, new ElaValue(new ElaUserType(td.TypeName, td.TypeCode, -1, new ElaValue(ElaUnit.Instance))));
+                                thread.Context.IndexOutOfRange(right, new ElaValue(new ElaUserType0(td.TypeName, td.TypeCode, -1)));
                             else
                                 return new ElaValue(td.Constructors[right.I4]);
                         }

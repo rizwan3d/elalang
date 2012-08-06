@@ -66,6 +66,9 @@ namespace Ela.Compilation
         Traitch,
         Skiptag,
         Newtype,
+        Newtype0,
+        Newtype1,
+        Newtype2,
         Ctypei,
         Disp,
         
