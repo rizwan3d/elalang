@@ -1,4 +1,11 @@
 0.1.6.0:Release:Release of 0.1.6.0.
+0.1.5.22:New:Now classes 'Eq' and 'Ord' have complete recursive instances in prelude (minimum definition for 'Eq' is (==) or (<>); minimum definition for 'Ord' is 'compare').
+0.1.5.21:New:Now class 'Ord' defines an additional 'compare' function that returns an instance of 'Ordering' (used to be a separate function in `core` module).
+0.1.5.20:Change:An 'Ordering' type (and all related functions) is moved from 'core' module to prelude.
+0.1.5.19:Fix:A bug fixed in implementation of 'Enum.enumFromTo' for integers - if a second element is equal to the first the function could hang forever.
+0.1.5.18:Fix:A bug fixed in default instance of Ord class in 'generic' module.
+0.1.5.17:Fix:A bug fixed in implementation of Eq and Ord for tuples.
+0.1.5.16:New:Functions 'writeLines' and 'writeText' are added to 'io' module.
 0.1.5.15:New:Module 'generic' now defines a generic default instance for 'Default' class.
 0.1.5.14:New:A new 'Default' class is now added to 'prelude' module, most of standard types provide an instance for this class.
 0.1.5.13:New:A type 'Peano' now provides an instance for 'Num' class.

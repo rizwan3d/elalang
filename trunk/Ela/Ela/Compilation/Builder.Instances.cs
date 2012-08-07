@@ -606,10 +606,6 @@ namespace Ela.Compilation
             if ((var.Flags & ElaVariableFlags.Builtin) != ElaVariableFlags.Builtin)
                 return false;
 
-            Label funSkipLabel;
-            int address;
-            LabelMap newMap;
-
             switch ((ElaBuiltinKind)var.Data)
             {
                 //Used to generate Bounded.maxBound constant
@@ -626,27 +622,6 @@ namespace Ela.Compilation
                     EmitSpecName(inst.TypePrefix, "$$" + inst.TypeName, inst, ElaCompilerError.None);
                     cw.Emit(Op.Api2, (Int32)Api.ConsCodeByIndex);
                     cw.Emit(Op.Api, (Int32)Api.ConsDefault);
-                    return true;
-                case ElaBuiltinKind.GenFromInt:
-                    CompileFunctionProlog(null, 1, inst.Line, inst.Column, out funSkipLabel, out address, out newMap);
-
-                    //Obtain type ID, no errors, they are captured elsewhere
-                    EmitSpecName(inst.TypePrefix, "$$" + inst.TypeName, inst, ElaCompilerError.None);
-                    cw.Emit(Op.Api2, (Int32)Api.ConsCodeByIndex);
-                    cw.Emit(Op.Api, (Int32)Api.ConsDefault);
-
-                    CompileFunctionEpilog(null, 1, address, funSkipLabel);
-                    return true;
-                case ElaBuiltinKind.GenFromString:                    
-                    CompileFunctionProlog(null, 1, inst.Line, inst.Column, out funSkipLabel, out address, out newMap);
-
-                    //Obtain type ID, no errors, they are captured elsewhere
-                    EmitSpecName(inst.TypePrefix, "$$" + inst.TypeName, inst, ElaCompilerError.None);
-                    cw.Emit(Op.Api2, (Int32)Api.ConsNameIndex);
-                    EmitSpecName(inst.TypePrefix, "$$" + inst.TypeName, inst, ElaCompilerError.None);
-                    cw.Emit(Op.Api2, (Int32)Api.ConsCodeByIndex);
-                    cw.Emit(Op.Api, (Int32)Api.ConsDefault);
-                    CompileFunctionEpilog(null, 1, address, funSkipLabel);
                     return true;
                 default:
                     return false;

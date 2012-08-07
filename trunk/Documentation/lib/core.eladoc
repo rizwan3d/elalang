@@ -28,26 +28,6 @@ This function takes a default value and a `Maybe`. If a `Maybe` is 'Nothing', it
 otherwise, it returns the value contained in `Maybe`.
 >>>fromMaybe 32 None
 
-=Ordering
-
-#Ordering
-This type can be used by comparison functions to specify if two values are equal (represented through `EQ` 
-case), one value is lesser than another (represented through `LT` case) or one value is greater than another 
-(represented through `GT` case).//br
-A typical example of a function that returns a value of type `Ordering` is `compare`.
-
-#compare
-Compares two given values and returns `EQ` if they are equal, `LT` if first argument is lesser than the 
-second argument and `GT` if first argument is greater than the second argument:
->>>compare 12 34
-
-#maxValue
-Returns `x` if `x` is greater or equal to `y`, otherwise returns y. 
-
-#minValue
-Returns `x` if `x` is lesser or equal to `y`, otherwise returns `y`. 
-
-
 =Either
 
 #Either

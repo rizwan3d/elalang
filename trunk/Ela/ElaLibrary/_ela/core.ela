@@ -4,23 +4,6 @@
 */
 open generic
 
-/* Ordering */
-type Ordering = EQ | LT | GT
-  deriving Eq Ord Show Enum IntLike
-
-compare x y 
-  | x == y = EQ 
-  | x < y  = LT 
-  | else   = GT
-
-maxValue x y 
-  | x >= y = x 
-  | else   = y
-
-minValue x y 
-  | x <= y = x 
-  | else   = y
-
 /* Maybe */
 type Maybe = None | Some a
   deriving Eq Ord Show Default

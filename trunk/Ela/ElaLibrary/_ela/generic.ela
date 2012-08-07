@@ -70,26 +70,17 @@ instance Eq where
           cyc n 
             | consParamValue (n-1) a == consParamValue (n-1) b = cyc (n-1)
             | else = false
-  a <> b = not (a == b)
 
 //Only for algebraic, bettern not to use with open types
 instance Ord where
-  a > b
-    | consParamNumber a == 0 or consParamNumber b == 0 = consIndex a > consIndex b 
-    | else = consIndex a > consIndex b or cyc (consParamNumber a - 1)
-    where cyc 0 = true
-          cyc n 
-            | consParamValue n a > consParamValue n b = cyc (n-1)
-            | else = false
-  a < b
+  compare a b
     | consParamNumber a == 0 or consParamNumber b == 0 = consIndex a < consIndex b 
     | else = consIndex a < consIndex b or cyc (consParamNumber a - 1)
-    where cyc 0 = true
+    where cyc 0 = EQ
           cyc n 
-            | consParamValue n a < consParamValue n b = cyc (n-1)
-            | else = false
-  a >= b = a > b or a == b
-  a <= b = a < b or a == b
+            | consParamValue n a == consParamValue n b = cyc (n-1)
+            | consParamValue n a > consParamValue n b = GT
+            | else = LT
 
 //Only for algebraic, open types are welcome
 instance Name where
@@ -128,7 +119,6 @@ instance Default where
 //Only for algebraic, better not to use with open types
 instance IntLike where
   toInt = consIndex
-  //fromInt = __internal genfromint
   fromInt x = consCreateDefault <| consCodeByIndex context x
 
 //Only for algebraic, better not to use with open types
@@ -139,7 +129,6 @@ instance LongLike where
 //Only for algebraic, open types are welcome
 instance StringLike where
   toString = consName
-  //fromString = __internal genfromstring
   fromString x = consCreateDefault <| consCodeByIndex context (consNameIndex context x)
 
 //(Partial) Only for algebraic, open types are welcome

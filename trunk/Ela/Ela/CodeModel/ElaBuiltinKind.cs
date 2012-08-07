@@ -63,8 +63,6 @@ namespace Ela.CodeModel
         HasField,
 
         GenMaxBound,
-        GenFromInt,
-        GenFromString,
         GenDefault,
 
         Api101,

@@ -21,3 +21,12 @@ would result in:
 >FIRST LINE
 >SECOND LINE
 >THIRD LINE
+
+#writeLines xs fl
+This function accepts a list of string a name of a file and writes these strings one by one
+to a provided file. If the file doesn't exist, it is created. If the file exists, it is 
+truncated.
+
+#writeText txt fl
+This functions accepts a string and a name of a file and writes this string to a file. If the
+file doesn't exist, it is created. If the file exists, it is truncated.

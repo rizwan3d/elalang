@@ -58,7 +58,8 @@ namespace Ela.Compilation
             //If this a tail call and we effectively call the same function we are currently in,
             //than do not emit an actual function call, just do a goto. (Tail recursion optimization).
             if (tail && map.FunctionName != null && map.FunctionName == v.GetName() &&
-                map.FunctionParameters == len && map.FunctionScope == GetScope(map.FunctionName))
+                map.FunctionParameters == len && map.FunctionScope == GetScope(map.FunctionName)
+                && (sv.Flags & ElaVariableFlags.ClassFun) != ElaVariableFlags.ClassFun)
             {
                 AddLinePragma(v);
                 cw.Emit(Op.Br, map.FunStart);
