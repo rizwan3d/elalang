@@ -1,0 +1,44 @@
+#summary Ela development roadmap.
+#labels Featured,Phase-Requirements
+
+This article contains a roadmap for the upcoming versions of Ela Platform.
+
+== Platform 2012.8 ==
+
+August 2012
+
+  * Support for lazy tuple and lazy record patterns.
+  * Support for overloading class functions by return type.
+  * Use constants as well as function as class members.
+  * Performance optimizations for algebraic types construction.
+  * Redesign of `StringBuilder` data type (ease of use, effeciency).
+
+== Platform 2012.9 ==
+
+September 2012
+
+  * New version of the book _Ela, dynamic functional language_, covering all the recent changes in the languages, including algebraic types and classes.
+  * New "getting started" style documentation and tutorials.
+  * Bring back validation of `match` entries for overlapping.
+  * Redesign of logical operators (`and`, `or`) and sequencing operator `($)`, which are currently presented as special forms, not as functions.  
+  * New function application operators.
+  * New types classes: `Functor` (generalization of `map`), `Foldable` (generalization of `fold`), `Union` (generalization of `concat`), etc. and their instances, including generic default instances.
+  * Final version of Ela reflection API, minor redesign in modules `generic` and `reflect`.
+
+== Platform 2012.10 ==
+
+November 2012
+  
+  * Monads, `do` notation for monads.
+  * `IO` monad, redesign of existing modules to work through `IO` monad.
+  * Extend standard library with new modules (collections, IO functions, etc.)
+  * A benchmarking suite for Ela.
+  * First public release of Eladoc, Ela documentation utility based on literate code syntax (will be integrated with Elide).
+
+== Platform 2012.11 ==
+
+December 2012
+
+  * The core modules from standard library will be shipped in precompiled form in addition to source code.
+  * Decimal (128 bit) numeric type.
+  * Arbitrary precision integer type.
