@@ -66,7 +66,7 @@ namespace Ela.Runtime.Classes
                 return false;
             }
 
-            return left.DirectGetString().CompareTo(right.DirectGetString()) > 0;
+            return left.DirectGetString().CompareTo(right.DirectGetString()) < 0;
         }
 
         internal override bool Lesser(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -77,7 +77,7 @@ namespace Ela.Runtime.Classes
                 return false;
             }
 
-            return left.DirectGetString().CompareTo(right.DirectGetString()) < 0;
+            return left.DirectGetString().CompareTo(right.DirectGetString()) > 0;
         }
 
         internal override bool GreaterEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -88,7 +88,7 @@ namespace Ela.Runtime.Classes
                 return false;
             }
 
-            return left.DirectGetString().CompareTo(right.DirectGetString()) >= 0;
+            return left.DirectGetString().CompareTo(right.DirectGetString()) <= 0;
         }
 
         internal override bool LesserEqual(ElaValue left, ElaValue right, ExecutionContext ctx)
@@ -99,7 +99,7 @@ namespace Ela.Runtime.Classes
                 return false;
             }
 
-            return left.DirectGetString().CompareTo(right.DirectGetString()) <= 0;
+            return left.DirectGetString().CompareTo(right.DirectGetString()) >= 0;
         }
 
         internal override ElaValue Head(ElaValue left, ExecutionContext ctx)

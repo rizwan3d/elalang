@@ -221,6 +221,20 @@ instead of `++` operator:
 The result of application of `+>` to two arguments is not a string, but an instance of `StringBuilder` type.
 In order to convert a string builder to a string, one can use a standard `toString` function.
 
+==Ordering
+
+#Ordering
+This type can be used by comparison functions to specify if two values are equal (represented through `EQ` 
+case), one value is lesser than another (represented through `LT` case) or one value is greater than another 
+(represented through `GT` case).//br
+A typical example of a function that returns a value of type `Ordering` is `compare`.
+
+#maxValue
+Returns `x` if `x` is greater or equal to `y`, otherwise returns y. 
+
+#minValue
+Returns `x` if `x` is lesser or equal to `y`, otherwise returns `y`. 
+
 =Standard classes
 
 ==Basic classes
@@ -230,10 +244,16 @@ Defines two basic comparison functions - equal `==` and not equal `<>`. Implemen
 functions is fully dependent from a particular instance however normally these functions would 
 test for structural, not reference equality.
 >>>[1,2,3] == [1,2,3]
+Minimum definition: `(==)` or `(<>)`.
 
 #Ord
-Defines four comparison functions including: greater `>`, lesser `<`, greater or equal `>=` and 
-lesser or equal `<=`.
+Defines four comparison functions including: greater `>`, lesser `<`, greater or equal `>=`, 
+lesser or equal `<=` and `compare`.//br
+Function `compare` compares two given values and returns `EQ` if they are equal, `LT` if first 
+argument is lesser than the second argument and `GT` if first argument is greater than the second 
+argument:
+>>>compare 12 34
+Minimum definition: `compare` (or other functions, except `compare`).
 
 #Bit
 Defines bit manipulation functions including: bitwise AND `&&&`, bitwise OR `|||`, bitwise 

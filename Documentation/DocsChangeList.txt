@@ -1,5 +1,5 @@
 0.1.6.0:Release:Release of 0.1.6.0.
-0.1.5.5:Change:Articles 'prelude', 'number', 'core', 'tuple', 'list', 'peano', 'generic' are updated.
+0.1.5.5:Change:Articles 'prelude', 'io', 'number', 'core', 'tuple', 'list', 'peano', 'generic' are updated.
 0.1.5.4:New:A new document 'Whats new' that contains platform changes overview is added.
 0.1.5.3:Change:Article 'Operator priority' is updated according to the language changes.
 0.1.5.2:Change:Article 'Classes' is updated according to the language changes.

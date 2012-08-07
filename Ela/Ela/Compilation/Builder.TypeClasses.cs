@@ -18,31 +18,7 @@ namespace Ela.Compilation
             {
                 //Run through members and create global class functions (Newfunc)
                 for (var i = 0; i < s.Members.Count; i++)
-                {
-                    var m = s.Members[i];
-
-                    //Each class function should a mask with at least one entry of a type parameter
-                    if (m.Mask == 0)
-                        AddError(ElaCompilerError.InvalidMemberSignature, m, m.Name);
-
-                    //Class member can be a constant or a function
-                    var isConst = m.Components == 1;
-
-                    //m.Components are function arguments plus return type.
-                    var addr = AddVariable(m.Name, m, ElaVariableFlags.ClassFun |
-                        (isConst ? ElaVariableFlags.Polyadric : ElaVariableFlags.None), m.Components - 1);
-
-                    if (!isConst) //This is a function
-                    {
-                        cw.Emit(Op.PushI4, m.Components - 1);
-                        cw.Emit(Op.PushI4, m.Mask);
-                        cw.Emit(Op.Newfunc, AddString(m.Name));
-                    }
-                    else //This is a polymorphic constant
-                        cw.Emit(Op.Newconst, AddString(m.Name));
-
-                    PopVar(addr);
-                }
+                    CompileMember(s.Members[i]);
             }
 
             //We create a special variable that will be initialized with a global unique ID of this class
@@ -58,6 +34,32 @@ namespace Ela.Compilation
 
             if (s.And != null)
                 CompileClass(s.And, map);
+        }
+
+        //Compiles class member - function or constant
+        private void CompileMember(ElaClassMember m)
+        {
+            //Each class function should a mask with at least one entry of a type parameter
+            if (m.Mask == 0)
+                AddError(ElaCompilerError.InvalidMemberSignature, m, m.Name);
+
+            //Class member can be a constant or a function
+            var isConst = m.Components == 1;
+
+            //m.Components are function arguments plus return type.
+            var addr = AddVariable(m.Name, m, ElaVariableFlags.ClassFun |
+                (isConst ? ElaVariableFlags.Polyadric : ElaVariableFlags.None), m.Components - 1);
+
+            if (!isConst) //This is a function
+            {
+                cw.Emit(Op.PushI4, m.Components - 1);
+                cw.Emit(Op.PushI4, m.Mask);
+                cw.Emit(Op.Newfunc, AddString(m.Name));
+            }
+            else //This is a polymorphic constant
+                cw.Emit(Op.Newconst, AddString(m.Name));
+
+            PopVar(addr);
         }
 
         //Built-in class compilation simply compiles an appropriate built-in and creates
@@ -77,6 +79,7 @@ namespace Ela.Compilation
                     CompileBuiltinMember(ElaBuiltinKind.Lesser, s, 1, map);
                     CompileBuiltinMember(ElaBuiltinKind.GreaterEqual, s, 2, map);
                     CompileBuiltinMember(ElaBuiltinKind.LesserEqual, s, 3, map);
+                    CompileMember(s.Members[4]);
                     break;
                 case TypeClass.Additive:
                     CompileBuiltinMember(ElaBuiltinKind.Add, s, 0, map);

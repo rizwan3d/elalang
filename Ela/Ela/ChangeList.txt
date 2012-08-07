@@ -1,4 +1,6 @@
 0.11.2.0:Release:Release of 0.11.2.0.
+0.11.1.14:Fix:A critical bug fixed - tail recursion was optimized incorrectly for class member functions.
+0.11.1.13:Fix:An implementation (compiler generated) of Ord for string didn't work correctly.
 0.11.1.12:Fix:Deletion of two doubles could result in DivideByZero error. (Issue #34)
 0.11.1.11:Change:New op codes 'Newtype0', 'Newtype1' and 'Newtype2' are added; creation of AlgDT constructors is optimized.
 0.11.1.10:New:Now in addition to lazy tuple patterns Ela also supports lazy record patterns.

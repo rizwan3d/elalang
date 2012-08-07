@@ -17,6 +17,9 @@ namespace Ela.Library.General
         public override void Initialize()
         {
             Add<ElaFunction,String,String>("readLines", ReadLines);
+            Add<String,ElaUnit>("truncateFile", TruncateFile);
+            Add<String,String,ElaUnit>("writeLine", WriteLine);
+            Add<String,String,ElaUnit>("writeText", WriteText);
         }
         
         public string ReadLines(ElaFunction fun, string file)
@@ -31,6 +34,28 @@ namespace Ela.Library.General
 
                 return sb.ToString();
             }
+        }
+
+        public ElaUnit TruncateFile(string file)
+        {
+            File.Open(file, FileMode.Create).Close();
+            return ElaUnit.Instance;
+        }
+
+        public ElaUnit WriteLine(string line, string file)
+        {
+            using (var sw = new StreamWriter(File.Open(file, FileMode.Append)))
+                sw.WriteLine(line);
+
+            return ElaUnit.Instance;
+        }
+
+        public ElaUnit WriteText(string text, string file)
+        {
+            using (var sw = new StreamWriter(File.Open(file, FileMode.Create)))
+                sw.WriteLine(text);
+
+            return ElaUnit.Instance;
         }
     }
 }

@@ -51,8 +51,6 @@ namespace Ela
 
                 /* infrastructure */
                 case "genmaxbound": return ElaBuiltinKind.GenMaxBound;
-                case "genfromint": return ElaBuiltinKind.GenFromInt;
-                case "genfromstring": return ElaBuiltinKind.GenFromString;
                 case "gendefault": return ElaBuiltinKind.GenDefault;
 
                 case "api1": return ElaBuiltinKind.Api1;
