@@ -23,6 +23,7 @@ The following combinations of operator symbols are reserved and cannot be used f
 |`..` |Ranges
 |`$`  |Sequencing
 |`.`  |Member access
+|`:::` |Context
 
 =Priority and Associativity
 In Ela operator priority and associativity is controlled by the first symbols in operator identifier. The following table lists all operator 

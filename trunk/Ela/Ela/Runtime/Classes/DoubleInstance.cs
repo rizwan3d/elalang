@@ -213,12 +213,6 @@ namespace Ela.Runtime.Classes
                 }
             }
 
-            if (right.Ref.AsDouble() == 0)
-            {
-                ctx.DivideByZero(left);
-                return Default();
-            }
-
             return new ElaValue(left.Ref.AsDouble() / right.Ref.AsDouble());
         }
 
