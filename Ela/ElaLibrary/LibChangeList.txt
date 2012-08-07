@@ -1,3 +1,8 @@
+0.1.6.0:Release:Release of 0.1.6.0.
+0.1.5.15:New:Module 'generic' now defines a generic default instance for 'Default' class.
+0.1.5.14:New:A new 'Default' class is now added to 'prelude' module, most of standard types provide an instance for this class.
+0.1.5.13:New:A type 'Peano' now provides an instance for 'Num' class.
+0.1.5.12:New:A new 'Num' class is added to 'number' module. Now all numeric types provides an instance for this class.
 0.1.5.11:Change:Function 'consParams' is decomissioned from 'generic' module.
 0.1.5.10:Fix:Ranges for tuples do not work when the second element in a range is less than the first element and the range is finite. (Issue #31)
 0.1.5.9:Change:StringBuilder type from prelude is redesigned and string concatenation through this type is now much more effecient and easier to use.

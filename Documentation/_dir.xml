@@ -45,8 +45,8 @@
     <doc name="Operator Priority" file="operatorpriority.htm" />    
   </folder>
   <folder name="Older Versions">
-    <doc name="Platform 2012.6" file="oldversions/platform-2012-6.htm" />
     <doc name="Platform 2012.7" file="oldversions/platform-2012-7.htm" />
+    <doc name="Platform 2012.6" file="oldversions/platform-2012-6.htm" />
   </folder>
   <doc name="What's new?" file="whatsnew.htm" />
   <doc name="Ela and Haskell" file="elaandhaskell.htm" />

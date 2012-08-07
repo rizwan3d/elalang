@@ -1,4 +1,6 @@
-﻿0.1.5.5:Change:Now EIL generator shows op codes offsets by default.
+﻿0.1.6.0:Release:Release of Elide 0.1.6.0.
+0.1.5.6:Change:Scrolling to the location of a run-time error is improved.
+0.1.5.5:Change:Now EIL generator shows op codes offsets by default.
 0.1.5.4:Fix:Elide could crash if another program modified a file currently editing.
 0.1.5.3:Fix:Highlighting in output window wasn't always done correctly.
 0.1.5.2:Change:Default highlighting settings for Ela code editor has changed.

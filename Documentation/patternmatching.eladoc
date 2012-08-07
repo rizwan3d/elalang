@@ -1,4 +1,4 @@
-﻿#title Pattern Matching
+#title Pattern Matching
 #category Language Reference
 
 =Introduction
@@ -69,7 +69,7 @@ A construct used for exception handling - `try` expression - has effectively the
 keyword instead of `match`. The major difference is that it doesn't match a given expression but executes it and if (and only if) 
 this expression fails matches an exception object. 
 >>try 2 / 0 with
->>    DivideByZero m = m
+>>    m = m
 
 =Patterns
 All patterns can be divided in two groups - irrefutable patterns that always match (such as name pattern that always does the 
@@ -86,5 +86,5 @@ Ela supports the following patterns:
 |Record     |`{pattern{,pattern}}`  |`{x,y,z} or {x'=x,y=y'}` |Refutable pattern, matches a record and binds its fields to names. If names are not specified it creates bindings with tde same names as record fields. 
 |List       |`[pattern{,pattern}]`  |`[1,2,x]`                |Refutable pattern, matches a linked list of a specified lengtd. 
 |Head/Tail  |`pattern{::pattern}`   |`x::(1,2)::xs`           |Refutable pattern, matches a linked list. Unlike list pattern, it doesn't test a list length and if the last pattern is a name this name gets bound a list tail. 
-|Variant    |`Tag pattern`          |`Some x`                 |Refutable pattern, matches a variant. 
-|Type Check |`pattern is typename`  |`x  is unit`             |Refutable pattern, matches if a type of an expression equals to the specified type. 
+|Constructor |`Constructor pattern` |`Some x`                 |Refutable pattern, matches an instance of an algebraic type. 
+|Lazy pattern |`& pattern`          |`& (x,y)`                |Irrefutable pattern, matches a value in a lazy manner. 

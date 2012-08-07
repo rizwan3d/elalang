@@ -582,7 +582,9 @@ namespace Elide.Scintilla
         
         public void ScrollToCaret()
         {
+            Ref.Send(Sci.SCI_SETYCARETPOLICY, Sci.CARET_SLOP | Sci.CARET_STRICT | Sci.CARET_EVEN, 50);
             Ref.Send(Sci.SCI_SCROLLCARET);
+            Ref.Send(Sci.SCI_SETYCARETPOLICY, Sci.CARET_SLOP | Sci.CARET_STRICT | Sci.CARET_EVEN, 0);
         }
         
         public void ScrollLineUp()
