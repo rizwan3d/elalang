@@ -101,9 +101,10 @@ A typical example of running a test suite can look like so:
 Function `formatResult` is used to format test results to a string.
 
 ==Displaying Test Results
-Currently `espec` provides only a single function to format test results to a string - a function
-`formatResult`. However it is possible to implement a custom formatting function. For references
-how to accomplush you can inspect `formatResult` implementation in `espec` module.//br
+Currently `espec` provides two functions to format test results to a string - a function
+`formatResult`, which output a string, and a function `formatResultHtm`, which outputs HTML with syntax highlighting.//br
+It is possible to implement additional formatting functions. For references how to accomplush you can inspect `formatResult` 
+implementation in `espec` module.//br
 Function `formatResult` outputs formatted plain text which mirrows the test specification. This 
 output also allows to track how a given value changes through test specification sentences. Let's
 write a simple example:
@@ -203,4 +204,8 @@ Adds a test `fn` to a list `xs` and returns a list with added test.
 Adds tests from module `mod` to a list `xs` and returns a list with added tests.
 
 #formatResult
-Format test results obtain from `run` function into a string and returns this string.
+Formats test results obtained from `run` function into a string and returns this string.
+
+#formatResultHtm
+Formats test results obtained from `run` function into an HTML document with syntax 
+highlighting and returns this document as a string.

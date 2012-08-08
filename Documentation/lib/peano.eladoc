@@ -144,6 +144,10 @@ Provides an implementation of a `showf` function. This implementation is strict 
 whole peano number. It would result to a non-termination if applied to an infinity.
 >>>show (5? + 2?)
 
+===Lazy
+Implements `Lazy` class. All peano numbers are supposed to be lazy and are safely translated to strings
+as `peano(..)`.
+
 ==Functions and constants
 
 #infinity

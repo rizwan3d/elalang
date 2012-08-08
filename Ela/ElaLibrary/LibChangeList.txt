@@ -1,4 +1,7 @@
 0.1.6.0:Release:Release of 0.1.6.0.
+0.1.5.26:Fix:A bug fixed in module 'format' - several occurences of the same pattern (such as {0}) weren't processed correctly.
+0.1.5.25:Change:Now 'espec' can output test result as string and as HTML with highlighting.
+0.1.5.24:Change:Now 'espec' can correctly handle thunks and lazy (and infinite) data structures.
 0.1.5.23:Change:Words 'do' and 'apply' from 'espec' module are renamed to 'when' and 'after'; 'do' is now a reserved keyword.
 0.1.5.22:New:Now classes 'Eq' and 'Ord' have complete recursive instances in prelude (minimum definition for 'Eq' is (==) or (<>); minimum definition for 'Ord' is 'compare').
 0.1.5.21:New:Now class 'Ord' defines an additional 'compare' function that returns an instance of 'Ordering' (used to be a separate function in `core` module).

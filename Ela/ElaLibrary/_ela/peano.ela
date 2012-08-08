@@ -2,7 +2,7 @@
   Module peano. Lazy peano numbers.
   Created in 2012 by Basil Voronkov
 */
-open number list
+open number list thunk
 
 /* Construction */
 type Peano = Zero | Succ a
@@ -16,6 +16,10 @@ fromIntegral a = from a
         from n = Succ (& from (n-1))
 
 /* Instances */
+instance Lazy List where
+  lazy _ = true
+  showLazy _ = "peano(..)"
+
 instance Default Peano where
   default = Zero
 

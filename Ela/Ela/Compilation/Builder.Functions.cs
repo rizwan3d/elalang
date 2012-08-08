@@ -157,5 +157,42 @@ namespace Ela.Compilation
             cw.Emit(Op.PushI4, pars);
             cw.Emit(Op.Newfun, frame.Layouts.Count - 1);
         }
+
+        //Perform an eta expansion for a given expression
+        private void EtaExpand(string name, ElaExpression exp, LabelMap map, int args)
+        {
+            //Here we generate a function which has a provided number of
+            //arguments            
+            if (name != null)
+                StartFun(name, args);
+
+            StartSection();
+            StartScope(true, exp.Line, exp.Column);
+            cw.StartFrame(args);
+            var funSkipLabel = cw.DefineLabel();
+            cw.Emit(Op.Br, funSkipLabel);
+            var address = cw.Offset;
+
+            if (exp.Type != ElaNodeType.Equation)
+                CompileExpression(exp, map, Hints.None);
+            else
+                CompileFunction((ElaEquation)exp);
+
+            //Functions are curried so generate a call for each argument
+            for (var i = 0; i < args; i++)
+                cw.Emit(Op.Call);
+
+            cw.Emit(Op.Ret);
+            frame.Layouts.Add(new MemoryLayout(currentCounter, cw.FinishFrame(), address));
+            EndSection();
+            EndScope();
+
+            if (name != null)
+                EndFun(frame.Layouts.Count - 1);
+
+            cw.MarkLabel(funSkipLabel);
+            cw.Emit(Op.PushI4, args);
+            cw.Emit(Op.Newfun, frame.Layouts.Count - 1);
+        }
 	}
 }

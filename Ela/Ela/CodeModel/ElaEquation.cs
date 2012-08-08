@@ -87,6 +87,8 @@ namespace Ela.CodeModel
             return IsFunction() ? ((ElaJuxtaposition)Left).Parameters.Count : 0;
         }
 
+        internal int Arguments { get; set; }
+
         public ElaVariableFlags VariableFlags { get; set; }
 
         public ElaExpression Left { get; set; }

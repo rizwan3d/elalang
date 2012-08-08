@@ -300,9 +300,9 @@ namespace Ela.Compilation
                 //(it can be a partially applied function) or if a number of arguments
                 //doesn't match.
                 if (!s.IsFunction())
-                    EtaExpand(s.Right, map, args);
+                    EtaExpand(null, s.Right, map, args);
                 else if (s.GetArgumentNumber() < args)
-                    EtaExpand(s, map, args);
+                    EtaExpand(null, s, map, args);
                 else
                     CompileFunction(s);
             }
@@ -401,36 +401,6 @@ namespace Ela.Compilation
             }
             
             return false;
-        }
-
-        //Perform an eta expansion for a given expression
-        private void EtaExpand(ElaExpression exp, LabelMap map, int args)
-        {
-            //Here we generate a function which has a provided number of
-            //arguments
-            StartSection();
-            StartScope(true, exp.Line, exp.Column);
-            cw.StartFrame(args);
-            var funSkipLabel = cw.DefineLabel();
-            cw.Emit(Op.Br, funSkipLabel);
-            var address = cw.Offset;
-
-            if (exp.Type != ElaNodeType.Equation)
-                CompileExpression(exp, map, Hints.None);
-            else
-                CompileFunction((ElaEquation)exp);
-
-            //Functions are curried so generate a call for each argument
-            for (var i = 0; i < args; i++)
-                cw.Emit(Op.Call);
-
-            cw.Emit(Op.Ret);
-            frame.Layouts.Add(new MemoryLayout(currentCounter, cw.FinishFrame(), address));
-            EndSection();
-            EndScope();
-            cw.MarkLabel(funSkipLabel);
-            cw.Emit(Op.PushI4, args);
-            cw.Emit(Op.Newfun, frame.Layouts.Count - 1);
         }
 
         //An instance might be missing a body. If this instance corresponds to

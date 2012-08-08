@@ -4,6 +4,12 @@
 
 This module contains multiple functions for linked lists. 
 
+=Instances
+
+===Lazy
+Implements an instances of `Lazy` class that can be used to indentify lazy lists and safely
+print them as strings.
+
 =Functions
 
 ==Sorting functions

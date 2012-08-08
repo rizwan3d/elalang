@@ -4,8 +4,8 @@
 */
 import libCon#elalib@con
 
-write x = con.write (show x)
+write x = con.write (force x)
 
-writen x = con.writen (show x)
+writen x = con.writen (force x)
 
 readn () = con.readn ()
