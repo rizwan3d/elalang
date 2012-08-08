@@ -1,4 +1,6 @@
 0.11.2.0:Release:Release of 0.11.2.0.
+0.11.1.16:Change:Now names with 'qualified' attribute are not imported at all (to avoid names clashing).
+0.11.1.15:Change:Implementation of 'Show' for built-ins is changed - now for strings it appends quotes, for doubles and longs - postfixes, etc.
 0.11.1.14:Fix:A critical bug fixed - tail recursion was optimized incorrectly for class member functions.
 0.11.1.13:Fix:An implementation (compiler generated) of Ord for string didn't work correctly.
 0.11.1.12:Fix:Deletion of two doubles could result in DivideByZero error. (Issue #34)

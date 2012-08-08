@@ -408,7 +408,7 @@ instance Show Record where
           tos sb n 
             | n < len = tos (sbb +> ",") (n+1)
             | else = sbb +> "}"
-            where sbb = sb +> n!!t +> "=" +> showf f (t:n)
+            where sbb = sb +> (lang.showRecordKey n t) +> "=" +> showf f (t:n)
 
 /* xLike */
 class IntLike a where

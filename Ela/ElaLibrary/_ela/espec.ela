@@ -9,7 +9,7 @@ type EndOfTest # private
 type EndOfTest = EndOfTest
 
 type Word # private
-type Word = Do a | Apply a | Pred a | Given a | Fun a | Other | Test a
+type Word = When a | After a | Pred a | Given a | Fun a | Other | Test a
 
 type Result # private
 type Result = Success | Failed a | Error a
@@ -19,8 +19,8 @@ test = test_sg []
 
 test_sg # private
 test_sg xs t EndOfTest = Test t :: reverse xs
-test_sg xs t Do = test_apply t xs Do
-test_sg xs t Apply = test_apply t xs Apply
+test_sg xs t When = test_apply t xs When
+test_sg xs t After = test_apply t xs After
 test_sg xs t (Pred pred) = test_pred t xs pred
 test_sg xs t Given = test_given t xs
 test_sg xs t err = fail (formatStr "Unexpected word: {0}." (name err))
@@ -31,8 +31,8 @@ test_sg xs t err = fail (formatStr "Unexpected word: {0}." (name err))
       where 
         word (Pred (n,_)) = n
         word (Fun (n,_)) = n
-        word Do = "do"
-        word Apply = "apply"
+        word When = "when"
+        word After = "after"
         word Other = "other"
         word x = show x
 
@@ -63,8 +63,8 @@ greater = Fun ("greater", >)
 lesserEqual = Fun ("lesserEqual", <=)
 greaterEqual = Fun ("greaterEqual", >=)
 contain = Fun ("contain", flip elem)
-do = Do ()
-apply = Apply ()
+when = When ()
+after = After ()
 given = Given ()
 
 /* Execution */
@@ -73,11 +73,11 @@ exec z [] = z
 exec z (x::xs) = exec (eval z x) xs
   where eval (_,lst) (Test n) = () => Test n :: lst
         eval (_,lst) (Given x) = x => Given x :: lst
-        eval (x,lst) (Do (fn,args)) = 
-            res => Do (funName fn, args, res) :: lst
+        eval (x,lst) (When (fn,args)) = 
+            res => When (funName fn, args, res) :: lst
             where res = evalFun fn (x :: reverse args)
-        eval (x,lst) (Apply (fn,args)) = 
-            res => Apply (funName fn, args, res) :: lst
+        eval (x,lst) (After (fn,args)) = 
+            res => After (funName fn, args, res) :: lst
             where res = evalFun fn (args ++ [x])
         eval (x,lst) (Pred ((nm,pred),Fun (fnm,fn),arg)) = 
             x => Pred (nm,fnm,arg,res) :: lst
@@ -125,11 +125,11 @@ report_stat sb _ _ [] = sb
 report_stat sb f e (x::xs) = report_stat (sb +> (item x) +> "\r\n") f e xs
   where item (Test n) = formatStr "\r\nTest \"{0}\" (failed {1}, errors {2}):" n f e
         item (Given x) = formatStr "  given {0}" x
-        item (Pred (nm,fnm,val,res)) = formatStr "    {0} {1} {2} -> {3}" nm fnm val (result res)
-        item (Do (fn,args,res)) = formatStr "    do {0}{1} -> {2}" fn (itemDo args) res
-        item (Apply (fn,args,res)) = formatStr "    apply {0}{1} -> {2}" fn (itemDo args) res
+        item (Pred (nm,fnm,val,res)) = formatStr "    {0} {1} {2} -> {3}" nm fnm (show val) (result res)
+        item (When (fn,args,res)) = formatStr "    when {0}{1} -> {2}" fn (itemDo args) res
+        item (After (fn,args,res)) = formatStr "    after {0}{1} -> {2}" fn (itemDo args) res
         itemDo [] = ""
-        itemDo (y::ys) = formatStr " {0}{1}" (ystr y) (itemDo ys)
+        itemDo (y::ys) = " " ++ (ystr y) ++ itemDo ys
           where ystr y | y is Fun = funName y 
                        | else = show y
         result Success = "success"

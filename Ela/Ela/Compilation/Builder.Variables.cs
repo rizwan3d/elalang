@@ -243,12 +243,7 @@ namespace Ela.Compilation
             {
                 var flags = vk.Flags;
                 var data = vk.Data;
-
-                //This name requires qualified access, no need to stop compilation but
-                //we need to generate an appropriate error.
-                if ((flags & ElaVariableFlags.Qualified) == ElaVariableFlags.Qualified)
-                    AddError(ElaCompilerError.NameRequireQualified, line, col, name);
-
+                                
                 //All externals are added to the list of 'latebounds'. These names are then verified by a linker.
                 //This verification is used only when a module is deserialized from an object file.
                 frame.LateBounds.Add(new LateBoundSymbol(name, vk.ModuleHandle | vk.Address << 8, data, (Int32)flags, line, col));

@@ -1,4 +1,5 @@
 0.1.6.0:Release:Release of 0.1.6.0.
+0.1.5.23:Change:Words 'do' and 'apply' from 'espec' module are renamed to 'when' and 'after'; 'do' is now a reserved keyword.
 0.1.5.22:New:Now classes 'Eq' and 'Ord' have complete recursive instances in prelude (minimum definition for 'Eq' is (==) or (<>); minimum definition for 'Ord' is 'compare').
 0.1.5.21:New:Now class 'Ord' defines an additional 'compare' function that returns an instance of 'Ordering' (used to be a separate function in `core` module).
 0.1.5.20:Change:An 'Ordering' type (and all related functions) is moved from 'core' module to prelude.
