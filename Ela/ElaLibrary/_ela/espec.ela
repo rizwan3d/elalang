@@ -8,10 +8,8 @@ open reflect list format thunk generic
 type EndOfTest # private
 type EndOfTest = EndOfTest
 
-type Word # private
 type Word = When a | After a | Pred a | Given a | Fun a | Other | Test a
 
-type Result # private
 type Result = Success | Failed a | Error a
 
 /* Words */
@@ -133,11 +131,6 @@ report_stat sb f e (x::xs) = report_stat (sb +> (item x) +> "\r\n") f e xs
         result Success = "success"
         result (Error m) = "error: " ++ show m
         result (Failed x) = formatStr "failed (got {0})" (safeShow x)
-        safeShow x 
-          | (x is Lazy) and lazy x = showLazy x
-          | not (evaled x) = "<thunk>"
-          | x is Fun = funName x
-          | else = showf "" x
 
 report_stathtm # private
 report_stathtm sb _ _ [] = sb
@@ -156,11 +149,13 @@ report_stathtm sb f e (x::xs) = report_stathtm (sb +> (item x)) f e xs
         result Success = "<span class='ok'>success</span>"
         result (Error m) = "<span class='err'>error: " ++ show m ++ "</span>"
         result (Failed x) = formatStr "<span class='err'>failed</span> (got {0})" (safeShow x)
-        safeShow x 
-          | (x is Lazy) and lazy x = showLazy x
-          | not (evaled x) = "<thunk>"
-          | x is Fun = funName x
-          | else = showf "" x
+
+safeShow # private
+safeShow x 
+  | (x is Lazy) and lazy x = showLazy x
+  | not (evaled x) = "<thunk>"
+  | x is Fun = funName x
+  | else = showf "" x
 
 formatGen # private
 formatGen formatter n fc str [] = (n,fc,toString <| str)
