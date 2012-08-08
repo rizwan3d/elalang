@@ -19,6 +19,9 @@ returns the result.
 #isSome o
 Checks if a given value is a `Maybe`, created using `Some` constructor.
 
+#isNone o
+Checks if a given value is a `Maybe`, created using `None` constructor.
+
 #fromSome o
 Unpacks a given value of a `Maybe`, created using `Some` constructor.
 >>>fromSome (Some 12)
@@ -27,6 +30,15 @@ Unpacks a given value of a `Maybe`, created using `Some` constructor.
 This function takes a default value and a `Maybe`. If a `Maybe` is 'Nothing', it returns the default value; 
 otherwise, it returns the value contained in `Maybe`.
 >>>fromMaybe 32 None
+
+#catMaybes
+The `catMaybes` function takes a list of `Maybe` values and returns a list of all the `Some` values.
+>>>catMaybes [Some 2,None,Some 12]
+
+#mapMaybe
+The `mapMaybe` function is a version of `map` which can throw out elements. In particular, the functional 
+argument returns something of type `Maybe`. If this is `None`, no element is added on to the result 
+list. If this is `Some a`, then `a` is included to the result list.
 
 =Either
 
@@ -57,3 +69,8 @@ Checks if a given value is an `Either`, created using `Left` constructor.
 
 #isRight o
 Checks if a given value is an `Either`, created using `Right` constructor.
+
+#partitionEithers
+Partitions a list of `Either` into two lists. All the `Left` elements are extracted, in order, 
+to the first component of the output. Similarly, the `Right` elements are extracted to the second 
+component of the output.

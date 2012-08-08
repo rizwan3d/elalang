@@ -136,6 +136,10 @@ Returns a first element in a tuple. This function will only work with a tuple of
 Returns a second element in a tuple. This function will only work with a tuple of three elements: 
 >>>snd3 (1,2,3)
 
+#dup x
+Duplicates an element.
+>>>dup 12
+
 ==Records
 
 #Record
