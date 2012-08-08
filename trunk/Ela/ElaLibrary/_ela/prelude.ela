@@ -81,6 +81,8 @@ fst3 (x,_,_) = x
 
 snd3 (_,y,_) = y
 
+dup x = (x,x)
+
 /* List */
 type List
   deriving Seq
@@ -126,7 +128,9 @@ instance StringLike StringBuilder where
   fromString s = "" +> s
 
 instance Eq StringBuilder where
-  (a +> b) == (c +> d) = a == b and c == d
+  (a +> b) == (c +> d) = 
+    typeCode a == typeCode c and a == c and 
+    typeCode b == typeCode d and b == d
   a <> b = not (a == b)
 
 instance Show StringBuilder where
@@ -592,6 +596,9 @@ odd x = x % 2 <> 0
 /* Privates */
 (!!) # private
 (!!) = __internal api106
+
+typeCode # private
+typeCode = __internal api5
 
 listLazy # private
 listLazy = __internal api10

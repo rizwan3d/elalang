@@ -18,10 +18,23 @@ maybe _ f (Some x) = f x
 isSome None = false
 isSome _    = true
 
+isNone None = true
+isNone _    = false
+
 fromSome (Some a) = a
 
 fromMaybe d None = d
 fromMaybe _ (Some x) = x
+
+catMaybes [] = []
+catMaybes (Some x :: xs) = x :: catMaybes xs
+catMaybes (None :: xs) = catMaybes xs
+
+mapMaybe f [] = []
+mapMaybe f (x::xs)
+  | isSome y = fromSome y :: mapMaybe f xs
+  | else = mapMaybe f xs
+  where y = f x
 
 /* Either */
 type Either = Left a | Right a
@@ -43,3 +56,36 @@ rights xs = [a \\ Right a <- xs]
 fromLeft (Left a) = a
 
 fromRight (Right a) = a
+
+partitionEithers xs = partition ([],[]) xs
+  where partition (ys1,ys2) (Left x::xs) = partition (x::ys1,ys2) xs
+        partition (ys1,ys2) (Right x::xs) = partition (ys1,x::ys2) xs
+        partition (ys1,ys2) [] = (reverse ys1,reverse ys2)
+
+/* Or */
+type Or = Fst a | Snd a | Both a b
+  deriving Eq Ord Show
+
+elimOr f _ _ (Fst a) = f a
+elimOr _ f _ (Snd a) = f a
+elimOr _ _ f (Both a b) = f a b
+
+fromEither (Left a) = Fst a
+fromEither (Right a) = Snd a
+
+isFst (Fst _) = true
+isFst _ = false
+
+isSnd (Snd _) = true
+isSnd _ = false
+
+isBoth (Both _ _) = true
+isBoth _ = false
+
+fromFst (Fst a) = a
+
+fromSnd (Snd a) = a
+
+fromBoth1 (Both a _) = a
+
+fromBoth2 (Both _ a) = a
