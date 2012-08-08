@@ -93,9 +93,9 @@ all f (x::xs)
   | else = false
 all _ [] = true
 
-sum = foldl (+) 0
+sum xs = foldl (+) 0 xs
 
-product = foldl (*) 1
+product xs = foldl (*) 1 xs
 
 minimum xs = foldl1 minValue xs
 
@@ -133,11 +133,11 @@ iterate f x = x :: (& iterate f (f x))
 replicate n x = take n (repeat x)
 
 /* Sublists */
-take = tak [] 
+take = take [] 
   where
-    tak ys 0 _       = reverse ys
-    tak ys n (x::xs) = tak (x::ys) (n-1) xs
-    tak ys _ []      = []
+    take ys 0 _       = reverse ys
+    take ys n (x::xs) = take (x::ys) (n-1) xs
+    take ys _ []      = []
 
 takeWhile f (x::xs) 
   | f x  = x :: takeWhile f xs

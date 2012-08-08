@@ -32,7 +32,7 @@ instance Enum Tuple where
             | else = gen (e::xs) max (e+s) s
 
 instance ListLike Tuple where
-  toList t = foldr (flip(::)) []
+  toList = foldr (flip(::)) []
   fromList xs = lang.asTuple ys
     where ys | lazyList xs = forceOnlyList xs
              | else = xs

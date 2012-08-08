@@ -7,7 +7,7 @@ namespace Ela.Runtime.Classes
     {
         internal override string Showf(string format, ElaValue value, ExecutionContext ctx)
         {
-            return value.ToString(format, Culture.NumberFormat);
+            return "'" + value.ToString(format, Culture.NumberFormat) + "'";
         }
 
         internal override ElaValue Concatenate(ElaValue left, ElaValue right, ExecutionContext ctx)

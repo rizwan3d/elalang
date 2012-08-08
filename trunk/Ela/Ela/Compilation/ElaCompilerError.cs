@@ -29,7 +29,7 @@ namespace Ela.Compilation
 
 		// = 310,
 
-		NameRequireQualified = 311,
+		// = 311,
 
 		InvalidTypeDefinition = 312,
 

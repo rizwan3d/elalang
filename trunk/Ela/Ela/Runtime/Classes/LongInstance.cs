@@ -9,7 +9,7 @@ namespace Ela.Runtime.Classes
         #region Show
         internal override string Showf(string format, ElaValue value, ExecutionContext ctx)
         {
-            return value.ToString(format, Culture.NumberFormat);
+            return value.ToString(format, Culture.NumberFormat) + "L";
         }
         #endregion
 

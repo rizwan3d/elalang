@@ -44,21 +44,21 @@ which tests a given for equality. Other options are `lesser`, `greater`, `lesser
 >>  should lesser 3
 A predicate `should` expects a result of comparison to be `true`, a predicate
 `shouldn't` expects it to be `false`.//br
-It is also possible to encode calculations that should be done with a given value using `do` and
-`apply` words.//br
-The word `do` expects a function as its first argument, followed by the function arguments:
+It is also possible to encode calculations that should be done with a given value using `when` and
+`after` words.//br
+The word `when` expects a function as its first argument, followed by the function arguments:
 >>given 2
->>  do (+) 3
-An example above can be translated to regular Ela syntax as `2 + 3` or `(+) 2 3`. Word `do` basically 
+>>  when (+) 3
+An example above can be translated to regular Ela syntax as `2 + 3` or `(+) 2 3`. Word `when` basically 
 acts as a variadic function - it would accept as much arguments as needed for a provided function:
 >>given 2
->>  do (--)
-When using `do` word a given value is always a first argument to the provided function. Sometimes
-this is not a desired behavior. That is where another word, `apply`, can be used:
+>>  when negate
+When using `when` word a given value is always a first argument to the provided function. Sometimes
+this is not a desired behavior. That is where another word, `after`, can be used:
 >>given [1..10]
->>  apply filter even
+>>  after filter even
 An example below can be translated to regular Ela syntax as `filter even [1..10]`. In other words
-with `apply` a given value is always regarded as the last argument.//br
+with `after` a given value is always regarded as the last argument.//br
 Basically a test specification can be seen as a chain of _sentences_ in which each sentence either
 encodes a calculation to be done with a given value or an expectation about this value. A given 
 value if effectively _piped_ through all these sentences. An expectation (encoded through `should`
@@ -66,7 +66,7 @@ and `shouldn't` words) always returns an original value even if it values. A cal
 a result of a calculation:
 >>given 2
 >>  should be 2 //Value is 2
->>  do (+) 2    //Value is 4
+>>  when (+) 2    //Value is 4
 >>  should be 4 //Value is 4
 Sometimes it might be useful to change a value introduced by word `given`. It can be seamlessly 
 done by adding another `given <something>` sentence to a test specification:
@@ -113,11 +113,11 @@ write a simple example:
 >>>    should contain 1
 >>>    shouldn't contain 3
 >>>    shouldn't contain 6
->>>    do reverse
+>>>    when reverse
 >>>    should be [5,4..1]
->>>    do tail
+>>>    when tail
 >>>    should be [3,2..1]
->>>    do head
+>>>    when head
 >>>    should be 4
 Here we have a simple specification that can be used to test linked list. This specification has
 some deliberate errors for demonstration purposes. Now we can execute this test like so:
@@ -166,25 +166,25 @@ A comparison word, expects a value to be greater or equal to `x`.
 This words expects value to contain an element `x`. It would work for all types
 that have instances of `Seq` class, e.g. lists and strings.
 
-#do fun
+#when fun
 This word applies a function `fun` to a given value. It can also accept additional
 arguments for the function `fun` if needed.
 >>given 2
->>  do (--)
+>>  when negate
 The binary form is also valid:
 >>given 2
->>  do (+) 2
-A `do` word can work with functions with any number of arguments. It assumes that
+>>  when (+) 2
+A `when` word can work with functions with any number of arguments. It assumes that
 a given value is first argument of a function.
 
-#apply fun
+#after fun
 This word applies a function `fun` to a given value. It can also accept additional
 arguments for the function `fun` if needed.
 >>given []
->>  apply (::) 2
-An `apply` word can work with functions with any number of arguments. It assumes that
+>>  after (::) 2
+An `after` word can work with functions with any number of arguments. It assumes that
 a given value is _last_ argument of a function. An example above would fail if you
-use `do` word instead of `apply`.
+use `when` word instead of `after`.
 
 #given x
 This word introduces a value in a test specification:

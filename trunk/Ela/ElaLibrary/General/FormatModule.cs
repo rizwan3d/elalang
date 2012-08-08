@@ -26,6 +26,18 @@ namespace Ela.Library.General
 
             public string ToString(string format, IFormatProvider formatProvider)
             {
+                if (val.TypeCode == ElaTypeCode.Long ||
+                    val.TypeCode == ElaTypeCode.String ||
+                    val.TypeCode == ElaTypeCode.Char ||
+                    val.TypeCode == ElaTypeCode.Double ||
+                    val.TypeCode == ElaTypeCode.Single ||
+                    val.TypeCode == ElaTypeCode.Integer ||
+                    val.TypeCode == ElaTypeCode.Boolean ||
+                    val.TypeCode == ElaTypeCode.Unit ||
+                    val.TypeCode == ElaTypeCode.Function ||
+                    val.TypeCode == ElaTypeCode.Module)
+                    return val.ToString();
+
                 return showf.Call(new ElaValue(format ?? String.Empty), val).AsString();
             }
         }

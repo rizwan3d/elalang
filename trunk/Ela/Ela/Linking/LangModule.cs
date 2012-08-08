@@ -3,6 +3,7 @@ using Ela.Runtime.ObjectModel;
 using Ela.Runtime;
 using System.Text;
 using System.Collections.Generic;
+using Ela.CodeModel;
 
 namespace Ela.Linking
 {
@@ -18,6 +19,17 @@ namespace Ela.Linking
             Add<ElaValue,ElaValue>("asChar", AsChar);
             Add<ElaValue,ElaValue>("asString", AsString);
             Add<ElaValue,ElaTuple>("asTuple", AsTuple);
+            Add<Int32,ElaRecord,ElaValue>("showRecordKey", ShowRecordKey);
+        }
+
+        public ElaValue ShowRecordKey(int field, ElaRecord rec)
+        {
+            var fl = rec.keys[field];
+
+            if (fl.IndexOf(' ') != -1 || Format.IsSymbolic(fl))
+                return new ElaValue("\"" + fl + "\"");
+
+            return new ElaValue(fl);
         }
 
         public ElaValue AsString(ElaValue val)

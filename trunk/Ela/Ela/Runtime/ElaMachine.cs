@@ -85,9 +85,6 @@ namespace Ela.Runtime
 
             if (val.TypeCode == ElaTypeCode.Lazy)
                 val = ((ElaLazy)val.Ref).Force();
-
-            if (val.TypeId == STR)
-                return val.DirectGetString();
                         
             var ctx = new ExecutionContext();
             var ret = cls[val.TypeId].Showf(String.Empty, val, ctx);

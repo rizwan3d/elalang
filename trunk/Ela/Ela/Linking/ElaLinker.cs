@@ -239,7 +239,8 @@ namespace Ela.Linking
             {
                 var sv = kv.Value;
 
-                if ((sv.Flags & ElaVariableFlags.Private) != ElaVariableFlags.Private)
+                if ((sv.Flags & ElaVariableFlags.Private) != ElaVariableFlags.Private &&
+                    (sv.Flags & ElaVariableFlags.Qualified) != ElaVariableFlags.Qualified)
                     exportVars.AddVariable(kv.Key, 
                         (sv.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin ? (ElaBuiltinKind)sv.Data : ElaBuiltinKind.None,
                         sv.Flags,
