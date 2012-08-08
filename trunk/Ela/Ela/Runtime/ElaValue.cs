@@ -81,9 +81,9 @@ namespace Ela.Runtime
         internal bool GetBool()
         {
             if (TypeCode == ElaTypeCode.Long)
-                return Ref.AsLong() == 1;
+                return Ref.AsLong() != 0;
 
-            return I4 == 1;
+            return I4 != 0;
         }
 
         internal char GetChar()

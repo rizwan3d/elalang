@@ -22,8 +22,8 @@ class Fractional a where
   floor a->_
 
 class Integral a where
-  div a->_
-  quot a->_
+  div a->a->_
+  quot a->a->_
 
 class Absolute a where
   abs a->_
