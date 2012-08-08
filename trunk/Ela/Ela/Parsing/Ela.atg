@@ -11,7 +11,7 @@ CHARACTERS
 	digit = "0123456789".
 	notDigit = ANY - digit.
 	hexDigit = digit + "ABCDEFabcdef".
-	verbatimChar = ANY - "]>".
+	verbatimChar = ANY.
 	stringChar = ANY - '"' - '\\' - newLine.
 	char = ANY - "'" - '\\' - newLine.
 	op = "!%&*+-.:/\\<=>?@^|~$".

@@ -4,6 +4,11 @@
 */
 open core thunk
 
+/* Instances */
+instance Lazy List where
+  lazy xs = lazyList xs
+  showLazy (x::_) = "[" ++ show x ++ "..]"
+
 /* Sorting */
 //Strict sort based on merge sort
 mergeBy # private

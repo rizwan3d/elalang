@@ -2,6 +2,14 @@
 #title thunk
 This module contains useful functions that operate with thunks. 
 
+=Classes
+
+#Lazy
+All data types, such as lists, that can be lazy (and, potentially, infinite), should provide an
+instance for this class. A function `lazy` should return `true` if this particular value represents
+a lazily evaluated data structure. A function `showLazy` should safely present a value of a lazy
+data structure without completely evaluating it.
+
 =Functions
 
 #evaled x

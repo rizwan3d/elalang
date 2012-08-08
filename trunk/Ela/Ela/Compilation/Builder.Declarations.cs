@@ -12,22 +12,29 @@ namespace Ela.Compilation
         {
             //Check for some errors
             ValidateBinding(s);
-            var fun = s.IsFunction();
+            var partial = (s.VariableFlags & ElaVariableFlags.PartiallyApplied) == ElaVariableFlags.PartiallyApplied;
+            var fun = partial || s.IsFunction();
 
             if ((s.Left.Type != ElaNodeType.NameReference || ((ElaNameReference)s.Left).Uppercase) && !fun)
                 CompileBindingPattern(s, map);
             else
             {
                 var nm = default(String);
-                var addr = GetNoInitVariable(s, out nm);
-
+                var sv = GetNoInitVariable(s, out nm);
+                
                 //Now, when do initialization, when can remove NoInit flags.
-                if (addr != -1)
+                if (!sv.IsEmpty())
                     CurrentScope.RemoveFlags(nm, ElaVariableFlags.NoInit);
                 
                 //Compile expression and write it to a variable
                 if (fun)
-                    CompileFunction(s);
+                {
+                    //Here we automatically eta expand functions defined through partial application
+                    if (partial)
+                        EtaExpand(s.Left.GetName(), s.Right, map, s.Arguments);
+                    else
+                        CompileFunction(s);
+                }
                 else
                 {
                     map.BindingName = s.Left.GetName();
@@ -35,7 +42,7 @@ namespace Ela.Compilation
                 }
 
                 AddLinePragma(s);
-                PopVar(addr);    
+                PopVar(sv.Address);    
             }
         }
 
@@ -75,7 +82,7 @@ namespace Ela.Compilation
 
         //Returns a variable from a local scope marked with NoInit flag
         //If such variable couldn't be found returns -1
-        private int GetNoInitVariable(ElaEquation s, out string name)
+        private ScopeVar GetNoInitVariable(ElaEquation s, out string name)
         {
             ScopeVar var;
             name = s.Left.GetName();
@@ -87,12 +94,15 @@ namespace Ela.Compilation
             {
                 //If it doesn't have a NoInit flag we are not good
                 if ((var.Flags & ElaVariableFlags.NoInit) != ElaVariableFlags.NoInit)
-                    return -1;
+                    return ScopeVar.Empty;
                 else
-                    return 0 | var.Address << 8; //Aligning it to local scope
+                {
+                    var.Address = 0 | var.Address << 8; //Aligning it to local scope
+                    return var;
+                }
             }
 
-            return -1;
+            return ScopeVar.Empty;
         }
 
         //Adds a variable with NoInit flag to the current scope

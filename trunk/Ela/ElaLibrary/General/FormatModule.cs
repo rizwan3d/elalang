@@ -36,7 +36,7 @@ namespace Ela.Library.General
                     val.TypeCode == ElaTypeCode.Unit ||
                     val.TypeCode == ElaTypeCode.Function ||
                     val.TypeCode == ElaTypeCode.Module)
-                    return val.ToString();
+                    return val.ToString(format ?? String.Empty, formatProvider);
 
                 return showf.Call(new ElaValue(format ?? String.Empty), val).AsString();
             }
@@ -63,6 +63,7 @@ namespace Ela.Library.General
             var ptr = 0;
             var start = ptr;
             var args = 0;
+            var dict = new Dictionary<Int32,Int32>();
 
             while (ptr < format.Length)
             {
@@ -76,8 +77,25 @@ namespace Ela.Library.General
                         continue;
                     }
 
-                    start = ptr;
-                    args++;
+                    var idx = format.IndexOf('}', ptr - 1);
+
+                    if (idx != -1)
+                    {
+                        var sub = format.Substring(ptr, idx - ptr);
+                        var idx2 = sub.IndexOf(':');
+
+                        if (idx2 != -1)
+                            sub = sub.Substring(0, idx2);
+
+                        var i = Int32.Parse(sub);
+
+                        if (!dict.ContainsKey(i))
+                        {
+                            start = ptr;
+                            args++;
+                            dict.Add(i, i);
+                        }
+                    }
                 }
             }
 

@@ -133,7 +133,7 @@ namespace Ela.Compilation
                 if (b.Right != null)
                 {
                     //We need to ensure that this is a global binding that it is not defined by pattern matching
-                    if (b.IsFunction() || (b.Right.Type == ElaNodeType.LazyLiteral && 
+                    if (IsFunction(b) || (b.Right.Type == ElaNodeType.LazyLiteral && 
                         (b.Left.Type == ElaNodeType.NameReference || b.Left.Type == ElaNodeType.LazyLiteral)))
                         CompileDeclaration(b, map, Hints.None);
                     else
@@ -185,6 +185,58 @@ namespace Ela.Compilation
             //something. Therefore just return unit.
             if (len == 0)
                 cw.Emit(Op.Pushunit);
+        }
+
+        //This method checks if a given expression is a regular function definition or a function
+        //defined through partial application of another function.
+        private bool IsFunction(ElaEquation eq)
+        {
+            //A simple case - regular function definition
+            if (eq.IsFunction())
+                return true;
+
+            //This may be a function defined through partial application. Here we only
+            //recognize two cases - when the head is an ordinary identifier and if a head is
+            //a fully qualified name.
+            if (eq.Right != null && eq.Right.Type == ElaNodeType.Juxtaposition)
+            {
+                var jx = (ElaJuxtaposition)eq.Right;
+
+                //A head is an identifier
+                if (jx.Target.Type == ElaNodeType.NameReference)
+                {
+                    var sv = GetVariable(jx.Target.GetName(), CurrentScope, GetFlags.NoError, 0, 0);
+                    
+                    //This is a partially applied function, therefore we can "count" this as a function.
+                    if ((sv.Flags & ElaVariableFlags.Function) == ElaVariableFlags.Function && sv.Data > jx.Parameters.Count)
+                    {
+                        eq.VariableFlags |= ElaVariableFlags.PartiallyApplied;
+                        eq.Arguments = sv.Data - jx.Parameters.Count;
+                        return true;
+                    }
+                }
+                else if (jx.Target.Type == ElaNodeType.FieldReference) //This might be a fully qualified name
+                {
+                    var tr = (ElaFieldReference)jx.Target;
+
+                    //A target can only be a name reference; otherwise we don't see it as a function.
+                    if (tr.TargetObject.Type == ElaNodeType.NameReference)
+                    {
+                        CodeFrame _;
+                        var sv = FindByPrefix(tr.TargetObject.GetName(), tr.FieldName, out _);
+
+                        //This is a partially applied function, therefore we can "count" this as a function.
+                        if ((sv.Flags & ElaVariableFlags.Function) == ElaVariableFlags.Function && sv.Data > jx.Parameters.Count)
+                        {
+                            eq.VariableFlags |= ElaVariableFlags.PartiallyApplied;
+                            eq.Arguments = sv.Data - jx.Parameters.Count;
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }

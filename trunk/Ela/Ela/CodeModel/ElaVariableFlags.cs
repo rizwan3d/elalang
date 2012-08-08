@@ -35,6 +35,8 @@ namespace Ela.CodeModel
 
         ClosedType = 1 << 13,
 
-        Polyadric = 1 << 14
+        Polyadric = 1 << 14,
+
+        PartiallyApplied = 1 << 15
 	}
 }

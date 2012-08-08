@@ -1,4 +1,6 @@
 0.11.2.0:Release:Release of 0.11.2.0.
+0.11.1.18:Fix:Multiline string literal wasn't correctly parsed.
+0.11.1.17:Change:Now Ela compiler performs automatic eta expansion for functions defined through partial application of other functions.
 0.11.1.16:Change:Now names with 'qualified' attribute are not imported at all (to avoid names clashing).
 0.11.1.15:Change:Implementation of 'Show' for built-ins is changed - now for strings it appends quotes, for doubles and longs - postfixes, etc.
 0.11.1.14:Fix:A critical bug fixed - tail recursion was optimized incorrectly for class member functions.

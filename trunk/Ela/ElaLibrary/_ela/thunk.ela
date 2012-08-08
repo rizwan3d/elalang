@@ -4,6 +4,10 @@
 */
 import libCore#elalib@core lang
 
+class Lazy a where
+  lazy a->_
+  showLazy a->_
+
 evaled = core.evaled
 
 lazyList xs = internalLazyList (force xs)
