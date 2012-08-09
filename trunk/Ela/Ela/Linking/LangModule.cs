@@ -43,7 +43,7 @@ namespace Ela.Linking
 
                 while (usb != null)
                 {
-                    xs.Add(usb.Value2.ToString());
+                    xs.Add(usb.Value2.DirectGetString());
                     var td = usb.Value1.Ref;
 
                     if (td.TypeId == tid)

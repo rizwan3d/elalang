@@ -123,7 +123,7 @@ revList = __internal api12
 /* String builder */
 type StringBuilder = SB sb s # private
 
-a +> b = SB a (force b)
+a +> b = SB (force a) (toString <| force b)
 
 instance StringLike StringBuilder where
   toString sb = lang.asString sb
