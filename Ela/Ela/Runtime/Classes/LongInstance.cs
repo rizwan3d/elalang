@@ -313,12 +313,6 @@ namespace Ela.Runtime.Classes
             {
                 if (right.TypeId == ElaMachine.INT)
                 {
-                    if (right.I4 == 0)
-                    {
-                        ctx.DivideByZero(left);
-                        return Default();
-                    }
-
                     return new ElaValue((Double)left.Ref.AsLong() / right.I4);
                 }
                 else if (right.TypeId == ElaMachine.REA)
@@ -333,13 +327,6 @@ namespace Ela.Runtime.Classes
             }
 
             var r = right.Ref.AsLong();
-
-            if (r == 0)
-            {
-                ctx.DivideByZero(left);
-                return Default();
-            }
-
             return new ElaValue((Double)left.Ref.AsLong() / r);
         }
 

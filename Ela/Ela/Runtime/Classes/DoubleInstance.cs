@@ -9,7 +9,12 @@ namespace Ela.Runtime.Classes
         #region Show
         internal override string Showf(string format, ElaValue value, ExecutionContext ctx)
         {
-            return value.ToString(format, Culture.NumberFormat) + "d";
+            var d = value.Ref.AsDouble();
+
+            if (Double.IsInfinity(d) || Double.IsNaN(d))
+                return value.ToString(format, Culture.NumberFormat);
+            else
+                return value.ToString(format, Culture.NumberFormat) + "d";
         }
         #endregion
 

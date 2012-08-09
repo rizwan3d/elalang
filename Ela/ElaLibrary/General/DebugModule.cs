@@ -29,7 +29,7 @@ namespace Ela.Library.General
 		public override void Initialize()
 		{
 			Add<ElaObject>("startClock", StartClock);
-            Add<Wrapper<Stopwatch>,String>("stopClock", StopClock);
+            Add<Wrapper<Stopwatch>,Double>("stopClock", StopClock);
 			Add<Int32,ElaUnit>("sleep", Sleep);
             Add<ElaUnit,ElaUnit>("fun1", Fun1);
             Add("fun2",new Fun2());
@@ -49,10 +49,10 @@ namespace Ela.Library.General
 		}
 
 
-		public string StopClock(Wrapper<Stopwatch> val)
+		public double StopClock(Wrapper<Stopwatch> val)
 		{
             val.Value.Stop();
-            return val.Value.Elapsed.ToString();
+            return val.Value.Elapsed.TotalMilliseconds;
 		}
 
 

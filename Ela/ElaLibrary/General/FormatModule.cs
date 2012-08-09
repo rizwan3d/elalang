@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using Ela.Linking;
 using Ela.Runtime;
 using Ela.Runtime.ObjectModel;
+using System.Globalization;
 
 namespace Ela.Library.General
 {
     public sealed class FormatModule : ForeignModule
     {
+        internal static readonly IFormatProvider NumberFormat = CultureInfo.GetCultureInfo("en-US").NumberFormat;
+
         public FormatModule()
         {
 
@@ -36,7 +39,7 @@ namespace Ela.Library.General
                     val.TypeCode == ElaTypeCode.Unit ||
                     val.TypeCode == ElaTypeCode.Function ||
                     val.TypeCode == ElaTypeCode.Module)
-                    return val.ToString(format ?? String.Empty, formatProvider);
+                    return val.ToString(format ?? String.Empty, NumberFormat);
 
                 return showf.Call(new ElaValue(format ?? String.Empty), val).AsString();
             }
