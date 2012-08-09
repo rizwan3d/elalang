@@ -1,11 +1,17 @@
+/*
+  Module bench (benchmarking)
+  Created in 2012 by Basil Voronkov
+*/
 open debug#elalib generic number format
 
+/* Types */
 type Bench = Bench name runs time
   deriving Eq Show Name
 
 type BenchItem # private
 type BenchItem = BenchItem name runs fun arg
 
+/* Functions */
 benchmark name n f arg xs = BenchItem name n f arg :: xs
 
 runBenches xs = 

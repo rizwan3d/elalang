@@ -22,6 +22,7 @@
     <doc name="espec" file="lib\espec.htm" />
     <doc name="test" file="lib\test.htm" />
     <doc name="peano" file="lib\peano.htm" />
+    <doc name="bench" file="lib\bench.htm" />
     <doc name="cell" file="lib\cell.htm" />
     <doc name="io" file="lib\io.htm" />
     <doc name="console" file="lib\console.htm" />    
