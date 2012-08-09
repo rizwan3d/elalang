@@ -67,9 +67,11 @@ For more information about polymoprhic constants, please refer to the language r
 =Library changes
 A new version of standard library, shipped with this release, contains a number of various changes. Here is quick
 summary of them:
+* A new module `bench` (benchmarking suite) is added to standard library
 * Multiple bug fixes (default implementation of `Enum`, `Cat` instance for queues, standard `reverse` function, etc).
 * Lists now provide an instance for an `Ord` class
 * `StringBuilder` type is redesigned and is now easier to use and provides a better performance
+* A new data type `Or` (similar to `Either`, but for non-exclusive disjunction) is added to `core` module
 * New class `Default` with a single `default` constant is added to prelude
 * New class `Num` with cosntants `one` and `zero` is added to `number` module
 * Tuples now provide instances for classes `Field` and `Ring`
