@@ -21,7 +21,7 @@ namespace Ela.Compilation
 				addr = AddVariable();
 
 			var serv = AddVariable();
-			CompileExpression(s.Target, map, Hints.None);
+			CompileExpression(s.Target, map, Hints.None, s);
 			cw.Emit(Op.Dup);
             PopVar(serv);
 			cw.Emit(Op.Isnil);
@@ -44,13 +44,13 @@ namespace Ela.Compilation
 
 			if (s.Guard != null)
 			{
-				CompileExpression(s.Guard, map, Hints.None);
+				CompileExpression(s.Guard, map, Hints.None, s);
 				cw.Emit(Op.Brfalse, iter);
 			}
 
 			if (s.Body != null)
 			{
-				CompileExpression(s.Body, newMap, Hints.Scope);
+				CompileExpression(s.Body, newMap, Hints.Scope, s);
 
 				if (s.Body.Type != ElaNodeType.Generator)
 					cw.Emit(Op.Cons);
@@ -69,7 +69,7 @@ namespace Ela.Compilation
 		private void CompileLazyList(ElaGenerator s, LabelMap map, Hints hints)
 		{
             var fun = CompileRecursiveFor(s, map, hints, -1, -1);
-			CompileExpression(s.Target, map, Hints.None);
+			CompileExpression(s.Target, map, Hints.None, s);
 			PushVar(fun);
 			cw.Emit(Op.Call);
 		}
@@ -114,7 +114,7 @@ namespace Ela.Compilation
 
 			if (s.Guard != null)
 			{
-				CompileExpression(s.Guard, map, Hints.None);
+				CompileExpression(s.Guard, map, Hints.None, s);
 				cw.Emit(Op.Brfalse, iterLab);
 			}
 
@@ -122,7 +122,7 @@ namespace Ela.Compilation
 			{
 				var f = (ElaGenerator)s.Body;
 				var child = CompileRecursiveFor(f, map, hints, funAddr, tail);
-				CompileExpression(f.Target, map, Hints.None);
+				CompileExpression(f.Target, map, Hints.None, f);
                 PushVar(child);
 				cw.Emit(Op.Call);
                 cw.Emit(Op.Br, exitLab);//
@@ -132,7 +132,7 @@ namespace Ela.Compilation
 				PushVar(tail);
 				PushVar(1 | (funAddr >> 8) << 8);
 				cw.Emit(Op.LazyCall);
-				CompileExpression(s.Body, map, Hints.None);
+				CompileExpression(s.Body, map, Hints.None, s);
 				cw.Emit(Op.Cons);
 				cw.Emit(Op.Br, exitLab);
 			}

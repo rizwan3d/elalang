@@ -17,7 +17,7 @@ namespace Ela.Compilation
             var fst = AddVariable();
 
             //Compile the first element which should always be present.
-            CompileExpression(range.First, map, Hints.None);
+            CompileExpression(range.First, map, Hints.None, range);
             PopVar(fst);
 
             //If the second element is missing we will calculate it using 'succ'.
@@ -31,7 +31,7 @@ namespace Ela.Compilation
             }
             else
             {
-                CompileExpression(range.Second, map, Hints.None);
+                CompileExpression(range.Second, map, Hints.None, range);
                 PopVar(snd);
             }
 
@@ -52,7 +52,7 @@ namespace Ela.Compilation
                 var sv = GetFunction("enumFromTo", range);
                 PushVar(snd);                
                 PushVar(fst);
-                CompileExpression(range.Last, map, Hints.None);
+                CompileExpression(range.Last, map, Hints.None, range);
                 PushVar(sv);
                 cw.Emit(Op.Call);
                 cw.Emit(Op.Call);

@@ -94,7 +94,10 @@ namespace Ela.Runtime.ObjectModel
 
         public override string ToString(string format, IFormatProvider provider)
         {
-            return "<thunk>";
+            if (Value.Ref != null)
+                return Value.ToString(format, provider);
+            else
+                return "<thunk>";
         }
 
         internal override bool True(ElaValue @this, ExecutionContext ctx)

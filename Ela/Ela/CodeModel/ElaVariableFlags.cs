@@ -37,6 +37,8 @@ namespace Ela.CodeModel
 
         Polyadric = 1 << 14,
 
-        PartiallyApplied = 1 << 15
+        Self = 1 << 15,
+
+        PartiallyApplied = 1 << 16 //??
 	}
 }

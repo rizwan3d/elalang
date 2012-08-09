@@ -273,10 +273,14 @@ namespace Ela.Runtime
                         evalStack.Push(modules[frame.HandleMap[opd & Byte.MaxValue]][opd >> 8]);
                         break;
                     case Op.Pushloc:
-                        evalStack.Push(locals[opd]);
+                        right = locals[opd];
+                        evalStack.Push(right);
+                        if (right.TypeId == 0) { }
                         break;
                     case Op.Pushvar:
-                        evalStack.Push(captures[captures.Count - (opd & Byte.MaxValue)][opd >> 8]);
+                        right = captures[captures.Count - (opd & Byte.MaxValue)][opd >> 8];
+                        evalStack.Push(right);
+                        if (right.TypeId == 0) { }
                         break;
                     case Op.Pushstr:
                         evalStack.Push(new ElaValue(frame.Strings[opd]));

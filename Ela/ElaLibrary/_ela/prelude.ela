@@ -121,14 +121,16 @@ revList # private
 revList = __internal api12
 
 /* String builder */
-type StringBuilder = sb +> s
+type StringBuilder = SB sb s # private
+
+a +> b = SB a (force b)
 
 instance StringLike StringBuilder where
   toString sb = lang.asString sb
-  fromString s = "" +> s
+  fromString s = SB "" (force s)
 
 instance Eq StringBuilder where
-  (a +> b) == (c +> d) = 
+  (SB a b) == (SB c d) = 
     typeCode a == typeCode c and a == c and 
     typeCode b == typeCode d and b == d
   a <> b = not (a == b)

@@ -13,7 +13,7 @@ namespace Ela.Compilation
         private void CompileConditionalOperator(ElaCondition s, LabelMap map, Hints hints)
         {
             AddLinePragma(s);
-            CompileExpression(s.Condition, map, Hints.Scope);
+            CompileExpression(s.Condition, map, Hints.Scope, s);
             var falseLab = cw.DefineLabel();
             cw.Emit(Op.Brfalse, falseLab);
 
@@ -25,14 +25,14 @@ namespace Ela.Compilation
             var lazy = (hints & Hints.Lazy) == Hints.Lazy ? Hints.Lazy : Hints.None;
             
             if (s.True != null)
-                CompileExpression(s.True, map, left | lazy | tail | Hints.Scope);
+                CompileExpression(s.True, map, left | lazy | tail | Hints.Scope, s);
 
             if (s.False != null)
             {
                 var skipLabel = cw.DefineLabel();
                 cw.Emit(Op.Br, skipLabel);
                 cw.MarkLabel(falseLab);
-                CompileExpression(s.False, map, left | lazy | tail | Hints.Scope);
+                CompileExpression(s.False, map, left | lazy | tail | Hints.Scope, s);
                 cw.MarkLabel(skipLabel);
                 cw.Emit(Op.Nop);
             }
@@ -61,11 +61,11 @@ namespace Ela.Compilation
 			{
                 //Logical AND is executed in a lazy manner
 				case ElaOperator.BooleanAnd:
-					CompileExpression(bin.Left, map, ut);
+					CompileExpression(bin.Left, map, ut, bin);
 					termLab = cw.DefineLabel();
 					exitLab = cw.DefineLabel();
 					cw.Emit(Op.Brfalse, termLab);
-					CompileExpression(bin.Right, map, ut);
+                    CompileExpression(bin.Right, map, ut, bin);
 					cw.Emit(Op.Br, exitLab);
 					cw.MarkLabel(termLab);
 					cw.Emit(Op.PushI1_0);
@@ -74,11 +74,11 @@ namespace Ela.Compilation
 					break;
                 //Logical OR is executed in a lazy manner
                 case ElaOperator.BooleanOr:
-					CompileExpression(bin.Left, map, ut);
+                    CompileExpression(bin.Left, map, ut, bin);
 					termLab = cw.DefineLabel();
 					exitLab = cw.DefineLabel();
 					cw.Emit(Op.Brtrue, termLab);
-					CompileExpression(bin.Right, map, ut);
+                    CompileExpression(bin.Right, map, ut, bin);
 					cw.Emit(Op.Br, exitLab);
 					cw.MarkLabel(termLab);
 					cw.Emit(Op.PushI1_1);
@@ -88,7 +88,7 @@ namespace Ela.Compilation
                 //Sequence operators forces left expression, pops it and yields a value
                 //of a right expression. Evaliation is done in a strict order.
                 case ElaOperator.Sequence:
-					CompileExpression(bin.Left, map, Hints.None);
+                    CompileExpression(bin.Left, map, Hints.None, bin);
 					cw.Emit(Op.Force);
 					cw.Emit(Op.Pop);
                     var ut2 = hints;
@@ -96,7 +96,7 @@ namespace Ela.Compilation
                     if ((ut2 & Hints.Left) == Hints.Left)
                         ut2 ^= Hints.Left;
 
-					CompileExpression(bin.Right, map, ut2);
+                    CompileExpression(bin.Right, map, ut2, bin);
 					break;
 			}
 

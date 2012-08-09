@@ -174,7 +174,7 @@ namespace Ela.Compilation
             var address = cw.Offset;
 
             if (exp.Type != ElaNodeType.Equation)
-                CompileExpression(exp, map, Hints.None);
+                CompileExpression(exp, map, Hints.None, null);
             else
                 CompileFunction((ElaEquation)exp);
 

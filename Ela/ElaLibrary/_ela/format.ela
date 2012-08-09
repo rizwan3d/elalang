@@ -8,7 +8,7 @@ import libFormat#elalib@fm
 format' # private 
 format' fun fstr xs n 
   | n == 0 = fun (fm.format fstr showf xs)
-  | else = \x -> format' fun fstr (x::xs) (n - 1)
+  | else = \x -> format' fun fstr (force x::xs) (n - 1)
 
 printf fstr = format' write f' [] (fm.countArgs f')
   where f' = force fstr

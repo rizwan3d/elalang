@@ -225,6 +225,9 @@ instead of `++` operator:
 The result of application of `+>` to two arguments is not a string, but an instance of `StringBuilder` type.
 In order to convert a string builder to a string, one can use a standard `toString` function.
 
+#+> a b
+Concatenates two string using `StringBuilder`.
+
 ==Ordering
 
 #Ordering
