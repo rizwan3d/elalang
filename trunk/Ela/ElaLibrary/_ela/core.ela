@@ -66,9 +66,9 @@ partitionEithers xs = partition ([],[]) xs
 type Or = Fst a | Snd a | Both a b
   deriving Eq Ord Show
 
-elimOr f _ _ (Fst a) = f a
-elimOr _ f _ (Snd a) = f a
-elimOr _ _ f (Both a b) = f a b
+orElse f _ _ (Fst a) = f a
+orElse _ f _ (Snd a) = f a
+orElse _ _ f (Both a b) = f a b
 
 fromEither (Left a) = Fst a
 fromEither (Right a) = Snd a

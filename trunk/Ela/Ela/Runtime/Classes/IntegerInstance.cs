@@ -319,13 +319,6 @@ namespace Ela.Runtime.Classes
                 if (right.TypeId == ElaMachine.LNG)
                 {
                     var r = right.Ref.AsLong();
-
-                    if (r == 0)
-                    {
-                        ctx.DivideByZero(left);
-                        return Default();
-                    }
-
                     return new ElaValue((Double)left.I4 / r);
                 }
                 else if (right.TypeId == ElaMachine.REA)
@@ -337,12 +330,6 @@ namespace Ela.Runtime.Classes
                     NoOverloadBinary(TCF.INT, right, "divide", ctx);
                     return Default();
                 }
-            }
-
-            if (right.I4 == 0)
-            {
-                ctx.DivideByZero(left);
-                return Default();
             }
 
             return new ElaValue((Single)left.I4 / right.I4);

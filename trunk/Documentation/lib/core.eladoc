@@ -74,3 +74,43 @@ Checks if a given value is an `Either`, created using `Right` constructor.
 Partitions a list of `Either` into two lists. All the `Left` elements are extracted, in order, 
 to the first component of the output. Similarly, the `Right` elements are extracted to the second 
 component of the output.
+
+=Or
+
+#Or
+This is type is similar to `Either`, but is used for non-exclusive disjunction.
+
+#orElse f1 f2 f3 x
+Accepts three functions and an `Or` value. If an `Or` value is `Fst a`, applies a first function to `a`;
+if an `Or` value is `Snd a`, applies a second function to `a`; if an `Or` value is `Both a b`, applies a
+third function to `a` and `b`.
+>>>orElse id id (+) <| Both 2 4
+
+#fromEither x
+Converts an `Either` into an `Or`.
+>>>fromEither <| Left 12
+
+#isFst x
+Tests if a given value is `Fst`.
+
+#isSnd x
+Tests if a given value is `Snd`.
+
+#isBoth x
+Tests if a given value is `Both`.
+
+#fromFst x
+Extracts a value from `Fst`.
+>>>fromFst <| Fst 12
+
+#fromSnd x
+Extracts a value from `Snd`.
+>>>fromSnd <| Snd 12
+
+#fromBoth1 x
+Extracts a first value from `Both`.
+>>>fromBoth1 <| Both 1 2
+
+#fromBoth2 x
+Extracts a second value from `Both`.
+>>>fromBoth2 <| Both 1 2
