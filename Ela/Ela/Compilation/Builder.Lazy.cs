@@ -72,6 +72,23 @@ namespace Ela.Compilation
             if (scopeVar.Data != funCall.Parameters.Count)
                 return false;
 
+            //We can only optimize a thunk if a last parameter (that will be executed in a strict manner)
+            //is either a primitive value or an already initialized variable.
+            {
+                var p = funCall.Parameters[funCall.Parameters.Count - 1];
+
+                //Need to check if variable is already initialized.
+                if (p.Type == ElaNodeType.NameReference)
+                {
+                    var ssv = GetVariable(p.GetName(), CurrentScope, GetFlags.NoError, 0, 0);
+
+                    if ((ssv.Flags & ElaVariableFlags.NoInit) == ElaVariableFlags.NoInit)
+                        return false;
+                }
+                else if (p.Type != ElaNodeType.Primitive)
+                    return false;
+            }
+
             for (var i = 0; i < len; i++)
                 CompileExpression(funCall.Parameters[len - i - 1], map, Hints.None);
 

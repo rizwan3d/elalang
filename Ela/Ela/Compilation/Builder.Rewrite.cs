@@ -133,7 +133,7 @@ namespace Ela.Compilation
                 if (b.Right != null)
                 {
                     //We need to ensure that this is a global binding that it is not defined by pattern matching
-                    if (IsFunction(b) || (b.Right.Type == ElaNodeType.LazyLiteral && 
+                    if (b.IsFunction() || (b.Right.Type == ElaNodeType.LazyLiteral && 
                         (b.Left.Type == ElaNodeType.NameReference || b.Left.Type == ElaNodeType.LazyLiteral)))
                         CompileDeclaration(b, map, Hints.None);
                     else
@@ -187,6 +187,7 @@ namespace Ela.Compilation
                 cw.Emit(Op.Pushunit);
         }
 
+        //**********************************TEMPORARY DISABLED
         //This method checks if a given expression is a regular function definition or a function
         //defined through partial application of another function.
         private bool IsFunction(ElaEquation eq)
@@ -208,12 +209,7 @@ namespace Ela.Compilation
                     var sv = GetVariable(jx.Target.GetName(), CurrentScope, GetFlags.NoError, 0, 0);
                     
                     //This is a partially applied function, therefore we can "count" this as a function.
-                    if ((sv.Flags & ElaVariableFlags.Function) == ElaVariableFlags.Function && sv.Data > jx.Parameters.Count)
-                    {
-                        eq.VariableFlags |= ElaVariableFlags.PartiallyApplied;
-                        eq.Arguments = sv.Data - jx.Parameters.Count;
-                        return true;
-                    }
+                    return IfFunction(eq, sv, jx.Parameters.Count, false);
                 }
                 else if (jx.Target.Type == ElaNodeType.FieldReference) //This might be a fully qualified name
                 {
@@ -225,14 +221,54 @@ namespace Ela.Compilation
                         CodeFrame _;
                         var sv = FindByPrefix(tr.TargetObject.GetName(), tr.FieldName, out _);
 
-                        //This is a partially applied function, therefore we can "count" this as a function.
-                        if ((sv.Flags & ElaVariableFlags.Function) == ElaVariableFlags.Function && sv.Data > jx.Parameters.Count)
-                        {
-                            eq.VariableFlags |= ElaVariableFlags.PartiallyApplied;
-                            eq.Arguments = sv.Data - jx.Parameters.Count;
-                            return true;
-                        }
+                        return IfFunction(eq, sv, jx.Parameters.Count, false);
                     }
+                }
+            }
+            else if (eq.Right != null && eq.Right.Type == ElaNodeType.NameReference)
+            {
+                //This may be a function defined as an alias for another function.
+                var sv = GetVariable(eq.Right.GetName(), CurrentScope, GetFlags.NoError, 0, 0);
+
+                //This is an alias, we can "count" this as a function.
+                return IfFunction(eq, sv, 0, true);
+            }
+
+            return false;
+        }
+
+        //**********************************TEMPORARY DISABLED
+        //Here we try to check if a right side is a function reference of a partially applied function.
+        //This function might (or might not) set a 'PartiallyApplied' flag. If this flag is set, than a
+        //function is eta expanded during compilation. Normally this flag is not needed when functions
+        //are defined as simple aliases for other functions.
+        private bool IfFunction(ElaEquation eq, ScopeVar sv, int curArgs, bool noPartial)
+        {
+            //This is a partially applied function, therefore we can "count" this as a function.
+            if ((sv.Flags & ElaVariableFlags.Function) == ElaVariableFlags.Function && sv.Data > curArgs)
+            {
+                if (!noPartial)
+                {
+                    eq.VariableFlags |= ElaVariableFlags.PartiallyApplied;
+                    eq.Arguments = sv.Data - curArgs;
+                }
+
+                return true;
+            }
+            else if ((sv.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin)
+            {
+                //If this a built-in, we need to use another method to determine number of arguments.
+                var args = BuiltinParams((ElaBuiltinKind)sv.Data);
+
+                if (args > curArgs)
+                {
+                    if (!noPartial)
+                    {
+                        eq.VariableFlags |= ElaVariableFlags.PartiallyApplied;
+                        eq.Arguments = args - curArgs;
+                    }
+
+                    return true;
                 }
             }
 
