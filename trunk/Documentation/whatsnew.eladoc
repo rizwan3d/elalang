@@ -73,10 +73,9 @@ summary of them:
 * `StringBuilder` type is redesigned and is now easier to use and provides a better performance
 * A new data type `Or` (similar to `Either`, but for non-exclusive disjunction) is added to `core` module
 * New class `Default` with a single `default` constant is added to prelude
-* New class `Num` with cosntants `one` and `zero` is added to `number` module
+* New class `Num` with constants `one` and `zero` is added to `number` module
 * Tuples now provide instances for classes `Field` and `Ring`
 * Type `Ordering` and related functions are moved from `core` module to prelude
 * Now `Ord` class contains an additional function `compare` that returns an instance of `Ordering` type
-* Now prelude defines complete, but mutually recursive default instances of classes `Eq` and `Ord`, so that a minimum
-definition for `Eq` is now `(==)` or `(<>)` and minimum definition for `Ord` is `compare`.
+* Now prelude defines complete, but mutually recursive default instances of classes `Eq` and `Ord`, so that a minimum definition for `Eq` is now `(==)` or `(<>)` and minimum definition for `Ord` is `compare`.
 For more information please refer to standard library change log.
