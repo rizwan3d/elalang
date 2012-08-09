@@ -47,8 +47,8 @@ namespace Ela.Compilation
             var isConst = m.Components == 1;
 
             //m.Components are function arguments plus return type.
-            var addr = AddVariable(m.Name, m, ElaVariableFlags.ClassFun |
-                (isConst ? ElaVariableFlags.Polyadric : ElaVariableFlags.None), m.Components - 1);
+            var addr = AddVariable(m.Name, m, ElaVariableFlags.ClassFun | (m.Components>1?ElaVariableFlags.Function:ElaVariableFlags.None)
+                | (isConst ? ElaVariableFlags.Polyadric : ElaVariableFlags.None), m.Components - 1);
 
             if (!isConst) //This is a function
             {

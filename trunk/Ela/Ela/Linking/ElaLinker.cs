@@ -97,21 +97,27 @@ namespace Ela.Linking
 
             if (mod.ModuleName == "lang" && mod.Path.Length == 0 && mod.DllName == null)
             {
-                var lm = new LangModule();
-                lm.Initialize();
-                frame = lm.Compile();
-                hdl = Assembly.AddModule("lang", frame, false, mod.LogicalHandle);
+                if ((frame = Assembly.GetModule("LANG", out hdl)) == null)
+                {
+                    var lm = new LangModule();
+                    lm.Initialize();
+                    frame = lm.Compile();
+                    hdl = Assembly.AddModule("LANG", frame, false, mod.LogicalHandle);
+                }
             }
             else if (mod.ModuleName == ARG_MODULE)
             {
-                if (argModule == null)
-                    argModule = new ArgumentModule();
+                if ((frame = Assembly.GetModule("ARGS", out hdl)) == null)
+                {
+                    if (argModule == null)
+                        argModule = new ArgumentModule();
 
-                if (argModuleFrame == null)
-                    argModuleFrame = argModule.Compile();
+                    if (argModuleFrame == null)
+                        argModuleFrame = argModule.Compile();
 
-                frame = argModuleFrame;
-                hdl = Assembly.AddModule("args", argModuleFrame, false, mod.LogicalHandle);
+                    frame = argModuleFrame;
+                    hdl = Assembly.AddModule("ARGS", argModuleFrame, false, mod.LogicalHandle);
+                }
             }
             else
             {
@@ -134,7 +140,7 @@ namespace Ela.Linking
                         {
                             inProc.Add(kv, null);
 
-                            if ((frame = Assembly.GetModule(fi.FullName.ToUpper(), out hdl)) != null)
+                            if ((frame = Assembly.GetModule(fi, out hdl)) != null)
                             {
                                 //Do nothing
                             }

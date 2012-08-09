@@ -21,10 +21,10 @@ namespace Ela.Compilation
             {
                 var nm = default(String);
                 var sv = GetNoInitVariable(s, out nm);
+                var addr = sv.Address;
                 
-                //Now, when do initialization, when can remove NoInit flags.
-                if (!sv.IsEmpty())
-                    CurrentScope.RemoveFlags(nm, ElaVariableFlags.NoInit);
+                if (sv.IsEmpty())
+                    addr = AddVariable(s.Left.GetName(), s, s.VariableFlags, -1);
                 
                 //Compile expression and write it to a variable
                 if (fun)
@@ -41,8 +41,12 @@ namespace Ela.Compilation
                     CompileExpression(s.Right, map, Hints.None);
                 }
 
+                //Now, when done initialization, when can remove NoInit flags.
+                if (!sv.IsEmpty())
+                    CurrentScope.RemoveFlags(nm, ElaVariableFlags.NoInit);                
+
                 AddLinePragma(s);
-                PopVar(sv.Address);    
+                PopVar(addr);    
             }
         }
 
@@ -130,22 +134,22 @@ namespace Ela.Compilation
             {
                var data = -1;
 
-                if (exp.Right.Type == ElaNodeType.Builtin)
-                {
-                    //Adding required hints for a built-in
-                    data = (Int32)((ElaBuiltin)exp.Right).Kind;
-                    flags |= ElaVariableFlags.Builtin;
-                }
-                else if (exp.Right.Type == ElaNodeType.Lambda)
-                {
-                    var fun = (ElaLambda)exp.Right;
-                    flags |= ElaVariableFlags.Function;
-                    data = fun.GetParameterCount();
-                }
-                else if (exp.Right.IsLiteral())
-                    flags |= ElaVariableFlags.ObjectLiteral;
-
-                AddVariable(exp.Left.GetName(), exp, flags, data);
+               if (exp.Right.Type == ElaNodeType.Builtin)
+               {
+                   //Adding required hints for a built-in
+                   data = (Int32)((ElaBuiltin)exp.Right).Kind;
+                   flags |= ElaVariableFlags.Builtin;
+               }
+               else if (exp.Right.Type == ElaNodeType.Lambda)
+               {
+                   var fun = (ElaLambda)exp.Right;
+                   flags |= ElaVariableFlags.Function;
+                   data = fun.GetParameterCount();
+               }
+               else if (exp.Right.IsLiteral())
+                   flags |= ElaVariableFlags.ObjectLiteral;
+               
+               AddVariable(exp.Left.GetName(), exp, flags, data);
             }
             else
                 AddPatternVariables(exp.Left);

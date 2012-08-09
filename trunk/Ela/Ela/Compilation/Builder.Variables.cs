@@ -209,6 +209,9 @@ namespace Ela.Compilation
             {
                 if (cur.Locals.TryGetValue(name, out var))
                 {
+                    //if ((var.Flags & ElaVariableFlags.NoInit) == ElaVariableFlags.NoInit && cur == CurrentScope && getFlags != GetFlags.NoError)
+                    //    AddError(ElaCompilerError.UndefinedName, line, col, name);
+
                     var.Address = shift | var.Address << 8;
                     return var;
                 }

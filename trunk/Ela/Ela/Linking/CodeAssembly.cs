@@ -94,11 +94,17 @@ namespace Ela.Linking
 
 		internal int AddModule(FileInfo fi, CodeFrame module, bool qual, int logicHandle)
 		{
-			var name = !String.IsNullOrEmpty(fi.Extension) && !fi.Extension.Contains("#") ? 
-                fi.FullName.Replace(fi.Extension, String.Empty).ToUpper() :
-                fi.FullName.ToUpper();
+            var name = ObtainModuleName(fi);
             return AddModule(name, module, qual, logicHandle);
 		}
+
+
+        private string ObtainModuleName(FileInfo fi)
+        {
+            return !String.IsNullOrEmpty(fi.Extension) && !fi.Extension.Contains("#") ?
+                fi.FullName.Replace(fi.Extension, String.Empty).ToUpper() :
+                fi.FullName.ToUpper();
+        }
 
 
         internal int AddModule(string name, CodeFrame module, bool qual, int logicHandle)
@@ -133,16 +139,11 @@ namespace Ela.Linking
 		}
 
 
-		public CodeFrame GetModule(string name)
-		{
-			var hdl = 0;
-
-			if (moduleMap.TryGetValue(name, out hdl))
-				return GetModule(hdl);
-			else
-				return null;
-		}
-        
+        internal CodeFrame GetModule(FileInfo fi, out int hdl)
+        {
+            var name = ObtainModuleName(fi);
+            return GetModule(name, out hdl);
+        }
 
         internal CodeFrame GetModule(string name, out int hdl)
         {

@@ -295,7 +295,7 @@ namespace Ela.Compilation
                 cw.Emit(Op.Newtype);
 
             CompileFunctionEpilog(name, len, address, funSkipLabel);
-            var a = AddVariable(name, juxta, ElaVariableFlags.TypeFun|flags, len);
+            var a = AddVariable(name, juxta, ElaVariableFlags.TypeFun|ElaVariableFlags.Function|flags, len);
             PopVar(a);
 
             //To prevent redundant errors
