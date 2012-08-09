@@ -53,7 +53,7 @@ namespace Ela.Compilation
 
             //Compile arguments to which a function is applied
             for (var i = 0; i < len; i++)
-                CompileExpression(v.Parameters[len - i - 1], map, safeHints);
+                CompileExpression(v.Parameters[len - i - 1], map, safeHints, v);
 
             //If this a tail call and we effectively call the same function we are currently in,
             //than do not emit an actual function call, just do a goto. (Tail recursion optimization).
@@ -103,10 +103,17 @@ namespace Ela.Compilation
                         ed = new ExprData(DataKind.FunParams, sv.Data);
                     else if ((sv.VariableFlags & ElaVariableFlags.ObjectLiteral) == ElaVariableFlags.ObjectLiteral)
                         ed = new ExprData(DataKind.VarType, (Int32)ElaVariableFlags.ObjectLiteral);
+
+                    if ((sv.Flags & ElaVariableFlags.NoInit) == ElaVariableFlags.NoInit &&
+                        (sv.Address & Byte.MaxValue) == 0)
+                    {
+                        AddWarning(ElaCompilerWarning.BottomValue, v, FormatNode(v), bf.Name);
+                        AddHint(ElaCompilerHint.UseThunk, v, v);
+                    }
                 }
             }
             else
-                ed = CompileExpression(v.Target, map, Hints.None);
+                ed = CompileExpression(v.Target, map, Hints.None, v);
 
             //Why it comes from AST? Because parser do not save the difference between pre-, post- and infix applications.
             //However Ela does support left and right sections for operators - and for such cases an additional flag is used
@@ -195,11 +202,11 @@ namespace Ela.Compilation
             //For optimization purposes we use a simplified creation algorythm for constructors 
             //with 1 and 2 parameters
             if (len == 1)
-                CompileExpression(juxta.Parameters[0], map, Hints.None);
+                CompileExpression(juxta.Parameters[0], map, Hints.None, juxta);
             else if (len == 2)
             {
-                CompileExpression(juxta.Parameters[0], map, Hints.None);
-                CompileExpression(juxta.Parameters[1], map, Hints.None);
+                CompileExpression(juxta.Parameters[0], map, Hints.None, juxta);
+                CompileExpression(juxta.Parameters[1], map, Hints.None, juxta);
             }
             else
                 CompileTupleParameters(juxta, juxta.Parameters, map);

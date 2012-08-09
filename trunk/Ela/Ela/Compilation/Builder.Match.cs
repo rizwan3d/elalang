@@ -18,7 +18,7 @@ namespace Ela.Compilation
             AddLinePragma(n);
             cw.Emit(Op.Start, catchLab);
 
-            CompileExpression(n.Expression, map, Hints.None);
+            CompileExpression(n.Expression, map, Hints.None, n);
 
             //Leaving 'try' section
             cw.Emit(Op.Leave);
@@ -41,7 +41,7 @@ namespace Ela.Compilation
         //Used to compile a 'match' expression.
         private void CompileMatchExpression(ElaMatch n, LabelMap map, Hints hints)
         {
-            CompileExpression(n.Expression, map, Hints.None);
+            CompileExpression(n.Expression, map, Hints.None, n);
             AddLinePragma(n);
             CompileSimpleMatch(n.Entries.Equations, map, hints);
 
@@ -104,7 +104,7 @@ namespace Ela.Compilation
                 if (b.Right == null)
                     AddError(ElaCompilerError.InvalidMatchEntry, b.Left, FormatNode(b));
                 else
-                    CompileExpression(b.Right, map, Hints.None);
+                    CompileExpression(b.Right, map, Hints.None, b);
 
                 //Close current scope
                 EndScope();
@@ -211,7 +211,7 @@ namespace Ela.Compilation
                 if (b.Right == null)
                     AddError(ElaCompilerError.InvalidMatchEntry, b.Left, FormatNode(b));
                 else
-                    CompileExpression(b.Right, map, hints);
+                    CompileExpression(b.Right, map, hints, b);
 
                 //Close current scope
                 EndScope();

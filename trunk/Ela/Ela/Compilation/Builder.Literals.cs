@@ -80,7 +80,7 @@ namespace Ela.Compilation
             for (var i = 0; i < p.Fields.Count; i++)
             {
                 var f = p.Fields[i];
-                CompileExpression(f.FieldValue, map, Hints.None);
+                CompileExpression(f.FieldValue, map, Hints.None, f);
                 cw.Emit(Op.Pushstr, AddString(f.FieldName));
                 cw.Emit(Op.Reccons, i);
             }
@@ -101,7 +101,7 @@ namespace Ela.Compilation
             //If len is 0 than we have an empty (nil) list which is created by Newlist.
             for (var i = 0; i < len; i++)
             {
-                CompileExpression(p.Values[p.Values.Count - i - 1], map, Hints.None);
+                CompileExpression(p.Values[p.Values.Count - i - 1], map, Hints.None, p);
                 cw.Emit(Op.Cons);
             }
 
@@ -128,8 +128,8 @@ namespace Ela.Compilation
             //Optimize tuple creates for a case of pair (a single op typeId is used).
             if (pars.Count == 2)
             {
-                CompileExpression(pars[0], map, Hints.None);
-                CompileExpression(pars[1], map, Hints.None);
+                CompileExpression(pars[0], map, Hints.None, v);
+                CompileExpression(pars[1], map, Hints.None, v);
                 AddLinePragma(v);
                 cw.Emit(Op.Newtup_2);
             }
@@ -140,7 +140,7 @@ namespace Ela.Compilation
 
                 for (var i = 0; i < pars.Count; i++)
                 {
-                    CompileExpression(pars[i], map, Hints.None);
+                    CompileExpression(pars[i], map, Hints.None, v);
                     cw.Emit(Op.Tupcons, i);
                 }
             }

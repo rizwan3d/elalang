@@ -34,7 +34,7 @@ namespace Ela.Compilation
             LabelMap newMap;
 
             CompileFunctionProlog(null, 1, exp.Line, exp.Column, out funSkipLabel, out address, out newMap);            
-            var ed = CompileExpression(exp, newMap, Hints.Scope | Hints.FunBody);
+            var ed = CompileExpression(exp, newMap, Hints.Scope | Hints.FunBody, null);
             CompileFunctionEpilog(null, 1, address, funSkipLabel);
             cw.Emit(Op.Newlazy);
             
@@ -74,8 +74,9 @@ namespace Ela.Compilation
 
             //We can only optimize a thunk if a last parameter (that will be executed in a strict manner)
             //is either a primitive value or an already initialized variable.
+            for (var i = 0; i < len; i++)
             {
-                var p = funCall.Parameters[funCall.Parameters.Count - 1];
+                var p = funCall.Parameters[i];
 
                 //Need to check if variable is already initialized.
                 if (p.Type == ElaNodeType.NameReference)
@@ -90,7 +91,7 @@ namespace Ela.Compilation
             }
 
             for (var i = 0; i < len; i++)
-                CompileExpression(funCall.Parameters[len - i - 1], map, Hints.None);
+                CompileExpression(funCall.Parameters[len - i - 1], map, Hints.None, funCall);
 
             var sl = len - 1;
             AddLinePragma(varRef);

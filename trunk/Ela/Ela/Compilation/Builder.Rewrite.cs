@@ -157,7 +157,7 @@ namespace Ela.Compilation
             {
                 var b = exps[i];
 
-                if (b.Right != null)
+                if (b.Right != null && b.Left.Type != ElaNodeType.Placeholder)
                     CompileDeclaration(b, map, Hints.Left);
                 else
                     list.Add(b);
@@ -171,19 +171,32 @@ namespace Ela.Compilation
         private void ProcessExpressions(FastList<ElaEquation> exps, LabelMap map)
         {
             var len = exps.Count;
+            var expCount = 0;
             
             for (var i = 0; i < len; i++)
             {
                 var e = exps[i];
-                var hints = i == len - 1 ? Hints.None : Hints.Left;
 
-                //Compile everything that is left
-                CompileExpression(e.Left, map, hints);
+                //This is a binding in the form '_ = exp' which we consider to be
+                //just a hanging expression "without a warning".
+                if (e.Left != null && e.Right != null)
+                {
+                    CompileExpression(e.Right, map, Hints.None, e);
+                    cw.Emit(Op.Pop);
+                }
+                else
+                {
+                    var hints = i == len - 1 ? Hints.None : Hints.Left;
+
+                    //Compile everything that is left
+                    CompileExpression(e.Left, map, hints, e);
+                    expCount++;
+                }
             }
 
-            //It may happens that nothing is left on this stage however Ela program have to return
+            //It may happens that nothing is left on this stage, however, Ela program have to return
             //something. Therefore just return unit.
-            if (len == 0)
+            if (expCount == 0)
                 cw.Emit(Op.Pushunit);
         }
 

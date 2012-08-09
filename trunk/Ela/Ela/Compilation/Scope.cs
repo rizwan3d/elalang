@@ -72,6 +72,13 @@ namespace Ela.Compilation
             return false;
         }
 
+        internal void AddFlags(string name, ElaVariableFlags flags)
+        {
+            var sv = Locals[name];
+            sv = new ScopeVar(sv.Flags | flags, sv.Address, sv.Data);
+            Locals[name] = sv;
+        }
+
         internal void RemoveFlags(string name, ElaVariableFlags flags)
         {
             var sv = Locals[name];

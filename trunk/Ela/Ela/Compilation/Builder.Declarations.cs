@@ -1,6 +1,7 @@
 ﻿using System;
 using Ela.CodeModel;
 using Ela.Runtime;
+using System.Collections.Generic;
 
 namespace Ela.Compilation
 {
@@ -17,15 +18,18 @@ namespace Ela.Compilation
 
             if ((s.Left.Type != ElaNodeType.NameReference || ((ElaNameReference)s.Left).Uppercase) && !fun)
                 CompileBindingPattern(s, map);
+                //CompileLazyPattern(s, map);
             else
             {
                 var nm = default(String);
                 var sv = GetNoInitVariable(s, out nm);
                 var addr = sv.Address;
-                
+
                 if (sv.IsEmpty())
                     addr = AddVariable(s.Left.GetName(), s, s.VariableFlags, -1);
-                
+                else
+                    CurrentScope.AddFlags(nm, ElaVariableFlags.Self);
+
                 //Compile expression and write it to a variable
                 if (fun)
                 {
@@ -38,15 +42,15 @@ namespace Ela.Compilation
                 else
                 {
                     map.BindingName = s.Left.GetName();
-                    CompileExpression(s.Right, map, Hints.None);
+                    CompileExpression(s.Right, map, Hints.None, s);
                 }
 
                 //Now, when done initialization, when can remove NoInit flags.
                 if (!sv.IsEmpty())
-                    CurrentScope.RemoveFlags(nm, ElaVariableFlags.NoInit);                
+                    CurrentScope.RemoveFlags(nm, ElaVariableFlags.NoInit | ElaVariableFlags.Self);
 
                 AddLinePragma(s);
-                PopVar(addr);    
+                PopVar(addr);
             }
         }
 
@@ -56,7 +60,7 @@ namespace Ela.Compilation
             //Compile a right hand expression. Currently it is always compiled, event if right-hand
             //and both left-hand are tuples (however an optimization can be applied in such a case).
             var sys = AddVariable();
-            CompileExpression(s.Right, map, Hints.None);
+            CompileExpression(s.Right, map, Hints.None, s);
             AddLinePragma(s);
             PopVar(sys);
 
@@ -227,6 +231,125 @@ namespace Ela.Compilation
                         {
                             foreach (var e in l.Values)
                                 AddPatternVariables(e);
+                        }
+                    }
+                    break;
+            }
+        }
+
+        private void CompileLazyPattern(ElaEquation eq, LabelMap map)
+        {
+            var names = new List<ElaNameReference>();
+            ExtractPatternNames(eq.Left, names);
+            CompileLazyExpression(eq.Right, map, Hints.None);
+            var sys = AddVariable();
+            PopVar(sys);
+
+            for (var i = 0; i < names.Count; i++)
+            {
+                var n = names[i];
+                Label funSkipLabel;
+                int address;
+                LabelMap newMap;
+
+                CompileFunctionProlog(null, 1, eq.Line, eq.Column, out funSkipLabel, out address, out newMap);
+
+                var next = cw.DefineLabel();
+                var exit = cw.DefineLabel();
+                CompilePattern(1 | ((sys >> 8) << 8), eq.Left, next);
+                cw.Emit(Op.Br, exit);
+                cw.MarkLabel(next);
+                cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
+                cw.MarkLabel(exit);
+                cw.Emit(Op.Nop);
+
+                var sv = GetVariable(n.Name, n.Line, n.Column);
+                PushVar(sv);
+                CompileFunctionEpilog(null, 1, address, funSkipLabel);
+                cw.Emit(Op.Newlazy);
+
+                ScopeVar var;
+                if (CurrentScope.Locals.TryGetValue(n.Name, out var))
+                {
+                    //If it doesn't have a NoInit flag we are not good
+                    if ((var.Flags & ElaVariableFlags.NoInit) == ElaVariableFlags.NoInit)
+                    {
+                        PopVar(var.Address = 0 | var.Address << 8); //Aligning it to local scope
+                        CurrentScope.RemoveFlags(n.Name, ElaVariableFlags.NoInit);
+                    }
+                }
+            }
+        }
+
+
+        private void ExtractPatternNames(ElaExpression pat, List<ElaNameReference> names)
+        {
+            switch (pat.Type)
+            {
+                case ElaNodeType.LazyLiteral:
+                    {
+                        //Not all forms of lazy patterns are supported,
+                        //but it is easier to process them anyways. Errors will be caught
+                        //during pattern compilation.
+                        var vp = (ElaLazyLiteral)pat;
+                        ExtractPatternNames(vp.Expression, names);
+                    }
+                    break;
+                case ElaNodeType.UnitLiteral: //Idle
+                    break;
+                case ElaNodeType.As:
+                    {
+                        var asPat = (ElaAs)pat;
+                        var nr = new ElaNameReference { Name = asPat.Name, Line = asPat.Line, Column = asPat.Column };
+                        names.Add(nr);
+                        ExtractPatternNames(asPat.Expression, names);
+                    }
+                    break;
+                case ElaNodeType.Primitive: //Idle
+                    break;
+                case ElaNodeType.NameReference:
+                    {
+                        var vexp = (ElaNameReference)pat;
+
+                        if (!vexp.Uppercase) //Uppercase is constructor
+                            names.Add(vexp);
+                    }
+                    break;
+                case ElaNodeType.RecordLiteral:
+                    {
+                        var rexp = (ElaRecordLiteral)pat;
+
+                        foreach (var e in rexp.Fields)
+                            if (e.FieldValue != null)
+                                ExtractPatternNames(e.FieldValue, names);
+                    }
+                    break;
+                case ElaNodeType.TupleLiteral:
+                    {
+                        var texp = (ElaTupleLiteral)pat;
+
+                        foreach (var e in texp.Parameters)
+                            ExtractPatternNames(e, names);
+                    }
+                    break;
+                case ElaNodeType.Placeholder: //Idle
+                    break;
+                case ElaNodeType.Juxtaposition:
+                    {
+                        var hexp = (ElaJuxtaposition)pat;
+
+                        foreach (var e in hexp.Parameters)
+                            ExtractPatternNames(e, names);
+                    }
+                    break;
+                case ElaNodeType.ListLiteral: //Idle
+                    {
+                        var l = (ElaListLiteral)pat;
+
+                        if (l.HasValues())
+                        {
+                            foreach (var e in l.Values)
+                                ExtractPatternNames(e, names);
                         }
                     }
                     break;

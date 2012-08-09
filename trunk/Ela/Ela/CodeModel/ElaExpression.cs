@@ -57,9 +57,9 @@ namespace Ela.CodeModel
             return false;
         }
 		
-        public int Line { get; private set; }
+        public int Line { get; internal set; }
 
-		public int Column { get; private set; }
+        public int Column { get; internal set; }
 		
 		public ElaNodeType Type { get; protected set; }
 

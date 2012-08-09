@@ -78,7 +78,7 @@ namespace Ela.Compilation
 			frame.Layouts[0].StackSize = cw.FinishFrame();
 		}
 
-        private ExprData CompileExpression(ElaExpression exp, LabelMap map, Hints hints)
+        private ExprData CompileExpression(ElaExpression exp, LabelMap map, Hints hints, ElaExpression parent)
         {
             var exprData = ExprData.Empty;
 
@@ -100,7 +100,7 @@ namespace Ela.Compilation
                                 EmitSpecName(null, "$$" + nr.Name, nr, ElaCompilerError.UndefinedType);
                             else
                             {
-                                CompileExpression(v.Context, map, Hints.None);
+                                CompileExpression(v.Context, map, Hints.None, v);
                                 cw.Emit(Op.Api, 5); //TypeCode
                             }
                         }
@@ -112,13 +112,13 @@ namespace Ela.Compilation
                                 EmitSpecName(fr.TargetObject.GetName(), "$$" + fr.FieldName, fr, ElaCompilerError.UndefinedType);
                             else
                             {
-                                CompileExpression(v.Context, map, Hints.None);
+                                CompileExpression(v.Context, map, Hints.None, v);
                                 cw.Emit(Op.Api, 5); //TypeCode
                             }
                         }
                         else
                         {
-                            CompileExpression(v.Context, map, Hints.None);
+                            CompileExpression(v.Context, map, Hints.None, v);
                             cw.Emit(Op.Api, 5); //TypeCode
                         }
 
@@ -129,7 +129,7 @@ namespace Ela.Compilation
                         var newMap = map.Clone(a);
 
                         //cw.Emit(v.Tentative ? Op.Ctxtnt : Op.Ctxset);
-                        CompileExpression(v.Expression, newMap, hints);
+                        CompileExpression(v.Expression, newMap, hints, v);
                         //cw.Emit(v.Tentative ? Op.Ctxclst : Op.Ctxcls);
                     }
                     break;
@@ -176,7 +176,7 @@ namespace Ela.Compilation
                         var v = (ElaLetBinding)exp;
                         StartScope(false, v.Line, v.Column);
                         CompileEquationSet(v.Equations, map);
-                        CompileExpression(v.Expression, map, hints);
+                        CompileExpression(v.Expression, map, hints, v);
                         EndScope();
                     }
                     break;
@@ -230,7 +230,7 @@ namespace Ela.Compilation
                 case ElaNodeType.Raise:
                     {
                         var s = (ElaRaise)exp;
-                        CompileExpression(s.Expression, map, Hints.None);
+                        CompileExpression(s.Expression, map, Hints.None, s);
                         AddLinePragma(s);
                         cw.Emit(Op.Throw);
                     }
@@ -259,7 +259,7 @@ namespace Ela.Compilation
                         //are first class) but is used as optimization.
                         if (!TryOptimizeFieldReference(p))
                         {
-                            CompileExpression(p.TargetObject, map, Hints.None);
+                            CompileExpression(p.TargetObject, map, Hints.None, p);
                             cw.Emit(Op.Pushstr, AddString(p.FieldName));
                             AddLinePragma(p);
                             cw.Emit(Op.Pushfld);
@@ -314,11 +314,12 @@ namespace Ela.Compilation
                             exprData = new ExprData(DataKind.Builtin, scopeVar.Data);
 
                         //Generate a warning if a name is not initialized
-                        if ((scopeVar.Flags & ElaVariableFlags.NoInit) == ElaVariableFlags.NoInit && 
+                        if ((scopeVar.Flags & ElaVariableFlags.NoInit) == ElaVariableFlags.NoInit &&
                             (scopeVar.Address & Byte.MaxValue) == 0)
                         {
-                            AddWarning(ElaCompilerWarning.BottomValue, v, FormatNode(v));
-                            AddHint(ElaCompilerHint.UseThunk, v, v);
+                            var ee = parent ?? v;
+                            AddWarning(ElaCompilerWarning.BottomValue, ee, FormatNode(ee), v.Name);
+                            AddHint(ElaCompilerHint.UseThunk, ee, ee);
                         }
                     }
                     break;

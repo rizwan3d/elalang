@@ -13,7 +13,7 @@ namespace Ela.Compilation
             var endLab = cw.DefineLabel();
 
             var sysVar = AddVariable();
-            CompileExpression(n.Expression, map, Hints.None);
+            CompileExpression(n.Expression, map, Hints.None, n);
             PopVar(sysVar);
 
 
