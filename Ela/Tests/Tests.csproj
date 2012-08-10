@@ -43,16 +43,17 @@
   </Target>
   -->
   <ItemGroup>
-    <None Include="basictests.ela" />
-    <None Include="comprehensiontests.ela" />
-    <None Include="funtests.ela" />
-    <None Include="listtests.ela" />
-    <None Include="matchtests.ela" />
-    <None Include="rangetests.ela" />
-    <None Include="recordtests.ela" />
-    <None Include="thunktests.ela" />
-    <None Include="tupletests.ela" />
-    <None Include="varianttests.ela" />
-    <None Include="_run.ela" />
+    <None Include="Espec\basic.ela" />
+    <None Include="Espec\_run.ela" />
+    <None Include="Unit\basictests.ela" />
+    <None Include="Unit\comprehensiontests.ela" />
+    <None Include="Unit\funtests.ela" />
+    <None Include="Unit\listtests.ela" />
+    <None Include="Unit\matchtests.ela" />
+    <None Include="Unit\rangetests.ela" />
+    <None Include="Unit\recordtests.ela" />
+    <None Include="Unit\thunktests.ela" />
+    <None Include="Unit\tupletests.ela" />
+    <None Include="Unit\_run.ela" />
   </ItemGroup>
 </Project>
