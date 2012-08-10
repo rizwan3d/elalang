@@ -158,7 +158,20 @@ namespace Ela.Compilation
                 var b = exps[i];
 
                 if (b.Right != null && b.Left.Type != ElaNodeType.Placeholder)
-                    CompileDeclaration(b, map, Hints.Left);
+                {
+                    var hints = Hints.Left;
+                    var small = len == 1;
+
+                    if ((small && IsRecursive(b)) || (!small && !CanCompileStrict(b.Right, null)))
+                    {
+#if DEBUG
+                        Console.WriteLine("lazy:::" + FormatNode(b));
+#endif
+                        hints |= Hints.Lazy;
+                    }
+
+                    CompileDeclaration(b, map, hints);
+                }
                 else
                     list.Add(b);
             }

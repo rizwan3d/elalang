@@ -126,11 +126,15 @@
     <Content Include="_ela\thunk.ela" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="_ela\bench.ela" />
+    <None Include="_ela\core.ela" />
     <None Include="_ela\espec.ela" />
+    <None Include="_ela\generic.ela" />
     <None Include="_ela\list.ela" />
-    <None Include="_ela\math.ela" />
+    <None Include="_ela\peano.ela" />
+    <None Include="_ela\random.ela" />
     <None Include="_ela\read.ela" />
-    <None Include="_ela\variant.ela" />
+    <None Include="_ela\tuple.ela" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

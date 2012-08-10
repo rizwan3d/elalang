@@ -55,15 +55,38 @@ namespace Ela.Compilation
             if (refs.Count != frame.HandleMap.Count)
                 for (var i = 0; i < frame.HandleMap.Count; i++)
                     refs.Add(null);
+
+            //Determine whether this is fresh session.
+            var scratch = cw.Offset == 0;
 			
             //We always include prelude, but a module variable is created just once
             //(We check if we are not resuming in interactive mode (cw.Offset==0) and if yes
             //we don't create a variable 'prelude'.
-            if (!String.IsNullOrEmpty(options.Prelude))
-                IncludePrelude(prog, cw.Offset == 0);
+            if (!String.IsNullOrEmpty(options.Prelude) && scratch)
+                IncludePrelude(prog, scratch);
 
             //Always include arguments module
-            IncludeArguments();
+            if (scratch)
+                IncludeArguments();
+
+            //Another workaround that is needed for interactive mode. We need
+            //to restore a reference list with correct indices (LogicalHandle).
+            //It can be done by working through the reference map and requesting all referenced
+            //modules one more time.
+            if (cw.Offset != 0)
+            {
+                var arr = new ModuleReference[frame.References.Count];
+                
+                foreach (var kv in frame.References)
+                    arr[kv.Value.LogicalHandle] = kv.Value;
+
+                for (var i = 0; i < arr.Length; i++)
+                {
+                    var e = new ModuleEventArgs(arr[i]);
+                    comp.OnModuleInclude(e);
+                    refs[i] = e.Frame;
+                }
+            }
 			            
             var map = new LabelMap();
 

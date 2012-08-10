@@ -161,7 +161,9 @@ formatGen # private
 formatGen formatter n fc str [] = (n,fc,toString <| str)
 formatGen formatter n fc str (x::xs) = formatGen formatter (n+1) failed (str+>r) xs
   where (f,e,r) = report formatter x
-        failed | f+e>0 = fc + 1 | else = fc
+        failed 
+          | f + e > 0 = fc + 1 
+          | else = fc
 
 formatResult xs = 
   formatStr "Test session started.\r\n{0}\r\nTotal tests:{1} Failed: {2}" 
