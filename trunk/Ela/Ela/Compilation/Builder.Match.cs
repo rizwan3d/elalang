@@ -97,7 +97,7 @@ namespace Ela.Compilation
                 if (first)
                     firstSys = sysVar;
 
-                CompilePattern(sysVar, p, failLab);
+                CompilePattern(sysVar, p, failLab, false /*forceStrict*/);
                 first = false;
 
                 //Compile entry expression
@@ -203,7 +203,7 @@ namespace Ela.Compilation
                 //Now compile patterns
                 for (var i = 0; i < len; i++)
                     if (firstSys.Length > i && pars.Count > i)
-                        CompilePattern(firstSys[i], pars[i], failLab);
+                        CompilePattern(firstSys[i], pars[i], failLab, false /*forceStrict*/);
                 
                 first = false;
 
@@ -230,7 +230,7 @@ namespace Ela.Compilation
         }
 
         //Compile a given expression as a pattern. If match fails proceed to failLab.
-        private void CompilePattern(int sysVar, ElaExpression exp, Label failLab)
+        private void CompilePattern(int sysVar, ElaExpression exp, Label failLab, bool forceStrict)
         {
             AddLinePragma(exp);
 
@@ -240,13 +240,11 @@ namespace Ela.Compilation
                     {
                         var n = (ElaLazyLiteral)exp;
 
-                        //Currently we support only lazy tuple and record patterns
-                        if (n.Expression.Type == ElaNodeType.TupleLiteral)
-                            CompileLazyTuplePattern(sysVar, (ElaTupleLiteral)n.Expression, failLab);
-                        else if (n.Expression.Type == ElaNodeType.RecordLiteral)
-                            CompileLazyRecordPattern(sysVar, (ElaRecordLiteral)n.Expression, failLab);
+                        //Normally this flag is set when everything is already compiled as lazy.
+                        if (forceStrict)
+                            CompilePattern(sysVar, n.Expression, failLab, forceStrict);
                         else
-                            AddError(ElaCompilerError.InvalidLazyPattern, exp, FormatNode(exp));
+                            CompileLazyPattern(sysVar, exp);
                     }
                     break;
                 case ElaNodeType.FieldReference:
@@ -328,7 +326,7 @@ namespace Ela.Compilation
                 case ElaNodeType.As:
                     {
                         var n = (ElaAs)exp;
-                        CompilePattern(sysVar, n.Expression, failLab);
+                        CompilePattern(sysVar, n.Expression, failLab, false /*forceStrict*/);
                         var newV = false;
                         var addr = AddMatchVariable(n.Name, n, out newV);
                         PushVar(sysVar);
@@ -392,7 +390,7 @@ namespace Ela.Compilation
                             }
 
                             //Now we can compile it as head/tail pattern
-                            CompilePattern(sysVar, fc, failLab);
+                            CompilePattern(sysVar, fc, failLab, false /*forceStrict*/);
                         }
                     }
                     break;
@@ -426,7 +424,7 @@ namespace Ela.Compilation
 
                 //We obtain a value of field, now we need to match it using a pattern in
                 //a field value (it could be a name reference or a non-irrefutable pattern).
-                CompilePattern(addr, fld.FieldValue, failLab);
+                CompilePattern(addr, fld.FieldValue, failLab, false /*forceStrict*/);
             }
         }
 
@@ -463,7 +461,7 @@ namespace Ela.Compilation
                 PopVar(sysVar2);
                 
                 //Match an element of a tuple
-                CompilePattern(sysVar2, pat, failLab);
+                CompilePattern(sysVar2, pat, failLab, false /*forceStrict*/);
             }
         }
 
@@ -543,7 +541,7 @@ namespace Ela.Compilation
                     PopVar(sysVar2);
                 }
 
-                CompilePattern(sysVar2, p, failLab);
+                CompilePattern(sysVar2, p, failLab, false /*forceStrict*/);
             }
         }
 
@@ -572,7 +570,7 @@ namespace Ela.Compilation
                 PopVar(sysVar2);
             }
 
-            CompilePattern(sysVar2, fst, failLab);
+            CompilePattern(sysVar2, fst, failLab, false /*forceStrict*/);
 
             //Take a tail of a list
             PushVar(sysVar);
@@ -586,97 +584,131 @@ namespace Ela.Compilation
                 PopVar(sysVar2);
             }
 
-            CompilePattern(sysVar2, snd, failLab);
+            CompilePattern(sysVar2, snd, failLab, false /*forceStrict*/);
         }
 
-        //With a lazy tuple pattern an equation like so: '(x,y) = exp' is semantically transformed 
-        //into '(x,y) = (&fst exp,&snd exp)', but as long as we now have two tuples of the same
-        //length on both sides there is no need to create any of them - so we just assign variables
-        //with generated thunks.
-        private void CompileLazyTuplePattern(int sysVar, ElaTupleLiteral tuple, Label failLab)
+        //Compiles a pattern as lazy by creating a thunk an initializing all pattern names with these thunks.
+        private void CompileLazyPattern(int sys, ElaExpression pat)
         {
-            var len = tuple.Parameters.Count;
+            //First we need to obtain a list of all names, that declared in this pattern.
+            var names = new List<String>();
+            ExtractPatternNames(pat, names);
 
-            for (var i = 0; i < len; i++)
+            //Walk through all names and create thunks
+            for (var i = 0; i < names.Count; i++)
             {
-                var e = tuple.Parameters[i];
-
-                //Compile the first part of the thunk function
+                var n = names[i];
                 Label funSkipLabel;
                 int address;
                 LabelMap newMap;
-                CompileFunctionProlog(null, 1, e.Line, e.Column, out funSkipLabel, out address, out newMap);
 
-                //Here we compile a thunk body that obtains a tuple element
-                //Here we have to manually patch an address because we refer
-                //to a captured variable that doesn't belong to this function scope.
-                var a = (sysVar & Byte.MaxValue) + 1 | (sysVar << 8) >> 8;
-                PushVar(a);
-                //Check for length in order to generate "nice" error instead of IndexOutOfRange.
-                //We have to do for each element because they may be evaluated independently.
-                cw.Emit(Op.Len);
-                cw.Emit(Op.PushI4, len);
-                cw.Emit(Op.Cneq);
-                cw.Emit(Op.Brtrue, failLab);
-                //Obtain an element
-                PushVar(a);
-                if (i == 0) cw.Emit(Op.PushI4_0); else cw.Emit(Op.PushI4, i);
-                cw.Emit(Op.Pushelem);
+                CompileFunctionProlog(null, 1, pat.Line, pat.Column, out funSkipLabel, out address, out newMap);
 
-                //Compile thunk epilog, create a new thunk object
+                var next = cw.DefineLabel();
+                var exit = cw.DefineLabel();
+
+                //As soon as already compiling pattern as lazy, we should enforce strictness even if
+                //pattern is declared as lazy. Otherwise everything would crash, because here assume
+                //that names are bound in this bound in the same scope.
+                CompilePattern(1 | ((sys >> 8) << 8), pat, next, true /*forceStrict*/);
+                cw.Emit(Op.Br, exit);
+                cw.MarkLabel(next);
+                cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
+                cw.MarkLabel(exit);
+                cw.Emit(Op.Nop);
+
+                //Here we expect that our target variable is already declared by a pattern in the
+                //same physical scope - so we can obtain and push it as a return value.
+                var sv = GetVariable(n, pat.Line, pat.Column);
+                PushVar(sv);
                 CompileFunctionEpilog(null, 1, address, funSkipLabel);
                 cw.Emit(Op.Newlazy);
 
-                //Move on to the nested pattern
-                var newSys = AddVariable();
-                PopVar(newSys);
-                CompilePattern(newSys, e, failLab);
+                ScopeVar var;
+                if (CurrentScope.Locals.TryGetValue(n, out var))
+                {
+                    //If it doesn't have a NoInit flag we are not good
+                    if ((var.Flags & ElaVariableFlags.NoInit) == ElaVariableFlags.NoInit)
+                    {
+                        PopVar(var.Address = 0 | var.Address << 8); //Aligning it to local scope
+                        CurrentScope.RemoveFlags(n, ElaVariableFlags.NoInit);
+                    }
+                }
             }
         }
 
-        //With a lazy record pattern an equation like so: '{x,y} = exp' is semantically 
-        //transformed into '{x,y} = {x = & getField "x" exp, y = & getField "y" exp}, but as soon as
-        //there is no need for an intermediate record structure the names on the left hand side
-        //are bound directly to thunks.
-        private void CompileLazyRecordPattern(int sysVar, ElaRecordLiteral rec, Label failLab)
+        //Builds a lists of all variables that are declared in the given pattern.
+        private void ExtractPatternNames(ElaExpression pat, List<String> names)
         {
-            var len = rec.Fields.Count;
-
-            for (var i = 0; i < len; i++)
+            switch (pat.Type)
             {
-                var f = rec.Fields[i];
-                var sid = AddString(f.FieldName);
+                case ElaNodeType.LazyLiteral:
+                    {
+                        //This whole method is used to extract names before making a
+                        //pattern lazy, so we need to extract all names here as well,
+                        //because this lazy literal will be compiled strict anyway (because
+                        //the whole pattern is lazy already).
+                        var vp = (ElaLazyLiteral)pat;
+                        ExtractPatternNames(vp.Expression, names);
+                    }
+                    break;
+                case ElaNodeType.UnitLiteral: //Idle
+                    break;
+                case ElaNodeType.As:
+                    {
+                        var asPat = (ElaAs)pat;
+                        names.Add(asPat.Name);
+                        ExtractPatternNames(asPat.Expression, names);
+                    }
+                    break;
+                case ElaNodeType.Primitive: //Idle
+                    break;
+                case ElaNodeType.NameReference:
+                    {
+                        var vexp = (ElaNameReference)pat;
 
-                //Compile the first part of the thunk function
-                Label funSkipLabel;
-                int address;
-                LabelMap newMap;
-                CompileFunctionProlog(null, 1, f.Line, f.Column, out funSkipLabel, out address, out newMap);
+                        if (!vexp.Uppercase) //Uppercase is constructor
+                            names.Add(vexp.Name);
+                    }
+                    break;
+                case ElaNodeType.RecordLiteral:
+                    {
+                        var rexp = (ElaRecordLiteral)pat;
 
-                //Here we compile a thunk body that obtains a record element
-                //Here we have to manually patch an address because we refer
-                //to a captured variable that doesn't belong to this function scope.
-                var a = (sysVar & Byte.MaxValue) + 1 | (sysVar << 8) >> 8;
-                PushVar(a);
+                        foreach (var e in rexp.Fields)
+                            if (e.FieldValue != null)
+                                ExtractPatternNames(e.FieldValue, names);
+                    }
+                    break;
+                case ElaNodeType.TupleLiteral:
+                    {
+                        var texp = (ElaTupleLiteral)pat;
 
-                //Here we first check if a requested field exists in a record,
-                //otherwise we need to generate a MatchFailed error.
-                cw.Emit(Op.Pushstr, sid);
-                cw.Emit(Op.Hasfld);
-                cw.Emit(Op.Brfalse, failLab);
-                //Obtain a field value
-                PushVar(a);
-                cw.Emit(Op.Pushstr, sid);
-                cw.Emit(Op.Pushfld);
-                
-                //Compile thunk epilog, create a new thunk object
-                CompileFunctionEpilog(null, 1, address, funSkipLabel);
-                cw.Emit(Op.Newlazy);
+                        foreach (var e in texp.Parameters)
+                            ExtractPatternNames(e, names);
+                    }
+                    break;
+                case ElaNodeType.Placeholder: //Idle
+                    break;
+                case ElaNodeType.Juxtaposition:
+                    {
+                        var hexp = (ElaJuxtaposition)pat;
 
-                //Move on to the nested pattern
-                var newSys = AddVariable();
-                PopVar(newSys);
-                CompilePattern(newSys, f.FieldValue, failLab);
+                        foreach (var e in hexp.Parameters)
+                            ExtractPatternNames(e, names);
+                    }
+                    break;
+                case ElaNodeType.ListLiteral: 
+                    {
+                        var l = (ElaListLiteral)pat;
+
+                        if (l.HasValues())
+                        {
+                            foreach (var e in l.Values)
+                                ExtractPatternNames(e, names);
+                        }
+                    }
+                    break;
             }
         }
 

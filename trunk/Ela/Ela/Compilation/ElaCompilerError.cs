@@ -23,7 +23,7 @@ namespace Ela.Compilation
 
         ElseMissing = 307,
 
-		InvalidLazyPattern = 308,
+		// = 308,
 
 		InvalidPattern = 309,
 

@@ -40,7 +40,7 @@ namespace Ela.Compilation
             PopVar(0 | ((addr >> 8) + 1) << 8);
 
 			if (s.Pattern.Type != ElaNodeType.NameReference)
-				CompilePattern(addr, s.Pattern, iter);
+                CompilePattern(addr, s.Pattern, iter, false /*forceStrict*/);
 
 			if (s.Guard != null)
 			{
@@ -110,7 +110,7 @@ namespace Ela.Compilation
                 PopVar(addr);
 			}
 			else
-				CompilePattern(head, s.Pattern, iterLab);
+                CompilePattern(head, s.Pattern, iterLab, false /*forceStrict*/);
 
 			if (s.Guard != null)
 			{

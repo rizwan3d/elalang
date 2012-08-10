@@ -411,7 +411,8 @@ namespace ElaConsole
 					ShowHints = !opt.SupressHints,
 					GenerateDebugInfo = opt.Debug,
 					Optimize = !opt.DisableOptimization,
-					Prelude = opt.NoPrelude ? null : opt.Prelude
+					Prelude = opt.NoPrelude ? null : opt.Prelude,
+                    Strict = opt.Strict
 				};
 		}
 
