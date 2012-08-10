@@ -65,6 +65,8 @@ Syntax: elac [filename] [options]
  
 -nohints		Do not show compiler hint messages.
 
+-strict                 Compile all code as strict.
+
 
 		*** Linker Options ***
 

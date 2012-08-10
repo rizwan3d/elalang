@@ -160,14 +160,23 @@ namespace Ela.Compilation
                 if (b.Right != null && b.Left.Type != ElaNodeType.Placeholder)
                 {
                     var hints = Hints.Left;
-                    var small = len == 1;
 
-                    if ((small && IsRecursive(b)) || (!small && !CanCompileStrict(b.Right, null)))
+                    //Unless somebody explicitly told us to compile everything in a
+                    //strict manner, we need to check if we need to create some thunks here.
+                    if (!options.Strict)
                     {
+                        var small = len == 1;
+
+                        //Thunks are created if we have a single non-function binding which is recursive
+                        //or when we have more than one binding, and we 'suspect' that this one cannot
+                        //be executed in a strict manner (e.g. it references non-initialized names).
+                        if ((small && IsRecursive(b)) || (!small && !CanCompileStrict(b.Right, null)))
+                        {
 #if DEBUG
-                        Console.WriteLine("lazy:::" + FormatNode(b));
+                            Console.WriteLine("lazy:::" + FormatNode(b));
 #endif
-                        hints |= Hints.Lazy;
+                            hints |= Hints.Lazy;
+                        }
                     }
 
                     CompileDeclaration(b, map, hints);
@@ -212,7 +221,410 @@ namespace Ela.Compilation
             if (expCount == 0)
                 cw.Emit(Op.Pushunit);
         }
+        
+        //Checks whether a given expression can be compiled in a strict manner. The test is
+        //very conservative and may refuse to compile expressions as strict even if they can safely
+        //executed in a strict manner.
+        private bool CanCompileStrict(ElaExpression exp, List<String> locals)
+        {
+            if (exp == null)
+                return true;
 
+            switch (exp.Type)
+            {
+                case ElaNodeType.Binary:
+                    {
+                        var b = (ElaBinary)exp;
+                        return CanCompileStrict(b.Left, locals) && CanCompileStrict(b.Right, locals);
+                    }
+                case ElaNodeType.Comprehension:
+                    {
+                        var b = (ElaComprehension)exp;
+                        return CanCompileStrict(b.Generator, locals);
+                    }
+                case ElaNodeType.Condition:
+                    {
+                        var b = (ElaCondition)exp;
+                        return CanCompileStrict(b.Condition, locals) && 
+                            CanCompileStrict(b.True, locals) && CanCompileStrict(b.False, locals);
+                    }
+                case ElaNodeType.LazyLiteral:
+                    {
+                        var b = (ElaLazyLiteral)exp;
+                        return CanCompileStrict(b.Expression, locals);
+                    }
+                case ElaNodeType.Context:
+                    {
+                        var c = (ElaContext)exp;
+                        return CanCompileStrict(c.Expression, locals);
+                    }
+                case ElaNodeType.Equation:
+                    return true;
+                case ElaNodeType.FieldDeclaration:
+                    {
+                        var b = (ElaFieldDeclaration)exp;
+                        return CanCompileStrict(b.FieldValue, locals);
+                    }
+                case ElaNodeType.FieldReference:
+                    {
+                        var b = (ElaFieldReference)exp;
+                        return CanCompileStrict(b.TargetObject, locals);
+                    }
+                case ElaNodeType.Generator:
+                    {
+                        var g = (ElaGenerator)exp;
+                        return CanCompileStrict(g.Target, locals) && 
+                            CanCompileStrict(g.Guard, locals) && CanCompileStrict(g.Body, locals);
+                    }
+                case ElaNodeType.Juxtaposition:
+                    {
+                        //We are very conservative here. Basically we can't compile in a strict manner any application of a function
+                        //defined in the current module (except of a partial application).
+                        var g = (ElaJuxtaposition)exp;
+
+                        if (g.Target.Type == ElaNodeType.NameReference)
+                        {
+                            var n = g.Target.GetName();
+
+                            //If a target is a 'local' name, we're ok with that. Local means
+                            //that this whole expression is a part of 'let/in' or 'where' and we reference here
+                            //a name declared by these constructs.
+                            if (!IsLocal(locals, n))
+                            {
+                                var sv = GetVariable(n, CurrentScope, GetFlags.NoError, 0, 0);
+
+                                if ((sv.Flags & ElaVariableFlags.External) != ElaVariableFlags.External &&
+                                    (sv.Flags & ElaVariableFlags.TypeFun) != ElaVariableFlags.TypeFun &&
+                                    (sv.Flags & ElaVariableFlags.Builtin) != ElaVariableFlags.Builtin &&
+                                    (sv.Flags & ElaVariableFlags.Parameter) != ElaVariableFlags.Parameter)
+                                {
+                                    if ((sv.Flags & ElaVariableFlags.Function) != ElaVariableFlags.Function ||
+                                        sv.Data <= g.Parameters.Count)
+                                        return false;
+                                }
+                            }
+                        }
+                        else if (g.Target.Type == ElaNodeType.FieldReference)
+                        {
+                            //Here we check if this is a fully qualified function reference.
+                            var fr = (ElaFieldReference)g.Target;
+
+                            if (fr.TargetObject.Type != ElaNodeType.NameReference)
+                                return false;
+
+                            var sv = GetVariable(fr.TargetObject.GetName(), CurrentScope, GetFlags.NoError, 0, 0);
+
+                            if ((sv.Flags & ElaVariableFlags.Module) != ElaVariableFlags.Module)
+                                return false;
+                        }
+                        else
+                            return false;
+
+                        foreach (var p in g.Parameters)
+                            if (!CanCompileStrict(p, locals))
+                                return false;
+
+                        return true;
+                    }
+                case ElaNodeType.LetBinding:
+                    {
+                        var g = (ElaLetBinding)exp;
+
+                        if (locals == null)
+                            locals = new List<String>();
+
+                        //For a 'let' binding we need to extract all names declared in it.
+                        //This will be our list of 'locals', which can be safely references in the
+                        //expression, that comes right after 'in' clause. This is done to avoid
+                        //generation of redundant thunks.
+                        foreach (var e in g.Equations.Equations)
+                        {
+                            if (e.IsFunction())
+                                locals.Add(e.GetFunctionName());
+                            else
+                                ExtractPatternNames(e, locals);
+                        }
+
+                        return CanCompileStrict(g.Expression, locals);
+                    }
+                case ElaNodeType.ListLiteral:
+                    {
+                        var b = (ElaListLiteral)exp;
+
+                        if (!b.HasValues())
+                            return true;
+
+                        foreach (var v in b.Values)
+                            if (!CanCompileStrict(v, locals))
+                                return false;
+
+                        return true;
+                    }
+                case ElaNodeType.Try:
+                case ElaNodeType.Match:
+                    {
+                        var b = (ElaMatch)exp;
+
+                        if (!CanCompileStrict(b.Expression, locals))
+                            return false;
+
+                        foreach (var e in b.Entries.Equations)
+                            if (!CanCompileStrict(e.Right, locals))
+                                return false;
+
+                        return true;
+                    }
+                case ElaNodeType.NameReference:
+                    {
+                        var b = (ElaNameReference)exp;
+
+                        //If a name is a 'local' name, we're ok with that. Local means
+                        //that this whole expression is a part of 'let/in' or 'where' and we reference here
+                        //a name declared by these constructs.                            
+                        if (!IsLocal(locals, b.Name))
+                        {
+                            var sv = GetVariable(b.Name, CurrentScope, GetFlags.NoError | GetFlags.Local, 0, 0);
+                            return (sv.Flags & ElaVariableFlags.NoInit) != ElaVariableFlags.NoInit;
+                        }
+
+                        return true;
+                    }
+                case ElaNodeType.Raise:
+                    {
+                        var r = (ElaRaise)exp;
+                        return CanCompileStrict(r.Expression, locals);
+                    }
+                case ElaNodeType.Range:
+                    {
+                        var r = (ElaRange)exp;
+                        return CanCompileStrict(r.First, locals) && CanCompileStrict(r.Second, locals) && CanCompileStrict(r.Last, locals);
+                    }
+                case ElaNodeType.RecordLiteral:
+                    {
+                        var r = (ElaRecordLiteral)exp;
+
+                        foreach (var f in r.Fields)
+                            if (!CanCompileStrict(f.FieldValue, locals))
+                                return false;
+
+                        return true;
+                    }
+                case ElaNodeType.TupleLiteral:
+                    {
+                        var t = (ElaTupleLiteral)exp;
+
+                        foreach (var v in t.Parameters)
+                            if (!CanCompileStrict(v, locals))
+                                return false;
+
+                        return true;
+                    }
+                default:
+                    return true;
+            }
+        }
+
+        //Checks if a given binding is a recursive binding, e.g. contains a reference to itself 
+        //in the right side.
+        private bool IsRecursive(ElaEquation eq)
+        {
+            //For a simple case we don't need to construct a name list and can do the 
+            //things much easier.
+            if (eq.Left.Type == ElaNodeType.NameReference && !((ElaNameReference)eq.Left).Uppercase)
+            {
+                var sv = GetVariable(eq.Left.GetName(), CurrentScope, GetFlags.NoError, 0, 0);
+                return IsRecursive(eq.Right, sv.Address, null);
+            }
+            else
+            {
+                //Complex case, a binding contains a pattern in the left hand side. We then need to
+                //extract all names declared in this pattern first, and the build a list of all addresses
+                //that can be referenced by right hand side.
+                var names = new List<String>();
+                ExtractPatternNames(eq.Left, names);
+                var arr = new int[names.Count];
+
+                for (var i = 0; i < names.Count; i++)
+                    arr[i] = GetVariable(names[i], CurrentScope, GetFlags.NoError, 0, 0).Address;
+
+                if (IsRecursive(eq.Right, -1, arr))
+                    return true;
+
+                return false;
+            }
+        }
+
+        //This method checks if an expression references any of the given addresses. It may accept
+        //either a single address (addr) or an array of addresses.
+        private bool IsRecursive(ElaExpression exp, int addr, int[] arr)
+        {
+            if (exp == null)
+                return false;
+
+            switch (exp.Type)
+            {
+                case ElaNodeType.Binary:
+                    {
+                        var b = (ElaBinary)exp;
+                        return IsRecursive(b.Left, addr, arr) && IsRecursive(b.Right, addr, arr);
+                    }
+                case ElaNodeType.Comprehension:
+                    {
+                        var b = (ElaComprehension)exp;
+                        return IsRecursive(b.Generator, addr, arr);
+                    }
+                case ElaNodeType.LazyLiteral:
+                    {
+                        var b = (ElaLazyLiteral)exp;
+                        return IsRecursive(b.Expression, addr, arr);
+                    }
+                case ElaNodeType.Condition:
+                    {
+                        var b = (ElaCondition)exp;
+                        return IsRecursive(b.Condition, addr, arr) && 
+                            IsRecursive(b.True, addr, arr) && IsRecursive(b.False, addr, arr);
+                    }
+                case ElaNodeType.Context:
+                    {
+                        var c = (ElaContext)exp;
+                        return IsRecursive(c.Expression, addr, arr);
+                    }
+                case ElaNodeType.Equation:
+                    return true;
+                case ElaNodeType.FieldDeclaration:
+                    {
+                        var b = (ElaFieldDeclaration)exp;
+                        return IsRecursive(b.FieldValue, addr, arr);
+                    }
+                case ElaNodeType.FieldReference:
+                    {
+                        var b = (ElaFieldReference)exp;
+                        return IsRecursive(b.TargetObject, addr, arr);
+                    }
+                case ElaNodeType.Generator:
+                    {
+                        var g = (ElaGenerator)exp;
+                        return IsRecursive(g.Target, addr, arr) && 
+                            IsRecursive(g.Guard, addr, arr) && IsRecursive(g.Body, addr, arr);
+                    }
+                case ElaNodeType.Juxtaposition:
+                    {
+                        var g = (ElaJuxtaposition)exp;
+
+                        if (IsRecursive(g.Target, addr, arr))
+                            return true;
+
+                        foreach (var p in g.Parameters)
+                            if (IsRecursive(p, addr, arr))
+                                return true;
+
+                        return false;
+                    }
+                case ElaNodeType.LetBinding:
+                    {
+                        var g = (ElaLetBinding)exp;
+
+                        foreach (var e in g.Equations.Equations)
+                        {
+                            if (!e.IsFunction() && IsRecursive(e.Right, addr, arr))
+                                return true;
+                        }
+
+                        return IsRecursive(g.Expression, addr, arr);
+                    }
+                case ElaNodeType.ListLiteral:
+                    {
+                        var b = (ElaListLiteral)exp;
+
+                        if (!b.HasValues())
+                            return false;
+
+                        foreach (var v in b.Values)
+                            if (IsRecursive(v, addr, arr))
+                                return true;
+
+                        return false;
+                    }
+                case ElaNodeType.Try:
+                case ElaNodeType.Match:
+                    {
+                        var b = (ElaMatch)exp;
+
+                        if (IsRecursive(b.Expression, addr, arr))
+                            return true;
+
+                        foreach (var e in b.Entries.Equations)
+                            if (IsRecursive(e.Right, addr, arr))
+                                return true;
+
+                        return false;
+                    }
+                case ElaNodeType.NameReference:
+                    {
+                        var b = (ElaNameReference)exp;
+                        var sv = GetVariable(b.Name, CurrentScope, GetFlags.NoError | GetFlags.Local, 0, 0);
+
+                        if (arr == null)
+                            return sv.Address == addr;
+
+                        for (var i = 0; i < arr.Length; i++)
+                            if (arr[i] == sv.Address)
+                                return true;
+
+                        return false;
+                    }
+                case ElaNodeType.Raise:
+                    {
+                        var r = (ElaRaise)exp;
+                        return IsRecursive(r.Expression, addr, arr);
+                    }
+                case ElaNodeType.Range:
+                    {
+                        var r = (ElaRange)exp;
+                        return IsRecursive(r.First, addr, arr) && 
+                            IsRecursive(r.Second, addr, arr) && IsRecursive(r.Last, addr, arr);
+                    }
+                case ElaNodeType.RecordLiteral:
+                    {
+                        var r = (ElaRecordLiteral)exp;
+
+                        foreach (var f in r.Fields)
+                            if (IsRecursive(f.FieldValue, addr, arr))
+                                return true;
+
+                        return false;
+                    }
+                case ElaNodeType.TupleLiteral:
+                    {
+                        var t = (ElaTupleLiteral)exp;
+
+                        foreach (var v in t.Parameters)
+                            if (IsRecursive(v, addr, arr))
+                                return true;
+
+                        return false;
+                    }
+                default:
+                    return false;
+            }
+        }
+
+        //Checks if a given name is present in the list of local names.
+        //List may be null.
+        private bool IsLocal(List<String> names, string n)
+        {
+            if (names == null)
+                return false;
+
+            for (var i = 0; i < names.Count; i++)
+                if (names[i] == n)
+                    return true;
+
+            return false;
+        }
+
+
+        #region Disabled staff
         //**********************************TEMPORARY DISABLED
         //This method checks if a given expression is a regular function definition or a function
         //defined through partial application of another function.
@@ -300,5 +712,6 @@ namespace Ela.Compilation
 
             return false;
         }
+        #endregion
     }
 }

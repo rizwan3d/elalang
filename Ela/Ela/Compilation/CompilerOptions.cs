@@ -29,7 +29,8 @@ namespace Ela.Compilation
 				ShowHints = this.ShowHints,
 				GenerateDebugInfo = this.GenerateDebugInfo,
 				Optimize = this.Optimize,
-				Prelude = this.Prelude
+				Prelude = this.Prelude,
+                Strict = this.Strict
 			};
 		}
 
@@ -56,5 +57,7 @@ namespace Ela.Compilation
 		public string Prelude { get; set; }
 
         public bool IgnoreUndefined { get; set; }
+
+        public bool Strict { get; set; }
 	}
 }

@@ -65,7 +65,10 @@ namespace ElaConsole.Options
 
 		#region Compiler Options
 		[CommandLineOption("nohints")]
-		public bool SupressHints { get; set; }
+        public bool SupressHints { get; set; }
+
+        [CommandLineOption("strict")]
+        public bool Strict { get; set; }
 		
 		[CommandLineOption("warnaserr")]
 		public bool WarningsAsErrors { get; set; }
