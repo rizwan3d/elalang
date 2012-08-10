@@ -74,13 +74,16 @@ instance Eq where
 //Only for algebraic, bettern not to use with open types
 instance Ord where
   compare a b
-    | consParamNumber a == 0 or consParamNumber b == 0 = consIndex a < consIndex b 
-    | else = consIndex a < consIndex b or cyc (consParamNumber a - 1)
+    | consIndex a > consIndex b = GT
+    | consIndex a < consIndex b = LT
+    | else = cyc (consParamNumber a)
     where cyc 0 = EQ
           cyc n 
-            | consParamValue n a == consParamValue n b = cyc (n-1)
-            | consParamValue n a > consParamValue n b = GT
+            | av == bv = cyc (n - 1)
+            | av > bv = GT
             | else = LT
+            where av = consParamValue (n - 1) a
+                  bv = consParamValue (n - 1) b
 
 //Only for algebraic, open types are welcome
 instance Name where

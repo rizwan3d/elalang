@@ -165,8 +165,7 @@ comparision {eq} =
     eq fun1 fun2
   $ eq (getFun ()) (getFun ())
   where getFun () = \x y -> x + y
-        fun1 = getFun ()
-        fun2 = getFun ()
+        (fun1,fun2) = (getFun (),getFun ())
 
 operator1 {eq} =
   eq (rec ?. "foo") "foo"

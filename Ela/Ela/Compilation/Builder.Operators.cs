@@ -22,17 +22,16 @@ namespace Ela.Compilation
             //in a situation when some of the referenced names are not initialized (Lazy)
             var left = (hints & Hints.Left) == Hints.Left ? Hints.Left : Hints.None;
             var tail = (hints & Hints.Tail) == Hints.Tail ? Hints.Tail : Hints.None;
-            var lazy = (hints & Hints.Lazy) == Hints.Lazy ? Hints.Lazy : Hints.None;
             
             if (s.True != null)
-                CompileExpression(s.True, map, left | lazy | tail | Hints.Scope, s);
+                CompileExpression(s.True, map, left | tail | Hints.Scope, s);
 
             if (s.False != null)
             {
                 var skipLabel = cw.DefineLabel();
                 cw.Emit(Op.Br, skipLabel);
                 cw.MarkLabel(falseLab);
-                CompileExpression(s.False, map, left | lazy | tail | Hints.Scope, s);
+                CompileExpression(s.False, map, left | tail | Hints.Scope, s);
                 cw.MarkLabel(skipLabel);
                 cw.Emit(Op.Nop);
             }

@@ -48,12 +48,11 @@ namespace Ela.Compilation
 
             //We can't apply tail call optimization for the context bound call
             var tail = (hints & Hints.Tail) == Hints.Tail && !map.HasContext;
-            var safeHints = (hints & Hints.Lazy) == Hints.Lazy ? Hints.Lazy : Hints.None;
             var len = v.Parameters.Count;
 
             //Compile arguments to which a function is applied
             for (var i = 0; i < len; i++)
-                CompileExpression(v.Parameters[len - i - 1], map, safeHints, v);
+                CompileExpression(v.Parameters[len - i - 1], map, Hints.None, v);
 
             //If this a tail call and we effectively call the same function we are currently in,
             //than do not emit an actual function call, just do a goto. (Tail recursion optimization).

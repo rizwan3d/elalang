@@ -28,7 +28,7 @@ namespace Ela.Compilation
 
         //This method should be used always instead of direct emitting Pushvar/Pushloc op codes.
         //It first checks if a given variable is an external and in such a case generates
-        //a different op typeId. For locals it uses PushVar(int) to generate an appropriate op typeId.
+        //a different op typeId. For addr it uses PushVar(int) to generate an appropriate op typeId.
         private void PushVar(ScopeVar sv)
         {
             if ((sv.Flags & ElaVariableFlags.External) == ElaVariableFlags.External)
