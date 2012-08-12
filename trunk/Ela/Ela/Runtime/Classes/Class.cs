@@ -478,11 +478,11 @@ namespace Ela.Runtime.Classes
             return false;
         }
 
-        internal virtual string Showf(string format, ElaValue value, ExecutionContext ctx)
+        internal virtual string Show(ElaValue value, ExecutionContext ctx)
         {
             if (show != null)
             {
-                ctx.SetDeffered(show, 2);
+                ctx.SetDeffered(show, 1);
                 return String.Empty;
             }
 
@@ -577,7 +577,7 @@ namespace Ela.Runtime.Classes
                 case ElaBuiltinKind.IsNil:
                     isnil = fun;
                     break;
-                case ElaBuiltinKind.Showf:
+                case ElaBuiltinKind.Show:
                     show = fun;
                     break;
                 case ElaBuiltinKind.Modulus:

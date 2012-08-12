@@ -17,7 +17,7 @@ namespace Ela
                 case "tail": return ElaBuiltinKind.Tail;
                 case "isnil": return ElaBuiltinKind.IsNil;
 
-                case "showf": return ElaBuiltinKind.Showf;
+                case "show": return ElaBuiltinKind.Show;
                 case "fpipe": return ElaBuiltinKind.ForwardPipe;
                 case "bpipe": return ElaBuiltinKind.BackwardPipe;
                 case "equal": return ElaBuiltinKind.Equal;

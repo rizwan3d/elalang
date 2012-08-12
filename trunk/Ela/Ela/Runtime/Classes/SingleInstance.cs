@@ -7,9 +7,9 @@ namespace Ela.Runtime.Classes
     internal sealed class SingleInstance : Class
     {
         #region Show
-        internal override string Showf(string format, ElaValue value, ExecutionContext ctx)
+        internal override string Show(ElaValue value, ExecutionContext ctx)
         {
-            return value.ToString(format, Culture.NumberFormat);
+            return value.ToString() + "f";
         }
         #endregion
 

@@ -68,7 +68,7 @@ namespace Ela.Compilation
                 case ElaBuiltinKind.Not:
                     cw.Emit(Op.Not);
                     break;
-                case ElaBuiltinKind.Showf:
+                case ElaBuiltinKind.Show:
                     cw.Emit(Op.Show);
                     break;
                 case ElaBuiltinKind.Concat:
@@ -226,7 +226,7 @@ namespace Ela.Compilation
         //Determines the number of built-in parameters based on its kind.
         private int BuiltinParams(ElaBuiltinKind kind)
         {
-            return kind >= ElaBuiltinKind.Showf ? 2 : 1;
+            return kind >= ElaBuiltinKind.ForwardPipe ? 2 : 1;
         }
     }
 }

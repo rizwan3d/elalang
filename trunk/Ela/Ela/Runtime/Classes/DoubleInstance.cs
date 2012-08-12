@@ -7,14 +7,14 @@ namespace Ela.Runtime.Classes
     internal sealed class DoubleInstance : Class
     {
         #region Show
-        internal override string Showf(string format, ElaValue value, ExecutionContext ctx)
+        internal override string Show(ElaValue value, ExecutionContext ctx)
         {
             var d = value.Ref.AsDouble();
 
             if (Double.IsInfinity(d) || Double.IsNaN(d))
-                return value.ToString(format, Culture.NumberFormat);
+                return value.ToString();
             else
-                return value.ToString(format, Culture.NumberFormat) + "d";
+                return value.ToString() + "d";
         }
         #endregion
 

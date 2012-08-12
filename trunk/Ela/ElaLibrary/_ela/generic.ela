@@ -54,13 +54,13 @@ consNameIndex     = __internal api107
 /* Default instances */
 //Only for algebraic, open types are welcome
 instance Show where
-  showf f a 
-    | consInfix a and len == 2 = showf f (consParamValue 0 a) ++ " " 
-                                 ++ consName a ++ " " ++ showf f (consParamValue 1 a)
-    | else = toString <| show (consName a) 0
+  show a 
+    | consInfix a and len == 2 = show (consParamValue 0 a) ++ " " 
+                                 ++ consName a ++ " " ++ show (consParamValue 1 a)
+    | else = toString <| show' (consName a) 0
     where len = consParamNumber a
-          show sb n 
-            | n < len = show (sb +> " " +> showf f (consParamValue n a)) (n+1)
+          show' sb n 
+            | n < len = show' (sb +> " " +> show (consParamValue n a)) (n+1)
             | else = sb
 
 //Only for algebraic, open types are welcome

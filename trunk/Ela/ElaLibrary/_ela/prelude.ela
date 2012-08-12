@@ -136,7 +136,7 @@ instance Eq StringBuilder where
   a <> b = not (a == b)
 
 instance Show StringBuilder where
-  showf _ = toString
+  show = show << toString
 
 /* Ordering */
 type Ordering = EQ | LT | GT
@@ -164,9 +164,9 @@ instance Ord Ordering where
   compare LT GT = LT
 
 instance Show Ordering where
-  showf _ EQ = "EQ"
-  showf _ LT = "LT"
-  showf _ GT = "GT"
+  show EQ = "EQ"
+  show LT = "LT"
+  show GT = "GT"
 
 instance Enum Ordering where
   succ EQ = LT
@@ -394,32 +394,30 @@ instance Cat List where
 
 /* Show */
 class Show(Show) a where 
-  showf _->a->_
-
-show = showf ""
+  show a->_
 
 instance Show Tuple where 
-  showf f (x,) = "(" ++ showf f x ++ ",)"
-  showf f t = toString <| tos "(" 0
+  show (x,) = "(" ++ show x ++ ",)"
+  show t = toString <| tos "(" 0
     where len = length t - 1
           tos sb n 
             | n < len = tos (sbb +> ",") (n+1)
             | else = sbb +> ")"
-            where sbb = sb +> showf f (t:n)
+            where sbb = sb +> show (t:n)
 
 instance Show List where 
-  showf _ [] = "[]"
-  showf f xs = toString <| tos "[" xs
-    where tos sb (x::[]) = sb +> showf f x +> "]"
-          tos sb (x::xs) = tos (sb +> showf f x +> ",") xs
+  show [] = "[]"
+  show xs = toString <| tos "[" xs
+    where tos sb (x::[]) = sb +> show x +> "]"
+          tos sb (x::xs) = tos (sb +> show x +> ",") xs
 
 instance Show Record where 
-  showf f t = toString <| tos "{" 0
+  show t = toString <| tos "{" 0
     where len = length t - 1
           tos sb n 
             | n < len = tos (sbb +> ",") (n+1)
             | else = sbb +> "}"
-            where sbb = sb +> (lang.showRecordKey n t) +> "=" +> showf f (t:n)
+            where sbb = sb +> (lang.showRecordKey n t) +> "=" +> show (t:n)
 
 /* xLike */
 class IntLike a where

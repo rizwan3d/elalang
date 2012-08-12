@@ -3,7 +3,7 @@
   Created in 2012 by Basil Voronkov
 */
 import libDateTime#elalib@dt
-open generic
+open generic format
 
 /* Construction */
 type DateTime = DateTime a # private
@@ -44,7 +44,10 @@ instance Default DateTime where
   default = dt.minDateTime
 
 instance Show DateTime where 
-  showf fmt (DateTime x) = dt.formatToString (force fmt) x
+  show (DateTime x) = dt.formatToString "" x
+
+instance Format DateTime where
+  fmt f x = dt.formatToString (force fmt) x
 
 /* Functions */
 addDates (DateTime x) (DateTime y) = fromTicks <| dt.add (force x) (force y)
