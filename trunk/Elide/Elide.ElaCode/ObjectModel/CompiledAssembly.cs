@@ -13,7 +13,7 @@ namespace Elide.ElaCode.ObjectModel
         {
             Assembly = asm;
             Units = Assembly.EnumerateModules()
-                .Select(n => Assembly.GetModule(n))
+                .Select(n => Assembly.GetModule(Assembly.GetModuleHandle(n)))
                 .Select(m => new CompiledUnit(new VirtualDocument(m.File), m))
                 .ToList();
             var root = Assembly.GetRootModule();

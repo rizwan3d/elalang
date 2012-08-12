@@ -156,7 +156,12 @@ instance Eq Ordering where
   _  == _  = false
  
 instance Ord Ordering where
-  compare x y = compare (toInt x) (toInt y)
+  compare EQ y = y
+  compare GT GT = EQ
+  compare GT _ = GT
+  compare LT LT = EQ
+  compare LT EQ = GT
+  compare LT GT = LT
 
 instance Show Ordering where
   showf _ EQ = "EQ"
@@ -168,7 +173,7 @@ instance Enum Ordering where
   succ LT = GT
   pred GT = LT
   pred LT = EQ
-  enumFrom fst snd = enumFromTo GT fst snd
+  enumFrom = enumFromTo GT
   enumFromTo max fst snd = (map fromInt 
     <| enumFromTo (toInt max) (toInt fst) (toInt snd)) ::: Ordering
 

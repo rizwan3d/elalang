@@ -102,9 +102,7 @@ instance Ix where
 instance Enum where
   succ a = consCreateDefault (consCodeByIndex (typeCode a) (consIndex a + 1))
   pred a = consCreateDefault (consCodeByIndex (typeCode a) (consIndex a - 1))
-  enumFrom fst snd = map (\x -> consCreateDefault (consCodeByIndex tc x)) 
-      [consIndex fst,consIndex snd..typeConsNumber (typeCode fst) - 1]
-    where tc = typeCode fst
+  enumFrom fst snd = enumFromTo <| typeConsNumber (typeCode fst)
   enumFromTo max fst snd = map (\x -> consCreateDefault (consCodeByIndex tc x)) 
       [consIndex fst,consIndex snd..consIndex max]
     where tc = typeCode fst

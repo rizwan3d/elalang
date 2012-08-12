@@ -161,7 +161,6 @@ namespace Ela.Compilation
                 {
                     var hints = Hints.Left;
 
-#if LAZY
                     //Unless somebody explicitly told us to compile everything in a
                     //strict manner, we need to check if we need to create some thunks here.
                     if (!options.Strict)
@@ -179,7 +178,6 @@ namespace Ela.Compilation
                             hints |= Hints.Lazy;
                         }
                     }
-#endif
 
                     CompileDeclaration(b, map, hints);
                 }
