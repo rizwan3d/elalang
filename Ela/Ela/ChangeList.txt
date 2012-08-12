@@ -1,5 +1,6 @@
 0.11.2.0:Release:Release of 0.11.2.0.
-0.11.1.11:New:Now Ela can compile any pattern a lazy pattern.
+0.11.1.12:Fix:Module references weren't always processed correctly in interactive mode.
+0.11.1.11:New:Now Ela can compile any pattern as a lazy pattern.
 0.11.1.10:Fix:A bug fixed in compilation of recursive thunks that could cause VM to crash.
 0.11.1.18:Fix:Multiline string literal wasn't correctly parsed.
 0.11.1.17:Change:Now Ela compiler performs automatic eta expansion for functions defined through partial application of other functions.
