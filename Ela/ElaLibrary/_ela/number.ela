@@ -91,7 +91,7 @@ instance Fractional Single Double where
 instance Integral Int Long where
   quot = __internal quot
   div x y
-    | r < 0 and r*y <> x = r - 1
+    | r < 0 && r*y <> x = r - 1
     | else = r
     where r = x `quot` y
 

@@ -1,14 +1,14 @@
 partial1 {eq} =
     eq (sum 2 3) 5
-  $ eq (sum2 3) 5
-  $ eq (sum3 2) 5
+  `seq` eq (sum2 3) 5
+  `seq` eq (sum3 2) 5
   where sum x y = x + y
         sum2 = sum 2
         sum3 = sum 3
 
 partial2 {eq} =
     eq (((fun 2) 3) 4) 20
-  $ eq (fun 2 3 4) 20
+  `seq` eq (fun 2 3 4) 20
   where fun x y = \z -> z * x + z * y
     
 partial3 {eq} =
@@ -17,8 +17,8 @@ partial3 {eq} =
       f2 = fun 1
   in
     eq ((f1 1) 1) 24
-  $ eq (((f2 2) 3) 4) 10
-  $ eq (f3 7) 30
+  `seq` eq (((f2 2) 3) 4) 10
+  `seq` eq (f3 7) 30
   where fun x y z k = x + y + z + k
 
 partial4 {eq} =
@@ -34,12 +34,12 @@ closure1 {eq} =
 
 flipped1 {eq} = 
     eq (sub 3 2) 1
-  $ eq (flip sub 3 2) (--1)
+  `seq` eq (flip sub 3 2) (--1)
   where sub x y = x - y
 
 flipped2 {eq} = 
     eq (sub 3 2 1) 0
-  $ eq (flip sub 3 2 (--1)) 0
+  `seq` eq (flip sub 3 2 (--1)) 0
   where sub x y z = x - y - z
 
 flipped3 {eq} =  
@@ -47,19 +47,19 @@ flipped3 {eq} =
       res = f xs 
   in 
     eq (res:0) 10
-  $ eq (res:1) 20
-  $ eq (res:2) 30
+  `seq` eq (res:1) 20
+  `seq` eq (res:2) 30
   where fold' [] f = []
         fold' (x::xs) f = f x :: fold' xs f
         f = flip fold' (*10)
 
 partialOperators {eq} =
     eq (add' 7 2) 9
-  $ eq (add2 3) 5
-  $ eq (sub 5 4) 1
-  $ eq (sub2 9) 7
-  $ eq (div 6 3) 2
-  $ eq (div2 2) 4
+  `seq` eq (add2 3) 5
+  `seq` eq (sub 5 4) 1
+  `seq` eq (sub2 9) 7
+  `seq` eq (div 6 3) 2
+  `seq` eq (div2 2) 4
   where add' = (+)
         add2 = (+2)
         sub = (-)
@@ -69,19 +69,19 @@ partialOperators {eq} =
 
 partialOperators2 {eq} =
     eq ((^^^5) 10) 5
-  $ eq ((5^^^) 10) (--5)
+  `seq` eq ((5^^^) 10) (--5)
   where (^^^) x y = x - y
 
 funcTok {eq} =
     eq ((`sub` 8) 20) 12
-  $ eq ((sub 8) 20) (--12)
-  $ eq ((8 `sub`) 20) (--12)
+  `seq` eq ((sub 8) 20) (--12)
+  `seq` eq ((8 `sub`) 20) (--12)
   where sub x y = x - y
 
 postfixOperators {eq} =
     eq ((3-) 2) 1
-  $ eq ((10/) 2) 5
-  $ eq (12 ^^^) 24
+  `seq` eq ((10/) 2) 5
+  `seq` eq (12 ^^^) 24
   where ^^^ x = x + x
 
 local1 {eq} = 
@@ -96,7 +96,7 @@ local2 {eq} =
         
 local3 {eq} = 
     eq (add 3) 5
-  $ eq (div 6) 3
+  `seq` eq (div 6) 3
   where y = 2
         add x = x + y
         div x = x / y
@@ -108,7 +108,7 @@ local4 {eq} =
 
 infix1 {eq} =
     eq (2 `add` 3) 5
-  $ eq (8 `sub` 9) (--1)
+  `seq` eq (8 `sub` 9) (--1)
   where add x y = x + y
         sub x y = x - y
 
@@ -119,9 +119,9 @@ infix2 {eq} =
 
 postfix1 {eqt,eqf} =
     eqt (2 `even`)
-  $ eqf (5 `even`)
-  $ eqt (3 `odd`)
-  $ eqf (10 `odd`)
+  `seq` eqf (5 `even`)
+  `seq` eqt (3 `odd`)
+  `seq` eqf (10 `odd`)
   where even x = x % 2 == 0
         odd x = x % 2 <> 0
 
@@ -130,7 +130,7 @@ postfix2 {eq} =
       sub' = 4 `sub`
   in 
     eq (add' 3) 5
-  $ eq (sub' 3) 1
+  `seq` eq (sub' 3) 1
   where add x y = x + y
         sub x y = x - y
 
@@ -159,11 +159,11 @@ mutualRecur {eq} =
       mskip (_::xs) = mtake xs; mskip [] = []
   in    
   let res = mtake [1,2,3,4] 
-  in eq (res:0) 1 $ eq (res:1) 3
+  in eq (res:0) 1 `seq` eq (res:1) 3
 
 comparision {eq} =
     eq fun1 fun2
-  $ eq (getFun ()) (getFun ())
+  `seq` eq (getFun ()) (getFun ())
   where getFun () = \x y -> x + y
         (fun1,fun2) = (getFun (),getFun ())
 

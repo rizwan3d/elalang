@@ -7,12 +7,12 @@ open console
 //and the rightmost argument should be a list
 list1 = 1::2::3::[]
 
-_ = writen list1 //A handy thing is that list is automatically serialized to string
+_ = writen <| show list1 //A handy thing is that list is automatically serialized to string
 
 //A more readable way to construct lists is to use a list literal
 list2 = [1,2,3]
 
-_ = writen list2 //The result is the same
+_ = writen <| show list2 //The result is the same
 
 //Lists in Ela are immutable and are always compared using structured equality
 //We have constructed two different lists - list1 and list2 - however they have the same
@@ -22,13 +22,13 @@ _ = writen ("The lists are equal? " ++ show (list1 == list2))
 //One can construct lists using ranges
 list3 = [1..10]
 
-_ = writen list3 //Here we have a list of integers from 1 to 10
+_ = writen <| show list3 //Here we have a list of integers from 1 to 10
 
 //If you specify a second element in range than a range will automatically
 //calculate the rest elements
 list4 = [1,3..10]
 
-_ = writen list4 //Prints [1,3,5,7,9]
+_ = writen <| show list4 //Prints [1,3,5,7,9]
 
 //Lists are immutable, therefore you can't change lists in place. In order to add an
 //element to the head of the list you can use a (::) operator, in order to add an 
@@ -37,8 +37,8 @@ _ = writen list4 //Prints [1,3,5,7,9]
 list5 = 0 :: list4  //Creates a new list
 list6 = list4 ++ [10] //Creates a new list
 
-_ = writen list5 //Prints [0,1,3,5,7,9]
-_ = writen list6 //Prints [1,3,5,7,9,10]
+_ = writen <| show list5 //Prints [0,1,3,5,7,9]
+_ = writen <| show list6 //Prints [1,3,5,7,9,10]
 
 //Lists can be deconstructed using pattern matching, head/tail pattern. Head is the first
 //element in a list, tail is the rest of the list without the first element.

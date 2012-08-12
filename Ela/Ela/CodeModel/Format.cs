@@ -16,8 +16,6 @@ namespace Ela.CodeModel
 		{
 			switch (op)
 			{
-				case ElaOperator.BooleanAnd: return " and ";
-				case ElaOperator.BooleanOr: return " or ";
 				case ElaOperator.Sequence: return "$";
 				default:
 					return String.Empty;

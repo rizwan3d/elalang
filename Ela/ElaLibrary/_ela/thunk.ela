@@ -34,7 +34,7 @@ forceRecord r = forceTuple r
 forceTuple tup = force 0
   where len = length tup 
         force i | i == len = tup
-                | else = forceAll (tup:i) $ force (i+1)
+                | else = forceAll (tup:i) `seq` force (i+1)
 
 internalLazyList # private
 internalLazyList = __internal api10

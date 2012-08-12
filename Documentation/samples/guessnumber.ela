@@ -5,20 +5,20 @@ rnd' v = rnd s 1 v where s = milliseconds <| datetime.now ()
 
 //Implementation of a game
 start () = match bound () with
-                 Some v = printfn "Guess a number from 1 to {0}." v $ guess <| rnd' v
+                 Some v = printfn "Guess a number from 1 to {0}." v `seq` guess <| rnd' v
                  None   = start ()
 
-bound () = writen "What's the upper bound?" $ bound' <| readStr <| readn ()
-           where bound' v | v <= 0 = writen "Bound should be greater than 0." $ None
+bound () = writen "What's the upper bound?" `seq` (bound' <| readStr <| readn ())
+           where bound' v | v <= 0 = writen "Bound should be greater than 0." `seq` None
                           | else   = Some v
                           
-success v =  writen "Correct! Do you want to continue? (Y/N)" $ ask ()
+success v =  writen "Correct! Do you want to continue? (Y/N)" `seq` ask ()
              where ask () = read <| upper <| readn ()
                    read "Y" = start ()
                    read "N" = writen "Bye!"
-                   read x   = writen "Say what?" $ ask ()
+                   read x   = writen "Say what?" `seq` ask ()
                    
-failed v n = printfn "No, this is not {0}. {1}" v hint $ guess n
+failed v n = printfn "No, this is not {0}. {1}" v hint `seq` guess n
              where hint | v < n = "Try bigger."
                         | else  = "Try smaller."
                         

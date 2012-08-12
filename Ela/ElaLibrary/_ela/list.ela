@@ -200,7 +200,7 @@ tails (_::xs)@ys = ys :: tails xs
 tails [] =  [[]]
 
 /* Predicates */
-isPrefixOf (x::xs) (y::ys) = x == y and isPrefixOf xs ys
+isPrefixOf (x::xs) (y::ys) = x == y && isPrefixOf xs ys
 isPrefixOf [] _ = true
 isPrefixOf _  [] = false
 
@@ -214,7 +214,7 @@ elem x = any (==x)
 notElem x = all (<>x)
 
 elemBy _  _ [] = false
-elemBy eq y (x::xs) = y `eq` x or elemBy eq y xs
+elemBy eq y (x::xs) = y `eq` x || elemBy eq y xs
 
 filter' p (x::xs) 
   | p x  = x :: (& filter' p xs)

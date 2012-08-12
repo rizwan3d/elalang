@@ -3,11 +3,11 @@
   Created in 2012 by Basil Voronkov
 */
 
-rec f x = f x $ rec f
+rec f x = f x `seq` rec f
 
-rec2 f x y = f x y $ rec2 f
+rec2 f x y = f x y `seq` rec2 f
 
-each f (x::xs) = f x $ each f xs
+each f (x::xs) = f x `seq` each f xs
 each _ []      = ()
 
 loop f (x::xs) 

@@ -237,9 +237,6 @@
   <data name="ExpectedSquareBrace" xml:space="preserve">
     <value>Invalid list literal, a brace '[' or ']' is missing.</value>
   </data>
-  <data name="InvalidAnd" xml:space="preserve">
-    <value>Invalid logical 'and' expression.</value>
-  </data>
   <data name="InvalidApplication" xml:space="preserve">
     <value>Invalid function application syntax.</value>
   </data>
@@ -288,23 +285,14 @@
   <data name="InvalidMemberAccess" xml:space="preserve">
     <value>Invalid member access syntax.</value>
   </data>
-  <data name="InvalidOr" xml:space="preserve">
-    <value>Invalid logical 'or' expression.</value>
-  </data>
   <data name="InvalidParamList" xml:space="preserve">
     <value>Invalid syntax for list or array literal.</value>
-  </data>
-  <data name="InvalidRaise" xml:space="preserve">
-    <value>Invalid syntax for a 'raise' expression.</value>
   </data>
   <data name="InvalidRange" xml:space="preserve">
     <value>Invalid range declaration syntax.</value>
   </data>
   <data name="InvalidRecord" xml:space="preserve">
     <value>Invalid record declaration syntax.</value>
-  </data>
-  <data name="InvalidSequence" xml:space="preserve">
-    <value>Invalid sequencing operation syntax.</value>
   </data>
   <data name="InvalidSimpleExpression" xml:space="preserve">
     <value>Invalid syntax for an expression.</value>

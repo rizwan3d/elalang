@@ -34,8 +34,11 @@ namespace Ela.CodeModel
         Api16,
         
         /* Two arguments */
+        Seq,
         ForwardPipe,
         BackwardPipe,
+        LogicalAnd,
+        LogicalOr,
         Add,
         Subtract,
         Multiply,

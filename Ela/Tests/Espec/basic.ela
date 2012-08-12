@@ -315,10 +315,7 @@ test13 =
     should be "12"
   given 12.2
     when show
-    should be "12.2"
-  given 12.122
-    after showf ".##"
-    should be "12.12"
+    should be "12.2f"
   given true
     when show
     should be "true"
@@ -776,7 +773,7 @@ test24 =
   test "Comprehensions"
   given [x \\ x <- [1..10] | even x]
     should be [2,4,6,8,10]
-  given [x \\ x <- [1..10] | even x and x > 4]
+  given [x \\ x <- [1..10] | even x && x > 4]
     should be [6,8,10]
   given [x \\ x <- [1..5] | x > 2]
     should be [3,4,5]

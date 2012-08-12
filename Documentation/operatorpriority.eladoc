@@ -21,7 +21,6 @@ The following combinations of operator symbols are reserved and cannot be used f
 |`\\` |Comprehension operator 
 |`<-` |Comprehension selector
 |`..` |Ranges
-|`$`  |Sequencing
 |`.`  |Member access
 |`:::` |Context
 
@@ -29,25 +28,28 @@ The following combinations of operator symbols are reserved and cannot be used f
 In Ela operator priority and associativity is controlled by the first symbols in operator identifier. The following table lists all operator 
 priorities in order, starting from the loose operators. A notation `{op}` is used to show that any number (zero or more) of trailing operator 
 symbols is allowed here. For example, priroty of operators `=|` and `=||` is the same. 
-|*Operator* *Symbols* |*Priority* |*Associativity* 
-|`| {op}` | 0 |Left 
-|`& {op}` | 0 |Left 
-|`$ {op}` | 0 |Left
-|`<| {op}` | 1 |Right 
-|`= {op}` | 2 |Left 
-|`< {op}` | 2 |Left 
-|`> {op}` | 2 |Left 
-|`^ {op}` | 3 |Left 
-|`: {op}` | 4 |Right 
-|`+ {op}` | 5 |Left 
-|`- {op}` | 5 |Left 
-|`* {op}` | 6 |Left 
-|`/ {op}` | 6 |Left 
-|`% {op}` | 6 |Left 
-|`<< {op}` | 7 |Right 
-|`>> {op}` | 8 |Left 
-|`~ {op}` | 9 |Left 
-|`-- {op}` | 9 |Left 
-|`! {op}` | 9 |Left 
-|`? {op}` | 9 |Left 
-|`. {op}` | 9 |Left 
+|*Operator Symbols*  |*Priority* |*Associativity* 
+|`<| {op}`           | 0         |Right 
+|`$ {op}`            | 0         |Right 
+|`|> {op}`           | 1         |Left
+|`| {op}`            | 2         |Left 
+|`& {op}`            | 3         |Left 
+|`= {op}`            | 4         |Left 
+|`< {op}`            | 4         |Left 
+|`> {op}`            | 4         |Left 
+|`^ {op}`            | 5         |Left 
+|`:: {op}`           | 6         |Right 
+|`+ {op}`            | 7         |Left 
+|`- {op}`            | 7         |Left 
+|`* {op}`            | 8         |Left 
+|`/ {op}`            | 8         |Left 
+|`% {op}`            | 8         |Left 
+|(infix application) | 9         |Left 
+|`<< {op}`           | 10        |Right 
+|`>> {op}`           | 11        |Left 
+|`: {op}`            | 12        |Right 
+|`~ {op}`            | 12        |Left 
+|`-- {op}`           | 12        |Left 
+|`! {op}`            | 12        |Left 
+|`? {op}`            | 12        |Left 
+|`. {op}`            | 12        |Left 

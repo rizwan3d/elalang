@@ -103,8 +103,8 @@ init = ((),[])
 
 same # private
 same f g
-  | (f is Fun) and (g is Fun) = 
-    funModule f == funModule g and funHandle f == funHandle g
+  | (f is Fun) && (g is Fun) = 
+    funModule f == funModule g && funHandle f == funHandle g
   | else = false
 
 /* Format result as string */
@@ -152,7 +152,7 @@ report_stathtm sb f e (x::xs) = report_stathtm (sb +> (item x)) f e xs
 
 safeShow # private
 safeShow x 
-  | (x is Lazy) and lazy x = showLazy x
+  | (x is Lazy) && lazy x = showLazy x
   | not (evaled x) = "<thunk>"
   | x is Fun = funName x
   | else = show x

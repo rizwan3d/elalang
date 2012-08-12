@@ -43,7 +43,7 @@ report f prf (tests, failed) =
       (formatStr "Executed tests: {0}" (length tests))
       (formatStr "Successful tests: {0}" (length tests - failed))
       (formatStr "Failed tests: {0}" failed)
-  where out v = prf v $ out
+  where out v = prf v `seq` out
         tag' true  = "Success "
         tag' false = "FAILED "
         fmt' i (n, r, m) = formatStr "{0}. {1}: {2} {3}\r\n" i n (tag' r) m

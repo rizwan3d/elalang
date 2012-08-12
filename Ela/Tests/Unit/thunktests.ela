@@ -1,7 +1,7 @@
 simple {eq,eqt} =
     eq (t + 2) 6
-  $ eq t 4
-  $ eqt (t == 4)
+  `seq` eq t 4
+  `seq` eqt (t == 4)
   where t = (& 2 + 2)
      
 lazyList {eqt} =
@@ -10,8 +10,8 @@ lazyList {eqt} =
         lst = make 0
            
 lazyList2 {eqt} =
-    eqt <| (match xs with 1::2::3::_ = true; _ = false;;)
-  $ eqt <| (match xs with 1::2::3::1::2::3::_ = true; _ = false;;)
+  (eqt <| (match xs with 1::2::3::_ = true; _ = false;;))
+  `seq` (eqt <| (match xs with 1::2::3::1::2::3::_ = true; _ = false;;))
   where cycle xs = xs ++ (& cycle xs)
         xs = cycle [1,2,3]
 
@@ -24,82 +24,82 @@ fixPoint {eq} =
 
 typeCheck {eqt} =
     eqt (t is Int)
-  $ eqt (t2 is Int)
+  `seq` eqt (t2 is Int)
   where t = (& 2 * 2) + 0
         t2 = & 2
 
 lazyEquals {eqt} =
     eqt (thunk1 == 4)
-  $ eqt (thunk1 <> 5)
-  $ eqt (thunk2 == 5)
-  $ eqt (thunk2 <> 4)
+  `seq` eqt (thunk1 <> 5)
+  `seq` eqt (thunk2 == 5)
+  `seq` eqt (thunk2 <> 4)
   where thunk1 = (& 2 + 2)
         thunk2 = (& add 2 3)
              where add x y = x + y
 
 lazyCompare {eqt,eqf} =
     eqt (thunk1 > 3)
-  $ eqf (thunk1 > 4)
-  $ eqt (thunk1 <= 4)
-  $ eqt (thunk2 >= 5)
-  $ eqf (thunk2 > 6)
-  $ eqt (thunk2 < 6)
+  `seq` eqf (thunk1 > 4)
+  `seq` eqt (thunk1 <= 4)
+  `seq` eqt (thunk2 >= 5)
+  `seq` eqf (thunk2 > 6)
+  `seq` eqt (thunk2 < 6)
   where thunk1 = (& 2 + 2)
         thunk2 = (& add 2 3)
              where add x y = x + y
 
 lazyMath {eq,neq} =
     eq (thunk1 + 2) 6
-  $ eq (thunk1 - 2) 2
-  $ eq (thunk1 * 3) 12
-  $ eq (thunk1 / 2) 2
-  $ eq (thunk1 ** 2) 16
-  $ eq (thunk1 % 3) 1
-  $ eq (thunk2 + 2) 7
-  $ eq (thunk2 - 2) 3
-  $ eq (thunk2 * 3) 15
-  $ neq (thunk2 / 2) 2
-  $ eq (thunk2 ** 2) 25
-  $ eq (thunk2 % 2) 1
+  `seq` eq (thunk1 - 2) 2
+  `seq` eq (thunk1 * 3) 12
+  `seq` eq (thunk1 / 2) 2
+  `seq` eq (thunk1 ** 2) 16
+  `seq` eq (thunk1 % 3) 1
+  `seq` eq (thunk2 + 2) 7
+  `seq` eq (thunk2 - 2) 3
+  `seq` eq (thunk2 * 3) 15
+  `seq` neq (thunk2 / 2) 2
+  `seq` eq (thunk2 ** 2) 25
+  `seq` eq (thunk2 % 2) 1
   where thunk1 = (& 2 + 2)
         thunk2 = (& add 2 3)
              where add x y = x + y
 
 lazyBits {eq} = 
     eq ((& 2) ||| (& 12)) 14
-  $ eq ((& 2) &&& (& 12)) 0
-  $ eq ((& 2) ^^^ (& 12)) 14
-  $ eq ( (& (& 128) <<< (& 8)) ||| (& 4) ) 32772
-  $ eq (& (& 32772) >>> (& 8)) 128 
+  `seq` eq ((& 2) &&& (& 12)) 0
+  `seq` eq ((& 2) ^^^ (& 12)) 14
+  `seq` eq ( (& (& 128) <<< (& 8)) ||| (& 4) ) 32772
+  `seq` eq (& (& 32772) >>> (& 8)) 128 
 
 lazyElem {eq} =
     eq ( fst (& (1,2)) ) 1
-  $ eq ( fst (& ((&12),2)) ) 12
-  $ eq ( snd (& (2,3)) ) 3
-  $ eq ( snd (& ((&2),(&3))) ) 3
+  `seq` eq ( fst (& ((&12),2)) ) 12
+  `seq` eq ( snd (& (2,3)) ) 3
+  `seq` eq ( snd (& ((&2),(&3))) ) 3
 
 lazyConcat {eq} =
     eq ((show <| force thunk1) ++ "str") "4str"
-  $ eq ((show <| force thunk2) ++ "str") "5str"
+  `seq` eq ((show <| force thunk2) ++ "str") "5str"
   where thunk1 = (& 2 + 2)
         thunk2 = (& add 2 3)
              where add x y = x + y
 
 lazyConcat2 {eq} =
     eq ( (& 'c') ++ (& 'a') ) "ca"
-  $ eq ('c' ++ (& 'a') ) "ca"
-  $ eq ( (&'c') ++ 'a' ) "ca"
+  `seq` eq ('c' ++ (& 'a') ) "ca"
+  `seq` eq ( (&'c') ++ 'a' ) "ca"
 
 lazyBool {eqt} =
-    eqt <| not (thunk1 == 5)
-  $ eqt <| not (thunk2 == 4)
+  (eqt <| not (thunk1 == 5))
+  `seq` (eqt <| not (thunk2 == 4))
   where thunk1 = (& 2 + 2)
         thunk2 = (& add 2 3)
              where add x y = x + y
 
 lazyFunc {eq} =
     eq (lf 2 3) 5
-  $ eq (lf2 3) (--3)
+  `seq` eq (lf2 3) (--3)
   where lf = (& \x y -> x + y)
         lf2 = (& \x -> --x)
 
@@ -109,14 +109,14 @@ lazyRecord {eq} =
 
 lazySuccPred {eq} = 
     eq (succ thunk1) 5
-  $ eq (pred thunk2) 4
+  `seq` eq (pred thunk2) 4
   where thunk1 = (& 2 + 2)
         thunk2 = (& add 2 3)
              where add x y = x + y
 
 lazyUnary {eq} = 
     eq (~~~thunk1) (--3)
-  $ eq (--thunk2) (--5)
+  `seq` eq (--thunk2) (--5)
   where thunk1 = (& 1+1)
         thunk2 = (& add 2 3)
              where add x y = x + y
@@ -141,8 +141,8 @@ tupex {eq} =
 
 tupleEq1 {eqt,eqf} = 
     eqt (tup1 <> tup2)
-  $ eqf (tup3 <> tup4)
-  $ eqt (tup5 <> tup3)
+  `seq` eqf (tup3 <> tup4)
+  `seq` eqt (tup5 <> tup3)
   where tup1 = (& (1,2,3) )
         tup2 = (& (3,4,5) )
         tup3 = (1,2,3)
@@ -151,8 +151,8 @@ tupleEq1 {eqt,eqf} =
 
 tupleEq2 {eqt,eqf} = 
     eqf (tup1 == tup2)
-  $ eqt (tup3 == tup4)
-  $ eqf (tup5 == tup3)
+  `seq` eqt (tup3 == tup4)
+  `seq` eqf (tup5 == tup3)
   where tup1 = (& (1,2,3) )
         tup2 = (& (3,4,5) )
         tup3 = (1,2,3)
@@ -161,8 +161,8 @@ tupleEq2 {eqt,eqf} =
            
 tupleAdd {eq} = 
     eq (tup1 + tup2) (4,6,8)
-  $ eq (tup3 + tup4) (2,4,6)
-  $ eq (tup5 + tup3) (4,6,8)
+  `seq` eq (tup3 + tup4) (2,4,6)
+  `seq` eq (tup5 + tup3) (4,6,8)
   where tup1 = (& (1,2,3) )
         tup2 = (& (3,4,5) )
         tup3 = (1,2,3)
@@ -171,8 +171,8 @@ tupleAdd {eq} =
 
 tupleSub {eq} = 
     eq (tup1 - tup2) (--2,--2,--2)
-  $ eq (tup3 - tup4) (0,0,0)
-  $ eq (tup5 - tup3) (2,2,2)
+  `seq` eq (tup3 - tup4) (0,0,0)
+  `seq` eq (tup5 - tup3) (2,2,2)
   where tup1 = (& (1,2,3) )
         tup2 = (& (3,4,5) )
         tup3 = (1,2,3)
@@ -181,8 +181,8 @@ tupleSub {eq} =
 
 tupleGt {eqt,eqf} = 
     eqf (tup1 > tup2)
-  $ eqf (tup3 > tup4)
-  $ eqt (tup5 > tup3)
+  `seq` eqf (tup3 > tup4)
+  `seq` eqt (tup5 > tup3)
   where tup1 = (& (1,2,3) )
         tup2 = (& (3,4,5) )
         tup3 = (1,2,3)
@@ -191,8 +191,8 @@ tupleGt {eqt,eqf} =
 
 tupleLt {eqt,eqf} = 
     eqt (tup1 < tup2)
-  $ eqf (tup3 < tup4)
-  $ eqf (tup5 < tup3)
+  `seq` eqf (tup3 < tup4)
+  `seq` eqf (tup5 < tup3)
   where tup1 = (& (1,2,3) )
         tup2 = (& (3,4,5) )
         tup3 = (1,2,3)
@@ -201,8 +201,8 @@ tupleLt {eqt,eqf} =
 
 tupleConcat {eq} = 
     eq (tup1 ++ tup2) (1,2,3,3,4,5)
-  $ eq (tup3 ++ tup4) (1,2,3,1,2,3)
-  $ eq (tup5 ++ tup3) (3,4,5,1,2,3)
+  `seq` eq (tup3 ++ tup4) (1,2,3,1,2,3)
+  `seq` eq (tup5 ++ tup3) (3,4,5,1,2,3)
   where tup1 = (& (1,2,3) )
         tup2 = (& (3,4,5) )
         tup3 = (1,2,3)
@@ -211,15 +211,15 @@ tupleConcat {eq} =
 
 thunkFun {eq} = 
     eq ((& +) 2 2) 4
-  $ eq ((& add) 2 2) 4
+  `seq` eq ((& add) 2 2) 4
   where add x y = x + y
 
 thunkBoolEq {eqt} = 
     eqt (true == (& true))
-  $ eqt ((& true) == true)
+  `seq` eqt ((& true) == true)
 
 thunkListEq {eqt} = 
     eqt ([1,2,3] == (& [1,2,3]))
-  $ eqt ((& [1,2,3]) == [1,2,3])
-  $ eqt ([& x \\ x <- [1..3]] == [1,2,3])
-  $ eqt ([1,2,3] == [& x \\ x <- [1..3]])
+  `seq` eqt ((& [1,2,3]) == [1,2,3])
+  `seq` eqt ([& x \\ x <- [1..3]] == [1,2,3])
+  `seq` eqt ([1,2,3] == [& x \\ x <- [1..3]])

@@ -29,19 +29,37 @@ namespace Ela.Compilation
                 {
                     var k = (ElaBuiltinKind)sv.Data;
 
-                    if (k == ElaBuiltinKind.BackwardPipe && v.Parameters.Count == 2)
+                    if (v.Parameters.Count == 2)
                     {
-                        var fc = new ElaJuxtaposition { Target = v.Parameters[0] };
-                        fc.SetLinePragma(v.Line, v.Column);
-                        fc.Parameters.Add(v.Parameters[1]);
-                        return CompileFunctionCall(fc, map, hints);
-                    }
-                    else if (k == ElaBuiltinKind.ForwardPipe && v.Parameters.Count == 2)
-                    {
-                        var fc = new ElaJuxtaposition { Target = v.Parameters[1] };
-                        fc.SetLinePragma(v.Line, v.Column);
-                        fc.Parameters.Add(v.Parameters[0]);
-                        return CompileFunctionCall(fc, map, hints);
+                        if (k == ElaBuiltinKind.BackwardPipe)
+                        {
+                            var fc = new ElaJuxtaposition { Target = v.Parameters[0] };
+                            fc.SetLinePragma(v.Line, v.Column);
+                            fc.Parameters.Add(v.Parameters[1]);
+                            return CompileFunctionCall(fc, map, hints);
+                        }
+                        else if (k == ElaBuiltinKind.ForwardPipe)
+                        {
+                            var fc = new ElaJuxtaposition { Target = v.Parameters[1] };
+                            fc.SetLinePragma(v.Line, v.Column);
+                            fc.Parameters.Add(v.Parameters[0]);
+                            return CompileFunctionCall(fc, map, hints);
+                        }
+                        else if (k == ElaBuiltinKind.LogicalOr)
+                        {
+                            CompileLogicalOr(v, v.Parameters[0], v.Parameters[1], map, hints);
+                            return ed;
+                        }
+                        else if (k == ElaBuiltinKind.LogicalAnd)
+                        {
+                            CompileLogicalAnd(v, v.Parameters[0], v.Parameters[1], map, hints);
+                            return ed;
+                        }
+                        else if (k == ElaBuiltinKind.Seq)
+                        {
+                            CompileSeq(v, v.Parameters[0], v.Parameters[1], map, hints);
+                            return ed;
+                        }
                     }
                 }
             }

@@ -1,16 +1,16 @@
 fromLiteral {eq} =
   let rec' = {lang="Ela", dev="Basil"} in
     eq (length rec') 2
-  $ eq (rec':0) "Ela"
-  $ eq (rec':1) "Basil"
-  $ eq rec'.lang "Ela" 
-  $ eq rec'.dev "Basil"
-  $ eq (getField "lang" rec') "Ela"
-  $ eq (getField "dev" rec') "Basil"
+  `seq` eq (rec':0) "Ela"
+  `seq` eq (rec':1) "Basil"
+  `seq` eq rec'.lang "Ela" 
+  `seq` eq rec'.dev "Basil"
+  `seq` eq (getField "lang" rec') "Ela"
+  `seq` eq (getField "dev" rec') "Basil"
     
 fromLiteral2 {eq} = 
     eq (getField "font-color" rec') "red"
-  $ eq (getField "text-decoration" rec') "none"
+  `seq` eq (getField "text-decoration" rec') "none"
   where rec' = {"font-color"="red","text-decoration"="none"}
 
 lightRec {eq} = 
@@ -26,14 +26,14 @@ concat {eq} =
 
 recordAsTuple {eq} =
     eq x 1
-  $ eq y 2
-  $ eq z 3
+  `seq` eq y 2
+  `seq` eq z 3
   where r = {x=1,y=2,z=3}
         (x,y,z) = r
 
 equals {eq,neq} =
     eq r1 r2
-  $ neq r1 r3
+  `seq` neq r1 r3
   where r1 = {x=1,y="word",z='c'}
         r2 = {x=1,y="word",z='c'}
         r3 = {x=1,y="WORD",z='C'}

@@ -23,8 +23,8 @@ Changes a value inside a cell cl to a value x.
 #valueof cl
 Unwraps a value from reference cell cl. For example, the following code evaluates to `12`: 
 >>>r = ref 10
->>>mutate ((valueof r) + 2) r $
->>> valueof r
+>>>mutate ((valueof r) + 2) r
+>>>valueof r
 
 #:= c v
 An assignment operator for a reference cell which provides some syntax sugar for value mutation. 

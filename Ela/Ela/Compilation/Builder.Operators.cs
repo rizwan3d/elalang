@@ -44,63 +44,84 @@ namespace Ela.Compilation
 
         //Compile one of three binary operators
 		private void CompileBinary(ElaBinary bin, LabelMap map, Hints hints)
-		{
-		    var op = bin.Operator;
-			var exitLab = default(Label);
-			var termLab = default(Label);
+        {
+            var op = bin.Operator;
             var ut = hints;
-
-            if ((ut & Hints.Tail) == Hints.Tail)
-                ut ^= Hints.Tail;
 
             if ((ut & Hints.Left) == Hints.Left)
                 ut ^= Hints.Left;
 
-			switch (op)
-			{
-                //Logical AND is executed in a lazy manner
-				case ElaOperator.BooleanAnd:
-					CompileExpression(bin.Left, map, ut, bin);
-					termLab = cw.DefineLabel();
-					exitLab = cw.DefineLabel();
-					cw.Emit(Op.Brfalse, termLab);
-                    CompileExpression(bin.Right, map, ut, bin);
-					cw.Emit(Op.Br, exitLab);
-					cw.MarkLabel(termLab);
-					cw.Emit(Op.PushI1_0);
-					cw.MarkLabel(exitLab);
-					cw.Emit(Op.Nop);
-					break;
-                //Logical OR is executed in a lazy manner
-                case ElaOperator.BooleanOr:
-                    CompileExpression(bin.Left, map, ut, bin);
-					termLab = cw.DefineLabel();
-					exitLab = cw.DefineLabel();
-					cw.Emit(Op.Brtrue, termLab);
-                    CompileExpression(bin.Right, map, ut, bin);
-					cw.Emit(Op.Br, exitLab);
-					cw.MarkLabel(termLab);
-					cw.Emit(Op.PushI1_1);
-					cw.MarkLabel(exitLab);
-					cw.Emit(Op.Nop);
-					break;
-                //Sequence operators forces left expression, pops it and yields a value
-                //of a right expression. Evaliation is done in a strict order.
+            switch (op)
+            {
                 case ElaOperator.Sequence:
-                    CompileExpression(bin.Left, map, Hints.None, bin);
-					cw.Emit(Op.Force);
-					cw.Emit(Op.Pop);
-                    var ut2 = hints;
 
-                    if ((ut2 & Hints.Left) == Hints.Left)
-                        ut2 ^= Hints.Left;
-
-                    CompileExpression(bin.Right, map, ut2, bin);
-					break;
-			}
+                    break;
+            }
 
             if ((hints & Hints.Left) == Hints.Left)
                 AddValueNotUsed(bin);
-		}
+        }
+
+        //Compiles a sequencing operator
+        private void CompileSeq(ElaExpression parent, ElaExpression left, ElaExpression right, LabelMap map, Hints hints)
+        {
+            var ut = hints;
+
+            if ((ut & Hints.Left) == Hints.Left)
+                ut ^= Hints.Left;
+
+            //Sequence operators forces left expression, pops it and yields a value
+            //of a right expression. Evaliation is done in a strict order.
+            CompileExpression(left, map, Hints.None, parent);
+            cw.Emit(Op.Force);
+            cw.Emit(Op.Pop);
+            CompileExpression(right, map, ut, parent);
+        }
+
+        //Compiles logical AND operator in a lazy manner.
+        private void CompileLogicalAnd(ElaExpression parent, ElaExpression left, ElaExpression right, LabelMap map, Hints hints)
+        {
+            //Logical AND is executed in a lazy manner
+            var exitLab = default(Label);
+            var termLab = default(Label);
+            var ut = hints;
+
+            if ((ut & Hints.Left) == Hints.Left)
+                ut ^= Hints.Left;
+
+            CompileExpression(left, map, ut, parent);
+            termLab = cw.DefineLabel();
+            exitLab = cw.DefineLabel();
+            cw.Emit(Op.Brfalse, termLab);
+            CompileExpression(right, map, ut, parent);
+            cw.Emit(Op.Br, exitLab);
+            cw.MarkLabel(termLab);
+            cw.Emit(Op.PushI1_0);
+            cw.MarkLabel(exitLab);
+            cw.Emit(Op.Nop);
+        }
+
+        //Compiles logical OR operator in a lazy manner.
+        private void CompileLogicalOr(ElaExpression parent, ElaExpression left, ElaExpression right, LabelMap map, Hints hints)
+        {
+            //Logical OR is executed in a lazy manner
+            var exitLab = default(Label);
+            var termLab = default(Label);
+            var ut = hints;
+
+            if ((ut & Hints.Left) == Hints.Left)
+                ut ^= Hints.Left;
+
+            CompileExpression(left, map, ut, parent);
+            termLab = cw.DefineLabel();
+            exitLab = cw.DefineLabel();
+            cw.Emit(Op.Brtrue, termLab);
+            CompileExpression(right, map, ut, parent);
+            cw.Emit(Op.Br, exitLab);
+            cw.MarkLabel(termLab);
+            cw.Emit(Op.PushI1_1);
+            cw.MarkLabel(exitLab);
+            cw.Emit(Op.Nop);
+        }
 	}
 }
