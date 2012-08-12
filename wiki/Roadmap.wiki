@@ -7,7 +7,7 @@ This article contains a roadmap for the upcoming versions of Ela Platform.
 
 August 2012
 
-  * Support for lazy tuple and lazy record patterns.
+  * Support for lazy patterns.
   * Support for overloading class functions by return type.
   * Use constants as well as function as class members.
   * Performance optimizations for algebraic types construction.
