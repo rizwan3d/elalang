@@ -3,10 +3,10 @@ open console imperative char cell
 //Implementation of HQ9+ interpreter
 eval src = eval' src
       where eval' [] = ()
-            eval' (x::xs) | be 'H' = h! $ eval' xs
-                          | be 'Q' = q! $ eval' xs
-                          | be '9' = n! $ eval' xs
-                          | be '+' = p! $ eval' xs
+            eval' (x::xs) | be 'H' = h! `seq` eval' xs
+                          | be 'Q' = q! `seq` eval' xs
+                          | be '9' = n! `seq` eval' xs
+                          | be '+' = p! `seq` eval' xs
                           | else = fail ("Unrecognized " ++ x)
                           where rf = ref 0
                                 be c = upper x == c
@@ -16,10 +16,10 @@ eval src = eval' src
                                 n () = bottles [99,98..1]
                                   where bottles [] = ()
                                         bottles (x::xs) = rec write 
-                                          x " bottles of beer of the wall\r\n"
-                                          x " bottles of beer\r\n"
+                                          (show x) " bottles of beer of the wall\r\n"
+                                          (show x) " bottles of beer\r\n"
                                           "Take one down, pass it around\r\n"
-                                          $ bottles xs
+                                          `seq` bottles xs
 
 //Let's evaluate the main program in HQ9+ 
 eval "HQ9+"

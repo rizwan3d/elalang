@@ -48,6 +48,9 @@ namespace Ela
                 case "getfield": return ElaBuiltinKind.GetValue;
                 case "isfield": return ElaBuiltinKind.HasField;
                 case "getvaluer": return ElaBuiltinKind.GetValueR;
+                case "and": return ElaBuiltinKind.LogicalAnd;
+                case "or": return ElaBuiltinKind.LogicalOr;
+                case "seq": return ElaBuiltinKind.Seq;
 
                 /* infrastructure */
                 case "genmaxbound": return ElaBuiltinKind.GenMaxBound;

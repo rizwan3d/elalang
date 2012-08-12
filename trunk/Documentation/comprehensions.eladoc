@@ -16,7 +16,7 @@ multiply each element by two and compile a new list with the result:
 Guard clause is not mandatory and can be omitted: 
 >>>[x * 2 \\ x <- [1..10]]
 You can generate a list based on several inputs like so: 
->>>[x * y \\ x <- [10,9..1], y <- [1..10] | x % 2 == 0 and x > 5]
+>>>[x * y \\ x <- [10,9..1], y <- [1..10] | x % 2 == 0 && x > 5]
 Guards can be attached to each selector in comprehension. You can also use pattern matching in selectors and reference names 
 declared in preceding selectors: 
 >>>[x * y \\ x <- [10,9..1] | x % 2 == 0, y <- [x..10] | y > 5]

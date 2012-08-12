@@ -1,3 +1,6 @@
+0.11.2.4:Change:Built-in sequencing operator 'seq' is decomissioned and is now replaced with a regular function.
+0.11.2.3:Change:Operator priority is corrected for better convinience.
+0.11.2.2:Change:Built-in logical operators 'and'/'or' are decomissioned and are now replaced with regular functions.
 0.11.2.1:Change:A behavior of 'Show' op code has changed; now it doesn't support a format string.
 0.11.2.0:Release:Release of 0.11.2.0.
 0.11.1.12:Fix:Module references weren't always processed correctly in interactive mode.

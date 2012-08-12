@@ -79,14 +79,9 @@ namespace Ela.Parsing
                 case "ImportName": return ElaParserError.InvalidInclude;
 				case "Qualident": return ElaParserError.InvalidInclude;
 				case "IfExpr": return ElaParserError.InvalidIf;
-				case "RaiseExpr": return ElaParserError.InvalidRaise;
 				case "FailExpr": return ElaParserError.InvalidFail;
 				case "TryExpr": return ElaParserError.InvalidTry;
-				case "OrExpr": return ElaParserError.InvalidOr;
-				case "AndExpr": return ElaParserError.InvalidAnd;
-                case "OpExpr0": return ElaParserError.InvalidOperation;
-				case "OpExpr1": return ElaParserError.InvalidOperation;
-                case "OpExpr1b": return ElaParserError.InvalidOperation;
+                case "OpExpr1": return ElaParserError.InvalidOperation;
                 case "OpExpr2": return ElaParserError.InvalidOperation;
                 case "OpExpr3": return ElaParserError.InvalidOperation;
                 case "OpExpr4": return ElaParserError.InvalidOperation;
@@ -94,10 +89,13 @@ namespace Ela.Parsing
                 case "OpExpr6": return ElaParserError.InvalidOperation;
                 case "OpExpr7": return ElaParserError.InvalidOperation;
                 case "OpExpr8": return ElaParserError.InvalidOperation;
-				case "InfixExpr": return ElaParserError.InvalidInfix;
+                case "OpExpr9": return ElaParserError.InvalidOperation;
+                case "OpExpr10": return ElaParserError.InvalidOperation;
+                case "OpExpr11": return ElaParserError.InvalidOperation;
+                case "OpExpr12": return ElaParserError.InvalidOperation;
+                case "InfixExpr": return ElaParserError.InvalidInfix;
 				case "Application": return ElaParserError.InvalidApplication;
 				case "AccessExpr": return ElaParserError.InvalidMemberAccess;
-				case "BinaryExpr": return ElaParserError.InvalidSequence;
 				case "LazyExpr": return ElaParserError.InvalidLazy;
 				case "ComprehensionExpr": return ElaParserError.InvalidComprehension;
 				case "ComprehensionEntry": return ElaParserError.InvalidComprehension;
@@ -119,7 +117,6 @@ namespace Ela.Parsing
 				case Parser._realTok: return ElaParserError.ExpectedRealToken;
 				case Parser._stringTok: return ElaParserError.ExpectedStringToken;
 				case Parser._charTok: return ElaParserError.ExpectedCharToken;
-                case Parser._operatorTok0:
                 case Parser._operatorTok1:
 				case Parser._operatorTok2:
 				case Parser._operatorTok3:
@@ -128,7 +125,10 @@ namespace Ela.Parsing
 				case Parser._operatorTok6:
                 case Parser._operatorTok7:
                 case Parser._operatorTok8:
-                case Parser._operatorTok9: 
+                case Parser._operatorTok9:
+                case Parser._operatorTok10:
+                case Parser._operatorTok11:
+                case Parser._operatorTok12:                 
                     return ElaParserError.ExpectedOperatorToken;
 				case Parser._LBRA: return ElaParserError.ExpectedCurlyBrace;
 				case Parser._RBRA: return ElaParserError.ExpectedCurlyBrace;

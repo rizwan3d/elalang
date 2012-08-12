@@ -187,7 +187,7 @@ namespace Ela.Parsing
 
 		// = 214,
 
-		InvalidRaise = 215,
+		// = 215,
 
 		InvalidLazy = 216,
 
@@ -263,9 +263,9 @@ namespace Ela.Parsing
 
         InvalidHeader = 252,
 
-		InvalidOr = 253,
+		// = 253,
 
-		InvalidAnd = 254,
+		// = 254,
 
         InvalidAs = 255,
 
@@ -291,7 +291,7 @@ namespace Ela.Parsing
 
 		InvalidApplication = 266,
 
-		InvalidSequence = 267,
+		// = 267,
 
 		InvalidComprehension = 268,
 

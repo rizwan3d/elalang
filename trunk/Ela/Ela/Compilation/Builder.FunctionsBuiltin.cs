@@ -40,12 +40,56 @@ namespace Ela.Compilation
         {
             switch (kind)
             {
+                case ElaBuiltinKind.Seq:
+                    cw.Emit(Op.Force);
+                    cw.Emit(Op.Pop);
+                    break;
                 case ElaBuiltinKind.ForwardPipe:
                     cw.Emit(Op.Swap);
                     cw.Emit(Op.Call);
                     break;
                 case ElaBuiltinKind.BackwardPipe:
                     cw.Emit(Op.Call);
+                    break;
+                case ElaBuiltinKind.LogicalOr:
+                    {
+                        var left = AddVariable();
+                        var right = AddVariable();
+                        PopVar(left);
+                        PopVar(right);
+                        
+                        PushVar(left);
+                        var termLab = cw.DefineLabel();
+                        var exitLab = cw.DefineLabel();
+                        cw.Emit(Op.Brtrue, termLab);
+
+                        PushVar(right);
+                        cw.Emit(Op.Br, exitLab);
+                        cw.MarkLabel(termLab);
+                        cw.Emit(Op.PushI1_1);
+                        cw.MarkLabel(exitLab);
+                        cw.Emit(Op.Nop);
+                    }
+                    break;
+                case ElaBuiltinKind.LogicalAnd:
+                    {
+                        var left = AddVariable();
+                        var right = AddVariable();
+                        PopVar(left);
+                        PopVar(right);
+                        
+                        PushVar(left);
+                        var termLab = cw.DefineLabel();
+                        var exitLab = cw.DefineLabel();
+                        cw.Emit(Op.Brfalse, termLab);
+
+                        PushVar(right);
+                        cw.Emit(Op.Br, exitLab);
+                        cw.MarkLabel(termLab);
+                        cw.Emit(Op.PushI1_0);
+                        cw.MarkLabel(exitLab);
+                        cw.Emit(Op.Nop);
+                    }
                     break;
                 case ElaBuiltinKind.Head:
                     cw.Emit(Op.Head);
@@ -226,7 +270,7 @@ namespace Ela.Compilation
         //Determines the number of built-in parameters based on its kind.
         private int BuiltinParams(ElaBuiltinKind kind)
         {
-            return kind >= ElaBuiltinKind.ForwardPipe ? 2 : 1;
+            return kind >= ElaBuiltinKind.Seq ? 2 : 1;
         }
     }
 }

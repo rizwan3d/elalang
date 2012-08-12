@@ -6,10 +6,6 @@ namespace Ela.CodeModel
 	{
 		None,
 
-		BooleanAnd,
-
-		BooleanOr,
-
 		Sequence
 	}
 }

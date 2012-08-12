@@ -22,6 +22,10 @@ type Bool
 
 not  = __internal not
 
+(&&) = __internal and
+
+(||) = __internal or
+
 type Char
   deriving Eq Ord Show Cat
 
@@ -131,8 +135,8 @@ instance StringLike StringBuilder where
 
 instance Eq StringBuilder where
   (SB a b) == (SB c d) = 
-    typeCode a == typeCode c and a == c and 
-    typeCode b == typeCode d and b == d
+    typeCode a == typeCode c && a == c && 
+    typeCode b == typeCode d && b == d
   a <> b = not (a == b)
 
 instance Show StringBuilder where
@@ -245,9 +249,9 @@ class Ord(Ord) a where
 instance Ord where
   x > y = compare x y == GT
   x < y = compare x y == LT
-  x >= y = z == GT or z == EQ
+  x >= y = z == GT || z == EQ
     where z = compare x y
-  x <= y = z == LT or z == EQ
+  x <= y = z == LT || z == EQ
     where z = compare x y
   compare x y 
     | x == y = EQ 
@@ -582,6 +586,7 @@ instance StringLike Char where
 
 /* Misc */
 force = __internal force
+seq   = __internal seq
 undefined = & fail "Undefined."
 
 /* Combinators */
@@ -615,9 +620,9 @@ listReverse # private
 listReverse = __internal api12
 
 eqRecord # private
-eqRecord rec1 rec2 = len == length rec2 and eq 0
+eqRecord rec1 rec2 = len == length rec2 && eq 0
   where len = length rec1
-        eq n | n < len = if n!!rec1 == n!!rec2 and rec1:n == rec2:n then eq (n+1) else false
+        eq n | n < len = if n!!rec1 == n!!rec2 && rec1:n == rec2:n then eq (n+1) else false
              | else = true
 
 eqLists # private

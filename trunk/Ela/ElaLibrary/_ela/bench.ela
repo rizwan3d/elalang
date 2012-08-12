@@ -15,8 +15,8 @@ type BenchItem = BenchItem name runs fun arg
 benchmark name n f arg xs = BenchItem name n f arg :: xs
 
 runBenches xs = 
-  cycle void () 10 $
-  mainRun rxs $ 
+  cycle void () 10 `seq`
+  mainRun rxs `seq`
   mainRun rxs
   where rxs = reverse xs
 
@@ -30,7 +30,7 @@ mainRun (BenchItem name n fun arg :: xs) =
 mainRun [] = []
 
 withTime # private
-withTime f arg n = cycle f arg n $ stopClock c
+withTime f arg n = cycle f arg n `seq` stopClock c
   where c = startClock ()
 
 void # private
@@ -38,7 +38,7 @@ void arg = arg
 
 cycle # private
 cycle _ _ 0 = ()
-cycle f arg n = f arg $ cycle f arg (n-1)
+cycle f arg n = f arg `seq` cycle f arg (n-1)
 
 formatBench xs = 
   let sb =

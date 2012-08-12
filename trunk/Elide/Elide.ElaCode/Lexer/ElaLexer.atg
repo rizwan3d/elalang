@@ -100,7 +100,7 @@ PRODUCTIONS
 		).
 		
 	Keywords = 
-		( "let" | "where" | "and" | "or" | "open" | "import" | "in" | "is" | "if" | "then" | "else" | "match" | "try" | "with" | "__internal" | "class" | "instance" | "type" | "data" | "fail" | "deriving" | "opentype"  )
+		( "let" | "where" | "open" | "import" | "in" | "is" | "if" | "then" | "else" | "match" | "try" | "with" | "__internal" | "class" | "instance" | "type" | "data" | "fail" | "deriving" | "opentype"  )
 		(. Add(t.pos, t.val.Length, TextStyle.Style2); .).
 		
 	Code = Keywords | VerbatimString | Comment | SingleLineComment | Primary | NL.// | Thunk.

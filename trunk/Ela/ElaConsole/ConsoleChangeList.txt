@@ -1,3 +1,4 @@
+0.9.6.1:New:A new compiler option 'strict' is now supported by Ela Console.
 0.9.6.0:Release:Release of Ela Console 0.9.6.
 0.9.5.5:Change:A setting 'stdLib' is decomissioned (it is no longer supported by a linker).
 0.9.5.4:New:Now a help screen contains information about Ela Console and Ela version.

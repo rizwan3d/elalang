@@ -55,8 +55,8 @@ consNameIndex     = __internal api107
 //Only for algebraic, open types are welcome
 instance Show where
   show a 
-    | consInfix a and len == 2 = show (consParamValue 0 a) ++ " " 
-                                 ++ consName a ++ " " ++ show (consParamValue 1 a)
+    | consInfix a && len == 2 = show (consParamValue 0 a) ++ " " 
+                                ++ consName a ++ " " ++ show (consParamValue 1 a)
     | else = toString <| show' (consName a) 0
     where len = consParamNumber a
           show' sb n 
@@ -65,7 +65,7 @@ instance Show where
 
 //Only for algebraic, open types are welcome
 instance Eq where
-  a == b = consCode a == consCode b and cyc (consParamNumber a)
+  a == b = consCode a == consCode b && cyc (consParamNumber a)
     where cyc 0 = true
           cyc n 
             | consParamValue (n-1) a == consParamValue (n-1) b = cyc (n-1)

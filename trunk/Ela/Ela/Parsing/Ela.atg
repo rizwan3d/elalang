@@ -18,10 +18,9 @@ CHARACTERS
 	op2 = "!%&*+-.:/\\<=?@^|~$".
 	op3 = "!%&*+-.:/\\=>?@^~$".
 	op4 = "!%&*+.:/\\<=>?@^|~$".
-	op5 = "!%&*+-./\\<=>?@^|~$".
-	
+	op5 = "!%&*+-./\\<=>?@^|~$".	
 	op6 = "!%&*+.:/\\<=?@^|~$".
-	
+	op7 = "!%&*+-.:/\\<=?@^|~$".	
 
 TOKENS
 	ident = lcase { letter | digit | "'" }
@@ -58,8 +57,7 @@ TOKENS
 					)  
 				"'".
 				
-    operatorTok0 = ("|"|"&"|"$") { op }.
-	operatorTok1 = (
+    operatorTok1 = (
 	      "=" { op }
         | ">" [ op2 { op } ]
 		| "<" [ op3 { op } ]
@@ -79,7 +77,10 @@ TOKENS
 	operatorTok8 = (("~"|"--"|"!"|"?") { op }
 	               | ":" [ op5 { op } ])
 	               | "." op { op }.
-	operatorTok9 = "<|" { op }.
+	operatorTok9 = ("<|"|"$") { op }.
+	operatorTok10 = "|>" { op }.
+	operatorTok11 = "|" op7 { op }.
+	operatorTok12 = "&" { op }.
 	
 	LBRA = "{".
 	RBRA = "}".
@@ -374,7 +375,7 @@ PRODUCTIONS
 		    )
 		).
 		
-	Operators = operatorTok0|operatorTok1|operatorTok2|operatorTok3|operatorTok4|operatorTok5|operatorTok6|operatorTok7|operatorTok8|operatorTok9|"::".
+	Operators = operatorTok1|operatorTok2|operatorTok3|operatorTok4|operatorTok5|operatorTok6|operatorTok7|operatorTok8|operatorTok9|operatorTok10|operatorTok11|operatorTok12.
 			
 	IfExpr<out ElaExpression exp> = 
 		IFS
@@ -428,89 +429,8 @@ PRODUCTIONS
 		EndBlock.
 			
 	/* Expr */
-					
-	OrExpr<out ElaExpression exp> =
-		AndExpr<out exp>
-		{
-			(. var cexp = default(ElaExpression); .)
-			"or" AndExpr<out cexp>
-			(. 
-				exp = new ElaBinary(t) { 
-					Left = exp, Operator = ElaOperator.BooleanOr, Right = cexp }; 
-			.)			
-		}.
-		
-	AndExpr<out ElaExpression exp> =
-		OpExpr0<out exp>
-		{
-			(. var cexp = default(ElaExpression); .)
-			"and" OpExpr0<out cexp>
-			(. 
-				exp = new ElaBinary(t) { 
-					Left = exp, Operator = ElaOperator.BooleanAnd, Right = cexp }; 
-			.)
-		}.		
-			
-	OpExpr0<out ElaExpression exp> =
-		(. 
-			var op = String.Empty; 
-			exp = null;
-			var ot = t; 
-		.)				
-		(
-			(
-				OpExpr1b<out exp>
-				{
-					(. var cexp = default(ElaExpression); .)
-					operatorTok0 (. op = t.val; .)
-					[ OpExpr1b<out cexp> ]
-					(. exp = GetOperatorFun(op, exp, cexp); .)
-				}
-			)
-			|
-			(
-				operatorTok0 (. op = t.val; .)
-				[ 
-					OpExpr1b<out exp> 
-					(. exp = GetOperatorFun(op, null, exp); .)
-				]
-				(.
-					if (exp == null)
-						exp = new ElaNameReference(ot) { Name = op };
-				.)
-			)
-		).
-			
-	OpExpr1b<out ElaExpression exp> =
-		(. 
-			var op = String.Empty; 
-			exp = null;
-			var ot = t; 
-		.)				
-		(
-			(
-				OpExpr1<out exp>
-				{
-					(. var cexp = default(ElaExpression); .)
-					operatorTok9 (. op = t.val; .)
-					[ OpExpr1b<out cexp> ]
-					(. exp = GetOperatorFun(op, exp, cexp); .)
-				}			
-			)
-			|
-			(
-				operatorTok9 (. op = t.val; .)
-				[ 
-					OpExpr1<out exp> 
-					(. exp = GetOperatorFun(op, null, exp); .)
-				]
-				(.
-					if (exp == null)
-						exp = new ElaNameReference(ot) { Name = t.val };
-				.)
-			)
-		).
-			
+				
+    /* <| $ */
 	OpExpr1<out ElaExpression exp> =
 		(. 
 			var op = String.Empty; 
@@ -522,25 +442,26 @@ PRODUCTIONS
 				OpExpr2<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
-					operatorTok1 (. op = t.val; .)
-					[ OpExpr2<out cexp> ]
+					operatorTok9 (. op = t.val; .)
+					[ OpExpr1<out cexp> ]
 					(. exp = GetOperatorFun(op, exp, cexp); .)
-				}
+				}			
 			)
 			|
 			(
-				operatorTok1 (. op = t.val; .)
+				operatorTok9 (. op = t.val; .)
 				[ 
 					OpExpr2<out exp> 
 					(. exp = GetOperatorFun(op, null, exp); .)
 				]
 				(.
 					if (exp == null)
-						exp = new ElaNameReference(ot) { Name = op };
+						exp = new ElaNameReference(ot) { Name = t.val };
 				.)
 			)
 		).
-			
+		
+	/* |> */		
 	OpExpr2<out ElaExpression exp> =
 		(. 
 			var op = String.Empty; 
@@ -552,26 +473,26 @@ PRODUCTIONS
 				OpExpr3<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
-					operatorTok2 (. op = t.val; .)
+					operatorTok10 (. op = t.val; .)
 					[ OpExpr3<out cexp> ]
 					(. exp = GetOperatorFun(op, exp, cexp); .)
 				}
 			)
 			|
 			(
-				operatorTok2 (. op = t.val; .)
+				operatorTok10 (. op = t.val; .)
 				[ 
 					OpExpr3<out exp> 
 					(. exp = GetOperatorFun(op, null, exp); .)
 				]
 				(.
 					if (exp == null)
-						exp = new ElaNameReference(ot) { Name = t.val };
+						exp = new ElaNameReference(ot) { Name = op };
 				.)
 			)
 		).
-			
-			
+		
+	/* | */
 	OpExpr3<out ElaExpression exp> =
 		(. 
 			var op = String.Empty; 
@@ -583,25 +504,26 @@ PRODUCTIONS
 				OpExpr4<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
-					(operatorTok3|"::") (. op = t.val; .)
-					[ OpExpr3<out cexp> ]
+					operatorTok11 (. op = t.val; .)
+					[ OpExpr4<out cexp> ]
 					(. exp = GetOperatorFun(op, exp, cexp); .)
-				}			
+				}
 			)
 			|
 			(
-				(operatorTok3|"::") (. op = t.val; .)
+				operatorTok11 (. op = t.val; .)
 				[ 
 					OpExpr4<out exp> 
 					(. exp = GetOperatorFun(op, null, exp); .)
 				]
 				(.
 					if (exp == null)
-						exp = new ElaNameReference(ot) { Name = t.val };
+						exp = new ElaNameReference(ot) { Name = op };
 				.)
 			)
 		).
 		
+	/* & */
 	OpExpr4<out ElaExpression exp> =
 		(. 
 			var op = String.Empty; 
@@ -613,16 +535,109 @@ PRODUCTIONS
 				OpExpr5<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
-					operatorTok4 (. op = t.val; .)
+					operatorTok12 (. op = t.val; .)
 					[ OpExpr5<out cexp> ]
 					(. exp = GetOperatorFun(op, exp, cexp); .)
 				}
 			)
 			|
 			(
-				operatorTok4 (. op = t.val; .)
+				operatorTok12 (. op = t.val; .)
 				[ 
 					OpExpr5<out exp> 
+					(. exp = GetOperatorFun(op, null, exp); .)
+				]
+				(.
+					if (exp == null)
+						exp = new ElaNameReference(ot) { Name = op };
+				.)
+			)
+		).		
+			
+	/* = > < */
+	OpExpr5<out ElaExpression exp> =
+		(. 
+			var op = String.Empty; 
+			exp = null;
+			var ot = t; 
+		.)				
+		(
+			(
+				OpExpr6<out exp>
+				{
+					(. var cexp = default(ElaExpression); .)
+					operatorTok1 (. op = t.val; .)
+					[ OpExpr6<out cexp> ]
+					(. exp = GetOperatorFun(op, exp, cexp); .)
+				}
+			)
+			|
+			(
+				operatorTok1 (. op = t.val; .)
+				[ 
+					OpExpr6<out exp> 
+					(. exp = GetOperatorFun(op, null, exp); .)
+				]
+				(.
+					if (exp == null)
+						exp = new ElaNameReference(ot) { Name = op };
+				.)
+			)
+		).
+			
+	/* ^ */
+	OpExpr6<out ElaExpression exp> =
+		(. 
+			var op = String.Empty; 
+			exp = null;
+			var ot = t; 
+		.)				
+		(
+			(
+				OpExpr7<out exp>
+				{
+					(. var cexp = default(ElaExpression); .)
+					operatorTok2 (. op = t.val; .)
+					[ OpExpr7<out cexp> ]
+					(. exp = GetOperatorFun(op, exp, cexp); .)
+				}
+			)
+			|
+			(
+				operatorTok2 (. op = t.val; .)
+				[ 
+					OpExpr7<out exp> 
+					(. exp = GetOperatorFun(op, null, exp); .)
+				]
+				(.
+					if (exp == null)
+						exp = new ElaNameReference(ot) { Name = t.val };
+				.)
+			)
+		).
+			
+	/* :: */
+	OpExpr7<out ElaExpression exp> =
+		(. 
+			var op = String.Empty; 
+			exp = null;
+			var ot = t; 
+		.)				
+		(
+			(
+				OpExpr8<out exp>
+				{
+					(. var cexp = default(ElaExpression); .)
+					(operatorTok3) (. op = t.val; .)
+					[ OpExpr7<out cexp> ]
+					(. exp = GetOperatorFun(op, exp, cexp); .)
+				}			
+			)
+			|
+			(
+				(operatorTok3) (. op = t.val; .)
+				[ 
+					OpExpr8<out exp> 
 					(. exp = GetOperatorFun(op, null, exp); .)
 				]
 				(.
@@ -632,7 +647,39 @@ PRODUCTIONS
 			)
 		).
 		
-	OpExpr5<out ElaExpression exp> =
+	/* + - */
+	OpExpr8<out ElaExpression exp> =
+		(. 
+			var op = String.Empty; 
+			exp = null;
+			var ot = t; 
+		.)				
+		(
+			(
+				OpExpr9<out exp>
+				{
+					(. var cexp = default(ElaExpression); .)
+					operatorTok4 (. op = t.val; .)
+					[ OpExpr9<out cexp> ]
+					(. exp = GetOperatorFun(op, exp, cexp); .)
+				}
+			)
+			|
+			(
+				operatorTok4 (. op = t.val; .)
+				[ 
+					OpExpr9<out exp> 
+					(. exp = GetOperatorFun(op, null, exp); .)
+				]
+				(.
+					if (exp == null)
+						exp = new ElaNameReference(ot) { Name = t.val };
+				.)
+			)
+		).
+		
+	/* * / % */
+	OpExpr9<out ElaExpression exp> =
 		(. 
 			var op = String.Empty; 
 			exp = null;
@@ -670,16 +717,16 @@ PRODUCTIONS
 		.)				
 		(
 			(
-				OpExpr6<out exp>
+				OpExpr10<out exp>
 				{
 					(. 
 						var cexp = default(ElaExpression); 
 						ot = t;
 					.)
 					(
-						"`" OpExpr6<out funexp> "`"
+						"`" OpExpr11<out funexp> "`"
 					)
-					[ OpExpr6<out cexp> ]
+					[ OpExpr10<out cexp> ]
 					(. 
 						var fc = new ElaJuxtaposition(ot) { 
 								Target = funexp
@@ -696,10 +743,10 @@ PRODUCTIONS
 			|
 			(
 				(
-					"`" OpExpr6<out funexp> "`"
+					"`" OpExpr10<out funexp> "`"
 				)
 				[ 
-					OpExpr6<out exp> 
+					OpExpr10<out exp> 
 					(. exp = GetPrefixFun(funexp, exp, true);	.)
 				]
 				(.
@@ -709,7 +756,8 @@ PRODUCTIONS
 			)
 		).
 		
-	OpExpr6<out ElaExpression exp> =
+	/* << */
+	OpExpr10<out ElaExpression exp> =
 		(. 
 			var op = String.Empty; 
 			exp = null;
@@ -717,11 +765,11 @@ PRODUCTIONS
 		.)				
 		(
 			(
-				OpExpr7<out exp>
+				OpExpr11<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
 					operatorTok6 (. op = t.val; .)
-					[ OpExpr6<out cexp> ]
+					[ OpExpr10<out cexp> ]
 					(. exp = GetOperatorFun(op, exp, cexp); .)
 				}			
 			)
@@ -729,7 +777,7 @@ PRODUCTIONS
 			(
 				operatorTok6 (. op = t.val; .)
 				[ 
-					OpExpr7<out exp> 
+					OpExpr11<out exp> 
 					(. exp = GetOperatorFun(op, null, exp); .)
 				]
 				(.
@@ -739,7 +787,8 @@ PRODUCTIONS
 			)
 		).
 		
-	OpExpr7<out ElaExpression exp> =
+	/* >> */
+	OpExpr11<out ElaExpression exp> =
 		(. 
 			var op = String.Empty; 
 			exp = null;
@@ -747,11 +796,11 @@ PRODUCTIONS
 		.)				
 		(
 			(
-				OpExpr8<out exp>
+				OpExpr12<out exp>
 				{
 					(. var cexp = default(ElaExpression); .)
 					operatorTok7 (. op = t.val; .)
-					[ OpExpr8<out cexp> ]
+					[ OpExpr12<out cexp> ]
 					(. exp = GetOperatorFun(op, exp, cexp); .)
 				}			
 			)
@@ -759,7 +808,7 @@ PRODUCTIONS
 			(
 				operatorTok7 (. op = t.val; .)
 				[ 
-					OpExpr8<out exp> 
+					OpExpr12<out exp> 
 					(. exp = GetOperatorFun(op, null, exp); .)
 				]
 				(.
@@ -769,7 +818,8 @@ PRODUCTIONS
 			)
 		).
 		
-	OpExpr8<out ElaExpression exp> = 
+	/* ~ ! -- ? : . */
+	OpExpr12<out ElaExpression exp> = 
 		(. 
 			var op = String.Empty; 
 			exp = null;
@@ -852,30 +902,11 @@ PRODUCTIONS
 				)
 			)			
 		}.	
-					
-	BinaryExpr<out ElaExpression exp> = 
-		(. 
-			exp = null;
-			var ot = t; 
-		.)				
-		(
-			(
-				OrExpr<out exp>
-				{
-					(. var cexp = default(ElaExpression); .)
-					"$"
-					OrExpr<out cexp>
-					(. 
-						exp = new ElaBinary(t) { Operator = ElaOperator.Sequence, Left = exp, Right = cexp };
-					.)
-				}
-			)
-		).	
 		
 	EmbExpr<out ElaExpression exp> = 
 		(. exp = null; .)
 		(  
-			BinaryExpr<out exp> [TypeCheckExpr<ref exp>]
+			OpExpr1<out exp> [TypeCheckExpr<ref exp>]
 			| IfExpr<out exp>  
 			| LazyExpr<out exp>
 			| LetBinding<out exp>			
@@ -1331,7 +1362,7 @@ PRODUCTIONS
             var exp = default(ElaExpression);
         .)
         (
-            OpExpr0<out exp>
+            OpExpr1<out exp>
             [
                 "#" 
 	            ident (. flags = ProcessAttribute(t.val,flags); .) 

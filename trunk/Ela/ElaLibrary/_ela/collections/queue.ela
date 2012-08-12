@@ -18,7 +18,7 @@ instance Cat Queue where
   q1 ++ q2 = fromList (toList q1 ++ toList q2) ::: Queue
 
 instance Eq Queue where 
-  (Queue a b) == (Queue c d) = a == b and c == d
+  (Queue a b) == (Queue c d) = a == b && c == d
 
 instance Seq Queue where 
   head = peek
