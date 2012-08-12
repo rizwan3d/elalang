@@ -3,7 +3,7 @@
 
 This article contains a roadmap for the upcoming versions of Ela Platform.
 
-== Platform 2012.8 ==
+== Platform 2012.8 (Released) ==
 
 August 2012
 
