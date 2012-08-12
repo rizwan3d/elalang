@@ -63,6 +63,10 @@ Polymorphic constants are used exactly in the same way as functions:
 >>>empty ::: List
 For more information about polymoprhic constants, please refer to the language reference (article _Classes_).
 
+==Lazy patterns
+Ela 0.11.2 provides a support for lazy patterns. Lazy patterns are always irrefutable and have the same syntax as
+lazy literals:
+>>& (x,y) = someValue
 
 =Library changes
 A new version of standard library, shipped with this release, contains a number of various changes. Here is quick
