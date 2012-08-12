@@ -87,7 +87,7 @@ namespace Ela.Runtime
                 val = ((ElaLazy)val.Ref).Force();
                         
             var ctx = new ExecutionContext();
-            var ret = cls[val.TypeId].Showf(String.Empty, val, ctx);
+            var ret = cls[val.TypeId].Show(val, ctx);
 
             if (ctx.Failed && ctx.Fun == null)
                 return val.ToString();
@@ -95,7 +95,7 @@ namespace Ela.Runtime
             {
                 try
                 {
-                    var rval = ctx.Fun.Call(new ElaValue(String.Empty), val);
+                    var rval = ctx.Fun.Call(val);
                     return rval.DirectGetString();
                 }
                 catch
@@ -389,33 +389,23 @@ namespace Ela.Runtime
                     #region Object Operations
                     case Op.Show:
                         {
-                            left = evalStack.Pop();
                             right = evalStack.Pop();
-                            left = left.Ref.Force(left, ctx);
-
-                            if (left.TypeId != STR)
-                            {
-                                InvalidType(left, thread, evalStack, TCF.GetShortForm(ElaTypeCode.String));
-                                goto SWITCH_MEM;
-                            }
-
+                            
                             if (right.TypeId == LAZ)
                                 right = right.Ref.Force(right, ctx);
 
                             if (ctx.Failed)
                             {
                                 evalStack.Push(right);
-                                evalStack.Push(left);
                                 ExecuteFail(ctx.Error, thread, evalStack);
                                 goto SWITCH_MEM;
                             }
 
-                            evalStack.Push(new ElaValue(cls[right.TypeId].Showf(left.DirectGetString(), right, ctx)));
+                            evalStack.Push(new ElaValue(cls[right.TypeId].Show(right, ctx)));
 
                             if (ctx.Failed)
                             {
                                 evalStack.Replace(right);
-                                evalStack.Push(left);
                                 ExecuteFail(ctx.Error, thread, evalStack);
                                 goto SWITCH_MEM;
                             }

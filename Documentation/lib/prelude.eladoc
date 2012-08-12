@@ -333,15 +333,8 @@ both entities:
 >>>"First" ++ "Second"
 
 #Show
-A function `showf` formats a given value to a string:
->>>showf "" [1,2,3]
-A format string can be used to specify a format if this format is supported by a particular 
-implementation of `showf`:
->>>showf ".##" 12.1234
-
-#show x
-Implements a helper function defined like `showf ""` that can be used when a format string is 
-not needed.
+A function `show` formats a given value to a string:
+>>>showf [1,2,3]
 
 #Bounded
 This class defines two functions `maxBound` and `minBound` that accept an argument and return a

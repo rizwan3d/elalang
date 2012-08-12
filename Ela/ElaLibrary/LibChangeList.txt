@@ -1,3 +1,7 @@
+0.1.6.4:Change:Instances for 'Show' class for all types are changed according to the class changes.
+0.1.6.3:New:A type 'DateTime' (module 'datetime') now provides an instance for 'Format' class.
+0.1.6.2:New:A new class 'Format' added to 'format' module (it is now used for arguments that can be substituted in a format string). Also instances for most of built-in types are added.
+0.1.6.1:Change:Now class 'Show' defines a 'show' function (instead of 'showf') which doesn't accept a format string; a standalone 'show' function is decomissioned.
 0.1.6.0:Release:Release of 0.1.6.0.
 0.1.5.32:New:A new 'bench' (benchmarking suite) module is added.
 0.1.5.31:New:A function 'dup' is added to prelude module.

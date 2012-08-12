@@ -9,7 +9,7 @@ type Cell = Ref a # private
 
 /* Instances */
 instance Show Cell
-  where showf fmt (Ref x) = "<cell:" ++ showf fmt (cl.valueof x) ++ ">"
+  where show (Ref x) = "<cell:" ++ show (cl.valueof x) ++ ">"
 
 /* Functions */
 ref a = Ref (cl.newCell (force a))

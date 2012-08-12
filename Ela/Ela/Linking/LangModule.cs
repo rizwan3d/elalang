@@ -20,6 +20,12 @@ namespace Ela.Linking
             Add<ElaValue,ElaValue>("asString", AsString);
             Add<ElaValue,ElaTuple>("asTuple", AsTuple);
             Add<Int32,ElaRecord,ElaValue>("showRecordKey", ShowRecordKey);
+            Add<String,ElaValue,ElaValue>("toString", ToString);
+        }
+
+        public ElaValue ToString(string format, ElaValue val)
+        {
+            return new ElaValue(val.ToString(format, Culture.NumberFormat));
         }
 
         public ElaValue ShowRecordKey(int field, ElaRecord rec)

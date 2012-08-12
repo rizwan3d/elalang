@@ -32,10 +32,10 @@ instance Bounded Peano where
   minBound = Zero
 
 instance Show Peano where 
-  showf _ p = toString <| show "peano(" p
+  show p = toString <| show' "peano(" p
     where 
-      show sb Zero = sb +> "0)"
-      show sb (Succ a) = show (sb +> "1+") a
+      show' sb Zero = sb +> "0)"
+      show' sb (Succ a) = show' (sb +> "1+") a
 
 instance Eq Peano where
   (==) = comp (==)

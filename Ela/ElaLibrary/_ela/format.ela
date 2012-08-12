@@ -3,13 +3,16 @@
   Created in 2012 by Basil Voronkov
 */
 open console
-import libFormat#elalib@fm
+import libFormat#elalib@fm lang
 
-format' # private 
-format' fun fstr xs n 
-  | n == 0 = fun (fm.format fstr showf xs)
-  | else = \x -> format' fun fstr (force x::xs) (n - 1)
+/* Classes and instances */
+class Format a where
+  fmt _->a->_
 
+instance Format Int Long Single Double String Char Bool where
+  fmt f x = lang.toString (force f) x
+
+/* Functions */
 printf fstr = format' write f' [] (fm.countArgs f')
   where f' = force fstr
 
@@ -18,3 +21,10 @@ printfn fstr = format' writen f' [] (fm.countArgs f')
 
 formatStr fstr = format' id f' [] (fm.countArgs f')
   where f' = force fstr
+
+/* Privates */
+format' # private 
+format' fun fstr xs n 
+  | n == 0 = fun (fm.format fstr fmt xs)
+  | else = \x -> format' fun fstr (force x::xs) (n - 1)
+

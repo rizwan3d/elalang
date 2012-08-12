@@ -12,7 +12,7 @@ instance Default Queue where
   default = empty
 
 instance Show Queue where 
-  showf f q = "queue" ++ showf f (toList q)
+  show q = "queue" ++ show (toList q)
 
 instance Cat Queue where 
   q1 ++ q2 = fromList (toList q1 ++ toList q2) ::: Queue

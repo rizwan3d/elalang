@@ -155,7 +155,7 @@ safeShow x
   | (x is Lazy) and lazy x = showLazy x
   | not (evaled x) = "<thunk>"
   | x is Fun = funName x
-  | else = showf "" x
+  | else = show x
 
 formatGen # private
 formatGen formatter n fc str [] = (n,fc,toString <| str)

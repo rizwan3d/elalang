@@ -124,7 +124,7 @@ namespace Ela.Compilation
                     CompileBuiltinMember(ElaBuiltinKind.Concat, s, 0, map);
                     break;
                 case TypeClass.Show:
-                    CompileBuiltinMember(ElaBuiltinKind.Showf, s, 0, map);
+                    CompileBuiltinMember(ElaBuiltinKind.Show, s, 0, map);
                     break;
                 default:
                     AddError(ElaCompilerError.InvalidBuiltinClass, s, s.BuiltinName);

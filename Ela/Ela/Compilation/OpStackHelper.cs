@@ -63,7 +63,7 @@ namespace Ela.Compilation
 			-1, //Rethrow
 			0, //Force
 			0, //Isnil
-			-1, //Show
+			0, //Show
             -3, //Addmbr            
             -1, //Traitch
             -2, //Skiptag

@@ -14,6 +14,7 @@ namespace Ela.CodeModel
         IsNil,
         Negate,
         BitwiseNot,
+        Show,
                 
         Api1,
         Api2,
@@ -33,7 +34,6 @@ namespace Ela.CodeModel
         Api16,
         
         /* Two arguments */
-        Showf,
         ForwardPipe,
         BackwardPipe,
         Add,
