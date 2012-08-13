@@ -285,8 +285,6 @@ class Additive(Additive) a where
   (-) a->a->_
   negate a->_
 
-(--) = negate
-
 class Ring(Ring) a where
   (*) a->a->_
   (**) a->a->_
@@ -339,19 +337,19 @@ class Bounded a where
 
 instance Bounded Int where
   maxBound = 0x7fffffff
-  minBound = 0x7fffffff + 1
+  minBound = -2147483648
 
 instance Bounded Long where
   maxBound = 0x7fffffffffffffffL
-  minBound = 0x7fffffffffffffffL + 1
+  minBound = -9223372036854775808L
 
 instance Bounded Single where
   maxBound = 3.402823E+38f
-  minBound = --3.402823E+38f
+  minBound = -3.402823E+38f
 
 instance Bounded Double where
   maxBound = 1.7976931348623157E+308D
-  minBound = --1.7976931348623157E+308D
+  minBound = -1.7976931348623157E+308D
 
 /* Seq */
 class Seq(Seq) a where

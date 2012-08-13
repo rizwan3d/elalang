@@ -54,16 +54,16 @@ foldl1 f xs = walk (xs:0) 1
                  | else = walk (e `f` xs:n) (n+1)
 
 foldr # qualified
-foldr f z xs = walk z (len-1)
+foldr f z xs = walk z (len - 1)
   where len = length xs
         walk e n | n < 0 = e
-                 | else = walk (e `f` xs:n) (n-1)
+                 | else = walk (e `f` xs:n) (n - 1)
 
 foldr1 # qualified
-foldr1 f xs = walk (xs:0) (len-1)
+foldr1 f xs = walk (xs:0) (len - 1)
   where len = length xs
         walk e 0 = e
-        walk e n = walk (e `f` xs:n) (n-1)
+        walk e n = walk (e `f` xs:n) (n - 1)
 
 concat # qualified
 concat = foldl1 (++)
@@ -100,4 +100,4 @@ zero 3 = (0,0,0)
 zero n = fromList (gen [] n) ::: Tuple
   where 
     gen ys 0 = ys
-    gen ys n = gen (0::ys) (n-1)
+    gen ys n = gen (0::ys) (n - 1)

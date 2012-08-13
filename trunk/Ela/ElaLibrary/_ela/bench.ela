@@ -38,7 +38,7 @@ void arg = arg
 
 cycle # private
 cycle _ _ 0 = ()
-cycle f arg n = f arg `seq` cycle f arg (n-1)
+cycle f arg n = f arg `seq` cycle f arg (n - 1)
 
 formatBench xs = 
   let sb =
@@ -58,7 +58,7 @@ formatBench xs =
           | length name > n = longest (length name) xs
           | else = longest n xs
         repeat 0 c = c
-        repeat n c = c ++ repeat (n-1) c
+        repeat n c = c ++ repeat (n - 1) c
         walkBench [] sb = sb
         walkBench (Bench name runs time :: xs) sb = 
           walkBench xs <|

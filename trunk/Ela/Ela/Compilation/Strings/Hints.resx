@@ -120,6 +120,12 @@
   <data name="AddElse" xml:space="preserve">
     <value>Add an 'else' clause to the conditional expression like so: 'x | y &gt; 0 = y | else = 0' or 'if y &gt; 0 then y else 0'.</value>
   </data>
+  <data name="AddSpaceApplication" xml:space="preserve">
+    <value>Add a space between a function and an argument, if you mean an application of a function '{0}' to one argument, e.g. ({0} {1}), or add a space between (-) operator and a number, e.g. ({0} - {2}).</value>
+  </data>
+  <data name="AddSpaceSection" xml:space="preserve">
+    <value>Add a space between an operator (-) and a number literal, if you wan a right section, e.g. '(- {0})', or remove the parentheses.</value>
+  </data>
   <data name="MatchEntryNotReachable" xml:space="preserve">
     <value>Consider reordering match entries. Less specific patterns should be moved after more specific patterns.</value>
   </data>
@@ -128,8 +134,5 @@
   </data>
   <data name="UseIgnoreToPop" xml:space="preserve">
     <value>Use '_ = ...' expression to disable warning, e.g. '_ = x'.</value>
-  </data>
-  <data name="UseThunk" xml:space="preserve">
-    <value>Consider explicitly marking an expression as a thunk, e.g. '(&amp; {0})'.</value>
   </data>
 </root>

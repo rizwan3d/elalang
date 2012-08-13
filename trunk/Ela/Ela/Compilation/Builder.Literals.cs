@@ -16,6 +16,12 @@ namespace Ela.Compilation
             if ((hints & Hints.Left) == Hints.Left)
                 AddValueNotUsed(p);
 
+            if (p.Parens && p.Value.IsNegative())
+            {
+                AddWarning(ElaCompilerWarning.SectionAmbiguity, p, p.Value.ToString());
+                AddHint(ElaCompilerHint.AddSpaceSection, p, p.Value.ToString().TrimStart('-'));
+            }
+
             return new ExprData(DataKind.VarType, (Int32)p.Value.LiteralType);
         }
 

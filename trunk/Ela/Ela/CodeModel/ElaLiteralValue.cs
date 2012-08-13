@@ -156,6 +156,23 @@ namespace Ela.CodeModel
 			}
 		}
 
+        public bool IsNegative()
+        {
+            if (LiteralType == ElaTypeCode.Integer)
+                return AsInteger() < 0;
+
+            if (LiteralType == ElaTypeCode.Long)
+                return AsLong() < 0;
+
+            if (LiteralType == ElaTypeCode.Single)
+                return AsReal() < 0;
+
+            if (LiteralType == ElaTypeCode.Double)
+                return AsDouble() < 0;
+
+            return false;
+        }
+
 		public readonly ElaTypeCode LiteralType;
 	}
 }

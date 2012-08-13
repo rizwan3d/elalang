@@ -15,6 +15,8 @@ namespace Ela.Compilation
 
         AddElse = 503,
 
-        UseThunk = 504,
+        AddSpaceSection = 504,
+
+        AddSpaceApplication = 505,
 	}
 }

@@ -85,6 +85,15 @@ namespace Ela.Compilation
 
             if (bf != null)
             {
+                if (v.Parameters[0].Type == ElaNodeType.Primitive &&
+                    bf.Line == v.Parameters[0].Line && bf.Column + bf.Name.Length == v.Parameters[0].Column &&
+                    ((ElaPrimitive)v.Parameters[0]).Value.IsNegative())
+                {
+                    var par = ((ElaPrimitive)v.Parameters[0]).Value.ToString();
+                    AddWarning(ElaCompilerWarning.NegationAmbiguity, v, bf.Name, par);
+                    AddHint(ElaCompilerHint.AddSpaceApplication, v, bf.Name, par, par.TrimStart('-'));
+                }
+
                 //The target is one of built-in functions and therefore can be inlined for optimization.
                 if ((sv.Flags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin)
                 {
@@ -120,13 +129,6 @@ namespace Ela.Compilation
                         ed = new ExprData(DataKind.FunParams, sv.Data);
                     else if ((sv.VariableFlags & ElaVariableFlags.ObjectLiteral) == ElaVariableFlags.ObjectLiteral)
                         ed = new ExprData(DataKind.VarType, (Int32)ElaVariableFlags.ObjectLiteral);
-
-                    if ((sv.Flags & ElaVariableFlags.NoInit) == ElaVariableFlags.NoInit &&
-                        (sv.Address & Byte.MaxValue) == 0)
-                    {
-                        AddWarning(ElaCompilerWarning.BottomValue, v, FormatNode(v), bf.Name);
-                        AddHint(ElaCompilerHint.UseThunk, v, v);
-                    }
                 }
             }
             else

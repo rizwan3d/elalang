@@ -21,6 +21,8 @@ namespace Ela.Compilation
 
         TypeClassAmbiguity = 406,
 
-        BottomValue = 407,
+        NegationAmbiguity = 407,
+
+        SectionAmbiguity = 408,
 	}
 }

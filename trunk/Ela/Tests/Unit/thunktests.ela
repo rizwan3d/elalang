@@ -99,9 +99,9 @@ lazyBool {eqt} =
 
 lazyFunc {eq} =
     eq (lf 2 3) 5
-  `seq` eq (lf2 3) (--3)
+  `seq` eq (lf2 3) -3
   where lf = (& \x y -> x + y)
-        lf2 = (& \x -> --x)
+        lf2 = (& \x -> negate x)
 
 lazyRecord {eq} =
   eq obj.x 1
@@ -115,8 +115,8 @@ lazySuccPred {eq} =
              where add x y = x + y
 
 lazyUnary {eq} = 
-    eq (~~~thunk1) (--3)
-  `seq` eq (--thunk2) (--5)
+    eq (~~~thunk1) -3
+  `seq` eq (negate thunk2) -5
   where thunk1 = (& 1+1)
         thunk2 = (& add 2 3)
              where add x y = x + y
@@ -170,7 +170,7 @@ tupleAdd {eq} =
         tup5 = (& (3,4,5) )
 
 tupleSub {eq} = 
-    eq (tup1 - tup2) (--2,--2,--2)
+    eq (tup1 - tup2) (-2,-2,-2)
   `seq` eq (tup3 - tup4) (0,0,0)
   `seq` eq (tup5 - tup3) (2,2,2)
   where tup1 = (& (1,2,3) )

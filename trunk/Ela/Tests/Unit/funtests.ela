@@ -34,12 +34,12 @@ closure1 {eq} =
 
 flipped1 {eq} = 
     eq (sub 3 2) 1
-  `seq` eq (flip sub 3 2) (--1)
+  `seq` eq (flip sub 3 2) -1
   where sub x y = x - y
 
 flipped2 {eq} = 
     eq (sub 3 2 1) 0
-  `seq` eq (flip sub 3 2 (--1)) 0
+  `seq` eq (flip sub 3 2 -1) 0
   where sub x y z = x - y - z
 
 flipped3 {eq} =  
@@ -69,13 +69,13 @@ partialOperators {eq} =
 
 partialOperators2 {eq} =
     eq ((^^^5) 10) 5
-  `seq` eq ((5^^^) 10) (--5)
+  `seq` eq ((5^^^) 10) -5
   where (^^^) x y = x - y
 
 funcTok {eq} =
     eq ((`sub` 8) 20) 12
-  `seq` eq ((sub 8) 20) (--12)
-  `seq` eq ((8 `sub`) 20) (--12)
+  `seq` eq ((sub 8) 20) -12
+  `seq` eq ((8 `sub`) 20) -12
   where sub x y = x - y
 
 postfixOperators {eq} =
@@ -108,7 +108,7 @@ local4 {eq} =
 
 infix1 {eq} =
     eq (2 `add` 3) 5
-  `seq` eq (8 `sub` 9) (--1)
+  `seq` eq (8 `sub` 9) -1
   where add x y = x + y
         sub x y = x - y
 
