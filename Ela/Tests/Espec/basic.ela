@@ -118,8 +118,8 @@ test4 =
   given 3
     when (**) 2
     should be 9
-    when (--)
-    should be (negate 9)
+    when negate
+    should be -9
   given 0
     when (-) 256
     should be (negate 256)
@@ -190,7 +190,7 @@ test7 =
     should be 6
   where fun1 x = x+2
         fun2 x = x*2
-        fun3 x = x-2
+        fun3 x = x - 2
         comp1 = fun1 >> fun2 >> fun3
         comp2 = fun3 << fun2 << fun1
 
@@ -209,11 +209,11 @@ test8 =
     should be 12
   given 2
     when (~~~)
-    should be (--3)
+    should be -3
   given 124
     when (~~~)
-    should be (--125)
-  given (--3)
+    should be -125
+  given -3
     when (~~~)
     should be 2
 
@@ -287,11 +287,11 @@ test11 =
   given 5
     when negate
     when quot 2
-    should be (--2)
+    should be -2
   given 5
     when negate
     when div 2
-    should be (--3)
+    should be -3
 
 test12 = 
   test "Fractional"
@@ -445,7 +445,7 @@ test15 =
     when (-) (10,20,30,40)
     should be (1,2,3,4)
     when negate
-    should be (--1,--2,--3,--4)
+    should be (-1,-2,-3,-4)
   given (1,2,3)
     when toList
     should be [1,2,3]

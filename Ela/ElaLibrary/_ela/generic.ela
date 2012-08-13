@@ -68,7 +68,7 @@ instance Eq where
   a == b = consCode a == consCode b && cyc (consParamNumber a)
     where cyc 0 = true
           cyc n 
-            | consParamValue (n-1) a == consParamValue (n-1) b = cyc (n-1)
+            | consParamValue (n - 1) a == consParamValue (n - 1) b = cyc (n - 1)
             | else = false
 
 //Only for algebraic, bettern not to use with open types

@@ -141,7 +141,7 @@ replicate n x = take n (repeat x)
 take = take [] 
   where
     take ys 0 _       = reverse ys
-    take ys n (x::xs) = take (x::ys) (n-1) xs
+    take ys n (x::xs) = take (x::ys) (n - 1) xs
     take ys _ []      = []
 
 takeWhile f (x::xs) 
@@ -150,13 +150,13 @@ takeWhile f (x::xs)
 takeWhile f [] = []
 
 skip 0 xs      = xs
-skip n (_::xs) = skip (n-1) xs
+skip n (_::xs) = skip (n - 1) xs
 skip _ []      = []
 
 drop 0 xs = xs
 drop _ [] = []
 drop n (_::xs) 
-  | n > 0 = drop (n-1) xs
+  | n > 0 = drop (n - 1) xs
   | else  = fail "list.drop: negative argument"
 
 dropWhile p [] = []
@@ -168,7 +168,7 @@ splitAt 0 xs = ([],xs)
 splitAt _ [] = ([],[])
 splitAt n (x::xs) | n > 0 = (x::xs',xs2')
                   | else = fail "list.splitAt: negative argument"
-                  where (xs',xs2') = splitAt (n-1) xs
+                  where (xs',xs2') = splitAt (n - 1) xs
 
 splitHalf xs = go xs xs 
   where go (x::xs) (_::_::zs) = (x::us,vs) where (us,vs) = go xs zs

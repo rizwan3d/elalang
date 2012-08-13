@@ -26,13 +26,13 @@ This module provides instances of `Fractional` class for types `Single` and `Dou
 Defines two integer division functions - `quot`, which is an integer division, truncated
 towards zero, and `div`, which is an integer division, truncated towards negative
 infinity.
->>>(--5) `div` 2
+>>>-5 `div` 2
 This module provides instances of `Integral` class for types `Int` and `Long`.
 
 #Absolute
 Defines functions for the types with a notion of an absolute value. Function `abs` returns
 an absolute value of a given value, and function `signum` returns a sign of a given value.
->>>signum (--2)
+>>>signum -2
 This module provides instances of `Absolute` class for types `Int`, `Long`, `Single` and `Double`.
 
 #Transcendental

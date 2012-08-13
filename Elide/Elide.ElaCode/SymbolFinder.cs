@@ -82,17 +82,6 @@ namespace Elide.ElaCode
                             FindName(name, doc, a.Expression, syms);
                     }
                     break;
-                case ElaNodeType.Binary:
-                    {
-                        var b = (ElaBinary)expr;
-
-                        if (b.Left != null)
-                            FindName(name, doc, b.Left, syms);
-
-                        if (b.Right != null)
-                            FindName(name, doc, b.Right, syms);
-                    }
-                    break;
                 case ElaNodeType.EquationSet:
                     {
                         var b = (ElaEquationSet)expr;

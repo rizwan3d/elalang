@@ -332,15 +332,6 @@ namespace Ela.Compilation
                             exprData = new ExprData(DataKind.VarType, (Int32)ElaVariableFlags.ObjectLiteral);
                         else if ((scopeVar.VariableFlags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin)
                             exprData = new ExprData(DataKind.Builtin, scopeVar.Data);
-
-                        //Generate a warning if a name is not initialized
-                        if ((scopeVar.Flags & ElaVariableFlags.NoInit) == ElaVariableFlags.NoInit &&
-                            (scopeVar.Address & Byte.MaxValue) == 0)
-                        {
-                            var ee = parent ?? v;
-                            AddWarning(ElaCompilerWarning.BottomValue, ee, FormatNode(ee), v.Name);
-                            AddHint(ElaCompilerHint.UseThunk, ee, ee);
-                        }
                     }
                     break;
                 case ElaNodeType.Placeholder:

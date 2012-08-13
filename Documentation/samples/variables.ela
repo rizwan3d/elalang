@@ -30,8 +30,7 @@ _ = writen ("first+second=" ++ show (first+second)) //Prints first+second=3
 
 //Ela does have a typical conditional if/else operator however in most cases
 //it is better to use guards like so:
-y = --2 //(--) is an unary negation operator in Ela
-
+y = -2
 x2 | y < 0 = 0
    | else  = x //This clause is mandatory
 

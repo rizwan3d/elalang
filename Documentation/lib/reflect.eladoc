@@ -36,7 +36,7 @@ Returns a number of applied arguments in a partially applied function:
 
 #funAppliedArgs
 Returns a list of applied arguments in a partially applied function:
->>>sub2 = (-2)
+>>>sub2 = (- 2)
 >>>funAppliedArgs sub2
 
 ==Module related

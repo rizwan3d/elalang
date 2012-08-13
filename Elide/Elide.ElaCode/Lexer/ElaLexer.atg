@@ -23,16 +23,18 @@ TOKENS
 	
 	variantTok = ucase { letter | digit | "'" }.
 	
-	intTok = ( digit { digit } | digit { digit } CONTEXT ("." notDigit) | 
-			( "0x" | "0X" ) hexDigit { hexDigit } ) [ "L" | "l" ].
+	intTok = ["-"]( digit { digit } 
+	          | digit { digit } CONTEXT ("." notDigit) 
+	          | ("0x"|"0X") hexDigit { hexDigit } 
+	          ) ["L"|"l"].
 			
-	realTok = "." digit { digit } [ ( "e" | "E") [ "+" | "-" ] digit { digit } ] [ "D" | "d" | "F" | "f" ] 
-			| digit { digit } 
-			( 
-				"." digit { digit } 
-				[ ( "e" | "E" ) ["+" | "-" ] digit { digit } ] [ "D" | "d" | "F" | "f" ] 
-				| ( "e" | "E") ["+" | "-" ] digit { digit } [ "D" | "d" | "F" | "f" ]  | "D" | "d" | "F" | "f"
-			).		
+	realTok = ["-"]"." digit { digit } [ ("e"|"E") ["+"|"-"] digit { digit } ] ["D"|"d"|"F"|"f"] 
+			| ["-"] digit { digit } 
+			    ( 
+				    "." digit { digit } [ ( "e" | "E" ) ["+" | "-" ] digit { digit } ] ["D"|"d"|"F"|"f"] 
+				    | ("e"|"E") ["+"|"-"] digit { digit } ["D"|"d"|"F"|"f"]  
+				    | "D"|"d"|"F"|"f"|"M"|"m"
+			    ).			
 			
 	stringTok = "\"" { stringChar
 					| "\\\"" | "\\\\" | "\\0" | "\\b" | "\\n" | "\\r" | "\\t" | "\\'"

@@ -17,10 +17,8 @@ CHARACTERS
 	op = "!%&*+-.:/\\<=>?@^|~$".
 	op2 = "!%&*+-.:/\\<=?@^|~$".
 	op3 = "!%&*+-.:/\\=>?@^~$".
-	op4 = "!%&*+.:/\\<=>?@^|~$".
-	op5 = "!%&*+-./\\<=>?@^|~$".	
-	op6 = "!%&*+.:/\\<=?@^|~$".
-	op7 = "!%&*+-.:/\\<=?@^|~$".	
+	op4 = "!%&*+-.:/\\<=?@^|~$".
+	op5 = "!%&*+-.:/\\<=?@^|~$".	
 
 TOKENS
 	ident = lcase { letter | digit | "'" }
@@ -29,13 +27,13 @@ TOKENS
         
 	variantTok = ucase { letter | digit | "'" }.
 	
-	intTok = ( digit { digit } 
+	intTok = ["-"]( digit { digit } 
 	          | digit { digit } CONTEXT ("." notDigit) 
 	          | ("0x"|"0X") hexDigit { hexDigit } 
 	          ) ["L"|"l"].
 			
-	realTok = "." digit { digit } [ ("e"|"E") ["+"|"-"] digit { digit } ] ["D"|"d"|"F"|"f"] 
-			| digit { digit } 
+	realTok = ["-"]"." digit { digit } [ ("e"|"E") ["+"|"-"] digit { digit } ] ["D"|"d"|"F"|"f"] 
+			| ["-"] digit { digit } 
 			    ( 
 				    "." digit { digit } [ ( "e" | "E" ) ["+" | "-" ] digit { digit } ] ["D"|"d"|"F"|"f"] 
 				    | ("e"|"E") ["+"|"-"] digit { digit } ["D"|"d"|"F"|"f"]  
@@ -63,23 +61,22 @@ TOKENS
 		| "<" [ op3 { op } ]
 		).
 	operatorTok2 = "^" { op }.
-	operatorTok3 = "::" { op }.
+	operatorTok3 = "@" { op }.
 	operatorTok4 = (
 		"+" { op }
 		| "-" [
-		        op4 op { op }
-		        | op6 { op }
+		        op op { op }
+		        | op4 { op }
 		    ]
 		).
 	operatorTok5 = ("*"|"/"|"%") { op }.		
-	operatorTok6 = "<<" { op }.
+	operatorTok6 = ("<<" { op } | ":" {op}).
 	operatorTok7 = ">>" { op }.
-	operatorTok8 = (("~"|"--"|"!"|"?") { op }
-	               | ":" [ op5 { op } ])
+	operatorTok8 = ("~"|"!"|"?") { op }
 	               | "." op { op }.
-	operatorTok9 = ("<|"|"$") { op }.
-	operatorTok10 = "|>" { op }.
-	operatorTok11 = "|" op7 { op }.
+	operatorTok9 = "<|" { op }.
+	operatorTok10 = ("|>"|"$") { op }.
+	operatorTok11 = "|" op5 { op }.
 	operatorTok12 = "&" { op }.
 	
 	LBRA = "{".
@@ -756,7 +753,7 @@ PRODUCTIONS
 			)
 		).
 		
-	/* << */
+	/* << : */
 	OpExpr10<out ElaExpression exp> =
 		(. 
 			var op = String.Empty; 
@@ -818,7 +815,7 @@ PRODUCTIONS
 			)
 		).
 		
-	/* ~ ! -- ? : . */
+	/* ~ ! ? . */
 	OpExpr12<out ElaExpression exp> = 
 		(. 
 			var op = String.Empty; 
@@ -860,8 +857,8 @@ PRODUCTIONS
 			.)	
 			{
 				AccessExpr<out cexp>					
-				(. 
-					if (mi == null)
+				(.
+				    if (mi == null)
 					{
 					    mi = new ElaJuxtaposition(ot) { Target = exp };
 						exp = mi;

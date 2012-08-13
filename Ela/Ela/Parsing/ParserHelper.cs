@@ -117,22 +117,9 @@ namespace Ela.Parsing
 			return fc;
 		}
 
-
 		private ElaLiteralValue ParseInt(string val)
 		{
-			return ParseInt(val, false);
-		}
-
-
-		private ElaLiteralValue ParseInt(string val, bool negate)
-		{
-            if (val.StartsWith("-"))
-            {
-                val = val.Substring(1);
-                negate = true;
-            }
-
-			if (TrimLast(ref val, 'l', 'L'))
+            if (TrimLast(ref val, 'l', 'L'))
 			{
 				var res = default(Int64);
 				
@@ -148,7 +135,7 @@ namespace Ela.Parsing
 					}
 				}
 				
-				return new ElaLiteralValue(negate ? -res : res);
+				return new ElaLiteralValue(res);
 			}
 			else
 			{
@@ -166,7 +153,7 @@ namespace Ela.Parsing
 					}
 				}
 				
-				return new ElaLiteralValue(negate ? -res : res);
+				return new ElaLiteralValue(res);
 			}
 		}
 
@@ -183,21 +170,8 @@ namespace Ela.Parsing
 			return new ElaLiteralValue(str[0]);
 		}
 
-
 		private ElaLiteralValue ParseReal(string val)
 		{
-			return ParseReal(val, false);
-		}
-
-
-		private ElaLiteralValue ParseReal(string val, bool negate)
-		{
-            if (val.StartsWith("-"))
-            {
-                val = val.Substring(1);
-                negate = true;
-            }
-
             if (TrimLast(ref val, 'd', 'D'))
 			{
 				var res = default(Double);
@@ -205,7 +179,7 @@ namespace Ela.Parsing
 				if (!Double.TryParse(val, NumberStyles.Float, Culture.NumberFormat, out res))
 					AddError(ElaParserError.InvalidRealSyntax);
 				
-				return new ElaLiteralValue(negate ? -res : res);
+				return new ElaLiteralValue(res);
 			}
             else
             {
@@ -214,7 +188,7 @@ namespace Ela.Parsing
                 if (!Single.TryParse(val.Trim('f', 'F'), NumberStyles.Float, Culture.NumberFormat, out res))
                     AddError(ElaParserError.InvalidRealSyntax);
 
-                return new ElaLiteralValue(negate ? -res : res);
+                return new ElaLiteralValue(res);
             }
 		}
 

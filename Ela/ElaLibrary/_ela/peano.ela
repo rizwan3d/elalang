@@ -13,7 +13,7 @@ infinity = & Succ infinity
 fromIntegral # qualified
 fromIntegral a = from a
   where from 0 = Zero
-        from n = Succ (& from (n-1))
+        from n = Succ (& from (n - 1))
 
 /* Instances */
 instance Lazy Peano where

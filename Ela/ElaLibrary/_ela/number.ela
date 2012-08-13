@@ -98,9 +98,9 @@ instance Integral Int Long where
 instance Absolute Int Long Single Double where
   abs x 
     | x >= 0 = x 
-    | else = --x
+    | else = negate x
   signum x 
-    | x < 0 = --one ::: (x)
+    | x < 0 = negate one ::: (x)
     | else = one ::: (x)
 
 instance Transcendental where

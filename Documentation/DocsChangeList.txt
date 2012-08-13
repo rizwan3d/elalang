@@ -1,3 +1,7 @@
+0.1.6.4:Change:An article 'elaandhaskell' is updated according to the language changes.
+0.1.6.3:New:A new document 'Whats new' that contains platform changes overview is added.
+0.1.6.2:Change:Article 'operatorpriority' is updated according to the operator priority and associativity changes.
+0.1.6.1:Change:Article 'prelude' is updated according to the module changes.
 0.1.6.0:Release:Release of 0.1.6.0.
 0.1.5.6:New:A new article 'bench' about the new module of the same name is added.
 0.1.5.5:Change:Articles 'prelude', 'espec', 'io', 'number', 'core', 'tuple', 'list', 'peano', 'generic' are updated.

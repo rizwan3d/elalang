@@ -5,24 +5,24 @@ This article provides a brief overview of differences between Ela and Haskell. I
 a "quick start" guide for those who are familiar with Haskell. 
 
 =Feature comparison
-| |*Ela* |*Haskell*
-| Major programming paradigm |Functional |Functional 
-| Syntax |ML style, layout based |ML style, layout based 
-| Purity |Impure *i* |Pure 
-| Type system |No type system, only dynamic typing |Statically typed with type inference 
-| Type strength |Strong |Strong 
-| Type safety |Safe |Safe 
-| Evaluation strategy |Strict by default, lazy by demand |Lazy by default, string by demand 
-| Pattern matching |Yes |Yes 
-| Function definition by PM |Yes |Yes 
-| Algebraic types |Yes |Yes 
-| First class modules |Yes |No 
-| OOP support |Through duck typing and modules |Through existential types 
-| Monads |No *ii* |Yes 
-| Exceptions |Through structured exception handling |Through monads 
-| Curried functions |Yes, all functions are curried |Yes, all functions are curried 
-| Operators as functions |Yes |Yes 
-| Type classes |Yes *iii* |Yes
+|                           |*Ela*                                |*Haskell*
+|Major programming paradigm |Functional                           |Functional 
+|Syntax                     |ML style, layout based               |ML style, layout based 
+|Purity                     |Impure *i*                           |Pure 
+|Type system                |No type system, only dynamic typing  |Statically typed with type inference 
+|Type strength              |Strong                               |Strong 
+|Type safety                |Safe                                 |Safe 
+|Evaluation strategy        |Strict by default, lazy by demand    |Lazy by default, string by demand 
+|Pattern matching           |Yes                                  |Yes 
+|Function definition by PM  |Yes                                  |Yes 
+|Algebraic types            |Yes                                  |Yes 
+|First class modules        |Yes                                  |No 
+|OOP support                |Through duck typing and modules      |Through existential types 
+|Monads                     |No *ii*                              |Yes 
+|Exceptions                 |Yes                                  |Yes
+|Curried functions          |Yes, all functions are curried       |Yes, all functions are curried 
+|Operators as functions     |Yes                                  |Yes 
+|Type classes               |Yes *iii*                            |Yes
 \*i* Actually Ela is a pure language. The language itself provides no support for mutation of state 
 - no variables, mutable data structures, etc. However Ela doesn't restrict and/or control side 
 effects in the code therefore mutation of state can be easily implemented on a library level. For 
@@ -82,14 +82,17 @@ Ela:
 >>x `negate` = --x
 
 ==Unary negation
-Haskell uses a common notation for unary negation, e.g. `-x`, while Ela has a different operator 
-for unary negation. //br
+Haskell uses a `-` operator for unary negation. Ela standard library doesn't provide a prefix
+operator for unary negation (a `negate` function is used instead), however, a `-` sign is a part
+of numeric literals.//br
 Haskell: 
->y = -2 --unary negation
+>x = -2
+>y = -x
+>fun (-2)
 Ela: 
->>y = --2
->>f = -2 //Right section for a binary minus
->>f 10 //8
+>>x = -2
+>>y = negate 2
+>>fun -2
 
 == List construction and list pattern matching
 By default Ela uses `::` operator for list construction. Haskell uses `:` operator. //br

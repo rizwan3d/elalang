@@ -127,16 +127,16 @@ cast {eq} =
   `seq` eq (toSingle 12.2D) 12.2
 
 bitNot {eq} =
-    eq (~~~2) (--3)
-  `seq` eq (~~~124) (--125)
-  `seq` eq (~~~(--3)) 2
+    eq (~~~2) -3
+  `seq` eq (~~~124) -125
+  `seq` eq (~~~ -3) 2
 
 unaryMinus {eq} =
-    eq (--3) (0 - 3)
-  `seq` eq (--256) (0 - 256)
-  `seq` eq (--2.2) (0 - 2.2)
-  `seq` eq (--45L) (0 - 45L)
-  `seq` eq (--42.42D) (0 - 42.42D)
+    eq -3 (0 - 3)
+  `seq` eq -256 (0 - 256)
+  `seq` eq -2.2 (0 - 2.2)
+  `seq` eq -45L (0 - 45L)
+  `seq` eq -42.42D (0 - 42.42D)
 
 succPred {eq} =
     eq (succ 1) 2
