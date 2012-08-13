@@ -232,11 +232,6 @@ namespace Ela.Compilation
 
             switch (exp.Type)
             {
-                case ElaNodeType.Binary:
-                    {
-                        var b = (ElaBinary)exp;
-                        return CanCompileStrict(b.Left, locals) && CanCompileStrict(b.Right, locals);
-                    }
                 case ElaNodeType.Comprehension:
                     {
                         var b = (ElaComprehension)exp;
@@ -463,11 +458,6 @@ namespace Ela.Compilation
 
             switch (exp.Type)
             {
-                case ElaNodeType.Binary:
-                    {
-                        var b = (ElaBinary)exp;
-                        return IsRecursive(b.Left, addr, arr) && IsRecursive(b.Right, addr, arr);
-                    }
                 case ElaNodeType.Comprehension:
                     {
                         var b = (ElaComprehension)exp;

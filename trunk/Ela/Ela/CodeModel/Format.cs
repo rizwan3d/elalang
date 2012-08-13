@@ -11,16 +11,6 @@ namespace Ela.CodeModel
         {
             return name.IndexOfAny(ops) != -1;
         }
-        
-		public static string OperatorAsString(ElaOperator op)
-		{
-			switch (op)
-			{
-				case ElaOperator.Sequence: return "$";
-				default:
-					return String.Empty;
-			}
-		}
 
 		public static bool IsSimpleExpression(ElaExpression p)
 		{

@@ -28,9 +28,7 @@ namespace Ela.CodeModel
 		Context,
         
         Builtin,
-
-		Binary,
-
+        		
 		Juxtaposition,
 
 		FieldDeclaration,
