@@ -17,13 +17,15 @@ August 2012
 
 September 2012
 
-  * New version of the book _Ela, dynamic functional language_, covering all the recent changes in the language, including algebraic types and classes.
-  * New "getting started" style documentation and tutorials.
+  * Better support for laziness, compiler can implicitly mark certain expressions as lazy if they cannot be executed in a strict manner.
+  * Negative numeric literals.
   * Bring back validation of `match` entries for overlapping.
   * Redesign of logical operators (`and`, `or`) and sequencing operator `($)`, which are currently presented as special forms, not as functions.  
-  * New function application operators.
   * New types classes: `Functor` (generalization of `map`), `Foldable` (generalization of `fold`), `Union` (generalization of `concat`), etc. and their instances, including generic default instances.
   * Final version of Ela reflection API, minor redesign in modules `generic` and `reflect`.
+  * New version of the book _Ela, dynamic functional language_, covering all the recent changes in the language, including algebraic types and classes.
+  * New "getting started" style documentation and tutorials.
+
 
 == Platform 2012.10 ==
 
