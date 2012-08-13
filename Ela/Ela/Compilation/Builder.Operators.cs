@@ -42,26 +42,6 @@ namespace Ela.Compilation
             }
         }
 
-        //Compile one of three binary operators
-		private void CompileBinary(ElaBinary bin, LabelMap map, Hints hints)
-        {
-            var op = bin.Operator;
-            var ut = hints;
-
-            if ((ut & Hints.Left) == Hints.Left)
-                ut ^= Hints.Left;
-
-            switch (op)
-            {
-                case ElaOperator.Sequence:
-
-                    break;
-            }
-
-            if ((hints & Hints.Left) == Hints.Left)
-                AddValueNotUsed(bin);
-        }
-
         //Compiles a sequencing operator
         private void CompileSeq(ElaExpression parent, ElaExpression left, ElaExpression right, LabelMap map, Hints hints)
         {
