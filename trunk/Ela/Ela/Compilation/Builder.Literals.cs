@@ -117,7 +117,7 @@ namespace Ela.Compilation
             return new ExprData(DataKind.VarType, (Int32)ElaTypeCode.List);
         }
 
-        //Compiles tuple literal
+        //Compiles xs literal
         private ExprData CompileTuple(ElaTupleLiteral v, LabelMap map, Hints hints)
         {
             CompileTupleParameters(v, v.Parameters, map);
@@ -128,10 +128,10 @@ namespace Ela.Compilation
             return new ExprData(DataKind.VarType, (Int32)ElaTypeCode.Tuple);
         }
 
-        //Compiles tuple parameters, can be used in all cases where tuple creation is needed.
+        //Compiles xs parameters, can be used in all cases where xs creation is needed.
         private void CompileTupleParameters(ElaExpression v, List<ElaExpression> pars, LabelMap map)
         {
-            //Optimize tuple creates for a case of pair (a single op typeId is used).
+            //Optimize xs creates for a case of pair (a single op typeId is used).
             if (pars.Count == 2)
             {
                 CompileExpression(pars[0], map, Hints.None, v);

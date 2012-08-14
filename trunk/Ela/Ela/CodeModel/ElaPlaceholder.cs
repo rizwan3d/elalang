@@ -25,5 +25,10 @@ namespace Ela.CodeModel
 		{
 			sb.Append('_');
 		}
+
+        internal override bool IsIrrefutable()
+        {
+            return true;
+        }
 	}
 }

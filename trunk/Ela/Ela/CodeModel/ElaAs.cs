@@ -28,6 +28,16 @@ namespace Ela.CodeModel
             sb.Append(Name);
         }
 
+        internal override bool IsIrrefutable()
+        {
+            return Expression.IsIrrefutable();
+        }
+
+        internal override bool CanFollow(ElaExpression exp)
+        {
+            return Expression.CanFollow(exp);
+        }
+
         public string Name { get; set; }
 
         public ElaExpression Expression { get; set; }

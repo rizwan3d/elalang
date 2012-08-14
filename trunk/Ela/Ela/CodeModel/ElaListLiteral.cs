@@ -56,6 +56,28 @@ namespace Ela.CodeModel
         {
             return _values != null && _values.Count > 0;
         }
+
+        internal override bool CanFollow(ElaExpression pat)
+        {
+            if (pat.IsIrrefutable())
+                return false;
+
+            if (pat.Type == ElaNodeType.ListLiteral)
+            {
+                var xs = (ElaListLiteral)pat;
+
+                if (xs.Values.Count != Values.Count)
+                    return true;
+
+                for (var i = 0; i < Values.Count; i++)
+                    if (Values[i].CanFollow(xs.Values[i]))
+                        return true;
+
+                return false;
+            }
+
+            return true;
+        }
 		
 		private List<ElaExpression> _values;
 		public List<ElaExpression> Values 

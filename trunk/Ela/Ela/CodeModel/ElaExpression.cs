@@ -56,6 +56,16 @@ namespace Ela.CodeModel
         {
             return false;
         }
+
+        internal virtual bool CanFollow(ElaExpression exp)
+        {
+            return !exp.IsIrrefutable();
+        }
+
+        internal virtual bool IsIrrefutable()
+        {
+            return false;
+        }
 		
         public int Line { get; internal set; }
 
