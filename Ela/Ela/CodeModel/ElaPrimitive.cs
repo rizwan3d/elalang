@@ -30,6 +30,20 @@ namespace Ela.CodeModel
 		{
 			sb.Append(Value);
 		}
+
+        internal override bool CanFollow(ElaExpression exp)
+        {
+            if (exp.IsIrrefutable())
+                return false;
+
+            if (exp.Type == ElaNodeType.Primitive)
+            {
+                var lit = (ElaPrimitive)exp;
+                return !Value.Equals(lit.Value);
+            }
+
+            return true;
+        }
 		
 		public ElaLiteralValue Value { get; set; }
 	}

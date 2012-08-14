@@ -57,6 +57,28 @@ namespace Ela.CodeModel
 				}
 			}
 		}
+
+        internal override bool CanFollow(ElaExpression exp)
+        {
+            if (exp.IsIrrefutable())
+                return false;
+
+            if (exp.Type == ElaNodeType.Juxtaposition)
+            {
+                var jx = (ElaJuxtaposition)exp;
+
+                if (jx.Parameters.Count != Parameters.Count || jx.Target.GetName() != Target.GetName())
+                    return true;
+
+                for (var i = 0; i < Parameters.Count; i++)
+                    if (Parameters[i].CanFollow(jx.Parameters[i]))
+                        return true;
+
+                return false;
+            }
+
+            return true;
+        }
 		
         public ElaExpression Target { get; set; }
 

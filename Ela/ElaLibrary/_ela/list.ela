@@ -18,10 +18,10 @@ mergeBy pred (x::xs) (y::ys)
 mergeBy pred xs [] = xs
 mergeBy pred [] ys = ys
 
+sortBy pred [] = []
 sortBy pred [x] = [x]
 sortBy pred xs = mergeBy pred (sortBy pred xs1) (sortBy pred xs2)
   where (xs1,xs2) = splitHalf xs
-sortBy pred [] = []
 
 sort = sortBy (<=)
 

@@ -29,7 +29,7 @@ namespace Ela.Compilation
             //Throw hint is to tell match compiler to generate a different typeId if 
             //all pattern fail - to rethrow an original error instead of generating a
             //new MatchFailed error.
-            CompileSimpleMatch(n.Entries.Equations, map, hints | Hints.Throw);
+            CompileSimpleMatch(n.Entries.Equations, map, hints | Hints.Throw, null);
 
             cw.MarkLabel(exitLab);
             cw.Emit(Op.Nop);
@@ -43,7 +43,7 @@ namespace Ela.Compilation
         {
             CompileExpression(n.Expression, map, Hints.None, n);
             AddLinePragma(n);
-            CompileSimpleMatch(n.Entries.Equations, map, hints);
+            CompileSimpleMatch(n.Entries.Equations, map, hints, n.Expression);
 
             if ((hints & Hints.Left) == Hints.Left)
                 AddValueNotUsed(n);
@@ -51,8 +51,11 @@ namespace Ela.Compilation
 
         //This method contains main compilation logic for 'match' expressions and for 'try' expressions. 
         //This method only supports a single pattern per entry.
-        private void CompileSimpleMatch(IEnumerable<ElaEquation> bindings, LabelMap map, Hints hints)
+        //A 'mexp' (matched expression) parameter can be null and is used for additional validation only.
+        private void CompileSimpleMatch(IEnumerable<ElaEquation> bindings, LabelMap map, Hints hints, ElaExpression mexp)
         {
+            ValidateOverlapSimple(bindings, mexp);
+
             var failLab = cw.DefineLabel();
             var endLab = cw.DefineLabel();
 
@@ -138,6 +141,8 @@ namespace Ela.Compilation
         //Argument patNum contains number of patterns that should be in each.
         private void CompileFunctionMatch(int patNum, IEnumerable<ElaEquation> bindings, LabelMap map, Hints hints)
         {
+            ValidateOverlapComplex(bindings);
+            
             var failLab = cw.DefineLabel();
             var endLab = cw.DefineLabel();
             
@@ -428,7 +433,7 @@ namespace Ela.Compilation
             }
         }
 
-        //Compile a tuple pattern in the form: {fieldName=pat,..}. This pattern can fail at
+        //Compile a xs pattern in the form: {fieldName=pat,..}. This pattern can fail at
         //run-time if a given expression doesn't support Len and Pushelem op codes.
         private void CompileTuplePattern(int sysVar, ElaTupleLiteral tuple, Label failLab)
         {
@@ -441,7 +446,7 @@ namespace Ela.Compilation
             cw.Emit(Op.Cneq);
             cw.Emit(Op.Brtrue, failLab); //Length not equal, proceed to fail
 
-            //Loops through all tuple patterns
+            //Loops through all xs patterns
             for (var i = 0; i < len; i++)
             {
                 var pat = tuple.Parameters[i];
@@ -460,7 +465,7 @@ namespace Ela.Compilation
                 var sysVar2 = AddVariable();
                 PopVar(sysVar2);
                 
-                //Match an element of a tuple
+                //Match an element of a xs
                 CompilePattern(sysVar2, pat, failLab, false /*forceStrict*/);
             }
         }
@@ -742,5 +747,52 @@ namespace Ela.Compilation
                 return AddVariable(varName, exp, ElaVariableFlags.None, -1);
             }
 		}
+
+        //Performs validation of overlapping for simple case of pattern matching 
+        //(such as 'match' expression with a single pattern per entry).
+        private void ValidateOverlapSimple(IEnumerable<ElaEquation> seq, ElaExpression mexp)
+        {
+            var lst = new List<ElaExpression>();
+            
+            foreach (var e in seq)
+            {
+                foreach (var o in lst)
+                    if (!e.Left.CanFollow(o))
+                        AddWarning(ElaCompilerWarning.MatchEntryNotReachable, e.Left, FormatNode(e.Left), FormatNode(o));
+
+                lst.Add(e.Left);
+            }
+        }
+
+        //Performs validation of overlapping for complex case of pattern matchine
+        //(such as when pattern matching is done in a function definition).
+        private void ValidateOverlapComplex(IEnumerable<ElaEquation> seq)
+        {
+            var lst = new List<ElaJuxtaposition>();
+
+            foreach (var ejx in seq)
+            {
+                var jx = (ElaJuxtaposition)ejx.Left;
+
+                foreach (var ojx in lst)
+                {
+                    var can = false;
+
+                    for (var i = 0; i < ojx.Parameters.Count; i++)
+                    {
+                        if (i < jx.Parameters.Count && jx.Parameters[i].CanFollow(ojx.Parameters[i]))
+                        {
+                            can = true;
+                            break;
+                        }
+                    }
+
+                    if (!can)
+                        AddWarning(ElaCompilerWarning.MatchEntryNotReachable, jx, FormatNode(jx), FormatNode(ojx));
+                }
+
+                lst.Add(jx);
+            }
+        }
 	}
 }

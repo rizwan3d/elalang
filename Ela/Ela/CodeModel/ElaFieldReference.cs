@@ -22,6 +22,11 @@ namespace Ela.CodeModel
 			sb.Append('.');
 			sb.Append(FieldName);
 		}
+
+        internal override string GetName()
+        {
+            return TargetObject.GetName() + '.' + FieldName;
+        }
 		
         public string FieldName { get; set; }
 

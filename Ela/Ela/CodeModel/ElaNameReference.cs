@@ -34,6 +34,22 @@ namespace Ela.CodeModel
 			    sb.Append(Name);
 		}
 
+        internal override bool IsIrrefutable()
+        {
+            return !Uppercase;
+        }
+
+        internal override bool CanFollow(ElaExpression exp)
+        {
+            if (exp.IsIrrefutable())
+                return false;
+
+            if (exp.Type == ElaNodeType.NameReference)
+                return Name != exp.GetName();
+
+            return true;
+        }
+
 		public string Name { get; set; }
 
         public bool Uppercase { get; set; }

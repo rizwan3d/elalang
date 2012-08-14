@@ -56,6 +56,28 @@ namespace Ela.CodeModel
 
 			sb.Append('}');
 		}
+
+        internal override bool CanFollow(ElaExpression pat)
+        {
+            if (pat.IsIrrefutable())
+                return false;
+
+            if (pat.Type == ElaNodeType.RecordLiteral)
+            {
+                var rec = (ElaRecordLiteral)pat;
+
+                if (rec.Fields.Count != Fields.Count)
+                    return true;
+
+                for (var i = 0; i < rec.Fields.Count; i++)
+                    if (Fields[i].CanFollow(rec.Fields[i]))
+                        return true;
+
+                return false;
+            }
+
+            return true;
+        }
 		
 		public List<ElaFieldDeclaration> Fields { get; private set; }
 	}

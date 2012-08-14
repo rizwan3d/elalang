@@ -54,6 +54,28 @@ namespace Ela.CodeModel
 
 			sb.Append(')');
 		}
+
+        internal override bool CanFollow(ElaExpression pat)
+        {
+            if (pat.IsIrrefutable())
+                return false;
+            
+            if (pat.Type == ElaNodeType.TupleLiteral)
+            {
+                var tuple = (ElaTupleLiteral)pat;
+
+                if (tuple.Parameters.Count != Parameters.Count)
+                    return true;
+
+                for (var i = 0; i < Parameters.Count; i++)
+                    if (Parameters[i].CanFollow(tuple.Parameters[i]))
+                        return true;
+
+                return false;
+            }
+
+            return true;
+        }
 		
 		private List<ElaExpression> _parameters;
 		public List<ElaExpression> Parameters

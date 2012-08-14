@@ -28,6 +28,11 @@ namespace Ela.CodeModel
 			sb.Append(')');
 		}
 
+        internal override bool IsIrrefutable()
+        {
+            return true;
+        }
+
         public ElaExpression Expression { get; set; }
 	}
 }
