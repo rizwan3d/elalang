@@ -188,3 +188,5 @@ Returns an index of a constructor with the specified `name`. A `code` should be 
 can be obtained using `typeCode` function.
 >>>consNameIndex (typeCode None) "Some"
 
+#isAlgebraic val
+Returns true if a given value is of algebraic type, otherwise returns false.

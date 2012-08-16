@@ -45,9 +45,15 @@ foldl1 _ [] = fail "list.foldl1: Empty list."
 foldr1 f (x::xs) = foldr f x xs
 foldr1 _ [] = fail "list.foldr1: Empty list."
 
+foldl1' f (x::xs) = foldl' f x xs
+foldl1' _ [] = fail "list.foldl1': Empty list."
+
+foldr1' f (x::xs) = foldr' f x xs
+foldr1' _ [] = fail "list.foldr1': Empty list."
+
 fold f xs = foldr f [] xs
 
-foldl' f z (x::xs) = foldl' f (& f z x) xs
+foldl' f z (x::xs) = foldl' f ( f z x) xs
 foldl' _ z []      = z
 
 foldr' f z (x::xs) = f x (& foldr' f z xs)

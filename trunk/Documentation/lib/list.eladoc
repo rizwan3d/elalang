@@ -50,6 +50,12 @@ A variant of `foldl` that has no starting value element and can only be applied 
 #foldr1 f xs
 A variant of `foldr` that has no starting value element and can only be applied to non-empty lists.
 
+#foldl1' f xs
+A lazy version of `foldl1`.
+
+#foldr1' f xs
+A lazy version of `foldr1`.
+
 #any p xs
 Returns `true` if at least one of the elements in `xs` list satisfies `p` predicate. 
 

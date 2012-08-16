@@ -251,7 +251,7 @@ namespace Ela.Compilation
                 case ElaNodeType.Context:
                     {
                         var c = (ElaContext)exp;
-                        return CanCompileStrict(c.Expression, locals);
+                        return CanCompileStrict(c.Expression, locals) && (!c.Context.Parens || CanCompileStrict(c.Context, locals));
                     }
                 case ElaNodeType.Equation:
                     return true;
@@ -471,13 +471,13 @@ namespace Ela.Compilation
                 case ElaNodeType.Condition:
                     {
                         var b = (ElaCondition)exp;
-                        return IsRecursive(b.Condition, addr, arr) && 
-                            IsRecursive(b.True, addr, arr) && IsRecursive(b.False, addr, arr);
+                        return IsRecursive(b.Condition, addr, arr) ||
+                            IsRecursive(b.True, addr, arr) || IsRecursive(b.False, addr, arr);
                     }
                 case ElaNodeType.Context:
                     {
                         var c = (ElaContext)exp;
-                        return IsRecursive(c.Expression, addr, arr);
+                        return IsRecursive(c.Expression, addr, arr) || (!c.Context.Parens && IsRecursive(c.Context, addr, arr));
                     }
                 case ElaNodeType.Equation:
                     return true;
@@ -494,8 +494,8 @@ namespace Ela.Compilation
                 case ElaNodeType.Generator:
                     {
                         var g = (ElaGenerator)exp;
-                        return IsRecursive(g.Target, addr, arr) && 
-                            IsRecursive(g.Guard, addr, arr) && IsRecursive(g.Body, addr, arr);
+                        return IsRecursive(g.Target, addr, arr) || 
+                            IsRecursive(g.Guard, addr, arr) || IsRecursive(g.Body, addr, arr);
                     }
                 case ElaNodeType.Juxtaposition:
                     {
@@ -571,8 +571,8 @@ namespace Ela.Compilation
                 case ElaNodeType.Range:
                     {
                         var r = (ElaRange)exp;
-                        return IsRecursive(r.First, addr, arr) && 
-                            IsRecursive(r.Second, addr, arr) && IsRecursive(r.Last, addr, arr);
+                        return IsRecursive(r.First, addr, arr) || 
+                            IsRecursive(r.Second, addr, arr) || IsRecursive(r.Last, addr, arr);
                     }
                 case ElaNodeType.RecordLiteral:
                     {

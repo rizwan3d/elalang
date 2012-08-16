@@ -142,6 +142,7 @@ namespace Ela.Compilation
                         else
                         {
                             CompileExpression(v.Context, map, Hints.None, v);
+                            cw.Emit(Op.Force);
                             cw.Emit(Op.Api, 5); //TypeCode
                         }
 
