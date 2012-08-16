@@ -51,6 +51,9 @@ consCreate        = __internal api15
 //An index of a constructor by name: Int->String->Int
 consNameIndex     = __internal api107
 
+//Returns try if a value is AlgDT: Alg->Bool
+isAlgebraic       = __internal api8
+
 /* Default instances */
 //Only for algebraic, open types are welcome
 instance Show where

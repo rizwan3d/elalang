@@ -13,7 +13,7 @@ namespace Ela
         TypeCode = 5,
         TypeConsNumber = 6,
         ConsInfix = 7,
-        __Reserved = 8,
+        IsAlgebraic = 8,
         ConsCode = 9,
         LazyList = 10,
         ListLength = 11,

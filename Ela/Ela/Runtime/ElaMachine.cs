@@ -1238,7 +1238,7 @@ namespace Ela.Runtime
                             var cp = callStack.Pop();
                             evalStack.PopVoid();
 
-                            if (Call(funObj, thread, evalStack, CallFlag.NoReturn, null))
+                            if (Call(funObj, thread, evalStack, CallFlag.NoReturn, (int?)cp.Context))
                                 goto SWITCH_MEM;
                             else
                                 callStack.Push(cp);
@@ -1512,6 +1512,8 @@ namespace Ela.Runtime
         {
             switch ((Api)code)
             {
+                case Api.IsAlgebraic:
+                    return new ElaValue(left.TypeId > SysConst.MAX_TYP);
                 case Api.CurrentContext:
                     var ic = thread.CallStack.Peek().Context;
 

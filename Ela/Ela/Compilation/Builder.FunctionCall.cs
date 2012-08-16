@@ -169,7 +169,7 @@ namespace Ela.Compilation
 
             return ed;
         }
-
+        
         //Here we check if a function application is actually a constructor application.
         //The latter case can be inlined. We support both direct reference and a qualified reference.
         //Only constructors without type constraints can be inlined.
@@ -186,7 +186,7 @@ namespace Ela.Compilation
                     if (!sv.IsEmpty() && sv.Data == juxta.Parameters.Count)
                     {
                         var sv2 = GetGlobalVariable("$--" + nr.Name, GetFlags.None, juxta.Line, juxta.Column);
-                        CompleConstructorCall(juxta, map, sv, sv2);
+                        CompileConstructorCall(juxta, map, sv, sv2);
                         return true;
                     }
                 }
@@ -204,7 +204,7 @@ namespace Ela.Compilation
                     if (!sv.IsEmpty() && sv.Data == juxta.Parameters.Count)
                     {
                         var sv2 = FindByPrefix(prefix, "$--" + fr.FieldName, out _);
-                        CompleConstructorCall(juxta, map, sv, sv2);
+                        CompileConstructorCall(juxta, map, sv, sv2);
                         return true;
                     }
                 }
@@ -214,7 +214,7 @@ namespace Ela.Compilation
         }
 
         //Inlines a constructor call, method is called from TryOptimizeConstructor
-        private void CompleConstructorCall(ElaJuxtaposition juxta, LabelMap map, ScopeVar sv, ScopeVar sv2)
+        private void CompileConstructorCall(ElaJuxtaposition juxta, LabelMap map, ScopeVar sv, ScopeVar sv2)
         {
             var len = juxta.Parameters.Count;
 
