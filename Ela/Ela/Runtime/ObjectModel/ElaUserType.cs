@@ -21,7 +21,7 @@ namespace Ela.Runtime.ObjectModel
             return typeName;
         }
 
-        internal override int GetTag(ExecutionContext ctx)
+        internal override int GetTag()
         {
             return tag;
         }

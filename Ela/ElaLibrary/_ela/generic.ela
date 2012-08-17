@@ -58,12 +58,15 @@ isAlgebraic       = __internal api8
 //Only for algebraic, open types are welcome
 instance Show where
   show a 
-    | consInfix a && len == 2 = show (consParamValue 0 a) ++ " " 
-                                ++ consName a ++ " " ++ show (consParamValue 1 a)
+    | consInfix a && len == 2 = showAlg (consParamValue 0 a) ++ " " 
+                                ++ consName a ++ " " ++ showAlg (consParamValue 1 a)
     | else = toString <| show' (consName a) 0
     where len = consParamNumber a
+          showAlg x 
+            | isAlgebraic x && consParamNumber x > 0 = "(" ++ show x ++ ")"
+            | else = show x
           show' sb n 
-            | n < len = show' (sb +> " " +> show (consParamValue n a)) (n+1)
+            | n < len = show' (sb +> " " +> showAlg (consParamValue n a)) (n+1)
             | else = sb
 
 //Only for algebraic, open types are welcome
