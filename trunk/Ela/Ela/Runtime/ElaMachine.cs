@@ -544,7 +544,7 @@ namespace Ela.Runtime
                         if (right.TypeId == LAZ)
                             right = right.Ref.Force(right, ctx);
 
-                        if (left.I4 == right.Ref.GetTag(ctx))
+                        if (left.I4 == right.Ref.GetTag())
                         {
                             thread.Offset++;
                             break;
@@ -1542,14 +1542,20 @@ namespace Ela.Runtime
                 case Api.ListLength:
                     return new ElaValue(((ElaList)left.Ref).GetLength());
                 case Api.ReverseList:
-                    if (left.TypeId != LST)
-                        thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.List), left);
-                    else
-                        return new ElaValue(((ElaList)left.Ref).Reverse());
+                    if (left.TypeId == LAZ)
+                        left = left.Ref.Force(left, thread.Context);
+
+                    if (!thread.Context.Failed)
+                    {
+                        if (left.TypeId != LST)
+                            thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.List), left);
+                        else
+                            return new ElaValue(((ElaList)left.Ref).Reverse());
+                    }
                     break;
                 case Api.ConsName:
                     {
-                        var cid = left.Ref.GetTag(null);
+                        var cid = left.Ref.GetTag();
 
                         if (cid >= 0)
                             return new ElaValue(asm.Constructors[cid].Name);
@@ -1559,7 +1565,7 @@ namespace Ela.Runtime
                     break;
                 case Api.ConsParamNumber:
                     {
-                        var cid = left.Ref.GetTag(null);
+                        var cid = left.Ref.GetTag();
 
                         if (cid >= 0)
                         {
@@ -1576,11 +1582,11 @@ namespace Ela.Runtime
                             thread.Context.NotAlgebraicType(left);
 
                         var cons = asm.Types[left.Ref.TypeId].Constructors;
-                        var r = cons.IndexOf(left.Ref.GetTag(null));
+                        var r = cons.IndexOf(left.Ref.GetTag());
 
                         if (r < 0)
                             thread.Context.Fail(new ElaError(ElaRuntimeError.InvalidConstructor, 
-                                asm.Constructors[left.Ref.GetTag(null)].Name,
+                                asm.Constructors[left.Ref.GetTag()].Name,
                                 left.Ref.GetTypeName()));
 
                         return new ElaValue(r);
@@ -1590,7 +1596,7 @@ namespace Ela.Runtime
                         if (left.TypeId <= SysConst.MAX_TYP)
                             thread.Context.NotAlgebraicType(left);
 
-                        return new ElaValue(left.Ref.GetTag(null));
+                        return new ElaValue(left.Ref.GetTag());
                     }
                 case Api.TypeName:
                     return new ElaValue(left.GetTypeName());
@@ -1606,7 +1612,7 @@ namespace Ela.Runtime
                     break;
                 case Api.ConsInfix:
                     {
-                        var cid = left.Ref.GetTag(null);
+                        var cid = left.Ref.GetTag();
 
                         if (cid >= 0)
                         {

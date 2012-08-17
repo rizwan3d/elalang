@@ -115,7 +115,7 @@ namespace Ela.Runtime.ObjectModel
 			return @this;
 		}
         
-		internal virtual int GetTag(ExecutionContext ctx)
+		internal virtual int GetTag()
 		{
             return -1;
 		}

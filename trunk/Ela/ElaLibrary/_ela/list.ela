@@ -181,9 +181,10 @@ splitHalf xs = go xs xs
         go xs _ = ([],xs)
 
 span p [] = ([],[])
-span p (x::xs')@xs | p x  = (x::ys, zs)
-                   | else = ([],xs)
-                   where (ys,zs) = span p xs'
+span p (x::xs')@xs 
+  | p x  = (x::ys, zs)
+  | else = ([],xs)
+  where (ys,zs) = span p xs'
 
 break p xs = span (not << p) xs
 
