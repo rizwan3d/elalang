@@ -987,23 +987,10 @@ namespace Ela.Runtime
                             goto SWITCH_MEM;
                         }
                         break;
-                    case Op.Ctypei:
+                    case Op.Ctype:
                         left = evalStack.Pop();
-                        i4 = left.I4;
                         right = evalStack.Peek();
-
-                        if (right.TypeId == LAZ)
-                            right = right.Ref.Force(right, ctx);
-
-                        evalStack.Replace(right.TypeId == i4);
-                        
-                        if (ctx.Failed)
-                        {
-                            evalStack.Replace(right);
-                            evalStack.Push(left);
-                            ExecuteThrow(thread, evalStack);
-                            goto SWITCH_MEM;
-                        }
+                        evalStack.Replace(right.TypeId == LAZ || right.TypeId == left.I4);
                         break;
                     #endregion
 

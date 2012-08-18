@@ -71,7 +71,7 @@ namespace Ela.Compilation
             -1, //Newtype0
             -2, //Newtype1
             -3, //Newtype2
-            -1, //Ctypei            
+            -1, //Ctype            
             -1, //Disp
 
             1, //Newconst

@@ -308,8 +308,9 @@ namespace Ela.Compilation
                         //Unit pattern is redundant, it is essentially the same as checking
                         //the type of an expression which is what we do here.
                         PushVar(sysVar);
+                        cw.Emit(Op.Force);
                         cw.Emit(Op.PushI4, (Int32)ElaTypeCode.Unit);
-                        cw.Emit(Op.Ctypei);
+                        cw.Emit(Op.Ctype);
 
                         //Types are not equal, proceed to fail.
                         cw.Emit(Op.Brfalse, failLab);
