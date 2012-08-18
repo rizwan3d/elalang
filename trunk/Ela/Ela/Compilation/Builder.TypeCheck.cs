@@ -1,11 +1,31 @@
 ﻿using System;
 using Ela.CodeModel;
+using Ela.Runtime;
 
 namespace Ela.Compilation
 {
     //This part is responsible for omitting type check/class check related code.
     internal sealed partial class Builder
     {
+        //Performs a type check and throws and error if the type is not as expected.
+        //This method assumes that a value to be checked is on the top of the stack.
+        private ScopeVar TypeCheck(string prefix, string name, ElaExpression par)
+        {
+            var sv = EmitSpecName(prefix, "$$" + name, par, ElaCompilerError.UndefinedType);
+            TypeCheckAllStack();
+            return sv;
+        }
+
+        //This method is similar to TypeCheck, but assumes that everything is on stack
+        private void TypeCheckAllStack()
+        {
+            var succ = cw.DefineLabel();
+            cw.Emit(Op.Ctypei);
+            cw.Emit(Op.Brtrue, succ);
+            cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
+            cw.MarkLabel(succ);
+        }
+
         //Compiles Ela 'is' expression.
         private void CompileTypeCheck(ElaTypeCheck n, LabelMap map, Hints hints)
         {
@@ -15,7 +35,6 @@ namespace Ela.Compilation
             var sysVar = AddVariable();
             CompileExpression(n.Expression, map, Hints.None, n);
             PopVar(sysVar);
-
 
             //Here we are checking all classes specified in a pattern. We have to loop
             //through all classes and generate a check instruction (Traitch) for each.

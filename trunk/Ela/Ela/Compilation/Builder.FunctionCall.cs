@@ -175,6 +175,7 @@ namespace Ela.Compilation
         //Only constructors without type constraints can be inlined.
         private bool TryOptimizeConstructor(ElaJuxtaposition juxta, LabelMap map)
         {
+            return false;
             if (juxta.Target.Type == ElaNodeType.NameReference)
             {
                 var nr = (ElaNameReference)juxta.Target;
@@ -186,7 +187,7 @@ namespace Ela.Compilation
                     if (!sv.IsEmpty() && sv.Data == juxta.Parameters.Count)
                     {
                         var sv2 = GetGlobalVariable("$--" + nr.Name, GetFlags.None, juxta.Line, juxta.Column);
-                        CompileConstructorCall(juxta, map, sv, sv2);
+                        CompileConstructorCall(null, nr.Name, juxta, map, sv, sv2);
                         return true;
                     }
                 }
@@ -204,7 +205,7 @@ namespace Ela.Compilation
                     if (!sv.IsEmpty() && sv.Data == juxta.Parameters.Count)
                     {
                         var sv2 = FindByPrefix(prefix, "$--" + fr.FieldName, out _);
-                        CompileConstructorCall(juxta, map, sv, sv2);
+                        CompileConstructorCall(prefix, fr.FieldName, juxta, map, sv, sv2);
                         return true;
                     }
                 }
@@ -214,21 +215,27 @@ namespace Ela.Compilation
         }
 
         //Inlines a constructor call, method is called from TryOptimizeConstructor
-        private void CompileConstructorCall(ElaJuxtaposition juxta, LabelMap map, ScopeVar sv, ScopeVar sv2)
+        private void CompileConstructorCall(string prefix, string name, ElaJuxtaposition juxta, LabelMap map, ScopeVar sv, ScopeVar sv2)
         {
             var len = juxta.Parameters.Count;
 
             //For optimization purposes we use a simplified creation algorythm for constructors 
             //with 1 and 2 parameters
             if (len == 1)
+            {
                 CompileExpression(juxta.Parameters[0], map, Hints.None, juxta);
+                TypeCheckIf(prefix, name, 0);
+            }
             else if (len == 2)
             {
                 CompileExpression(juxta.Parameters[0], map, Hints.None, juxta);
+                TypeCheckIf(prefix, name, 0);
+
                 CompileExpression(juxta.Parameters[1], map, Hints.None, juxta);
+                TypeCheckIf(prefix, name, 1);
             }
             else
-                CompileTupleParameters(juxta, juxta.Parameters, map);
+                CompileConstructorParameters(prefix, name, juxta, map);
 
             PushVar(sv);
             PushVar(sv2);
@@ -239,6 +246,37 @@ namespace Ela.Compilation
                 cw.Emit(Op.Newtype2);
             else
                 cw.Emit(Op.Newtype);
+        }
+
+        private void CompileConstructorParameters(string prefix, string name, ElaJuxtaposition juxta, LabelMap map)
+        {
+            var pars = juxta.Parameters;
+            cw.Emit(Op.Newtup, pars.Count);
+
+            for (var i = 0; i < pars.Count; i++)
+            {
+                CompileExpression(pars[i], map, Hints.None, juxta);
+                TypeCheckIf(prefix, name, i);
+                cw.Emit(Op.Tupcons, i);
+            }        
+        }
+
+        private void TypeCheckIf(string prefix, string name, int n)
+        {
+            CodeFrame _;
+            var sv = default(ScopeVar);
+
+            if (prefix != null)
+                sv = FindByPrefix(prefix, "$-" + n + name, out _);
+            else
+                sv = GetVariable("$-" + n + name, CurrentScope, GetFlags.NoError, 0, 0);
+
+            if (!sv.IsEmpty())
+            {
+                cw.Emit(Op.Dup);
+                PushVar(sv);
+                TypeCheckAllStack();
+            }
         }
     }
 }

@@ -68,6 +68,8 @@ namespace Ela.Runtime
 
         ZeroContext = 830,
 
+        UnableCreateConstructor = 831,
+
 
 		UserCode = 999
 	}
