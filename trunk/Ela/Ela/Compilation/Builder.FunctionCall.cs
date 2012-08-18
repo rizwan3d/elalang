@@ -248,6 +248,8 @@ namespace Ela.Compilation
                 cw.Emit(Op.Newtype);
         }
 
+        //Compiles constructor parameters. This method is called from CompileContructorCall, it is used
+        //when inlining constructor and when constructor has >2 arguments.
         private void CompileConstructorParameters(string prefix, string name, ElaJuxtaposition juxta, LabelMap map)
         {
             var pars = juxta.Parameters;
@@ -261,11 +263,17 @@ namespace Ela.Compilation
             }        
         }
 
+        //Compile type check for a constructor parameter when needed (if a type constructor parameter has type
+        //constraint). This method is called from CompileContructorCall/CompileConstructorParameters and is used
+        //when inlining constructor. A type to be checked againsted is determined using system variable which is
+        //initialized when a type constructor gets compiled.
         private void TypeCheckIf(string prefix, string name, int n)
         {
             CodeFrame _;
             var sv = default(ScopeVar);
 
+            //Here we need to seek for the special system variable that has a type ID to check against.
+            //If this variable is not found, than no type check logic needs to be compiled.
             if (prefix != null)
                 sv = FindByPrefix(prefix, "$-" + n + name, out _);
             else
@@ -275,7 +283,7 @@ namespace Ela.Compilation
             {
                 cw.Emit(Op.Dup);
                 PushVar(sv);
-                TypeCheckAllStack();
+                TypeCheckAllStack(false);
             }
         }
     }

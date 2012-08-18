@@ -261,7 +261,7 @@ namespace Ela.Compilation
                         //A simple direct type reference
                         var nt = (ElaNameReference)jc.Target;
                         PushVar(sys[i]);
-                        types[i] = TypeCheck(null, nt.Name, nt);
+                        types[i] = TypeCheck(null, nt.Name, nt, false);
                         pars.Add(jc.Parameters[0].GetName());
                     }
                     else if (jc.Target.Type == ElaNodeType.FieldReference)
@@ -269,7 +269,7 @@ namespace Ela.Compilation
                         //A type is qualified with a module alias
                         var fr = (ElaFieldReference)jc.Target;
                         PushVar(sys[i]);
-                        types[i] = TypeCheck(fr.TargetObject.GetName(), fr.FieldName, fr);
+                        types[i] = TypeCheck(fr.TargetObject.GetName(), fr.FieldName, fr, false);
                         pars.Add(jc.Parameters[0].GetName());
                     }
                 }
