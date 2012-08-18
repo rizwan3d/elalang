@@ -19,6 +19,7 @@ September 2012
 
   * Better support for laziness, compiler can implicitly mark certain expressions as lazy if they cannot be executed in a strict manner.
   * Negative numeric literals.
+  * Type constaints for constructor parameters in algebraic types.
   * Bring back validation of `match` entries for overlapping.
   * Redesign of logical operators (`and`, `or`) and sequencing operator `($)`, which are currently presented as special forms, not as functions.  
   * New types classes: `Functor` (generalization of `map`), `Foldable` (generalization of `fold`), `Union` (generalization of `concat`), etc. and their instances, including generic default instances.
