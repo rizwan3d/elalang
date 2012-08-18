@@ -18,5 +18,9 @@ namespace Ela.Compilation
         public string Name { get; internal set; }
 
         internal List<String> Parameters { get; set; }
+
+        //These are populated only by linker
+        internal int ModuleId;
+        internal int ConsAddress;
     }
 }

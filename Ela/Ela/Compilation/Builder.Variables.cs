@@ -102,7 +102,8 @@ namespace Ela.Compilation
                     AddError(ElaCompilerError.PrivateNameInModule, exp, specName.TrimStart('$'), ns);
 
                 modId = lh;
-                cw.Emit(Op.Pushext, lh | (extVar.Address << 8));
+                extVar = new ScopeVar(extVar.Flags | ElaVariableFlags.External, lh | (extVar.Address << 8), extVar.Data);
+                PushVar(extVar);
                 return extVar;
             }
             else

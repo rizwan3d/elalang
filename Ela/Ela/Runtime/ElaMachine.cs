@@ -1477,39 +1477,17 @@ namespace Ela.Runtime
 
 
         #region Operations
-        private sealed class ConsFunction : ElaFunction
-        {
-            private string typeName;
-            private int typeCode;
-            private int consCode;
-
-            internal ConsFunction(string typeName, int typeCode, int consCode, int args) : base(args)
-            {
-                this.typeName = typeName;
-                this.typeCode = typeCode;
-                this.consCode = consCode;
-            }
-
-            public override ElaValue Call(params ElaValue[] args)
-            {
-                var len = base.Parameters.Length + 1;
-
-                if (len == 1)
-                    return new ElaValue(new ElaUserType1(typeName, typeCode, consCode, args[0]));
-                else if (len == 2)
-                    return new ElaValue(new ElaUserType2(typeName, typeCode, consCode, args[0], args[1]));
-                else
-                    return new ElaValue(new ElaUserTypeVariadic(typeName, typeCode, consCode, args));
-            }
-
-            public override ElaFunction Clone()
-            {
-                return CloneFast(new ConsFunction(typeName, typeCode, consCode, Parameters.Length + 1));
-            }
-        }
-
         internal ElaValue ApiCall(int code, ElaValue left, ElaValue right, EvalStack stack, WorkerThread thread)
         {
+            if (left.TypeId == LAZ)
+                left = left.Ref.Force(left, thread.Context);
+
+            if (right.Ref != null && right.TypeId == LAZ)
+                right = right.Ref.Force(right, thread.Context);
+
+            if (thread.Context.Failed)
+                return new ElaValue(ElaObject.ElaInvalidObject.Instance);
+
             switch ((Api)code)
             {
                 case Api.IsAlgebraic:
@@ -1542,9 +1520,6 @@ namespace Ela.Runtime
                 case Api.ListLength:
                     return new ElaValue(((ElaList)left.Ref).GetLength());
                 case Api.ReverseList:
-                    if (left.TypeId == LAZ)
-                        left = left.Ref.Force(left, thread.Context);
-
                     if (!thread.Context.Failed)
                     {
                         if (left.TypeId != LST)
@@ -1565,7 +1540,12 @@ namespace Ela.Runtime
                     break;
                 case Api.ConsParamNumber:
                     {
-                        var cid = left.Ref.GetTag();
+                        var cid = 0;
+
+                        if (left.TypeId == INT)
+                            cid = left.I4;
+                        else
+                            cid = left.Ref.GetTag();
 
                         if (cid >= 0)
                         {
@@ -1732,23 +1712,9 @@ namespace Ela.Runtime
                             var cd = asm.Constructors[left.I4];
 
                             if (cd.Parameters == null)
-                                return new ElaValue(new ElaUserType0(cd.TypeName, cd.TypeCode, cd.Code));
+                                return modules[cd.ModuleId][cd.ConsAddress];
                             else
-                            {
-                                if (cd.Parameters.Count == 1)
-                                    return new ElaValue(new ElaUserType1(cd.TypeName, cd.TypeCode, cd.Code, new ElaValue(ElaUnit.Instance)));
-                                else if (cd.Parameters.Count == 2)
-                                    return new ElaValue(new ElaUserType2(cd.TypeName, cd.TypeCode, cd.Code, new ElaValue(ElaUnit.Instance), new ElaValue(ElaUnit.Instance)));
-                                else
-                                {
-                                    var arr = new ElaValue[cd.Parameters.Count];
-
-                                    for (var i = 0; i < arr.Length; i++)
-                                        arr[i] = new ElaValue(ElaUnit.Instance);
-
-                                    return new ElaValue(new ElaUserTypeVariadic(cd.TypeName, cd.TypeCode, cd.Code, arr));
-                                }
-                            }
+                                thread.Context.Fail(ElaRuntimeError.UnableCreateConstructor, cd.Name, "Constructor has parameters");
                         }
                     }
                     break;
@@ -1776,12 +1742,7 @@ namespace Ela.Runtime
                         else
                         {
                             var cd = asm.Constructors[left.I4];
-
-                            if (cd.Parameters == null)
-                                return new ElaValue(new ElaUserType0(cd.TypeName, cd.TypeCode, cd.Code));
-                            else
-                                return new ElaValue(new ConsFunction(cd.TypeName, cd.TypeCode,
-                                    cd.Code, cd.Parameters.Count));
+                            return modules[cd.ModuleId][cd.ConsAddress];
                         }
                     }
                     break;

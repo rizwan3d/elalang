@@ -202,6 +202,8 @@ namespace Ela.Linking
                 {
                     var c = Assembly.Constructors.Count;
                     d.Code = c;
+                    d.ModuleId = hdl;
+                    d.ConsAddress = frame.GlobalScope.Locals[d.Name].Address;
                     Assembly.Constructors.Add(d);
 
                     var ti = default(TypeData);

@@ -239,6 +239,7 @@ namespace Ela.Compilation
             CompileFunctionProlog(name, len, juxta.Line, juxta.Column, out funSkipLabel, out address, out newMap);
             
             var sys = new int[len];
+            var types = new ScopeVar[len];
             
             //Here we have to validate all constructor parameters
             for (var i = 0; i < len; i++)
@@ -247,10 +248,38 @@ namespace Ela.Compilation
                 sys[i] = AddVariable();
                 PopVar(sys[i]);
 
-                if (ce.Type != ElaNodeType.NameReference || IsInvalidConstructorParameter((ElaNameReference)ce))
-                    AddError(ElaCompilerError.InvalidConstructorParameter, juxta, FormatNode(ce), name);
-                else
+                //This can be type a type constraint so we should compile here type check logic
+                if (ce.Type == ElaNodeType.Juxtaposition)
+                {
+                    var jc = (ElaJuxtaposition)ce;
+
+                    //First we check if a constraint is actually valid
+                    if (IsInvalidConstructorParameterConstaint(jc))
+                        AddError(ElaCompilerError.InvalidConstructorParameter, juxta, FormatNode(ce), name);                    
+                    else if (jc.Target.Type == ElaNodeType.NameReference)
+                    {
+                        //A simple direct type reference
+                        var nt = (ElaNameReference)jc.Target;
+                        PushVar(sys[i]);
+                        types[i] = TypeCheck(null, nt.Name, nt);
+                        pars.Add(jc.Parameters[0].GetName());
+                    }
+                    else if (jc.Target.Type == ElaNodeType.FieldReference)
+                    {
+                        //A type is qualified with a module alias
+                        var fr = (ElaFieldReference)jc.Target;
+                        PushVar(sys[i]);
+                        types[i] = TypeCheck(fr.TargetObject.GetName(), fr.FieldName, fr);
+                        pars.Add(jc.Parameters[0].GetName());
+                    }
+                }
+                else if (ce.Type == ElaNodeType.NameReference && !IsInvalidConstructorParameter(ce))
+                {
                     pars.Add(ce.GetName());
+                    types[i] = ScopeVar.Empty;
+                }
+                else
+                    AddError(ElaCompilerError.InvalidConstructorParameter, juxta, FormatNode(ce), name);
             }
 
             frame.InternalConstructors.Add(new ConstructorData
@@ -298,6 +327,32 @@ namespace Ela.Compilation
             var a = AddVariable(name, juxta, ElaVariableFlags.TypeFun|ElaVariableFlags.Function|flags, len);
             PopVar(a);
 
+            //We need to add special variable that would store type check information.
+            //This information is used when inlining constructors.
+            for (var i = 0; i < types.Length; i++)
+            {
+                var sv = types[i];
+
+                //There is a type constraint, we have to memoize it for inlining
+                if (!sv.IsEmpty())
+                {
+                    CurrentScope.Locals.Remove("$-" + i + name); //To prevent redundant errors
+                    var av = AddVariable("$-" + i + name, juxta, ElaVariableFlags.None, -1);
+
+                    //This ScopeVar was obtained in a different scope, we have to patch it here
+                    if ((sv.Flags & ElaVariableFlags.External) == ElaVariableFlags.External)
+                        PushVar(sv); //No need to patch an external
+                    else
+                    {
+                        //Roll up one scope
+                        sv.Address = ((sv.Address & Byte.MaxValue) - 1) | (sv.Address >> 8) << 8;
+                        PushVar(sv);
+                    }
+
+                    PopVar(av);
+                }
+            }
+
             //To prevent redundant errors
             CurrentScope.Locals.Remove("$-" + name); 
             CurrentScope.Locals.Remove("$--" + name);
@@ -311,9 +366,33 @@ namespace Ela.Compilation
         }
 
         //Checks if a constructor parameter name is invalid
-        private bool IsInvalidConstructorParameter(ElaNameReference n)
+        private bool IsInvalidConstructorParameter(ElaExpression exp)
         {
+            if (exp.Type != ElaNodeType.NameReference)
+                return false;
+
+            var n = (ElaNameReference)exp;
             return n.Uppercase || Format.IsSymbolic(n.Name);
+        }
+
+        //Checks if a constructor parameter type constraint is invalid
+        private bool IsInvalidConstructorParameterConstaint(ElaJuxtaposition n)
+        {
+            if (n.Parameters.Count != 1)
+                return true;
+
+            if (IsInvalidConstructorParameter(n.Parameters[0]))
+                return true;
+
+            if (n.Target.Type == ElaNodeType.NameReference)
+                return !((ElaNameReference)n.Target).Uppercase;
+            else if (n.Target.Type == ElaNodeType.FieldReference)
+            {
+                var f = (ElaFieldReference)n.Target;
+                return f.TargetObject.Type != ElaNodeType.NameReference || !Char.IsUpper(f.FieldName[0]);
+            }
+
+            return true;
         }
 
         //Checks if a constructor is actually a list constructor which implementation can be optimized.
