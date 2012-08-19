@@ -126,6 +126,9 @@
   <data name="AddSpaceSection" xml:space="preserve">
     <value>Add a space between an operator (-) and a number literal, if you wan a right section, e.g. '(- {0})', or remove the parentheses.</value>
   </data>
+  <data name="BangsOnlyFunctions" xml:space="preserve">
+    <value>Bang patterns are only allowed in constructors and functions.</value>
+  </data>
   <data name="MatchEntryNotReachable" xml:space="preserve">
     <value>Consider reordering match entries. Less specific patterns should be moved after more specific patterns.</value>
   </data>

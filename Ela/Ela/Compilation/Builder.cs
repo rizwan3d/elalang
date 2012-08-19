@@ -301,6 +301,13 @@ namespace Ela.Compilation
                         var v = (ElaNameReference)exp;
                         AddLinePragma(v);
                         var scopeVar = GetVariable(v.Name, v.Line, v.Column);
+
+                        //Bang patterns are only allowed in functions and constructors
+                        if (v.Bang)
+                        {
+                            AddError(ElaCompilerError.BangPatternNotValid, exp, FormatNode(exp));
+                            AddHint(ElaCompilerHint.BangsOnlyFunctions, exp);
+                        }
                         
                         //This a polymorphic constant
                         if ((scopeVar.Flags & ElaVariableFlags.Polyadric) == ElaVariableFlags.Polyadric)

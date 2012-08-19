@@ -100,7 +100,7 @@ namespace Ela.Compilation
                 if (first)
                     firstSys = sysVar;
 
-                CompilePattern(sysVar, p, failLab, false /*forceStrict*/);
+                CompilePattern(sysVar, p, failLab, false /*allowBang*/, false /*forceStrict*/);
                 first = false;
 
                 //Compile entry expression
@@ -208,7 +208,7 @@ namespace Ela.Compilation
                 //Now compile patterns
                 for (var i = 0; i < len; i++)
                     if (firstSys.Length > i && pars.Count > i)
-                        CompilePattern(firstSys[i], pars[i], failLab, false /*forceStrict*/);
+                        CompilePattern(firstSys[i], pars[i], failLab, true /*allowBang*/, false /*forceStrict*/);
                 
                 first = false;
 
@@ -235,21 +235,21 @@ namespace Ela.Compilation
         }
 
         //Compile a given expression as a pattern. If match fails proceed to failLab.
-        private void CompilePattern(int sysVar, ElaExpression exp, Label failLab, bool forceStrict)
+        private void CompilePattern(int sysVar, ElaExpression exp, Label failLab, bool allowBang, bool forceStrict)
         {
             AddLinePragma(exp);
 
             switch (exp.Type)
-            {
+            {                    
                 case ElaNodeType.LazyLiteral:
                     {
                         var n = (ElaLazyLiteral)exp;
 
                         //Normally this flag is set when everything is already compiled as lazy.
                         if (forceStrict)
-                            CompilePattern(sysVar, n.Expression, failLab, forceStrict);
+                            CompilePattern(sysVar, n.Expression, failLab, allowBang, forceStrict);
                         else
-                            CompileLazyPattern(sysVar, exp);
+                            CompileLazyPattern(sysVar, exp, allowBang);
                     }
                     break;
                 case ElaNodeType.FieldReference:
@@ -275,6 +275,13 @@ namespace Ela.Compilation
                         //a constructor pattern
                         var n = (ElaNameReference)exp;
 
+                        //Bang pattern are only allowed in constructors and functions
+                        if (n.Bang && !allowBang)
+                        {
+                            AddError(ElaCompilerError.BangPatternNotValid, exp, FormatNode(exp));
+                            AddHint(ElaCompilerHint.BangsOnlyFunctions, exp);
+                        }
+
                         if (n.Uppercase) //This is a constructor
                         {
                             if (sysVar != -1)
@@ -296,6 +303,9 @@ namespace Ela.Compilation
                             //already on the top of the stack.
                             if (sysVar > -1 && newV)
                                 PushVar(sysVar);
+
+                            if (n.Bang)
+                                cw.Emit(Op.Force);
 
                             //The binding is already done, so just idle.
                             if (newV)
@@ -332,7 +342,7 @@ namespace Ela.Compilation
                 case ElaNodeType.As:
                     {
                         var n = (ElaAs)exp;
-                        CompilePattern(sysVar, n.Expression, failLab, false /*forceStrict*/);
+                        CompilePattern(sysVar, n.Expression, failLab, allowBang, false /*forceStrict*/);
                         var newV = false;
                         var addr = AddMatchVariable(n.Name, n, out newV);
                         PushVar(sysVar);
@@ -348,20 +358,20 @@ namespace Ela.Compilation
                 case ElaNodeType.RecordLiteral:
                     {
                         var n = (ElaRecordLiteral)exp;
-                        CompileRecordPattern(sysVar, n, failLab);
+                        CompileRecordPattern(sysVar, n, failLab, allowBang);
                     }
                     break;
                 case ElaNodeType.TupleLiteral:
                     {
                         var n = (ElaTupleLiteral)exp;
-                        CompileTuplePattern(sysVar, n, failLab);
+                        CompileTuplePattern(sysVar, n, failLab, allowBang);
                     }
                     break;
                 case ElaNodeType.Juxtaposition:
                     {
                         //An infix pattern, currently the only case is head/tail pattern.
                         var n = (ElaJuxtaposition)exp;
-                        CompileComplexPattern(sysVar, n, failLab);
+                        CompileComplexPattern(sysVar, n, failLab, allowBang);
                     }
                     break;                
                 case ElaNodeType.ListLiteral:
@@ -396,7 +406,7 @@ namespace Ela.Compilation
                             }
 
                             //Now we can compile it as head/tail pattern
-                            CompilePattern(sysVar, fc, failLab, false /*forceStrict*/);
+                            CompilePattern(sysVar, fc, failLab, allowBang, false /*forceStrict*/);
                         }
                     }
                     break;
@@ -409,7 +419,7 @@ namespace Ela.Compilation
         //Compile a record pattern in the form: {fieldName=pat,..}. Here we don't check the
         //type of an expression on the top of the stack - in a case if try to match a non-record
         //using this pattern the whole match would fail on Pushfld operation.
-        private void CompileRecordPattern(int sysVar, ElaRecordLiteral rec, Label failLab)
+        private void CompileRecordPattern(int sysVar, ElaRecordLiteral rec, Label failLab, bool allowBang)
         {
             //Loops through all record fields
             for (var i = 0; i < rec.Fields.Count; i++)
@@ -430,13 +440,13 @@ namespace Ela.Compilation
 
                 //We obtain a value of field, now we need to match it using a pattern in
                 //a field value (it could be a name reference or a non-irrefutable pattern).
-                CompilePattern(addr, fld.FieldValue, failLab, false /*forceStrict*/);
+                CompilePattern(addr, fld.FieldValue, failLab, allowBang, false /*forceStrict*/);
             }
         }
 
         //Compile a xs pattern in the form: {fieldName=pat,..}. This pattern can fail at
         //run-time if a given expression doesn't support Len and Pushelem op codes.
-        private void CompileTuplePattern(int sysVar, ElaTupleLiteral tuple, Label failLab)
+        private void CompileTuplePattern(int sysVar, ElaTupleLiteral tuple, Label failLab, bool allowBang)
         {
             var len = tuple.Parameters.Count;
             
@@ -467,16 +477,16 @@ namespace Ela.Compilation
                 PopVar(sysVar2);
                 
                 //Match an element of a xs
-                CompilePattern(sysVar2, pat, failLab, false /*forceStrict*/);
+                CompilePattern(sysVar2, pat, failLab, allowBang, false /*forceStrict*/);
             }
         }
 
         //Currently this method only compiles head/tail pattern which is processed by parser
         //as function application. However it can be extended to support custom 'infix' patterns in future.
-        private void CompileComplexPattern(int sysVar, ElaJuxtaposition call, Label failLab)
+        private void CompileComplexPattern(int sysVar, ElaJuxtaposition call, Label failLab, bool allowBang)
         {
             if (call.Target == null)
-                CompileHeadTail(sysVar, call, failLab);
+                CompileHeadTail(sysVar, call, failLab, allowBang);
             else if (call.Target.Type == ElaNodeType.NameReference)
             {
                 var targetName = call.Target.GetName();
@@ -484,12 +494,12 @@ namespace Ela.Compilation
 
                 //The head symbol corresponds to a constructor, this is a special case of pattern
                 if ((sv.VariableFlags & ElaVariableFlags.Builtin) == ElaVariableFlags.Builtin && (ElaBuiltinKind)sv.Data == ElaBuiltinKind.Cons)
-                    CompileHeadTail(sysVar, call, failLab);
+                    CompileHeadTail(sysVar, call, failLab, allowBang);
                 else
-                    CompileConstructorPattern(sysVar, call, failLab);
+                    CompileConstructorPattern(sysVar, call, failLab, allowBang);
             }
             else if (call.Target.Type == ElaNodeType.FieldReference)
-                CompileConstructorPattern(sysVar, call, failLab);
+                CompileConstructorPattern(sysVar, call, failLab, allowBang);
             else
             {
                 //We don't yet support other cases
@@ -499,7 +509,7 @@ namespace Ela.Compilation
         }
 
         //A generic case of constructor pattern
-        private void CompileConstructorPattern(int sysVar, ElaJuxtaposition call, Label failLab)
+        private void CompileConstructorPattern(int sysVar, ElaJuxtaposition call, Label failLab, bool allowBang)
         {
             var n = String.Empty;
             PushVar(sysVar);
@@ -547,12 +557,12 @@ namespace Ela.Compilation
                     PopVar(sysVar2);
                 }
 
-                CompilePattern(sysVar2, p, failLab, false /*forceStrict*/);
+                CompilePattern(sysVar2, p, failLab, allowBang, false /*forceStrict*/);
             }
         }
 
         //Compiles a special case of constructor pattern - head/tail pattern.
-        private void CompileHeadTail(int sysVar, ElaJuxtaposition call, Label failLab)
+        private void CompileHeadTail(int sysVar, ElaJuxtaposition call, Label failLab, bool allowBang)
         {
             var fst = call.Parameters[0];
             var snd = call.Parameters[1];
@@ -576,7 +586,7 @@ namespace Ela.Compilation
                 PopVar(sysVar2);
             }
 
-            CompilePattern(sysVar2, fst, failLab, false /*forceStrict*/);
+            CompilePattern(sysVar2, fst, failLab, allowBang, false /*forceStrict*/);
 
             //Take a tail of a list
             PushVar(sysVar);
@@ -590,11 +600,11 @@ namespace Ela.Compilation
                 PopVar(sysVar2);
             }
 
-            CompilePattern(sysVar2, snd, failLab, false /*forceStrict*/);
+            CompilePattern(sysVar2, snd, failLab, allowBang, false /*forceStrict*/);
         }
 
         //Compiles a pattern as lazy by creating a thunk an initializing all pattern names with these thunks.
-        private void CompileLazyPattern(int sys, ElaExpression pat)
+        private void CompileLazyPattern(int sys, ElaExpression pat, bool allowBang)
         {
             //First we need to obtain a list of all names, that declared in this pattern.
             var names = new List<String>();
@@ -616,7 +626,7 @@ namespace Ela.Compilation
                 //As soon as already compiling pattern as lazy, we should enforce strictness even if
                 //pattern is declared as lazy. Otherwise everything would crash, because here assume
                 //that names are bound in this bound in the same scope.
-                CompilePattern(1 | ((sys >> 8) << 8), pat, next, true /*forceStrict*/);
+                CompilePattern(1 | ((sys >> 8) << 8), pat, next, allowBang, true /*forceStrict*/);
                 cw.Emit(Op.Br, exit);
                 cw.MarkLabel(next);
                 cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);

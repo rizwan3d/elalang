@@ -55,8 +55,6 @@ type Fun
 
 (<|) = __internal bpipe
 
-f! = f()
-
 flip f x y = f y x
 
 curry f x y = f (x, y)

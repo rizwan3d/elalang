@@ -18,5 +18,7 @@ namespace Ela.Compilation
         AddSpaceSection = 504,
 
         AddSpaceApplication = 505,
+
+        BangsOnlyFunctions = 506,
 	}
 }

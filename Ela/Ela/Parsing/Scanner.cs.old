@@ -209,8 +209,8 @@ internal sealed class Scanner {
 	const char EOL = '\n';
 	const int eofSym = 0; /* pdt */
 	
-	const int maxT = 65;
-	const int noSym = 65;
+	const int maxT = 66;
+	const int noSym = 66;
 
 
 	public Buffer buffer; // scanner buffer
@@ -397,13 +397,14 @@ internal sealed class Scanner {
 			case "import": t.kind = 47; break;
 			case "data": t.kind = 48; break;
 			case "opentype": t.kind = 49; break;
-			case "=": t.kind = 56; break;
-			case "..": t.kind = 57; break;
-			case ":::": t.kind = 60; break;
-			case "__internal": t.kind = 61; break;
-			case "&": t.kind = 62; break;
-			case "<-": t.kind = 63; break;
-			case "deriving": t.kind = 64; break;
+			case "!": t.kind = 52; break;
+			case "=": t.kind = 57; break;
+			case "..": t.kind = 58; break;
+			case ":::": t.kind = 61; break;
+			case "__internal": t.kind = 62; break;
+			case "&": t.kind = 63; break;
+			case "<-": t.kind = 64; break;
+			case "deriving": t.kind = 65; break;
 			default: break;
 		}
 	}
@@ -852,19 +853,19 @@ internal sealed class Scanner {
 			case 88:
 				{t.kind = 51; break;}
 			case 89:
-				{t.kind = 53; break;}
-			case 90:
 				{t.kind = 54; break;}
-			case 91:
+			case 90:
 				{t.kind = 55; break;}
+			case 91:
+				{t.kind = 56; break;}
 			case 92:
-				{t.kind = 58; break;}
-			case 93:
 				{t.kind = 59; break;}
+			case 93:
+				{t.kind = 60; break;}
 			case 94:
-				recEnd = pos; recKind = 52;
+				recEnd = pos; recKind = 53;
 				if (ch == 39 || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 2;}
-				else {t.kind = 52; break;}
+				else {t.kind = 53; break;}
 			case 95:
 				recEnd = pos; recKind = 21;
 				if (ch == '&') {AddCh(); goto case 92;}

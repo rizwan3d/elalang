@@ -78,7 +78,7 @@ namespace Ela.Compilation
             var exit = cw.DefineLabel();
 
             //Here we compile a pattern a generate a 'handling logic' that raises a MatchFailed exception
-            CompilePattern(sys, s.Left, next, false /*forceStrict*/);
+            CompilePattern(sys, s.Left, next, false /*allowBang*/, false /*forceStrict*/);
             cw.Emit(Op.Br, exit);
             cw.MarkLabel(next);
             cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
@@ -95,6 +95,13 @@ namespace Ela.Compilation
 
             if ((s.VariableFlags & ElaVariableFlags.Private) == ElaVariableFlags.Private && CurrentScope != globalScope)
                 AddError(ElaCompilerError.PrivateOnlyGlobal, s);
+
+            //Bang patterns are only allowed in functions and constructors
+            if (s.Left.Type == ElaNodeType.NameReference && ((ElaNameReference)s.Left).Bang)
+            {
+                AddError(ElaCompilerError.BangPatternNotValid, s, FormatNode(s.Left));
+                AddHint(ElaCompilerHint.BangsOnlyFunctions, s);
+            }
         }
 
         //Returns a variable from a local scope marked with NoInit flag
@@ -253,7 +260,7 @@ namespace Ela.Compilation
             CompileLazyExpression(eq.Right, map, Hints.None);
             var sys = AddVariable();
             PopVar(sys);
-            CompileLazyPattern(sys, eq.Left);            
+            CompileLazyPattern(sys, eq.Left, false);            
         }        
     }
 }

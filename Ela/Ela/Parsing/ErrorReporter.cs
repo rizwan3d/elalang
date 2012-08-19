@@ -97,7 +97,7 @@ namespace Ela.Parsing
 				case "Application": return ElaParserError.InvalidApplication;
 				case "AccessExpr": return ElaParserError.InvalidMemberAccess;
 				case "LazyExpr": return ElaParserError.InvalidLazy;
-				case "ComprehensionExpr": return ElaParserError.InvalidComprehension;
+                case "ComprehensionExpr": return ElaParserError.InvalidComprehension;
 				case "ComprehensionEntry": return ElaParserError.InvalidComprehension;
                 case "Expr": return ElaParserError.InvalidExpression;
 				case "EmbExpr": return ElaParserError.InvalidExpression;
