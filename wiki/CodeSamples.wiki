@@ -109,7 +109,7 @@ permutations [1,2,3] //[[1,2,3],[2,1,3],[3,2,1],[2,3,1],[3,1,2],[1,3,2]]
 open list
 
 is_true x            = is_axiom x || is_theorem x
-is_expr x            = is_b_expr x || is_n_expr x || is_a_expr 
+is_expr x            = is_b_expr x || is_a_expr x || is_n_expr x
 is_axiom x           = is_n_expr x && is_b_expr (tail x)
 is_b_expr ['B']      = true
 is_b_expr ('B'::xs)  = all (=='I') xs
@@ -118,18 +118,20 @@ is_n_expr ('N'::xs)  = is_expr xs
 is_n_expr  _         = false               
 split _ []           = []
 split p (x::xs)      = split' [x] xs
-                       where split' _  [] = false
-                             split' l1 (x::xs)@l2 | p l1 l2 = l1 | else    = split' (l1 ++ [x]) xs
+  where split' _  [] = false
+        split' l1 (x::xs)@l2 
+          | p l1 l2 = l1 
+          | else    = split' (l1 ++ [x]) xs
 have_two_exprs xs ys = is_expr xs && is_expr ys
-check_two_exprs lst  = (split have_two_exprs lst) is ?list
+check_two_exprs lst  = split have_two_exprs lst is List
 is_a_expr ('A'::xs)  = check_two_exprs xs
 is_a_expr  _         = false               
 is_theorem x         = is_n_expr x && is_a_expr (tail x) && has_subtheorem x
-                       where has_subtheorem lst = is_true ('N'::first)
-                                                   where first = split have_two_exprs (tail (tail x))
+  where has_subtheorem lst = is_true ('N'::first)
+          where first = split have_two_exprs (tail (tail x))
 
 xs = ["NBI", "NBIBI", "NABIBI", "NANBBI", "ABB", "NABIBIBI", "NAABABBBI"]
-_ = map is_true xs //[True,False,True,False,False,False,True]
+map is_true xs //[True,False,True,False,False,False,True]
 }}}
 
 ABIN theorem is taken from: W. Robinson, Computers, minds and robots, Temple University Press, 1992.
