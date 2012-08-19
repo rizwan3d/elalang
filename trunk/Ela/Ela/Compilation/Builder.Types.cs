@@ -240,12 +240,17 @@ namespace Ela.Compilation
             
             var sys = new int[len];
             var types = new ScopeVar[len];
+            var bangs = new bool[len];
             
             //Here we have to validate all constructor parameters
             for (var i = 0; i < len; i++)
             {
                 var ce = juxta.Parameters[i];
                 sys[i] = AddVariable();
+
+                if (bangs[i] = IsBang(ce))
+                    cw.Emit(Op.Force);
+
                 PopVar(sys[i]);
 
                 //This can be type a type constraint so we should compile here type check logic
@@ -261,7 +266,7 @@ namespace Ela.Compilation
                         //A simple direct type reference
                         var nt = (ElaNameReference)jc.Target;
                         PushVar(sys[i]);
-                        types[i] = TypeCheck(null, nt.Name, nt, false);
+                        types[i] = TypeCheckConstructor(name, null, nt.Name, nt, false);
                         pars.Add(jc.Parameters[0].GetName());
                     }
                     else if (jc.Target.Type == ElaNodeType.FieldReference)
@@ -269,7 +274,7 @@ namespace Ela.Compilation
                         //A type is qualified with a module alias
                         var fr = (ElaFieldReference)jc.Target;
                         PushVar(sys[i]);
-                        types[i] = TypeCheck(fr.TargetObject.GetName(), fr.FieldName, fr, false);
+                        types[i] = TypeCheckConstructor(name, fr.TargetObject.GetName(), fr.FieldName, fr, false);
                         pars.Add(jc.Parameters[0].GetName());
                     }
                 }
@@ -327,6 +332,18 @@ namespace Ela.Compilation
             var a = AddVariable(name, juxta, ElaVariableFlags.TypeFun|ElaVariableFlags.Function|flags, len);
             PopVar(a);
 
+            //We need to add special variable that would indicate that a constructor parameter
+            //should be strictly evaluated. Used when inlining constructors. This variable is for
+            //metadata only, it is never initialized.
+            for (var i = 0; i < bangs.Length; i++)
+            {
+                if (bangs[i])
+                {
+                    CurrentScope.Locals.Remove("$-!" + i + name); //To prevent redundant errors
+                    AddVariable("$-!" + i + name, juxta, ElaVariableFlags.None, -1);
+                }
+            }
+
             //We need to add special variable that would store type check information.
             //This information is used when inlining constructors.
             for (var i = 0; i < types.Length; i++)
@@ -363,6 +380,25 @@ namespace Ela.Compilation
             PopVar(consVar);
             PushVar(sca);
             PopVar(typeVar);
+        }
+
+        //Checks if we need to force a constructor parameter.
+        private bool IsBang(ElaExpression exp)
+        {
+            if (exp.Type == ElaNodeType.NameReference && ((ElaNameReference)exp).Bang)
+                return true;
+            else if (exp.Type == ElaNodeType.Juxtaposition)
+            {
+                var j = (ElaJuxtaposition)exp;
+
+                if (j.Parameters[0].Type == ElaNodeType.NameReference &&
+                    ((ElaNameReference)j.Parameters[0]).Bang)
+                    return true;
+
+                return false;
+            }
+
+            return false;
         }
 
         //Checks if a constructor parameter name is invalid

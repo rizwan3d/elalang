@@ -9,15 +9,15 @@ namespace Ela.Compilation
     {
         //Performs a type check and throws and error if the type is not as expected.
         //This method assumes that a value to be checked is on the top of the stack.
-        private ScopeVar TypeCheck(string prefix, string name, ElaExpression par, bool force)
+        private ScopeVar TypeCheckConstructor(string cons, string prefix, string name, ElaExpression par, bool force)
         {
             var sv = EmitSpecName(prefix, "$$" + name, par, ElaCompilerError.UndefinedType);
-            TypeCheckAllStack(force);
+            TypeCheckConstructorAllStack(cons, force);
             return sv;
         }
 
-        //This method is similar to TypeCheck, but assumes that everything is on stack
-        private void TypeCheckAllStack(bool force)
+        //This method is similar to TypeCheckConstructor, but assumes that everything is on stack
+        private void TypeCheckConstructorAllStack(string cons, bool force)
         {
             if (force)
                 cw.Emit(Op.Force);
@@ -25,7 +25,8 @@ namespace Ela.Compilation
             var succ = cw.DefineLabel();
             cw.Emit(Op.Ctype);
             cw.Emit(Op.Brtrue, succ);
-            cw.Emit(Op.Failwith, (Int32)ElaRuntimeError.MatchFailed);
+            cw.Emit(Op.Pushstr, AddString(String.Format("Type constraint is violated for a constructor '{0}'.", cons)));
+            cw.Emit(Op.Throw);
             cw.MarkLabel(succ);
         }
 

@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BangPatternNotValid" xml:space="preserve">
+    <value>Bang pattern {0} is not valid in this context.</value>
+  </data>
   <data name="ClassAlreadyDeclared" xml:space="preserve">
     <value>A module already defines a class '{0}'.</value>
   </data>

@@ -28,10 +28,13 @@ namespace Ela.CodeModel
 
         internal override void ToString(StringBuilder sb, int ident)
 		{
+            if (Bang)
+                sb.Append('!');
+
             if (Format.IsSymbolic(Name))
                 sb.AppendFormat("({0})", Name);
             else
-			    sb.Append(Name);
+                sb.Append(Name);
 		}
 
         internal override bool IsIrrefutable()
@@ -53,5 +56,7 @@ namespace Ela.CodeModel
 		public string Name { get; set; }
 
         public bool Uppercase { get; set; }
+
+        public bool Bang { get; set; }
 	}
 }

@@ -172,6 +172,7 @@ PRODUCTIONS
 			(
 			    ident (. exp = new ElaNameReference(t) { Name = t.val }; .)
 			    | variantTok (. exp = new ElaNameReference(t) { Name = t.val, Uppercase = true }; .)
+			    | "!" ident (. exp = new ElaNameReference(t) { Name = t.val, Bang = true }; .)
 			)
 			| "_" (. exp = new ElaPlaceholder(t); .)
 		).

@@ -175,7 +175,6 @@ namespace Ela.Compilation
         //Only constructors without type constraints can be inlined.
         private bool TryOptimizeConstructor(ElaJuxtaposition juxta, LabelMap map)
         {
-            return false;
             if (juxta.Target.Type == ElaNodeType.NameReference)
             {
                 var nr = (ElaNameReference)juxta.Target;
@@ -269,6 +268,9 @@ namespace Ela.Compilation
         //initialized when a type constructor gets compiled.
         private void TypeCheckIf(string prefix, string name, int n)
         {
+            //First we check if we need to force it.
+            BangIf(prefix, name, n);
+
             CodeFrame _;
             var sv = default(ScopeVar);
 
@@ -283,8 +285,26 @@ namespace Ela.Compilation
             {
                 cw.Emit(Op.Dup);
                 PushVar(sv);
-                TypeCheckAllStack(false);
+                TypeCheckConstructorAllStack(name, false);
             }
+        }
+
+        //Force an argument if a special metadata varialbe is declared. This method is called from TypeCheckIf
+        //and is used when inlining constructors.
+        private void BangIf(string prefix, string name, int n)
+        {
+            CodeFrame _;
+            var sv = default(ScopeVar);
+
+            //Here we need to seek for the special system variable that has a type ID to check against.
+            //If this variable is not found, than no type check logic needs to be compiled.
+            if (prefix != null)
+                sv = FindByPrefix(prefix, "$-!" + n + name, out _);
+            else
+                sv = GetVariable("$-!" + n + name, CurrentScope, GetFlags.NoError, 0, 0);
+
+            if (!sv.IsEmpty())
+                cw.Emit(Op.Force);
         }
     }
 }

@@ -22,7 +22,6 @@ namespace Ela.CodeModel
 		// = 7,
 		
 		
-
         Header,
 
 		Context,

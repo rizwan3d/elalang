@@ -1,3 +1,4 @@
+0.1.6.12:Change:An application operator (!) from prelude is decomissioned.
 0.1.6.11:Change:Default instance of 'Show' is corrected in 'generic' module. Now this instance inserts parens for nested data structures.
 0.1.6.10:New:A new function 'isAlgebraic' is added to the 'generic' module.
 0.1.6.9:New:Lazy functions foldl1' and foldr1' are added to 'list' module.
