@@ -69,6 +69,9 @@ namespace Ela.Compilation
             if ((ut & Hints.Left) == Hints.Left)
                 ut ^= Hints.Left;
 
+            if ((ut & Hints.Tail) == Hints.Tail)
+                ut ^= Hints.Tail;
+            
             CompileExpression(left, map, ut, parent);
             termLab = cw.DefineLabel();
             exitLab = cw.DefineLabel();
@@ -92,6 +95,9 @@ namespace Ela.Compilation
             if ((ut & Hints.Left) == Hints.Left)
                 ut ^= Hints.Left;
 
+            if ((ut & Hints.Tail) == Hints.Tail)
+                ut ^= Hints.Tail;
+            
             CompileExpression(left, map, ut, parent);
             termLab = cw.DefineLabel();
             exitLab = cw.DefineLabel();
