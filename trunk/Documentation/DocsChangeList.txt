@@ -1,3 +1,5 @@
+0.1.6.8:Change:Article 'Pattern matching' is updated with information about bang patterns.
+0.1.6.7:Change:An article 'classes' is updated with information about type constraints and strict constructors.
 0.1.6.6:Change:An article 'list' is updated according to the module changes.
 0.1.6.5:Change:An article 'generic' is updated according to the module changes.
 0.1.6.4:Change:An article 'elaandhaskell' is updated according to the language changes.
