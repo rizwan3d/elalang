@@ -51,4 +51,7 @@ bang patterns are used, type checking in constructors is conservative and never 
 Please refere to languages reference for more details.
 
 =Library changes
-...
+A new version of standard library also contains several notable changes. Here is a quick summary of them:
+  * Standard `Show` class is redesigned and now defines a single argument `show` function (instead of two argument `showf` function). Also formatting of standard types using `show` now mimics the literal syntax.
+  * Module `format` is redesigned and now defines a `Format` class which is used for arguments that are substituted into format strings.
+  * New prelude functions, such as logical operators `&&` and `||`, sequencing function `seq` are added.

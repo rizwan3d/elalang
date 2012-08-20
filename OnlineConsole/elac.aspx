@@ -248,7 +248,7 @@
 			</tr>
 			<tr>
 				<td class="marginCell">&nbsp;</td>
-				<td style="height:200px;width:10px;padding-top:0px;border-left:solid 1px darkgray;border-right:solid 1px darkgray">
+				<td style="height:200px;padding-top:0px;border-left:solid 1px darkgray;border-right:solid 1px darkgray">
 					<textarea id="console" class="console"></textarea>					
 				</td>		
 				<td class="marginCell"  style="vertical-align:top;padding-top:5px;">
