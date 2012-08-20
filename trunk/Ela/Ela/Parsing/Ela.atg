@@ -264,6 +264,21 @@ PRODUCTIONS
 					Expr<out cexp> 
 					(. fld.FieldValue = cexp; .)
 				)
+				|
+				(
+				    (. string name; .)
+					"(" Operators (. name=t.val; .) ")"
+					(. fld = new ElaFieldDeclaration(t) { FieldName = name }; .) 
+					[						
+						"=" Expr<out cexp> 
+						(. fld.FieldValue = cexp; .)
+					]
+					(.
+						if (fld.FieldValue == null)
+							fld.FieldValue = new ElaNameReference(t) { Name = t.val };
+					.)
+				)
+				|
 			)
 		).
 		
