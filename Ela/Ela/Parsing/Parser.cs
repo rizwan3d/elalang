@@ -385,66 +385,23 @@ internal sealed partial class Parser {
 			Expect(57);
 			Expr(out cexp);
 			fld.FieldValue = cexp; 
-		} else SynErr(72);
-	}
-
-	void RangeExpr(ElaExpression first, ElaExpression sec, out ElaRange rng) {
-		rng = new ElaRange(t) { First = first, Second = sec };
-		var cexp = default(ElaExpression);
-		
-		Expect(58);
-		if (StartOf(3)) {
-			Expr(out cexp);
-			rng.Last = cexp; 
-		}
-	}
-
-	void ParamList(out List<ElaExpression> list, out ElaComprehension comp, out ElaRange rng ) {
-		var exp = default(ElaExpression); 
-		list = null;
-		comp = null;
-		rng = null;
-		
-		Expr(out exp);
-		if (la.kind == 26 || la.kind == 56 || la.kind == 58) {
-			if (la.kind == 26) {
-				ComprehensionExpr(exp, out comp);
-			} else if (la.kind == 58) {
-				RangeExpr(exp, null, out rng);
-			} else {
-				var oexp = exp; 
+		} else if (la.kind == 54) {
+			string name; 
+			Get();
+			Operators();
+			name=t.val; 
+			Expect(55);
+			fld = new ElaFieldDeclaration(t) { FieldName = name }; 
+			if (la.kind == 57) {
 				Get();
-				Expr(out exp);
-				if (la.kind == 58) {
-					RangeExpr(oexp, exp, out rng);
-				} else if (la.kind == 22 || la.kind == 56) {
-					list = new List<ElaExpression>();
-					list.Add(oexp);
-					list.Add(exp);
-					
-					while (la.kind == 56) {
-						Get();
-						Expr(out exp);
-						list.Add(exp); 
-					}
-				} else SynErr(73);
+				Expr(out cexp);
+				fld.FieldValue = cexp; 
 			}
-		}
-		if (list == null && comp == null && rng == null && exp != null)
-		{
-			list = new List<ElaExpression>();
-			list.Add(exp);
-		}
-		
-	}
-
-	void ComprehensionExpr(ElaExpression sel, out ElaComprehension exp) {
-		var it = default(ElaGenerator); 
-		var ot = t;		
-		
-		Expect(26);
-		ComprehensionEntry(sel, out it);
-		exp = new ElaComprehension(ot) { Generator = it }; 
+			if (fld.FieldValue == null)
+			fld.FieldValue = new ElaNameReference(t) { Name = t.val };
+			
+		} else if (la.kind == 20 || la.kind == 56) {
+		} else SynErr(72);
 	}
 
 	void Operators() {
@@ -497,8 +454,67 @@ internal sealed partial class Parser {
 			Get();
 			break;
 		}
-		default: SynErr(74); break;
+		default: SynErr(73); break;
 		}
+	}
+
+	void RangeExpr(ElaExpression first, ElaExpression sec, out ElaRange rng) {
+		rng = new ElaRange(t) { First = first, Second = sec };
+		var cexp = default(ElaExpression);
+		
+		Expect(58);
+		if (StartOf(3)) {
+			Expr(out cexp);
+			rng.Last = cexp; 
+		}
+	}
+
+	void ParamList(out List<ElaExpression> list, out ElaComprehension comp, out ElaRange rng ) {
+		var exp = default(ElaExpression); 
+		list = null;
+		comp = null;
+		rng = null;
+		
+		Expr(out exp);
+		if (la.kind == 26 || la.kind == 56 || la.kind == 58) {
+			if (la.kind == 26) {
+				ComprehensionExpr(exp, out comp);
+			} else if (la.kind == 58) {
+				RangeExpr(exp, null, out rng);
+			} else {
+				var oexp = exp; 
+				Get();
+				Expr(out exp);
+				if (la.kind == 58) {
+					RangeExpr(oexp, exp, out rng);
+				} else if (la.kind == 22 || la.kind == 56) {
+					list = new List<ElaExpression>();
+					list.Add(oexp);
+					list.Add(exp);
+					
+					while (la.kind == 56) {
+						Get();
+						Expr(out exp);
+						list.Add(exp); 
+					}
+				} else SynErr(74);
+			}
+		}
+		if (list == null && comp == null && rng == null && exp != null)
+		{
+			list = new List<ElaExpression>();
+			list.Add(exp);
+		}
+		
+	}
+
+	void ComprehensionExpr(ElaExpression sel, out ElaComprehension exp) {
+		var it = default(ElaGenerator); 
+		var ot = t;		
+		
+		Expect(26);
+		ComprehensionEntry(sel, out it);
+		exp = new ElaComprehension(ot) { Generator = it }; 
 	}
 
 	void IfExpr(out ElaExpression exp) {
@@ -1799,8 +1815,8 @@ internal sealed class Errors {
 			case 70: s = "invalid As"; break;
 			case 71: s = "invalid VariableReference"; break;
 			case 72: s = "invalid RecordField"; break;
-			case 73: s = "invalid ParamList"; break;
-			case 74: s = "invalid Operators"; break;
+			case 73: s = "invalid Operators"; break;
+			case 74: s = "invalid ParamList"; break;
 			case 75: s = "this symbol not expected in MatchExpr"; break;
 			case 76: s = "this symbol not expected in TryExpr"; break;
 			case 77: s = "invalid OpExpr1"; break;

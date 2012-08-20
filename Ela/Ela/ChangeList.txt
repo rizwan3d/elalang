@@ -1,3 +1,4 @@
+0.11.2.15:New:Not it is possible to use operator symbols as record field names.
 0.11.2.14:New:Now Ela supports bang patterns in constructors and functions.
 0.11.2.13:Change:A behavior of 'Ctype' op code has changed; now type check is conservative and doesn't force values (a thunk always passes a type check).
 0.11.2.12:New:Now it is possible to specify type constraints for constructor arguments.
