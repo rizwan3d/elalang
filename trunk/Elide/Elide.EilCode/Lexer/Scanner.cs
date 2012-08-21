@@ -386,7 +386,7 @@ internal sealed class Scanner {
 			case "Newtype0": t.kind = 72; break;
 			case "Newtype1": t.kind = 73; break;
 			case "Newtype2": t.kind = 74; break;
-			case "Ctypei": t.kind = 75; break;
+			case "Ctype": t.kind = 75; break;
 			case "Disp": t.kind = 76; break;
 			case "Newconst": t.kind = 77; break;
 			case "Api": t.kind = 78; break;

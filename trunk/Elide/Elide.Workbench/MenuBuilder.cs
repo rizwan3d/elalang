@@ -5,11 +5,14 @@ using Elide.Core;
 using System.Collections.Generic;
 using Elide.Environment;
 using Elide.Forms;
+using System.Globalization;
 
 namespace Elide.Workbench
 {
     internal sealed class MenuBuilder<T> : IMenuBuilder<T> where T : new()
     {
+        private static readonly CultureInfo Culture = new CultureInfo("en-US");
+
         private ToolStrip menuStrip;
         private Stack<ToolStripMenuItem> menu;
         private KeysConverter conv;
@@ -131,7 +134,7 @@ namespace Elide.Workbench
             var mi = new ToolStripMenuItem(text, null, (o,e) => handler());
 
             if (!String.IsNullOrEmpty(keys))
-                mi.ShortcutKeys = (Keys)conv.ConvertFromString(keys);
+                mi.ShortcutKeys = (Keys)conv.ConvertFromString(null, Culture, keys);
 
             mi.Tag = new Tag { Predicate = pred, CheckPredicate = checkPred, Data = (dynamic ? (Object)true : null) };
             Add(mi);
