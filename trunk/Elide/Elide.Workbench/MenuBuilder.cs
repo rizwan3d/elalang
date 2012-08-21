@@ -22,10 +22,10 @@ namespace Elide.Workbench
         static MenuBuilder()
         {
             //Add some commonly used keys
-            //Ctrl is used here as a shortcut for Control
+            //Ctrl, Ins and Del are used as shortcuts
             keysCache.Add("Ctrl", Keys.Control);
-            keysCache.Add("Alt", Keys.Alt);
-            keysCache.Add("Shift", Keys.Shift);
+            keysCache.Add("Ins", Keys.Insert);
+            keysCache.Add("Del", Keys.Delete);
         }
 
         public MenuBuilder()
