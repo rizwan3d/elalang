@@ -9,7 +9,12 @@ namespace Ela.Runtime.Classes
         #region Show
         internal override string Show(ElaValue value, ExecutionContext ctx)
         {
-            return value.ToString() + "f";
+            var d = value.DirectGetSingle();
+
+            if (Single.IsInfinity(d) || Single.IsNaN(d))
+                return value.ToString();
+            else
+                return value.ToString() + "f";
         }
         #endregion
 

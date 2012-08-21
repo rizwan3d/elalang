@@ -11,13 +11,22 @@ namespace Elide.Workbench
 {
     internal sealed class MenuBuilder<T> : IMenuBuilder<T> where T : new()
     {
-        private static readonly CultureInfo Culture = new CultureInfo("en-US");
+        private static Dictionary<String,Keys> keysCache = new Dictionary<String,Keys>();
 
         private ToolStrip menuStrip;
         private Stack<ToolStripMenuItem> menu;
         private KeysConverter conv;
         private bool dynamic;
         private int dynamicIndex;
+
+        static MenuBuilder()
+        {
+            //Add some commonly used keys
+            //Ctrl is used here as a shortcut for Control
+            keysCache.Add("Ctrl", Keys.Control);
+            keysCache.Add("Alt", Keys.Alt);
+            keysCache.Add("Shift", Keys.Shift);
+        }
 
         public MenuBuilder()
         {
@@ -134,11 +143,32 @@ namespace Elide.Workbench
             var mi = new ToolStripMenuItem(text, null, (o,e) => handler());
 
             if (!String.IsNullOrEmpty(keys))
-                mi.ShortcutKeys = (Keys)conv.ConvertFromString(null, Culture, keys);
+                mi.ShortcutKeys = ConvertFromString(keys);
 
             mi.Tag = new Tag { Predicate = pred, CheckPredicate = checkPred, Data = (dynamic ? (Object)true : null) };
             Add(mi);
             return this;
+        }
+
+        private Keys ConvertFromString(string str)
+        {
+            var arr = str.Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries);
+            var keys = default(Keys);
+
+            foreach (var a in arr)
+            {
+                var kv = default(Keys);
+
+                if (!keysCache.TryGetValue(a, out kv))
+                {
+                    kv = (Keys)Enum.Parse(typeof(Keys), a);
+                    keysCache.Add(a, kv);
+                }
+
+                keys |= kv;
+            }
+
+            return keys;
         }
         
         private void Add(ToolStripItem mi)

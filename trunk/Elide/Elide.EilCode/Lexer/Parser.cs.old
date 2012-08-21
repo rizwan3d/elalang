@@ -655,7 +655,7 @@ internal sealed class Errors {
 			case 72: s = "\"Newtype0\" expected"; break;
 			case 73: s = "\"Newtype1\" expected"; break;
 			case 74: s = "\"Newtype2\" expected"; break;
-			case 75: s = "\"Ctypei\" expected"; break;
+			case 75: s = "\"Ctype\" expected"; break;
 			case 76: s = "\"Disp\" expected"; break;
 			case 77: s = "\"Newconst\" expected"; break;
 			case 78: s = "\"Api\" expected"; break;
