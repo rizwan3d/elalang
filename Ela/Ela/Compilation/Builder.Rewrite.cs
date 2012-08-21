@@ -288,7 +288,8 @@ namespace Ela.Compilation
                             {
                                 var sv = GetVariable(n, CurrentScope, GetFlags.NoError, 0, 0);
 
-                                if ((sv.Flags & ElaVariableFlags.External) != ElaVariableFlags.External &&
+                                if ((sv.Address & Byte.MaxValue) == 0 &&
+                                    (sv.Flags & ElaVariableFlags.External) != ElaVariableFlags.External &&
                                     (sv.Flags & ElaVariableFlags.TypeFun) != ElaVariableFlags.TypeFun &&
                                     (sv.Flags & ElaVariableFlags.Builtin) != ElaVariableFlags.Builtin &&
                                     (sv.Flags & ElaVariableFlags.Parameter) != ElaVariableFlags.Parameter)
