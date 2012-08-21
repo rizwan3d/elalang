@@ -585,7 +585,13 @@ namespace Ela.Compilation
                     EmitSpecName(inst.TypePrefix, "$$" + inst.TypeName, inst, ElaCompilerError.None);
                     cw.Emit(Op.Api, (Int32)Api.TypeConsNumber);
                     cw.Emit(Op.Sub);
+
+                    EmitSpecName(inst.TypePrefix, "$$" + inst.TypeName, inst, ElaCompilerError.None);
+                    cw.Emit(Op.Api2, (Int32)Api.ConsCodeByIndex);
+                    cw.Emit(Op.Api, (Int32)Api.ConsDefault);
                     return true;
+                //Used to generate Bounded.minBound constant
+                case ElaBuiltinKind.GenMinBound:                    
                 case ElaBuiltinKind.GenDefault:
                     cw.Emit(Op.PushI4_0);
                     //Obtain type ID, no errors, they are captured elsewhere

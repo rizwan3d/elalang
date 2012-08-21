@@ -116,7 +116,7 @@ instance Enum where
 //Only for algebraic, better not to use with open types
 instance Bounded where
   maxBound = __internal genmaxbound
-  minBound = 0
+  minBound = __internal genminbound
 
 //Only for algebraic, recommended for types where first constructor
 //has not parameters.

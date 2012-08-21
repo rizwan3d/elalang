@@ -52,3 +52,5 @@ symbols is allowed here. For example, priroty of operators `=|` and `=||` is the
 |`! {op}`            | 12        |Left 
 |`? {op}`            | 12        |Left 
 |`. {op}`            | 12        |Left 
+|`:::`               | 13        |Left
+|(application)       | 13        |Left
