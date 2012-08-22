@@ -25,7 +25,15 @@ namespace Ela.CodeModel
         {
             Expression.ToString(sb, 0);
             sb.Append(" ::: ");
-            Context.ToString(sb, 0);
+
+            if (Context.Parens)
+            {
+                sb.Append('(');
+                Context.ToString(sb, 0);
+                sb.Append(')');
+            }
+            else
+                Context.ToString(sb, 0);
         }
 
         public bool Tentative { get; set; }

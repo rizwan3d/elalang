@@ -40,6 +40,23 @@ namespace Ela.CodeModel
 
             sb.Append(Name);
 
+            if (HasBody)
+            {
+                sb.Append(" = ");
+
+                for (var i = 0; i < Constructors.Count; i++)
+                {
+                    if (i > 0)
+                        sb.Append(" | ");
+
+                    var c = Constructors[i];
+                    c.ToString(sb, 0);
+
+                    if ((ConstructorFlags[i] & ElaVariableFlags.Private) == ElaVariableFlags.Private)
+                        sb.Append(" # private");
+                }
+            }
+
             if (And != null)
             {
                 sb.AppendLine();
