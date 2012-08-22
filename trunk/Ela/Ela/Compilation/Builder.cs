@@ -379,10 +379,12 @@ namespace Ela.Compilation
             return exprData;
         }
 		
+        //Adds a string to a string table (strings are indexed).
 		private int AddString(string val)
 		{
 			var index = 0;
 
+            //The lookup is done to prevent redundant strings.
 			if (!stringLookup.TryGetValue(val, out index))
 			{
 				frame.Strings.Add(val);
