@@ -273,8 +273,8 @@ namespace Ela.Compilation
                     }
                 case ElaNodeType.Juxtaposition:
                     {
-                        //We are very conservative here. Basically we can't compile in a strict manner any application of a function
-                        //defined in the current module (except of a partial application).
+                        //We are very conservative here. Basically we can't compile in a strict manner any application of a 
+                        //non clean local function (except of a partial application).
                         var g = (ElaJuxtaposition)exp;
 
                         if (g.Target.Type == ElaNodeType.NameReference)
@@ -288,13 +288,15 @@ namespace Ela.Compilation
                             {
                                 var sv = GetVariable(n, CurrentScope, GetFlags.NoError, 0, 0);
 
-                                if ((sv.Address & Byte.MaxValue) == 0 &&
+                                if ((sv.Address & Byte.MaxValue) == 0 && //If it is not 0 than the call is non-local
                                     (sv.Flags & ElaVariableFlags.External) != ElaVariableFlags.External &&
                                     (sv.Flags & ElaVariableFlags.TypeFun) != ElaVariableFlags.TypeFun &&
                                     (sv.Flags & ElaVariableFlags.Builtin) != ElaVariableFlags.Builtin &&
                                     (sv.Flags & ElaVariableFlags.Parameter) != ElaVariableFlags.Parameter &&
                                     (sv.Flags & ElaVariableFlags.Clean) != ElaVariableFlags.Clean)
                                 {
+                                    //When we fall here, we can't compile the code in a strict manner, if this 
+                                    //is not a function and not a partial application of a function.
                                     if ((sv.Flags & ElaVariableFlags.Function) != ElaVariableFlags.Function ||
                                         sv.Data <= g.Parameters.Count)
                                         return false;
