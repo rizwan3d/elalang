@@ -7,9 +7,14 @@ namespace Ela.Compilation
     //This part is responsible for function compilation.
 	internal sealed partial class Builder
 	{
+        //Used for 'clean' flag - to track whether a function that is currently compiled
+        //doesn't reference any non-inits.
+        private FastStack<Boolean> cleans = new FastStack<Boolean>();
+
         //Main method used to compile functions. Can compile regular named functions, 
         //named functions in-place (FunFlag.Inline) and type constructors (FunFlag.Newtype).
-		private void CompileFunction(ElaEquation dec)
+        //Return 'true' if a function is clean (no no-inits references).
+		private bool CompileFunction(ElaEquation dec)
 		{
             var fc = (ElaJuxtaposition)dec.Left;
 			var pars = fc.Parameters.Count;
@@ -50,7 +55,10 @@ namespace Ela.Compilation
             var hints = Hints.Scope|Hints.Tail;
 			AddLinePragma(dec);
             var address = cw.Offset;
+
+            cleans.Push(true);
             CompileFunctionMatch(pars, dec, map, hints);
+            var ret = cleans.Pop();
 
             //This logic creates a function (by finally emitting Newfun).
 			var funHandle = frame.Layouts.Count;
@@ -67,6 +75,7 @@ namespace Ela.Compilation
             //Function is constructed
 			cw.Emit(Op.PushI4, pars);
 			cw.Emit(Op.Newfun, funHandle);
+            return ret;
 		}
 
         //Used to compile an anonymous function (lambda). This function returns a number of parameters 
