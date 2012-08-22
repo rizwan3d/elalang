@@ -38,6 +38,7 @@ namespace Ela.Compilation
 			opt = options.Optimize;
 
 			stringLookup = new Dictionary<String,Int32>();
+            cleans.Push(true);
 
             ResumeIndexer();
             Success = true;			

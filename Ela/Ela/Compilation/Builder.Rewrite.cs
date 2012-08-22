@@ -292,7 +292,8 @@ namespace Ela.Compilation
                                     (sv.Flags & ElaVariableFlags.External) != ElaVariableFlags.External &&
                                     (sv.Flags & ElaVariableFlags.TypeFun) != ElaVariableFlags.TypeFun &&
                                     (sv.Flags & ElaVariableFlags.Builtin) != ElaVariableFlags.Builtin &&
-                                    (sv.Flags & ElaVariableFlags.Parameter) != ElaVariableFlags.Parameter)
+                                    (sv.Flags & ElaVariableFlags.Parameter) != ElaVariableFlags.Parameter &&
+                                    (sv.Flags & ElaVariableFlags.Clean) != ElaVariableFlags.Clean)
                                 {
                                     if ((sv.Flags & ElaVariableFlags.Function) != ElaVariableFlags.Function ||
                                         sv.Data <= g.Parameters.Count)

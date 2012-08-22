@@ -39,6 +39,8 @@ namespace Ela.CodeModel
 
         Self = 1 << 15,
 
-        PartiallyApplied = 1 << 16 //??
+        PartiallyApplied = 1 << 16, //??
+
+        Clean = 1 << 17
 	}
 }
