@@ -51,7 +51,12 @@ namespace Ela.Compilation
                     if ((hints & Hints.Lazy) == Hints.Lazy)
                         CompileLazyExpression(s.Right, map, Hints.None);
                     else
-                        CompileExpression(s.Right, map, Hints.None, s);
+                    {
+                        var ed = CompileExpression(s.Right, map, Hints.None, s);
+
+                        if (ed.Type == DataKind.Builtin)
+                            CurrentScope.AddFlagsAndData(nm, ElaVariableFlags.Builtin, ed.Data);
+                    }
                 }
 
                 //Now, when done initialization, when can remove NoInit flags.

@@ -388,8 +388,8 @@ class Cat(Cat) a where
   (++) a->_->_
 
 instance Cat List where 
-  xs ++ ys = cat (reverse xs) ys
-    where cat (x::xs) ys = & cat xs (x::ys)
+  xs ++ ys = cat xs ys
+    where cat (x::xs) ys = & x :: cat xs ys
           cat [] ys = ys
 
 /* Show */
