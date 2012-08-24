@@ -71,6 +71,8 @@ namespace Ela.Compilation
             }
         }
         
+        //This method generate a warning and hint and when a value is not used and 
+        //pops this value from the top of the stack.
         private void AddValueNotUsed(ElaExpression exp)
         {
             AddWarning(ElaCompilerWarning.ValueNotUsed, exp, FormatNode(exp));
@@ -89,13 +91,14 @@ namespace Ela.Compilation
         private string FormatNode(ElaExpression exp, bool compact)
         {
             var str = exp.ToString();
+            str = str.Length > 100 ? str.Substring(0, 100) + " ..." : str;
 
             if (!compact && (str.IndexOf('\n') != -1 || str.Length > 40))
                 str = "\r\n    " + str + "\r\n";
             else if (!compact && str.Length > 0 && str[0] != '(' && str[0] != '"' && str[0] != '\'' && str[0] != '[')
                 str = "(" + str + ")";
 
-            return str.Length > 100 ? str.Substring(0, 100) : str;
+            return str;
         }
     }
 }
