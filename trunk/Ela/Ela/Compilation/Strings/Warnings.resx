@@ -136,6 +136,6 @@
     <value>A name '{0}' in a pattern {1} can correspond to both type and class. A type is considered.</value>
   </data>
   <data name="ValueNotUsed" xml:space="preserve">
-    <value>Value returned by this expression is not used.</value>
+    <value>Value returned by an expression {0} is not used.</value>
   </data>
 </root>

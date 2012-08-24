@@ -73,19 +73,26 @@ namespace Ela.Compilation
         
         private void AddValueNotUsed(ElaExpression exp)
         {
-            AddWarning(ElaCompilerWarning.ValueNotUsed, exp);
-            AddHint(ElaCompilerHint.UseIgnoreToPop, exp);
+            AddWarning(ElaCompilerWarning.ValueNotUsed, exp, FormatNode(exp));
+            AddHint(ElaCompilerHint.UseIgnoreToPop, exp, FormatNode(exp, true));
             cw.Emit(Op.Pop);
         }
 
-        //Used to format an AST node to incorporate its textual representation into an error message.
+        //The same as FormatNode(ElaExpression,bool) but always formats AST not in non-compact manner.
         private string FormatNode(ElaExpression exp)
+        {
+            return FormatNode(exp, false);
+        }
+
+        //Used to format an AST node to incorporate its textual representation into an error message.
+        //Parameter 'compact' is used to specify whether line brakes and parens should be added around output.
+        private string FormatNode(ElaExpression exp, bool compact)
         {
             var str = exp.ToString();
 
-            if (str.IndexOf('\n') != -1 || str.Length > 40)
-                str = "->\r\n    " + str + "\r\n";
-            else if (str.Length > 0 && str[0] != '(' && str[0] != '"' && str[0] != '\'' && str[0] != '[')
+            if (!compact && (str.IndexOf('\n') != -1 || str.Length > 40))
+                str = "\r\n    " + str + "\r\n";
+            else if (!compact && str.Length > 0 && str[0] != '(' && str[0] != '"' && str[0] != '\'' && str[0] != '[')
                 str = "(" + str + ")";
 
             return str.Length > 100 ? str.Substring(0, 100) : str;
