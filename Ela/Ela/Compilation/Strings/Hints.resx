@@ -136,6 +136,6 @@
     <value>Qualify a name with a module alias to resolve this ambiguity.</value>
   </data>
   <data name="UseIgnoreToPop" xml:space="preserve">
-    <value>Use '_ = ...' expression to disable warning, e.g. '_ = x'.</value>
+    <value>Use '_ = ...' construct to disable warning, e.g. '_ = {0}'.</value>
   </data>
 </root>
