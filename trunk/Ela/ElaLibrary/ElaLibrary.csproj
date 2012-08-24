@@ -86,7 +86,6 @@
     <Compile Include="General\DateTimeModule.cs" />
     <Compile Include="General\DebugModule.cs" />
     <Compile Include="General\Experimental.cs" />
-    <Compile Include="General\FormatModule.cs" />
     <Compile Include="General\IOModule.cs" />
     <Compile Include="General\ReadModule.cs" />
     <Compile Include="General\RecordModule.cs" />

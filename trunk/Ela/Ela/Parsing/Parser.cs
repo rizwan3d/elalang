@@ -987,6 +987,12 @@ internal sealed partial class Parser {
 		var mi = default(ElaJuxtaposition); 
 		var cexp = default(ElaExpression);
 		
+		if (exp.Type == ElaNodeType.Juxtaposition)
+		{
+		    mi = (ElaJuxtaposition)exp;
+		    mi.Parens = false;
+		}
+		
 		while (StartOf(18)) {
 			AccessExpr(out cexp);
 			if (mi == null)

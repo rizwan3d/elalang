@@ -4,7 +4,6 @@ using Ela.Library.General;
 
 [assembly: ElaModule("libCon", typeof(ConModule))]
 [assembly: ElaModule("libCore", typeof(CoreModule))]
-[assembly: ElaModule("libFormat", typeof(FormatModule))]
 [assembly: ElaModule("libCell", typeof(CellModule))]
 [assembly: ElaModule("libIO", typeof(IOModule))]
 [assembly: ElaModule("libChar", typeof(CharModule))]

@@ -870,6 +870,12 @@ PRODUCTIONS
 				var ot = t;
 				var mi = default(ElaJuxtaposition); 
 				var cexp = default(ElaExpression);
+				
+				if (exp.Type == ElaNodeType.Juxtaposition)
+				{
+				    mi = (ElaJuxtaposition)exp;
+				    mi.Parens = false;
+				}
 			.)	
 			{
 				AccessExpr<out cexp>					

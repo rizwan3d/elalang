@@ -3,7 +3,7 @@
   Created in 2012 by Basil Voronkov
 */
 open console
-import libFormat#elalib@fm lang
+import libString#elalib@fm lang
 
 /* Classes and instances */
 class Format a where
