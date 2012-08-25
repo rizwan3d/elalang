@@ -3,7 +3,7 @@
   Created in 2012 by Basil Voronkov
 */
 import libDateTime#elalib@dt
-open generic format
+open generic string
 
 /* Construction */
 type DateTime = DateTime a # private

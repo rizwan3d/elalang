@@ -2,7 +2,7 @@
   Module bench (benchmarking)
   Created in 2012 by Basil Voronkov
 */
-open debug#elalib generic number format
+open debug#elalib generic number string
 
 /* Types */
 type Bench = Bench name runs time
@@ -71,5 +71,5 @@ formatBench xs =
 
 formatRes # private
 formatRes n
-  | n > 1000 = formatStr "{0:0.000000}s" (n/1000)
-  | else = formatStr "{0:0.000000}ms" n
+  | n > 1000 = format "{0:0.000000}s" (n/1000)
+  | else = format "{0:0.000000}ms" n

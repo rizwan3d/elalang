@@ -1,19 +1,41 @@
 #file string.ela
 #title string
 #category Ela Standard Library
-This module contains functions that operate with strings. 
+This module contains functions that operate with strings and string formatting functions 
+in .NET `String.Format` style.
+
+=Classes
+
+#Format
+This class is used for formatting values of different types to strings. It defines a function
+`fmt` that is used internally by `format` function that implements .NET style string
+formatting (similar to `String.Format`).//br
 
 =Instances
 
 ===ListLike
-Converts a given string to a linked list.
+Provides an instance of `ListLike` class for a string, which converts a given string to a linked list.
+Only a list of chars, a list of string or a list of chars and strings can be transformed to a string 
+using `fromList` function of this instance.
+
+===Format
+Provides instances of this class for `Int`, `Long`, `Single`, `Double`, `String`, `Char` and `Bool`.
 
 =Functions
 
-#fromList xs
-Converts a given list to a string. Only a list of chars, a list of string or a list of chars
-and strings can be transformed to a string using this function. This function also requires
-a qualified access, e.g. `string.fromList`.
+#format fstr
+Takes a format string and returns a function for n-arguments (dependings on the format string), 
+which builds a new string by substituting format clauses with provided arguments. This function 
+implements .NET style format strings, e.g. `"{0} {1} {2}"`. 
+>>>format "{0}={1}" "key" 42
+It is also possible to specify formatting string for values:
+>>>format "value is {0:#.#}" 12.11
+Only types which implement `Show` class are accepted by this function. However all standard Ela 
+types have instances of `Show` class.
+
+#formatfn fn fstr
+The same as `format` but additionally takes a function that is applied to a saturated format
+string.
 
 #upper s
 Converts a given string to uppercase. 

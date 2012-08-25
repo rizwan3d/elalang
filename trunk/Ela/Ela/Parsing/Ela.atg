@@ -872,10 +872,7 @@ PRODUCTIONS
 				var cexp = default(ElaExpression);
 				
 				if (exp.Type == ElaNodeType.Juxtaposition)
-				{
 				    mi = (ElaJuxtaposition)exp;
-				    mi.Parens = false;
-				}
 			.)	
 			{
 				AccessExpr<out cexp>					
@@ -885,6 +882,8 @@ PRODUCTIONS
 					    mi = new ElaJuxtaposition(ot) { Target = exp };
 						exp = mi;
 					}
+					else
+					    mi.Parens = false;
 				
 				    if (mi != null)
 					    mi.Parameters.Add(cexp); 

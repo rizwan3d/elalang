@@ -2,10 +2,14 @@
   Module console
   Created in 2012 by Basil Voronkov
 */
-import libCon#elalib@con
+import libCon#elalib@con string
 
 write x = con.write (force x)
 
 writen x = con.writen (force x)
 
 readn () = con.readn ()
+
+printf = string.formatfn write
+
+prtinfn = string.formatfn writen

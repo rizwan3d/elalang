@@ -16,3 +16,10 @@ Writes a given string and a new line to standard output:
 #readn ()
 Reads a line from standard input: 
 >>res = readn ()
+
+#printf
+Works like `format` function from `string` module but instead of returning a result string prints it to console. 
+
+#printfn
+Works like `format` function from `string` module  but instead of returning a result string prints it to console and 
+adds a new line. 
