@@ -1,3 +1,4 @@
+0.1.6.13:Change:A 'format' function is decomissioned; function 'formatStr' is renamed to 'format' and moved to 'string' module (along with 'Format' class); 'printf' and 'printfn' functions are moved to console module.
 0.1.6.12:Change:An application operator (!) from prelude is decomissioned.
 0.1.6.11:Change:Default instance of 'Show' is corrected in 'generic' module. Now this instance inserts parens for nested data structures.
 0.1.6.10:New:A new function 'isAlgebraic' is added to the 'generic' module.

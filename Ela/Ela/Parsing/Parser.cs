@@ -988,10 +988,7 @@ internal sealed partial class Parser {
 		var cexp = default(ElaExpression);
 		
 		if (exp.Type == ElaNodeType.Juxtaposition)
-		{
 		    mi = (ElaJuxtaposition)exp;
-		    mi.Parens = false;
-		}
 		
 		while (StartOf(18)) {
 			AccessExpr(out cexp);
@@ -1000,6 +997,8 @@ internal sealed partial class Parser {
 			    mi = new ElaJuxtaposition(ot) { Target = exp };
 				exp = mi;
 			}
+			else
+			    mi.Parens = false;
 			
 			    if (mi != null)
 				    mi.Parameters.Add(cexp); 

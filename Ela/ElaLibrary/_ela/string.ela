@@ -5,11 +5,27 @@
 import libString#elalib@str
 import lang
 
+/* Classes and instances */
+class Format a where
+  fmt _->a->_
+
+instance Format Int Long Single Double String Char Bool where
+  fmt f x = lang.toString (force f) x
+
 instance ListLike String where 
   toList x    = str.toList x
   fromList xs = toString <| trav "" xs
     where trav sb (x::xs) = trav (sb +> toString x) xs
           trav sb [] = sb
+
+/* Functions */
+format = formatfn id
+
+formatfn fn !fstr = format fn fstr [] (str.countArgs fstr)
+  where
+    format fn fstr xs n 
+      | n == 0 = fn <| str.format fstr fmt xs
+      | else = \x -> format fn fstr (force x::xs) (n - 1)
 
 upper x = str.upper (force x)
 lower x = str.lower (force x)
