@@ -95,7 +95,7 @@ generate instances of `Bounded` (e.g. using `deriving` clause). This implementat
 custom algebraic type.//br
 It relies on a declaration order of constructors in an algebraic type. The `maxBound` function returns a maximum
 index of a constructor in a given algebraic type, e.g. for a type with three constructors it will return 2 as a
-maximum bound. The `minBound` function always returns 0 in this implementation.
+maximum bound. The `minBound` function always returns the first constructor of an algebraic type.
 
 =Partial Instances
 
