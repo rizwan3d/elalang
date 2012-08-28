@@ -10,7 +10,7 @@ iter xs = iter' (ref xs)
 //This is a 'foreach' function implementation that works with iterator defined above
 each f xs = for' (iter xs)
                 where for' it =
-                        match it! with
+                        match it() with
                               Some x = f x `seq` for' it
                               _ = ()
 

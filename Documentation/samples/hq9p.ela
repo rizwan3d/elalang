@@ -3,10 +3,10 @@ open console imperative char cell
 //Implementation of HQ9+ interpreter
 eval src = eval' src
       where eval' [] = ()
-            eval' (x::xs) | be 'H' = h! `seq` eval' xs
-                          | be 'Q' = q! `seq` eval' xs
-                          | be '9' = n! `seq` eval' xs
-                          | be '+' = p! `seq` eval' xs
+            eval' (x::xs) | be 'H' = h() `seq` eval' xs
+                          | be 'Q' = q() `seq` eval' xs
+                          | be '9' = n() `seq` eval' xs
+                          | be '+' = p() `seq` eval' xs
                           | else = fail ("Unrecognized " ++ x)
                           where rf = ref 0
                                 be c = upper x == c
