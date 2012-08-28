@@ -23,16 +23,15 @@ September 2012
   * Bang patterns for constructor and function parameters.
   * Bring back validation of `match` entries for overlapping.
   * Redesign of logical operators (`and`, `or`) and sequencing operator `($)`, which are currently presented as special forms, not as functions.  
-  * New types classes: `Functor` (generalization of `map`), `Foldable` (generalization of `fold`), `Union` (generalization of `concat`), etc. and their instances, including generic default instances.
-  * Final version of Ela reflection API, minor redesign in modules `generic` and `reflect`.
   * New version of the book _Ela, dynamic functional language_, covering all the recent changes in the language, including algebraic types and classes.
   * New "getting started" style documentation and tutorials.
-
 
 == Platform 2012.10 ==
 
 November 2012
   
+  * Final version of Ela reflection API, minor redesign in modules `generic` and `reflect`.
+  * New types classes: `Functor` (generalization of `map`), `Foldable` (generalization of `fold`), `Union` (generalization of `concat`), etc. and their instances, including generic default instances.
   * Monads, `do` notation for monads.
   * `IO` monad, redesign of existing modules to work through `IO` monad.
   * Extend standard library with new modules (collections, IO functions, etc.)
