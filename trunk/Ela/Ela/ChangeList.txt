@@ -1,4 +1,4 @@
-0.12.0.0.Release:Release of Ela 0.12.0.0.
+0.12.0.0:Release:Release of Ela 0.12.0.0.
 0.11.2.19:Fix:Function definitions in the form (f + g) x = ... are not processed correctly. (Issue #47)
 0.11.2.18:Fix:Standard functions are not always inlined. (Issue #46)
 0.11.2.17:Change:Warning and hint considering 'value not used' are improved.
