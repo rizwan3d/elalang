@@ -1,3 +1,4 @@
+0.1.7.0:Release:Release of 0.1.7.0.
 0.1.6.9.Change:An article about 'format' module is decomissioned.
 0.1.6.8:Change:Article 'Pattern matching' is updated with information about bang patterns.
 0.1.6.7:Change:An article 'classes' is updated with information about type constraints and strict constructors.
