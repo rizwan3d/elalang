@@ -5,10 +5,10 @@
 open number list thunk
 
 /* Construction */
-type Peano = Zero | Succ a
+type Peano = Zero | Succ (Peano a)
 
 infinity # qualified
-infinity = & Succ infinity
+infinity = Succ infinity
 
 fromIntegral # qualified
 fromIntegral a = from a
