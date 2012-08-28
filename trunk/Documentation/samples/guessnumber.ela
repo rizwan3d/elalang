@@ -1,4 +1,4 @@
-open random list console format string datetime read core
+open random list console string datetime read core
 
 //A function that is used to generate a random number
 rnd' v = rnd s 1 v where s = milliseconds <| datetime.now ()

@@ -12,4 +12,4 @@ readn () = con.readn ()
 
 printf = string.formatfn write
 
-prtinfn = string.formatfn writen
+printfn = string.formatfn writen
