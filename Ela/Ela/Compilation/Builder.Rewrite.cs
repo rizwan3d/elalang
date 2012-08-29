@@ -151,6 +151,7 @@ namespace Ela.Compilation
         private FastList<ElaEquation> ProcessBindings(FastList<ElaEquation> exps, LabelMap map)
         {
             var len = exps.Count;
+            var small = len == 1;
             var list = new FastList<ElaEquation>(len);
 
             for (var i = 0; i < len; i++)
@@ -164,9 +165,7 @@ namespace Ela.Compilation
                     //Unless somebody explicitly told us to compile everything in a
                     //strict manner, we need to check if we need to create some thunks here.
                     if (!options.Strict)
-                    {
-                        var small = len == 1;
-
+                    {                        
                         //Thunks are created if we have a single non-function binding which is recursive
                         //or when we have more than one binding, and we 'suspect' that this one cannot
                         //be executed in a strict manner (e.g. it references non-initialized names).
