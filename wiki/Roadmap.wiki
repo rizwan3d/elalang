@@ -13,7 +13,7 @@ August 2012
   * Performance optimizations for algebraic types construction.
   * Redesign of `StringBuilder` data type (ease of use, effeciency).
 
-== Platform 2012.9 ==
+== Platform 2012.9 (Released) ==
 
 September 2012
 
