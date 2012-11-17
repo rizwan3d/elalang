@@ -23,3 +23,11 @@ Works like `format` function from `string` module but instead of returning a res
 #printfn
 Works like `format` function from `string` module  but instead of returning a result string prints it to console and 
 adds a new line. 
+
+#print
+This function is defined like so:
+>>print = write << show
+
+#printn
+This function is defined like so:
+>>printn = writen << show

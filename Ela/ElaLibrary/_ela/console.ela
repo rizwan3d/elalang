@@ -10,6 +10,10 @@ writen x = con.writen (force x)
 
 readn () = con.readn ()
 
+print = write << show
+
+printn = writen << show
+
 printf = string.formatfn write
 
 printfn = string.formatfn writen

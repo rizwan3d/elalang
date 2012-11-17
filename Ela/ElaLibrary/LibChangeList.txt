@@ -1,3 +1,5 @@
+0.1.7.2:New:New functions 'print' and 'printn' are added to 'console' module.
+0.1.7.1:Fix:A bug fixed in list.take function (Issue #49)
 0.1.7.0:Release:Release of 0.1.7.0.
 0.1.6.14:Change:Now a 'Peano' data type (from 'peano') module defines a type constraint for 'Succ' constructor.
 0.1.6.13:Change:A 'format' function is decomissioned; function 'formatStr' is renamed to 'format' and moved to 'string' module (along with 'Format' class); 'printf' and 'printfn' functions are moved to console module.
