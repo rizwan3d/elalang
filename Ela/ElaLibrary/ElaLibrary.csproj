@@ -129,6 +129,7 @@
     <None Include="_ela\espec.ela" />
     <None Include="_ela\generic.ela" />
     <None Include="_ela\list.ela" />
+    <None Include="_ela\monad.ela" />
     <None Include="_ela\peano.ela" />
     <None Include="_ela\random.ela" />
     <None Include="_ela\read.ela" />
