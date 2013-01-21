@@ -113,7 +113,6 @@
     <Content Include="_ela\collections\queue.ela" />
     <Content Include="_ela\console.ela" />
     <Content Include="_ela\datetime.ela" />
-    <Content Include="_ela\format.ela" />
     <Content Include="_ela\imperative.ela" />
     <Content Include="_ela\io.ela" />
     <Content Include="_ela\number.ela" />
