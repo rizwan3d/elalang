@@ -23,6 +23,7 @@ namespace Ela
         ConsCreate = 15,
 
         CurrentContext = 16,
+        Classes = 17,
 
         ConsParamIndex = 101,
         ConsParamValue = 102,

@@ -1477,6 +1477,13 @@ namespace Ela.Runtime
 
             switch ((Api)code)
             {
+                case Api.Classes:
+                    if (left.TypeId != INT)
+                    {
+                        thread.Context.InvalidType(TCF.GetShortForm(ElaTypeCode.Integer), left);
+                        break;
+                    }
+                    break;
                 case Api.IsAlgebraic:
                     return new ElaValue(left.TypeId > SysConst.MAX_TYP);
                 case Api.CurrentContext:
