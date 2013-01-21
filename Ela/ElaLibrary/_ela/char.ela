@@ -15,7 +15,10 @@ instance Bounded Char where
   maxBound = '\x65535'
   minBound = '\0'
 
+lower # qualified
 lower c = ch.lower (force c)
+
+upper # qualified
 upper c = ch.upper (force c)
 
 isUpper c = ch.isUpper (force c)

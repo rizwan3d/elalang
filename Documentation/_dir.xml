@@ -22,9 +22,10 @@
     <doc name="test" file="lib\test.htm" />
     <doc name="peano" file="lib\peano.htm" />
     <doc name="bench" file="lib\bench.htm" />
+    <doc name="monad" file="lib\monad.htm" />
     <doc name="cell" file="lib\cell.htm" />
     <doc name="io" file="lib\io.htm" />
-    <doc name="console" file="lib\console.htm" />    
+    <doc name="console" file="lib\console.htm" />
     <doc name="imperative" file="lib\imperative.htm" />
   </folder>
   <folder name="Language Reference">
@@ -45,6 +46,7 @@
     <doc name="Operator Priority" file="operatorpriority.htm" />    
   </folder>
   <folder name="Older Versions">
+    <doc name="Platform 2012.9" file="oldversions/platform-2012-9.htm" />
     <doc name="Platform 2012.8" file="oldversions/platform-2012-8.htm" />
     <doc name="Platform 2012.7" file="oldversions/platform-2012-7.htm" />
     <doc name="Platform 2012.6" file="oldversions/platform-2012-6.htm" />
