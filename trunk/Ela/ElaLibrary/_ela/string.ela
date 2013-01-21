@@ -27,7 +27,10 @@ formatfn fn !fstr = format fn fstr [] (str.countArgs fstr)
       | n == 0 = fn <| str.format fstr fmt xs
       | else = \x -> format fn fstr (force x::xs) (n - 1)
 
+upper # qualified
 upper x = str.upper (force x)
+
+lower # qualified
 lower x = str.lower (force x)
 
 trim x = str.trim (force x)

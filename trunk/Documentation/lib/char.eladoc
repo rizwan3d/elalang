@@ -15,10 +15,10 @@ Implements `Bounded` class for a unicode character.
 
 ==Transformation
 #lower
-Transforms a given char to lowercase. 
+Transforms a given char to lowercase. This function requires a full qualification.
 
 #upper
-Transforms a given char to uppercase.
+Transforms a given char to uppercase. This function requires a full qualification.
 
 ==Checking
 #isLower

@@ -38,10 +38,10 @@ The same as `format` but additionally takes a function that is applied to a satu
 string.
 
 #upper s
-Converts a given string to uppercase. 
+Converts a given string to uppercase. This function requires a full qualification.
 
 #lower s
-Converts a given string to lowercase. 
+Converts a given string to lowercase. This function requires a full qualification.
 
 #trim s
 Strips all trailing and leading spaces from a given string. 

@@ -6,7 +6,7 @@ open basictests funtests rangetests listtests tupletests recordtests
 import cell char datetime espec imperative io list
      number read record reflect string thunk
      peano random tuple core generic
-     collections.alist collections.queue
+     collections.alist collections.queue monad
 
 _ = [] 
     |> regFuns basictests
