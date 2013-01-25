@@ -1,3 +1,5 @@
+0.1.7.7:Change:An article 'Ela and Haskell' is corrected.
+0.1.7.6:Change:An article 'Classes' from Ela documentation is corrected.
 0.1.7.5:Change:An article 'char' is updated according to the module changes.
 0.1.7.4:Change:An article 'string' is updated according to the module changes.
 0.1.7.3:New:A new document 'Whats new' that contains platform changes overview is added.

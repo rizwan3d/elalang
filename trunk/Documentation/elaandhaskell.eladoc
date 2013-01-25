@@ -202,8 +202,7 @@ Ela has four operators instead (similar to F#). These are forward pipe `|>`, bac
 forward composition `>>` and backward composition `<<`. //br
 Backward pipe is fully equivalent to `$` and backward composition is equivalent to `.`. They are 
 both right associative and use applicative order. (Remember, that `.` is a different operator in 
-Ela and is used specifically for "member access"; and `$` is a different operator as well and is 
-used for sequencing). //br
+Ela and is used specifically for "member access"). //br
 Haskell: 
 >funk = (negate . abs)
 >funk x = negate $ abs $ x

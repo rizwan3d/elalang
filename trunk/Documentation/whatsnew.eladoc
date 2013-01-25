@@ -6,6 +6,16 @@ Also some fixes are implemented in standard library. The most important addition
 `monad` module that contains monadic classes and their instances. This document contains an overview of the most important 
 changes in this release.
 
+=Documentation changes
+This release includes several important correction to the Ela documentation, especially to Ela language reference. Documentation
+is updated according to the latest language changes.
+
 =Library changes
-A most importand change to the standar library is an addition of `monad` module that contains monadic classes and their instances.
-Ela design of monads is different that the one used by Haskell and is closer to the category theory.
+A most importand change to the standard library is an addition of `monad` module that contains monadic classes and their instances.
+Ela design of monads is different that the one used by Haskell and is closer to the category theory. Ela provides the following 
+classes - `Functor` (that defines a single `fmap` function which is a generalization over `map`), `Union` (which defines a single
+`join` function which is a generalization over `concat`), `Pointed` (with a `point` function equivalent to the `return` function
+from Haskell), `Copointed` and `Failure` (with a single function of the same name). The minimum requirement for a monad is to provide
+instances for classes `Functor`, `Union` and `Pointed`.//br
+Module `monad` already provides instances for some common Ela types including lists, `Maybe`, etc. Also this module provides default
+instances for most of its classes so you can use deriving mechanism to create your own instances.

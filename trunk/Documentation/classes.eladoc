@@ -26,9 +26,6 @@ effectively a global function that is not different from other functions - it is
 >>>foo
 Dispatch rules are also different. Ela provides a support for only single parameter classes, however, this parameter can appear 
 at any place in a function signature.//br
-Unlike single parameter typeclasses in Haskell, classes in Ela do not support dispatch by return type; as a result, a function 
-signature in a class declaration do not include a return type at all, e.g. a signature like so: `a->a` means a two argument
-function, not a single argument function.//br
 In the example above we have defined a function `foo`, that accepts any value as its first argument and a specific value (that
 can be specified through an instance) as its second argument. Now we can define an instance of this class like so:
 >>>instance Foo Int where 
@@ -39,7 +36,11 @@ Class member signature is used to provide overload rules for a function. For exa
 like so:
 >>class Foo a where
 >>  foo a->a->_
-an application of `foo` to string and integer would fail.
+an application of `foo` to string and integer would fail.//br
+Classes in Ela do support dispatch by return type (through contexts, see a section below). Therefore it is possible to use classes
+to define both functions an polymorphic constants. For example, the folowing code defines a class with polymorphic constant:
+>>class Default a where
+>>  default a
 
 =Classes
 A class in Ela is declared using `class` declaration that has the following syntax:
