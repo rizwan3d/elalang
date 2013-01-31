@@ -33,9 +33,6 @@ namespace ElaConsole
         #region Methods
         private static int Main(string[] args) 
 		{
-            //foreach (var s in Enum.GetNames(typeof(Op)))
-            //    Debug.Write("\"" + s + "\"|");
-
             if (!ReadOptions(args))
 				return R_ERR;
 
@@ -56,6 +53,11 @@ namespace ElaConsole
 				helper.PrintHelp();
 				return R_OK;
 			}
+
+            var p = new ElaParser();
+            var res = p.Parse(new FileInfo(opt.FileName));
+            Console.WriteLine(res.Program.ToString());
+            return 0;
 
 			try
 			{
