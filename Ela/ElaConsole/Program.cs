@@ -54,10 +54,12 @@ namespace ElaConsole
 				return R_OK;
 			}
 
-            var p = new ElaParser();
-            var res = p.Parse(new FileInfo(opt.FileName));
-            Console.WriteLine(res.Program.ToString());
-            return 0;
+            //var p = new ElaParser();
+            //var res = p.Parse(new FileInfo(opt.FileName));
+            //foreach (var m in res.Messages)
+            //    Console.WriteLine(m);
+            //Console.WriteLine(res.Program.ToString());
+            //return 0;
 
 			try
 			{

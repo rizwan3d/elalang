@@ -1470,7 +1470,7 @@ PRODUCTIONS
 			var cexp2 = default(ElaExpression);
 		.)
 		(
-			Expr<out cexp1> [ "<-" Expr<out cexp2> ] (. if (RequireEndBlock()) .) EndBlock
+			Expr<out cexp1> [ "<-" Expr<out cexp2> ]
 			(. ProcessDoBlock(cexp1, cexp2, ref eqt); .)
 		).
     

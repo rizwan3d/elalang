@@ -1711,8 +1711,6 @@ internal sealed partial class Parser {
 			Get();
 			Expr(out cexp2);
 		}
-		if (RequireEndBlock()) 
-		EndBlock();
 		ProcessDoBlock(cexp1, cexp2, ref eqt); 
 	}
 
