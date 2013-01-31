@@ -10,14 +10,34 @@ namespace Ela.Parsing
 	{
         private static readonly ElaEquation unit = new ElaEquation();
 		private Stack<ElaEquation> bindings = new Stack<ElaEquation>(new ElaEquation[] { null });
+        /*
+            do
+              x <- thing1
+              y <- func1 x
+              thing2
+              z <- func2 y
+              return z
 
+            thing1 >>= 
+              \x -> func1 x >>= 
+                \y -> thing2 >>= 
+                  \_ -> func2 y >>= 
+                    \z -> return z
+        
+            thing1 >>= 
+              \x -> func1 x >>= 
+                \y -> thing2 >>= 
+                  \z -> func2 y >>- 
+                    return z
+        
+        */
         private void ProcessDoBlock(ElaExpression cexp1, ElaExpression cexp2, ref ElaJuxtaposition eqt)
         {
             if (eqt.Line == 0)
                 eqt.SetLinePragma(cexp1.Line, cexp1.Column);
 
             if (eqt.Parameters.Count == 2 &&
-                eqt.Parameters[0].Type == ElaNodeType.UnitLiteral && eqt.Parameters[0].Type == ElaNodeType.UnitLiteral)
+                eqt.Parameters[0].Type == ElaNodeType.UnitLiteral && eqt.Parameters[1].Type == ElaNodeType.UnitLiteral)
             {
                 eqt.Parameters.Clear();
                 eqt.Target = null;
@@ -27,38 +47,57 @@ namespace Ela.Parsing
             {
                 if (eqt.Parameters.Count == 2)
                 {
-                    if (eqt.Parameters[1].Type == ElaNodeType.UnitLiteral)
+                    if (eqt.Parameters[0].Type == ElaNodeType.UnitLiteral)
                     {
-                        var lambda3 = new ElaLambda();
-                        lambda3.SetLinePragma(cexp2.Line, cexp2.Column);
-                        lambda3.Left = cexp2;
-                        var eqt2 = new ElaJuxtaposition();
-                        eqt2.SetLinePragma(cexp2.Line, cexp2.Column);
-                        lambda3.Right = eqt2;
-                        eqt.Parameters[1] = lambda3;
                         eqt.Target = new ElaNameReference(t) { Name = ">>=" };
-                        eqt = eqt2;
-                    }
-                    else
-                    {
-                        var oldeqt = eqt;
-                        eqt = new ElaJuxtaposition();
-                        eqt.Target = new ElaNameReference(t) { Name = ">>=" };
-                        eqt.SetLinePragma(cexp1.Line, cexp1.Column);
-                        eqt.Parameters.Add(oldeqt.Parameters[1]);
-                        oldeqt.Parameters[1] = eqt;
-
+                        
+                        var lambda = new ElaLambda();
+                        lambda.SetLinePragma(cexp2.Line, cexp2.Column);
+                        lambda.Left = new ElaPlaceholder();
+                        
                         var lambda2 = new ElaLambda();
                         lambda2.SetLinePragma(cexp2.Line, cexp2.Column);
-                        lambda2.Left = cexp2;
+                        lambda2.Left = cexp1;
+
+                        var eqt1 = new ElaJuxtaposition();
+                        eqt1.SetLinePragma(cexp2.Line, cexp2.Column);
+                        eqt1.Target = new ElaNameReference(t) { Name = ">>=" };
+                        eqt1.Parameters.Add(cexp2);
+                        eqt1.Parameters.Add(lambda2);
+                        lambda.Right = eqt1; 
+                        
                         var eqt2 = new ElaJuxtaposition();
                         eqt2.SetLinePragma(cexp2.Line, cexp2.Column);
                         eqt2.Target = new ElaNameReference(t) { Name = ">>-" };
                         eqt2.Parameters.Add(new ElaUnitLiteral(t));
-                        eqt2.Parameters.Add(new ElaUnitLiteral(t));
+                        eqt2.Parameters.Add(new ElaUnitLiteral(t));                        
                         lambda2.Right = eqt2;
-                        eqt.Parameters.Add(lambda2);
+
+                        eqt.Parameters[0] = eqt.Parameters[1];
+                        eqt.Parameters[1] = lambda;
                         eqt = eqt2;
+                    }
+                    else
+                    {
+                        //var oldeqt = eqt;
+                        //eqt = new ElaJuxtaposition();
+                        //eqt.Target = new ElaNameReference(t) { Name = ">>=" };
+                        //eqt.SetLinePragma(cexp1.Line, cexp1.Column);
+                        //eqt.Parameters.Add(oldeqt.Parameters[1]);
+                        //oldeqt.Parameters[1] = eqt;
+
+                        //var lambda2 = new ElaLambda();
+                        //lambda2.SetLinePragma(cexp1.Line, cexp1.Column);
+                        //lambda2.Left = cexp1;
+                        //var eqt2 = new ElaJuxtaposition();
+                        //eqt2.SetLinePragma(cexp2.Line, cexp2.Column);
+                        //eqt2.Target = new ElaNameReference(t) { Name = ">>-" };
+                        //eqt2.Parameters.Add(cexp2);
+                        //eqt2.Parameters.Add(new ElaUnitLiteral(t));
+                        //lambda2.Right = eqt2;
+                        //eqt.Parameters.Add(lambda2);
+                        //eqt = eqt2;
+                        throw new Exception("Unable to process do-notation.");
                     }
                 }
                 else
@@ -84,8 +123,11 @@ namespace Ela.Parsing
             {
                 if (eqt.Parameters.Count == 2)
                 {
-                    if (eqt.Parameters[1].Type == ElaNodeType.UnitLiteral)
+                    if (eqt.Parameters[0].Type == ElaNodeType.UnitLiteral)
+                    {
+                        eqt.Parameters[0] = eqt.Parameters[1];
                         eqt.Parameters[1] = cexp1;
+                    }
                     else
                     {
                         var oldeqt = eqt;
@@ -100,8 +142,8 @@ namespace Ela.Parsing
                 else
                 {
                     eqt.Target = new ElaNameReference(t) { Name = ">>-" };
-                    eqt.Parameters.Add(cexp1);
                     eqt.Parameters.Add(new ElaUnitLiteral(t));
+                    eqt.Parameters.Add(cexp1);                    
                 }
             }
         }

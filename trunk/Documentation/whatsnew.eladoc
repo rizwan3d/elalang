@@ -1,10 +1,10 @@
 #title What's new? (Ela Platform 2013.1)
 
 =Ela changes
-Platform 2013.1 is a stabilization release. It comes with a new version of Ela that contains several important fixes. 
-Also some fixes are implemented in standard library. The most important addition in this release is an experimental 
-`monad` module that contains monadic classes and their instances. This document contains an overview of the most important 
-changes in this release.
+Platform 2013.1 provides an experimental support for monadic programming - both on the language and on the library level. 
+This release also includes some fixes are in standard library. The most important addition in this release is an experimental 
+`monad` module that contains monadic classes and their instances - and a support for Haskell style `do` notation.
+This document contains an overview of the most important changes in this release.
 
 =Documentation changes
 This release includes several important correction to the Ela documentation, especially to Ela language reference. Documentation
@@ -19,3 +19,22 @@ from Haskell), `Copointed` and `Failure` (with a single function of the same nam
 instances for classes `Functor`, `Union` and `Pointed`.//br
 Module `monad` already provides instances for some common Ela types including lists, `Maybe`, etc. Also this module provides default
 instances for most of its classes so you can use deriving mechanism to create your own instances.
+
+=Language changes
+In order to simplify monadic programming Ela was extended with a new syntactic construct - a `do` notation. Ela uses the same syntax
+for `do` notation as Haskell:
+>>do
+>>  x <- thing1
+>>  y <- func1 x
+>>  thing2
+>>  z <- func2 y
+>>  return z
+The `do` expression is automatically desugared into chain of applications of functions `>>=` and `>>-` (both of them are defined in
+`monad` module). For example, an example above is desugared like so:
+>>thing1 >>= 
+>>  \x -> func1 x >>= 
+>>  \y -> thing2 >>= 
+>>  \_ -> func2 y >>= 
+>>  \z -> return z
+The `do` expression can bind to any function `>>=` and `>>-` available in scope. It is completely legal to provide your implementations
+and not to use module `monad`.

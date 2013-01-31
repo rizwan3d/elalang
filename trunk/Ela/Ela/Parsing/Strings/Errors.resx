@@ -384,4 +384,7 @@
   <data name="ExpectedKeywordOpentype" xml:space="preserve">
     <value>Expected keyword 'opentype'.</value>
   </data>
+  <data name="InvalidDoBlock" xml:space="preserve">
+    <value>Invalid 'do' notation syntax.</value>
+  </data>
 </root>
