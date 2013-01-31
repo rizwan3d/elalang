@@ -202,8 +202,8 @@ internal sealed class UTF8Buffer: Buffer {
 internal sealed class Scanner {
 	const char EOL = '\n';
 	const int eofSym = 0; /* pdt */
-	const int maxT = 43;
-	const int noSym = 43;
+	const int maxT = 44;
+	const int noSym = 44;
 
 
 	public Buffer buffer; // scanner buffer
@@ -344,6 +344,7 @@ internal sealed class Scanner {
 			case "fail": t.kind = 40; break;
 			case "deriving": t.kind = 41; break;
 			case "opentype": t.kind = 42; break;
+			case "do": t.kind = 43; break;
 			default: break;
 		}
 	}

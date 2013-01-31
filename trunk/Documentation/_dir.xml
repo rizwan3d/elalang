@@ -43,6 +43,7 @@
     <doc name="Modules" file="modules.htm"/>
     <doc name="User Types" file="types.htm"/>
     <doc name="Classes" file="classes.htm"/>
+    <doc name="Monads" file="monads.htm"/>
     <doc name="Operator Priority" file="operatorpriority.htm" />    
   </folder>
   <folder name="Older Versions">

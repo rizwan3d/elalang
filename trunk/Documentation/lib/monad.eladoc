@@ -92,3 +92,20 @@ second. This function is defined in terms of `fmap` and `join`:
 Sequentially compose two actions, discarding any value produced by the first, like sequencing operators (such as the semicolon) 
 in imperative languages. This function is define through `>>=` like so:
 >>xs >>- ys = xs >>= (\_ -> ys)
+
+#guard
+A boolean guard function that can be used in monadic expressions, specifically in `do` notation. This function is
+defined as follows:
+>>guard true = return ()
+>>guard false = default
+It should be called in a context of a type that provides instances for class `Default` (defined in Prelude) and 
+`Pointed` (defined in this module, `return` is just an alias for function `point`).//br
+For example, this code filters out all events from a given list (using `do` notation):
+>>>open monad
+>>>
+>>>evens xs = do
+>>>  x <- xs
+>>>  guard (even x)
+>>>  return x
+>>>
+>>>evens [1..10] ::: List

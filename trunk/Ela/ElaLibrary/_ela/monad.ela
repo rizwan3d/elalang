@@ -141,3 +141,6 @@ instance Failure Tuple
 xs >>= f = join (fmap f xs)
 
 xs >>- ys = xs >>= (\_ -> ys)
+
+guard true = return ()
+guard false = default

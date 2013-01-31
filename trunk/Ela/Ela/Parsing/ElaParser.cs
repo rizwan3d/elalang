@@ -46,7 +46,7 @@ namespace Ela.Parsing
 		private ParserResult InternalParse(Stream stream)
 		{
 			var p = new Parser(new Scanner(stream));
-			p.Parse();			
+			p.Parse();
 			return new ParserResult(p.Program, p.errors.ErrorList.Count == 0, p.errors.ErrorList);
 		}
 		#endregion

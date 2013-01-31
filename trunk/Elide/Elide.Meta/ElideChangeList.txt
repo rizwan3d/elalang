@@ -1,4 +1,6 @@
-﻿0.1.7.0:Release:Release of Elide 0.1.7.0.
+﻿0.1.7.2:Change:Minor user interface changes.
+0.1.7.1:Change:Ela syntax highlighting is updated according to the language changes (do notation).
+0.1.7.0:Release:Release of Elide 0.1.7.0.
 0.1.6.2:Fix:A bug fixed in menu builder logic that could cause Elide to crash on systems with german locale. (Issue #44).
 0.1.6.1:Change:Ela syntax highlighting is updated according to the language changes (numeric literals).
 0.1.6.0:Release:Release of Elide 0.1.6.0.

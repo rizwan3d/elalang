@@ -1207,6 +1207,7 @@ internal sealed partial class Parser {
 			if (RequireEndBlock()) 
 			EndBlock();
 		}
+		ValidateDoBlock(exp); 
 		if (!skip) 
 		EndBlock();
 	}
