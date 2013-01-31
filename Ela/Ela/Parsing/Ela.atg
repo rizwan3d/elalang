@@ -1462,6 +1462,7 @@ PRODUCTIONS
 	            DoBlockStmt<ref eqt> (. if (RequireEndBlock()) .) EndBlock
 	        }
 		)
+		(. ValidateDoBlock(exp); .)
 		(. if (!skip) .) EndBlock.
         
 	DoBlockStmt<ref ElaJuxtaposition eqt> =

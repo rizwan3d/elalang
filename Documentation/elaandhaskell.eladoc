@@ -18,7 +18,7 @@ a "quick start" guide for those who are familiar with Haskell.
 |Algebraic types            |Yes                                  |Yes 
 |First class modules        |Yes                                  |No 
 |OOP support                |Through duck typing and modules      |Through existential types 
-|Monads                     |No *ii*                              |Yes 
+|Monads                     |Yes                                  |Yes 
 |Exceptions                 |Yes                                  |Yes
 |Curried functions          |Yes, all functions are curried       |Yes, all functions are curried 
 |Operators as functions     |Yes                                  |Yes 
@@ -28,8 +28,6 @@ a "quick start" guide for those who are familiar with Haskell.
 effects in the code therefore mutation of state can be easily implemented on a library level. For 
 example, module `cell` adds a support for reference cells and module `console` provides a support 
 for classical C-style console input/output.//br
-\*ii* Ela standard library doesn't have monads, however of course it is possible to implement them
-in the language.//br
 \*iii* Ela (as of 0.11) provides a support for single parameter type classes. However the implementation
 is quite different from Haskell as long as Ela is dynamically typed and the whole notion of type
 has a different (runtime) meaning in Ela.

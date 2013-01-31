@@ -13,13 +13,29 @@ namespace Ela.Parsing
 
         private void ValidateDoBlock(ElaExpression exp)
         {
-            while (exp != null)
+            while (true)
             {
                 if (exp.Type == ElaNodeType.Juxtaposition)
                 {
                     var juxta = (ElaJuxtaposition)exp;
 
+                    if (juxta.Parameters.Count == 2)
+                    {
+                        juxta.Parameters[0] = Reduce(juxta.Parameters[0]);
+                        juxta.Parameters[1] = Reduce(juxta.Parameters[1]);
+                        exp = juxta.Parameters[1];
+                    }
+                    else
+                        break;
                 }
+                else if (exp.Type == ElaNodeType.Lambda)
+                {
+                    var lb = (ElaLambda)exp;
+                    lb.Right = Reduce(lb.Right);
+                    exp = lb.Right;
+                }
+                else
+                    break;
             }
         }
 
@@ -129,7 +145,7 @@ namespace Ela.Parsing
             {
                 if (eqt.Parameters.Count == 2)
                 {
-                    if (eqt.Parameters[0].Type == ElaNodeType.UnitLiteral)
+                    if (eqt.Parameters[0] == null)
                     {
                         eqt.Parameters[0] = eqt.Parameters[1];
                         eqt.Parameters[1] = cexp1;
