@@ -103,6 +103,8 @@ namespace Ela.Parsing
 				case "EmbExpr": return ElaParserError.InvalidExpression;
                 case "TopLevel": return ElaParserError.InvalidRoot;
 				case "Ela": return ElaParserError.InvalidRoot;
+                case "DoBlock": return ElaParserError.InvalidDoBlock;
+                case "DoBlockStmt": return ElaParserError.InvalidDoBlock;
 				default: return ElaParserError.InvalidProduction;
 			}
 		}
