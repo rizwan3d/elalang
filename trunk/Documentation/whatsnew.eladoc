@@ -19,6 +19,9 @@ from Haskell), `Copointed` and `Failure` (with a single function of the same nam
 instances for classes `Functor`, `Union` and `Pointed`.//br
 Module `monad` already provides instances for some common Ela types including lists, `Maybe`, etc. Also this module provides default
 instances for most of its classes so you can use deriving mechanism to create your own instances.
+Module `monad` additionally defines functions `>>=` and `>>-` which are used to desugar `do` notation, added to Ela language. Also
+module `monad` provide a `return` function (which is an alias for `point` function of `Pointed` class and can be used whenever it
+appears to be more "visual"). 
 
 =Language changes
 In order to simplify monadic programming Ela was extended with a new syntactic construct - a `do` notation. Ela uses the same syntax
@@ -38,3 +41,5 @@ The `do` expression is automatically desugared into chain of applications of fun
 >>  \z -> return z
 The `do` expression can bind to any function `>>=` and `>>-` available in scope. It is completely legal to provide your implementations
 and not to use module `monad`.
+This implementation is experimental. Also currently Ela doesn't support full pattern matching in the left hand of "binding" expression, e.g.
+in expression `x <- y` an `x` part can only be an irrefutable pattern.
