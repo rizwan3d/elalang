@@ -59,14 +59,14 @@ namespace Ela.Parsing
                         lambda2.SetLinePragma(cexp2.Line, cexp2.Column);
                         lambda2.Left = cexp1;
 
-                        var eqt1 = new ElaJuxtaposition();
+                        var eqt1 = new ElaJuxtaposition { Gen = true };
                         eqt1.SetLinePragma(cexp2.Line, cexp2.Column);
                         eqt1.Target = new ElaNameReference(t) { Name = ">>=" };
                         eqt1.Parameters.Add(cexp2);
                         eqt1.Parameters.Add(lambda2);
-                        lambda.Right = eqt1; 
-                        
-                        var eqt2 = new ElaJuxtaposition();
+                        lambda.Right = eqt1;
+
+                        var eqt2 = new ElaJuxtaposition { Gen = true };
                         eqt2.SetLinePragma(cexp2.Line, cexp2.Column);
                         eqt2.Target = new ElaNameReference(t) { Name = ">>-" };
                         eqt2.Parameters.Add(new ElaUnitLiteral(t));
@@ -108,7 +108,7 @@ namespace Ela.Parsing
                     var lambda = new ElaLambda();
                     lambda.SetLinePragma(cexp2.Line, cexp2.Column);
                     lambda.Left = cexp1;
-                    var eqt2 = new ElaJuxtaposition();
+                    var eqt2 = new ElaJuxtaposition { Gen = true };
                     eqt2.SetLinePragma(cexp2.Line, cexp2.Column);
                     eqt2.Target = new ElaNameReference(t) { Name = ">>-" };
                     eqt2.Parameters.Add(new ElaUnitLiteral(t));
@@ -131,7 +131,7 @@ namespace Ela.Parsing
                     else
                     {
                         var oldeqt = eqt;
-                        eqt = new ElaJuxtaposition();
+                        eqt = new ElaJuxtaposition { Gen = true };
                         eqt.Target = new ElaNameReference(t) { Name = ">>-" };
                         eqt.SetLinePragma(cexp1.Line, cexp1.Column);
                         eqt.Parameters.Add(oldeqt.Parameters[1]);

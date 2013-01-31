@@ -85,6 +85,8 @@ namespace Ela.CodeModel
 		public List<ElaExpression> Parameters { get; set; }
 
 		public bool FlipParameters { get; set; }
+
+        internal bool Gen { get; set; }
 	}
 
 }
