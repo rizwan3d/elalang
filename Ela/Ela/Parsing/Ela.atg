@@ -933,7 +933,7 @@ PRODUCTIONS
 			| FailExpr<out exp>
 			| MatchExpr<out exp>
 			| TryExpr<out exp>
-			//| DoBlock
+			| DoBlock<out exp>
 		).
 	
 	TypeCheckExpr<ref ElaExpression pat> = 
@@ -1446,22 +1446,33 @@ PRODUCTIONS
 	        ]
 	    ).
     
-   /* DoBlock = 
+	DoBlock<out ElaExpression exp> = 
 		(. 
-		    scanner.InjectBlock(); 
+		    scanner.InjectBlock(); 			
 		    var skip = false;
-		    var exp = default(ElaExpression);
+			var eqt = new ElaJuxtaposition();					
+			exp = eqt;
 		.) 
 		SYNC "do" [EndBlock (. skip=true; .)]
 		(
-		    Expr<out exp> [ "<-" Expr<out exp> ] (. if (RequireEndBlock()) .) EndBlock	    
+			(. scanner.InjectBlock(); .)
+			DoBlockStmt<ref eqt> (. if (RequireEndBlock()) .) EndBlock
 		    {	            
 	            (. scanner.InjectBlock(); .)
-	            Expr<out exp> [ "<-" Expr<out exp> ] (. if (RequireEndBlock()) .) EndBlock
+	            DoBlockStmt<ref eqt> (. if (RequireEndBlock()) .) EndBlock
 	        }
 		)
-		(. if (!skip) .) EndBlock.*/
+		(. if (!skip) .) EndBlock.
         
+	DoBlockStmt<ref ElaJuxtaposition eqt> =
+		(.			
+		    var cexp1 = default(ElaExpression);
+			var cexp2 = default(ElaExpression);
+		.)
+		(
+			Expr<out cexp1> [ "<-" Expr<out cexp2> ] (. if (RequireEndBlock()) .) EndBlock
+			(. ProcessDoBlock(cexp1, cexp2, ref eqt); .)
+		).
     
 	TopLevel =
 	    (. scanner.InjectBlock(); .)
