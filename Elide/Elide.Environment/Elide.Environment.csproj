@@ -109,6 +109,7 @@
     <Compile Include="Editors\IEditor.cs" />
     <Compile Include="Editors\IEditorService.cs" />
     <Compile Include="IAutoSaveService.cs" />
+    <Compile Include="IBrowserService.cs" />
     <Compile Include="IDialogService.cs" />
     <Compile Include="IDocumentService.cs" />
     <Compile Include="IEnvironmentService.cs" />

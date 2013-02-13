@@ -14,6 +14,7 @@
         <add key="MenuService" interface="Elide.Environment.IMenuService,Elide.Environment" type="Elide.Workbench.MenuService,Elide.Workbench" />
         <add key="EnvironmentService" interface="Elide.Environment.IEnvironmentService,Elide.Environment" type="Elide.Workbench.EnvironmentService,Elide.Workbench" />
         <add key="DialogService" interface="Elide.Environment.IDialogService,Elide.Environment" type="Elide.Workbench.DialogService,Elide.Workbench" />
+        <add key="BrowserService" interface="Elide.Environment.IBrowserService,Elide.Environment" type="Elide.Workbench.BrowserService,Elide.Workbench" />
         <add key="EditorService" interface="Elide.Environment.Editors.IEditorService,Elide.Environment" type="Elide.Workbench.EditorService,Elide.Workbench">
             <add key="editors" />
         </add>
