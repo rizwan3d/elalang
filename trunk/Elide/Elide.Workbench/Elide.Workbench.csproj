@@ -99,6 +99,7 @@
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="AutoSaveService.cs" />
+    <Compile Include="BrowserService.cs" />
     <Compile Include="Configuration\AddFolderDialog.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -48,6 +48,7 @@ namespace Elide.Workbench
             var ps = App.GetService<IPrintService>();
             var docs = App.GetService<IDocumentService>();
             Func<Boolean> hasDocs = () => docs.EnumerateDocuments().Any();
+            Func<String,Action> openLink = s => () => App.GetService<IBrowserService>().OpenLink(new Uri(s));
 
             builder
                 .Menu("&File")
@@ -65,7 +66,7 @@ namespace Elide.Workbench
                     .Item("Save A&ll", "Ctrl+Shift+S", fs.SaveAll, () => docs.EnumerateDocuments().Any(t => t.IsDirty))
                     .Separator()
                     .Item("Page Set&up...", () => ps.PageSetup(App.Document()), () => ps.IsPrintAvailable(App.Document()))
-                    .Item("Print Pre&vew...", () => ps.PrintPreview(App.Document()), () => ps.IsPrintAvailable(App.Document()))
+                    .Item("Print Pre&view...", () => ps.PrintPreview(App.Document()), () => ps.IsPrintAvailable(App.Document()))
                     .Item("&Print...", "Ctrl+Shift+P", () => ps.Print(App.Document()), () => ps.IsPrintAvailable(App.Document()))
                     .Separator()
                         .Menu("Recent &Files")
@@ -96,6 +97,11 @@ namespace Elide.Workbench
                     .CloseMenu()
                 .Menu("&Help")
                     .Items(BuildHelpList)
+                    .Separator()
+                    .Item("Ela &Home Page", openLink("http://elalang.net/"))
+                    .Item("Ela Google &Code", openLink("http://elalang.googlecode.com/"))
+                    .Item("&Submit a bug", openLink("http://code.google.com/p/elalang/issues/entry?template=Defect%20report%20from%20user"))
+                    .Item("&Request a feature", openLink("http://code.google.com/p/elalang/issues/entry?template=Enhancement"))
                     .Separator()
                     .Item("&About Elide...", ShowAbout)
                 .Finish();

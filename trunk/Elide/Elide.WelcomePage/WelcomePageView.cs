@@ -110,11 +110,7 @@ namespace Elide.WelcomePage
 
         private void OpenLink(string link)
         {
-            try
-            {
-                Process.Start(link);
-            }
-            catch { }
+            App.GetService<IBrowserService>().OpenLink(new Uri(link));
         }
 
         internal IApp App { get; set; }
