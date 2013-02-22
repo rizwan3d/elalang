@@ -10,7 +10,7 @@ CHARACTERS
 	notDigit = ANY - digit.
 	hexDigit = digit + "ABCDEFabcdef".
 	verbatimChar = ANY.
-	stringChar = ANY - '"' - '\\' - newLine.
+	stringChar = ANY - '"' - '\\'.
 	char = ANY - "'" - '\\' - newLine.
 	op = "!%&+-/.,:<=>?*@^|$~`\\".
 	parens = "[]{}()".
