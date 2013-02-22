@@ -100,6 +100,7 @@ namespace Elide.Workbench
                     .Separator()
                     .Item("Ela &Home Page", openLink("http://elalang.net/"))
                     .Item("Ela Google &Code", openLink("http://elalang.googlecode.com/"))
+                    .Separator()
                     .Item("&Submit a bug", openLink("http://code.google.com/p/elalang/issues/entry?template=Defect%20report%20from%20user"))
                     .Item("&Request a feature", openLink("http://code.google.com/p/elalang/issues/entry?template=Enhancement"))
                     .Separator()

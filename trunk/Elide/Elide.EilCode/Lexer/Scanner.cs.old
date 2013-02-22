@@ -500,7 +500,7 @@ internal sealed class Scanner {
 			case 15:
 				{t.kind = 3; break;}
 			case 16:
-				if (ch <= 9 || ch >= 11 && ch <= 12 || ch >= 14 && ch <= '!' || ch >= '#' && ch <= '[' || ch >= ']' && ch <= 65535) {AddCh(); goto case 16;}
+				if (ch <= '!' || ch >= '#' && ch <= '[' || ch >= ']' && ch <= 65535) {AddCh(); goto case 16;}
 				else if (ch == '"') {AddCh(); goto case 26;}
 				else if (ch == 92) {AddCh(); goto case 39;}
 				else {goto case 0;}
