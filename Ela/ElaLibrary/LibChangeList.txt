@@ -1,3 +1,4 @@
+0.1.8.1:Fix:A function test.assert is fixed, it couldn't format arguments of certain types (related to #55).
 0.1.8.0:Release:Release of 0.1.8.0.
 0.1.7.5:Change:Functions 'upper' and 'lower' from 'string' module now require full qualification.
 0.1.7.4:Change:Functions 'upper' and 'lower' from 'char' module now require full qualification.

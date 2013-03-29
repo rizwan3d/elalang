@@ -18,7 +18,7 @@ assert =
   } 
   where op' m op x y 
           | op x y = None
-          | else   = Some (format ": Assert failed: {0} for {1} and {2}" m x y)
+          | else   = Some (format ": Assert failed: {0} for {1} and {2}" m (show x) (show y))
 
 funData # private 
 funData mod fun = (moduleName mod ++ "." ++ funName fun, fun)

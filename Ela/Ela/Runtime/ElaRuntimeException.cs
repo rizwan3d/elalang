@@ -1,4 +1,5 @@
 ﻿using System;
+using Ela.Runtime.ObjectModel;
 
 namespace Ela.Runtime
 {
@@ -10,8 +11,15 @@ namespace Ela.Runtime
             Arguments = arguments;
 		}
 
+        internal ElaRuntimeException(ElaError err)
+        {
+            ErrorObj = err;
+        }
+
         internal ElaRuntimeError Error { get; set; }
 
         internal object[] Arguments { get; set; }
+
+        internal ElaError ErrorObj { get; set; }
 	}
 }
