@@ -119,20 +119,34 @@ namespace Ela.Runtime.ObjectModel
                 throw new ElaException("Unable to call an overloaded function without arguments.");
 
             var ctx = new ExecutionContext();
-            var fn = default(ElaFunction);
+            var fn = this;
             
-            for (var i = 0; i < args.Length - 1; i++)
+            for (var i = 0; i < args.Length; i++)
             {
-                fn = GetFunction(args[i], ctx, 0);
+                var f = fn.GetFunction(args[i], ctx, 0);
+                var nfn = f as ElaFunTable;
 
-                if (!(fn is ElaFunTable))
+                if (nfn == null && i < args.Length - 1)
                     throw new ElaException("Incorrect argument number.");
+                else if (nfn != null)
+                {
+                    nfn.AppliedParameters = fn.AppliedParameters + 1;
+                    fn = nfn;
+                }
+                else
+                {
+                    if (ctx.Failed)
+                        throw new ElaRuntimeException(ctx.Error);
+                    
+                    f.AppliedParameters = 0;
+                    return Machine.Call(f, args);
+                }
 
                 if (ctx.Failed)
                     throw new ElaException(ctx.Error.Message);
             }
 
-            return fn.Call(args);
+            return base.Default();
         }
 
         internal void AddFunction(int typeId, ElaFunction fun)

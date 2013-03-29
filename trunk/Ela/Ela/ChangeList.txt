@@ -1,3 +1,4 @@
+0.12.1.1:Fix:A bug fixed that chould crush VM when calling overloaded Ela functions from .NET code (related to Issue #55).
 0.12.1.0:Release:Release of Ela 0.12.1.0.
 0.12.0.2:Change:Parser error recovery is enhanced to accomodate new language constructs.
 0.12.0.1:Change:A support for 'do' notation is added on the parser level.

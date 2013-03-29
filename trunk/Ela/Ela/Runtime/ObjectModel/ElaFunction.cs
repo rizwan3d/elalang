@@ -335,7 +335,7 @@ namespace Ela.Runtime.ObjectModel
 			nf.Parameters = pars;
 			return nf;
 		}
-        
+
 		public virtual ElaValue Call(params ElaValue[] args)
 		{
 			if (args == null || args.Length == 0)

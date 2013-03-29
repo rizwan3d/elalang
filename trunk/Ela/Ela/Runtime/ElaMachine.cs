@@ -2000,7 +2000,7 @@ namespace Ela.Runtime
             catch (ElaRuntimeException ex)
             {
                 thread.LastException = ex;
-                ExecuteFail(new ElaError(ex.Error, ex.Arguments), thread, stack);
+                ExecuteFail(ex.ErrorObj ?? new ElaError(ex.Error, ex.Arguments), thread, stack);
                 return true;
             }
             catch (Exception ex)
