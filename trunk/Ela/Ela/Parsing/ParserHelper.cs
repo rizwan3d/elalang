@@ -56,6 +56,9 @@ namespace Ela.Parsing
 
         private void ProcessDoBlock(ElaExpression cexp1, ElaExpression cexp2, ref ElaJuxtaposition eqt)
         {
+            if (cexp1 == null)
+                return;
+
             if (eqt.Line == 0)
                 eqt.SetLinePragma(cexp1.Line, cexp1.Column);
 
@@ -101,24 +104,6 @@ namespace Ela.Parsing
                     }
                     else
                     {
-                        //var oldeqt = eqt;
-                        //eqt = new ElaJuxtaposition();
-                        //eqt.Target = new ElaNameReference(t) { Name = ">>=" };
-                        //eqt.SetLinePragma(cexp1.Line, cexp1.Column);
-                        //eqt.Parameters.Add(oldeqt.Parameters[1]);
-                        //oldeqt.Parameters[1] = eqt;
-
-                        //var lambda2 = new ElaLambda();
-                        //lambda2.SetLinePragma(cexp1.Line, cexp1.Column);
-                        //lambda2.Left = cexp1;
-                        //var eqt2 = new ElaJuxtaposition();
-                        //eqt2.SetLinePragma(cexp2.Line, cexp2.Column);
-                        //eqt2.Target = new ElaNameReference(t) { Name = ">>-" };
-                        //eqt2.Parameters.Add(cexp2);
-                        //eqt2.Parameters.Add(new ElaUnitLiteral(t));
-                        //lambda2.Right = eqt2;
-                        //eqt.Parameters.Add(lambda2);
-                        //eqt = eqt2;
                         throw new Exception("Unable to process do-notation.");
                     }
                 }

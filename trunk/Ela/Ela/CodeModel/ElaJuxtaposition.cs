@@ -85,5 +85,7 @@ namespace Ela.CodeModel
 		public List<ElaExpression> Parameters { get; set; }
 
 		public bool FlipParameters { get; set; }
+
+        public ElaLetBinding Binding { get; set; }
 	}
 }
