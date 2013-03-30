@@ -926,8 +926,7 @@ PRODUCTIONS
 		(  
 			OpExpr1<out exp> [TypeCheckExpr<ref exp>]
 			| IfExpr<out exp>  
-			| LazyExpr<out exp>
-			| LetBinding<out exp>			
+			| LazyExpr<out exp>			
 			| Builtin<out exp>	
 			| LambdaExpr<out exp>
 			| FailExpr<out exp>
@@ -971,7 +970,8 @@ PRODUCTIONS
 	Expr<out ElaExpression exp> = 
 		(. exp = null; .)
 		( 
-			EmbExpr<out exp>			
+			EmbExpr<out exp>
+			| LetBinding<out exp>			
 		).
 		
 	Builtin<out ElaExpression exp> = 
@@ -1471,7 +1471,29 @@ PRODUCTIONS
 			var cexp2 = default(ElaExpression);
 		.)
 		(
-			Expr<out cexp1> [ "<-" Expr<out cexp2> ]
+			(
+			    EmbExpr<out cexp1> [ "<-" EmbExpr<out cexp2> ]
+			    | 
+			    ( 
+			        (. 
+			            scanner.InjectBlock(); 
+			            var eqs = new ElaEquationSet();
+			        .)
+			        LET Binding<eqs>
+			        (.  
+			            if (eqt.Binding != null)
+		                    eqt.Binding.Equations.Equations.AddRange(eqs.Equations);
+		                else
+		                {
+		                    var lt = new ElaLetBinding(t);
+			                lt.Equations = eqs;
+			                lt.Expression = eqt;
+			                eqt.Binding = lt;
+		                }
+			        .)
+			        EndBlock
+			    )
+			)
 			(. ProcessDoBlock(cexp1, cexp2, ref eqt); .)
 		).
     

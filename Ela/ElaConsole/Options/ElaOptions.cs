@@ -47,7 +47,10 @@ namespace ElaConsole.Options
 		public bool ShowHelp { get; set; }
 
 		[CommandLineOption("compile", "c")]
-		public bool Compile { get; set; }
+        public bool Compile { get; set; }
+
+        [CommandLineOption("parse", "p")]
+        public bool ParseOnly { get; set; }
 
 		[CommandLineOption("ml")]
 		public bool Multiline { get; set; }

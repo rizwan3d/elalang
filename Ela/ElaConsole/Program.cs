@@ -63,7 +63,7 @@ namespace ElaConsole
 					return R_OK;
 				}
 
-				if (opt.Compile)
+				if (opt.Compile || opt.ParseOnly)
 				{
 					if (!CheckExists(opt.FileName))
 					{
@@ -71,9 +71,9 @@ namespace ElaConsole
 						return R_ERR;
 					}
 
-					return Compile();
+					return opt.Compile ? Compile() : Parse();
 				}
-				else
+                else
                     return InterpretFile(opt.FileName);
 			}
 			finally
@@ -103,6 +103,28 @@ namespace ElaConsole
             }
             else
                 return true;
+        }
+
+
+        private static int Parse()
+        {
+            try
+            {
+                var p = new ElaParser();
+                var res = p.Parse(new FileInfo(opt.FileName));
+                helper.PrintErrors(res.Messages);
+
+                if (!res.Success)
+                    return R_ERR;
+
+                Console.WriteLine(res.Program.ToString());
+                return R_OK;
+            }
+            catch (ElaException ex)
+            {
+                helper.PrintInternalError(ex);
+                return R_ERR;
+            }
         }
 
 
