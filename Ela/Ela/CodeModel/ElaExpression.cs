@@ -6,7 +6,7 @@ namespace Ela.CodeModel
 {
 	public abstract class ElaExpression
 	{
-		protected ElaExpression(ElaNodeType type) : this(null, type)
+        protected ElaExpression(ElaNodeType type) : this(null, type)
 		{
 
 		}

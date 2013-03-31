@@ -1171,7 +1171,7 @@ internal sealed partial class Parser {
 	void DoBlock(out ElaExpression exp) {
 		scanner.InjectBlock(); 			
 		var skip = false;
-		var eqt = new ElaJuxtaposition();					
+		ElaExpression eqt = new ElaJuxtaposition(t);
 		exp = eqt;
 		
 		while (!(la.kind == 0 || la.kind == 66)) {SynErr(98); Get();}
@@ -1190,7 +1190,7 @@ internal sealed partial class Parser {
 			if (RequireEndBlock()) 
 			EndBlock();
 		}
-		ValidateDoBlock(exp); 
+		exp = ValidateDoBlock(exp); 
 		if (!skip) 
 		EndBlock();
 	}
@@ -1703,7 +1703,7 @@ internal sealed partial class Parser {
 		}
 	}
 
-	void DoBlockStmt(ref ElaJuxtaposition eqt) {
+	void DoBlockStmt(ref ElaExpression eqt) {
 		var cexp1 = default(ElaExpression);
 		var cexp2 = default(ElaExpression);
 		
@@ -1713,25 +1713,28 @@ internal sealed partial class Parser {
 				Get();
 				EmbExpr(out cexp2);
 			}
+			ProcessDoBlock(cexp1, cexp2, ref eqt); 
 		} else if (la.kind == 32) {
 			scanner.InjectBlock(); 
 			var eqs = new ElaEquationSet();
 			
 			Get();
 			Binding(eqs);
-			if (eqt.Binding != null)
-			      eqt.Binding.Equations.Equations.AddRange(eqs.Equations);
-			  else
-			  {
-			      var lt = new ElaLetBinding(t);
-			   lt.Equations = eqs;
-			   lt.Expression = eqt;
-			   eqt.Binding = lt;
-			  }
+			if (eqt.Type == ElaNodeType.LetBinding)
+			   ((ElaLetBinding)eqt).Equations.Equations.AddRange(eqs.Equations);
+			else
+			{
+			    var lt = new ElaLetBinding(t);
+			    lt.Equations = eqs;
+			    if (eqt.Type == ElaNodeType.Lambda)
+			        ((ElaLambda)eqt).Right = lt;
+			    else
+			        lt.Expression = eqt;
+			    eqt = lt;
+			}
 			
 			EndBlock();
 		} else SynErr(117);
-		ProcessDoBlock(cexp1, cexp2, ref eqt); 
 	}
 
 	void TopLevel() {

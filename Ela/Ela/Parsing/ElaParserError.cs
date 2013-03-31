@@ -8,7 +8,7 @@ namespace Ela.Parsing
 
 		InvalidSyntax = 1,
 
-        // = 2,
+        InvaliDoEnd = 2,
 
 		InvalidIntegerSyntax = 3,
 

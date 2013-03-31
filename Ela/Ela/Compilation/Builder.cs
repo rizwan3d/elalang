@@ -358,19 +358,10 @@ namespace Ela.Compilation
                     {
                         var v = (ElaJuxtaposition)exp;
 
-                        if (v.Binding != null)
-                        {
-                            var b = v.Binding;
-                            v.Binding = null;
-                            CompileExpression(b, map, hints, parent);
-                        }
-                        else
-                        {
-                            CompileFunctionCall(v, map, hints);
+                        CompileFunctionCall(v, map, hints);
 
-                            if ((hints & Hints.Left) == Hints.Left)
-                                AddValueNotUsed(v);
-                        }
+                        if ((hints & Hints.Left) == Hints.Left)
+                            AddValueNotUsed(v);
                     }
                     break;
                 case ElaNodeType.UnitLiteral:
