@@ -99,7 +99,7 @@ PRODUCTIONS
 		).
 		
 	Keywords = 
-		( "let" | "where" | "and" | "or" | "open" | "import" | "in" | "is" | "if" | "then" | "else" | "match" | "try" | "with" | "__internal" | "deriving" | "fail" | "instance" | "class" | "type" | "data" | "opentype" )
+		( "let" | "do" | "where" | "open" | "import" | "in" | "is" | "if" | "then" | "else" | "match" | "try" | "with" | "__internal" | "deriving" | "fail" | "instance" | "class" | "type" | "data" | "opentype" )
 		(. Add(t.pos, t.val.Length, ElaStyle.Keyword); .).
 		
 	Code = Keywords | VerbatimString | Comment | SingleLineComment | Primary | NL.// | Thunk.

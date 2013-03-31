@@ -12,7 +12,6 @@ using Ela.Library.General;
 [assembly: ElaModule("libDateTime", typeof(DateTimeModule))]
 [assembly: ElaModule("libRecord", typeof(RecordModule))]
 [assembly: ElaModule("libReflect", typeof(ReflectModule))]
-[assembly: ElaModule("libRead", typeof(ReadModule))]
 
 [assembly: ElaModule("experimental", typeof(Experimental))]
 [assembly: ElaModule("debug", typeof(DebugModule))]

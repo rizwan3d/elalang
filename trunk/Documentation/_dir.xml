@@ -4,6 +4,11 @@
       <doc name="alist" file="lib\collections\alist.htm"/>
       <doc name="queue" file="lib\collections\queue.htm"/>
     </folder>
+    <folder name="unsafe">
+      <doc name="cell" file="lib\unsafe\cell.htm" />
+      <doc name="file" file="lib\unsafe\file.htm" />
+      <doc name="console" file="lib\unsafe\console.htm" />
+    </folder>
     <doc name="prelude" file="lib\prelude.htm" />
     <doc name="number" file="lib\number.htm" />
     <doc name="list" file="lib\list.htm" />
@@ -17,16 +22,13 @@
     <doc name="generic" file="lib\generic.htm" />
     <doc name="core" file="lib\core.htm" />
     <doc name="reflect" file="lib\reflect.htm" />
-    <doc name="read" file="lib\read.htm" />
     <doc name="espec" file="lib\espec.htm" />
     <doc name="test" file="lib\test.htm" />
     <doc name="peano" file="lib\peano.htm" />
     <doc name="bench" file="lib\bench.htm" />
     <doc name="monad" file="lib\monad.htm" />
-    <doc name="cell" file="lib\cell.htm" />
-    <doc name="io" file="lib\io.htm" />
-    <doc name="console" file="lib\console.htm" />
     <doc name="imperative" file="lib\imperative.htm" />
+    <doc name="io" file="lib\io.htm" />
   </folder>
   <folder name="Language Reference">
     <doc name="Bindings" file="bindings.htm"/>
@@ -47,6 +49,7 @@
     <doc name="Operator Priority" file="operatorpriority.htm" />    
   </folder>
   <folder name="Older Versions">
+    <doc name="Platform 2013.1" file="oldversions/platform-2013-1.htm" />
     <doc name="Platform 2012.9" file="oldversions/platform-2012-9.htm" />
     <doc name="Platform 2012.8" file="oldversions/platform-2012-8.htm" />
     <doc name="Platform 2012.7" file="oldversions/platform-2012-7.htm" />

@@ -1,14 +1,38 @@
 /* 
-  "Dirty" io module
-  Created in 2012 by Basil Voronkov
+  Module io
+  Created in 2013 by Basil Voronkov
 */
-import libIO#elalib@io
+open monad unsafe.console 
 
-readLines fun fl = io.readLines (force fun) (force fl)
+//Type and instances
+type IO = IO a # private
+  deriving Failure
 
-writeLines xs fl = io.truncateFile fl `seq` write (force xs)
-  where f = force fl
-        write (x::xs) = io.writeLine x f
-        write [] = ()
+instance Pointed IO where
+  point x = IO x
 
-writeText str fl = io.writeText (force str) (force fl)
+instance Union IO where
+  join (IO a) 
+    | a is IO = mkIO $ execIO a
+    | else = fail "Union IO.join: Expected IO."
+
+instance Functor IO where
+  fmap f x = mkIO (f $ execIO x)
+
+instance Show IO where
+  show _ = ""
+
+execIO (IO a)
+  | a is Fun  = a ()
+  | else      = a
+
+mkIO a = IO a
+
+//Console IO
+putStr s = mkIO (\_ -> write s)
+
+putStrLn s = putStr (s ++ "\r\n")
+
+readStr = mkIO (\_ -> readn ())
+
+readAny = mkIO (\_ -> gread $ readn())

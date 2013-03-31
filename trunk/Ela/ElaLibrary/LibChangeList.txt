@@ -1,3 +1,9 @@
+0.1.8.7:New:A new 'Read' class is added to prelude with a bunch of instances, as well as a generic 'gread' function (equivalent to decomissioned 'read.readStr' function).
+0.1.8.6:Change:A module 'read' is decomissioned.
+0.1.8.5:New:An operator ($) is added to prelude (a left associative alias for (<|) operator).
+0.1.8.4:Change:Now 'monad' module defines an instance of class 'Functor' for a function.
+0.1.8.3:Change:Modules 'cell', 'console' and 'file' are now moved to 'unsafe' namespace.
+0.1.8.2:Change:A module 'io' is renamed to 'file'.
 0.1.8.1:Fix:A function test.assert is fixed, it couldn't format arguments of certain types (related to #55).
 0.1.8.0:Release:Release of 0.1.8.0.
 0.1.7.5:Change:Functions 'upper' and 'lower' from 'string' module now require full qualification.

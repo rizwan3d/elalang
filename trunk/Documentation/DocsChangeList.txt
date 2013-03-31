@@ -1,3 +1,9 @@
+0.1.8.6:New:A new article 'io' is added about a corresponding new module.
+0.1.8.5:Change:An article 'prelude' is updated according to the module changes.
+0.1.8.4:Change:An article 'monad' is updated according to the module changes.
+0.1.8.3:New:A new document 'Whats new' that contains platform changes overview is added.
+0.1.8.2:Change:Articles 'file', 'cell' and 'console' are moved to a new 'unsafe' folder.
+0.1.8.1:Change:An article 'io' is renamed 'file' (according to module name changes).
 0.1.8.0:Release:Release of 0.1.8.0.
 0.1.7.8:New:A draft version of `Monads` article is added to Ela language reference.
 0.1.7.7:Change:An article 'Ela and Haskell' is corrected.
@@ -15,6 +21,7 @@
 0.1.6.5:Change:An article 'generic' is updated according to the module changes.
 0.1.6.4:Change:An article 'elaandhaskell' is updated according to the language changes.
 0.1.6.3:New:A new document 'Whats new' that contains platform changes overview is added.
+0.1.6.3:Change:An article `read` is decomissioned (because a corresponding module is decomissioned).
 0.1.6.2:Change:Article 'operatorpriority' is updated according to the operator priority and associativity changes.
 0.1.6.1:Change:Article 'prelude' is updated according to the module changes.
 0.1.6.0:Release:Release of 0.1.6.0.
