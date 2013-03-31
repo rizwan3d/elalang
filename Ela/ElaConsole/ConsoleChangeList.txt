@@ -1,3 +1,4 @@
+0.9.7.1:New:A new switch 'parse' is added (shows the AST without executing the code).
 0.9.7.0:Release:Release of Ela Console 0.9.7.
 0.9.6.1:New:A new compiler option 'strict' is now supported by Ela Console.
 0.9.6.0:Release:Release of Ela Console 0.9.6.

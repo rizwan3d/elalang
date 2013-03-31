@@ -21,6 +21,9 @@ instance Functor where
                           else iter (cf <| f v) (n+1)
             | else = cf
 
+instance Functor Fun where
+  fmap f xs = f xs
+
 instance Functor Maybe where
   fmap f (Some x) = Some (f x)
   fmap _ None = None

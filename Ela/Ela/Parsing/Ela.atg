@@ -1450,7 +1450,7 @@ PRODUCTIONS
 		(. 
 		    scanner.InjectBlock(); 			
 		    var skip = false;
-			ElaExpression eqt = new ElaJuxtaposition(t);
+			ElaExpression eqt = new ElaJuxtaposition(t) { Spec = true };
 			exp = eqt;
 		.) 
 		SYNC "do" [EndBlock (. skip=true; .)]

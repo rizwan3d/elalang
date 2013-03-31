@@ -1,7 +1,0 @@
-/*
-  Module read
-  Created in 2012 by Basil Voronkov
-*/
-import libRead#elalib@rd
-
-readStr s = rd.readStr (force s)

@@ -55,6 +55,8 @@ type Fun
 
 (<|) = __internal bpipe
 
+($) = (<|)
+
 flip f x y = f y x
 
 curry f x y = f (x, y)
@@ -186,6 +188,20 @@ maxValue x y
 minValue x y 
   | x <= y = x 
   | else   = y
+
+/* Read */
+class Read a where
+  read _->a
+
+gread = lang.readLiteral
+
+instance Read Int Long Single Double Bool Char String List Tuple Record where
+  read = gread
+
+instance Read Ordering where
+  read "LT" = LT
+  read "GT" = GT
+  read "EQ" = EQ
 
 /* Default */
 class Default a where

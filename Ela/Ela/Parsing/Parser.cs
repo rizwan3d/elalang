@@ -1171,7 +1171,7 @@ internal sealed partial class Parser {
 	void DoBlock(out ElaExpression exp) {
 		scanner.InjectBlock(); 			
 		var skip = false;
-		ElaExpression eqt = new ElaJuxtaposition(t);
+		ElaExpression eqt = new ElaJuxtaposition(t) { Spec = true };
 		exp = eqt;
 		
 		while (!(la.kind == 0 || la.kind == 66)) {SynErr(98); Get();}

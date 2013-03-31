@@ -23,8 +23,8 @@ You can, of course, define instances for other types that can be mapped over. Al
 satisfy the following law:
 >>fmap id == id
 >>fmap (f << g) == fmap f << fmap g
-This module defines instances of `Functor` for types `List`, `Maybe`, `Either`, `Or` and for a `Tuple`. This module
-also provides a generic default instance of `Functor`.
+This module defines instances of `Functor` for types `Fun`, `List`, `Maybe`, `Either`, `Or` and for a `Tuple`. 
+This module also provides a generic default instance of `Functor`.
 
 ==Union
 

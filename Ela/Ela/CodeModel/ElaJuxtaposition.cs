@@ -40,11 +40,11 @@ namespace Ela.CodeModel
 			if (Target.Type == ElaNodeType.NameReference && Target.GetName().IndexOfAny(opChars) != -1 &&
 				Parameters.Count == 2)
 			{
-				Parameters[0].ToString(sb, 0);
+                Format.PutInBraces(Parameters[0], sb);
 				sb.Append(' ');
 				sb.Append(Target.GetName());
 				sb.Append(' ');
-				Parameters[1].ToString(sb, 0);
+                Format.PutInBraces(Parameters[1], sb);
 			}
 			else
 			{
@@ -85,5 +85,7 @@ namespace Ela.CodeModel
 		public List<ElaExpression> Parameters { get; set; }
 
 		public bool FlipParameters { get; set; }
+
+        internal bool Spec;
 	}
 }

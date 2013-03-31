@@ -40,6 +40,9 @@ Syntax: elac [filename] [options]
 
 -compile or -c		Do not execute code but compile it into Ela Object 
 			File (.elaobj).
+
+-parse or -p            Only parse the source code file provided and print out
+                        the AST.
 			
 -out <file>		Specifies an output file for the compilation (see
 			-compile) mode. If this switch is omitted Ela Console

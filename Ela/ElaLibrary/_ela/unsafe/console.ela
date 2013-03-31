@@ -2,7 +2,8 @@
   Module console
   Created in 2012 by Basil Voronkov
 */
-import libCon#elalib@con string
+import libCon#elalib@con string 
+open generic
 
 write x = con.write (force x)
 
