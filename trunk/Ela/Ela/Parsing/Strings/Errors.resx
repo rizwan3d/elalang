@@ -387,4 +387,7 @@
   <data name="InvalidDoBlock" xml:space="preserve">
     <value>Invalid 'do' notation syntax.</value>
   </data>
+  <data name="InvaliDoEnd" xml:space="preserve">
+    <value>Invalid 'do' block. A 'do' block should end with an expression.</value>
+  </data>
 </root>

@@ -1450,7 +1450,7 @@ PRODUCTIONS
 		(. 
 		    scanner.InjectBlock(); 			
 		    var skip = false;
-			var eqt = new ElaJuxtaposition();					
+			ElaExpression eqt = new ElaJuxtaposition(t);
 			exp = eqt;
 		.) 
 		SYNC "do" [EndBlock (. skip=true; .)]
@@ -1462,17 +1462,20 @@ PRODUCTIONS
 	            DoBlockStmt<ref eqt> (. if (RequireEndBlock()) .) EndBlock
 	        }
 		)
-		(. ValidateDoBlock(exp); .)
+		(. exp = ValidateDoBlock(exp); .)
 		(. if (!skip) .) EndBlock.
         
-	DoBlockStmt<ref ElaJuxtaposition eqt> =
+	DoBlockStmt<ref ElaExpression eqt> =
 		(.			
 		    var cexp1 = default(ElaExpression);
 			var cexp2 = default(ElaExpression);
 		.)
 		(
 			(
-			    EmbExpr<out cexp1> [ "<-" EmbExpr<out cexp2> ]
+			    (
+			        EmbExpr<out cexp1> [ "<-" EmbExpr<out cexp2> ]
+			        (. ProcessDoBlock(cexp1, cexp2, ref eqt); .)
+			    )
 			    | 
 			    ( 
 			        (. 
@@ -1481,20 +1484,22 @@ PRODUCTIONS
 			        .)
 			        LET Binding<eqs>
 			        (.  
-			            if (eqt.Binding != null)
-		                    eqt.Binding.Equations.Equations.AddRange(eqs.Equations);
-		                else
-		                {
-		                    var lt = new ElaLetBinding(t);
+			            if (eqt.Type == ElaNodeType.LetBinding)
+			                ((ElaLetBinding)eqt).Equations.Equations.AddRange(eqs.Equations);
+			            else
+			            {
+			                var lt = new ElaLetBinding(t);
 			                lt.Equations = eqs;
-			                lt.Expression = eqt;
-			                eqt.Binding = lt;
-		                }
+			                if (eqt.Type == ElaNodeType.Lambda)
+			                    ((ElaLambda)eqt).Right = lt;
+			                else
+			                    lt.Expression = eqt;
+			                eqt = lt;
+			            }
 			        .)
 			        EndBlock
 			    )
 			)
-			(. ProcessDoBlock(cexp1, cexp2, ref eqt); .)
 		).
     
 	TopLevel =
