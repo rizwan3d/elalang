@@ -25,17 +25,19 @@ This function obeys the following law which can also help to understand its mech
 >>return a >>= k == k a
 The code above, if evaluated, would return `true`. This means that the two expressions are equivalent and would always
 fetch the same value.//br
-The function `return` used in our code sample is the second basic function - it just takes a value and puts in a 
+The function `return`, used in our code sample, is the second basic function - it just takes a value and puts it in a 
 monadic context:
 >>>open monad
 >>>return 2 ::: List
 As you can see this function should be always executed in a context of a monadic type (and linked lists in Ela are
-monads). In fact the name `return` is just an alias for a function `point`.//br
+monads). In fact the name `return` is just an alias for a function `point` and is defined in `monad` module like
+so: `return = point`.//br
 The third function is actually a redundant one. This a a `>>-` function (Haskell equivalent is `>>`). It can be defined
 in terms of `>>=` function like so:
 >>xs >>- ys = xs >>= (\_ -> ys)
-Its behavior is pretty similar to the standard `seq` function - it takes the contents of the first argument and simply
-ignores it, moving on to the second argument.
+(And this is in fact the way how this function is actually defined in `monad` module).//br
+Behavior of this function is pretty similar to the standard `seq` function - it takes the contents of the first argument 
+and simply ignores it, moving on to the second argument.
 
 =Monadic classes
 Module `monad` defines the following core monadic classes: `Functor`, `Union` and `Pointed` (there are other classes
@@ -58,10 +60,10 @@ And `return`, as it was already mentioned, is simply an alias for `point`.
 
 =Do notation
 A so called `do` notation is a special syntax that was added to Ela to simplify writing monadic code. Heavy usage of
-"bind" operator can lead to a pretty unreadable code; the `do` notation can help to remove the clutter. It is an expression
-that can be used in all the contexts where expression is valid. It starts with `do` keyword. The layout for `do` expression
-is pretty similar to the one used for `where` binding - the first entry can be on the same line with `do`, but other
-entries should indented after `do`:
+"bind" operator can lead to a pretty unreadable code; the `do` notation can help to remove the clutter.//br
+A `do` notation is a special type of an expression that can be used in all the contexts where expression is valid. It 
+starts with `do` keyword. The layout for `do` expression is pretty similar to the one used for `where` binding - the first 
+entry can be on the same line with `do`, but other entries should indented after `do`:
 >>>open core
 >>>
 >>>foo = do  
@@ -72,4 +74,17 @@ entries should indented after `do`:
 >>>
 >>>foo
 The monadic notation in Ela mimics the one used in Haskell; however, Ela currently supports only irrefutable patterns
-in left hand side of `<-` expressions.
+in left hand side of `<-` expressions.//br
+It is also possible to use `let` bindings in `do` notation in the following way:
+>>do
+>>  putStrLn "What is your height?"
+>>  x <- readAny
+>>  putStrLn "What is your weight?"
+>>  y <- readAny
+>>  let rec = x / y
+>>  putStr (
+>>    if rec > 2.25 then "You're too thin!"
+>>    else if rec < 2 then "You're too heavy!"
+>>    else "You're OK...")
+>>  putStr x
+The example above is written using `IO` monad and console IO actions available in `io` module.

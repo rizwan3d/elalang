@@ -1,3 +1,5 @@
+
+
 equals {eq,eqt,eqf} =
     eqt (2 == 2)
   `seq` eqt (12L == 12)
