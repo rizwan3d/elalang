@@ -1,4 +1,5 @@
-﻿0.1.8.2:Change:Minor UI changes.
+﻿0.1.9.0:Release:Release of Elide 0.1.9.0.
+0.1.8.2:Change:Minor UI changes.
 0.1.8.1:Fix:A problem with syntax highlighting in EIL code editor is fixed (Issue #52).
 0.1.8.0:Release:Release of Elide 0.1.8.0.
 0.1.7.4:New:Help menu is expanded with new links.
