@@ -1,3 +1,4 @@
+0.1.9.1:New:Functions 'until' and 'untili' added to the 'imperative' module.
 0.1.9.0:Release:Release of 0.1.9.0.
 0.1.8.7:New:A new 'Read' class is added to prelude with a bunch of instances, as well as a generic 'gread' function (equivalent to decomissioned 'read.readStr' function).
 0.1.8.6:Change:A module 'read' is decomissioned.
