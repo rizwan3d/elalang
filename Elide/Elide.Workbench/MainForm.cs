@@ -240,6 +240,9 @@ namespace Elide.Workbench
             }
             else
             {
+                if (mainSplit.Panel2.Height > 50) //50 - minimum panel size (with buttons).
+                    _outputPanelSize = mainSplit.Panel2.Height;
+                
                 mainSplit.SetPanel2Size(_outputPanelSize);
                 var inf = (ViewInfo)outputsBar.SelectedTag;
                 var view = App.GetService<IViewService>().GetView(inf.Key);
