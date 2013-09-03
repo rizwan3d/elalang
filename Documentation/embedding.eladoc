@@ -18,7 +18,13 @@ to support interactive mode. It allows you to build and execute Ela code chunk b
 Incremental linker is also useful if you want to evaluate Ela code in a string representation. 
 If this is not what you need, you can use a regular Ela linker. This is a sample in C# that shows 
 how to execute Ela code from a string: 
->var l = new ElaIncrementalLinker(new LinkerOptions(), CompilerOptions.Default);
+>using Ela;
+>using Ela.Compilation;
+>using Ela.Linking;
+>using Ela.Runtime;
+>using Ela.Runtime.ObjectModel;
+>
+>var l = new ElaIncrementalLinker(new LinkerOptions(), CompilerOptions.Default());
 >l.SetSource(elaSourceCode);
 >var res = l.Build();
 >if (res.Success) {
@@ -75,7 +81,13 @@ module:
 
 And this is what you need to do to make this module available in Ela: 
 
->var l = new ElaIncrementalLinker(CompilerOptions.Default, new LinkerOptions());
+>using Ela;
+>using Ela.Compilation;
+>using Ela.Linking;
+>using Ela.Runtime;
+>using Ela.Runtime.ObjectModel;
+>
+>var l = new ElaIncrementalLinker(new LinkerOptions(), CompilerOptions.Default());
 >l.ModuleResolve += (o,e) => {
 >  if (e.Module.ModuleName == "math")
 >    e.AddModule(new MathModule());
