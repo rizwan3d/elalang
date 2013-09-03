@@ -36,7 +36,13 @@ TOKENS
 					| "\\x" digit digit digit digit digit
 					}  
 				"\"".				
-				
+	
+	charTok = 	"'" ( char
+					| "\\\"" | "\\\\" | "\\0" | "\\b" | "\\n" | "\\r" | "\\t" | "\\'"
+					| "\\u" hexDigit hexDigit hexDigit hexDigit
+					| "\\x" digit digit digit digit digit
+					)  
+				"'".
 	operatorTok = op { op }.
 	
 	NL = newLine.

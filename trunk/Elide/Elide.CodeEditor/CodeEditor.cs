@@ -41,6 +41,9 @@ namespace Elide.CodeEditor
         {
             var cfg = GetConfig();
 
+            if (cfg == null)
+                return;
+
             if ((e.KeyChar == ' ' && cfg.ShowAutocompleteOnSpace) ||
                 (e.KeyChar == '.' && cfg.ShowAutocompleteOnModule) ||
                 (cfg.ShowAutocompleteOnChars && cfg.AutocompleteChars != null && cfg.AutocompleteChars.IndexOf(e.KeyChar) != -1))
