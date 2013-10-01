@@ -73,17 +73,15 @@ namespace Ela.Library.General
 
         public ElaUnit CloseFile(FileWrapper fs)
         {
-            Console.WriteLine("CloseFile");
-            //fs.Dispose();
+            fs.Dispose();
             return ElaUnit.Instance;
         }
 
         public ElaUnit WriteString(string str, FileWrapper fs)
         {
-            Console.WriteLine(str);
-            //var sw = new StreamWriter(fs.Stream);
-            //sw.Write(str);
-            //sw.Flush();
+            var sw = new StreamWriter(fs.Stream);
+            sw.Write(str);
+            sw.Flush();
             return ElaUnit.Instance;
         }
         
