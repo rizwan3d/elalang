@@ -1,30 +1,38 @@
-open random list console string datetime read core
+open string datetime random core monad io
 
-//A function that is used to generate a random number
+putStrFmt f x = putStrLn (format f x)
 rnd' v = rnd s 1 v where s = milliseconds <| datetime.now ()
 
-//Implementation of a game
-start () = match bound () with
-                 Some v = printfn "Guess a number from 1 to {0}." v `seq` guess <| rnd' v
-                 None   = start ()
+guess () = do
+  putStrLn "What's the upper bound?"
+  ub <- readAny
+  main ub
+  where main ub
+          | ub < 0 = "Bound should be greater than 0."
+          | else = do 
+              putStrFmt "Guess a number from 1 to {0}" ub
+              guesser (rnd' ub)
+        guesser v = & do
+          x <- readAny
+          if x == v then
+              cont ()
+            else if x < v then
+              do putStrLn "Too small!"
+                 guesser v
+            else 
+              do putStrLn "Too big!"
+                 guesser v
+        cont () = do
+          putStrLn "Correct! Do you wish to continue (Y/N)?"
+          ask ()
+        ask () = & do
+          a <- readStr
+          if a == "y" || a == "Y" then
+              guess ()
+            else if a == "n" || a == "N" then
+              do putStrLn "Bye!"
+            else 
+              do putStrLn "Say what?"
+                 ask ()
 
-bound () = writen "What's the upper bound?" `seq` (bound' <| readStr <| readn ())
-           where bound' v | v <= 0 = writen "Bound should be greater than 0." `seq` None
-                          | else   = Some v
-                          
-success v =  writen "Correct! Do you want to continue? (Y/N)" `seq` ask ()
-             where ask () = read <| upper <| readn ()
-                   read "Y" = start ()
-                   read "N" = writen "Bye!"
-                   read x   = writen "Say what?" `seq` ask ()
-                   
-failed v n = printfn "No, this is not {0}. {1}" v hint `seq` guess n
-             where hint | v < n = "Try bigger."
-                        | else  = "Try smaller."
-                        
-guess n = g <| readStr <| readn ()
-          where g v | v == n = success v
-                    | else   = failed v n
-
-//Let's start the game.
-start ()
+guess () ::: IO

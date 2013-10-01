@@ -93,6 +93,9 @@ namespace Ela.Compilation
 
             //Main compilation routine
             CompileProgram(prog, map);
+
+            //Forcing evaluation of a program retval
+            cw.Emit(Op.Force);
             
             //Every Ela module should end with a Stop op typeId
 			cw.Emit(Op.Stop);
@@ -150,12 +153,12 @@ namespace Ela.Compilation
                         AddLinePragma(v);
 
                         var a = AddVariable();
+                        cw.Emit(Op.Dup);
+                        cw.Emit(Op.Ctx);
                         PopVar(a);
                         var newMap = map.Clone(a);
 
-                        //cw.Emit(v.Tentative ? Op.Ctxtnt : Op.Ctxset);
                         CompileExpression(v.Expression, newMap, hints, v);
-                        //cw.Emit(v.Tentative ? Op.Ctxclst : Op.Ctxcls);
                     }
                     break;
                 case ElaNodeType.Builtin:

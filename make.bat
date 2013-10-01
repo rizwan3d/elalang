@@ -4,11 +4,11 @@
 
 @echo.
 @echo 1. Build Elide
-"C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\vcsexpress.exe" c:\projects\elaplatform\elide\elide.sln /build Release
+"C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\devenv.exe" c:\WORKSPACE\projects\elalang\elide\elide.sln /build Release
 
 @echo.
 @echo 2. Build Ela
-"C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE\devenv.exe" c:\projects\elaplatform\ela\ela.sln /build Release
+"C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\devenv.exe" c:\WORKSPACE\projects\elalang\ela\ela.sln /build Release
 
 @echo.
 @echo 3. Prepare target directory
@@ -22,35 +22,35 @@ mkdir c:\ela-platform\docs\samples\
 
 @echo.
 @echo 4. Copy Ela files
-copy c:\projects\elaplatform\ela\bin\ela.dll c:\ela-platform\ela\
-copy c:\projects\elaplatform\ela\bin\elac.exe c:\ela-platform\ela\
-copy c:\projects\elaplatform\ela\elaconsole\elac.exe.config c:\ela-platform\ela\
-copy c:\projects\elaplatform\ela\bin\elalib.dll c:\ela-platform\lib\
-xcopy c:\projects\elaplatform\ela\elalibrary\_ela\*.ela c:\ela-platform\lib\ /E
+copy c:\WORKSPACE\projects\elalang\ela\bin\ela.dll c:\ela-platform\ela\
+copy c:\WORKSPACE\projects\elalang\ela\bin\elac.exe c:\ela-platform\ela\
+copy c:\WORKSPACE\projects\elalang\ela\elaconsole\elac.exe.config c:\ela-platform\ela\
+copy c:\WORKSPACE\projects\elalang\ela\bin\elalib.dll c:\ela-platform\lib\
+xcopy c:\WORKSPACE\projects\elalang\ela\elalibrary\_ela\*.ela c:\ela-platform\lib\ /E
 
 @echo. 
 @echo 5. Copy Elide files
-copy c:\projects\elaplatform\elide\bin\*.dll c:\ela-platform\elide\
-copy c:\projects\elaplatform\elide\bin\elide.exe c:\ela-platform\elide\
-copy c:\projects\elaplatform\elide\bin\elide.xml c:\ela-platform\elide\
+copy c:\WORKSPACE\projects\elalang\elide\bin\*.dll c:\ela-platform\elide\
+copy c:\WORKSPACE\projects\elalang\elide\bin\elide.exe c:\ela-platform\elide\
+copy c:\WORKSPACE\projects\elalang\elide\bin\elide.xml c:\ela-platform\elide\
 
 @echo. 
 @echo 6. Generate documentation files
-xcopy c:\projects\elaplatform\documentation\_dir.xml c:\ela-platform\docs\
-eladoc c:\projects\elaplatform\documentation\ c:\ela-platform\docs\
+xcopy c:\WORKSPACE\projects\elalang\documentation\_dir.xml c:\ela-platform\docs\
+eladoc c:\WORKSPACE\projects\elalang\documentation\ c:\ela-platform\docs\
 
 @echo.
 @echo 7. Copy code samples
-xcopy c:\projects\elaplatform\documentation\samples\_dir.xml c:\ela-platform\docs\samples\
-xcopy c:\projects\elaplatform\documentation\samples\*.ela c:\ela-platform\docs\samples\ /E
+xcopy c:\WORKSPACE\projects\elalang\documentation\samples\_dir.xml c:\ela-platform\docs\samples\
+xcopy c:\WORKSPACE\projects\elalang\documentation\samples\*.ela c:\ela-platform\docs\samples\ /E
 
 @echo.
 @echo 8. Copy change log files
-copy c:\projects\elaplatform\ela\ela\changelist.txt c:\ela-platform\ela_log.txt
-copy c:\projects\elaplatform\ela\elalibrary\libchangelist.txt c:\ela-platform\lib_log.txt
-copy c:\projects\elaplatform\ela\elaconsole\consolechangelist.txt c:\ela-platform\elac_log.txt
-copy c:\projects\elaplatform\elide\elide.meta\elidechangelist.txt c:\ela-platform\elide_log.txt
-copy c:\projects\elaplatform\documentation\docschangelist.txt c:\ela-platform\docs_log.txt
+copy c:\WORKSPACE\projects\elalang\ela\ela\changelist.txt c:\ela-platform\ela_log.txt
+copy c:\WORKSPACE\projects\elalang\ela\elalibrary\libchangelist.txt c:\ela-platform\lib_log.txt
+copy c:\WORKSPACE\projects\elalang\ela\elaconsole\consolechangelist.txt c:\ela-platform\elac_log.txt
+copy c:\WORKSPACE\projects\elalang\elide\elide.meta\elidechangelist.txt c:\ela-platform\elide_log.txt
+copy c:\WORKSPACE\projects\elalang\documentation\docschangelist.txt c:\ela-platform\docs_log.txt
 
 @echo.
 @echo 9. Clean

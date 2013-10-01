@@ -1,6 +1,6 @@
 open espec 
 open basic
-open io
+open unsafe.file
 
 res = []
   |> addTests basic

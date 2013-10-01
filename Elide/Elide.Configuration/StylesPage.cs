@@ -96,8 +96,8 @@ namespace Elide.Configuration
             var def = GetDefaultItem();
 
             //Path for bug reproducible on XP (?)
-            //if (fontCombo.SelectedItem == null || sizeCombo.SelectedItem == null)
-            //    return;
+            if (fontCombo.SelectedItem == null || sizeCombo.SelectedItem == null)
+                return;
 
             var font = fontCombo.SelectedIndex == 0 ? def.FontName : fontCombo.SelectedItem.ToString();
             var size = sizeCombo.SelectedIndex == 0 ? def.FontSize : (Int32)sizeCombo.SelectedItem;

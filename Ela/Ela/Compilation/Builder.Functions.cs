@@ -87,7 +87,9 @@ namespace Ela.Compilation
             //Lambda is parsed as a an application of a lambda operator, e.g.
             //expr -> expr, therefore it needs to be transformed in order to be
             //able to use existing match compilation logic.
-            if (bid.Left.Type == ElaNodeType.Juxtaposition)
+            if (bid.Left.Type == ElaNodeType.Juxtaposition
+                && !bid.Left.Parens) //Parens flag is added if an expression is in parens and
+                                    //therefore should be qualified as a pattern.
             {
                 var f = (ElaJuxtaposition)bid.Left;
                 fc.Parameters.Add(f.Target);

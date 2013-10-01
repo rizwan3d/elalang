@@ -289,7 +289,7 @@ namespace Ela.Runtime.ObjectModel
 
         internal ElaFunction CloneFast()
 		{
-			var pars = new ElaValue[Parameters.Length];
+            var pars = new ElaValue[Parameters.Length];
 
 			if (AppliedParameters > 0) //This is faster than Array.Copy
 				for (var i = 0; i < AppliedParameters; i++)

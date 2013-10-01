@@ -64,7 +64,7 @@ PRODUCTIONS
 		
 	Keyword = 
 		( 
-		"Nop"|"Len"|"Pushunit"|"Pushelem"|"Pushfld"|"Hasfld"|"PushI4_0"|"PushI1_0"|"PushI1_1"|"Pop"|"Pushstr_0"|"Genfin"|"Cons"|"Tail"|"Head"|"Ret"|"Concat"|"Add"|"Mul"|"Div"|"Quot"|"Rem"|"Mod"|"Pow"|"Sub"|"Shr"|"Shl"|"Ceq"|"Cneq"|"Clt"|"Cgt"|"Cgteq"|"Clteq"|"AndBw"|"OrBw"|"Xor"|"Not"|"Neg"|"NotBw"|"Dup"|"Swap"|"Newlazy"|"Newlist"|"Newtup_2"|"Stop"|"NewI8"|"NewR8"|"Leave"|"Flip"|"LazyCall"|"Call"|"Callt"|"Calld"|"Throw"|"Rethrow"|"Force"|"Isnil"|"Show"|"Addmbr"|"Traitch"|"Skiptag"|"Newtype"|"Newtype0"|"Newtype1"|"Newtype2"|"Ctype"|"Disp"|"Newconst"|"Api"|"Api2"|"Untag"|"Reccons"|"Tupcons"|"Ctorid"|"Typeid"|"Classid"|"Newfunc"|"Newmod"|"Pushext"|"Newrec"|"Newtup"|"Failwith"|"Start"|"Pushstr"|"PushCh"|"PushI4"|"PushR4"|"Pushloc"|"Pushvar"|"Poploc"|"Popvar"|"Runmod"|"Br"|"Brtrue"|"Brfalse"|"Newfun"
+		"Nop"|"Len"|"Pushunit"|"Pushelem"|"Pushfld"|"Hasfld"|"PushI4_0"|"PushI1_0"|"PushI1_1"|"Pop"|"Pushstr_0"|"Genfin"|"Cons"|"Tail"|"Head"|"Ret"|"Concat"|"Add"|"Mul"|"Div"|"Quot"|"Rem"|"Mod"|"Pow"|"Sub"|"Shr"|"Shl"|"Ceq"|"Cneq"|"Clt"|"Cgt"|"Cgteq"|"Clteq"|"AndBw"|"OrBw"|"Xor"|"Not"|"Neg"|"NotBw"|"Dup"|"Swap"|"Newlazy"|"Newlist"|"Newtup_2"|"Stop"|"NewI8"|"NewR8"|"Leave"|"Flip"|"LazyCall"|"Call"|"Callt"|"Ctx"|"Throw"|"Rethrow"|"Force"|"Isnil"|"Show"|"Addmbr"|"Traitch"|"Skiptag"|"Newtype"|"Newtype0"|"Newtype1"|"Newtype2"|"Ctype"|"Disp"|"Newconst"|"Api"|"Api2"|"Untag"|"Reccons"|"Tupcons"|"Ctorid"|"Typeid"|"Classid"|"Newfunc"|"Newmod"|"Pushext"|"Newrec"|"Newtup"|"Failwith"|"Start"|"Pushstr"|"PushCh"|"PushI4"|"PushR4"|"Pushloc"|"Pushvar"|"Poploc"|"Popvar"|"Runmod"|"Br"|"Brtrue"|"Brfalse"|"Newfun"
 	    )
 		(. Add(t.pos, t.val.Length, TextStyle.Style2); .).		
 		

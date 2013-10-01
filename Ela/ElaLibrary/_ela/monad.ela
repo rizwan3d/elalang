@@ -130,13 +130,17 @@ instance Copointed Tuple where
 
 /* Failure */
 class Failure a where
-  failure a->_
+  failure _->a
 
 instance Failure where
   failure = undefined
 
-instance Failure List
-instance Failure Maybe
+instance Failure List where
+  failure _ = []
+
+instance Failure Maybe where
+  failure _ = None
+
 instance Failure Either
 instance Failure Tuple
 
