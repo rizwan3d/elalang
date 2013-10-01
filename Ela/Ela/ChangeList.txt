@@ -1,3 +1,5 @@
+0.12.2.10:Change:Implementation of do-notation is refactored, simplified and optimized.
+0.12.2.9:Fix:Do-notation execution order bug (Issue #65).
 0.12.2.8:New:Pattern matching is do-notation is now supported (Issue #51).
 0.12.2.7:Change:Compilation of contexts was optimized and is now more flexible, new op code Ctx is added.
 0.12.2.6:Change:An op code Calld is decomissioned.

@@ -155,34 +155,12 @@ namespace Ela.Parsing
             else if (rootExp.Type == ElaNodeType.Lambda)
             {
                 lam = (ElaLambda)rootExp;
-
-                if (lam.Right != null && (lam.Right.Type != ElaNodeType.Juxtaposition || !((ElaJuxtaposition)lam.Right).Spec))
-                {
-                    eqt = new ElaJuxtaposition { Spec = true };
-                    eqt.SetLinePragma(cexp1.Line, cexp1.Column);
-                    eqt.Target = new ElaNameReference(t) { Name = ">>-" };
-                    eqt.Parameters.Add(null);
-                    eqt.Parameters.Add(lam.Right);
-                    lam.Right = eqt;
-                }
-                else
-                    eqt = lam.Right as ElaJuxtaposition;
+                eqt = lam.Right as ElaJuxtaposition;
             }
             else if (rootExp.Type == ElaNodeType.LetBinding)
             {
                 letb = (ElaLetBinding)rootExp;
-
-                if (letb.Expression != null && (letb.Expression.Type != ElaNodeType.Juxtaposition || ((ElaJuxtaposition)letb.Expression).Spec))
-                {
-                    eqt = new ElaJuxtaposition { Spec = true };
-                    eqt.SetLinePragma(cexp1.Line, cexp1.Column);
-                    eqt.Target = new ElaNameReference(t) { Name = ">>-" };
-                    eqt.Parameters.Add(null);
-                    eqt.Parameters.Add(letb.Expression);
-                    letb.Expression = eqt;
-                }
-                else                    
-                    eqt = letb.Expression as ElaJuxtaposition;
+                eqt = letb.Expression as ElaJuxtaposition;
             }
             else if (rootExp.Type != ElaNodeType.None)
             {
@@ -202,102 +180,58 @@ namespace Ela.Parsing
                 eqt = eqt2;
             }
 
-            if (cexp2 != null)
+            if (eqt != null && eqt.Parameters.Count == 2)
             {
-                #region >>=
-                if (eqt != null && eqt.Parameters.Count == 2)
+                if (eqt.Parameters[0] == null)
                 {
-                    if (eqt.Parameters[0] == null)
-                    {
-                        eqt.Target = new ElaNameReference(t) { Name = ">>=" };
+                    eqt.Target = new ElaNameReference(t) { Name = ">>=" };
                         
-                        var lambda = new ElaLambda();
-                        lambda.SetLinePragma(cexp2.Line, cexp2.Column);
-                        lambda.Left = new ElaPlaceholder();
+                    var lambda = new ElaLambda();
+                    lambda.SetLinePragma(cexp2.Line, cexp2.Column);
+                    lambda.Left = new ElaPlaceholder();
                         
-                        var lambda2 = new ElaLambda();
-                        lambda2.SetLinePragma(cexp2.Line, cexp2.Column);
-                        lambda2.Left = cexp1;
+                    var lambda2 = new ElaLambda();
+                    lambda2.SetLinePragma(cexp2.Line, cexp2.Column);
+                    lambda2.Left = cexp1;
 
-                        var eqt1 = new ElaJuxtaposition { Spec = true };
-                        eqt1.SetLinePragma(cexp2.Line, cexp2.Column);
-                        eqt1.Target = new ElaNameReference(t) { Name = ">>=" };
-                        eqt1.Parameters.Add(cexp2);
-                        eqt1.Parameters.Add(lambda2);
-                        lambda.Right = eqt1;
+                    var eqt1 = new ElaJuxtaposition { Spec = true };
+                    eqt1.SetLinePragma(cexp2.Line, cexp2.Column);
+                    eqt1.Target = new ElaNameReference(t) { Name = ">>=" };
+                    eqt1.Parameters.Add(cexp2);
+                    eqt1.Parameters.Add(lambda2);
+                    lambda.Right = eqt1;
                         
-                        eqt.Parameters[0] = eqt.Parameters[1];
-                        eqt.Parameters[1] = lambda;
-                        rootExp = lambda2;
-                    }
-                    else
-                    {
-                        throw new Exception("Unable to process do-notation.");
-                    }
+                    eqt.Parameters[0] = eqt.Parameters[1];
+                    eqt.Parameters[1] = lambda;
+                    rootExp = lambda2;
                 }
                 else
                 {
-                    if (eqt == null)
-                    {
-                        eqt = new ElaJuxtaposition { Spec = true };
-                        eqt.SetLinePragma(cexp1.Line, cexp1.Column);
-
-                        if (lam != null)
-                            lam.Right = eqt;
-                        else if (letb != null)
-                            letb.Expression = eqt;
-                    }
-
-                    eqt.Target = new ElaNameReference(t) { Name = ">>=" };
-                    eqt.Parameters.Add(cexp2);
-
-                    var lambda = new ElaLambda();
-                    lambda.SetLinePragma(cexp2.Line, cexp2.Column);
-                    lambda.Left = cexp1;
-
-                    eqt.Parameters.Add(lambda);
-                    rootExp = lambda;
+                    throw new Exception("Unable to process do-notation.");
                 }
-                #endregion
             }
             else
             {
-                #region >>-
-                if (eqt != null && eqt.Parameters.Count == 2)
+                if (eqt == null)
                 {
-                    if (eqt.Parameters[0] == null)
-                    {
-                        eqt.Parameters[0] = eqt.Parameters[1];
-                        eqt.Parameters[1] = cexp1;
-                    }
-                    else
-                    {
-                        var oldeqt = eqt;
-                        eqt = new ElaJuxtaposition();
-                        eqt.Target = new ElaNameReference(t) { Name = ">>-" };
-                        eqt.SetLinePragma(cexp1.Line, cexp1.Column);
-                        eqt.Parameters.Add(oldeqt.Parameters[1]);
-                        eqt.Parameters.Add(cexp1);
-                        oldeqt.Parameters[1] = eqt;
-                        rootExp = eqt;
-                    }
-                }
-                else if (eqt != null)
-                {
-                    eqt.Target = new ElaNameReference(t) { Name = ">>-" };
-                    eqt.Parameters.Add(null);
-                    eqt.Parameters.Add(cexp1);
-                }
-                else
-                {
+                    eqt = new ElaJuxtaposition { Spec = true };
+                    eqt.SetLinePragma(cexp1.Line, cexp1.Column);
+
                     if (lam != null)
-                        lam.Right = cexp1;
+                        lam.Right = eqt;
                     else if (letb != null)
-                        letb.Expression = cexp1;
-                    else
-                        rootExp = cexp1;
+                        letb.Expression = eqt;
                 }
-                #endregion
+
+                eqt.Target = new ElaNameReference(t) { Name = ">>=" };
+                eqt.Parameters.Add(cexp2);
+
+                var lambda = new ElaLambda();
+                lambda.SetLinePragma(cexp2.Line, cexp2.Column);
+                lambda.Left = cexp1;
+
+                eqt.Parameters.Add(lambda);
+                rootExp = lambda;
             }
         }
 
