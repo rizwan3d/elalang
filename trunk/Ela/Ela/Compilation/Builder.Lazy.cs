@@ -64,6 +64,10 @@ namespace Ela.Compilation
             var scopeVar = GetVariable(varRef.Name, varRef.Line, varRef.Column);
             var len = funCall.Parameters.Count;
 
+            //Only one parameter is allowed
+            if (len > 1)
+                return false;
+
             //If a target is not function we can't optimize it
             if ((scopeVar.VariableFlags & ElaVariableFlags.Function) != ElaVariableFlags.Function)
                 return false;

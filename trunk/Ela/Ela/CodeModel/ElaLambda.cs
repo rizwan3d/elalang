@@ -26,11 +26,19 @@ namespace Ela.CodeModel
             sb.Append('\\');
 
             if (Left.Type == ElaNodeType.Juxtaposition)
-                foreach (var p in ((ElaJuxtaposition)Left).Parameters)
+            {
+                var j = (ElaJuxtaposition)Left;
+                Format.PutInBraces(j.Target, sb);
+
+                if (j.Parameters.Count > 0)
+                    sb.Append(' ');
+
+                foreach (var p in j.Parameters)
                 {
                     Format.PutInBraces(p, sb);
                     sb.Append(' ');
                 }
+            }
             else
             {
                 Format.PutInBraces(Left, sb);
@@ -38,7 +46,9 @@ namespace Ela.CodeModel
             }
 
             sb.Append("-> ");
-            Right.ToString(sb, 0);
+
+            if (Right != null)
+                Right.ToString(sb, 0);
         }
 
         internal int GetParameterCount()

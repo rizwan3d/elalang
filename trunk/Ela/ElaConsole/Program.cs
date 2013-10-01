@@ -42,6 +42,11 @@ namespace ElaConsole
                 return R_OK;
             }
 
+            //var p = new ElaParser();
+            //var r = p.Parse(new FileInfo(opt.FileName));
+            //Console.WriteLine(r.Program.ToString());
+            //return 0;
+
 			helper = new MessageHelper(opt);
 			helper.PrintLogo();
 		

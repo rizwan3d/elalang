@@ -19,7 +19,7 @@ internal sealed partial class Parser {
 	public const int _operatorTok = 7;
 	public const int _parenTok = 8;
 	public const int _NL = 9;
-	public const int maxT = 44;
+	public const int maxT = 43;
 
 	const bool T = true;
 	const bool x = false;
@@ -118,7 +118,7 @@ internal sealed partial class Parser {
 		} else if (la.kind == 0) {
 			Get();
 			Add(pos, t.pos - pos + t.val.Length, ElaStyle.Comment); 
-		} else SynErr(45);
+		} else SynErr(44);
 	}
 
 	void VerbatimString() {
@@ -202,7 +202,7 @@ internal sealed partial class Parser {
 			Get();
 			break;
 		}
-		default: SynErr(46); break;
+		default: SynErr(45); break;
 		}
 	}
 
@@ -292,18 +292,14 @@ internal sealed partial class Parser {
 			Get();
 			break;
 		}
-		case 43: {
-			Get();
-			break;
-		}
-		default: SynErr(47); break;
+		default: SynErr(46); break;
 		}
 		Add(t.pos, t.val.Length, ElaStyle.Keyword); 
 	}
 
 	void Code() {
 		switch (la.kind) {
-		case 22: case 23: case 24: case 25: case 26: case 27: case 28: case 29: case 30: case 31: case 32: case 33: case 34: case 35: case 36: case 37: case 38: case 39: case 40: case 41: case 42: case 43: {
+		case 22: case 23: case 24: case 25: case 26: case 27: case 28: case 29: case 30: case 31: case 32: case 33: case 34: case 35: case 36: case 37: case 38: case 39: case 40: case 41: case 42: {
 			Keywords();
 			break;
 		}
@@ -327,7 +323,7 @@ internal sealed partial class Parser {
 			Get();
 			break;
 		}
-		default: SynErr(48); break;
+		default: SynErr(47); break;
 		}
 	}
 
@@ -350,11 +346,11 @@ internal sealed partial class Parser {
 	}
 	
 	static readonly bool[,] set = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
-		{x,T,T,T, T,T,T,T, T,T,T,x, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,x},
-		{x,T,T,T, T,T,T,T, T,x,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,x},
-		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,x},
-		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x,x}
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,T,T,T, T,T,T,T, T,T,T,x, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x},
+		{x,T,T,T, T,T,T,T, T,x,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x},
+		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x},
+		{x,T,T,T, T,T,T,T, T,T,T,T, T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x, x}
 
 	};
 } // end Parser
@@ -394,32 +390,31 @@ internal sealed class Errors {
 			case 20: s = "\";\" expected"; break;
 			case 21: s = "\"#\" expected"; break;
 			case 22: s = "\"let\" expected"; break;
-			case 23: s = "\"where\" expected"; break;
-			case 24: s = "\"and\" expected"; break;
-			case 25: s = "\"or\" expected"; break;
-			case 26: s = "\"open\" expected"; break;
-			case 27: s = "\"import\" expected"; break;
-			case 28: s = "\"in\" expected"; break;
-			case 29: s = "\"is\" expected"; break;
-			case 30: s = "\"if\" expected"; break;
-			case 31: s = "\"then\" expected"; break;
-			case 32: s = "\"else\" expected"; break;
-			case 33: s = "\"match\" expected"; break;
-			case 34: s = "\"try\" expected"; break;
-			case 35: s = "\"with\" expected"; break;
-			case 36: s = "\"__internal\" expected"; break;
-			case 37: s = "\"deriving\" expected"; break;
-			case 38: s = "\"fail\" expected"; break;
-			case 39: s = "\"instance\" expected"; break;
-			case 40: s = "\"class\" expected"; break;
-			case 41: s = "\"type\" expected"; break;
-			case 42: s = "\"data\" expected"; break;
-			case 43: s = "\"opentype\" expected"; break;
-			case 44: s = "??? expected"; break;
-			case 45: s = "invalid SingleLineComment"; break;
-			case 46: s = "invalid Primary"; break;
-			case 47: s = "invalid Keywords"; break;
-			case 48: s = "invalid Code"; break;
+			case 23: s = "\"do\" expected"; break;
+			case 24: s = "\"where\" expected"; break;
+			case 25: s = "\"open\" expected"; break;
+			case 26: s = "\"import\" expected"; break;
+			case 27: s = "\"in\" expected"; break;
+			case 28: s = "\"is\" expected"; break;
+			case 29: s = "\"if\" expected"; break;
+			case 30: s = "\"then\" expected"; break;
+			case 31: s = "\"else\" expected"; break;
+			case 32: s = "\"match\" expected"; break;
+			case 33: s = "\"try\" expected"; break;
+			case 34: s = "\"with\" expected"; break;
+			case 35: s = "\"__internal\" expected"; break;
+			case 36: s = "\"deriving\" expected"; break;
+			case 37: s = "\"fail\" expected"; break;
+			case 38: s = "\"instance\" expected"; break;
+			case 39: s = "\"class\" expected"; break;
+			case 40: s = "\"type\" expected"; break;
+			case 41: s = "\"data\" expected"; break;
+			case 42: s = "\"opentype\" expected"; break;
+			case 43: s = "??? expected"; break;
+			case 44: s = "invalid SingleLineComment"; break;
+			case 45: s = "invalid Primary"; break;
+			case 46: s = "invalid Keywords"; break;
+			case 47: s = "invalid Code"; break;
 
 			default: s = "error " + n; break;
 		}

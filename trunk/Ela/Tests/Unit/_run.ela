@@ -1,10 +1,10 @@
-open test console 
+open test unsafe.console 
 open basictests funtests rangetests listtests tupletests recordtests
      comprehensiontests thunktests matchtests
 
 //Just to run all std lib modules
-import cell char datetime espec imperative io list
-     number read record reflect string thunk
+import char datetime espec imperative io list
+     number record reflect string thunk
      peano random tuple core generic
      collections.alist collections.queue monad
 

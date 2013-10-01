@@ -147,25 +147,16 @@ namespace Ela.Compilation
 
             AddLinePragma(v);
 
-            //If this is a context-bound call, we need to emit a different call instruction.
-            //Tail calls are not supported in such a case.
-            if (map.HasContext)
-                for (var i = 0; i < len; i++)
-                {
-                    PushVar(map.Context.Value);
-                    cw.Emit(Op.Calld);
-                }
-            else
-                for (var i = 0; i < len; i++)
-                {
-                    var last = i == v.Parameters.Count - 1;
+            for (var i = 0; i < len; i++)
+            {
+                var last = i == v.Parameters.Count - 1;
 
-                    //Use a tail call if this function call is a tail expression and optimizations are enabled.
-                    if (last && tail && opt)
-                        cw.Emit(Op.Callt);
-                    else
-                        cw.Emit(Op.Call);
-                }
+                //Use a tail call if this function call is a tail expression and optimizations are enabled.
+                if (last && tail && opt)
+                    cw.Emit(Op.Callt);
+                else
+                    cw.Emit(Op.Call);
+            }
 
             return ed;
         }

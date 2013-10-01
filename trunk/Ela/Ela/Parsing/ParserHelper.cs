@@ -14,7 +14,35 @@ namespace Ela.Parsing
         private ElaExpression ValidateDoBlock(ElaExpression exp)
         {
             if (exp.Type == ElaNodeType.Juxtaposition && ((ElaJuxtaposition)exp).Parameters[0] == null)
-                return ((ElaJuxtaposition)exp).Parameters[1];
+            {
+                var ext = ((ElaJuxtaposition)exp).Parameters[1];
+                var ctx = default(ElaContext);
+
+                if (ext.Type == ElaNodeType.Context)
+                {
+                    ctx = (ElaContext)ext;
+                    ext = ctx.Expression;
+                }
+
+                var eqt = new ElaJuxtaposition { Spec = true };
+                eqt.SetLinePragma(exp.Line, exp.Column);
+                eqt.Target = new ElaNameReference(t) { Name = ">>=" };
+                eqt.Parameters.Add(ext);
+
+                var jux = new ElaJuxtaposition();
+                jux.SetLinePragma(exp.Line, exp.Column);
+                jux.Target = new ElaNameReference { Name = "point" };
+                jux.Parameters.Add(new ElaUnitLiteral());
+                eqt.Parameters.Add(new ElaLambda { Left = new ElaPlaceholder(), Right = jux });
+
+                if (ctx != null)
+                {
+                    ctx.Expression = eqt;
+                    exp = ctx;
+                }
+                else
+                    exp = eqt;
+            }
 
             var root = exp;
 
@@ -33,17 +61,55 @@ namespace Ela.Parsing
                     else
                         break;
                 }
+                else if (exp.Type == ElaNodeType.LetBinding)
+                {
+                    var lb = (ElaLetBinding)exp;
+                    lb.Expression = Reduce(lb.Expression, lb);
+                    exp = lb.Expression;
+                }
                 else if (exp.Type == ElaNodeType.Lambda)
                 {
                     var lb = (ElaLambda)exp;
                     lb.Right = Reduce(lb.Right, lb);
-                    exp = lb.Right;
+
+                    if (lb.Left.Type != ElaNodeType.NameReference &&
+                        lb.Left.Type != ElaNodeType.Placeholder)
+                    {
+                        var em = new ElaMatch();
+                        em.SetLinePragma(lb.Left.Line, lb.Left.Column);
+                        em.Expression = new ElaNameReference { Name = "$x01" };
+                        em.Entries = new ElaEquationSet();
+
+                        var eq1 = new ElaEquation();
+                        eq1.SetLinePragma(lb.Left.Line, lb.Left.Column);
+                        eq1.Left = lb.Left;
+                        eq1.Right = lb.Right;
+                        em.Entries.Equations.Add(eq1);
+
+                        var eq2 = new ElaEquation();
+                        eq2.SetLinePragma(lb.Left.Line, lb.Left.Column);
+                        eq2.Left = new ElaNameReference { Name = "$x02" };
+                        var errExp = new ElaJuxtaposition();
+                        errExp.SetLinePragma(lb.Left.Line, lb.Left.Column);
+                        errExp.Target = new ElaNameReference { Name = "failure" };
+                        errExp.Parameters.Add(new ElaNameReference { Name = "$x02" });
+                        eq2.Right = errExp;
+                        em.Entries.Equations.Add(eq2);
+
+                        lb.Left = new ElaNameReference { Name = "$x01" };
+                        lb.Right = em;
+                        exp = lb;
+                    }
+                    else
+                        exp = lb.Right;
                 }
                 else
                     break;
             }
 
-            return root;
+            var ret = new ElaLazyLiteral { Expression = root };
+            ret.SetLinePragma(root.Line, root.Column);
+            return ret;
         }
 
         private ElaExpression Reduce(ElaExpression exp, ElaExpression parent)
@@ -60,6 +126,11 @@ namespace Ela.Parsing
 
                 if (juxta.Parameters[0] == null)
                     return juxta.Parameters[1];
+                else if (juxta.Parameters.Count > 1 &&
+                    juxta.Parameters[1] != null &&
+                    juxta.Parameters[1].Type == ElaNodeType.Lambda &&
+                    ((ElaLambda)juxta.Parameters[1]).Right == null)
+                    return juxta.Parameters[0];
                 else
                     return juxta;
             }
@@ -72,6 +143,12 @@ namespace Ela.Parsing
             var eqt = default(ElaJuxtaposition);
             var lam = default(ElaLambda);
             var letb = default(ElaLetBinding);
+
+            if (cexp2 == null)
+            {
+                cexp2 = cexp1;
+                cexp1 = new ElaPlaceholder();
+            }
 
             if (rootExp.Type == ElaNodeType.Juxtaposition)
                 eqt = (ElaJuxtaposition)rootExp;
@@ -127,6 +204,7 @@ namespace Ela.Parsing
 
             if (cexp2 != null)
             {
+                #region >>=
                 if (eqt != null && eqt.Parameters.Count == 2)
                 {
                     if (eqt.Parameters[0] == null)
@@ -147,17 +225,9 @@ namespace Ela.Parsing
                         eqt1.Parameters.Add(cexp2);
                         eqt1.Parameters.Add(lambda2);
                         lambda.Right = eqt1;
-
-                        //var eqt2 = new ElaJuxtaposition();
-                        //eqt2.SetLinePragma(cexp2.Line, cexp2.Column);
-                        //eqt2.Target = new ElaNameReference(t) { Name = ">>-" };
-                        //eqt2.Parameters.Add(null);
-                        //eqt2.Parameters.Add(null);                        
-                        //lambda2.Right = eqt2;
-
+                        
                         eqt.Parameters[0] = eqt.Parameters[1];
                         eqt.Parameters[1] = lambda;
-                        //rootExp = eqt2;
                         rootExp = lambda2;
                     }
                     else
@@ -184,20 +254,15 @@ namespace Ela.Parsing
                     var lambda = new ElaLambda();
                     lambda.SetLinePragma(cexp2.Line, cexp2.Column);
                     lambda.Left = cexp1;
-                    //var eqt2 = new ElaJuxtaposition();
-                    //eqt2.SetLinePragma(cexp2.Line, cexp2.Column);
-                    //eqt2.Target = new ElaNameReference(t) { Name = ">>-" };
-                    //eqt2.Parameters.Add(null);
-                    //eqt2.Parameters.Add(null);
-                    //lambda.Right = eqt2;
 
                     eqt.Parameters.Add(lambda);
-                    //rootExp = eqt2;
                     rootExp = lambda;
                 }
+                #endregion
             }
             else
             {
+                #region >>-
                 if (eqt != null && eqt.Parameters.Count == 2)
                 {
                     if (eqt.Parameters[0] == null)
@@ -232,6 +297,7 @@ namespace Ela.Parsing
                     else
                         rootExp = cexp1;
                 }
+                #endregion
             }
         }
 

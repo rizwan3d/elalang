@@ -56,7 +56,6 @@ namespace Ela.Compilation
         LazyCall,
         Call,
         Callt,
-        Calld,
         Throw,
         Rethrow,
         Force,
@@ -70,8 +69,9 @@ namespace Ela.Compilation
         Newtype1,
         Newtype2,
         Ctype,
-        Disp,
-        
+        Disp,        
+        Ctx,
+
         Newconst,
         Api,
         Api2,

@@ -1186,29 +1186,19 @@ namespace Ela.Runtime
                         if (Call(evalStack.Pop().Ref, thread, evalStack, CallFlag.None, null))
                             goto SWITCH_MEM;
                         break;
-                    case Op.Calld:
-                        left = evalStack.Pop();
-                        right = evalStack.Pop();
-
-                        if (right.TypeId == LAZ)
-                            right = right.Ref.Force(right, ctx);
-
-                        if (ctx.Failed)
-                        {
-                            evalStack.Push(right);
-                            evalStack.Push(left);
-                            ExecuteThrow(thread, evalStack);
-                            goto SWITCH_MEM;
-                        }
-
-                        if (Call(right.Ref, thread, evalStack, CallFlag.None, left.I4))
-                            goto SWITCH_MEM;
-                        break;
                     case Op.LazyCall:
                         {
-                            var fun = ((ElaFunction)evalStack.Pop().Ref).CloneFast();
-                            fun.LastParameter = evalStack.Pop();
-                            evalStack.Push(new ElaValue(-1, new ElaLazy(fun)));
+                            var o = (ElaFunction)evalStack.Pop().Ref;
+
+                            if (!o.table)
+                            {
+                                o = o.CloneFast();
+                                o.LastParameter = evalStack.Pop();
+                            }
+                            else
+                                o = ((ElaFunTable)o).GetFunction(evalStack.Pop(), ctx, thread.CallStack.Peek().Context);
+                            
+                            evalStack.Push(new ElaValue(-1, new ElaLazy(o)));
                         }
                         break;
                     case Op.Callt:
@@ -1275,6 +1265,9 @@ namespace Ela.Runtime
 
                     #region Misc
                     case Op.Nop:
+                        break;
+                    case Op.Ctx:
+                        callStack.Peek().Context = evalStack.Pop().I4;
                         break;
                     case Op.Api:
                         right = evalStack.Pop();
@@ -1939,7 +1932,8 @@ namespace Ela.Runtime
                     if (cf != CallFlag.NoReturn)
                         thread.CallStack.Peek().BreakAddress = thread.Offset;
 
-                    newStack.Push(p);
+                    if (p.Ref != null)
+                        newStack.Push(p);
 
                     for (var i = 0; i < natFun.Parameters.Length; i++)
                         newStack.Push(natFun.Parameters[natFun.Parameters.Length - i - 1]);
